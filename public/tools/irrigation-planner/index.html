@@ -1,0 +1,3134 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Irrigation Planner · Pop Epoch Tools</title>
+<meta name="theme-color" content="#1f7a91">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Irrigation">
+<link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAAD9ElEQVR42u3dMW4TURSF4XlXlC69CEtZCC0bYAsULCQFW2ADtF4IUhaRMn3oEQTbGTzz7vn+FiSUO+e/546Ik7FswMvz0+sC/MbheBr3/jeHwCNZiCH0SJZhCD2SZSjhx2ysmbUh+EhugxJ+JLfBEHwkt0EJP5LboIQfyRKU8CNZghJ+JEtQwo9kCUr4kSxBGRGSKdsfyS1Qwo9kCZxAcALZ/khtgRJ+JEvgBIITCIgXwPmDxDNIA0ADANECOH+QegZpAGgAgABAIMP9Dw2AzXh4PBsCAbLDTwICAARIPn20AAEAAiS/+GoBAgAESNz+WoAAAAGSt78WIABAgOTtrwUIABAgeftrAQIABEje/lqAAAABkre/FiAAQIDk7a8FCAAQIHn7awECAARI3v5agADx4QcBQDQCCCUIQDhDIIAwggDEAwGEEAQgIAggfCAAEUEAocO/8DvCGob+59ePHhYBbHsiOIGiTx1nmgYQHm1AAFuTCE4g4XcWEUAwSOAEEgYnkQYQfjOIFkD4zSJWAOE3k1gBhN9sYgUQfjOKFUD4zSpWAOE3MycQkCiA7W92sQIIvxnGCiD8ZukEAhIFsP3NVAMAiQLY/marAYBEAWx/M76WDx7pOvz48vmvf/bp23cD2iltPhK51WZ6K/idRejyUUrvAHcK/y1/HwTY7fa/NcxdJOjyLqABNgixJiBAbPhJQABV3IQOs9cAG25tLUAAgADOH8+AAAABAAIABAAIsLOXr7W/ma3LN8fN/CKsAaABcP+t7TMCBIiVQPgJECuB8BMgVgLh3x8+E7ySBD4TTAAiwAkEEAAgAEAAgAAAAQACAARYhS4/m7IDMz8LDQANABAAIABAAC9fiHkGGgAaACCACkbg7DUANABAAFWMwJlrAGgAGwmps9YA0AA2E1JnrAGgAWwopM5WA0AD2FRInakGgAawsZA6y/LgkDzD8gCRPDvvAPAOYJMhdWblgSJ5VuXBInlG5QEjeTblQSN5JuWBI3kW5cELfzLj5fnp1Q5clofHs+BrAJvQ10oAEvganUBOorPgEwCziyD4TqDYAAm/BohsA8EnQJwMQk+AOBmEngBxMgg9AWKkEHYCAP+VOhxPwxiQyOF4Gv4fANkNYAQgAJAsgPcAJN7/GgAawAhAAGcQAs8fDQANYAQggDMIgefPHxuABEgJvxMITqBLTQG6bf83G4AE6B5+JxCcQLeaA8y+/S9qABKga/gvPoFIgI7hv+odgAToFv6rX4JJgE7hv1oAEqBT+JdlWd4VZj9SBbMG/+YG0AboEv53N4A2wKzBX6UBtAFmDv+qDaARMEvo7yIAGTDDVbHJ2UII7OWM/gWyoNyr151NGQAAAABJRU5ErkJggg==">
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAYAAAA9zQYyAAADrklEQVR42u3dv21UQRRG8Tcjwg23iJUohJQGaIGAQghowQ2QUgiSi3Do3OTICO+/57nf/Z0QkJDvnHf2znoNY9uR56fHlw3tOBxPY6+/axAYSYIPEiNJ7kFkJIk9iIwksSeZsRLXOjWIjKRaTzIjqdaTzEiSepIZSVJPMiNJ6klmJEk9yYwkqSeZkST1NB4kMdUZSZWeZEaS1FYO5K4c6ozqlVZoZBZanZFQaYVG7g4NRAht3UDK2qHQsHIAhAZ2YNifodA4m4/ffxkCobNkJjWhAUKvvGqoNKEBQq98EVRpQgOEXrHOKk1ogNAr11mlCQ0QeuU6qzShAUKvXGeVJjRA6JXrrNKEBgi9cp1VmtBxMoPQHhAQmnyEhgeF0KQDoeGBITTZQGgPDqFBMkLDA0RocpGa0ACh61RSpQmNhvgHz4uV8fe3Tw6F0Hkv8cQmdOSuSmxCR166iO1SGPUOgndBFDpWgs61nmT2tRHagfsaCe2gfa12aIdrr1ZoMvedwXSQpCa0AzQTQgOEViKzITSZ+85oOihSE9oBmRmhAUKrs9kpNBRaYVSa0A6C1IQG7kjpj4++V1F+fv3y6q9//vEQIUXlj5p+8ExfL/Lfv58itpWjscyX/lkQevd14xJBK0td+XKo0HcUU6kJvVRBbiFkVamrVlqhodBWDasHoQFCZ93AzZrQAKFBaIDQydzy8xg+20FoF0IzV+gVK63OhI6RmsyEjpGazISOkZrM74efWLlA6vQfwSK0WsPKARAaIDQIDRAaIDTQVegu/xuqmSs0QGgQGiA0QGgXQ7NWaCg0QGiA0PZoMyY00EJolTZbhYZCA4T20mimhAYIrdJmmVdoUpuhlQNWDoVRZ0IDhFYaMyM0qc0qc+Ugdd8ZTQdGZkIDhFYiMyG0AzQLQpO67wzG89PjS6eD7fa/0XZ7mNtdCjsdcMdXppbvcnQ46K5rVtu37ZIPvPOdod0OnbxXu/z6xkqMCGRW6IhaE5nQEWITmdARYhOZ0OXlJjGhy8tNYkKXlZy8hAZeZR6Op2EMSOBwPA3fWEFWoY0AhAZWFtoejYT9WaFh5QBKCG3tQPV1Q6GRvXKoNCrXWaGRfylUaVSt8z8LTWpUlNnKgfyVQ6VRtc7/LTSpUUnmN60cpEYVmd+8Q5MaFWQ+61JIaqwu81lCkxqry3y20KTGyjJv27ZdJaefGMcqIl9caLXGqjJfXWi1xioi31xoYmOFV/m7rgzkxt6r6q47MMEJfG/+ACNPzG6POtXwAAAAAElFTkSuQmCC">
+<link rel="manifest" href='data:application/manifest+json,{%22name%22: %22Irrigation Planner%22, %22short_name%22: %22Irrigation%22, %22start_url%22: %22.%22, %22display%22: %22standalone%22, %22background_color%22: %22%23f4ecd8%22, %22theme_color%22: %22%231f7a91%22, %22icons%22: [{%22src%22: %22data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAYAAABS3GwHAAAD9ElEQVR42u3dMW4TURSF4XlXlC69CEtZCC0bYAsULCQFW2ADtF4IUhaRMn3oEQTbGTzz7vn+FiSUO+e/546Ik7FswMvz0+sC/MbheBr3/jeHwCNZiCH0SJZhCD2SZSjhx2ysmbUh+EhugxJ+JLfBEHwkt0EJP5LboIQfyRKU8CNZghJ+JEtQwo9kCUr4kSxBGRGSKdsfyS1Qwo9kCZxAcALZ/khtgRJ+JEvgBIITCIgXwPmDxDNIA0ADANECOH+QegZpAGgAgABAIMP9Dw2AzXh4PBsCAbLDTwICAARIPn20AAEAAiS/+GoBAgAESNz+WoAAAAGSt78WIABAgOTtrwUIABAgeftrAQIABEje/lqAAAABkre/FiAAQIDk7a8FCAAQIHn7awECAARI3v5agADx4QcBQDQCCCUIQDhDIIAwggDEAwGEEAQgIAggfCAAEUEAocO/8DvCGob+59ePHhYBbHsiOIGiTx1nmgYQHm1AAFuTCE4g4XcWEUAwSOAEEgYnkQYQfjOIFkD4zSJWAOE3k1gBhN9sYgUQfjOKFUD4zSpWAOE3MycQkCiA7W92sQIIvxnGCiD8ZukEAhIFsP3NVAMAiQLY/marAYBEAWx/M76WDx7pOvz48vmvf/bp23cD2iltPhK51WZ6K/idRejyUUrvAHcK/y1/HwTY7fa/NcxdJOjyLqABNgixJiBAbPhJQABV3IQOs9cAG25tLUAAgADOH8+AAAABAAIABAAIsLOXr7W/ma3LN8fN/CKsAaABcP+t7TMCBIiVQPgJECuB8BMgVgLh3x8+E7ySBD4TTAAiwAkEEAAgAEAAgAAAAQACAARYhS4/m7IDMz8LDQANABAAIABAAC9fiHkGGgAaACCACkbg7DUANABAAFWMwJlrAGgAGwmps9YA0AA2E1JnrAGgAWwopM5WA0AD2FRInakGgAawsZA6y/LgkDzD8gCRPDvvAPAOYJMhdWblgSJ5VuXBInlG5QEjeTblQSN5JuWBI3kW5cELfzLj5fnp1Q5clofHs+BrAJvQ10oAEvganUBOorPgEwCziyD4TqDYAAm/BohsA8EnQJwMQk+AOBmEngBxMgg9AWKkEHYCAP+VOhxPwxiQyOF4Gv4fANkNYAQgAJAsgPcAJN7/GgAawAhAAGcQAs8fDQANYAQggDMIgefPHxuABEgJvxMITqBLTQG6bf83G4AE6B5+JxCcQLeaA8y+/S9qABKga/gvPoFIgI7hv+odgAToFv6rX4JJgE7hv1oAEqBT+JdlWd4VZj9SBbMG/+YG0AboEv53N4A2wKzBX6UBtAFmDv+qDaARMEvo7yIAGTDDVbHJ2UII7OWM/gWyoNyr151NGQAAAABJRU5ErkJggg==%22, %22sizes%22: %22192x192%22, %22type%22: %22image/png%22}, {%22src%22: %22data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAgAAAAIACAYAAAD0eNT6AAAM9klEQVR42u3cvXEb2RKGYcwpmTQZBKsUCF0loBRkMBAZSkEJyFUgrEIQMOFjLVZpucKSggaYPv09j3er7o+InTn9ngZ1lx2rOR72J58CwPXc3T8sPoV1+CANeQBxIAAw7AFEgQAw8AEQBALA0AdADAgAQx8AMSAADH4AhIAAMPQBEAMCwOAHQAgIAIMfACEgAAx+AISAADD4ARACAsDgB0AIrGsY/gCQN5MWHzIA5G0DpviDGvwACIF1lf8KwPAHYDYzzK7hAwSAvBm2+NAA4LoqfiVQbgNg+ANgGxAWAIY/ACLgNhYfCgDcVoWvBDbfABj+ANgGhAWA4Q+ACAgLAMMfABGw3SwcaT8wAIiADQLA8AeA7Wfj6P4DAoAI2DAADH8AqDMrR7cfCABEQIEAMPwBoN7sHLP/AAAgAgoFgOEPAHVn6ZjtDwwAIqDwBgAAqGv1AHD7B4D6s3VU/wMCAOvP2FH1DwYAXG/W+h0AAAi0SgC4/QPAXFuAUeUPAgDcbvaOrf8AAMDtZ7DfAQCAQBcHgNs/AMy7BbABAAAbALd/AEjYAoxb/Q8BAHUiwFcAABDojwLA7R8AemwBbAAAwAbA7R8AErYANgAAYAPg9g8ACVsAGwAAsAFw+weAhC2ADQAA2AC4/QNAwhbABgAAbAAAgOgAsP4HgLn93yy3AQAAGwC3fwBI2ALYAACADQAAEBkA1v8A0MvvZrsNAADYAAAAcQFg/Q8APb2e8TYAAJC+AQAABAAA0D0AfP8PAL39OuttAAAgeQMAAAgAAEAAAADtAsAvAAJAhpeZbwMAAKkbAABAAAAAAgAAEABAGx+//vQhgAAAEoe/CIDQAPBXAAEgy/GwP9kAQPDt/9y/BgI2AD4CABAAQNjt3xYABAAAIACAlNu/LQAIAABAAAApt39bABAAAIAAAFJu/7YAIAAAAAEApNz+bQFAAAAAAgBIuf3bAoAAAAAEAJBy+7cFAAEAAAgAIOX2bwsAAgAAEABAyu3fFgAEABA6/AEBAAgMQAAAhjMgAAChAQgAwFAGBAAgOAABAMw8jEUACAAAQAAAKbdwWwAQAACAAABSbt+2ACAAAAABAKTcum0BQAAAAAIASLlt2wKAAAAABACQcsu2BQABAAAIACDldm0LAAIAABAAQMqt2hYABABgmAICABAugAAADFFAAAACBhAAYHgCCABAyAACAAxNAAEACBpAAIBhCSAAAGEDCAAwJP18IAAAAAEAuB37OUEAAAACAHAr9vOCAAAABADgNuznBgEAAAgAwC3Yzw8CAAAQAOD263MABAAAIADArdfnAQgAMOwABAAgjAABAIYcgAAABBIgAMBwAxAAgFACAQAYaoAAABBMIAAAwwwQAADCCQQAYIgBAgBAQIEAAMMLQAAACCkQAGBo4fMEAQAACABwW8XnCgIAABAA4Jbq8wUEAAAgAMDt1OcMCAAwlAAEACC4QAAAhhEgAACEF3S1HA/7k48BDKBZPT89+hBAAIChLwYAAQAGvxAABAAY/EIAEABg8AsBEABg6Bv6YgBy+GuAYPj7Zw02AGAYYBsAAgAMfoQACAAw+BEC0IPfAcDwB88INgDgUAfbAAQAGPwIAR8CLfkKAMMfPEvYAIDDGmwDsAEAwx88YwgAcDDjWfOs0YOvAHAYw4V8JYANABj+eAZBAICDF88i1OYrABy2sBJfCWADAIY/nlEQAOBgxbMKAgAcqHhmQQCAgxTPLtyaXwLE4QlX5pcDsQEAwx/PNAgAcFDi2QYBgAPSh4BnHAQADkbwrIMAwIEInnkQADgIwbMPAgAHIHgHQADg4APvAggAHHjgnQABgIMOvBsIAABAAIAbDnhHEADgYAPvCgIAHGjgnUEAgIMMvDsIAHCAgXcIAQAACADcXADvEgIABxbgnUIA4KACvFsIAABAAOCGAnjHEAA4mMC7BgIABxJ450AAAAACADcR8O6BAMABBN5BEAAAIADAzQO8iwgAAEAAgBsHeCcRADhoAO8mAgAAEAC4YQDeUQQAACAAcLMAvKsIAABAAOBGAXhnEQA4SADvLgIAABAAAIAAYD1WiOAdRgAAAI0sx8P+5GPAzeG2fnz5/K5/36dv331Y/LXnp0cfAv/xwUcAdQb+W/85QQDYAOD233jw2wxgC4ANABj8Z//7hQBgA4Dbf8DgtxHAFoC1+FsAMPnw3/p/GxAAYPiH/xkAAcCErP/nH7wiAO84AgBCB64IAAQAbgahg1YE4F1HAEDogBUBgACA0MEqAgABwFlWgr0HqgjAO48AAAAEAKTcpG0BAAHAv1gFgncfAQA0vkHbAgACAAAEAKmsAPNuzrYAOAMQAAAgAAAAAQAACAD68d3f+3T8ztzvAeAsQAAAgAAAAAQAACAA6MN3foAzAQEAAAIAABAAAIAAYH6+6wOcDQgAABAAwGufvn33MwECAAAQAACAAAAABADl+C3fy3T6ztz3/zgjEAAAIACA7jdnt39AAACAAAC636Dd/gEBAAAIAOh+k3b7BwQAhA1Uwx8QAOH8/d68wWr446xAAEDYgDX8AQEAYYPW8AcEAIQNXMMfEAAQNngNf0AAQNgANvyBP/XBRwDrD+IfXz4b/IAAACFg8AMCAISAwQ8IAMgJgRfvDQIDHxAA0DgIAG7N3wIAAAEAAAgAAEAAAAACAAAQAACAAAAABAAAIAAAAAEAAAgAAEAAAAACAAAQALzH89OjDwFwViAAAEAAAAACAAAQAACAAAAABAAAIAAAAAFAIf5+L+CMQAAAgAAAAAQAACAAAAABAAAIAGbit3wBZwMCAAAEAAAgAAAAAUAfvusDnAkIAAAQAACAAAAABAB9+M4PcBYIAABAAAAAAgAAEAD04bs/cAYgAAAAAQAACADasgIE7z4CAAAQAACAAKAtq0DwziMAAAABAAAIANqyEgTvOgIAABAAuBkA3nEEAAAgAAAAAcDkrAjBu40AAAAEAG4KgHcaAQAACADcGADvMgIAABAAuDkA3mEEAAAgAAAAAUAhVojg3UUA4CABvLMIAABAAOBGAXhXEQAAgADAzQLwjiIAAAABgBsG4N1EAOCgAbyTCAAAQADgxgF4FxEAAIAAwM0DvIMgAHAAgXcPBAAAIABwEwHvHAIAHEjgXUMAgIMJvGMIAABAAIAbCni3EADgoALvFAIAB5YDC7xLCAAAQADg5gJ4hxAAOMAA7w4CAAcZeGd8CAgAHGjgXQEBgIMNvCMgAAAAAYAbDng3QADgoAPvBAgAHHjgXQABgIMPvAMIAHAAgmcfAQAOQvDMIwDAgQiedQQAOBjBM44AAAckeLYRAOCgBM801S3Hw/7kY6Cqj19/+hAw+MEGAAcoeHZBAOAgBc8sCAAcqOBZBQGAgxU8o3CGXwJkSn45EIMfbABw4IJnEQQADl7wDMJbfAVAC74SwOAHGwAcyOBZAwGAgxk8Y/CarwBoyVcCGPxgA4ADGzxLYAOAbQAY/CAAEAJg8BPIVwA42MEzgg0A2AZg8IMAACGAwQ8CAIQABj/04HcAwEDwzxpsAAAbAUMfBAAIAR+CwQ8CAIQABj8IABACGPwgAEAMYOiDAAAhgMEPAgDEAIY+CAAQAxj6IABADGDogwAAQWDgAwIABIGBDwgAEAQGPvC3AbDb7XYiAISBQQ857u4fFgEAAsGABwEAACQEwPAxAEAeAQAAAgAAEAAAQN8AuLt/WHwUANDfy8y3AQCA1A0AACAAAAABAAC0DQC/CAgAvf06620AACB5AwAACAAAICUA/B4AAPT0esbbAABA+gYAAAgNAF8DAEAvv5vtNgAAYAMAAMQGgK8BAKCHczPdBgAAbABsAQCg++3fBgAAbAAAAAGw8zUAAMzqrRluAwAANgC2AADQ/fZvAwAANgC2AACQcPu3AQAAGwBbAABIuP3bAACADYAtAAAk3P5tAADABsAWAAASbv8XbwBEAADMO/wvDgAAYG4XB4AtAADMefu3AQAAGwBbAABIuP2vsgEQAQAw1/BfJQBEAADMNfxXCwAAYC6rBYAtAADMcftffQMgAgCg/vBfPQBEAADUH/5XCQAAoL6rBIAtAADUnqljtj8wABj+hQNABABA3Rk6Zv8BAMDwLxgAIgAA6s3M0e0HAgDDv1AAiAAAqDMjR/cfEAAM/wIBIAIAYPuZONJ+YABIH/6bBoAIAMDw385I/wAAIHH2lRq+x8P+5LEAwOAP2ADYBgBg+IcHgAgAwPC/jdLD1lcCABj8IRsA2wAADP/wABABABj+1zHVcPWVAAAGf2AACAEADP51DB80AOTNpOkHqW0AAAZ/YAAIAQAM/uAAEAIAGPzBASAEADD4gwNACABg8AcHgBgAwNAPDwAhAED64I8OADEAQPr/p4z/Qx0xAGDoCwAEAYCBLwAQBQCGvQBAHAAY8j38A4QwB4+f0KISAAAAAElFTkSuQmCC%22, %22sizes%22: %22512x512%22, %22type%22: %22image/png%22}]}'>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;600&display=swap">
+<style>
+:root{
+  color-scheme: light dark;
+  --bg:#f6f7fa;
+  --panel:#ffffff;
+  --panel-2:#f1f3f8;
+  --ink:#101521;
+  --ink-soft:#55607a;
+  --line:#e2e6ef;
+  --accent:#3a66e8;
+  --accent-deep:#2a50c8;
+  --accent-soft:#e4eafd;
+  --heat-0:transparent;
+  --heat-1:#e8eeff;
+  --heat-2:#b9caff;
+  --heat-3:#7b9bf5;
+  --good:#16855c;
+  --good-soft:#e2f3ec;
+  --warn:#9a6a10;
+  --warn-soft:#fbefd8;
+  --bad:#c4382f;
+  --bad-soft:#fbe6e3;
+  --gap-neutral:#e7ebf3;
+  --gap-river:#dbe6ff;
+  --gap-river-line:#b9caff;
+  --cs:20px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0a0c11;
+    --panel:#14181f;
+    --panel-2:#1a1f28;
+    --ink:#e9edf5;
+    --ink-soft:#98a3ba;
+    --line:#232a36;
+    --accent:#5b8cff;
+    --accent-deep:#86a9ff;
+    --accent-soft:#1b2336;
+    --heat-1:#18202f;
+    --heat-2:#243351;
+    --heat-3:#3a548f;
+    --good:#3ddc9a;
+    --good-soft:#10281f;
+    --warn:#f0b64c;
+    --warn-soft:#2b2314;
+    --bad:#ff8a7a;
+    --bad-soft:#2d1a18;
+    --gap-neutral:#181d26;
+    --gap-river:#16203a;
+    --gap-river-line:#243351;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0a0c11;
+  --panel:#14181f;
+  --panel-2:#1a1f28;
+  --ink:#e9edf5;
+  --ink-soft:#98a3ba;
+  --line:#232a36;
+  --accent:#5b8cff;
+  --accent-deep:#86a9ff;
+  --accent-soft:#1b2336;
+  --heat-1:#18202f;
+  --heat-2:#243351;
+  --heat-3:#3a548f;
+  --good:#3ddc9a;
+  --good-soft:#10281f;
+  --warn:#f0b64c;
+  --warn-soft:#2b2314;
+  --bad:#ff8a7a;
+  --bad-soft:#2d1a18;
+  --gap-neutral:#181d26;
+  --gap-river:#16203a;
+  --gap-river-line:#243351;
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:'Inter', system-ui, sans-serif;
+  padding:20px;
+}
+h1,h2,h3{font-family:'Sora','Inter',sans-serif; letter-spacing:-.02em; text-wrap:balance; margin:0;}
+h1{font-size:1.5rem; font-weight:700; letter-spacing:.02em; color:var(--accent-deep);}
+.eyebrow{
+  text-transform:uppercase; letter-spacing:.12em; font-size:.68rem; font-weight:600;
+  color:var(--ink-soft);
+}
+.app{max-width:1440px; margin:0 auto;}
+.head{display:flex; flex-direction:column; gap:4px; margin-bottom:16px;}
+.head p{margin:0; color:var(--ink-soft); font-size:.88rem; max-width:62ch;}
+
+.layout{display:flex; gap:20px; align-items:flex-start; flex-wrap:wrap;}
+.board{flex:0 0 auto; max-width:100%; min-width:0;}
+.side{flex:1 1 320px; min-width:300px; display:flex; flex-direction:column; gap:16px;}
+
+.toolbar{
+  display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+  margin-bottom:10px; padding:8px 10px; background:var(--panel);
+  border:1px solid var(--line); border-radius:8px; font-size:.82rem;
+}
+.toolbar b{color:var(--accent-deep);}
+.btn{
+  font-family:inherit; font-size:.8rem; font-weight:600; cursor:pointer;
+  border:1px solid var(--line); background:var(--panel-2); color:var(--ink);
+  padding:6px 12px; border-radius:6px; transition:background .15s;
+}
+.btn:hover{background:var(--accent-soft);}
+.btn:focus-visible, .row:focus-visible, input:focus-visible{outline:2px solid var(--accent); outline-offset:1px;}
+.btn.primary{background:var(--accent); color:#fff; border-color:var(--accent-deep);}
+.btn.primary:hover{background:var(--accent-deep);}
+.spacer{flex:1;}
+
+.gridwrap{
+  position:relative;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:var(--panel);
+  padding:14px;
+  width:max-content;
+  max-width:100%;
+  overflow-x:auto;
+}
+#stage{
+  position:relative;
+  display:grid;
+  grid-template-columns:repeat(26, var(--cs));
+  grid-template-rows:repeat(26, var(--cs));
+}
+.cell{
+  width:var(--cs); height:var(--cs);
+  background:transparent;
+  border-right:1px solid rgba(0,0,0,.04);
+  border-bottom:1px solid rgba(0,0,0,.04);
+}
+.cell.field{cursor:pointer;}
+.cell.gap-neutral{background:var(--gap-neutral);}
+.cell.gap-river{background:var(--gap-river); border-color:var(--gap-river-line);}
+#overlay{position:absolute; inset:14px; pointer-events:none;}
+.outline{
+  position:absolute; border-radius:2px; box-sizing:border-box;
+  pointer-events:none;
+}
+.outline.ok{border:2px solid var(--good); box-shadow:0 0 0 1px var(--good) inset;}
+.outline.partial{border:2px dashed var(--warn);}
+.outline.bad{border:2px solid var(--bad);}
+.outline.range{border:2px dashed #fff; background:transparent; box-shadow:0 0 0 1px rgba(0,0,0,.45);}
+.outline.ghost-valid{background:rgba(63,122,74,.35); border:1px solid var(--good);}
+.outline.ghost-invalid{background:rgba(168,67,47,.35); border:1px solid var(--bad);}
+.outline .tag{
+  position:absolute; top:-1px; left:1px; font-size:9px; font-weight:700;
+  color:#fff; padding:0 3px; border-radius:2px; line-height:13px;
+  font-family:'JetBrains Mono', monospace;
+}
+.tag.ok{background:var(--good);}
+.tag.partial{background:var(--warn);}
+.tag.bad{background:var(--bad);}
+/* one title bar at the top of a tile, one figures bar at the bottom - both flush with
+   the edges, so a tile reads as a labelled block instead of scattered chips */
+.tlabel{
+  position:absolute; pointer-events:none; overflow:hidden;
+  display:flex; flex-direction:column; justify-content:space-between;
+  box-sizing:border-box;
+}
+.tlabel .nm, .tlabel .ft{
+  display:block; color:#fff; line-height:1.32; padding:0 3px;
+  background:rgba(20,16,10,.55); overflow:hidden;
+  text-align:center; word-break:normal; overflow-wrap:break-word;
+}
+.tlabel .nm{font-weight:600; letter-spacing:.01em;}
+.tlabel .ft{
+  font-family:'JetBrains Mono',monospace; font-weight:700; letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums;
+}
+.tlabel .ft b{color:#ffe9b8; font-weight:700;}
+#overlay.tiny-cells .tlabel{display:none;}
+.outline .water{
+  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  font-family:'JetBrains Mono', monospace; font-size:10px; font-weight:700;
+  color:#fff; background:rgba(0,0,0,.55); padding:1px 5px; border-radius:3px;
+  white-space:nowrap; line-height:14px; letter-spacing:.01em;
+}
+
+.legend{display:flex; flex-wrap:wrap; gap:10px 16px; font-size:.74rem; color:var(--ink-soft); margin-top:10px;}
+.legend span{display:inline-flex; align-items:center; gap:5px;}
+.swatch{width:12px; height:12px; border-radius:3px; display:inline-block; border:1px solid rgba(0,0,0,.15);}
+
+.panel{
+  background:var(--panel); border:1px solid var(--line); border-radius:10px;
+  padding:12px 14px;
+}
+.panel h2{font-size:.82rem; text-transform:uppercase; letter-spacing:.08em; color:var(--ink-soft); margin-bottom:8px; font-family:'Inter'; font-weight:600;}
+
+.palette{display:flex; flex-direction:column; gap:2px; max-height:420px; overflow-y:auto;}
+.row{
+  display:grid; grid-template-columns:14px 1fr auto auto; align-items:center;
+  gap:8px; padding:6px 4px; border-radius:6px; cursor:pointer; border:1px solid transparent;
+  font-size:.8rem;
+}
+.row:hover{background:var(--panel-2);}
+.row.armed{background:var(--accent-soft); border-color:var(--accent);}
+.row.disabled{opacity:.45; cursor:default;}
+.row .name{display:flex; flex-direction:column; line-height:1.25;}
+.row .name b{font-weight:600;}
+.row .dims{color:var(--ink-soft); font-size:.7rem; font-family:'JetBrains Mono',monospace;}
+.row .cat-tag{font-size:.62rem; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-soft);}
+.row input[type=number]{
+  width:38px; font-family:'JetBrains Mono',monospace; font-size:.78rem;
+  border:1px solid var(--line); border-radius:4px; padding:2px 4px; background:var(--bg); color:var(--ink);
+  text-align:center;
+}
+.row .placed{font-family:'JetBrains Mono',monospace; font-size:.72rem; color:var(--ink-soft); min-width:34px; text-align:right;}
+.group-title{font-size:.68rem; text-transform:uppercase; letter-spacing:.08em; color:var(--accent-deep); margin:8px 0 2px; font-weight:700;}
+.group-title:first-child{margin-top:0;}
+.note{font-size:.72rem; color:var(--warn); font-weight:600;}
+.panelhead{display:flex; align-items:center; justify-content:space-between; gap:8px;}
+.btn.tiny{font-size:.7rem; padding:3px 8px;}
+.btnrow{display:flex; flex-wrap:wrap; gap:6px; margin:8px 0 2px;}
+.erow{padding:6px 7px; border:1px solid var(--line); border-radius:6px; margin-bottom:5px; background:var(--panel-2);}
+.erow .l1{display:flex; align-items:center; gap:6px; margin-bottom:4px;}
+.erow .l2{display:flex; flex-wrap:wrap; align-items:center; gap:5px; font-size:.7rem; color:var(--ink-soft);}
+.erow input{font-family:'JetBrains Mono',monospace; font-size:.72rem; border:1px solid var(--line);
+  border-radius:4px; padding:2px 4px; background:var(--bg); color:var(--ink); width:40px; text-align:center;}
+.erow input.nm{width:100%; flex:1; text-align:left; font-family:'Inter',sans-serif; font-size:.78rem;}
+.erow .del{cursor:pointer; color:var(--bad); font-weight:700; border:1px solid var(--line);
+  background:var(--panel); border-radius:4px; font-size:.75rem; line-height:1; padding:3px 6px;}
+.solverbox{display:flex; flex-direction:column; gap:7px; font-size:.78rem;}
+.solverbox label{display:flex; align-items:center; justify-content:space-between; gap:8px;}
+.solverbox input, .solverbox select{font-family:'JetBrains Mono',monospace; font-size:.75rem;
+  border:1px solid var(--line); border-radius:4px; padding:3px 5px; background:var(--bg); color:var(--ink);}
+.solverbox input[type=number]{width:76px; text-align:center;}
+.solverbox label.chk{justify-content:flex-start; gap:8px;}
+.chklist{display:flex; flex-direction:column; gap:1px; margin:2px 0 0;}
+.ioparts{display:flex; flex-wrap:wrap; gap:4px 12px; margin-top:8px; font-size:.72rem; color:var(--ink-soft);}
+.ioparts label{display:inline-flex; align-items:center; gap:4px; cursor:pointer;}
+.ioparts input{width:auto; margin:0;}
+body.m-mode .ioparts{font-size:.82rem; gap:8px 14px;}
+.chkrow{display:flex; align-items:center; gap:7px; padding:4px 3px; border-radius:5px; font-size:.76rem;
+  justify-content:flex-start; cursor:pointer;}
+.chkrow:hover{background:var(--panel-2);}
+.chkrow input{width:auto; margin:0;}
+.chkrow.on{background:var(--good-soft); color:var(--good); font-weight:600;}
+.chkrow.off{opacity:.45;}
+.chkrow .cnt{margin-left:auto; font-family:'JetBrains Mono',monospace; font-size:.72rem; color:var(--ink-soft);}
+.chkrow.on .cnt{color:var(--good);}
+body.m-mode .chkrow{padding:9px 4px; font-size:.85rem;}
+.solverbox label.chk input{width:auto;}
+body.m-mode .solverbox label.chk{flex-direction:row; align-items:center;}
+.progress{height:8px; border-radius:5px; background:var(--panel-2); border:1px solid var(--line); overflow:hidden;}
+.progress .bar{height:100%; width:0%; background:var(--accent);}
+.small{font-size:.73rem; color:var(--ink-soft); line-height:1.4;}
+.small b{color:var(--ink);}
+.small.good b{color:var(--good);}
+.ptable{width:100%; border-collapse:collapse; font-size:.74rem;}
+.ptable th{text-align:left; font-weight:600; color:var(--ink-soft); padding:3px 4px; border-bottom:1px solid var(--line);
+  font-size:.66rem; text-transform:uppercase; letter-spacing:.04em;}
+.ptable td{padding:3px 4px; border-bottom:1px solid var(--line); font-family:'JetBrains Mono',monospace;
+  font-variant-numeric:tabular-nums;}
+.ptable td.nm{font-family:'Inter',sans-serif;}
+.ptable tr:last-child td{border-bottom:none;}
+.ptable .num{text-align:right;}
+.tierpill{display:inline-block; padding:0 5px; border-radius:8px; font-size:.66rem; font-weight:700;}
+.t0{background:var(--bad-soft); color:var(--bad);}
+.t10{background:var(--warn-soft); color:var(--warn);}
+.t25{background:var(--accent-soft); color:var(--accent-deep);}
+.t50{background:var(--good-soft); color:var(--good);}
+.bonusgrid{display:grid; grid-template-columns:1fr auto 1fr auto; gap:5px 8px; align-items:center; font-size:.76rem;}
+.bonusgrid input{width:66px; font-family:'JetBrains Mono',monospace; font-size:.75rem; text-align:center;
+  border:1px solid var(--line); border-radius:4px; padding:3px 4px; background:var(--bg); color:var(--ink);}
+body.m-mode .bonusgrid{grid-template-columns:1fr auto;}
+.bigval{font-family:'JetBrains Mono',monospace; font-size:1.25rem; font-weight:700; color:var(--accent-deep);}
+.subval{font-size:.73rem; color:var(--ink-soft);}
+.io{width:100%; height:90px; font-family:'JetBrains Mono',monospace; font-size:.68rem; margin-top:6px;
+  border:1px solid var(--line); border-radius:6px; padding:6px; background:var(--bg); color:var(--ink); resize:vertical;}
+.rsrow{display:flex; gap:4px; align-items:center; margin-bottom:3px; font-size:.72rem;}
+.rsrow input{font-family:'JetBrains Mono',monospace; font-size:.7rem; border:1px solid var(--line);
+  border-radius:4px; padding:2px 3px; background:var(--bg); color:var(--ink); text-align:center;}
+.rsrow input.step{width:38px;} .rsrow input.pct{width:44px;} .rsrow input.mx{width:44px;}
+.rsrow select{font-size:.7rem; border:1px solid var(--line); border-radius:4px; padding:2px; background:var(--bg); color:var(--ink);}
+.rslist{max-height:260px; overflow-y:auto; margin-top:6px;}
+.dsel{display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:8px; font-size:.78rem;}
+.dsel select{font-size:.75rem; border:1px solid var(--line); border-radius:4px; padding:3px 5px;
+  background:var(--bg); color:var(--ink);}
+#focusList{display:grid; grid-template-columns:1fr auto; gap:3px 8px; font-size:.73rem; align-items:center;}
+#focusList input{width:56px; text-align:center; font-family:'JetBrains Mono',monospace; font-size:.72rem;
+  border:1px solid var(--line); border-radius:4px; padding:2px 4px; background:var(--bg); color:var(--ink);}
+.ptable input.wk{width:54px; text-align:center; font-family:'JetBrains Mono',monospace; font-size:.7rem;
+  border:1px solid var(--line); border-radius:4px; padding:1px 3px; background:var(--bg); color:var(--ink);}
+.ptable tr.prow{cursor:pointer;}
+.ptable tr.prow:hover{background:var(--panel-2);}
+.wklist{display:flex; flex-wrap:wrap; gap:5px; margin-top:5px;}
+.wkitem{background:var(--panel); border:1px solid var(--line); border-radius:5px; padding:2px 5px;}
+.wkitem input{width:48px; font-family:'JetBrains Mono',monospace; font-size:.68rem; text-align:center;
+  border:1px solid var(--line); border-radius:3px; background:var(--bg); color:var(--ink); padding:1px 2px;}
+.ptable td.calc{font-size:.68rem; color:var(--ink-soft); background:var(--panel-2); line-height:1.5;
+  font-family:'JetBrains Mono',monospace; white-space:normal;}
+#stage{touch-action:manipulation;}
+body.m-mode #stage.aiming{touch-action:none;}
+.outline.sel{border:3px solid var(--accent); box-shadow:0 0 0 2px var(--bg), 0 0 0 4px var(--accent); border-radius:3px;}
+.mobar{
+  position:fixed; left:0; right:0; bottom:0; z-index:60;
+  background:var(--panel); border-top:1px solid var(--line);
+  box-shadow:0 -4px 18px rgba(0,0,0,.18);
+  padding:8px 10px calc(8px + env(safe-area-inset-bottom,0px));
+  display:flex; flex-direction:column; gap:6px;
+}
+.mobar .mb-title{display:flex; align-items:baseline; gap:8px; font-size:.85rem;}
+.mobar .mb-title b{color:var(--accent-deep);}
+.mobar .mb-title span{font-family:'JetBrains Mono',monospace; font-size:.7rem; color:var(--ink-soft);}
+.mobar .mb-row{display:flex; align-items:center; gap:6px; flex-wrap:wrap;}
+.mobar button.mb{
+  flex:0 0 auto; min-width:44px; min-height:44px; font-size:1rem; font-weight:700;
+  border:1px solid var(--line); border-radius:8px; background:var(--panel-2); color:var(--ink);
+  cursor:pointer; font-family:inherit; padding:0 10px;
+}
+.mobar button.mb:active{background:var(--accent-soft);}
+.mobar button.mb[disabled]{opacity:.4;}
+.mobar button.mb.ok{background:var(--accent); color:#fff; border-color:var(--accent-deep); flex:1 1 auto; font-size:.9rem;}
+.mobar button.mb.danger{background:var(--bad-soft); color:var(--bad); border-color:var(--bad);}
+.mobar .mb-pad{display:grid; grid-template-columns:repeat(4,1fr); gap:6px; flex:1 1 auto;}
+.mobar .mb-pad button.mb{min-width:0; width:100%; padding:0 4px; font-size:.85rem;}
+.mobar button.mb.danger{flex:0 1 auto;}
+.mobar .mb-hint{font-size:.7rem; color:var(--ink-soft); line-height:1.3;}
+body.m-mode.bar-open{padding-bottom:132px;}
+body.m-mode .side{display:flex; flex-direction:column;}
+body.m-mode #bldPanel{order:-3;}     /* on a phone the building list and the solver */
+body.m-mode #solverPanel{order:-2;}  /* sit right under the grid, not below six panels */
+body.m-mode #outPanel{order:-1;}
+#overlay.small-cells .water{font-size:8px; padding:0 2px; line-height:11px; border-radius:2px; letter-spacing:0;}
+#overlay.tiny-cells .water{display:none;}
+body.m-mode{padding:10px;}
+body.m-mode h1{font-size:1.2rem;}
+body.m-mode .head p{font-size:.8rem; cursor:pointer;}
+body.m-mode .head p.clamped{display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden;}
+body.m-mode .layout{gap:12px;}
+body.m-mode .side{min-width:0; flex-basis:100%;}
+body.m-mode .board{width:100%;}
+body.m-mode .gridwrap{padding:8px; width:100%; max-width:100%; overflow-x:auto;}
+body.m-mode #overlay{inset:8px;}
+body.m-mode .toolbar{gap:6px; padding:7px 8px;}
+body.m-mode .btn{padding:9px 12px;}
+body.m-mode .btn.tiny{padding:6px 10px;}
+body.m-mode .row{padding:10px 4px; font-size:.85rem;}
+body.m-mode .row input[type=number]{width:54px; padding:7px 4px; font-size:.85rem;}
+body.m-mode .row .placed{min-width:40px;}
+body.m-mode .erow input{padding:7px 4px; font-size:.8rem; width:48px;}
+body.m-mode .erow input.nm{width:100%;}
+body.m-mode .solverbox{font-size:.85rem;}
+body.m-mode .solverbox label{flex-direction:column; align-items:stretch; gap:4px;}
+body.m-mode .solverbox input[type=number], body.m-mode .solverbox select{width:100%; padding:8px 6px; font-size:.85rem;}
+body.m-mode .palette{max-height:none;}
+body.m-mode .statuslist{max-height:300px;}
+body.m-mode .legend{font-size:.7rem;}
+.gridwrap{max-width:100%; overflow-x:auto;}
+@media (max-width:820px){
+  body{padding:10px;}
+  h1{font-size:1.2rem;}
+  .head p{font-size:.8rem;}
+  .layout{gap:12px;}
+  .side{min-width:0; flex-basis:100%;}
+  .board{width:100%;}
+  .gridwrap{padding:8px; width:100%; max-width:100%; overflow-x:auto;}
+  #overlay{inset:8px;}
+  .toolbar{gap:6px; padding:7px 8px;}
+  .btn{padding:9px 12px;}
+  .btn.tiny{padding:6px 10px;}
+  .row{padding:10px 4px; font-size:.85rem;}
+  .row input[type=number]{width:54px; padding:7px 4px; font-size:.85rem;}
+  .row .placed{min-width:40px;}
+  .erow input{padding:7px 4px; font-size:.8rem; width:48px;}
+  .erow input.nm{width:100%;}
+  .solverbox{font-size:.85rem;}
+  .solverbox label{flex-direction:column; align-items:stretch; gap:4px;}
+  .solverbox input[type=number], .solverbox select{width:100%; padding:8px 6px; font-size:.85rem;}
+  .palette{max-height:none;}
+  .statuslist{max-height:300px;}
+  .legend{font-size:.7rem;}
+}
+
+/* ---- side tabs: plan / result / settings ---- */
+.tabs{display:flex; gap:4px; background:var(--panel); border:1px solid var(--line);
+  border-radius:9px; padding:4px; margin-bottom:2px;}
+.tabs button{
+  flex:1 1 0; font:inherit; font-size:.78rem; font-weight:700; cursor:pointer;
+  border:1px solid transparent; background:transparent; color:var(--ink-soft);
+  padding:8px 6px; border-radius:6px; white-space:nowrap;
+}
+.tabs button:hover{background:var(--panel-2); color:var(--ink);}
+.tabs button[aria-selected="true"]{background:var(--accent); border-color:var(--accent-deep); color:#fff;}
+.tabpane{display:flex; flex-direction:column; gap:16px;}
+.tabpane[hidden]{display:none;}
+body.m-mode .tabs button{padding:11px 6px; font-size:.85rem;}
+
+.fieldbars{display:flex; flex-direction:column; gap:6px;}
+.fbar-row{display:grid; grid-template-columns:64px 1fr 48px; align-items:center; gap:8px; font-size:.76rem;}
+.fbar-track{height:8px; border-radius:5px; background:var(--panel-2); overflow:hidden; border:1px solid var(--line);}
+.fbar-fill{height:100%; background:var(--accent); border-radius:5px 0 0 5px;}
+.fbar-num{font-family:'JetBrains Mono',monospace; text-align:right; font-variant-numeric:tabular-nums;}
+
+.budget{display:flex; align-items:baseline; gap:8px; font-family:'JetBrains Mono',monospace;}
+.budget .num{font-size:1.3rem; font-weight:700;}
+.budget.over .num{color:var(--bad);}
+.budget.ok .num{color:var(--good);}
+
+.statuslist{display:flex; flex-direction:column; gap:4px; max-height:220px; overflow-y:auto; font-size:.78rem;}
+.status-row{display:flex; justify-content:space-between; align-items:center; padding:4px 6px; border-radius:5px;}
+.status-row.ok{background:var(--good-soft); color:var(--good);}
+.status-row.partial{background:var(--warn-soft); color:var(--warn);}
+.status-row.bad{background:var(--bad-soft); color:var(--bad);}
+.status-row .w{font-family:'JetBrains Mono',monospace; font-variant-numeric:tabular-nums;}
+.empty-hint{color:var(--ink-soft); font-size:.78rem; font-style:italic;}
+
+@media (max-width:760px){
+  .gridwrap{overflow-x:auto;}
+}
+
+/* ---- embedded in Pop Epoch Tools (?embed=1) -----------------------------
+   The wrapper page already supplies the eyebrow and the heading, so only the
+   instruction paragraph is kept. Without the flag the file stays a complete,
+   standalone planner. */
+html.embedded body{padding:14px;}
+html.embedded .head{margin-bottom:12px;}
+html.embedded .head h1, html.embedded .head .eyebrow{display:none;}
+</style>
+<script>
+/* Embed flag and theme bridge. The host site stores the reader's theme choice
+   under 'popepoch-theme'; this document is served from the same origin, so the
+   value is visible here and later changes arrive as a 'storage' event. */
+(function(){
+  try{
+    if (new URLSearchParams(location.search).get('embed') === '1'){
+      document.documentElement.classList.add('embedded');
+    }
+  }catch(e){}
+  var KEY = 'popepoch-theme';
+  function apply(v){
+    if (v === 'light' || v === 'dark') document.documentElement.setAttribute('data-theme', v);
+    else document.documentElement.removeAttribute('data-theme');
+  }
+  try{ apply(localStorage.getItem(KEY)); }catch(e){}
+  window.addEventListener('storage', function(e){ if (e.key === KEY) apply(e.newValue); });
+})();
+</script>
+</head>
+<body>
+<div class="app">
+  <div class="head">
+    <span class="eyebrow">Field Layout · Water Supply</span>
+    <h1>Irrigation Planner</h1>
+    <p>Four fields of 12×12 slots with the river between them. A production building counts the sum of every source whose range touches its footprint anywhere — each source once, whether or not they overlap. Goal: <b>≥640 water</b>. Click a building on the right, press <b>R</b> to rotate, click a field to place it; right-click removes, dragging moves. On a phone the bar at the bottom guides you.</p>
+  </div>
+
+  <div class="layout">
+    <div class="board">
+      <div class="toolbar">
+        <span>Selected: <b id="armedLabel">–</b></span>
+        <button class="btn" id="rotateBtn">⟳ Rotate (R)</button>
+        <button class="btn" id="cancelBtn">Cancel (Esc)</button>
+        <span class="spacer"></span>
+        <button class="btn" id="modeBtn" title="Switch between phone and desktop view">📱 Phone view</button>
+        <button class="btn" id="zoomOut" title="Zoom out">−</button>
+        <button class="btn" id="zoomIn" title="Zoom in">+</button>
+        <button class="btn" id="zoomFit" title="Back to fit">⤢</button>
+        <label style="display:flex;align-items:center;gap:5px;cursor:pointer;">
+          <input type="checkbox" id="showRanges"> Show ranges of all water sources
+        </label>
+        <label style="display:flex;align-items:center;gap:5px;">Tiles
+          <select id="labelMode">
+            <option value="workers" selected>name + workers</option>
+            <option value="water">name + water</option>
+            <option value="name">name only</option>
+            <option value="off">off</option>
+          </select>
+        </label>
+        <button class="btn primary" id="loadPresetBtn">Load full solution (25/25 supplied)</button>
+        <button class="btn" id="resetBtn">Reset</button>
+      </div>
+      <div class="gridwrap">
+        <div id="stage"></div>
+        <div id="overlay"></div>
+      </div>
+      <div class="legend">
+        <span><i class="swatch" style="border:2px dashed #fff;box-shadow:0 0 0 1px rgba(0,0,0,.45);background:transparent"></i>water source range</span>
+        <span><i class="swatch" style="background:var(--gap-river)"></i>river</span>
+        <span><i class="swatch" style="background:var(--gap-neutral)"></i>field boundary (no river)</span>
+        <span><i class="swatch" style="border:2px solid var(--good);background:transparent"></i>production on the top tier (+50%)</span>
+        <span><i class="swatch" style="border:2px dashed var(--warn);background:transparent"></i>production on a lower tier (+10% / +25%)</span>
+        <span><i class="swatch" style="border:2px solid var(--bad);background:transparent"></i>production with no water bonus</span>
+      </div>
+    </div>
+
+    <div class="side">
+      <div class="tabs" id="tabbar" role="tablist">
+        <button data-tab="plan" aria-selected="true">Plan</button>
+        <button data-tab="result" aria-selected="false">Result</button>
+        <button data-tab="setup" aria-selected="false">Settings</button>
+      </div>
+      <div class="tabpane" data-tab="plan">
+      <div class="panel" id="bldPanel">
+        <h2 class="panelhead">Buildings &amp; target count<button class="btn tiny" id="editToggle">Edit types</button></h2>
+        <div class="palette" id="palette"></div>
+      </div>
+      <div class="panel" id="solverPanel">
+        <h2>Auto-layout solver</h2>
+        <div class="solverbox">
+          <p class="small" id="tierLine" style="margin:0 0 2px;"></p>
+          <label>Search time <select id="budgetSel"><option value="30">30 s</option><option value="60">1 min</option><option value="180" selected>3 min</option><option value="600">10 min</option><option value="1800">30 min</option></select></label>
+          <label class="dsel" style="margin-top:6px;"><span>Compare water tiers, keep the best output</span><input type="checkbox" id="tierAutoChk" checked></label>
+          <p class="small" style="margin:0;">One full search per tier (+50 / +25 / +10 %), then the layout with the highest output wins. Each tier gets a third of the search time — pick a longer one, or switch this off for a single run at +50 %.</p>
+          <label class="dsel" style="margin-top:6px;"><span>At least one of every production type</span><input type="checkbox" id="minTypeChk" checked></label>
+          <div class="small" style="margin:6px 0 0;"><b>Build these completely</b> (max 3) – all of them or none:</div>
+          <div class="chklist" id="fullList"></div>
+          <p class="small" id="fullNote" style="margin:0;"></p>
+          <p class="small" style="margin:2px 0 0;">Required buildings (marked in the type editor) are always placed. Everything else the solver decides by output.</p>
+          <div class="btnrow">
+            <button class="btn primary" id="solveBtn">Compute best layout</button>
+            <button class="btn" id="stopBtn" disabled>Stop</button>
+          </div>
+          <div class="progress"><div class="bar" id="solveBar"></div></div>
+          <div class="small" id="solveMsg">Set how many of each building you want above, then let the solver find the best arrangement.</div>
+        </div>
+      </div>
+      <div class="panel">
+        <h2>Slot usage (all four fields)</h2>
+        <div class="budget" id="budgetBox"><span class="num" id="budgetNum">–</span><span>/ 576 slots used</span></div>
+        <p class="note" id="budgetNote" style="margin-top:4px;"></p>
+      </div>
+      <div class="panel">
+        <h2>Occupancy per field</h2>
+        <div class="fieldbars" id="fieldbars"></div>
+      </div>
+      </div>
+      <div class="tabpane" data-tab="result" hidden>
+      <div class="panel">
+        <h2>Output</h2>
+        <div class="bigval" id="totalOut">–</div>
+        <div class="subval" id="outSub"></div>
+        <table class="ptable" id="prodTable"></table>
+      </div>
+      <div class="panel">
+        <h2>Economic output</h2>
+        <div class="bigval" id="ecoTotal">–</div>
+        <div class="subval" id="ecoSub"></div>
+        <table class="ptable" id="ecoTable"></table>
+      </div>
+      <div class="panel">
+        <h2>Production buildings · water status</h2>
+        <div class="statuslist" id="statuslist"><div class="empty-hint">No production buildings placed yet.</div></div>
+      </div>
+      </div>
+      <div class="tabpane" data-tab="setup" hidden>
+      <div class="panel" id="outPanel">
+        <h2 class="panelhead">Production &amp; bonuses<button class="btn tiny" id="prodEditToggle">Edit research</button></h2>
+        <div class="bonusgrid" id="bonusGrid"></div>
+        <p class="small" style="margin:6px 0 0;">Worker cap = the highest number of worker slots a building of that family can reach, whatever its level. <b>0 means no ceiling</b> – then the level table alone decides. A = Sandstone, Fish Pond, Flax Field, Papyrus, Mortar, Mudbrick · B = Gold, Natron, Drying Area, Hieroglyph Press. A single building can override it with its own limit in the type editor.</p>
+        <label class="dsel">Worker split
+          <select id="distSel">
+            <option value="max">Max output</option>
+            <option value="balance">Balance (even)</option>
+            <option value="focus">Custom (%)</option>
+          </select></label>
+        <label class="dsel"><span>At least 1 worker per building</span><input type="checkbox" id="minOneChk"></label>
+        <label class="dsel"><span>Optimise by economic value</span><input type="checkbox" id="byValueChk"></label>
+        <p class="small" style="margin:0;">Off: workers and solver go for the most units. On: they go for the highest economic output, so a Gold Mine at 50 per unit outranks a Papyrus Workshop at 10. Displayed production stays in units either way.</p>
+        <div id="focusBox" hidden><p class="small">Share of the resident pool; the rest goes by output.</p><div id="focusList"></div></div>
+        <p class="small" id="researchInfo" style="margin:8px 0 0;"></p>
+        <div id="researchBox" hidden>
+          <div class="btnrow"><button class="btn tiny" id="addResearch">+ Research</button>
+            <button class="btn tiny" id="resetResearch">Reset research list</button></div>
+          <div class="rslist" id="researchList"></div>
+        </div>
+        <div class="ioparts">
+          <span>Take along:</span>
+          <label><input type="checkbox" id="ioLayout" checked> layout</label>
+          <label><input type="checkbox" id="ioTypes" checked> building types</label>
+          <label><input type="checkbox" id="ioBonus"> level &amp; bonuses</label>
+          <label><input type="checkbox" id="ioResearch"> research list</label>
+        </div>
+        <p class="small" style="margin:2px 0 0;">Applies to both buttons. Level, Duat and gods are personal — leave them off when you share a layout, tick everything for a backup of your own setup.</p>
+        <div class="btnrow">
+          <button class="btn tiny" id="exportBtn">Export</button>
+          <button class="btn tiny" id="fixNames">Reset names</button>
+          <button class="btn tiny" id="importBtn">Import</button>
+        </div>
+        <textarea class="io" id="ioBox" hidden placeholder="Paste a configuration here, then press Import"></textarea>
+      </div>
+      </div>
+    </div>
+  </div>
+<div class="mobar" id="mobar" hidden></div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var N = 26;  // grid dimension
+  var CS = 20; // cell size in px (auto-fitted to the screen, adjustable with -/+)
+  var userZoom = false;
+  function applyCellSize(){
+    document.documentElement.style.setProperty('--cs', CS+'px');
+    // pin the board to the grid's width, otherwise the wrapping toolbar decides how wide it is
+    var board = document.querySelector('.board');
+    if (board) board.style.width = document.body.classList.contains('m-mode') ? '' : (26 * CS + 30) + 'px';
+    var ov = document.getElementById('overlay');
+    if (ov){
+      ov.classList.toggle('small-cells', CS < 15);
+      ov.classList.toggle('tiny-cells', CS < 11);
+    }
+  }
+  var MODE_KEY = 'irrigation_planner_mode_v1';
+  var modePref = null;                       // 'mobile' | 'desktop' | null = automatic
+  try{ modePref = localStorage.getItem(MODE_KEY) || null; }catch(e){}
+  function currentMode(){ return modePref || (window.innerWidth <= 820 ? 'mobile' : 'desktop'); }
+  var CS_MAX = 60;                     // manual zoom ceiling
+  function fitCellSize(){
+    if (userZoom) return;
+    if (currentMode() === 'mobile'){
+      var avail = Math.min(window.innerWidth - 30, 1440);
+      CS = Math.max(8, Math.min(26, Math.floor(avail / 26)));
+    } else {
+      var app = document.querySelector('.app');
+      var w = app ? app.clientWidth : 1180;
+      var avail2 = w - 20 - 320 - 32;   // gap + side panel + gridwrap padding
+      CS = Math.max(20, Math.min(36, Math.floor(avail2 / 26)));
+    }
+    applyCellSize();
+  }
+  function applyMode(){
+    var m = currentMode();
+    document.body.classList.toggle('m-mode', m === 'mobile');
+    var btn = document.getElementById('modeBtn');
+    if (btn) btn.textContent = (m === 'mobile') ? '🖥 Desktop view' : '📱 Phone view';
+    var p = document.querySelector('.head p');
+    if (p) p.classList.toggle('clamped', m === 'mobile' && !p.dataset.open);
+    userZoom = false;
+    fitCellSize();
+    if (typeof updateMobar === 'function') updateMobar();
+  }
+  fitCellSize();
+
+  // ---- building definitions ----
+  // a = width (x-axis) at rotation 0, b = height (y-axis) at rotation 0
+  // ra/rb = matching range width/height at rotation 0 (source buildings only)
+  var DEFS = [
+    {key:'natron', resName:"Preserving Linen", unitValue:40, base:25, workers:20, wfam:'B', name:'Natron Basin', cat:'prod', a:5,b:4, max:2, target:2, color:'#8b7ac0'},
+    {key:'gold', resName:"Pharaoh's Gold", unitValue:50, base:25, workers:25, wfam:'B', name:'Gold Mine', cat:'prod', a:5,b:4, max:3, target:3, color:'#d9a520'},
+    {key:'sand', resName:"Lime Sand Mix", unitValue:10, base:20, workers:20, wfam:'A', name:'Sandstone Quarry', cat:'prod', a:4,b:4, max:5, target:5, color:'#b07d3a'},
+    {key:'papyrus', resName:"Papyrus Scroll", unitValue:10, base:20, workers:20, wfam:'A', name:'Papyrus Workshop', cat:'prod', a:4,b:4, max:4, target:4, color:'#4e9a51'},
+    {key:'moertel', resName:"Wet Mortar", unitValue:10, base:20, workers:20, wfam:'A', name:'Mortar Workshop', cat:'prod', a:4,b:4, max:3, target:3, color:'#78899a'},
+    {key:'fisch', resName:"Fish", unitValue:10, base:20, workers:20, wfam:'A', name:'Fish Pond', cat:'prod', a:4,b:4, max:1, target:1, color:'#2e9bb5'},
+    {key:'hiero', resName:"Scroll of Knowledge", unitValue:40, base:25, workers:20, wfam:'B', name:'Hieroglyph Press', cat:'prod', a:5,b:4, max:2, target:2, color:'#c1553b'},
+    {key:'trocken', resName:"Dried Fish", unitValue:20, base:25, workers:20, wfam:'B', name:'Drying Area', cat:'prod', a:5,b:4, max:1, target:1, color:'#c99a2e'},
+    {key:'lehm', resName:"Mudbrick", unitValue:10, base:20, workers:20, wfam:'A', name:'Mudbrick Yard', cat:'prod', a:4,b:3, max:1, target:1, color:'#a85b32'},
+    {key:'flachs', resName:"Linen Cloth", unitValue:10, base:20, workers:20, wfam:'A', name:'Flax Field', cat:'prod', a:4,b:3, max:3, target:3, color:'#7fa83f'},
+
+    {key:'mumie', must:true, must:true, name:'Mummification Hall', cat:'plain', a:4,b:4, max:1, target:1, color:'#6e665c'},
+    {key:'klein_h', res1:3, resStep:1, name:'Small Dwelling', cat:'plain', a:3,b:2, max:8, target:8, color:'#c2b49a'},
+    {key:'gross_h', res1:5, resStep:3, resSteps:'3;25:4;43:5', name:'Large Dwelling', cat:'plain', a:4,b:3, max:3, target:3, color:'#a8977a'},
+
+    {key:'teich', name:'Small Pond', cat:'source', a:2,b:1, ra:4,rb:3, water:120, max:4, target:4, color:'#5bb8d4'},
+    {key:'kanal', name:'Canal', cat:'source', a:5,b:1, ra:9,rb:5, water:400, max:4, target:4, color:'#2a7fa8'},
+    {key:'schaduf', name:'Shaduf', cat:'source', a:3,b:3, ra:7,rb:7, water:400, max:3, target:3, color:'#1d5c82'},
+    {key:'becken', name:'Ritual Water Basin', cat:'source', a:4,b:3, ra:10,rb:9, water:500, max:1, target:1, color:'#0f3547'}
+  ];
+  var DEFAULT_DEFS = JSON.parse(JSON.stringify(DEFS));
+  var DEF_BY_KEY = {};
+  function reindexDefs(){ DEF_BY_KEY = {}; DEFS.forEach(function(d){ DEF_BY_KEY[d.key]=d; }); }
+  (function(){ try{ var raw = localStorage.getItem('irrigation_planner_types_v1');
+      if (raw){ var a = JSON.parse(raw); if (Array.isArray(a) && a.length) DEFS = a; } }catch(e){} })();
+  var COLOR_FIX = {natron:['#c9a15a','#8b7ac0'], gold:['#caa63d','#d9a520'], sand:['#b6a17d','#b07d3a'], papyrus:['#8fb96a','#4e9a51'], moertel:['#a89a86','#78899a'], fisch:['#5a9fbd','#2e9bb5'], hiero:['#c67d54','#c1553b'], trocken:['#d3bf6e','#c99a2e'], lehm:['#b0703c','#a85b32'], flachs:['#79965a','#7fa83f'], mumie:['#948a77','#6e665c'], klein_h:['#c7ad82','#c2b49a'], gross_h:['#c2a066','#a8977a'], teich:['#3fa0c8','#5bb8d4'], kanal:['#2778a0','#2a7fa8'], schaduf:['#1e5e83','#1d5c82'], becken:['#123f57','#0f3547']};
+  (function migrateDefs(){                       // older saves lack the newer fields
+    var base = {};
+    DEFAULT_DEFS.forEach(function(d){ base[d.key] = d; });
+    DEFS.forEach(function(d){
+      var src = base[d.key];
+      if (!src) return;
+      ['res1','resStep','wfam','workers','must','base','capMax','resName','unitValue','resSteps'].forEach(function(f){
+        if (d[f] === undefined && src[f] !== undefined) d[f] = src[f];
+      });
+      // the large dwelling used a flat +3 with a fudged start of 18; the real curve
+      // starts at 5 and steps up at level 25 and 43
+      // the palette was reworked - update a saved colour only if it is still the old default
+      if (COLOR_FIX[d.key] && String(d.color).toLowerCase() === COLOR_FIX[d.key][0]) d.color = COLOR_FIX[d.key][1];
+      if (d.key === 'gross_h' && d.res1 === 18){ d.res1 = 5; d.resSteps = '3;25:4;43:5'; }
+    });
+  })();
+  reindexDefs();
+  var NEED = 640;
+
+  // ---- geometry: field id + baseline water per global cell ----
+  function fieldOf(gx,gy){
+    if (gx<=11 && gy<=11) return 0;       // Field 1, top left
+    if (gx>=14 && gy<=11) return 1;       // Field 2, top right
+    if (gx>=14 && gy>=14) return 2;       // Field 3, bottom right
+    if (gx<=11 && gy>=14) return 3;       // Field 4, bottom left
+    return -1;
+  }
+  var FIELD_NAMES = ['Field 1 (top left)','Field 2 (top right)','Field 3 (bottom right)','Field 4 (bottom left)'];
+
+  function isRiver(gx,gy){
+    if (gy>=12 && gy<=13) return true; // horizontal bar, full width
+    if (gx>=12 && gx<=13 && gy>=14) return true; // vertical stem, bottom half
+    return false;
+  }
+  function isGapNeutral(gx,gy){
+    return (gx>=12 && gx<=13 && gy<=11);
+  }
+
+  var RIVER_WATER = 160; // river gives 160, and does not stack with itself at the T-junction
+  function baselineOf(gx,gy){
+    var f = fieldOf(gx,gy);
+    if (f<0) return 0;
+    if (f===0){ return (gy>=10) ? RIVER_WATER : 0; }
+    if (f===1){ return (gy>=10) ? RIVER_WATER : 0; }
+    if (f===2){ var lr=gy-14, lc=gx-14; return (lr<=1 || lc<=1) ? RIVER_WATER : 0; }
+    if (f===3){ var lr2=gy-14, lc2=gx-0; return (lr2<=1 || lc2>=10) ? RIVER_WATER : 0; }
+    return 0;
+  }
+
+  var baseline = [];
+  var fieldGrid = [];
+  function rebuildBaseline(){
+    for (var y=0;y<N;y++){
+      baseline[y]=[]; fieldGrid[y]=[];
+      for (var x=0;x<N;x++){
+        fieldGrid[y][x]=fieldOf(x,y);
+        baseline[y][x]=baselineOf(x,y);
+      }
+    }
+  }
+  rebuildBaseline();
+
+  // ---- water rule: a building's total = sum of DISTINCT sources (river counted once, plus
+  // each source building whose range rectangle touches the footprint anywhere) that reach it.
+  // Nothing needs to overlap on the same tile -- e.g. one corner reached by source A and the
+  // opposite corner reached by source B still adds A+B for the building as a whole. ----
+  function rectsOverlap(ax,ay,aw,ah, bx,by,bw,bh){
+    return ax < bx+bw && bx < ax+aw && ay < by+bh && by < ay+ah;
+  }
+  function buildingTouchesBaseline(b){
+    for (var yy=b.y; yy<b.y+b.h; yy++){
+      for (var xx=b.x; xx<b.x+b.w; xx++){
+        if (baseline[yy][xx]>0) return true;
+      }
+    }
+    return false;
+  }
+  function buildingWaterTotal(b){
+    var total = buildingTouchesBaseline(b) ? RIVER_WATER : 0;
+    placed.forEach(function(s){
+      var sdef = DEF_BY_KEY[s.key];
+      if (sdef.cat!=='source') return;
+      var rr = rangeRectOf(s);
+      if (rectsOverlap(b.x,b.y,b.w,b.h, rr.rx0,rr.ry0,rr.rw,rr.rh)){
+        total += sdef.water;
+      }
+    });
+    return total;
+  }
+
+  // ---- state ----
+  var occ = []; // occ[y][x] = building uid or null
+  for (var yy=0;yy<N;yy++){ occ[yy]=new Array(N).fill(null); }
+  var placed = []; // {uid,key,x,y,rot,w,h}
+  var uidSeq = 1;
+  var armed = null; // {key, rot}
+  var lastGhostCells = [];
+  var dragging = null; // {uid, key, rot, w, h, offX, offY, origX, origY, lastNx, lastNy, lastOk}
+
+  // ---- DOM build: cells ----
+  var stage = document.getElementById('stage');
+  var cellEls = [];
+  for (var gy2=0; gy2<N; gy2++){
+    cellEls[gy2]=[];
+    for (var gx2=0; gx2<N; gx2++){
+      var d = document.createElement('div');
+      d.className = 'cell';
+      if (fieldGrid[gy2][gx2]>=0) d.className += ' field';
+      else if (isRiver(gx2,gy2)) d.className += ' gap-river';
+      else if (isGapNeutral(gx2,gy2)) d.className += ' gap-neutral';
+      stage.appendChild(d);
+      cellEls[gy2][gx2]=d;
+    }
+  }
+  var overlay = document.getElementById('overlay');
+
+  function rangeRectOf(b){
+    var def = DEF_BY_KEY[b.key];
+    var rw = (b.rot===0)?def.ra:def.rb;
+    var rh = (b.rot===0)?def.rb:def.ra;
+    var rx0 = b.x + Math.floor((b.w-rw)/2);
+    var ry0 = b.y + Math.floor((b.h-rh)/2);
+    return {rx0:rx0, ry0:ry0, rw:rw, rh:rh};
+  }
+
+  function footprint(key, rot){
+    var def = DEF_BY_KEY[key];
+    if (rot===0) return {w:def.a, h:def.b};
+    return {w:def.b, h:def.a};
+  }
+
+  function canPlace(key, rot, x, y){
+    var fp = footprint(key, rot);
+    var w=fp.w, h=fp.h;
+    if (x<0||y<0||x+w>N||y+h>N) return false;
+    var f0 = fieldGrid[y][x];
+    if (f0<0) return false;
+    for (var yy=y; yy<y+h; yy++){
+      for (var xx=x; xx<x+w; xx++){
+        if (fieldGrid[yy][xx]!==f0) return false;
+        if (occ[yy][xx]!==null) return false;
+      }
+    }
+    return true;
+  }
+
+  function remainingOf(key){
+    var def = DEF_BY_KEY[key];
+    var count = placed.filter(function(b){return b.key===key;}).length;
+    return def.target - count;
+  }
+
+  // ---- palette (with an editable type list) ----
+  var TYPES_KEY = 'irrigation_planner_types_v1';
+  var paletteEl = document.getElementById('palette');
+  var GROUPS = [
+    {title:'Production buildings (need water)', cat:'prod'},
+    {title:'No water needed', cat:'plain'},
+    {title:'Water sources', cat:'source'}
+  ];
+  var rowEls = {};
+  var editMode = false;
+
+  function saveTypes(){
+    try{ localStorage.setItem(TYPES_KEY, JSON.stringify(DEFS)); }catch(e){}
+  }
+  function num(v, dflt){ var n = parseInt(v,10); return (isNaN(n)||n<0) ? dflt : n; }
+
+  function paletteRow(def){
+    var row = document.createElement('div');
+    row.className='row';
+    row.tabIndex = 0;
+    var dimsTxt = def.a+'×'+def.b + (def.cat==='source' ? ' · range '+def.ra+'×'+def.rb+' · '+def.water+' water' : '');
+    row.innerHTML =
+      '<span class="swatch" style="background:'+def.color+'"></span>'+
+      '<span class="name"><b>'+def.name+'</b><span class="dims">'+dimsTxt+'</span></span>'+
+      '<input type="number" min="0" value="'+def.target+'" title="Target count">'+
+      '<span class="placed" data-role="placed">0/'+def.target+'</span>';
+    rowEls[def.key]=row;
+    var input = row.querySelector('input');
+    input.addEventListener('click', function(e){ e.stopPropagation(); });
+    input.addEventListener('input', function(){
+      var v = num(input.value, 0);
+      var mine = placed.filter(function(b){return b.key===def.key;});
+      if (v < mine.length){                       // drop the surplus from the grid
+        var drop = mine.slice(v);
+        placed = placed.filter(function(b){ return drop.indexOf(b) < 0; });
+        rebuildOcc();
+        renderAll();
+      }
+      input.value=v; def.target=v; saveTypes(); refreshPalette(); refreshBudget();
+    });
+    row.addEventListener('click', function(){
+      if (def.target - placed.filter(function(b){return b.key===def.key;}).length <= 0) return;
+      arm(def.key);
+    });
+    return row;
+  }
+
+  function editorRow(def){
+    var box = document.createElement('div');
+    box.className='erow';
+    var isSrc = def.cat==='source';
+    box.innerHTML =
+      '<div class="l1"><span class="swatch" style="background:'+def.color+'"></span>'+
+        '<input class="nm" type="text" data-f="name" value="'+def.name.replace(/"/g,'&quot;')+'" placeholder="Name">'+
+        '<button class="del" title="delete">✕</button></div>'+
+      '<div class="l2">size <input data-f="a" type="number" min="1" max="12" value="'+def.a+'">×'+
+        '<input data-f="b" type="number" min="1" max="12" value="'+def.b+'">'+
+        (isSrc ? ' · range <input data-f="ra" type="number" min="1" max="26" value="'+def.ra+'">×'+
+                 '<input data-f="rb" type="number" min="1" max="26" value="'+def.rb+'">'+
+                 ' · water <input data-f="water" type="number" min="0" step="10" value="'+def.water+'">' : '')+
+        ' · count <input data-f="target" type="number" min="0" value="'+def.target+'">' +
+        (def.cat==='prod' ? ' · slots <select data-f="wfam">' +
+                              '<option value="A"' + (def.wfam!=='B'&&def.wfam!=='fix'?' selected':'') + '>A</option>' +
+                              '<option value="B"' + (def.wfam==='B'?' selected':'') + '>B</option>' +
+                              '<option value="fix"' + (def.wfam==='fix'?' selected':'') + '>fixed</option></select>' +
+                            (def.wfam==='fix' ? ' <input data-f="workers" type="number" min="0" value="'+(def.workers||20)+'">' : '') +
+                            ' · resource <input class="nm" style="width:110px;text-align:left" data-f="resName" type="text" value="'+((def.resName||'').replace(/"/g,'&quot;'))+'">' +
+                            ' · value/unit <input data-f="unitValue" type="number" min="0" value="'+(def.unitValue||0)+'">' +
+                            ' · base <input data-f="base" type="number" min="1" value="'+(def.base||20)+'">' +
+                            ' · own worker cap (0=family) <input data-f="capMax" type="number" min="0" value="'+(def.capMax||0)+'">' +
+                            ' · workers man. <input data-f="wman" type="number" min="0" value="'+(def.wman||0)+'">' +
+                            ' · level (0=auto) <input data-f="lvl" type="number" min="0" value="'+(def.lvl||0)+'">' : '') +
+        (def.cat==='plain' ? ' · residents L1 <input data-f="res1" type="number" min="0" value="'+(def.res1||0)+'">' +
+                                ' +/lvl <input class="nm" style="width:96px;text-align:center" data-f="resSteps" type="text" title="3 = +3 every level. 3;25:4;43:5 = +3, then +4 from level 25, +5 from level 43." value="'+(def.resSteps || def.resStep || 0)+'">' +
+                                ' · level (0=auto) <input data-f="lvl" type="number" min="0" value="'+(def.lvl||0)+'">' : '') +
+        (def.cat!=='source' ? ' · <label style="display:inline-flex;align-items:center;gap:3px;">' +
+             '<input data-f="must" type="checkbox"' + (def.must?' checked':'') + '> required</label>' : '') +
+        '</div>';
+    box.querySelectorAll('input, select').forEach(function(inp){
+      inp.addEventListener('change', function(){
+        var f = inp.getAttribute('data-f');
+        if (f==='wfam'){ def.wfam = inp.value; saveTypes(); buildPalette(); renderProduction(); return; }
+        if (f==='must'){ def.must = inp.checked; saveTypes(); return; }
+        if (f==='resName'){ def.resName = inp.value; saveTypes(); renderProduction(); return; }
+        if (f==='resSteps'){ def.resSteps = inp.value.trim(); saveTypes(); renderProduction(); return; }
+        if (f==='name'){ def.name = inp.value || def.name; }
+        else {
+          var v = num(inp.value, def[f]);
+          if (f==='a'||f==='b') v = Math.max(1, Math.min(12, v));
+          def[f] = v;
+          if (f==='workers'||f==='lvl'||f==='wman'||f==='res1'||f==='resStep'||f==='base'||f==='capMax'||f==='unitValue'){
+            if (typeof renderProduction==='function') renderProduction();
+          }
+        }
+        saveTypes();
+        buildPalette(); refreshBudget(); renderAll();
+      });
+    });
+    box.querySelector('.del').addEventListener('click', function(){
+      var i = DEFS.indexOf(def);
+      if (i>=0) DEFS.splice(i,1);
+      placed = placed.filter(function(b){ return b.key!==def.key; });
+      rebuildOcc();
+      reindexDefs(); saveTypes(); buildPalette(); refreshBudget(); renderAll();
+    });
+    return box;
+  }
+
+  var PALETTE_COLORS = ['#c9a15a','#caa63d','#b6a17d','#8fb96a','#a89a86','#5a9fbd','#c67d54','#d3bf6e',
+                        '#b0703c','#79965a','#948a77','#c7ad82','#c2a066','#3fa0c8','#2778a0','#1e5e83'];
+  function addType(cat){
+    var key = 'user_' + Math.random().toString(36).slice(2,8);
+    var d = {key:key, name:(cat==='prod'?'New production building':cat==='plain'?'New building':'New water source'),
+             cat:cat, a:4, b:3, target:1, color:PALETTE_COLORS[DEFS.length % PALETTE_COLORS.length]};
+    if (cat==='source'){ d.ra=7; d.rb=7; d.water=400; }
+    DEFS.push(d); reindexDefs(); saveTypes(); buildPalette(); refreshBudget();
+  }
+
+  function buildPalette(){
+    paletteEl.innerHTML='';
+    rowEls = {};
+    GROUPS.forEach(function(g){
+      var h = document.createElement('div');
+      h.className='group-title'; h.textContent=g.title;
+      paletteEl.appendChild(h);
+      DEFS.filter(function(d){return d.cat===g.cat;}).forEach(function(def){
+        paletteEl.appendChild(editMode ? editorRow(def) : paletteRow(def));
+      });
+      if (editMode){
+        var b = document.createElement('button');
+        b.className='btn tiny';
+        b.textContent = (g.cat==='prod'?'+ Production building':g.cat==='plain'?'+ Other building':'+ Water source');
+        b.addEventListener('click', function(){ addType(g.cat); });
+        paletteEl.appendChild(b);
+      }
+    });
+    if (editMode){
+      var r = document.createElement('button');
+      r.className='btn tiny'; r.style.marginTop='10px'; r.textContent='Reset list';
+      r.addEventListener('click', function(){
+        DEFS = JSON.parse(JSON.stringify(DEFAULT_DEFS));
+        placed = []; rebuildOcc(); reindexDefs(); saveTypes(); buildPalette(); refreshBudget(); renderAll();
+      });
+      paletteEl.appendChild(r);
+    }
+    refreshPalette();
+    if (typeof buildFullList === 'function') buildFullList();
+  }
+
+  // ---- "build these completely" checklist: at most FULL_MAX production types ----
+  var FULL_MAX = 3;
+  function fullTypes(){ return DEFS.filter(function(d){ return d.cat==='prod' && d.full && d.target>0; }); }
+  function buildFullList(){
+    var box = document.getElementById('fullList');
+    if (!box) return;
+    box.innerHTML = '';
+    var picked = fullTypes().length;
+    DEFS.forEach(function(d){
+      if (d.cat !== 'prod' || !d.target) return;
+      var lab = document.createElement('label');
+      var locked = !d.full && picked >= FULL_MAX;
+      lab.className = 'chkrow' + (d.full ? ' on' : (locked ? ' off' : ''));
+      var cb = document.createElement('input');
+      cb.type = 'checkbox'; cb.checked = !!d.full; cb.disabled = locked;
+      var nm = document.createElement('span'); nm.textContent = d.name;
+      var ct = document.createElement('span'); ct.className = 'cnt'; ct.textContent = '\u00d7' + d.target;
+      lab.appendChild(cb); lab.appendChild(nm); lab.appendChild(ct);
+      cb.addEventListener('change', function(){
+        d.full = cb.checked; saveTypes(); buildFullList();
+      });
+      box.appendChild(lab);
+    });
+    var note = document.getElementById('fullNote');
+    if (note) note.textContent = picked ? '%s of %d picked. The solver builds these to the last one or drops something else instead.'.replace('%s', picked).replace('%d', FULL_MAX) : 'Nothing picked – the solver is free to leave any type incomplete.';
+  }
+
+  function rebuildOcc(){
+    for (var y=0;y<N;y++) occ[y]=new Array(N).fill(null);
+    placed.forEach(function(b){
+      for (var yy=b.y; yy<b.y+b.h; yy++)
+        for (var xx=b.x; xx<b.x+b.w; xx++) occ[yy][xx]=b.uid;
+    });
+  }
+
+  document.getElementById('editToggle').addEventListener('click', function(){
+    editMode = !editMode;
+    this.textContent = editMode ? 'Done editing' : 'Edit types';
+    buildPalette();
+  });
+
+  function refreshPalette(){
+    DEFS.forEach(function(def){
+      var row = rowEls[def.key];
+      if (!row) return;
+      var placedCount = placed.filter(function(b){return b.key===def.key;}).length;
+      var rem = def.target - placedCount;
+      row.querySelector('[data-role=placed]').textContent = placedCount+'/'+def.target;
+      row.classList.toggle('disabled', rem<=0);
+      row.classList.toggle('armed', armed && armed.key===def.key);
+    });
+  }
+
+  function refreshBudget(){
+    var bSum = 0, sSum = 0;
+    DEFS.forEach(function(def){
+      var a = def.target * def.a * def.b;
+      if (def.cat==='source') sSum += a; else bSum += a;
+    });
+    var used = 0;
+    placed.forEach(function(b){ used += b.w * b.h; });
+    var box = document.getElementById('budgetBox');
+    var numEl = document.getElementById('budgetNum');
+    var note = document.getElementById('budgetNote');
+    numEl.textContent = used;
+    box.className = 'budget ' + (used<=576 ? 'ok':'over');
+    var msg = 'Planned: ' + bSum + ' slots of buildings';
+    if (sSum) msg += ' + up to ' + sSum + ' for water sources (the solver places only as many as it needs)';
+    msg += '.';
+    if (bSum>576) msg += ' The buildings alone need ' + (bSum-576) + ' slots more than the four fields have.';
+    note.textContent = msg;
+  }
+
+  // ---- arm / rotate / cancel ----
+  var armedLabel = document.getElementById('armedLabel');
+  function arm(key){
+    armed = {key:key, rot:0};
+    selUid = null;
+    armedLabel.textContent = DEF_BY_KEY[key].name + ' (0°)';
+    stage.classList.add('aiming');
+    if (isMobile()){
+      ghostPos = null;
+      try{ document.querySelector('.gridwrap').scrollIntoView({behavior:'smooth', block:'start'}); }catch(e){}
+    }
+    refreshPalette();
+    if (typeof updateMobar === 'function') updateMobar();
+  }
+  function disarm(){
+    armed = null;
+    ghostPos = null;
+    armedLabel.textContent = '–';
+    stage.classList.remove('aiming');
+    clearGhost();
+    if (typeof clearAim === 'function') clearAim();
+    refreshPalette();
+    if (typeof updateMobar === 'function') updateMobar();
+  }
+  function rotateArmed(){
+    if (!armed) return;
+    armed.rot = armed.rot===0?90:0;
+    armedLabel.textContent = DEF_BY_KEY[armed.key].name + ' (' + armed.rot + '°)';
+    if (lastClientPos) updateGhostAt(lastClientPos.clientX, lastClientPos.clientY);
+    if (typeof drawAim === 'function') drawAim();
+  }
+  document.getElementById('rotateBtn').addEventListener('click', rotateArmed);
+  document.getElementById('cancelBtn').addEventListener('click', disarm);
+  document.addEventListener('keydown', function(e){
+    if (e.key==='r' || e.key==='R') rotateArmed();
+    if (e.key==='Escape') disarm();
+  });
+
+  // ---- overlay drawing helpers ----
+  function px(n){ return (n*CS)+'px'; }
+  function makeOutline(cls, x,y,w,h, tagText, tagCls){
+    var o = document.createElement('div');
+    o.className='outline '+cls;
+    o.style.left=px(x); o.style.top=px(y); o.style.width=px(w); o.style.height=px(h);
+    if (tagText){
+      var t=document.createElement('span'); t.className='tag '+(tagCls||''); t.textContent=tagText;
+      o.appendChild(t);
+    }
+    overlay.appendChild(o);
+    return o;
+  }
+
+  function clearGhost(){
+    lastGhostCells.forEach(function(el){ el.parentNode && el.parentNode.removeChild(el); });
+    lastGhostCells = [];
+  }
+
+  // short form for tiles that cannot hold the full name: initials for multi-word names,
+  // the first few letters otherwise
+  function shortOf(def){
+    if (def.short) return def.short;
+    var n = (def.name || '').trim();
+    var parts = n.split(/\s+/);
+    if (parts.length > 1) return parts.map(function(p){ return p.charAt(0).toUpperCase(); }).join('');
+    return n.slice(0, 5);
+  }
+  // title bar + figures bar, fitted to the building's footprint. `foot` is a list of
+  // lines; lines that do not fit are dropped from the bottom up.
+  function makeTileLabel(b, def, foot){
+    var wpx = b.w * CS, hpx = b.h * CS;
+    var fs = Math.max(6, Math.min(14, Math.round(CS * 0.44)));
+    var lineH = Math.ceil(fs * 1.34);
+    var rows = Math.floor(hpx / lineH);
+    var maxChars = Math.floor((wpx - 7) / (fs * 0.66));
+    if (rows < 1 || maxChars < 4) return null;
+
+    foot = (foot || []).filter(function(x){ return x; }).map(String);
+    var name = def.name || '', longest = 0;
+    name.split(/\s+/).forEach(function(w){ if (w.length > longest) longest = w.length; });
+    // a single long word gets a smaller font rather than one orphaned letter on line two
+    var nameFs = (longest > maxChars) ? Math.max(6, Math.floor(fs * maxChars / longest)) : fs;
+    var nameChars = Math.max(1, Math.floor((wpx - 7) / (nameFs * 0.66)));
+    var nameRows = Math.ceil((name.length + 1) / nameChars);
+    if (nameChars < 7 || nameRows > 2){           // three broken lines are unreadable
+      name = shortOf(def);
+      nameFs = fs;
+      nameChars = maxChars;
+      if (name.length > maxChars) name = name.slice(0, maxChars);
+      nameRows = 1;
+    }
+    while (foot.length && nameRows + foot.length > rows) foot.pop();
+    if (nameRows + foot.length > rows && nameRows === 2){
+      name = shortOf(def);
+      nameFs = fs;
+      if (name.length > maxChars) name = name.slice(0, maxChars);
+      nameRows = 1;
+    }
+    if (nameRows > rows) return null;
+    foot = foot.map(function(t){                  // "400 water" -> "400" when it is too long
+      if (t.replace(/<[^>]+>/g, '').length <= maxChars) return t;
+      var head = t.replace(/<[^>]+>/g, '').split(' ')[0];
+      return head.length <= maxChars ? head : '';
+    }).filter(function(x){ return x; });
+
+    var el = document.createElement('div');
+    el.className = 'tlabel';
+    el.style.left = px(b.x); el.style.top = px(b.y);
+    el.style.width = px(b.w); el.style.height = px(b.h);
+    el.style.fontSize = fs + 'px';
+    el.innerHTML = '<span class="nm"' + (nameFs !== fs ? ' style="font-size:' + nameFs + 'px"' : '') +
+                   '>' + name + '</span>' +
+                   (foot.length ? '<span class="ft">' + foot.join('<br>') + '</span>' : '');
+    overlay.appendChild(el);
+    return el;
+  }
+
+  // ---- main render: cell backgrounds + building fills + status outlines ----
+  function renderAll(){
+    for (var y=0;y<N;y++){
+      for (var x=0;x<N;x++){
+        if (fieldGrid[y][x]<0) continue;
+        if (occ[y][x]===null){
+          cellEls[y][x].style.background = '';
+        }
+      }
+    }
+    placed.forEach(function(b){
+      var def = DEF_BY_KEY[b.key];
+      for (var yy2=b.y; yy2<b.y+b.h; yy2++){
+        for (var xx2=b.x; xx2<b.x+b.w; xx2++){
+          cellEls[yy2][xx2].style.background = def.color;
+        }
+      }
+    });
+
+    overlay.innerHTML='';
+    var showRanges = document.getElementById('showRanges').checked;
+    var lblSel = document.getElementById('labelMode');
+    var lblMode = lblSel ? lblSel.value : 'workers';
+    var showLabels = (lblMode !== 'off');
+    // who actually works where - so the number on the tile is the real one, not a per-type total
+    var ev = null, wmap = {};
+    if (showLabels && typeof evaluate === 'function'){
+      try{
+        ev = evaluate();
+        ev.slots.forEach(function(s){ wmap[s.b.uid] = s.workers; });
+      }catch(e){ ev = null; }
+    }
+    if (showRanges){
+      placed.forEach(function(b){
+        var def = DEF_BY_KEY[b.key];
+        if (def.cat!=='source') return;
+        var rr = rangeRectOf(b);
+        makeOutline('range', rr.rx0, rr.ry0, rr.rw, rr.rh, null, null);
+      });
+    }
+
+    var statusListEl = document.getElementById('statuslist');
+    statusListEl.innerHTML='';
+    var anyProd = false;
+    var counters = {ok:0, partial:0, bad:0};
+    var countByKey = {};
+    placed.forEach(function(b, idx){
+      var def = DEF_BY_KEY[b.key];
+      if (def.cat!=='prod') return;
+      anyProd = true;
+      countByKey[b.key] = (countByKey[b.key]||0)+1;
+      var total = buildingWaterTotal(b);
+      var wp = (typeof waterPct === 'function') ? waterPct(total) : (total>=NEED?50:0);
+      var status = (wp >= 50) ? 'ok' : (wp > 0 ? 'partial' : 'bad');   // show the tier, not pass/fail
+      counters[status]++;
+      var tag = showLabels ? null : (status==='ok' ? '✓' : (status==='partial' ? '◐' : '✕'));
+      var outlineEl = makeOutline(status, b.x, b.y, b.w, b.h, tag, status);
+      if (showLabels){
+        var foot = (lblMode === 'workers') ? [(wmap[b.uid] || 0) + ' wk']
+                 : (lblMode === 'water')   ? [total + ' · <b>' + wp + '%</b>'] : [];
+        var lb = makeTileLabel(b, def, foot);
+        if (lb) lb.title = def.name + ' — ' + total + ' water, +' + wp + '%, ' + (wmap[b.uid] || 0) + ' workers';
+      } else {
+        var waterLabel = document.createElement('span');
+        waterLabel.className = 'water';
+        waterLabel.style.fontSize = Math.max(8, Math.min(16, Math.round(CS * 0.5))) + 'px';
+        waterLabel.textContent = total + ' · ' + wp + '%';
+        outlineEl.appendChild(waterLabel);
+      }
+
+      var row = document.createElement('div');
+      row.className='status-row '+status;
+      row.innerHTML = '<span>'+def.name+' #'+countByKey[b.key]+'</span><span class="w">'+total+' water · +'+wp+'%</span>';
+      statusListEl.appendChild(row);
+    });
+    if (showLabels){
+      placed.forEach(function(b){
+        var def = DEF_BY_KEY[b.key];
+        if (def.cat === 'prod') return;                 // already labelled above
+        var sub = '';
+        if (def.cat === 'source') sub = def.water + ' water';
+        else if (typeof residentsOf === 'function'){
+          var r = residentsOf(def, (typeof levelOf === 'function' && ev) ? levelOf(def, ev.st) : 0);
+          if (r > 0) sub = r + ' res';
+        }
+        makeTileLabel(b, def, (lblMode === 'name') ? [] : [sub]);
+      });
+    }
+    if (!anyProd){
+      statusListEl.innerHTML = '<div class="empty-hint">No production buildings placed yet.</div>';
+    }
+
+    // field usage bars
+    var used = [0,0,0,0];
+    placed.forEach(function(b){ used[fieldGrid[b.y][b.x]] += b.w*b.h; });
+    var fb = document.getElementById('fieldbars');
+    fb.innerHTML='';
+    for (var i=0;i<4;i++){
+      var pct = Math.min(100, used[i]/144*100);
+      var r = document.createElement('div');
+      r.className='fbar-row';
+      r.innerHTML = '<span>'+FIELD_NAMES[i].split(' (')[0]+'</span>'+
+        '<span class="fbar-track"><span class="fbar-fill" style="width:'+pct+'%; background:'+(used[i]>144?'var(--bad)':'var(--accent)')+'"></span></span>'+
+        '<span class="fbar-num">'+used[i]+'/144</span>';
+      fb.appendChild(r);
+    }
+
+    if (selUid){
+      var selB = placed.filter(function(x){ return x.uid === selUid; })[0];
+      if (selB) makeOutline('sel', selB.x, selB.y, selB.w, selB.h, null, null);
+      else selUid = null;
+    }
+    if (typeof drawAim === 'function') drawAim();
+
+    refreshPalette();
+    refreshBudget();
+    if (typeof renderProduction === 'function') renderProduction();
+  }
+
+  // ---- interaction ----
+  function gridPosFromEvent(e){
+    var rect = stage.getBoundingClientRect();
+    var x = Math.floor((e.clientX-rect.left)/CS);
+    var y = Math.floor((e.clientY-rect.top)/CS);
+    return {x:x,y:y};
+  }
+
+  var lastClientPos = null; // {clientX, clientY} of the last mousemove over the stage
+  function updateGhostAt(clientX, clientY){
+    clearGhost();
+    if (!armed) return;
+    var rect = stage.getBoundingClientRect();
+    var p = {x: Math.floor((clientX-rect.left)/CS), y: Math.floor((clientY-rect.top)/CS)};
+    var fp = footprint(armed.key, armed.rot);
+    var ok = canPlace(armed.key, armed.rot, p.x, p.y);
+    var el = makeOutline(ok?'ghost-valid':'ghost-invalid', p.x, p.y, fp.w, fp.h, null, null);
+    lastGhostCells.push(el);
+    var def = DEF_BY_KEY[armed.key];
+    if (ok && def.cat==='source'){
+      var rw = armed.rot===0?def.ra:def.rb;
+      var rh = armed.rot===0?def.rb:def.ra;
+      var rx0 = p.x + Math.floor((fp.w-rw)/2);
+      var ry0 = p.y + Math.floor((fp.h-rh)/2);
+      var el2 = makeOutline('range', rx0, ry0, rw, rh, null, null);
+      lastGhostCells.push(el2);
+    }
+  }
+  function updateDragGhostAt(clientX, clientY){
+    clearGhost();
+    if (!dragging) return;
+    var rect = stage.getBoundingClientRect();
+    var gx = Math.floor((clientX-rect.left)/CS);
+    var gy = Math.floor((clientY-rect.top)/CS);
+    var nx = gx - dragging.offX;
+    var ny = gy - dragging.offY;
+    var ok = canPlace(dragging.key, dragging.rot, nx, ny);
+    var el = makeOutline(ok?'ghost-valid':'ghost-invalid', nx, ny, dragging.w, dragging.h, null, null);
+    lastGhostCells.push(el);
+    dragging.lastNx = nx; dragging.lastNy = ny; dragging.lastOk = ok;
+    var def = DEF_BY_KEY[dragging.key];
+    if (ok && def.cat==='source'){
+      var rw = dragging.rot===0?def.ra:def.rb;
+      var rh = dragging.rot===0?def.rb:def.ra;
+      var rx0 = nx + Math.floor((dragging.w-rw)/2);
+      var ry0 = ny + Math.floor((dragging.h-rh)/2);
+      var el2 = makeOutline('range', rx0, ry0, rw, rh, null, null);
+      lastGhostCells.push(el2);
+    }
+  }
+
+  // ---- pointer input: mouse drags on desktop, aim-and-confirm on touch ----
+  var pressTimer = null, touchStart = null, suppressClick = false;
+  var selUid = null;        // the placed building the finger selected
+  var ghostPos = null;      // where the armed building is currently aimed (touch)
+  var aimEls = [];          // overlay elements of that aim ghost
+  var lastDeleted = null;   // {b:building} for one step of undo
+  var undoTimer = null;
+  var pts = {}, pinch = null;   // active touch points and the pinch-zoom base
+  function cancelPress(){ if (pressTimer){ clearTimeout(pressTimer); pressTimer = null; } }
+  function buzz(ms){ try{ if (navigator.vibrate) navigator.vibrate(ms); }catch(e){} }
+  function isMobile(){ return document.body.classList.contains('m-mode'); }
+
+  function uidAt(p){
+    if (p.x<0||p.y<0||p.x>=N||p.y>=N) return null;
+    return occ[p.y][p.x];
+  }
+  function byUid(uid){ return placed.filter(function(b){ return b.uid===uid; })[0] || null; }
+  function freeCells(b){
+    for (var yy=b.y; yy<b.y+b.h; yy++) for (var xx=b.x; xx<b.x+b.w; xx++) occ[yy][xx]=null;
+  }
+  function fillCells(b){
+    for (var yy=b.y; yy<b.y+b.h; yy++) for (var xx=b.x; xx<b.x+b.w; xx++) occ[yy][xx]=b.uid;
+  }
+  function deleteByUid(uid, remember){
+    var idx = placed.findIndex(function(b){return b.uid===uid;});
+    if (idx<0) return;
+    var b = placed[idx];
+    freeCells(b);
+    placed.splice(idx,1);
+    if (selUid === uid) selUid = null;
+    if (remember){
+      lastDeleted = {x:b.x, y:b.y, key:b.key, rot:b.rot, w:b.w, h:b.h};
+      if (undoTimer) clearTimeout(undoTimer);
+      undoTimer = setTimeout(function(){ lastDeleted = null; updateMobar(); }, 8000);
+    }
+    buzz(18);
+    clearGhost(); renderAll();
+  }
+  function undoDelete(){
+    if (!lastDeleted) return;
+    var d = lastDeleted; lastDeleted = null;
+    if (undoTimer){ clearTimeout(undoTimer); undoTimer = null; }
+    if (!canPlace(d.key, d.rot, d.x, d.y)) { updateMobar(); return; }
+    var b = {uid:uidSeq++, key:d.key, x:d.x, y:d.y, rot:d.rot, w:d.w, h:d.h};
+    placed.push(b); fillCells(b);
+    selUid = b.uid;
+    buzz(10); renderAll();
+  }
+  function pickUp(uid){                 // take a placed building back onto the cursor
+    var b = byUid(uid);
+    if (!b) return;
+    freeCells(b);
+    placed.splice(placed.indexOf(b), 1);
+    selUid = null;
+    armed = {key:b.key, rot:b.rot};
+    armedLabel.textContent = DEF_BY_KEY[b.key].name + ' (' + b.rot + '\u00b0)';
+    ghostPos = {x:b.x, y:b.y};
+    suppressClick = true;
+    stage.classList.add('aiming');
+    renderAll();
+  }
+  function rotatePlaced(uid){
+    var b = byUid(uid);
+    if (!b) return false;
+    var nrot = b.rot===0 ? 90 : 0;
+    var fp = footprint(b.key, nrot);
+    freeCells(b);
+    var ok = canPlace(b.key, nrot, b.x, b.y);
+    if (!ok){ fillCells(b); return false; }
+    b.rot = nrot; b.w = fp.w; b.h = fp.h;
+    fillCells(b);
+    buzz(8); renderAll();
+    return true;
+  }
+  function movePlaced(uid, nx, ny){
+    var b = byUid(uid);
+    if (!b) return false;
+    freeCells(b);
+    if (!canPlace(b.key, b.rot, nx, ny)){ fillCells(b); return false; }
+    b.x = nx; b.y = ny; fillCells(b);
+    renderAll();
+    return true;
+  }
+  function placeArmedAt(x, y){
+    if (!armed) return false;
+    if (!canPlace(armed.key, armed.rot, x, y)) return false;
+    if (remainingOf(armed.key) <= 0) return false;
+    var fp = footprint(armed.key, armed.rot);
+    var b = {uid:uidSeq++, key:armed.key, x:x, y:y, rot:armed.rot, w:fp.w, h:fp.h};
+    placed.push(b); fillCells(b);
+    buzz(12);
+    ghostPos = null;
+    if (remainingOf(armed.key) <= 0){ disarm(); if (isMobile()) selUid = b.uid; }
+    renderAll();
+    return true;
+  }
+
+  // ---- the aim ghost survives a full re-render ----
+  function clearAim(){
+    aimEls.forEach(function(el){ if (el && el.parentNode) el.parentNode.removeChild(el); });
+    aimEls = [];
+  }
+  function drawAim(){
+    clearAim();
+    if (!armed || !ghostPos){ updateMobar(); return; }
+    var fp = footprint(armed.key, armed.rot);
+    var ok = canPlace(armed.key, armed.rot, ghostPos.x, ghostPos.y);
+    aimEls.push(makeOutline(ok?'ghost-valid':'ghost-invalid', ghostPos.x, ghostPos.y, fp.w, fp.h, null, null));
+    var def = DEF_BY_KEY[armed.key];
+    if (ok && def.cat==='source'){
+      var rw = armed.rot===0?def.ra:def.rb, rh = armed.rot===0?def.rb:def.ra;
+      aimEls.push(makeOutline('range', ghostPos.x + Math.floor((fp.w-rw)/2),
+                                       ghostPos.y + Math.floor((fp.h-rh)/2), rw, rh, null, null));
+    }
+    updateMobar();
+  }
+  function setAim(x, y){
+    var fp = footprint(armed.key, armed.rot);
+    x = Math.max(0, Math.min(N-fp.w, x));
+    y = Math.max(0, Math.min(N-fp.h, y));
+    if (ghostPos && ghostPos.x===x && ghostPos.y===y) return;
+    ghostPos = {x:x, y:y};
+    drawAim();
+  }
+  // keeps a rectangle of the grid visible above the action bar (phone mode)
+  function scrollCellIntoView(x, y, w, h){
+    if (!isMobile()) return;
+    var rect = stage.getBoundingClientRect();
+    var left = rect.left + x*CS, top = rect.top + y*CS;
+    var right = left + w*CS, bottom = top + h*CS;
+    var wrap = document.querySelector('.gridwrap');
+    if (wrap && wrap.scrollWidth > wrap.clientWidth + 2){
+      var wr = wrap.getBoundingClientRect();
+      if (left < wr.left + 10) wrap.scrollLeft -= (wr.left + 10 - left);
+      else if (right > wr.right - 10) wrap.scrollLeft += (right - wr.right + 10);
+    }
+    var bar = document.getElementById('mobar');
+    var barH = (bar && !bar.hidden) ? bar.getBoundingClientRect().height : 0;
+    if (top < 10) window.scrollBy(0, top - 10);
+    else if (bottom > window.innerHeight - barH - 10) window.scrollBy(0, bottom - (window.innerHeight - barH - 10));
+  }
+  function keepInView(){
+    if (armed && ghostPos){ var fp2 = footprint(armed.key, armed.rot); scrollCellIntoView(ghostPos.x, ghostPos.y, fp2.w, fp2.h); return; }
+    var b = selUid ? byUid(selUid) : null;
+    if (b) scrollCellIntoView(b.x, b.y, b.w, b.h);
+  }
+
+  // ---- floating action bar (phone mode only) ----
+  var MB = {"rotate": "Rotate", "place": "Place", "cancel": "Cancel", "move": "Move", "del": "Delete", "undo": "Undo", "deleted": "Deleted:", "left_n": "left:", "left": "left", "right": "right", "up": "up", "down": "down", "hintAim": "Tap the grid – the building jumps there. Tapping a building that is already placed opens it instead.", "hintOk": "Fits here. Tap the same spot again, or press ✓ Place.", "hintBad": "Does not fit here – occupied or across a field border.", "hintSel": "⟳ rotates in place · arrows move by one cell · pinch to zoom · press and hold a building to delete it.", "noRot": "Rotated it does not fit in this spot.", "noMove": "No room in that direction."};
+  function updateMobar(){
+    var bar = document.getElementById('mobar');
+    if (!bar) return;
+    var show = isMobile() && (armed || selUid || lastDeleted);
+    document.body.classList.toggle('bar-open', !!show);
+    if (!show){ bar.hidden = true; bar.innerHTML=''; document.body.style.paddingBottom = ''; return; }
+    bar.hidden = false;
+    var pad = '<span class="mb-pad">'+
+      '<button class="mb" data-a="l" title="'+MB.left+'">\u25c0</button>'+
+      '<button class="mb" data-a="u" title="'+MB.up+'">\u25b2</button>'+
+      '<button class="mb" data-a="d" title="'+MB.down+'">\u25bc</button>'+
+      '<button class="mb" data-a="r" title="'+MB.right+'">\u25b6</button></span>';
+    if (armed){
+      var def = DEF_BY_KEY[armed.key], fp = footprint(armed.key, armed.rot);
+      var ok = !!(ghostPos && canPlace(armed.key, armed.rot, ghostPos.x, ghostPos.y));
+      var left = remainingOf(armed.key);
+      bar.innerHTML =
+        '<div class="mb-title"><b>'+def.name+'</b><span>'+fp.w+'\u00d7'+fp.h+' \u00b7 '+armed.rot+'\u00b0 \u00b7 '+MB.left_n+' '+left+'</span></div>'+
+        '<div class="mb-row">'+
+          '<button class="mb" data-a="rot" title="'+MB.rotate+'">\u27f3</button>'+ pad +
+        '</div>'+
+        '<div class="mb-row">'+
+          '<button class="mb ok" data-a="set"'+(ok?'':' disabled')+'>\u2713 '+MB.place+'</button>'+
+          '<button class="mb" data-a="cancel" title="'+MB.cancel+'">\u2715 '+MB.cancel+'</button>'+
+        '</div>'+
+        '<div class="mb-hint">'+(ghostPos ? (ok?MB.hintOk:MB.hintBad) : MB.hintAim)+'</div>';
+    } else if (selUid){
+      var b = byUid(selUid);
+      if (!b){ selUid = null; return updateMobar(); }
+      var d2 = DEF_BY_KEY[b.key];
+      bar.innerHTML =
+        '<div class="mb-title"><b>'+d2.name+'</b><span>'+b.w+'\u00d7'+b.h+' \u00b7 ('+b.x+','+b.y+')</span></div>'+
+        '<div class="mb-row">'+
+          '<button class="mb" data-a="rot" title="'+MB.rotate+'">\u27f3</button>'+ pad +
+        '</div>'+
+        '<div class="mb-row">'+
+          '<button class="mb ok" data-a="move">\u2725 '+MB.move+'</button>'+
+          '<button class="mb danger" data-a="del">\u2715 '+MB.del+'</button>'+
+          '<button class="mb" data-a="cancel" title="'+MB.cancel+'">\u21b3</button>'+
+        '</div>'+
+        '<div class="mb-hint">'+MB.hintSel+'</div>';
+    } else {
+      bar.innerHTML =
+        '<div class="mb-row">'+
+          '<button class="mb ok" data-a="undo">\u21a9 '+MB.undo+'</button>'+
+          '<button class="mb" data-a="dismiss">\u2715</button>'+
+        '</div>'+
+        '<div class="mb-hint">'+MB.deleted+' '+DEF_BY_KEY[lastDeleted.key].name+'</div>';
+    }
+    requestAnimationFrame(function(){
+      if (bar.hidden) return;
+      document.body.style.paddingBottom = Math.ceil(bar.getBoundingClientRect().height + 14) + 'px';
+    });
+  }
+  document.getElementById('mobar').addEventListener('click', function(e){
+    var btn = e.target.closest ? e.target.closest('button.mb') : null;
+    if (!btn) return;
+    var a = btn.getAttribute('data-a');
+    var dx = (a==='l'?-1:a==='r'?1:0), dy = (a==='u'?-1:a==='d'?1:0);
+    if (armed){
+      if (a==='rot'){ rotateArmed(); drawAim(); }
+      else if (dx || dy){ if (ghostPos) setAim(ghostPos.x+dx, ghostPos.y+dy); else setAim(0,0); }
+      else if (a==='set'){ if (ghostPos) placeArmedAt(ghostPos.x, ghostPos.y); }
+      else if (a==='cancel'){ disarm(); }
+      keepInView();
+    } else if (selUid){
+      if (a==='rot'){ if (!rotatePlaced(selUid)) flashHint(MB.noRot); }
+      else if (dx || dy){ var b = byUid(selUid); if (b && !movePlaced(selUid, b.x+dx, b.y+dy)) flashHint(MB.noMove); }
+      else if (a==='move'){ pickUp(selUid); }
+      else if (a==='del'){ deleteByUid(selUid, true); }
+      else if (a==='cancel'){ selUid = null; renderAll(); }
+      keepInView();
+    } else {
+      if (a==='undo') undoDelete();
+      else { lastDeleted = null; }
+    }
+    updateMobar();
+  });
+  function flashHint(txt){
+    var h = document.querySelector('#mobar .mb-hint');
+    if (!h) return;
+    var old = h.textContent;
+    h.textContent = txt;
+    setTimeout(function(){ if (h.textContent === txt) h.textContent = old; }, 1600);
+  }
+
+  // ---- mouse ----
+  stage.addEventListener('pointermove', function(e){
+    if (e.pointerType !== 'mouse'){ onTouchMove(e); return; }
+    lastClientPos = {clientX:e.clientX, clientY:e.clientY};
+    if (dragging){ updateDragGhostAt(e.clientX, e.clientY); return; }
+    updateGhostAt(e.clientX, e.clientY);
+  });
+  stage.addEventListener('pointerleave', function(e){
+    if (e.pointerType !== 'mouse') return;
+    lastClientPos = null;
+    if (!dragging) clearGhost();
+  });
+
+  // ---- touch ----
+  function cellFrom(e){
+    var rect = stage.getBoundingClientRect();
+    return {x: Math.floor((e.clientX-rect.left)/CS), y: Math.floor((e.clientY-rect.top)/CS)};
+  }
+  function nPts(){ return Object.keys(pts).length; }
+  function pinchDist(){
+    var k = Object.keys(pts);
+    if (k.length < 2) return 0;
+    var a = pts[k[0]], b = pts[k[1]];
+    return Math.hypot(a.x-b.x, a.y-b.y);
+  }
+  function onTouchMove(e){
+    if (!(e.pointerId in pts)) return;
+    pts[e.pointerId] = {x:e.clientX, y:e.clientY};
+    if (nPts() >= 2){
+      cancelPress(); touchStart = null;
+      if (!pinch){ pinch = {d: pinchDist(), cs: CS}; return; }
+      var d = pinchDist();
+      if (pinch.d > 10 && d > 10){
+        var next = Math.max(8, Math.min(CS_MAX, Math.round(pinch.cs * d / pinch.d)));
+        if (next !== CS){ userZoom = true; CS = next; applyCellSize(); renderAll(); }
+      }
+      e.preventDefault();
+      return;
+    }
+    if (touchStart && (Math.abs(e.clientX-touchStart.x)>10 || Math.abs(e.clientY-touchStart.y)>10)){
+      cancelPress();
+      touchStart.moved = true;
+    }
+    if (armed && touchStart){                 // one finger drags the ghost around
+      var c = cellFrom(e);
+      setAim(c.x - touchStart.gx, c.y - touchStart.gy);
+      e.preventDefault();
+    }
+  }
+
+  stage.addEventListener('pointerdown', function(e){
+    var p = gridPosFromEvent(e);
+    if (e.pointerType !== 'mouse'){
+      pts[e.pointerId] = {x:e.clientX, y:e.clientY};
+      if (nPts() >= 2){ pinch = {d: pinchDist(), cs: CS}; cancelPress(); touchStart = null; return; }
+      pinch = null;
+      var uid = uidAt(p);
+      // grabbing the ghost keeps the finger's offset inside it, otherwise aim by its top-left
+      var gx = 0, gy = 0;
+      if (armed && ghostPos){
+        var fp = footprint(armed.key, armed.rot);
+        if (p.x>=ghostPos.x && p.x<ghostPos.x+fp.w && p.y>=ghostPos.y && p.y<ghostPos.y+fp.h){
+          gx = p.x - ghostPos.x; gy = p.y - ghostPos.y;
+        }
+      }
+      var wasAt = !!(armed && ghostPos && ghostPos.x === p.x - gx && ghostPos.y === p.y - gy);
+      touchStart = {x:e.clientX, y:e.clientY, uid:uid, cell:p, gx:gx, gy:gy, moved:false, wasAt:wasAt};
+      try{ stage.setPointerCapture(e.pointerId); }catch(_){}
+      if (uid !== null){                       // press and hold on a building removes it (undoable)
+        cancelPress();
+        pressTimer = setTimeout(function(){
+          pressTimer = null;
+          if (!touchStart || touchStart.moved || touchStart.uid === null) return;
+          var victim = touchStart.uid; touchStart = null;
+          if (armed) disarm();
+          deleteByUid(victim, true);
+          updateMobar();
+        }, 550);
+      }
+      if (armed) setAim(p.x - gx, p.y - gy);
+      return;
+    }
+    if (e.button !== 0) return;   // right button removes via contextmenu
+    var uid2 = uidAt(p);
+    if (uid2 === null) return;    // empty cell: placing a new building takes priority
+    // an occupied cell always drags that building, even while a new one is on the cursor
+    var b = byUid(uid2);
+    if (!b) return;
+    dragging = {
+      uid: uid2, key: b.key, rot: b.rot, w: b.w, h: b.h,
+      offX: p.x - b.x, offY: p.y - b.y,
+      origX: b.x, origY: b.y
+    };
+    freeCells(b);
+    renderAll();
+    e.preventDefault();
+  });
+
+  function endDrag(){
+    if (!dragging) return;
+    var d = dragging;
+    dragging = null;
+    var b = byUid(d.uid);
+    if (!b) return;
+    var nx = d.lastNx, ny = d.lastNy, ok = d.lastOk;
+    if (nx===undefined || !ok){ nx = d.origX; ny = d.origY; }
+    b.x = nx; b.y = ny;
+    fillCells(b);
+    clearGhost();
+    renderAll();
+  }
+
+  document.addEventListener('pointerup', function(e){
+    if (e.pointerType !== 'mouse'){
+      delete pts[e.pointerId];
+      if (nPts() < 2) pinch = null;
+      cancelPress();
+      var ts = touchStart; touchStart = null;
+      if (!ts) return;
+      if (nPts() > 0) return;
+      if (armed){
+        // the first tap aims; tapping the same spot (or inside the ghost) again drops it
+        var canDrop = !ts.moved && ts.wasAt && ghostPos && canPlace(armed.key, armed.rot, ghostPos.x, ghostPos.y);
+        if (canDrop) placeArmedAt(ghostPos.x, ghostPos.y);
+        else if (!ts.moved && ts.uid !== null){   // tapped a building that is already on the grid
+          disarm(); selUid = ts.uid; renderAll();
+        }
+        updateMobar(); keepInView();
+        return;
+      }
+      if (!ts.moved){
+        selUid = (ts.uid !== null) ? ts.uid : null;
+        renderAll(); keepInView();
+      }
+      return;
+    }
+    endDrag();
+  });
+  document.addEventListener('pointercancel', function(e){
+    delete pts[e.pointerId];
+    if (nPts() < 2) pinch = null;
+    cancelPress(); touchStart = null; endDrag();
+  });
+
+  stage.addEventListener('click', function(e){
+    if (suppressClick){ suppressClick = false; return; }
+    if (!armed) return;
+    if (isMobile()) return;            // phones place through the action bar / second tap
+    var p = gridPosFromEvent(e);
+    placeArmedAt(p.x, p.y);
+  });
+
+  stage.addEventListener('contextmenu', function(e){
+    e.preventDefault();
+    var p = gridPosFromEvent(e);
+    if (p.x<0||p.y<0||p.x>=N||p.y>=N) return;
+    var uid = occ[p.y][p.x];
+    if (uid===null) return;
+    deleteByUid(uid, true);
+  });
+
+  document.getElementById('zoomIn').addEventListener('click', function(){
+    userZoom = true; CS = Math.min(CS_MAX, CS+3); applyCellSize(); renderAll();
+  });
+  document.getElementById('zoomOut').addEventListener('click', function(){
+    userZoom = true; CS = Math.max(7, CS-3); applyCellSize(); renderAll();
+  });
+  document.getElementById('zoomFit').addEventListener('click', function(){
+    userZoom = false; fitCellSize(); renderAll();
+  });
+  document.getElementById('modeBtn').addEventListener('click', function(){
+    modePref = (currentMode() === 'mobile') ? 'desktop' : 'mobile';
+    try{ localStorage.setItem(MODE_KEY, modePref); }catch(e){}
+    applyMode(); renderAll();
+  });
+  var resizeTimer = null;
+  window.addEventListener('resize', function(){
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function(){ applyMode(); renderAll(); }, 150);
+  });
+
+  document.getElementById('showRanges').addEventListener('change', renderAll);
+  document.getElementById('labelMode').addEventListener('change', renderAll);
+  document.getElementById('resetBtn').addEventListener('click', function(){
+    placed = [];
+    for (var y=0;y<N;y++){ occ[y]=new Array(N).fill(null); }
+    disarm();
+    renderAll();
+  });
+
+  // ---- complete layout: all 25 production buildings verified >=640 water and all 12
+  // non-production buildings placed, found with an exact-cover search over all four
+  // fields. Uses 4 canals, 2 shadufs, 1 ritual basin and 4 small ponds (574 of 576
+  // slots filled, 2 free). Water range: 640 (minimum) to 960. ----
+  var PRESET = {"sources": [{"key": "schaduf", "x": 5, "y": 0, "w": 3, "h": 3}, {"key": "becken", "x": 4, "y": 5, "w": 4, "h": 3}, {"key": "kanal", "x": 18, "y": 4, "w": 5, "h": 1}, {"key": "schaduf", "x": 18, "y": 5, "w": 3, "h": 3}, {"key": "teich", "x": 19, "y": 11, "w": 2, "h": 1}, {"key": "teich", "x": 18, "y": 18, "w": 1, "h": 2}, {"key": "kanal", "x": 19, "y": 18, "w": 5, "h": 1}, {"key": "teich", "x": 24, "y": 18, "w": 2, "h": 1}, {"key": "teich", "x": 18, "y": 20, "w": 1, "h": 2}, {"key": "kanal", "x": 6, "y": 18, "w": 1, "h": 5}, {"key": "kanal", "x": 5, "y": 18, "w": 1, "h": 5}], "prod": [{"key": "trocken", "x": 0, "y": 0, "w": 5, "h": 4}, {"key": "fisch", "x": 8, "y": 0, "w": 4, "h": 4}, {"key": "moertel", "x": 0, "y": 4, "w": 4, "h": 4}, {"key": "moertel", "x": 8, "y": 4, "w": 4, "h": 4}, {"key": "flachs", "x": 0, "y": 8, "w": 3, "h": 4}, {"key": "flachs", "x": 3, "y": 8, "w": 3, "h": 4}, {"key": "flachs", "x": 6, "y": 8, "w": 3, "h": 4}, {"key": "lehm", "x": 9, "y": 8, "w": 3, "h": 4}, {"key": "moertel", "x": 14, "y": 0, "w": 4, "h": 4}, {"key": "papyrus", "x": 18, "y": 0, "w": 4, "h": 4}, {"key": "papyrus", "x": 22, "y": 0, "w": 4, "h": 4}, {"key": "papyrus", "x": 14, "y": 4, "w": 4, "h": 4}, {"key": "hiero", "x": 14, "y": 8, "w": 5, "h": 4}, {"key": "hiero", "x": 21, "y": 8, "w": 5, "h": 4}, {"key": "papyrus", "x": 14, "y": 14, "w": 4, "h": 4}, {"key": "sand", "x": 18, "y": 14, "w": 4, "h": 4}, {"key": "sand", "x": 22, "y": 14, "w": 4, "h": 4}, {"key": "sand", "x": 14, "y": 18, "w": 4, "h": 4}, {"key": "sand", "x": 19, "y": 19, "w": 4, "h": 4}, {"key": "gold", "x": 7, "y": 14, "w": 5, "h": 4}, {"key": "sand", "x": 3, "y": 14, "w": 4, "h": 4}, {"key": "gold", "x": 7, "y": 18, "w": 5, "h": 4}, {"key": "gold", "x": 0, "y": 18, "w": 5, "h": 4}, {"key": "natron", "x": 7, "y": 22, "w": 5, "h": 4}, {"key": "natron", "x": 0, "y": 22, "w": 5, "h": 4}], "plain": [{"key": "klein_h", "x": 5, "y": 3, "w": 3, "h": 2}, {"key": "klein_h", "x": 23, "y": 4, "w": 3, "h": 2}, {"key": "klein_h", "x": 21, "y": 5, "w": 2, "h": 3}, {"key": "klein_h", "x": 23, "y": 6, "w": 3, "h": 2}, {"key": "klein_h", "x": 19, "y": 8, "w": 2, "h": 3}, {"key": "gross_h", "x": 23, "y": 19, "w": 3, "h": 4}, {"key": "mumie", "x": 14, "y": 22, "w": 4, "h": 4}, {"key": "gross_h", "x": 18, "y": 23, "w": 4, "h": 3}, {"key": "klein_h", "x": 22, "y": 23, "w": 2, "h": 3}, {"key": "klein_h", "x": 24, "y": 23, "w": 2, "h": 3}, {"key": "gross_h", "x": 0, "y": 14, "w": 3, "h": 4}, {"key": "klein_h", "x": 5, "y": 23, "w": 2, "h": 3}]};
+
+  function loadPreset(){
+    placed = [];
+    for (var y=0;y<N;y++){ occ[y]=new Array(N).fill(null); }
+    disarm();
+    function addAll(list){
+      list.forEach(function(it){
+        var def = DEF_BY_KEY[it.key];
+        if (!def) return;
+        var rot = (it.w===def.a && it.h===def.b) ? 0 : 90;
+        var uid = uidSeq++;
+        var b = {uid:uid, key:it.key, x:it.x, y:it.y, rot:rot, w:it.w, h:it.h};
+        placed.push(b);
+        for (var yy=it.y; yy<it.y+it.h; yy++){
+          for (var xx=it.x; xx<it.x+it.w; xx++){ occ[yy][xx]=uid; }
+        }
+      });
+    }
+    addAll(PRESET.sources);
+    addAll(PRESET.prod);
+    addAll(PRESET.plain);
+    // bump targets so the palette doesn't show these as "over target"
+    DEFS.forEach(function(def){
+      var count = placed.filter(function(b){return b.key===def.key;}).length;
+      if (count>def.target) def.target = count;
+      var r_ = rowEls[def.key]; if (r_) r_.querySelector('input').value = def.target;
+    });
+    refreshBudget();
+    renderAll();
+  }
+  document.getElementById('loadPresetBtn').addEventListener('click', loadPreset);
+
+
+  // ================= auto-layout solver driver =================
+  /* Layout solver: exact-cover rectangle packing per field with the water rule
+     built into the search, then a beam search that combines the fields.
+     Pure JS, no DOM - runs in the browser and in node. */
+
+  function createSolver(config) {
+    var F = config.F || 12;
+    var FULLROW = (1 << F) - 1;
+    var NEED = config.need;
+    var RIVER = config.riverWater;
+    // table generation stays production-focused; the housing priority is applied when the
+    // four fields are combined, so both kinds of field layout stay available
+    function scoreOf(a){ return a.prod; }
+
+    // ---------- helpers ----------
+    function touchesRiver(sig, x, y, w, h) {
+      if (sig.t && y <= 1) return true;
+      if (sig.b && y + h >= F - 1) return true;
+      if (sig.l && x <= 1) return true;
+      if (sig.r && x + w >= F - 1) return true;
+      return false;
+    }
+    function rangeOf(s, x, y, w, h) {
+      var rw, rh;
+      if (w === s.w && h === s.h) { rw = s.rw; rh = s.rh; } else { rw = s.rh; rh = s.rw; }
+      return [x + Math.floor((w - rw) / 2), y + Math.floor((h - rh) / 2), rw, rh, s.water];
+    }
+    function rectsOverlap(ax, ay, aw, ah, bx, by, bw, bh) {
+      return ax < bx + bw && bx < ax + aw && ay < by + bh && by < ay + ah;
+    }
+
+    // ---------- grouping: same shape + same category are interchangeable ----------
+    function shapeKey(w, h, kind) {
+      var a = Math.min(w, h), b = Math.max(w, h);
+      return kind + ':' + a + 'x' + b;
+    }
+    var groups = [];      // {key, kind:'prod'|'plain', w, h, pool, members:[buildingIdx]}
+    var gIndex = {};
+    config.buildings.forEach(function (b, i) {
+      if (!b.count) return;
+      var k = shapeKey(b.w, b.h, b.prod ? 'prod' : 'plain');
+      if (!(k in gIndex)) {
+        gIndex[k] = groups.length;
+        groups.push({ key: k, kind: b.prod ? 'prod' : 'plain', w: b.w, h: b.h, pool: 0, members: [], must: false });
+      }
+      var g = groups[gIndex[k]];
+      if (b.must) g.must = true;
+      g.pool += b.count;
+      for (var n = 0; n < b.count; n++) g.members.push(i);
+    });
+    var sources = config.sources.filter(function (s) { return s.count > 0; });
+
+    // ---------- field solver: exact cover with the water rule ----------
+    function solveField(sig, alloc, srcCounts, holes, nodeLimit) {
+      // build the piece list: bigger first is a good ordering for this branching rule
+      var types = [];
+      for (var i = 0; i < groups.length; i++) {
+        if (alloc[i] > 0) types.push({ kind: groups[i].kind, w: groups[i].w, h: groups[i].h, count: alloc[i], gi: i, si: -1 });
+      }
+      for (var j = 0; j < sources.length; j++) {
+        if (srcCounts[j] > 0) types.push({ kind: 'source', w: sources[j].w, h: sources[j].h, count: srcCounts[j], gi: -1, si: j });
+      }
+      types.sort(function (a, b) { return (b.w * b.h) - (a.w * a.h); });
+
+      var nT = types.length;
+      var counts = new Int32Array(nT);
+      var rots = [];
+      var area = 0, srcWaterTotal = 0;
+      for (i = 0; i < nT; i++) {
+        counts[i] = types[i].count;
+        area += types[i].count * types[i].w * types[i].h;
+        var r = [[types[i].w, types[i].h]];
+        if (types[i].w !== types[i].h) r.push([types[i].h, types[i].w]);
+        rots.push(r);
+        if (types[i].kind === 'source') srcWaterTotal += types[i].count * sources[types[i].si].water;
+      }
+      if (area > F * F) return null;
+
+      var occ = new Int32Array(F);
+      var plX = [], plY = [], plW = [], plH = [], plT = [];
+      var prX = [], prY = [], prW = [], prH = [], prV = [];
+      var srX = [], srY = [], srW = [], srH = [], srV = [];
+      var nodes = 0, out = null, hit = false;
+
+      function rec(areaLeft, holesLeft, waterLeft, freeCells) {
+        if (++nodes > nodeLimit) { hit = true; return true; }
+        if (areaLeft === 0) {
+          for (var q = 0; q < prV.length; q++) if (prV[q] < NEED) return false;
+          var res = [];
+          for (q = 0; q < plT.length; q++) {
+            var t = types[plT[q]];
+            res.push({ kind: t.kind, gi: t.gi, si: t.si, x: plX[q], y: plY[q], w: plW[q], h: plH[q] });
+          }
+          out = res;
+          return true;
+        }
+        if (freeCells < areaLeft) return false;
+        var y0 = -1, x0 = 0;
+        for (var r = 0; r < F; r++) {
+          if (occ[r] !== FULLROW) { y0 = r; var fr = (~occ[r]) & FULLROW; x0 = 31 - Math.clz32(fr & -fr); break; }
+        }
+        if (y0 < 0) return false;
+
+        for (var ti = 0; ti < nT; ti++) {
+          if (counts[ti] === 0) continue;
+          var rr = rots[ti];
+          for (var ri = 0; ri < rr.length; ri++) {
+            var w = rr[ri][0], h = rr[ri][1];
+            if (x0 + w > F || y0 + h > F) continue;
+            var bits = ((1 << w) - 1) << x0, ok = true;
+            for (var yy = y0; yy < y0 + h; yy++) { if (occ[yy] & bits) { ok = false; break; } }
+            if (!ok) continue;
+            var kind = types[ti].kind;
+
+            if (kind === 'prod') {
+              var wat = touchesRiver(sig, x0, y0, w, h) ? RIVER : 0;
+              for (var s = 0; s < srV.length; s++) {
+                if (rectsOverlap(x0, y0, w, h, srX[s], srY[s], srW[s], srH[s])) wat += srV[s];
+              }
+              if (wat + waterLeft < NEED) continue;
+              for (yy = y0; yy < y0 + h; yy++) occ[yy] |= bits;
+              prX.push(x0); prY.push(y0); prW.push(w); prH.push(h); prV.push(wat);
+              plX.push(x0); plY.push(y0); plW.push(w); plH.push(h); plT.push(ti);
+              counts[ti]--;
+              if (rec(areaLeft - w * h, holesLeft, waterLeft, freeCells - w * h)) return true;
+              counts[ti]++;
+              plX.pop(); plY.pop(); plW.pop(); plH.pop(); plT.pop();
+              prX.pop(); prY.pop(); prW.pop(); prH.pop(); prV.pop();
+              for (yy = y0; yy < y0 + h; yy++) occ[yy] &= ~bits;
+
+            } else if (kind === 'source') {
+              var sd = sources[types[ti].si];
+              var rg = rangeOf(sd, x0, y0, w, h);
+              var gained = [];
+              for (var p = 0; p < prV.length; p++) {
+                if (rectsOverlap(prX[p], prY[p], prW[p], prH[p], rg[0], rg[1], rg[2], rg[3])) {
+                  prV[p] += rg[4]; gained.push(p);
+                }
+              }
+              var left = waterLeft - rg[4], fine = true;
+              for (p = 0; p < prV.length; p++) if (prV[p] + left < NEED) { fine = false; break; }
+              if (fine) {
+                for (yy = y0; yy < y0 + h; yy++) occ[yy] |= bits;
+                srX.push(rg[0]); srY.push(rg[1]); srW.push(rg[2]); srH.push(rg[3]); srV.push(rg[4]);
+                plX.push(x0); plY.push(y0); plW.push(w); plH.push(h); plT.push(ti);
+                counts[ti]--;
+                if (rec(areaLeft - w * h, holesLeft, left, freeCells - w * h)) return true;
+                counts[ti]++;
+                plX.pop(); plY.pop(); plW.pop(); plH.pop(); plT.pop();
+                srX.pop(); srY.pop(); srW.pop(); srH.pop(); srV.pop();
+                for (yy = y0; yy < y0 + h; yy++) occ[yy] &= ~bits;
+              }
+              for (p = 0; p < gained.length; p++) prV[gained[p]] -= rg[4];
+
+            } else {
+              for (yy = y0; yy < y0 + h; yy++) occ[yy] |= bits;
+              plX.push(x0); plY.push(y0); plW.push(w); plH.push(h); plT.push(ti);
+              counts[ti]--;
+              if (rec(areaLeft - w * h, holesLeft, waterLeft, freeCells - w * h)) return true;
+              counts[ti]++;
+              plX.pop(); plY.pop(); plW.pop(); plH.pop(); plT.pop();
+              for (yy = y0; yy < y0 + h; yy++) occ[yy] &= ~bits;
+            }
+          }
+        }
+        if (holesLeft > 0) {
+          occ[y0] |= (1 << x0);
+          if (rec(areaLeft, holesLeft - 1, waterLeft, freeCells - 1)) return true;
+          occ[y0] &= ~(1 << x0);
+        }
+        return false;
+      }
+
+      rec(area, holes, srcWaterTotal, F * F);
+      return out && !hit ? out : (out || null);
+    }
+
+    // ---------- enumerate source multisets ----------
+    function srcCombos(maxArea, maxPieces) {
+      var out = [], n = sources.length, cur = new Int32Array(n);
+      (function go(i, area, pieces) {
+        if (i === n) {
+          // the empty set is allowed too: a field may hold only buildings that need no source
+          out.push({ counts: Int32Array.from(cur), area: area,
+                     water: cur.reduce(function (a, c, k) { return a + c * sources[k].water; }, 0) });
+          return;
+        }
+        var cap = Math.min(sources[i].count, maxPieces - pieces);
+        for (var c = 0; c <= cap; c++) {
+          var a = area + c * sources[i].w * sources[i].h;
+          if (a > maxArea) break;
+          cur[i] = c;
+          go(i + 1, a, pieces + c);
+        }
+        cur[i] = 0;
+      })(0, 0, 0);
+      out.sort(function (a, b) { return (b.water - a.water) || (a.area - b.area); });
+      return out;
+    }
+
+    // ---------- enumerate building allocations for one field ----------
+    function allocsFor(hi, lo, cap) {
+      var res = [], n = groups.length, cur = new Int32Array(n);
+      var budget = hi;
+      (function go(i, area, pieces) {
+        if (res.length >= cap) return;
+        if (i === n) {
+          if (area > hi || area < lo) return;
+          var np = 0;
+          for (var k = 0; k < n; k++) if (groups[k].kind === 'prod') np += cur[k];
+          res.push({ a: Int32Array.from(cur), area: area, prod: np, pieces: pieces, plain: pieces - np });
+          return;
+        }
+        var sz = groups[i].w * groups[i].h;
+        var cap2 = Math.min(groups[i].pool, Math.floor((budget - area) / sz));
+        for (var c = 0; c <= cap2; c++) {
+          cur[i] = c;
+          go(i + 1, area + c * sz, pieces + c);
+          if (res.length >= cap) break;
+        }
+        cur[i] = 0;
+      })(0, 0, 0);
+      res.sort(function (x, y) { return (scoreOf(y) - scoreOf(x)) || (y.area - x.area); });
+      return res;
+    }
+
+    // every combination of no-water buildings on their own - needed when production
+    // cannot be supplied at all, or when a field is filled with housing only
+    function plainOnlyAllocs(budget) {
+      var res = [], n = groups.length, cur = new Int32Array(n);
+      (function go(i, area, pieces) {
+        if (i === n) {
+          if (pieces > 0) res.push({ a: Int32Array.from(cur), area: area, prod: 0,
+                                     pieces: pieces, plain: pieces });
+          return;
+        }
+        if (groups[i].kind === 'prod') { cur[i] = 0; go(i + 1, area, pieces); return; }
+        var sz = groups[i].w * groups[i].h;
+        var cap = Math.min(groups[i].pool, Math.floor((budget - area) / sz));
+        for (var c = 0; c <= cap; c++) { cur[i] = c; go(i + 1, area + c * sz, pieces + c); }
+        cur[i] = 0;
+      })(0, 0, 0);
+      return res;
+    }
+
+    // ---------- build the feasibility table for one field signature ----------
+    function buildTable(sig, opts) {
+      var combos = srcCombos(opts.maxSrcArea, opts.maxSrcPieces);
+      var totalArea = 0;
+      for (var g = 0; g < groups.length; g++) totalArea += groups[g].pool * groups[g].w * groups[g].h;
+      var ideal = Math.ceil(totalArea / 4);
+      var jobs = [];
+      for (var c = 0; c < combos.length; c++) {
+        var budget = F * F - combos[c].area;
+        var hi = budget, lo = budget - opts.maxHole;
+        if (ideal < budget - opts.maxHole) {           // fewer buildings than the map holds
+          var pad = 6;
+          for (var gg = 0; gg < groups.length; gg++)
+            if (groups[gg].pool) pad = Math.max(pad, groups[gg].w * groups[gg].h);
+          hi = Math.min(budget, ideal + pad);
+          lo = Math.max(0, ideal - pad);
+        }
+        var als = allocsFor(hi, lo, opts.allocCap);
+        if (combos[c].area === 0) als = als.concat(plainOnlyAllocs(budget));  // fields of housing only
+        for (var a = 0; a < als.length; a++) jobs.push({ c: c, a: als[a], budget: budget });
+      }
+      jobs.sort(function (p, q) { return (scoreOf(q.a) - scoreOf(p.a)) || (q.a.area - p.a.area); });
+      // process a spread across the whole sorted list first, so stopping early still
+      // leaves a representative table behind
+      var n = jobs.length, order = [];
+      var head = Math.min(400, Math.round(n * 0.15));      // best candidates first
+      for (var h2 = 0; h2 < head; h2++) order.push(jobs[h2]);
+      var rest = jobs.slice(head), m2 = rest.length;
+      var stride = Math.max(1, Math.round(m2 / 500));       // then a spread over the remainder
+      for (var s2 = 0; s2 < stride; s2++) for (var i2 = s2; i2 < m2; i2 += stride) order.push(rest[i2]);
+      return { combos: combos, jobs: order, entries: [{ alloc: new Int32Array(groups.length),
+               src: new Int32Array(sources.length), prod: 0, pieces: 0, placements: [] }],
+               next: 0, sig: sig };
+    }
+
+    function stepTable(tab, deadline, nodeLimit) {
+      while (tab.next < tab.jobs.length) {
+        var j = tab.jobs[tab.next++];
+        var holes = j.budget - j.a.area;
+        var pl = solveField(tab.sig, j.a.a, tab.combos[j.c].counts, holes, nodeLimit);
+        if (pl) tab.entries.push({ alloc: j.a.a, src: tab.combos[j.c].counts, prod: j.a.prod,
+                                   plain: j.a.plain, pieces: j.a.pieces, placements: pl });
+        if ((tab.next & 7) === 0 && Date.now() > deadline) break;
+      }
+      return tab.next >= tab.jobs.length;
+    }
+
+    // ---------- combine the fields ----------
+    // Pairs of fields are aggregated into a map  (sum of building counts) -> source usage,
+    // then the two halves are matched against each other. Deficits are tried in order of
+    // increasing cost, so the first match found is the best one.
+    var nG = groups.length, nS = sources.length;
+    var POOL = new Int32Array(nG), SPOOL = new Int32Array(nS);
+    (function () {
+      for (var i = 0; i < nG; i++) POOL[i] = groups[i].pool;
+      for (i = 0; i < nS; i++) SPOOL[i] = sources[i].count;
+    })();
+    var MULT = new Float64Array(nG), KEYSPACE = 1;
+    (function () {
+      for (var i = 0; i < nG; i++) { MULT[i] = KEYSPACE; KEYSPACE *= (POOL[i] + 1); }
+    })();
+    var USE_NUM_KEY = KEYSPACE < 2000000000;
+
+    function keyOf(v) {
+      if (USE_NUM_KEY) { var k = 0; for (var i = 0; i < nG; i++) k += v[i] * MULT[i]; return k; }
+      return v.join(',');
+    }
+
+    function topEntries(list, cap) {
+      if (list.length <= cap) return list;
+      var top = list.slice().sort(function (a, b) { return (scoreOf(b) - scoreOf(a)) || (b.pieces - a.pieces); }).slice(0, cap);
+      var hasEmpty = false;
+      for (var i = 0; i < top.length; i++) if (top[i].pieces === 0) { hasEmpty = true; break; }
+      if (!hasEmpty) top.push(list[0].pieces === 0 ? list[0] : { alloc: new Int32Array(nG), src: new Int32Array(nS), prod: 0, pieces: 0, placements: [] });
+      return top;
+    }
+
+    function pairMap(listA, listB, same, capPerKey) {
+      var map = new Map(), sum = new Int32Array(nG), ssum = new Int32Array(nS);
+      map.areas = {};
+      for (var i = 0; i < listA.length; i++) {
+        var A = listA[i];
+        for (var j = same ? i : 0; j < listB.length; j++) {
+          var B = listB[j], ok = true, k;
+          for (k = 0; k < nG; k++) { var v = A.alloc[k] + B.alloc[k]; if (v > POOL[k]) { ok = false; break; } sum[k] = v; }
+          if (!ok) continue;
+          for (k = 0; k < nS; k++) { var s = A.src[k] + B.src[k]; if (s > SPOOL[k]) { ok = false; break; } ssum[k] = s; }
+          if (!ok) continue;
+          var key = keyOf(sum), lst = map.get(key);
+          if (!lst) { lst = []; map.set(key, lst); }
+          var dominated = false;
+          for (var q = 0; q < lst.length; q++) {
+            var le = true;
+            for (k = 0; k < nS; k++) if (lst[q].src[k] > ssum[k]) { le = false; break; }
+            if (le) { dominated = true; break; }
+          }
+          if (dominated) continue;
+          var sv = Int32Array.from(ssum);
+          for (q = lst.length - 1; q >= 0; q--) {
+            var worse = true;
+            for (k = 0; k < nS; k++) if (lst[q].src[k] < sv[k]) { worse = false; break; }
+            if (worse) lst.splice(q, 1);
+          }
+          if (lst.length < capPerKey) lst.push({ src: sv, i: i, j: j });
+          var ar = 0;
+          for (k = 0; k < nG; k++) ar += sum[k] * groups[k].w * groups[k].h;
+          map.areas[ar] = 1;
+        }
+      }
+      return map;
+    }
+
+    // deficit vectors: how many of each group stay unbuilt, cheapest (least output) first
+    function deficits(maxMiss, weights, cap) {
+      var out = [], cur = new Int32Array(nG);
+      (function go(i, cost) {
+        if (out.length >= cap) return;
+        if (i === nG) { out.push({ v: Int32Array.from(cur), cost: cost }); return; }
+        var lim = Math.max(0, Math.min(POOL[i], maxMiss[i]));
+        for (var c = 0; c <= lim; c++) {
+          cur[i] = c;
+          go(i + 1, cost + c * weights[i]);
+          if (out.length >= cap) break;
+        }
+        cur[i] = 0;
+      })(0, 0);
+      out.sort(function (a, b) { return a.cost - b.cost; });
+      return out;
+    }
+
+    function combine(tables, fieldTable, opts) {
+      var eCap = opts.entryCap || 2200, kCap = opts.keyCap || 6;
+      var e0 = topEntries(tables[fieldTable[0]].entries, eCap);
+      var e1 = topEntries(tables[fieldTable[1]].entries, eCap);
+      var e2 = topEntries(tables[fieldTable[2]].entries, eCap);
+      var e3 = topEntries(tables[fieldTable[3]].entries, eCap);
+      var mapA = pairMap(e0, e1, fieldTable[0] === fieldTable[1], kCap);
+      var mapB = pairMap(e2, e3, fieldTable[2] === fieldTable[3], kCap);
+      var defs = deficits(opts.maxMiss || POOL, opts.weights || POOL.map(function(){ return 1; }), 60000);
+      var sumArea = {};                       // building areas both halves can actually realise
+      for (var aA in mapA.areas) for (var aB in mapB.areas) sumArea[(+aA) + (+aB)] = 1;
+      var target = new Int32Array(nG), want = new Int32Array(nG);
+      var GAREA = new Int32Array(nG);
+      for (var gi = 0; gi < nG; gi++) GAREA[gi] = groups[gi].w * groups[gi].h;
+      var CAP = 4 * F * F, areaLo = opts.areaLo || 0;
+      var work = 0, workCap = opts.workCap || 4000000;
+      for (var d = 0; d < defs.length; d++) {
+        if (work > workCap) break;
+        for (var k = 0; k < nG; k++) target[k] = POOL[k] - defs[d].v[k];
+        var tArea = 0;
+        for (k = 0; k < nG; k++) tArea += target[k] * GAREA[k];
+        if (tArea > CAP) continue;                    // cannot fit into the four fields
+        if (!sumArea[tArea]) continue;                // no pair of field layouts adds up to this
+        for (var ent of mapA) {
+          if (++work > workCap) break;
+          var keyA = ent[0], lstA = ent[1];
+          // decode keyA back into counts
+          var rest = keyA, okA = true;
+          if (USE_NUM_KEY) {
+            for (k = nG - 1; k >= 0; k--) { want[k] = Math.floor(rest / MULT[k]); rest -= want[k] * MULT[k]; }
+          } else {
+            var parts = keyA.split(','); for (k = 0; k < nG; k++) want[k] = +parts[k];
+          }
+          for (k = 0; k < nG; k++) { if (want[k] > target[k]) { okA = false; break; } }
+          if (!okA) continue;
+          var needB = new Int32Array(nG);
+          for (k = 0; k < nG; k++) needB[k] = target[k] - want[k];
+          var lstB = mapB.get(keyOf(needB));
+          if (!lstB) continue;
+          for (var p = 0; p < lstA.length; p++) {
+            for (var q = 0; q < lstB.length; q++) {
+              var fine = true;
+              for (k = 0; k < nS; k++) if (lstA[p].src[k] + lstB[q].src[k] > SPOOL[k]) { fine = false; break; }
+              if (!fine) continue;
+              var prod = 0, plain = 0;
+              for (k = 0; k < nG; k++) { if (groups[k].kind === 'prod') prod += target[k]; else plain += target[k]; }
+              return {
+                prod: prod, plain: plain, cost: defs[d].cost,
+                picks: [ { f: 0, e: e0[lstA[p].i] }, { f: 1, e: e1[lstA[p].j] },
+                         { f: 2, e: e2[lstB[q].i] }, { f: 3, e: e3[lstB[q].j] } ]
+              };
+            }
+          }
+        }
+      }
+      return null;
+    }
+
+    return { groups: groups, sources: sources, buildTable: buildTable, stepTable: stepTable,
+             combine: combine, solveField: solveField, F: F, touchesRiver: touchesRiver, rangeOf: rangeOf };
+  }
+
+
+
+  var SOLVE = {running:false, cancel:false};
+  var solveMsg = document.getElementById('solveMsg');
+  var solveBar = document.getElementById('solveBar');
+  var solveBtn = document.getElementById('solveBtn');
+  var stopBtn  = document.getElementById('stopBtn');
+  var budgetSel = document.getElementById('budgetSel');
+
+
+  function syncWaterFromTiers(){          // the tiers define everything; the river is fixed at 160
+    RIVER_WATER = 160;
+    var t = PCFG.tiers;
+    NEED = (t && t.length > 2) ? (t[t.length-2].upTo + 1) : 631;
+    rebuildBaseline();
+    var el = document.getElementById('tierLine');
+    if (el && t.length > 2) el.textContent = ('Water: up to %d → 0%, up to %d → 10%, up to %d → 25%, above 50%')
+      .replace('%d', t[0].upTo).replace('%d', t[1].upTo).replace('%d', t[2].upTo);
+  }
+
+  function solverConfig(){
+    var b = [], s = [];
+    DEFS.forEach(function(d){
+      if (!d.target) return;
+      if (d.cat==='source') s.push({key:d.key, w:d.a, h:d.b, rw:d.ra, rh:d.rb, water:d.water, count:d.target});
+      else b.push({key:d.key, w:d.a, h:d.b, prod:d.cat==='prod', count:d.target});
+    });
+    return {F:12, need:NEED, riverWater:RIVER_WATER, buildings:b, sources:s};
+  }
+
+  var OFFS = [[0,0],[14,0],[14,14],[0,14]];
+
+  function applySolution(S, cfg, best){
+    var pools = {};
+    S.groups.forEach(function(g,i){
+      var byType = {}, order = [];
+      g.members.forEach(function(m){                 // round-robin over the distinct types,
+        if (!byType[m]){ byType[m] = []; order.push(m); }   // so every type gets a slot first
+        byType[m].push(m);
+      });
+      var out = [];
+      order.forEach(function(t){                     // required + complete types take their full count
+        var d = DEF_BY_KEY[cfg.buildings[t].key];
+        if (d && (d.must || d.full)) out = out.concat(byType[t].splice(0));
+      });
+      var added = true;                              // then round-robin, so every other type gets one
+      while (added){
+        added = false;
+        order.forEach(function(t){ if (byType[t].length){ out.push(byType[t].pop()); added = true; } });
+      }
+      pools[i] = out.reverse();                       // pop() takes from the end
+    });
+    placed = [];
+    for (var y=0;y<N;y++) occ[y]=new Array(N).fill(null);
+    best.picks.forEach(function(pick){
+      var off = OFFS[pick.f], mir = (pick.f===3);
+      pick.e.placements.forEach(function(p){
+        var lx = mir ? (12 - p.x - p.w) : p.x;
+        var key = (p.kind==='source') ? cfg.sources[p.si].key : cfg.buildings[pools[p.gi].pop()].key;
+        var def = DEF_BY_KEY[key];
+        if (!def) return;
+        var rot = (p.w===def.a && p.h===def.b) ? 0 : 90;
+        var uid = uidSeq++;
+        var b = {uid:uid, key:key, x:lx+off[0], y:p.y+off[1], rot:rot, w:p.w, h:p.h};
+        placed.push(b);
+        for (var yy=b.y; yy<b.y+b.h; yy++)
+          for (var xx=b.x; xx<b.x+b.w; xx++) occ[yy][xx]=uid;
+      });
+    });
+    disarm(); renderAll();
+  }
+
+  function runSolver(){
+    if (SOLVE.running) return;
+    if (!solverConfig().buildings.length){ solveMsg.textContent = 'Set at least one building count above first.'; return; }
+
+    // Which minimum water tier to demand. With the box ticked the solver runs the whole
+    // search once per tier and keeps the layout with the highest REAL output - a weaker
+    // bonus on more buildings can beat a top bonus on fewer.
+    var autoChk = document.getElementById('tierAutoChk');
+    var passes = [], tt = PCFG.tiers;
+    if (autoChk && autoChk.checked && tt && tt.length > 2){
+      for (var ti = tt.length - 2; ti >= 0; ti--) passes.push({need: tt[ti].upTo + 1, pct: tt[ti+1].pct});
+    } else {
+      passes.push({need: NEED, pct: (tt && tt.length ? tt[tt.length-1].pct : 50)});
+    }
+
+    var whole = parseInt(budgetSel.value,10)*1000;
+    var budget = Math.max(10000, Math.round(whole / passes.length));
+    var T0 = Date.now(), results = [], searchedAll = 0;
+
+    SOLVE.running = true; SOLVE.cancel = false;
+    solveBtn.disabled = true; stopBtn.disabled = false;
+    solveMsg.className = 'small';
+    setTimeout(function(){ runPass(0); }, 20);
+
+    function runPass(pi){
+      if (pi >= passes.length || SOLVE.cancel){ wrapUp(); return; }
+      var pass = passes[pi];
+      var cfg = solverConfig();
+      cfg.need = pass.need;
+      var S = createSolver(cfg);
+      var totProd = 0, totPlain = 0;
+      S.groups.forEach(function(g){ if (g.kind==='prod') totProd += g.pool; else totPlain += g.pool; });
+
+      var opts = {maxSrcArea:26, maxSrcPieces:4, maxHole:2, allocCap:4000};
+      var tA = S.buildTable({b:1}, opts);
+      var tB = S.buildTable({t:1,l:1}, opts);
+      var totalJobs = tA.jobs.length + tB.jobs.length;
+      var t0 = Date.now(), stage = 0;
+
+      function progress(){
+        var doneJobs = tA.next + tB.next;
+        var frac = (pi + Math.min(1, doneJobs / Math.max(1, totalJobs))) / passes.length;
+        solveBar.style.width = Math.min(100, frac*100).toFixed(1)+'%';
+        var head = (passes.length > 1)
+          ? 'Run %P of %N – at least +%C% water · '.replace('%P', pi+1).replace('%N', passes.length).replace('%C', pass.pct)
+          : '';
+        solveMsg.innerHTML = head + 'field type %S of 2'.replace('%S', stage+1) + ' — ' +
+          doneJobs + '/' + totalJobs + ' · ' + (tA.entries.length+tB.entries.length) + ' ✓ · ' +
+          Math.round((Date.now()-T0)/1000) + 's';
+      }
+
+      function finish(){
+        solveMsg.innerHTML = 'Combining fields...';
+        setTimeout(function(){
+          // ---- what is each building actually worth? marginal output, from the current bonuses ----
+          var stx = researchState();
+          function outputFor(counts){          // counts: key -> number of buildings
+            var pool = 0, list = [];
+            DEFS.forEach(function(d){
+              var n = counts[d.key] || 0;
+              if (!n) return;
+              var lvl = levelOf(d, stx);
+              if (d.cat === 'plain' && (d.res1 > 0 || d.resStep > 0 || d.resSteps)) pool += n * residentsOf(d, lvl);
+              if (d.cat === 'prod'){
+                var per = perWorker(d, stx, pass.pct) * valueOf(d), cap = capOf(d, lvl);
+                for (var i = 0; i < n; i++) list.push({per:per, cap:cap});
+              }
+            });
+            list.sort(function(a,b){ return b.per - a.per; });
+            var left = pool, out = 0;
+            list.forEach(function(s){ var w = Math.min(s.cap, left); left -= w; out += s.per * w; });
+            return out;
+          }
+          var baseCounts = {};
+          DEFS.forEach(function(d){ baseCounts[d.key] = d.target || 0; });
+          var baseOut = outputFor(baseCounts);
+          var mtChk = document.getElementById('minTypeChk');
+          var minOneType = !mtChk || mtChk.checked;
+          var weights = [], maxMiss = [], maxMissFull = [], maxMissMust = [];
+          S.groups.forEach(function(g){
+            var perKey = {};
+            g.members.forEach(function(mi){ var k = cfg.buildings[mi].key; perKey[k] = (perKey[k]||0)+1; });
+            var worst = Infinity, mustCount = 0, keepMin = 0, keepFull = 0;
+            Object.keys(perKey).forEach(function(k){
+              var d = DEF_BY_KEY[k];
+              var needMust = (d && d.must) ? perKey[k] : 0;
+              mustCount += needMust;
+              var needFull = (d && d.full && d.cat === 'prod') ? perKey[k] : 0;
+              var needK = Math.max(needMust, needFull);
+              keepFull += needK;
+              if (minOneType && d && d.cat === 'prod' && needK < 1) needK = 1;
+              keepMin += needK;
+              var c2 = {}; for (var kk in baseCounts) c2[kk] = baseCounts[kk];
+              c2[k] = Math.max(0, (c2[k]||0) - 1);
+              var loss = baseOut - outputFor(c2);          // marginal value of one such building
+              if (loss < worst) worst = loss;
+            });
+            if (!isFinite(worst)) worst = 0;
+            weights.push(Math.max(1, worst));
+            maxMiss.push(Math.max(0, g.pool - keepMin));
+            maxMissFull.push(Math.max(0, g.pool - keepFull));
+            maxMissMust.push(Math.max(0, g.pool - mustCount));
+          });
+          var cOpts = {entryCap:2200, keyCap:6, maxMiss:maxMiss, weights:weights, workCap:6000000};
+          var POOLCOPY = S.groups.map(function(g){ return g.pool; });
+          var best = S.combine([tA,tB], [0,0,1,1], cOpts);
+          if (!best && minOneType){ cOpts.maxMiss = maxMissFull; best = S.combine([tA,tB], [0,0,1,1], cOpts); }
+          if (!best && fullTypes().length){ cOpts.maxMiss = maxMissMust; best = S.combine([tA,tB], [0,0,1,1], cOpts); }
+          if (!best){ cOpts.maxMiss = POOLCOPY; best = S.combine([tA,tB], [0,0,1,1], cOpts); }
+          searchedAll += tA.next + tB.next;
+          if (best){
+            applySolution(S, cfg, best);           // apply it so the real output can be measured
+            results.push({pass:pass, best:best, S:S, cfg:cfg, out:evaluate().total,
+                          prod:best.prod, plain:best.plain, totProd:totProd, totPlain:totPlain});
+          }
+          runPass(pi + 1);
+        }, 30);
+      }
+
+      function step(){
+        if (SOLVE.cancel){ finish(); return; }
+        var slice = Date.now()+45;
+        var done;
+        if (stage===0){
+          done = S.stepTable(tA, slice, 200000);
+          if (done || (Date.now()-t0) > budget/2) stage = 1;
+        } else {
+          done = S.stepTable(tB, slice, 200000);
+          if (done || (Date.now()-t0) > budget){ progress(); finish(); return; }
+        }
+        progress();
+        setTimeout(step, 0);
+      }
+      progress();
+      setTimeout(step, 0);
+    }
+
+    function wrapUp(){
+      SOLVE.running = false;
+      solveBtn.disabled = false; stopBtn.disabled = true;
+      solveBar.style.width = '100%';
+      if (!results.length){
+        solveMsg.className = 'small';
+        solveMsg.innerHTML = 'No valid layout found. Try fewer buildings, more water sources or a longer search time.';
+        return;
+      }
+      var win = results[0];
+      results.forEach(function(r){ if (r.out > win.out) win = r; });
+      applySolution(win.S, win.cfg, win.best);
+
+      var txt = '<b>%A of %B</b> production buildings placed, <b>%C of %D</b> other buildings.'.replace('%A', win.prod).replace('%B', win.totProd)
+                         .replace('%C', win.plain).replace('%D', win.totPlain);
+      txt += ' Output <b>%O</b>.'.replace('%O', fmt(win.out));
+      if (results.length > 1){
+        txt += ' Compared: ' + results.map(function(r){
+          var s = '≥+%C%: %P buildings, %O'.replace('%C', r.pass.pct).replace('%P', r.prod).replace('%O', fmt(r.out));
+          return (r === win) ? ('<b>' + s + '</b>') : s;
+        }).join(' · ') + '.';
+      }
+      txt += ' Searched %S layouts in %Ts.'.replace('%S', searchedAll.toLocaleString())
+                         .replace('%T', ((Date.now()-T0)/1000).toFixed(0));
+      txt += ' The layout has been placed on the grid.';
+      var short = fullTypes().filter(function(d){
+        return placed.filter(function(b){ return b.key === d.key; }).length < d.target; });
+      if (short.length) txt += ' <b>' + 'Not enough room for all of them – %s was built only partly.'.replace('%s', short.map(function(d){ return d.name; }).join(', ')) + '</b>';
+      else if (fullTypes().length) txt += ' All picked types were built completely.';
+      if (SOLVE.cancel) txt += ' (stopped early)';
+      solveMsg.className = 'small' + (win.prod === win.totProd ? ' good' : '');
+      solveMsg.innerHTML = txt;
+    }
+  }
+
+  solveBtn.addEventListener('click', runSolver);
+  stopBtn.addEventListener('click', function(){ SOLVE.cancel = true; });
+
+
+  // ================= production model =================
+  // research steps: step | building | percent | max level     (3 steps per account level)
+  var RESEARCH_DEFAULT = ['1|klein_h|0|22','2|fisch|15|19','3|trocken|15|19','4|lehm|15|19','5|papyrus|15|19',
+  '6|klein_h|0|31','7|fisch|15|25','8|trocken|15|25','9|lehm|15|25','10|sand|24|25','11|papyrus|15|25',
+  '12|klein_h|0|38','13|fisch|15|31','14|moertel|24|25','15|trocken|15|31','16|hiero|15|19','17|lehm|15|31',
+  '18|sand|24|31','19|papyrus|15|31','20|gold|21|21','21|klein_h|0|45','22|fisch|15|37','23|moertel|24|31',
+  '24|trocken|15|37','25|flachs|24|25','26|hiero|15|25','27|lehm|15|37','28|sand|24|37','29|papyrus|15|37',
+  '30|gold|21|27','31|-|0|0','32|klein_h|0|52','33|fisch|15|43','34|moertel|24|37','35|natron|24|23',
+  '36|trocken|15|43','37|flachs|30|37','38|hiero|15|31','39|gross_h|0|7','40|lehm|15|43','41|sand|24|43',
+  '42|papyrus|15|43','43|gold|21|33','44|fisch|15|49','45|moertel|24|43','46|natron|24|35','47|trocken|15|49',
+  '48|flachs|30|47','49|hiero|15|37','50|gross_h|0|13','51|lehm|15|49','52|sand|24|49','53|papyrus|15|49',
+  '54|gold|21|39','55|fisch|21|55','56|moertel|24|49','57|natron|24|41','58|trocken|21|55','59|flachs|30|53',
+  '60|hiero|15|43','61|gross_h|0|19','62|lehm|21|55','63|sand|24|55','64|papyrus|21|55','65|gold|21|45',
+  '66|fisch|21|61','67|moertel|24|55','68|natron|24|47','69|trocken|21|61','70|flachs|30|59','71|hiero|15|49',
+  '72|gross_h|0|25','73|lehm|21|61','74|sand|24|61','75|papyrus|21|61','76|gold|21|51','77|fisch|21|67',
+  '78|moertel|24|61','79|natron|24|53','80|trocken|21|67','81|flachs|30|65','82|hiero|21|55','83|gross_h|0|31',
+  '84|lehm|21|67','85|sand|24|67','86|papyrus|21|67','87|gold|21|57','88|fisch|24|73','89|moertel|24|67',
+  '90|natron|24|59','91|trocken|24|73','92|flachs|30|71','93|hiero|21|61','94|gross_h|0|37','95|lehm|24|73',
+  '96|sand|24|73','97|papyrus|24|73','98|gold|21|63',
+  '99|fisch|30|79','100|moertel|24|73','101|natron|24|65','102|trocken|30|79','103|flachs|30|77',
+  '104|hiero|21|67','105|gross_h|0|43','106|lehm|30|79','107|sand|30|79','108|papyrus|30|79',
+  '109|gold|21|69','110|fisch|30|85','111|moertel|30|79','112|natron|24|71'];
+
+  var GOD_OF = {lehm:'thot', fisch:'seth', papyrus:'sobek', flachs:'taweret', moertel:'sachmet', sand:'hathor'};
+  var PCFG_KEY = 'irrigation_prod_v1';
+  var PCFG = {
+    totalLevel: 33, duat: 25.4,
+    gods: {horus:0, isis:0, thot:0, seth:0, sobek:0, taweret:0, sachmet:0, hathor:0},
+    tiers: [{upTo:120,pct:0},{upTo:310,pct:10},{upTo:630,pct:25},{upTo:999999,pct:50}],
+    research: RESEARCH_DEFAULT.slice(),
+    dist: 'balance', focus: {}, minOne: true, resOffset: -1, capA: 0, capB: 26, byValue: false
+  };
+  var PCFG_DEFAULT = JSON.parse(JSON.stringify(PCFG));
+  function mergePCFG(saved){                 // missing fields fall back to the defaults
+    var out = JSON.parse(JSON.stringify(PCFG_DEFAULT));
+    if (saved && typeof saved === 'object'){
+      for (var k in saved){ if (saved[k] !== undefined && saved[k] !== null) out[k] = saved[k]; }
+    }
+    if (out.cfgVer !== 2){        // the account level was off by one: 2 researches in level 1, then 3
+      if (out.resOffset === 2){ out.resOffset = -1; out.totalLevel = (out.totalLevel|0) + 1; }
+      out.cfgVer = 2;
+    }
+    if (['max','balance','focus'].indexOf(out.dist) < 0) out.dist = PCFG_DEFAULT.dist;
+    if (!out.focus || typeof out.focus !== 'object') out.focus = {};
+    if (!Array.isArray(out.tiers) || out.tiers.length < 2) out.tiers = PCFG_DEFAULT.tiers;
+    if (!Array.isArray(out.research) || !out.research.length) out.research = PCFG_DEFAULT.research;
+    else {                                   // pick up research steps added since it was saved
+      var stepOf = function(r){ return parseInt(String(r).split('|')[0], 10) || 0; };
+      var maxStep = 0;
+      out.research.forEach(function(r){ if (stepOf(r) > maxStep) maxStep = stepOf(r); });
+      PCFG_DEFAULT.research.forEach(function(r){ if (stepOf(r) > maxStep) out.research.push(r); });
+    }
+    return out;
+  }
+  (function(){ try{ var raw = localStorage.getItem(PCFG_KEY);
+    PCFG = mergePCFG(raw ? JSON.parse(raw) : null); }catch(e){ PCFG = mergePCFG(null); } })();
+  function savePCFG(){ try{ localStorage.setItem(PCFG_KEY, JSON.stringify(PCFG)); }catch(e){} }
+
+  // u ladder: 10 at level 1, x1.10 floored, x1.05 from level 50 on
+  var UTAB = (function(){ var u=[0,10]; for (var L=1; L<400; L++) u[L+1] = Math.floor(u[L]*(L<50?1.10:1.05)); return u; })();
+  function uOf(L){ return UTAB[Math.max(1, Math.min(399, L|0))] || 0; }
+
+  function parseResearch(){
+    return PCFG.research.map(function(r){
+      var p = String(r).split('|');
+      return {step:+p[0], key:p[1], pct:+p[2]||0, max:+p[3]||0};
+    }).filter(function(r){ return r.step > 0; }).sort(function(a,b){ return a.step-b.step; });
+  }
+  function researchState(){
+    var steps = Math.max(0, Math.max(0, PCFG.totalLevel|0) * 3 + (PCFG.resOffset|0)), st = {};
+    parseResearch().forEach(function(r){
+      if (r.step > steps || r.key === '-') return;
+      if (!st[r.key]) st[r.key] = {pct:0, max:0};
+      st[r.key].pct += r.pct;
+      if (r.max > st[r.key].max) st[r.key].max = r.max;
+    });
+    return {steps:steps, byKey:st};
+  }
+  function waterPct(w){
+    var t = PCFG.tiers;
+    for (var i=0;i<t.length;i++) if (w <= t[i].upTo) return t[i].pct;
+    return t[t.length-1].pct;
+  }
+  function levelOf(def, st){
+    if (def.lvl) return def.lvl;                     // manual override
+    var s = st.byKey[def.key];
+    return s && s.max ? s.max : 1;
+  }
+  // "3;25:4;43:5" = +3 per level, +4 from level 25 on, +5 from level 43 on
+  function stepsOf(def){
+    var raw = (def.resSteps === undefined || def.resSteps === null) ? '' : String(def.resSteps).trim();
+    var out = [];
+    if (raw){
+      raw.split(';').forEach(function(part){
+        part = part.trim();
+        if (!part) return;
+        var p = part.split(':');
+        if (p.length === 1) out.push({from:1, step: parseFloat(p[0]) || 0});
+        else out.push({from: parseInt(p[0], 10) || 1, step: parseFloat(p[1]) || 0});
+      });
+    }
+    if (!out.length) out = [{from:1, step: def.resStep || 0}];
+    out.sort(function(a, b){ return a.from - b.from; });
+    return out;
+  }
+  function residentsOf(def, level){
+    if (!level) return 0;
+    if (def.res1 === undefined && !def.resStep && !def.resSteps) return 0;
+    var sc = stepsOf(def), total = def.res1 || 0;
+    for (var L = 2; L <= level; L++){
+      var st = sc[0].step;
+      for (var i = 0; i < sc.length; i++) if (L >= sc[i].from) st = sc[i].step;
+      total += st;
+    }
+    return total;
+  }
+  // output of one building, per worker
+  function baseOf(def){ return (def.base > 0) ? def.base : 20; }   // 20 or 25 in game
+  // worth of one unit of the resource. Only used for ranking and for the economy panel -
+  // every number the tool prints as production stays in units.
+  function valueOf(def){
+    if (!PCFG.byValue) return 1;
+    return (def.unitValue > 0) ? def.unitValue : 1;
+  }
+  function perWorker(def, st, wpct){
+    var s = st.byKey[def.key] || {pct:0, max:0};
+    var g = PCFG.gods, spec = GOD_OF[def.key] ? (g[GOD_OF[def.key]]||0) : 0;
+    var gods = 1 + ((g.horus||0) + (g.isis||0) + spec)/100;
+    return uOf(levelOf(def, st)) * (baseOf(def)/10) * gods * (1 + (PCFG.duat||0)/100) * (1 + s.pct/100) * (1 + wpct/100);
+  }
+  function fmt(n){
+    if (n >= 1e9) return (n/1e9).toFixed(2)+' B';
+    if (n >= 1e6) return (n/1e6).toFixed(2)+' M';
+    if (n >= 1e3) return Math.round(n).toLocaleString('en-US');
+    return Math.round(n).toString();
+  }
+
+  // ---- worker slots per building level (two families, from the in-game tables) ----
+  function slotsA(L){ return L <= 50 ? (4 + L) : (55 + Math.floor((L - 51) / 2)); }
+  function slotsB(L){ return L <= 50 ? (4 + 2 * Math.floor((L - 1) / 5)) : (24 + 2 * Math.floor((L - 51) / 10)); }
+  function famLimit(fam){                       // 0 = no ceiling known yet
+    var v = (fam === 'B') ? PCFG.capB : PCFG.capA;
+    return (v > 0) ? v : Infinity;
+  }
+  function capOf(def, level){
+    if (def.wfam === 'fix') return Math.max(0, def.workers || 0);
+    if (def.capMax > 0) return def.capMax;     // per-building override from the type editor
+    var fam = (def.wfam === 'B') ? 'B' : 'A';
+    var n = (fam === 'B') ? slotsB(level) : slotsA(level);
+    return Math.min(n, famLimit(fam));
+  }
+
+  // ---- spread the resident pool over the buildings ----
+  function distribute(slots, pool){
+    slots.forEach(function(s){ s.workers = 0; });
+    var left = pool;
+    slots.forEach(function(s){                       // manual entries win, capped by the slots
+      if (s.man > 0){ s.workers = Math.max(0, Math.min(s.man, s.cap, left)); left -= s.workers; }
+    });
+    var auto = slots.filter(function(s){ return !(s.man > 0); });
+    if (PCFG.minOne !== false){                      // nobody stays empty
+      auto.forEach(function(s){
+        if (left > 0 && s.workers < 1 && s.cap > 0){ s.workers = 1; left -= 1; }
+      });
+    }
+    var mode = PCFG.dist || PCFG_DEFAULT.dist;   // must match what the dropdown shows
+
+    if (mode === 'focus'){                            // give each type its share, evenly inside it
+      var byKey = {};
+      auto.forEach(function(s){ (byKey[s.def.key] = byKey[s.def.key] || []).push(s); });
+      Object.keys(byKey).forEach(function(k){
+        var pct = (PCFG.focus && PCFG.focus[k]) || 0;
+        if (pct <= 0) return;
+        var budget = Math.min(left, Math.round(pool * pct / 100));
+        var list = byKey[k].slice();
+        while (budget > 0 && list.length){
+          var share = Math.max(1, Math.floor(budget / list.length));
+          var moved = false;
+          for (var i = 0; i < list.length && budget > 0; i++){
+            var give = Math.min(share, list[i].cap - list[i].workers, budget);
+            if (give > 0){ list[i].workers += give; budget -= give; left -= give; moved = true; }
+          }
+          list = list.filter(function(s){ return s.workers < s.cap; });
+          if (!moved) break;
+        }
+      });
+      auto = auto.filter(function(s){ return s.workers < s.cap; });
+      mode = 'max';                                   // leftovers by output
+    }
+
+    if (mode === 'balance'){                          // even fill, capped per building
+      var rest = auto.slice();
+      while (left > 0 && rest.length){
+        var share = Math.max(1, Math.floor(left / rest.length));
+        var moved = false;
+        for (var i = 0; i < rest.length && left > 0; i++){
+          var give = Math.min(share, rest[i].cap - rest[i].workers, left);
+          if (give > 0){ rest[i].workers += give; left -= give; moved = true; }
+        }
+        rest = rest.filter(function(s){ return s.workers < s.cap; });
+        if (!moved) break;
+      }
+    } else {                                          // max output: best value per worker first
+      auto.sort(function(a, b){ return b.per * valueOf(b.def) - a.per * valueOf(a.def); })
+          .forEach(function(s){
+            var give = Math.max(0, Math.min(s.cap - s.workers, left));
+            s.workers += give; left -= give;
+          });
+    }
+    return left;
+  }
+
+  // ---- evaluate the current grid: residents -> workers -> output ----
+  function evaluate(){
+    var st = researchState();
+    var pool = 0, houses = 0, houseRows = [];
+    placed.forEach(function(b){
+      var def = DEF_BY_KEY[b.key];
+      if (!def || def.cat !== 'plain' || !(def.res1 > 0 || def.resStep > 0 || def.resSteps)) return;
+      var lvl = levelOf(def, st), r = residentsOf(def, lvl);
+      pool += r; houses++;
+      var row = houseRows.filter(function(h){ return h.key === def.key; })[0];
+      if (!row){ row = {key:def.key, name:def.name, lvl:lvl, each:r, n:0}; houseRows.push(row); }
+      row.n++;
+    });
+    var slots = [];
+    placed.forEach(function(b){
+      var def = DEF_BY_KEY[b.key];
+      if (!def || def.cat !== 'prod') return;
+      var lvl = levelOf(def, st), w = buildingWaterTotal(b), wp = waterPct(w);
+      slots.push({b:b, def:def, lvl:lvl, water:w, wpct:wp, cap:capOf(def, lvl),
+                  per:perWorker(def, st, wp), man:(b.wman || def.wman || 0), workers:0});
+    });
+    var left = distribute(slots, pool);
+    var total = 0;
+    slots.forEach(function(s){ s.out = s.per * s.workers; total += s.out; });
+    return {st:st, pool:pool, houses:houses, houseRows:houseRows, slots:slots,
+            used:pool - left, free:left, total:total};
+  }
+
+  // ---- bonus inputs ----
+  var GODS_UI = [['horus','Horus % (all)'],['isis','Isis % (all)'],['thot','Thot % (mudbrick)'],['seth','Seth % (fish pond)'],['sobek','Sobek % (papyrus)'],['taweret','Taweret % (flax)'],['sachmet','Sachmet % (mortar)'],['hathor','Hathor % (sandstone)']];
+  function buildBonusGrid(){
+    var el = document.getElementById('bonusGrid');
+    el.innerHTML = '';
+    function add(label, value, step, onch){
+      var l = document.createElement('span'); l.textContent = label;
+      var i = document.createElement('input'); i.type='number'; i.step=step; i.value=value;
+      i.addEventListener('change', function(){ onch(parseFloat(i.value)||0); savePCFG(); renderProduction(); });
+      el.appendChild(l); el.appendChild(i);
+    }
+    add('Account level', PCFG.totalLevel, '1', function(v){ PCFG.totalLevel = Math.max(0, Math.round(v)); });
+    add('Duat %', PCFG.duat, '0.1', function(v){ PCFG.duat = v; });
+    add('Researches +/-', PCFG.resOffset || 0, '1', function(v){ PCFG.resOffset = Math.round(v); });
+    add('Worker cap A', PCFG.capA || 0, '1', function(v){ PCFG.capA = Math.max(0, Math.round(v)); });
+    add('Worker cap B', PCFG.capB || 0, '1', function(v){ PCFG.capB = Math.max(0, Math.round(v)); });
+    GODS_UI.forEach(function(g){
+      add(g[1], PCFG.gods[g[0]]||0, '0.1', function(v){ PCFG.gods[g[0]] = v; });
+    });
+    PCFG.tiers.forEach(function(t, i){
+      if (i === PCFG.tiers.length-1) return;
+      add(t.pct + '% up to', t.upTo, '10', function(v){ PCFG.tiers[i].upTo = Math.round(v); syncWaterFromTiers(); });
+    });
+  }
+
+  function buildResearchList(){
+    var box = document.getElementById('researchList');
+    box.innerHTML = '';
+    var keys = DEFS.filter(function(d){ return d.cat!=='source'; }).map(function(d){ return [d.key, d.name]; });
+    keys.unshift(['-', '—']);
+    parseResearch().forEach(function(r, idx){
+      var row = document.createElement('div'); row.className='rsrow';
+      var st = document.createElement('input'); st.className='step'; st.type='number'; st.value=r.step;
+      var sel = document.createElement('select');
+      keys.forEach(function(k){ var o=document.createElement('option'); o.value=k[0]; o.textContent=k[1];
+        if (k[0]===r.key) o.selected=true; sel.appendChild(o); });
+      var pc = document.createElement('input'); pc.className='pct'; pc.type='number'; pc.value=r.pct; pc.title='%';
+      var mx = document.createElement('input'); mx.className='mx'; mx.type='number'; mx.value=r.max; mx.title='max';
+      var del = document.createElement('button'); del.className='del'; del.textContent='✕';
+      function write(){
+        var list = parseResearch();
+        list[idx] = {step:+st.value||0, key:sel.value, pct:+pc.value||0, max:+mx.value||0};
+        PCFG.research = list.map(function(x){ return x.step+'|'+x.key+'|'+x.pct+'|'+x.max; });
+        savePCFG(); renderProduction();
+      }
+      [st, pc, mx].forEach(function(i){ i.addEventListener('change', write); });
+      sel.addEventListener('change', write);
+      del.addEventListener('click', function(){
+        var list = parseResearch(); list.splice(idx,1);
+        PCFG.research = list.map(function(x){ return x.step+'|'+x.key+'|'+x.pct+'|'+x.max; });
+        savePCFG(); buildResearchList(); renderProduction();
+      });
+      row.appendChild(st); row.appendChild(sel); row.appendChild(pc); row.appendChild(mx); row.appendChild(del);
+      box.appendChild(row);
+    });
+  }
+
+  function localizeNames(list){        // building names always follow this file's language
+    var base = {};
+    DEFAULT_DEFS.forEach(function(d){ base[d.key] = d.name; });
+    list.forEach(function(d){ if (base[d.key]) d.name = base[d.key]; });
+    return list;
+  }
+
+  function buildFocusList(){
+    var box = document.getElementById('focusList');
+    if (!box) return;
+    box.innerHTML = '';
+    PCFG.focus = PCFG.focus || {};
+    DEFS.filter(function(d){ return d.cat === 'prod' && d.target > 0; }).forEach(function(def){
+      var l = document.createElement('span'); l.textContent = def.name;
+      var i = document.createElement('input'); i.type = 'number'; i.min = '0'; i.max = '100';
+      i.value = PCFG.focus[def.key] || 0;
+      i.addEventListener('change', function(){
+        PCFG.focus[def.key] = Math.max(0, parseFloat(i.value) || 0); savePCFG(); renderProduction();
+      });
+      box.appendChild(l); box.appendChild(i);
+    });
+  }
+
+  function renderProduction(){
+    var ev = evaluate();
+    var hh = ev.houseRows.map(function(h){ return h.n + '× ' + h.name + ' L' + h.lvl + ' à ' + h.each; }).join(', ');
+    document.getElementById('researchInfo').innerHTML =
+      'Account level ' + PCFG.totalLevel + ' = <b>' + ev.st.steps + '</b> researches<br>' +
+      'Residents: <b>' + ev.pool + '</b>' + (hh ? ' (' + hh + ')' : '') +
+      ' · ' + ev.used + ' assigned, ' + ev.free + ' free';
+    var tbl = document.getElementById('prodTable');
+    if (!ev.slots.length){
+      tbl.innerHTML = '<tr><td class="nm"><span class="empty-hint">No production buildings on the grid yet.</span></td></tr>';
+      document.getElementById('totalOut').textContent = '–';
+      document.getElementById('outSub').textContent = '';
+      renderEco([]);
+      return;
+    }
+    var agg = {};
+    ev.slots.forEach(function(s){
+      var k = s.def.key;
+      if (!agg[k]) agg[k] = {def:s.def, lvl:s.lvl, cap:s.cap, per:s.per, n:0, workers:0, out:0,
+                             caps:0, tiers:{}, list:[]};
+      agg[k].n++; agg[k].workers += s.workers; agg[k].out += s.out; agg[k].caps += s.cap;
+      agg[k].tiers[s.wpct] = (agg[k].tiers[s.wpct] || 0) + 1;
+      agg[k].list.push(s);
+    });
+    var rows = Object.keys(agg).map(function(k){ return agg[k]; })
+                 .sort(function(a, b){ return b.out - a.out; });
+    var g = PCFG.gods;
+    var html = '<tr><th>Building</th><th class="num">Lvl</th><th class="num">Research</th>' +
+               '<th class="num">Workers</th><th class="num">Output</th></tr>';
+    rows.forEach(function(r, i){
+      var s = ev.st.byKey[r.def.key] || {pct:0};
+      var spec = GOD_OF[r.def.key] ? (g[GOD_OF[r.def.key]] || 0) : 0;
+      var godSum = (g.horus || 0) + (g.isis || 0) + spec;
+      var one = r.per;
+      var pills = Object.keys(r.tiers).sort(function(a,b){ return b-a; }).map(function(p){
+        return '<span class="tierpill t' + p + '">' + r.tiers[p] + '×' + p + '%</span>'; }).join(' ');
+      html += '<tr class="prow" data-i="' + i + '"><td class="nm">' + r.def.name +
+              ' ×' + r.n + ' ' + pills + '</td>' +
+              '<td class="num">' + r.lvl + '</td>' +
+              '<td class="num">' + s.pct + '%</td>' +
+              '<td class="num"><input class="wk" type="number" min="0" max="' + r.caps +
+                '" value="' + r.workers + '" data-key="' + r.def.key + '">/' + r.caps + '</td>' +
+              '<td class="num">' + fmt(r.out) + '</td></tr>' +
+              '<tr class="pdet" data-d="' + i + '" hidden><td colspan="5" class="calc">' +
+              'u(' + r.lvl + ')=' + uOf(r.lvl) + ' × ' + (baseOf(r.def)/10) + ' (base ' + baseOf(r.def) + ') × ' + r.workers + ' wk × ' +
+              (1 + godSum / 100).toFixed(4) + ' (gods ' + godSum + '%) × ' +
+              (1 + (PCFG.duat || 0) / 100).toFixed(4) + ' (duat) × ' +
+              (1 + s.pct / 100).toFixed(2) + ' (Research) × ' +
+              '(water ' + pills.replace(/<[^>]+>/g,' ').trim() + ') = <b>' + fmt(r.out) + '</b>' +
+              ' &nbsp;·&nbsp; 1× = ' + fmt(one * (r.workers / r.n)) +
+              ', per worker ' + fmt(one) + '<div class="wklist">' +
+              r.list.map(function(s, j){
+                return '<span class="wkitem">field ' + (fieldOf(s.b.x, s.b.y)+1) + ' (' + s.b.x + ',' + s.b.y + ') · ' +
+                       s.water + ' water · <input type="number" min="0" max="' + s.cap +
+                       '" placeholder="auto" data-uid="' + s.b.uid + '" value="' +
+                       (s.b.wman ? s.b.wman : '') + '"> / ' + s.cap + ' → ' + fmt(s.out) + '</span>';
+              }).join('') + '</div></td></tr>';
+    });
+    tbl.innerHTML = html;
+    [].forEach.call(tbl.querySelectorAll('.wklist input'), function(inp){
+      inp.addEventListener('click', function(e){ e.stopPropagation(); });
+      inp.addEventListener('change', function(){
+        var uid = +inp.getAttribute('data-uid');
+        var b = placed.filter(function(x){ return x.uid === uid; })[0];
+        if (!b) return;
+        var v = parseInt(inp.value, 10);
+        b.wman = (isNaN(v) || v <= 0) ? 0 : v;
+        renderProduction();
+      });
+    });
+    [].forEach.call(tbl.querySelectorAll('input.wk'), function(inp){
+      inp.addEventListener('click', function(e){ e.stopPropagation(); });
+      inp.addEventListener('change', function(){
+        var d = DEF_BY_KEY[inp.getAttribute('data-key')];
+        if (d){ d.wman = Math.max(0, parseInt(inp.value, 10) || 0); saveTypes(); renderProduction(); }
+      });
+    });
+    [].forEach.call(tbl.querySelectorAll('tr.prow'), function(tr){
+      tr.addEventListener('click', function(){
+        var d = tbl.querySelector('tr.pdet[data-d="' + tr.getAttribute('data-i') + '"]');
+        if (d) d.hidden = !d.hidden;
+      });
+    });
+    renderEco(rows);
+    document.getElementById('totalOut').textContent = fmt(ev.total);
+    document.getElementById('outSub').textContent =
+      ev.used + ' / ' + ev.pool + ' assigned · ' + ev.slots.length + ' buildings · Click a row to see the maths.';
+  }
+
+  // ---- economy panel: output = productivity x value per unit (same as the in-game screen) ----
+  function renderEco(rows){
+    var tbl = document.getElementById('ecoTable');
+    if (!tbl) return;
+    if (!rows.length){
+      tbl.innerHTML = "<tr><td class=\"nm\"><span class=\"empty-hint\">No production buildings on the grid yet.</span></td></tr>";
+      document.getElementById('ecoTotal').textContent = '\u2013';
+      document.getElementById('ecoSub').textContent = '';
+      return;
+    }
+    var list = rows.map(function(r){
+      var val = (r.def.unitValue > 0) ? r.def.unitValue : 0;
+      return {name: r.def.resName || r.def.name, prod: r.out, val: val, eco: r.out * val};
+    }).sort(function(a, b){ return b.eco - a.eco; });
+    var total = 0;
+    list.forEach(function(x){ total += x.eco; });
+    var html = "<tr><th>Resource</th><th class=\"num\">Productivity</th><th class=\"num\">Value</th><th class=\"num\">Output</th></tr>";
+    list.forEach(function(x){
+      html += '<tr><td class="nm">' + x.name + '</td>' +
+              '<td class="num">' + fmt(x.prod) + '</td>' +
+              '<td class="num">' + (x.val || '\u2013') + '</td>' +
+              '<td class="num">' + fmt(x.eco) + '</td></tr>';
+    });
+    tbl.innerHTML = html;
+    document.getElementById('ecoTotal').textContent = fmt(total);
+    document.getElementById('ecoSub').textContent = ' per second · ' + rows.length + ' resources · value per unit is editable under Edit types';
+  }
+
+  document.getElementById('prodEditToggle').addEventListener('click', function(){
+    var box = document.getElementById('researchBox');
+    box.hidden = !box.hidden;
+    if (!box.hidden) buildResearchList();
+  });
+  document.getElementById('addResearch').addEventListener('click', function(){
+    var list = parseResearch();
+    var next = list.length ? list[list.length-1].step + 1 : 1;
+    list.push({step:next, key:'-', pct:0, max:0});
+    PCFG.research = list.map(function(x){ return x.step+'|'+x.key+'|'+x.pct+'|'+x.max; });
+    savePCFG(); buildResearchList(); renderProduction();
+  });
+  document.getElementById('resetResearch').addEventListener('click', function(){
+    PCFG.research = RESEARCH_DEFAULT.slice(); savePCFG(); buildResearchList(); renderProduction();
+  });
+
+  function syncProdControls(){        // PCFG -> the controls, so both never disagree
+    var sel = document.getElementById('distSel');
+    if (sel){ sel.value = PCFG.dist; if (sel.value !== PCFG.dist){ PCFG.dist = PCFG_DEFAULT.dist; sel.value = PCFG.dist; } }
+    var fb = document.getElementById('focusBox');
+    if (fb) fb.hidden = (PCFG.dist !== 'focus');
+    var mc = document.getElementById('minOneChk');
+    if (mc) mc.checked = (PCFG.minOne !== false);
+    var bv = document.getElementById('byValueChk');
+    if (bv) bv.checked = !!PCFG.byValue;
+    if (typeof buildFocusList === 'function') buildFocusList();
+  }
+
+  // ---- export / import of everything ----
+  document.getElementById('fixNames').addEventListener('click', function(){
+    localizeNames(DEFS); reindexDefs(); saveTypes(); buildPalette(); buildFocusList(); renderAll();
+  });
+  var BONUS_KEYS = ['totalLevel','duat','gods','tiers','resOffset','capA','capB','dist','focus','minOne'];
+  function ioWant(id){ var e = document.getElementById(id); return !e || e.checked; }
+  var IO_NAMES = {layout:'layout', types:'building types', bonus:'level &amp; bonuses', research:'research list'};
+  function ioList(keys){ return keys.map(function(k){ return IO_NAMES[k]; }).join(', '); }
+
+  document.getElementById('exportBtn').addEventListener('click', function(){
+    var box = document.getElementById('ioBox');
+    var data = {v:2}, took = [];
+    if (ioWant('ioTypes')){ data.types = DEFS; took.push('types'); }
+    if (ioWant('ioLayout')){
+      data.layout = placed.map(function(b){
+        return {key:b.key, x:b.x, y:b.y, rot:b.rot, w:b.w, h:b.h, wman:b.wman||0}; });
+      took.push('layout');
+    }
+    if (ioWant('ioBonus') || ioWant('ioResearch')){
+      var p = {};
+      if (ioWant('ioBonus')){ BONUS_KEYS.forEach(function(k){ p[k] = PCFG[k]; }); took.push('bonus'); }
+      if (ioWant('ioResearch')){ p.research = PCFG.research; took.push('research'); }
+      data.prod = p;
+    }
+    if (!took.length){ document.getElementById('researchInfo').innerHTML = 'Nothing selected — tick at least one box above.'; return; }
+    box.hidden = false;
+    box.value = JSON.stringify(data);
+    box.select();
+    try{ navigator.clipboard.writeText(box.value); }catch(e){}
+    document.getElementById('researchInfo').innerHTML = 'Copied to clipboard: ' + ioList(took) + '.';
+    setTimeout(renderProduction, 2500);
+  });
+
+  document.getElementById('importBtn').addEventListener('click', function(){
+    var box = document.getElementById('ioBox');
+    if (box.hidden){ box.hidden = false; box.value = ''; box.focus(); return; }
+    try{
+      var d = JSON.parse(box.value);
+      var have = [], took = [];
+      if (d.types && d.types.length){
+        have.push('types');
+        if (ioWant('ioTypes')){ DEFS = localizeNames(d.types); reindexDefs(); saveTypes(); took.push('types'); }
+      }
+      if (d.prod){
+        var hasRes = Array.isArray(d.prod.research) && d.prod.research.length;
+        var hasBonus = BONUS_KEYS.some(function(k){ return d.prod[k] !== undefined; });
+        if (hasBonus) have.push('bonus');
+        if (hasRes) have.push('research');
+        var changed = false;
+        if (hasBonus && ioWant('ioBonus')){
+          BONUS_KEYS.forEach(function(k){ if (d.prod[k] !== undefined) PCFG[k] = d.prod[k]; });
+          took.push('bonus'); changed = true;
+        }
+        if (hasRes && ioWant('ioResearch')){ PCFG.research = d.prod.research.slice(); took.push('research'); changed = true; }
+        if (changed){ PCFG = mergePCFG(PCFG); savePCFG(); syncProdControls(); buildResearchList(); syncWaterFromTiers(); }
+      }
+      if (d.layout){
+        have.push('layout');
+        if (ioWant('ioLayout')){
+          placed = []; for (var y=0;y<N;y++) occ[y]=new Array(N).fill(null);
+          d.layout.forEach(function(it){
+            if (!DEF_BY_KEY[it.key]) return;
+            var uid = uidSeq++;
+            var b = {uid:uid, key:it.key, x:it.x, y:it.y, rot:it.rot, w:it.w, h:it.h, wman:it.wman||0};
+            placed.push(b);
+            for (var yy=b.y; yy<b.y+b.h; yy++) for (var xx=b.x; xx<b.x+b.w; xx++) occ[yy][xx]=uid;
+          });
+          took.push('layout');
+        }
+      }
+      box.hidden = true;
+      buildPalette(); buildBonusGrid(); buildFocusList(); refreshBudget(); renderAll();
+      document.getElementById('researchInfo').innerHTML =
+        'Contained: ' + (have.length ? ioList(have) : 'nothing') +
+        ' · applied: ' + (took.length ? ioList(took) : 'nothing') + '.';
+      setTimeout(renderProduction, 3000);
+    }catch(e){ document.getElementById('researchInfo').innerHTML = 'That is not a valid configuration.'; }
+  });
+
+  // ---- persistence (per-viewer convenience only) ----
+  function saveLocal(){
+    try{
+      var data = {placed:placed, targets:{}};
+      DEFS.forEach(function(d){ data.targets[d.key]=d.target; });
+      localStorage.setItem('irrigation_planner_v1', JSON.stringify(data));
+    }catch(e){}
+  }
+  function loadLocal(){
+    try{
+      var raw = localStorage.getItem('irrigation_planner_v1');
+      if (!raw) return;
+      var data = JSON.parse(raw);
+      if (data.targets){
+        DEFS.forEach(function(d){ if (typeof data.targets[d.key]==='number') d.target=data.targets[d.key]; });
+      }
+      if (Array.isArray(data.placed)){
+        data.placed.forEach(function(b){
+          if (!DEF_BY_KEY[b.key]) return;
+          if (!canPlace(b.key, b.rot, b.x, b.y)) return;
+          var fp = footprint(b.key, b.rot);
+          var uid = uidSeq++;
+          var nb = {uid:uid, key:b.key, x:b.x, y:b.y, rot:b.rot, w:fp.w, h:fp.h};
+          placed.push(nb);
+          for (var yy=b.y; yy<b.y+fp.h; yy++){
+            for (var xx=b.x; xx<b.x+fp.w; xx++){ occ[yy][xx]=uid; }
+          }
+        });
+      }
+    }catch(e){}
+  }
+  window.addEventListener('beforeunload', saveLocal);
+  setInterval(saveLocal, 4000);
+
+  // ---- collapsible intro in phone mode ----
+  var intro = document.querySelector('.head p');
+  if (intro){
+    intro.title = 'Tap to show/hide the full description';
+    intro.addEventListener('click', function(){
+      intro.classList.toggle('clamped');
+      intro.dataset.open = intro.classList.contains('clamped') ? '' : '1';
+    });
+  }
+  applyMode();
+
+  // ---- init ----
+  loadLocal();
+  buildPalette();
+  buildBonusGrid();
+  buildFocusList();
+  buildFullList();
+  syncProdControls();
+  var minChk = document.getElementById('minOneChk');
+  minChk.addEventListener('change', function(){
+    PCFG.minOne = minChk.checked; savePCFG(); renderProduction();
+  });
+  var valChk = document.getElementById('byValueChk');
+  valChk.addEventListener('change', function(){
+    PCFG.byValue = valChk.checked; savePCFG(); renderProduction();
+  });
+  document.getElementById('distSel').addEventListener('change', function(){
+    PCFG.dist = this.value; savePCFG();
+    document.getElementById('focusBox').hidden = (PCFG.dist !== 'focus');
+    buildFocusList(); renderProduction();
+  });
+  // ---- side tabs ----
+  (function(){
+    var bar = document.getElementById('tabbar');
+    if (!bar) return;
+    var KEY = 'irrigation_tab_v1';
+    function show(name){
+      [].forEach.call(bar.querySelectorAll('button'), function(b){
+        b.setAttribute('aria-selected', b.getAttribute('data-tab') === name ? 'true' : 'false');
+      });
+      [].forEach.call(document.querySelectorAll('.tabpane'), function(p){
+        p.hidden = (p.getAttribute('data-tab') !== name);
+      });
+      try{ localStorage.setItem(KEY, name); }catch(e){}
+    }
+    bar.addEventListener('click', function(e){
+      var b = e.target.closest ? e.target.closest('button[data-tab]') : null;
+      if (b) show(b.getAttribute('data-tab'));
+    });
+    var saved = null;
+    try{ saved = localStorage.getItem(KEY); }catch(e){}
+    show((saved === 'result' || saved === 'setup') ? saved : 'plan');
+  })();
+
+  syncWaterFromTiers();
+  refreshBudget();
+  renderAll();
+})();
+</script>
+</body>
+</html>

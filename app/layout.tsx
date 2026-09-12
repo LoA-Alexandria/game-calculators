@@ -1,15 +1,64 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+import { Inter, JetBrains_Mono, Sora } from "next/font/google";
+import { AppShell } from "./components/AppShell";
+import { AuthProvider } from "./components/AuthProvider";
+import { LocaleProvider } from "./components/LocaleProvider";
+import { THEME_STORAGE_KEY } from "../lib/site";
 import "./globals.css";
 
+/**
+ * Fonts are self-hosted by Next at build time rather than fetched from Google
+ * at page load, so there is no render-blocking third-party request. Each one
+ * exposes a CSS variable that `globals.css` folds into its type tokens.
+ */
+const sora = Sora({ subsets: ["latin"], weight: ["500", "600", "700"], variable: "--font-sora", display: "swap" });
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
+const jetBrainsMono = JetBrains_Mono({ subsets: ["latin"], weight: ["500", "600"], variable: "--font-jetbrains-mono", display: "swap" });
+
 export const metadata: Metadata = {
-  title: "Pop Epoch Tools · LoA Alexandria",
-  description: "Community-built calculators for Pop Epoch events, progression, and Grand Voyage.",
+  title: {
+    default: "Pop Epoch Tools · LoA Alexandria",
+    template: "%s · Pop Epoch Tools",
+  },
+  description:
+    "Community-built calculators, guides, and planners for Pop Epoch: events, Goddess progression, Grand Voyage, and the irrigation field layout. Available in English, German, and French.",
 };
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#f6f7fa" },
+    { media: "(prefers-color-scheme: dark)", color: "#0a0c11" },
+  ],
+};
+
+/**
+ * Applies the stored theme before first paint so a stored choice that differs
+ * from the operating-system preference does not flash the wrong palette. The
+ * language cannot be handled this way — the exported HTML carries the default
+ * language and `LocaleProvider` swaps it as soon as React hydrates.
+ */
+const themeBootstrap = `(function(){try{var t=localStorage.getItem(${JSON.stringify(THEME_STORAGE_KEY)});if(t==="light"||t==="dark"){document.documentElement.dataset.theme=t;}}catch(e){}})();`;
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
-      <body>{children}</body>
+    // suppressHydrationWarning: the script below sets `data-theme` and
+    // LocaleProvider sets `lang`, both before React hydrates. It only covers
+    // this element's own attributes, not the tree underneath.
+    <html
+      lang="en"
+      className={`${sora.variable} ${inter.variable} ${jetBrainsMono.variable}`}
+      suppressHydrationWarning
+    >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeBootstrap }} />
+      </head>
+      <body>
+        <LocaleProvider>
+          <AuthProvider>
+            <AppShell>{children}</AppShell>
+          </AuthProvider>
+        </LocaleProvider>
+      </body>
     </html>
   );
 }

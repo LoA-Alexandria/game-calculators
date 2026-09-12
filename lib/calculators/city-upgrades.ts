@@ -1,3 +1,5 @@
+import { CalculatorError } from "./errors.ts";
+
 export type CityType = "Town" | "City" | "Metropolis";
 
 export const CITY_GROUPS = {
@@ -24,15 +26,15 @@ export const CITIES: City[] = Object.entries(CITY_GROUPS).flatMap(([group, entri
 );
 
 export function requiredGroupLevel(targetLevel: number): number {
-  if (targetLevel < 1 || targetLevel > 35) throw new Error("Target level must be between 1 and 35.");
+  if (targetLevel < 1 || targetLevel > 35) throw new CalculatorError("levelRange", "Target level must be between 1 and 35.", { min: 1, max: 35 });
   return Math.floor((targetLevel - 1) / 5) * 5;
 }
 
 export function upgradeCost(city: City, currentLevel: number, targetLevel: number): number {
-  if (!Number.isInteger(currentLevel) || !Number.isInteger(targetLevel)) throw new Error("Levels must be whole numbers.");
-  if (currentLevel < 0) throw new Error("Current level cannot be negative.");
-  if (currentLevel > city.maximumLevel || targetLevel > city.maximumLevel) throw new Error(`${city.name} supports levels up to ${city.maximumLevel}.`);
-  if (targetLevel < currentLevel) throw new Error("Target level cannot be lower than the current level.");
+  if (!Number.isInteger(currentLevel) || !Number.isInteger(targetLevel)) throw new CalculatorError("wholeNumbers", "Levels must be whole numbers.");
+  if (currentLevel < 0) throw new CalculatorError("negativeLevel", "Current level cannot be negative.");
+  if (currentLevel > city.maximumLevel || targetLevel > city.maximumLevel) throw new CalculatorError("cityMaxLevel", `${city.name} supports levels up to ${city.maximumLevel}.`, { city: city.name, max: city.maximumLevel });
+  if (targetLevel < currentLevel) throw new CalculatorError("targetNotLower", "Target level cannot be lower than the current level.");
   return UPGRADE_COSTS[city.type].slice(currentLevel, targetLevel).reduce((sum, cost) => sum + cost, 0);
 }
 
@@ -46,14 +48,14 @@ export type UpgradePlan = {
 
 export function buildUpgradePlan(cityName: string, currentLevel: number, targetLevel: number, groupLevels: Record<string, number>): UpgradePlan {
   const city = CITIES.find((candidate) => candidate.name === cityName);
-  if (!city) throw new Error(`Unknown city: ${cityName}`);
-  if (targetLevel <= currentLevel) throw new Error("Target level must be higher than the current level.");
+  if (!city) throw new CalculatorError("unknownCity", `Unknown city: ${cityName}`, { city: cityName });
+  if (targetLevel <= currentLevel) throw new CalculatorError("targetHigher", "Target level must be higher than the current level.");
   const targetCost = upgradeCost(city, currentLevel, targetLevel);
   const groupLevel = requiredGroupLevel(targetLevel);
   const peers = CITIES.filter((candidate) => candidate.group === city.group && candidate.name !== city.name);
   const prerequisites = groupLevel === 0 ? [] : peers.flatMap((peer) => {
     const peerLevel = groupLevels[peer.name];
-    if (!Number.isInteger(peerLevel) || peerLevel < 0 || peerLevel > peer.maximumLevel) throw new Error(`${peer.name}'s current level must be between 0 and ${peer.maximumLevel}.`);
+    if (!Number.isInteger(peerLevel) || peerLevel < 0 || peerLevel > peer.maximumLevel) throw new CalculatorError("peerRange", `${peer.name}'s current level must be between 0 and ${peer.maximumLevel}.`, { city: peer.name, max: peer.maximumLevel });
     return peerLevel < groupLevel ? [{ city: peer, currentLevel: peerLevel, targetLevel: groupLevel, cost: upgradeCost(peer, peerLevel, groupLevel) }] : [];
   });
   return { city, targetCost, requiredGroupLevel: groupLevel, prerequisites, totalCost: targetCost + prerequisites.reduce((sum, item) => sum + item.cost, 0) };

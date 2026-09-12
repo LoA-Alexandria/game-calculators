@@ -1,0 +1,408 @@
+import type { Dictionary } from "./en.ts";
+
+/**
+ * Item, building, and city-group names are translated descriptively. They are
+ * not guaranteed to match the German client's official wording — please read
+ * over them and correct anything the game calls differently.
+ */
+const de: Dictionary = {
+  shell: {
+    brand: "Pop Epoch Tools",
+    tagline: "Community-Werkzeuge",
+    openMenu: "Navigation öffnen",
+    closeMenu: "Navigation schließen",
+    filterLabel: "Navigation filtern",
+    filterPlaceholder: "Werkzeug oder Guide finden…",
+    filterEmpty: "Dazu passt nichts.",
+    language: "Sprache",
+    theme: "Darstellung",
+    themeToLight: "Zur hellen Darstellung wechseln",
+    themeToDark: "Zur dunklen Darstellung wechseln",
+    discord: "Discord",
+    discordTitle: "Der Community auf Discord beitreten",
+    github: "GitHub",
+    skipToContent: "Zum Inhalt springen",
+    sectionLabel: "Bereich",
+  },
+  nav: {
+    home: "Übersicht",
+    news: "News",
+    guides: "Guides",
+    calculators: "Rechner",
+    simulations: "Simulationen",
+    admin: "Admin",
+    newGuide: "Neuer Guide",
+  },
+  navDescriptions: {
+    home: "Alles auf einen Blick",
+    news: "Änderungen und Neuzugänge",
+    guides: "Wie die Systeme funktionieren",
+    calculators: "Zahlen rein, Antwort raus",
+    simulations: "Einen Plan testen, bevor du baust",
+  },
+  common: {
+    open: "Öffnen",
+    openTool: "Werkzeug öffnen",
+    readMore: "Lesen",
+    backToOverview: "Zurück zur Übersicht",
+    backTo: "Zurück zu",
+    comingSoon: "In Arbeit",
+    empty: "Hier ist noch nichts.",
+    updated: "Aktualisiert",
+    all: "Alle",
+    inThisSection: "In diesem Bereich",
+    assumptions: "Annahmen",
+    result: "Ergebnis",
+    minutes: "Min. Lesezeit",
+    new: "Neu",
+  },
+  home: {
+    eyebrow: "LoA Alexandria",
+    title: "Dein Strategieraum.",
+    lede: "Ausbauten planen, Event-Punkte zählen, die nächste Reise abstecken und jedes Bewässerungsfeld auslegen — mit Werkzeugen aus unseren gemeinsamen Pop-Epoch-Spieldaten.",
+    primaryAction: "Bewässerungsplaner öffnen",
+    secondaryAction: "Alle Werkzeuge ansehen",
+    statTools: "Werkzeuge",
+    statSlots: "Verplante Feldplätze",
+    statWater: "Wasserziel",
+    statCost: "Kosten",
+    statCostValue: "Gratis",
+    latestNews: "Neueste News",
+    allNews: "Alle News",
+    quickAccess: "Direkt loslegen",
+    privacy:
+      "Alle Werkzeuge laufen vollständig in deinem Browser. Nichts, was du eingibst, wird hochgeladen, und die Spieldaten hinter jedem Ergebnis liegen samt Annahmen versioniert im Repository.",
+  },
+  news: {
+    title: "News",
+    lede: "Was sich auf dieser Seite geändert hat und was dazugekommen ist.",
+    empty: "Noch keine Einträge.",
+  },
+  guides: {
+    title: "Guides",
+    lede: "Wie die Systeme hinter den Werkzeugen wirklich funktionieren — aufgeschrieben, damit du es nicht selbst herausfinden musst.",
+    empty:
+      "Die ersten Guides entstehen gerade. Bis dahin erklärt jedes Werkzeug seine Annahmen direkt neben dem Ergebnis.",
+  },
+  calculators: {
+    title: "Rechner",
+    lede: "Zahlen eintragen, Antwort bekommen und sehen, welche Annahme dahintersteckt.",
+  },
+  simulations: {
+    title: "Simulationen",
+    lede: "Einen Plan bauen, ausprobieren und das Ergebnis vergleichen, bevor du im Spiel etwas ausgibst.",
+  },
+  tools: {
+    goddessMaterials: {
+      name: "Göttinnen-Materialien",
+      description: "Olivenzweige, Blütenkronen und Tributplatten in Göttinnen-Punkte umrechnen.",
+      category: "Göttin",
+    },
+    goddessXp: {
+      name: "Göttinnen-EP",
+      description: "Die EP ermitteln, die zwischen zwei Göttinnen-Stufen nötig sind.",
+      category: "Göttin",
+    },
+    redCarpet: {
+      name: "Red-Carpet-Materialien",
+      description: "Event-Punkte aus Jubelstäben, Klatschpappen und Vintage-Kameras berechnen.",
+      category: "Event",
+    },
+    cityUpgrade: {
+      name: "Stadtausbau",
+      description: "Wechselbriefe für eine Stadt und die nötigen Gruppen-Meilensteine planen.",
+      category: "Große Reise",
+    },
+    route: {
+      name: "Routenrechner",
+      description: "Reisezeit, Gewinn und Effizienz einer Rundreise über zwei bis sechs Städte vergleichen.",
+      category: "Große Reise",
+    },
+    irrigation: {
+      name: "Bewässerungsplaner",
+      description:
+        "Gebäude auf vier 12×12-Feldern platzieren, sehen, welche Wasserquellen welche Grundfläche erreichen, und den Löser die beste Ausbeute suchen lassen.",
+      category: "Stadtaufbau",
+    },
+    example: {
+      name: "Rohstoffwert",
+      description: "Referenz-Umsetzung, die als Vorlage für neue Rechner dient.",
+      category: "Referenz",
+    },
+  },
+  irrigation: {
+    eyebrow: "Stadtaufbau",
+    openFullScreen: "Im Vollbild öffnen",
+    frameTitle: "Bewässerungsplaner",
+    languageNote:
+      "Der Planer selbst ist eine eigenständige Anwendung und derzeit nur auf Englisch verfügbar. Die Darstellung folgt der Seite.",
+    model:
+      "Ein Produktionsgebäude zählt die Summe jeder Wasserquelle, deren Reichweite seine Grundfläche irgendwo berührt — jede Quelle einmal, ob sich die Reichweiten überschneiden oder nicht. Das Ziel sind 640 Wasser.",
+    storage:
+      "Layouts, Gebäudetypen, Forschung und Boni liegen ausschließlich in deinem Browser. Über „Export“ im Einstellungs-Tab des Planers gibst du eine Konfiguration an andere weiter.",
+    tagSolver: "Automatischer Layout-Löser",
+    tagTiers: "Wasserstufen +50 / +25 / +10 %",
+    tagWorkers: "Arbeiterverteilung",
+    tagIo: "Import / Export",
+  },
+  calculator: {
+    goddessMaterialsEyebrow: "Göttinnen-Fortschritt",
+    goddessMaterialsIntro:
+      "Berechne die Göttinnen-Punkte, die deine Olivenzweige, Blütenkronen und Tributplatten einbringen.",
+    goddessMaterialsResult: "Göttinnen-Punkte gesamt",
+    goddessXpEyebrow: "Göttinnen-Fortschritt",
+    goddessXpIntro: "Berechne die EP zwischen zwei Göttinnen-Stufen. Unterstützt werden die Stufen {min}–{max}.",
+    goddessXpResult: "Benötigte EP gesamt",
+    goddessXpFrom: "Aktuelle Stufe",
+    goddessXpTo: "Zielstufe",
+    goddessXpRange: "Stufe {from} → {to}",
+    goddessXpNote:
+      "Die EP-Werte stammen aus dem Göttinnen-Stufendatensatz von Pop Bot. Ändert sich die Quelle, werden versionierte Daten und Tests gemeinsam angepasst.",
+    redCarpetEyebrow: "Red Carpet Night",
+    redCarpetIntro: "Berechne die Event-Punkte aus Jubelstäben, Klatschpappen und Vintage-Kameras.",
+    materialsResult: "Punkte gesamt",
+    materialsPointsEach: "× {points} Punkte",
+    materialsPrompt: "Trage deine Materialien ein, um ihren Wert zu berechnen.",
+    materialsNote:
+      "Rechnet nur mit den eingetragenen Mengen; dein tatsächliches Inventar und der Event-Fortschritt können nicht ausgelesen werden.",
+    cityEyebrow: "Große Reise",
+    cityIntro: "Berechne die Wechselbriefe für eine Zielstadt und alle nötigen Gruppen-Meilensteine.",
+    cityTarget: "Zielstadt",
+    cityCurrent: "Aktuelle Stufe",
+    cityDesired: "Gewünschte Stufe",
+    cityGroupLevels: "Aktuelle Gruppenstufen",
+    cityGroupRequired: "Erforderlich: {level}",
+    cityResult: "Wechselbriefe gesamt",
+    cityNoPeers: "Keine Ausbauten in Nachbarstädten nötig.",
+    cityToLevel: "→ Stufe {level}",
+    cityNote:
+      "Die Ausbaupreise gehören zur Zielstufe. Gruppen-Schranken greifen alle fünf Stufen und kosten selbst keine Wechselbriefe. Städte und Dörfer gehen bis Stufe 30, Metropolen bis Stufe 35.",
+    routeEyebrow: "Große Reise",
+    routeIntro:
+      "Stelle eine Rundreise über zwei bis sechs Städte zusammen und vergleiche jede Etappe, Reisezeit, Gewinn und Gewinn pro Stunde.",
+    routeOrder: "Reihenfolge der Route",
+    routeAddCity: "Stadt hinzufügen",
+    routeCityLabel: "Stadt {index}",
+    routeRemove: "{city} entfernen",
+    routeTravelTime: "Reisezeit",
+    routeTotalProfit: "Gewinn gesamt",
+    routeProfitPerHour: "Gewinn / Stunde",
+    routeAssumptionsTitle: "Annahmen des Voll-Ausbau-Modells",
+    routeNote:
+      "Der Rechner bewertet nur die von dir gewählte Reihenfolge; er optimiert die Route nicht und prüft weder Kartenzugang noch Schiffsreichweite.",
+    exampleEyebrow: "Referenz-Umsetzung",
+    exampleIntro:
+      "Multipliziert eine Stückzahl mit ihrem Punktwert. Kopiere diese Seite für einen neuen Rechner und ersetze Eingaben und Formel.",
+    exampleItems: "Anzahl der Gegenstände",
+    exampleValue: "Punkte pro Gegenstand",
+    exampleResult: "Gesamtwert",
+    exampleNote: "{items} Gegenstände × {value} Punkte",
+  },
+  units: { hour: "h", minute: "min" },
+  materials: {
+    olive: "Olivenzweig",
+    corolla: "Blütenkrone",
+    tribute: "Tributplatte",
+    cheer: "Jubelstab",
+    clapper: "Klatschpappe",
+    camera: "Vintage-Kamera",
+  },
+  cityTypes: { Town: "Dorf", City: "Stadt", Metropolis: "Metropole" },
+  cityGroups: {
+    "Iberian Domain": "Iberische Domäne",
+    "French Waters": "Französische Gewässer",
+    "North Sea States": "Nordsee-Staaten",
+    "North Atlantic Islands": "Nordatlantik-Inseln",
+    "North American East Coast Islands": "Inseln der nordamerikanischen Ostküste",
+    "Gulf of Mexico Waters": "Gewässer des Golfs von Mexiko",
+    "Caribbean Pirate Territory": "Karibisches Piratengebiet",
+    "Mediterranean City-State League": "Mittelmeer-Städtebund",
+  },
+  routeAssumptions: [
+    "Gildenmeister-Rang (+15)",
+    "Alle Städte auf Stufe 30",
+    "Alle Metropolen auf Stufe 35",
+    "Keine Events aktiv",
+    "Alle Shop-Gegenstände freigeschaltet",
+    "Maximale Mengen kaufen und verkaufen",
+    "Schiffswerte: Segel 60, Nägel 50, Kajüte 60, Galionsfigur 60",
+  ],
+  errors: {
+    generic: "Diese Werte lassen sich nicht berechnen.",
+    wholeNumbers: "Stufen müssen ganze Zahlen sein.",
+    levelRange: "Die Stufen müssen zwischen {min} und {max} liegen.",
+    intendedHigher: "Die Zielstufe muss höher sein als die aktuelle Stufe.",
+    targetHigher: "Die Zielstufe muss höher sein als die aktuelle Stufe.",
+    targetNotLower: "Die Zielstufe darf nicht niedriger sein als die aktuelle Stufe.",
+    negativeLevel: "Die aktuelle Stufe darf nicht negativ sein.",
+    cityMaxLevel: "{city} unterstützt Stufen bis {max}.",
+    unknownCity: "Unbekannte Stadt: {city}.",
+    peerRange: "Die aktuelle Stufe von {city} muss zwischen 0 und {max} liegen.",
+    routeCount: "Wähle zwischen {min} und {max} Städte.",
+    routeDuplicate: "Jede Stadt darf nur einmal vorkommen.",
+  },
+  newsEntries: {
+    relaunch: {
+      title: "Neue Navigation, drei Sprachen",
+      summary: "Die Seite hat jetzt eine Seitenleiste und spricht Englisch, Deutsch und Französisch.",
+      body: [
+        "Alles ist jetzt über die Seitenleiste links erreichbar: News, Guides, Rechner und Simulationen. Das Filterfeld oben in der Leiste durchsucht sämtliche Einträge — auch bei vielen Guides bleibt so alles einen Tastendruck entfernt statt weit unten auf der Seite.",
+        "Das Sprachmenü sitzt in der oberen Leiste, deine Wahl merkt sich dieser Browser. Die Gegenstands- und Gebäudenamen sind von Hand übersetzt und können von der Schreibweise in deinem Spielclient abweichen — Korrekturen gern über Discord.",
+      ],
+    },
+    planner: {
+      title: "Bewässerungsplaner ist dazugekommen",
+      summary: "Der Feldplaner samt automatischem Layout-Löser gehört jetzt zur Werkzeugsammlung.",
+      body: [
+        "Der Bewässerungsplaner verteilt Gebäude auf vier 12×12-Felder, zeigt, welche Wasserquellen welche Grundfläche erreichen, und sucht die Anordnung mit der höchsten Ausbeute. Er liegt jetzt unter „Simulationen“ und übernimmt die Darstellung der Seite.",
+        "Er bleibt eine eigenständige Anwendung und ist deshalb vorerst nur auf Englisch verfügbar. Alles, was du planst, bleibt in deinem eigenen Browser.",
+      ],
+    },
+  },
+  guideEntries: {
+    waterSupply: {
+      title: "Wasserversorgung und Produktionsboni",
+      summary: "Wie das Wasser eines Gebäudes gezählt wird und was jede Bonusstufe bringt.",
+      intro:
+        "Wasser entscheidet darüber, wie viel ein Produktionsgebäude tatsächlich herstellt. Die folgenden Regeln sind die, mit denen der Bewässerungsplaner rechnet; im Einstellungs-Tab lässt sich jeder Wert ändern, falls dein Spiel abweicht.",
+      sections: [
+        {
+          heading: "Was als Wasser zählt",
+          body: [
+            "Ein Produktionsgebäude addiert jede Wasserquelle, deren Reichweite seine Grundfläche irgendwo berührt. Ein einziges überlappendes Feld genügt — die Quelle muss das Gebäude nicht vollständig abdecken.",
+            "Jede Quelle zählt einmal. Zwei Quellen, deren Reichweiten sich über demselben Gebäude überschneiden, steuern trotzdem jeweils ihren vollen Wert bei; überlappende Reichweiten sind also kein Verlust, aber dieselbe Quelle wird nie doppelt gezählt.",
+          ],
+        },
+        {
+          heading: "Die vier Bonusstufen",
+          body: [
+            "Bis 120 Wasser gibt es gar keinen Bonus. Bis 310 sind es +10 %, bis 630 sind es +25 %, und über 630 erreicht das Gebäude die oberste Stufe mit +50 %.",
+            "Deshalb lohnt sich die Zahl 640: Sie überschreitet die letzte Schwelle mit etwas Puffer, sodass eine kleine Änderung am Layout das Gebäude nicht gleich wieder auf +25 % zurückwirft.",
+          ],
+        },
+        {
+          heading: "Das Platzbudget",
+          body: [
+            "Vier Felder zu 12×12 ergeben zusammen 576 Plätze. Produktionsgebäude und Wasserquellen teilen sich dieses Budget — jede zusätzliche Quelle ist ein Platz, der nicht in Produktion fließt.",
+            "Der Planer zeigt die Aufteilung live an und warnt, sobald ein Layout mehr Plätze braucht, als die Felder hergeben.",
+          ],
+        },
+        {
+          heading: "Arbeiterobergrenzen",
+          body: [
+            "Eine Arbeiterobergrenze ist die höchste Zahl an Arbeiterplätzen, die eine Gebäudefamilie erreichen kann — unabhängig von ihrer Stufe. Eine 0 bedeutet: keine Obergrenze, dann entscheidet allein die Stufentabelle.",
+            "Die Familien sind: Sandstein, Fischteich, Flachsfeld, Papyrus, Mörtel und Lehmziegel in der einen Gruppe; Gold, Natron, Trockenplatz und Hieroglyphenpresse in der anderen. Einzelne Gebäude können ihre Familie im Typ-Editor des Planers überschreiben.",
+          ],
+        },
+      ],
+      note:
+        "Die genannten Schwellen sind die Standardwerte des Planers. Zeigt dein Spiel andere Zahlen, ändere sie im Einstellungs-Tab und sag uns auf Discord Bescheid, damit wir die Standardwerte korrigieren.",
+    },
+  },
+  auth: {
+    signIn: "Anmelden",
+    signOut: "Abmelden",
+    name: "Name",
+    password: "Passwort",
+    wrongCredentials: "Name und Passwort passen zu keinem Demo-Konto.",
+    demoTitle: "Demo-Anmeldung — kein echter Schutz",
+    demoBody:
+      "Diese Seite wird als statische Dateien ausgeliefert, es gibt also keinen Server, der ein Passwort prüfen könnte. Diese Zugangsdaten stecken in der Seite selbst und sind für jeden lesbar. Die Oberflächen dahinter existieren, damit Aufbau und Texte schon abgestimmt werden können, bevor das Backend steht.",
+    demoAccounts: "Demo-Konten",
+    signedInAs: "Angemeldet als",
+    noAccess: "Deine Rolle deckt diese Seite nicht ab.",
+    needSignIn: "Melde dich an, um diese Seite zu öffnen.",
+    toAdmin: "Zum Admin-Bereich",
+  },
+  admin: {
+    title: "Admin-Bereich",
+    lede:
+      "Rollen, Discord-Zuordnung und Team. Alles hier ist ein Entwurf im Frontend — es wird nichts an einen Server geschickt.",
+    tabRoles: "Rollen & Discord",
+    tabTeam: "Team",
+    tabPermissions: "Rechte",
+    tabIntegration: "Anbindung",
+    mappingTitle: "Discord-Rollen zuordnen",
+    mappingLede:
+      "Welche Discord-Rolle welche Rolle auf dieser Seite vergibt. Hat jemand mehrere, gilt die höchste.",
+    mappingRoleName: "Discord-Rolle",
+    mappingRoleId: "Rollen-ID",
+    mappingSiteRole: "Rolle auf der Seite",
+    mappingAdd: "Zuordnung hinzufügen",
+    mappingRemove: "Entfernen",
+    mappingEmpty: "Noch keine Zuordnung eingerichtet.",
+    mappingReset: "Auf Standard zurücksetzen",
+    mappingLocal: "Änderungen bleiben in diesem Browser.",
+    mappingIdNote: "In Discord Rechtsklick auf die Rolle → Rollen-ID kopieren (Entwicklermodus nötig).",
+    teamTitle: "Team",
+    teamLede: "Wer welche Rolle hat. Sobald Discord angebunden ist, kommt diese Liste vom Server.",
+    teamName: "Name",
+    teamDiscord: "Discord",
+    teamRole: "Rolle",
+    teamLastSeen: "Zuletzt gesehen",
+    teamNever: "nie",
+    permissionsTitle: "Was jede Rolle darf",
+    permissionsLede:
+      "Die Oberfläche entscheidet anhand dieser Tabelle, was sie anzeigt. Der Server muss dieselbe Tabelle durchsetzen — ein versteckter Knopf ist keine verschlossene Tür.",
+    permissionColumn: "Recht",
+    integrationTitle: "Was noch fehlt",
+    integrationLede: "Alles, was aus diesen Oberflächen einen funktionierenden Bereich macht.",
+    integrationDocs: "Anleitung zur Anbindung lesen",
+    integrationSteps: [
+      "Ein Hosting, das Servercode ausführen kann. GitHub Pages liefert nur Dateien aus — es kann kein Discord-Client-Secret halten und keinen OAuth-Rückruf beantworten.",
+      "Eine Discord-Anwendung mit OAuth2, den Berechtigungen `identify` und `guilds.members.read` und der Weiterleitungs-URL des neuen Hostings.",
+      "Ein serverseitig signiertes Sitzungs-Cookie mit der Benutzer-ID und der aus der Zuordnung abgeleiteten Rolle.",
+      "Tabellen für Mitglieder, Rollen-Zuordnungen, Guides, Guide-Übersetzungen und Medien.",
+      "Bildspeicher plus ein Upload-Endpunkt, der Typ und Größe prüft.",
+      "Rechteprüfung an jedem schreibenden Endpunkt, mit derselben Tabelle wie im Reiter „Rechte“.",
+    ],
+  },
+  editor: {
+    title: "Neuer Guide",
+    lede:
+      "Guide schreiben, Bilder hinzufügen und das Ergebnis exportieren. Sobald das Backend steht, speichert dieses Formular direkt.",
+    fieldTitle: "Titel",
+    fieldSlug: "URL-Abschnitt",
+    fieldSlugNote: "Wird zu /guides/<abschnitt>/",
+    fieldSummary: "Kurzfassung",
+    fieldSummaryNote: "Ein Satz, erscheint in der Guide-Liste",
+    fieldIntro: "Einleitung",
+    sections: "Abschnitte",
+    sectionHeading: "Überschrift",
+    sectionBody: "Text",
+    sectionBodyNote: "Eine Leerzeile beginnt einen neuen Absatz",
+    sectionNumber: "Abschnitt {n}",
+    addSection: "Abschnitt hinzufügen",
+    removeSection: "Abschnitt entfernen",
+    fieldNote: "Schlussbemerkung",
+    images: "Bilder",
+    imagesLede:
+      "Wähle Bilder aus, um sie in der Vorschau zu sehen. Sie bleiben in diesem Browser — zum Hochladen braucht es das Backend.",
+    dropzone: "Bilder auswählen oder hier ablegen",
+    dropzoneNote: "PNG, JPG, WebP oder GIF",
+    removeImage: "Bild entfernen",
+    preview: "Vorschau",
+    previewEmpty: "Fang an zu schreiben, dann erscheint der Guide hier.",
+    payload: "Export",
+    payloadLede:
+      "Genau das wird die künftige API entgegennehmen. Kopiere es, um einen Guide bis dahin weiterzugeben.",
+    copy: "Kopieren",
+    copied: "Kopiert",
+    saveDraft: "Entwurf speichern",
+    draftSaved: "Entwurf in diesem Browser gespeichert",
+    loadDraft: "Entwurf laden",
+    clearDraft: "Entwurf verwerfen",
+    noServerTitle: "Es wird nichts hochgeladen",
+    noServerBody:
+      "Hinter diesem Formular steht kein Server. Bilder liegen nur in diesem Tab und sind beim Schließen weg — nutze den Export, um deine Arbeit zu sichern.",
+    translationNote:
+      "Ein veröffentlichter Guide braucht seinen Text in jeder Sprache der Seite. Exportiere den Entwurf und gib ihn an die Person weiter, die die Übersetzungen einträgt.",
+  },
+  footer: {
+    disclaimer:
+      "LoA Alexandria · Community-Werkzeuge für Pop Epoch. Ein inoffizielles Fan-Projekt, weder mit dem Publisher des Spiels verbunden noch von ihm unterstützt. Alle Spielnamen gehören ihren jeweiligen Inhabern.",
+    source: "Quellcode und Dokumentation",
+  },
+};
+
+export default de;
