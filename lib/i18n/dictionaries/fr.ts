@@ -302,17 +302,9 @@ const fr: Dictionary = {
   auth: {
     signIn: "Se connecter",
     signOut: "Se déconnecter",
-    name: "Nom",
-    password: "Mot de passe",
-    wrongCredentials: "Ce nom et ce mot de passe ne correspondent à aucun compte de démonstration.",
-    demoTitle: "Connexion de démonstration — aucune protection réelle",
-    demoBody:
-      "Ce site est exporté sous forme de fichiers statiques : aucun serveur ne peut vérifier un mot de passe. Ces identifiants sont inclus dans la page et tout le monde peut les lire. Les écrans derrière ce formulaire existent pour valider la mise en page et les textes avant que le backend ne soit écrit.",
-    demoAccounts: "Comptes de démonstration",
     signedInAs: "Connecté en tant que",
     noAccess: "Votre rôle ne couvre pas cette page.",
     needSignIn: "Connectez-vous pour ouvrir cette page.",
-    toAdmin: "Aller au panneau d’administration",
   },
   admin: {
     title: "Panneau d’administration",

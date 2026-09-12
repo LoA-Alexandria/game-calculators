@@ -302,17 +302,9 @@ const de: Dictionary = {
   auth: {
     signIn: "Anmelden",
     signOut: "Abmelden",
-    name: "Name",
-    password: "Passwort",
-    wrongCredentials: "Name und Passwort passen zu keinem Demo-Konto.",
-    demoTitle: "Demo-Anmeldung — kein echter Schutz",
-    demoBody:
-      "Diese Seite wird als statische Dateien ausgeliefert, es gibt also keinen Server, der ein Passwort prüfen könnte. Diese Zugangsdaten stecken in der Seite selbst und sind für jeden lesbar. Die Oberflächen dahinter existieren, damit Aufbau und Texte schon abgestimmt werden können, bevor das Backend steht.",
-    demoAccounts: "Demo-Konten",
     signedInAs: "Angemeldet als",
     noAccess: "Deine Rolle deckt diese Seite nicht ab.",
     needSignIn: "Melde dich an, um diese Seite zu öffnen.",
-    toAdmin: "Zum Admin-Bereich",
   },
   admin: {
     title: "Admin-Bereich",

@@ -18,7 +18,6 @@ import {
   PenIcon,
   SearchIcon,
   SECTION_ICONS,
-  ShieldIcon,
 } from "./Icons";
 
 function matches(haystack: string, needle: string): boolean {
@@ -27,7 +26,7 @@ function matches(haystack: string, needle: string): boolean {
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const { t } = useLocale();
-  const { allows } = useAuth();
+  const { allows, session, loading, error: authError, signIn, signOut } = useAuth();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [filter, setFilter] = useState("");
@@ -74,10 +73,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   const nothingFound = query.length > 0 && sections.length === 0;
   const activeSection = SECTIONS.find((section) => pathname?.startsWith(section.href));
-  // /admin/ and /guides/new/ are not browsable sections, so name them directly
-  const context = pathname?.startsWith("/admin/")
-    ? t.nav.admin
-    : pathname === "/guides/new/"
+  // /guides/new/ is not a browsable section, so name it directly.
+  const context = pathname === "/guides/new/"
       ? t.nav.newGuide
       : (activeSection?.label(t) ?? t.nav.home);
 
@@ -191,9 +188,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             {!DISCORD_CONFIGURED && <span className="pill pill-warn">TODO</span>}
           </a>
           <div className="sidebar-meta-row">
-            <Link className="sidebar-meta" href="/admin/">
-              <ShieldIcon className="icon icon-sm" /> {t.nav.admin}
-            </Link>
             <a className="sidebar-meta" href={REPOSITORY_URL} target="_blank" rel="noreferrer">
               {t.shell.github}
             </a>
@@ -214,6 +208,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </button>
           <div className="topbar-context">{context}</div>
           <span className="topbar-spacer" />
+          {!loading && (session
+            ? <div className="topbar-account"><span>{session.name}</span><button type="button" onClick={() => void signOut()}>{t.auth.signOut}</button></div>
+            : <button className="topbar-sign-in" type="button" onClick={() => void signIn()}>{t.auth.signIn}</button>
+          )}
           <a
             className="icon-button topbar-discord"
             href={DISCORD_URL}
@@ -227,6 +225,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <LanguageMenu />
           <ThemeToggle />
         </header>
+
+        {authError && (
+          <div className="auth-banner" role="alert">
+            <strong>Discord sign-in failed.</strong> {authError}
+          </div>
+        )}
 
         <main className="content" id="content">{children}</main>
 
