@@ -6,7 +6,7 @@ The frontend uses Discord login through Supabase. A Supabase Edge Function check
 
 In GitHub, open **Settings → Secrets and variables → Actions → Variables** and add:
 
-- `NEXT_PUBLIC_SUPABASE_URL`: `https://puagqclhyzckitetsfc.supabase.co`
+- `NEXT_PUBLIC_SUPABASE_URL`: `https://puaggqclhyzckitetsfc.supabase.co`
 - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`: the project's `sb_publishable_…` key
 
 For local development, copy `.env.example` to `.env.local` and fill in the same values. These values identify the Supabase project but do not bypass database security.
@@ -22,10 +22,10 @@ The Discord provider must request `identify` and `guilds.members.read`; the fron
 
 ## Database and function
 
-Install the Supabase CLI, log in, and link this repository to project `puagqclhyzckitetsfc`. Then apply the checked-in migration and deploy the function:
+Install the Supabase CLI, log in, and link this repository to project `puaggqclhyzckitetsfc`. Then apply the checked-in migration and deploy the function:
 
 ```sh
-supabase link --project-ref puagqclhyzckitetsfc
+supabase link --project-ref puaggqclhyzckitetsfc
 supabase db push
 supabase functions deploy verify-discord-role
 ```

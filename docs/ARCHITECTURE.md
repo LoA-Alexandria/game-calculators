@@ -67,22 +67,17 @@ The visual identity is built from original CSS geometry and hand-drawn SVG in
 artwork, logo, icon, or typeface from the game; the footer states that the site
 is an unofficial fan project.
 
-## Roles and the admin area
+## Discord roles and protected editing
 
-`lib/auth/roles.ts` holds the roles (`admin`, `manager`, `guide_writer`), the
-permission table, and the "highest role wins" rule. It is free of UI and demo
-code so a future server can import it unchanged.
+`lib/auth/roles.ts` defines UI permissions. Supabase Auth supplies the signed-in
+Discord identity, and the `verify-discord-role` Edge Function checks server
+membership and the configured roles. The resulting `editor_access` row is
+server-maintained and protected with RLS.
 
-`/admin/` and `/guides/new/` are **front-end drafts with no security**. The site
-is a static export, so the sign-in check runs in the browser against credentials
-that ship inside the bundle, and the session is a localStorage entry the visitor
-can write. Both routes carry `robots: noindex`, which is the only protection a
-static host can offer.
-
-Do not extend `lib/auth/demo.ts`. Read
-[`AUTH-AND-CMS.md`](AUTH-AND-CMS.md) before touching anything under
-`app/admin/` — it records the data shapes, the endpoints the interface expects,
-and what must be deleted when the real backend lands.
+`/guides/new/` requires verified guide-writer access. It currently saves drafts
+only in the editor's browser; shared publishing and revision storage are still
+to be implemented. Read [`AUTH-AND-CMS.md`](AUTH-AND-CMS.md) before adding any
+write path.
 
 ## Vendored applications
 

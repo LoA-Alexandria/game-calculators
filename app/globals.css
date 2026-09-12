@@ -385,6 +385,9 @@ p { margin: 0; }
 .topbar .topbar-menu { display: none; }
 .topbar-context { font-size: .87rem; font-weight: 550; color: var(--ink-soft); }
 .topbar-spacer { flex: 1; }
+.topbar-account { display: flex; align-items: center; gap: 8px; color: var(--ink-soft); font-size: .78rem; }
+.topbar-account button, .topbar-sign-in { min-height: 32px; padding: 5px 10px; border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--surface); color: var(--ink); font: inherit; font-size: .78rem; font-weight: 650; cursor: pointer; }
+.topbar-account button:hover, .topbar-sign-in:hover { border-color: var(--accent); color: var(--accent); }
 
 .icon-button {
   display: inline-flex;

@@ -33,11 +33,5 @@ export const THEME_STORAGE_KEY = "popepoch-theme";
 /** Key holding the reader's language choice. */
 export const LOCALE_STORAGE_KEY = "popepoch-locale";
 
-/**
- * Demo-only keys. The session one holds a role that nothing verifies, so it is
- * named to make that obvious in devtools. Both disappear with the real backend
- * — see docs/AUTH-AND-CMS.md.
- */
-export const SESSION_STORAGE_KEY = "popepoch-demo-session";
-export const MAPPINGS_STORAGE_KEY = "popepoch-demo-role-mappings";
-export const GUIDE_DRAFT_STORAGE_KEY = "popepoch-demo-guide-draft";
+/** Local autosave key for an editor's in-progress guide draft. */
+export const GUIDE_DRAFT_STORAGE_KEY = "popepoch-guide-draft";

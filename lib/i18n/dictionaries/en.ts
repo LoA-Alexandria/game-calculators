@@ -300,17 +300,9 @@ const en = {
   auth: {
     signIn: "Sign in",
     signOut: "Sign out",
-    name: "Name",
-    password: "Password",
-    wrongCredentials: "That name and password do not match a demo account.",
-    demoTitle: "Demo sign-in — no real protection",
-    demoBody:
-      "This site is exported as static files, so there is no server that could check a password. These credentials ship inside the page and anyone can read them. The screens behind this form exist so the layout and wording can be reviewed before the backend is built.",
-    demoAccounts: "Demo accounts",
     signedInAs: "Signed in as",
     noAccess: "Your role does not cover this page.",
     needSignIn: "Sign in to open this page.",
-    toAdmin: "Go to the admin panel",
   },
   admin: {
     title: "Admin panel",
