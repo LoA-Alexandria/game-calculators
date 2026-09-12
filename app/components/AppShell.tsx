@@ -1,0 +1,240 @@
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { SECTIONS, type NavItem, type NavSection } from "../../lib/navigation";
+import { DISCORD_CONFIGURED, DISCORD_URL, REPOSITORY_URL } from "../../lib/site";
+import { useAuth } from "./AuthProvider";
+import { useLocale } from "./LocaleProvider";
+import { LanguageMenu } from "./LanguageMenu";
+import { ThemeToggle } from "./ThemeToggle";
+import {
+  BrandMark,
+  CloseIcon,
+  DiscordIcon,
+  HomeIcon,
+  MenuIcon,
+  PenIcon,
+  SearchIcon,
+  SECTION_ICONS,
+  ShieldIcon,
+} from "./Icons";
+
+function matches(haystack: string, needle: string): boolean {
+  return haystack.toLocaleLowerCase().includes(needle);
+}
+
+export function AppShell({ children }: { children: React.ReactNode }) {
+  const { t } = useLocale();
+  const { allows } = useAuth();
+  const pathname = usePathname();
+  const [open, setOpen] = useState(false);
+  const [filter, setFilter] = useState("");
+
+  /**
+   * On a phone the overlay covers the page, so following any link inside it
+   * should close it. Handled on the click rather than by watching the path, so
+   * tapping the already-current entry closes it too.
+   */
+  const closeIfNavigating = (event: React.MouseEvent) => {
+    if ((event.target as HTMLElement).closest("a")) setOpen(false);
+  };
+
+  useEffect(() => {
+    if (!open) return;
+    const onKeyDown = (event: KeyboardEvent) => { if (event.key === "Escape") setOpen(false); };
+    document.addEventListener("keydown", onKeyDown);
+    document.body.classList.add("nav-open");
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      document.body.classList.remove("nav-open");
+    };
+  }, [open]);
+
+  const query = filter.trim().toLocaleLowerCase();
+
+  /** Sections keep their heading while filtering; only the items narrow. */
+  const sections = useMemo<{ section: NavSection; items: NavItem[] }[]>(() => {
+    if (!query) return SECTIONS.map((section) => ({ section, items: section.items }));
+    return SECTIONS.map((section) => {
+      // A section whose own name matches keeps all of its entries.
+      const sectionHit = matches(section.label(t), query);
+      const items = section.items.filter(
+        (item) =>
+          sectionHit ||
+          matches(item.label(t), query) ||
+          matches(item.description?.(t) ?? "", query),
+      );
+      return { section, items, sectionHit };
+    })
+      .filter((entry) => entry.items.length > 0 || entry.sectionHit)
+      .map(({ section, items }) => ({ section, items }));
+  }, [query, t]);
+
+  const nothingFound = query.length > 0 && sections.length === 0;
+  const activeSection = SECTIONS.find((section) => pathname?.startsWith(section.href));
+  // /admin/ and /guides/new/ are not browsable sections, so name them directly
+  const context = pathname?.startsWith("/admin/")
+    ? t.nav.admin
+    : pathname === "/guides/new/"
+      ? t.nav.newGuide
+      : (activeSection?.label(t) ?? t.nav.home);
+
+  return (
+    <div className="layout-root">
+      <a className="skip-link" href="#content">{t.shell.skipToContent}</a>
+
+      <button
+        type="button"
+        className="nav-scrim"
+        hidden={!open}
+        aria-label={t.shell.closeMenu}
+        onClick={() => setOpen(false)}
+      />
+
+      <aside
+        className={open ? "sidebar is-open" : "sidebar"}
+        aria-label={t.shell.sectionLabel}
+        onClick={closeIfNavigating}
+      >
+        <div className="sidebar-head">
+          <Link className="brand" href="/">
+            <span className="brand-mark"><BrandMark className="icon" /></span>
+            <span className="brand-text">
+              <strong>{t.shell.brand}</strong>
+              <span>{t.shell.tagline}</span>
+            </span>
+          </Link>
+          <button
+            type="button"
+            className="icon-button sidebar-close"
+            aria-label={t.shell.closeMenu}
+            onClick={() => setOpen(false)}
+          >
+            <CloseIcon className="icon" />
+          </button>
+        </div>
+
+        <div className="nav-filter">
+          <SearchIcon className="icon" />
+          <input
+            type="search"
+            value={filter}
+            aria-label={t.shell.filterLabel}
+            placeholder={t.shell.filterPlaceholder}
+            onChange={(event) => setFilter(event.target.value)}
+          />
+        </div>
+
+        <nav className="sidebar-nav" aria-label={t.shell.sectionLabel}>
+          <Link className={pathname === "/" ? "nav-link is-active" : "nav-link"} href="/">
+            <HomeIcon className="icon" />
+            <span>{t.nav.home}</span>
+          </Link>
+
+          {sections.map(({ section, items }) => {
+            const Icon = SECTION_ICONS[section.icon];
+            const sectionActive = pathname?.startsWith(section.href) ?? false;
+            return (
+              <div className="nav-group" key={section.id}>
+                <Link
+                  className={sectionActive ? "nav-link is-active" : "nav-link"}
+                  href={section.href}
+                >
+                  <Icon className="icon" />
+                  <span>{section.label(t)}</span>
+                  {section.items.length > 0 && (
+                    <span className="nav-count">{section.items.length}</span>
+                  )}
+                </Link>
+                {items.length > 0 && (
+                  <ul className="nav-sublist">
+                    {items.map((item) => (
+                      <li key={item.href}>
+                        <Link
+                          className={pathname === item.href ? "nav-sublink is-active" : "nav-sublink"}
+                          href={item.href}
+                        >
+                          {item.label(t)}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            );
+          })}
+
+          {nothingFound && <p className="nav-empty">{t.shell.filterEmpty}</p>}
+        </nav>
+
+        <div className="sidebar-foot">
+          {allows("guides.draft") && (
+            <Link
+              className={pathname === "/guides/new/" ? "discord-link is-active" : "discord-link"}
+              href="/guides/new/"
+            >
+              <PenIcon className="icon" />
+              <span>{t.nav.newGuide}</span>
+            </Link>
+          )}
+          <a
+            className="discord-link"
+            href={DISCORD_URL}
+            title={t.shell.discordTitle}
+            target="_blank"
+            rel="noreferrer"
+          >
+            <DiscordIcon className="icon" />
+            <span>{t.shell.discord}</span>
+            {!DISCORD_CONFIGURED && <span className="pill pill-warn">TODO</span>}
+          </a>
+          <div className="sidebar-meta-row">
+            <Link className="sidebar-meta" href="/admin/">
+              <ShieldIcon className="icon icon-sm" /> {t.nav.admin}
+            </Link>
+            <a className="sidebar-meta" href={REPOSITORY_URL} target="_blank" rel="noreferrer">
+              {t.shell.github}
+            </a>
+          </div>
+        </div>
+      </aside>
+
+      <div className="layout-main">
+        <header className="topbar">
+          <button
+            type="button"
+            className="icon-button topbar-menu"
+            aria-label={t.shell.openMenu}
+            aria-expanded={open}
+            onClick={() => setOpen(true)}
+          >
+            <MenuIcon className="icon" />
+          </button>
+          <div className="topbar-context">{context}</div>
+          <span className="topbar-spacer" />
+          <a
+            className="icon-button topbar-discord"
+            href={DISCORD_URL}
+            title={t.shell.discordTitle}
+            aria-label={t.shell.discordTitle}
+            target="_blank"
+            rel="noreferrer"
+          >
+            <DiscordIcon className="icon" />
+          </a>
+          <LanguageMenu />
+          <ThemeToggle />
+        </header>
+
+        <main className="content" id="content">{children}</main>
+
+        <footer className="site-footer">
+          <p>{t.footer.disclaimer}</p>
+          <a href={REPOSITORY_URL} target="_blank" rel="noreferrer">{t.footer.source}</a>
+        </footer>
+      </div>
+    </div>
+  );
+}

@@ -1,41 +1,61 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Link from "next/link";
+import { CalculatorHeader } from "../../components/CalculatorHeader";
+import { useLocale } from "../../components/LocaleProvider";
 import { calculateResourceValue } from "../../../lib/calculators/resource-value";
 
+/**
+ * Reference implementation. Copy this file when adding a calculator: it shows
+ * the header, the panel layout, and how text is read from the dictionary
+ * rather than written inline.
+ */
 export default function ExampleCalculator() {
+  const { t, tf, n } = useLocale();
   const [items, setItems] = useState("25");
   const [value, setValue] = useState("4");
-  const total = useMemo(() => {
-    return calculateResourceValue(Number(items), Number(value));
-  }, [items, value]);
+  const total = useMemo(() => calculateResourceValue(Number(items), Number(value)), [items, value]);
 
   return (
-    <main className="calculator-shell">
-      <Link className="back-link" href="/">← All calculators</Link>
-      <header>
-        <div className="eyebrow">Reference implementation</div>
-        <h1>Resource value</h1>
-        <p>Multiply an item quantity by its point value. Copy this page when adding a calculator, then replace the example inputs and formula.</p>
-      </header>
-      <section className="calculator-panel" aria-label="Resource value calculator">
+    <>
+      <CalculatorHeader
+        eyebrow={t.calculator.exampleEyebrow}
+        title={t.tools.example.name}
+        description={t.calculator.exampleIntro}
+      />
+      <section className="calculator-panel" aria-label={t.tools.example.name}>
         <div className="calculator-form">
           <div className="field">
-            <label htmlFor="items">Number of items</label>
-            <input id="items" min="0" inputMode="numeric" type="number" value={items} onChange={(event) => setItems(event.target.value)} />
+            <label htmlFor="items">{t.calculator.exampleItems}</label>
+            <input
+              id="items"
+              min="0"
+              inputMode="numeric"
+              type="number"
+              value={items}
+              onChange={(event) => setItems(event.target.value)}
+            />
           </div>
           <div className="field">
-            <label htmlFor="value">Points per item</label>
-            <input id="value" min="0" inputMode="numeric" type="number" value={value} onChange={(event) => setValue(event.target.value)} />
+            <label htmlFor="value">{t.calculator.exampleValue}</label>
+            <input
+              id="value"
+              min="0"
+              inputMode="numeric"
+              type="number"
+              value={value}
+              onChange={(event) => setValue(event.target.value)}
+            />
           </div>
         </div>
         <div className="result-panel" aria-live="polite">
-          <span className="result-label">Total value</span>
-          <strong className="result-number">{total.toLocaleString()}</strong>
-          <span className="result-note">{items || 0} items × {value || 0} points</span>
+          <span className="result-label">{t.calculator.exampleResult}</span>
+          <strong className="result-number">{n(total)}</strong>
+          <span className="result-note">
+            {tf(t.calculator.exampleNote, { items: items || 0, value: value || 0 })}
+          </span>
         </div>
       </section>
-    </main>
+    </>
   );
 }

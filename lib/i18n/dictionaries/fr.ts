@@ -1,0 +1,409 @@
+import type { Dictionary } from "./en.ts";
+
+/**
+ * Item, building, and city-group names are translated descriptively. They are
+ * not guaranteed to match the French client's official wording — please read
+ * over them and correct anything the game calls differently.
+ */
+const fr: Dictionary = {
+  shell: {
+    brand: "Pop Epoch Tools",
+    tagline: "Outils communautaires",
+    openMenu: "Ouvrir la navigation",
+    closeMenu: "Fermer la navigation",
+    filterLabel: "Filtrer la navigation",
+    filterPlaceholder: "Trouver un outil ou un guide…",
+    filterEmpty: "Aucun résultat.",
+    language: "Langue",
+    theme: "Apparence",
+    themeToLight: "Passer au thème clair",
+    themeToDark: "Passer au thème sombre",
+    discord: "Discord",
+    discordTitle: "Rejoindre la communauté sur Discord",
+    github: "GitHub",
+    skipToContent: "Aller au contenu",
+    sectionLabel: "Section",
+  },
+  nav: {
+    home: "Aperçu",
+    news: "Actualités",
+    guides: "Guides",
+    calculators: "Calculateurs",
+    simulations: "Simulations",
+    admin: "Admin",
+    newGuide: "Nouveau guide",
+  },
+  navDescriptions: {
+    home: "Tout en un coup d’œil",
+    news: "Modifications et ajouts",
+    guides: "Comment fonctionnent les systèmes",
+    calculators: "Des chiffres, une réponse",
+    simulations: "Tester un plan avant de construire",
+  },
+  common: {
+    open: "Ouvrir",
+    openTool: "Ouvrir l’outil",
+    readMore: "Lire",
+    backToOverview: "Retour à l’aperçu",
+    backTo: "Retour à",
+    comingSoon: "En préparation",
+    empty: "Rien pour l’instant.",
+    updated: "Mis à jour",
+    all: "Tout",
+    inThisSection: "Dans cette section",
+    assumptions: "Hypothèses",
+    result: "Résultat",
+    minutes: "min de lecture",
+    new: "Nouveau",
+  },
+  home: {
+    eyebrow: "LoA Alexandria",
+    title: "Votre salle de stratégie.",
+    lede: "Planifiez vos améliorations, comptez vos points d’événement, tracez votre prochain voyage et disposez chaque champ d’irrigation — avec des outils bâtis sur nos données de jeu Pop Epoch partagées.",
+    primaryAction: "Ouvrir le planificateur d’irrigation",
+    secondaryAction: "Voir tous les outils",
+    statTools: "Outils",
+    statSlots: "Cases planifiées",
+    statWater: "Objectif d’eau",
+    statCost: "Prix",
+    statCostValue: "Gratuit",
+    latestNews: "Dernières actualités",
+    allNews: "Toutes les actualités",
+    quickAccess: "Commencer tout de suite",
+    privacy:
+      "Chaque outil fonctionne entièrement dans votre navigateur. Rien de ce que vous saisissez n’est envoyé, et les données de jeu derrière chaque résultat sont versionnées dans le dépôt avec leurs hypothèses.",
+  },
+  news: {
+    title: "Actualités",
+    lede: "Ce qui a changé sur ce site et ce qui a été ajouté.",
+    empty: "Aucune entrée pour l’instant.",
+  },
+  guides: {
+    title: "Guides",
+    lede: "Comment fonctionnent réellement les systèmes derrière les outils — écrit pour que vous n’ayez pas à le redécouvrir.",
+    empty:
+      "Les premiers guides sont en cours de rédaction. En attendant, chaque outil explique ses hypothèses à côté du résultat.",
+  },
+  calculators: {
+    title: "Calculateurs",
+    lede: "Saisissez vos chiffres, obtenez la réponse et voyez quelle hypothèse l’a produite.",
+  },
+  simulations: {
+    title: "Simulations",
+    lede: "Construisez un plan, essayez-le et comparez le résultat avant de dépenser quoi que ce soit en jeu.",
+  },
+  tools: {
+    goddessMaterials: {
+      name: "Matériaux de la Déesse",
+      description: "Convertir rameaux d’olivier, corolles et plaques de tribut en points de Déesse.",
+      category: "Déesse",
+    },
+    goddessXp: {
+      name: "XP de la Déesse",
+      description: "Trouver l’XP nécessaire entre deux niveaux de Déesse.",
+      category: "Déesse",
+    },
+    redCarpet: {
+      name: "Matériaux Tapis Rouge",
+      description: "Calculer les points d’événement des bâtons d’acclamation, claquoirs et caméras vintage.",
+      category: "Événement",
+    },
+    cityUpgrade: {
+      name: "Amélioration de ville",
+      description: "Planifier les lettres de change d’une ville et les paliers de groupe requis.",
+      category: "Grand Voyage",
+    },
+    route: {
+      name: "Calculateur d’itinéraire",
+      description: "Comparer durée, profit et efficacité d’une boucle de deux à six villes.",
+      category: "Grand Voyage",
+    },
+    irrigation: {
+      name: "Planificateur d’irrigation",
+      description:
+        "Placer des bâtiments sur quatre champs de 12×12, voir quelles sources d’eau atteignent chaque emprise et laisser le solveur chercher le meilleur rendement.",
+      category: "Plan de ville",
+    },
+    example: {
+      name: "Valeur des ressources",
+      description: "Implémentation de référence servant de modèle aux nouveaux calculateurs.",
+      category: "Référence",
+    },
+  },
+  irrigation: {
+    eyebrow: "Plan de ville",
+    openFullScreen: "Ouvrir en plein écran",
+    frameTitle: "Planificateur d’irrigation",
+    languageNote:
+      "Le planificateur est une application autonome, disponible pour l’instant en anglais uniquement. Il suit le thème du site.",
+    model:
+      "Un bâtiment de production additionne chaque source d’eau dont la portée touche son emprise, où que ce soit — chaque source une seule fois, que les portées se chevauchent ou non. L’objectif est de 640 d’eau.",
+    storage:
+      "Plans, types de bâtiments, recherches et bonus restent uniquement dans votre navigateur. Utilisez « Export » dans l’onglet Réglages du planificateur pour transmettre une configuration.",
+    tagSolver: "Solveur de disposition",
+    tagTiers: "Paliers d’eau +50 / +25 / +10 %",
+    tagWorkers: "Répartition des ouvriers",
+    tagIo: "Import / export",
+  },
+  calculator: {
+    goddessMaterialsEyebrow: "Progression de la Déesse",
+    goddessMaterialsIntro:
+      "Calculez les points de Déesse apportés par vos rameaux d’olivier, corolles et plaques de tribut.",
+    goddessMaterialsResult: "Score de Déesse total",
+    goddessXpEyebrow: "Progression de la Déesse",
+    goddessXpIntro: "Calculez l’XP nécessaire entre deux niveaux de Déesse. Les niveaux {min} à {max} sont pris en charge.",
+    goddessXpResult: "XP totale nécessaire",
+    goddessXpFrom: "Niveau actuel",
+    goddessXpTo: "Niveau visé",
+    goddessXpRange: "Niveau {from} → {to}",
+    goddessXpNote:
+      "Les valeurs d’XP proviennent du jeu de données des niveaux de Déesse de Pop Bot. Si la source change, les données versionnées et les tests sont mis à jour ensemble.",
+    redCarpetEyebrow: "Red Carpet Night",
+    redCarpetIntro: "Calculez les points d’événement des bâtons d’acclamation, claquoirs et caméras vintage.",
+    materialsResult: "Points au total",
+    materialsPointsEach: "× {points} points",
+    materialsPrompt: "Saisissez vos matériaux pour en calculer la valeur.",
+    materialsNote:
+      "N’utilise que les quantités saisies ; l’inventaire réel et la progression de l’événement ne peuvent pas être lus.",
+    cityEyebrow: "Grand Voyage",
+    cityIntro: "Calculez les lettres de change nécessaires pour une ville cible et les paliers de groupe requis.",
+    cityTarget: "Ville cible",
+    cityCurrent: "Niveau actuel",
+    cityDesired: "Niveau souhaité",
+    cityGroupLevels: "Niveaux actuels du groupe",
+    cityGroupRequired: "Requis : {level}",
+    cityResult: "Lettres de change au total",
+    cityNoPeers: "Aucune amélioration de ville voisine nécessaire.",
+    cityToLevel: "→ niveau {level}",
+    cityNote:
+      "Les prix d’amélioration correspondent au niveau d’arrivée. Les paliers de groupe surviennent tous les cinq niveaux et ne coûtent eux-mêmes aucune lettre. Bourgs et villes vont au niveau 30, les métropoles au niveau 35.",
+    routeEyebrow: "Grand Voyage",
+    routeIntro:
+      "Composez une boucle de deux à six villes et comparez chaque étape, la durée, le profit et le profit horaire.",
+    routeOrder: "Ordre de l’itinéraire",
+    routeAddCity: "Ajouter une ville",
+    routeCityLabel: "Ville {index}",
+    routeRemove: "Retirer {city}",
+    routeTravelTime: "Durée du trajet",
+    routeTotalProfit: "Profit total",
+    routeProfitPerHour: "Profit / heure",
+    routeAssumptionsTitle: "Hypothèses du modèle tout-équipé",
+    routeNote:
+      "Le calculateur n’évalue que l’ordre choisi ; il n’optimise pas l’itinéraire et ne vérifie ni l’accès à la carte ni la portée du navire.",
+    exampleEyebrow: "Implémentation de référence",
+    exampleIntro:
+      "Multiplie une quantité par sa valeur en points. Copiez cette page pour un nouveau calculateur, puis remplacez les entrées et la formule.",
+    exampleItems: "Nombre d’objets",
+    exampleValue: "Points par objet",
+    exampleResult: "Valeur totale",
+    exampleNote: "{items} objets × {value} points",
+  },
+  units: { hour: "h", minute: "min" },
+  materials: {
+    olive: "Rameau d’olivier",
+    corolla: "Corolle",
+    tribute: "Plaque de tribut",
+    cheer: "Bâton d’acclamation",
+    clapper: "Claquoir",
+    camera: "Caméra vintage",
+  },
+  cityTypes: { Town: "Bourg", City: "Ville", Metropolis: "Métropole" },
+  cityGroups: {
+    "Iberian Domain": "Domaine ibérique",
+    "French Waters": "Eaux françaises",
+    "North Sea States": "États de la mer du Nord",
+    "North Atlantic Islands": "Îles de l’Atlantique Nord",
+    "North American East Coast Islands": "Îles de la côte est nord-américaine",
+    "Gulf of Mexico Waters": "Eaux du golfe du Mexique",
+    "Caribbean Pirate Territory": "Territoire pirate des Caraïbes",
+    "Mediterranean City-State League": "Ligue des cités-États méditerranéennes",
+  },
+  routeAssumptions: [
+    "Rang de maître de guilde (+15)",
+    "Toutes les villes au niveau 30",
+    "Toutes les métropoles au niveau 35",
+    "Aucun événement actif",
+    "Tous les articles de boutique débloqués",
+    "Acheter et vendre au maximum",
+    "Statistiques du navire : voiles 60, clous 50, cabine 60, figure de proue 60",
+  ],
+  errors: {
+    generic: "Ces valeurs ne peuvent pas être calculées.",
+    wholeNumbers: "Les niveaux doivent être des nombres entiers.",
+    levelRange: "Les niveaux doivent être compris entre {min} et {max}.",
+    intendedHigher: "Le niveau visé doit être supérieur au niveau actuel.",
+    targetHigher: "Le niveau cible doit être supérieur au niveau actuel.",
+    targetNotLower: "Le niveau cible ne peut pas être inférieur au niveau actuel.",
+    negativeLevel: "Le niveau actuel ne peut pas être négatif.",
+    cityMaxLevel: "{city} va jusqu’au niveau {max}.",
+    unknownCity: "Ville inconnue : {city}.",
+    peerRange: "Le niveau actuel de {city} doit être compris entre 0 et {max}.",
+    routeCount: "Choisissez entre {min} et {max} villes.",
+    routeDuplicate: "Chaque ville ne peut apparaître qu’une seule fois.",
+  },
+  newsEntries: {
+    relaunch: {
+      title: "Nouvelle navigation, trois langues",
+      summary: "Le site passe à une barre latérale et parle désormais anglais, allemand et français.",
+      body: [
+        "Tout est maintenant accessible depuis la barre latérale : actualités, guides, calculateurs et simulations. Le champ de filtre en haut parcourt toutes les entrées ; même avec beaucoup de guides, tout reste à une frappe de distance plutôt qu’au bout d’un long défilement.",
+        "Le menu de langue se trouve dans la barre du haut et votre choix est mémorisé dans ce navigateur. Les noms d’objets et de bâtiments ont été traduits à la main et peuvent différer de ceux de votre client de jeu — les corrections sont bienvenues sur Discord.",
+      ],
+    },
+    planner: {
+      title: "Le planificateur d’irrigation rejoint le site",
+      summary: "Le planificateur de champs et son solveur automatique font désormais partie des outils.",
+      body: [
+        "Le planificateur d’irrigation dispose les bâtiments sur quatre champs de 12×12, montre quelles sources d’eau atteignent chaque emprise et cherche la disposition au meilleur rendement. Il se trouve désormais sous « Simulations » et suit le thème du site.",
+        "Il reste une application autonome, donc uniquement en anglais pour le moment, et tout ce que vous planifiez reste dans votre propre navigateur.",
+      ],
+    },
+  },
+  guideEntries: {
+    waterSupply: {
+      title: "Alimentation en eau et bonus de production",
+      summary: "Comment l’eau d’un bâtiment est comptée et ce que vaut chaque palier de bonus.",
+      intro:
+        "L’eau détermine ce qu’un bâtiment de production fabrique réellement. Les règles ci-dessous sont celles qu’applique le planificateur d’irrigation ; chaque valeur est modifiable dans son onglet Réglages si votre jeu diffère.",
+      sections: [
+        {
+          heading: "Ce qui compte comme eau",
+          body: [
+            "Un bâtiment de production additionne chaque source d’eau dont la portée touche son emprise, où que ce soit. Une seule case de chevauchement suffit : la source n’a pas besoin de couvrir tout le bâtiment.",
+            "Chaque source compte une fois. Deux sources qui se chevauchent sur le même bâtiment apportent malgré tout chacune leur valeur complète : les portées superposées ne sont donc pas perdues, mais une même source n’est jamais comptée deux fois.",
+          ],
+        },
+        {
+          heading: "Les quatre paliers de bonus",
+          body: [
+            "Jusqu’à 120 d’eau, aucun bonus. Jusqu’à 310, le bâtiment produit +10 % ; jusqu’à 630, +25 % ; et au-delà de 630, il atteint le palier supérieur à +50 %.",
+            "D’où l’intérêt de viser 640 : on franchit le dernier seuil avec une petite marge, si bien qu’une modification mineure de la disposition ne fait pas retomber le bâtiment à +25 %.",
+          ],
+        },
+        {
+          heading: "Le budget de cases",
+          body: [
+            "Quatre champs de 12×12 donnent 576 cases au total. Bâtiments de production et sources d’eau se partagent ce budget : chaque source supplémentaire est une case en moins pour la production.",
+            "Le planificateur affiche la répartition en direct et avertit dès qu’une disposition demande plus de cases que les champs n’en offrent.",
+          ],
+        },
+        {
+          heading: "Plafonds d’ouvriers",
+          body: [
+            "Un plafond d’ouvriers est le nombre maximal d’emplacements qu’une famille de bâtiments peut atteindre, quel que soit son niveau. Un plafond de 0 signifie qu’il n’y a pas de limite : seule la table des niveaux décide.",
+            "Les familles sont : grès, bassin à poissons, champ de lin, papyrus, mortier et brique de terre d’un côté ; or, natron, aire de séchage et presse à hiéroglyphes de l’autre. Un bâtiment peut déroger à sa famille dans l’éditeur de types du planificateur.",
+          ],
+        },
+      ],
+      note:
+        "Les seuils ci-dessus sont les valeurs par défaut du planificateur. Si votre jeu affiche d’autres chiffres, modifiez-les dans l’onglet Réglages et signalez-le sur Discord afin que les valeurs par défaut soient corrigées.",
+    },
+  },
+  auth: {
+    signIn: "Se connecter",
+    signOut: "Se déconnecter",
+    name: "Nom",
+    password: "Mot de passe",
+    wrongCredentials: "Ce nom et ce mot de passe ne correspondent à aucun compte de démonstration.",
+    demoTitle: "Connexion de démonstration — aucune protection réelle",
+    demoBody:
+      "Ce site est exporté sous forme de fichiers statiques : aucun serveur ne peut vérifier un mot de passe. Ces identifiants sont inclus dans la page et tout le monde peut les lire. Les écrans derrière ce formulaire existent pour valider la mise en page et les textes avant que le backend ne soit écrit.",
+    demoAccounts: "Comptes de démonstration",
+    signedInAs: "Connecté en tant que",
+    noAccess: "Votre rôle ne couvre pas cette page.",
+    needSignIn: "Connectez-vous pour ouvrir cette page.",
+    toAdmin: "Aller au panneau d’administration",
+  },
+  admin: {
+    title: "Panneau d’administration",
+    lede:
+      "Rôles, correspondance Discord et équipe. Tout ici est une maquette côté navigateur — rien n’est envoyé à un serveur.",
+    tabRoles: "Rôles & Discord",
+    tabTeam: "Équipe",
+    tabPermissions: "Droits",
+    tabIntegration: "Intégration",
+    mappingTitle: "Correspondance des rôles Discord",
+    mappingLede:
+      "Quel rôle Discord accorde quel rôle sur ce site. Si quelqu’un en possède plusieurs, le plus élevé s’applique.",
+    mappingRoleName: "Rôle Discord",
+    mappingRoleId: "Identifiant du rôle",
+    mappingSiteRole: "Rôle sur le site",
+    mappingAdd: "Ajouter une correspondance",
+    mappingRemove: "Retirer",
+    mappingEmpty: "Aucune correspondance définie.",
+    mappingReset: "Rétablir les valeurs par défaut",
+    mappingLocal: "Les modifications restent dans ce navigateur.",
+    mappingIdNote:
+      "Dans Discord, clic droit sur le rôle → Copier l’identifiant (mode développeur requis).",
+    teamTitle: "Équipe",
+    teamLede: "Qui détient quel rôle. Une fois Discord connecté, cette liste vient du serveur.",
+    teamName: "Nom",
+    teamDiscord: "Discord",
+    teamRole: "Rôle",
+    teamLastSeen: "Vu la dernière fois",
+    teamNever: "jamais",
+    permissionsTitle: "Ce que chaque rôle peut faire",
+    permissionsLede:
+      "L’interface s’appuie sur ce tableau pour décider quoi afficher. Le serveur doit appliquer le même tableau — un bouton caché n’est pas une porte fermée.",
+    permissionColumn: "Droit",
+    integrationTitle: "Ce qu’il reste à faire",
+    integrationLede: "Tout ce qu’il faut pour transformer ces écrans en panneau fonctionnel.",
+    integrationDocs: "Lire le guide d’intégration",
+    integrationSteps: [
+      "Un hébergement capable d’exécuter du code serveur. GitHub Pages ne sert que des fichiers : il ne peut ni garder un secret client Discord ni répondre à un rappel OAuth.",
+      "Une application Discord avec OAuth2, les portées `identify` et `guilds.members.read`, et l’URL de redirection du nouvel hébergement.",
+      "Un cookie de session signé côté serveur, contenant l’identifiant de l’utilisateur et le rôle déduit de la correspondance.",
+      "Des tables pour les membres, les correspondances de rôles, les guides, leurs traductions et les médias.",
+      "Un stockage d’images et un point d’envoi qui vérifie le type et la taille.",
+      "Une vérification des droits sur chaque écriture, avec le même tableau que l’onglet Droits.",
+    ],
+  },
+  editor: {
+    title: "Nouveau guide",
+    lede:
+      "Rédigez un guide, ajoutez des images et exportez le résultat. Dès que le backend existera, ce formulaire enregistrera directement.",
+    fieldTitle: "Titre",
+    fieldSlug: "Segment d’URL",
+    fieldSlugNote: "Devient /guides/<segment>/",
+    fieldSummary: "Résumé",
+    fieldSummaryNote: "Une phrase, affichée dans la liste des guides",
+    fieldIntro: "Introduction",
+    sections: "Sections",
+    sectionHeading: "Titre",
+    sectionBody: "Texte",
+    sectionBodyNote: "Une ligne vide commence un nouveau paragraphe",
+    sectionNumber: "Section {n}",
+    addSection: "Ajouter une section",
+    removeSection: "Retirer la section",
+    fieldNote: "Remarque finale",
+    images: "Images",
+    imagesLede:
+      "Choisissez des images pour les voir dans l’aperçu. Elles restent dans ce navigateur — leur envoi demande le backend.",
+    dropzone: "Choisir des images ou les déposer ici",
+    dropzoneNote: "PNG, JPG, WebP ou GIF",
+    removeImage: "Retirer l’image",
+    preview: "Aperçu",
+    previewEmpty: "Commencez à écrire pour voir le guide ici.",
+    payload: "Export",
+    payloadLede:
+      "C’est exactement ce que recevra la future API. Copiez-le pour transmettre un guide en attendant.",
+    copy: "Copier",
+    copied: "Copié",
+    saveDraft: "Enregistrer le brouillon",
+    draftSaved: "Brouillon enregistré dans ce navigateur",
+    loadDraft: "Charger le brouillon",
+    clearDraft: "Abandonner le brouillon",
+    noServerTitle: "Rien n’est envoyé",
+    noServerBody:
+      "Aucun serveur ne se trouve derrière ce formulaire. Les images ne vivent que dans cet onglet et disparaissent à sa fermeture : utilisez l’export pour conserver votre travail.",
+    translationNote:
+      "Un guide publié a besoin de son texte dans chaque langue du site. Exportez le brouillon et confiez-le à la personne qui saisit les traductions.",
+  },
+  footer: {
+    disclaimer:
+      "LoA Alexandria · outils communautaires pour Pop Epoch. Projet de fans non officiel, sans lien avec l’éditeur du jeu ni soutien de sa part. Tous les noms du jeu appartiennent à leurs propriétaires respectifs.",
+    source: "Code source et documentation",
+  },
+};
+
+export default fr;

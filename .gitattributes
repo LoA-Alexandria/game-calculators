@@ -1,0 +1,23 @@
+# Normalise line endings so a Windows checkout and a Linux one produce the same
+# blobs. Without this, files edited on Windows show up as entirely rewritten for
+# collaborators on macOS or Linux, and the Ubuntu CI sees different content than
+# the author did.
+* text=auto eol=lf
+
+# Binary: never touch these.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.pdf binary
+*.zip binary
+
+# The lockfile is generated; keep it out of diff review noise.
+pnpm-lock.yaml -diff linguist-generated
+
+# The vendored planner is a third-party application, not our source.
+public/tools/irrigation-planner/index.html linguist-vendored

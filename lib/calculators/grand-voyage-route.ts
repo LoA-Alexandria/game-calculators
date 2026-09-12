@@ -1,4 +1,5 @@
 import routeData from "../data/grand-voyage-routes.json" with { type: "json" };
+import { CalculatorError } from "./errors.ts";
 
 export const MIN_ROUTE_CITIES = 2;
 export const MAX_ROUTE_CITIES = 6;
@@ -8,11 +9,11 @@ export const ROUTE_ASSUMPTIONS = routeData.assumptions;
 export type RouteLeg = { origin: string; destination: string; travelHours: number; profit: number };
 
 export function calculateRoute(selectedCities: string[]) {
-  if (selectedCities.length < MIN_ROUTE_CITIES || selectedCities.length > MAX_ROUTE_CITIES) throw new Error(`Choose between ${MIN_ROUTE_CITIES} and ${MAX_ROUTE_CITIES} cities.`);
-  if (new Set(selectedCities).size !== selectedCities.length) throw new Error("Each city can appear only once.");
+  if (selectedCities.length < MIN_ROUTE_CITIES || selectedCities.length > MAX_ROUTE_CITIES) throw new CalculatorError("routeCount", `Choose between ${MIN_ROUTE_CITIES} and ${MAX_ROUTE_CITIES} cities.`, { min: MIN_ROUTE_CITIES, max: MAX_ROUTE_CITIES });
+  if (new Set(selectedCities).size !== selectedCities.length) throw new CalculatorError("routeDuplicate", "Each city can appear only once.");
   const indexes = selectedCities.map((city) => {
     const index = ROUTE_CITIES.indexOf(city);
-    if (index < 0) throw new Error(`Unknown city: ${city}`);
+    if (index < 0) throw new CalculatorError("unknownCity", `Unknown city: ${city}`, { city });
     return index;
   });
   const completeRoute = [...selectedCities, selectedCities[0]];
@@ -30,9 +31,18 @@ export function calculateRoute(selectedCities: string[]) {
   return { selectedCities, completeRoute, legs, totalTravelHours, totalProfit, profitPerHour: totalProfit / totalTravelHours };
 }
 
-export function formatDuration(hours: number): string {
+/**
+ * `units` lets the interface pass localised abbreviations. The defaults keep the
+ * original English output ("2h 01m"), which the tests pin.
+ */
+export function formatDuration(
+  hours: number,
+  units: { hour: string; minute: string } = { hour: "h", minute: "m" },
+): string {
   const totalMinutes = Math.round(hours * 60);
   const wholeHours = Math.floor(totalMinutes / 60);
   const minutes = totalMinutes % 60;
-  return wholeHours ? `${wholeHours}h ${String(minutes).padStart(2, "0")}m` : `${minutes}m`;
+  return wholeHours
+    ? `${wholeHours}${units.hour} ${String(minutes).padStart(2, "0")}${units.minute}`
+    : `${minutes}${units.minute}`;
 }
