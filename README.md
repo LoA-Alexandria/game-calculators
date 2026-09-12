@@ -32,3 +32,7 @@ Start with [`AGENTS.md`](AGENTS.md) and [`docs/AGENT-WORKFLOW.md`](docs/AGENT-WO
 ## Deployment
 
 Every push to `main` runs tests, builds a static export, and deploys it to GitHub Pages. In the repository settings, select **GitHub Actions** as the Pages source if it is not already selected.
+
+## Repository protection
+
+The project expects `main` to accept changes only through reviewed pull requests. See [`docs/REPOSITORY-SETTINGS.md`](docs/REPOSITORY-SETTINGS.md) for the required GitHub ruleset and contributor permissions.

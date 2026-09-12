@@ -11,6 +11,8 @@ This repository contains small, browser-only game calculators published as a sta
 - Prefer a focused calculator over a large shared abstraction. Extract shared code only after two real consumers need it.
 - Preserve keyboard access, visible labels, mobile layouts, and reduced-motion behavior.
 - Do not commit generated `out/`, `.next/`, secrets, personal data, or local environment files.
+- Work on a feature branch and open a pull request. Never push directly to `main`.
+- Do not merge a pull request without approval from another contributor and passing checks.
 
 ## Before editing
 
