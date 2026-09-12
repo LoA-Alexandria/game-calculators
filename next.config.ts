@@ -5,6 +5,7 @@ const repositoryBasePath = "/game-calculators";
 const basePath = isGitHubPages ? repositoryBasePath : "";
 
 const nextConfig: NextConfig = {
+  allowedDevOrigins: ["127.0.0.1"],
   output: "export",
   trailingSlash: true,
   basePath,
