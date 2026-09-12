@@ -75,17 +75,52 @@ footer { border-top: 1px solid var(--line); display: flex; justify-content: spac
 .result-panel { background: var(--forest); color: white; display: flex; flex-direction: column; justify-content: center; }
 .field { margin-bottom: 22px; }
 label { display: block; font-weight: 750; margin-bottom: 8px; }
-input { width: 100%; min-height: 48px; border: 1px solid var(--line); background: white; color: var(--ink); padding: 10px 12px; font: inherit; }
-input:focus { outline: 3px solid color-mix(in srgb, var(--lime) 70%, transparent); border-color: var(--forest); }
+input, select { width: 100%; min-height: 48px; border: 1px solid var(--line); background: white; color: var(--ink); padding: 10px 12px; font: inherit; }
+input:focus, select:focus, button:focus-visible, summary:focus-visible { outline: 3px solid color-mix(in srgb, var(--lime) 70%, transparent); border-color: var(--forest); }
+.label-note { color: var(--muted); font-size: .82rem; font-weight: 500; }
 .result-label { color: var(--lime); font-size: .76rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
 .result-number { font-size: clamp(3.6rem, 8vw, 6rem); font-weight: 850; letter-spacing: -.06em; margin: 8px 0; }
 .result-note { color: #c5d4ce; line-height: 1.5; }
+.result-error { color: #ffd0c2; line-height: 1.5; }
+.result-breakdown { display: grid; gap: 8px; color: #c5d4ce; line-height: 1.45; }
+.assumption { margin: 18px 0 0; color: var(--muted); font-size: .92rem; line-height: 1.6; }
+.assumption summary { cursor: pointer; color: var(--ink); font-weight: 750; }
+.assumption li { margin: 5px 0; }
+.calculator-wide { width: min(1080px, calc(100% - 40px)); }
+.surface { background: var(--surface); border: 1px solid var(--line); }
+.upgrade-layout { display: grid; grid-template-columns: 1.15fr .85fr; }
+.input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+fieldset { border: 0; border-top: 1px solid var(--line); padding: 20px 0 0; margin: 12px 0 0; }
+legend { width: 100%; padding: 18px 0 0; font-weight: 800; display: flex; justify-content: space-between; gap: 10px; }
+legend span { color: var(--muted); font-size: .82rem; font-weight: 600; }
+.field.compact { display: grid; grid-template-columns: 1fr 90px; gap: 12px; align-items: center; margin: 12px 0; }
+.field.compact label { margin: 0; }
+.route-builder { display: grid; grid-template-columns: .85fr 1.15fr; }
+.route-controls, .route-results { padding: 30px; }
+.route-results { background: var(--forest); color: white; }
+.compact-heading { align-items: center; margin-bottom: 22px; }
+.compact-heading h2 { font-size: 1.7rem; margin: 0; }
+.small-button, .route-row button { border: 1px solid var(--ink); background: transparent; color: inherit; min-height: 38px; padding: 7px 11px; font: inherit; font-weight: 750; cursor: pointer; }
+.small-button:disabled { opacity: .4; cursor: not-allowed; }
+.route-row { display: grid; grid-template-columns: 28px 1fr 38px; gap: 9px; align-items: center; margin-bottom: 10px; }
+.route-row > span { color: var(--muted); font-weight: 800; }
+.route-row button { padding: 0; font-size: 1.25rem; }
+.metric-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 28px; }
+.metric-grid div { border-top: 1px solid #547168; padding-top: 12px; }
+.metric-grid span { display: block; color: #c5d4ce; font-size: .72rem; text-transform: uppercase; letter-spacing: .08em; }
+.metric-grid strong { display: block; margin-top: 6px; font-size: 1.25rem; }
+.route-results h3 { color: var(--lime); line-height: 1.45; }
+.leg-list { display: grid; gap: 0; }
+.leg-list div { display: flex; justify-content: space-between; gap: 18px; border-top: 1px solid #35574c; padding: 11px 0; font-size: .88rem; }
+.leg-list div span:last-child { color: #c5d4ce; white-space: nowrap; }
 
 @media (max-width: 720px) {
   .hero { padding: 72px 0 64px; }
   .hero::after { width: 110px; height: 110px; top: 42px; right: 0; }
-  .principles, .calculator-panel { grid-template-columns: 1fr; gap: 32px; }
+  .principles, .calculator-panel, .upgrade-layout, .route-builder { grid-template-columns: 1fr; gap: 32px; }
   .calculator-panel { gap: 0; }
+  .upgrade-layout, .route-builder { gap: 0; }
+  .metric-grid { grid-template-columns: 1fr; }
   .section-heading, footer { align-items: flex-start; flex-direction: column; }
 }
 

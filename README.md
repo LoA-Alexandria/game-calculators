@@ -25,6 +25,8 @@ npm run lint   # check source style
 
 Read [`docs/ADDING-A-CALCULATOR.md`](docs/ADDING-A-CALCULATOR.md). Each calculator should include documented assumptions, pure calculation logic, boundary tests, an accessible interface, and an entry on the home page.
 
+The first five production calculators were ported from Pop Bot. Their copied data and assumptions are documented in [`docs/POP-BOT-DATA.md`](docs/POP-BOT-DATA.md).
+
 ## Work with a coding agent
 
 Start with [`AGENTS.md`](AGENTS.md) and [`docs/AGENT-WORKFLOW.md`](docs/AGENT-WORKFLOW.md). These files define the repository-wide guardrails and provide ready-to-use prompts.
