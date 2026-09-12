@@ -2,6 +2,13 @@
 
 Contributions should make a calculator more accurate, understandable, or useful.
 
+## Protected main branch
+
+All changes must arrive through a pull request. A contributor with repository
+write access must approve the pull request, and automated checks must pass,
+before it can be merged. Do not push directly to `main` or merge your own
+unreviewed changes.
+
 ## Pull-request checklist
 
 - Explain the player problem being solved.
@@ -12,6 +19,7 @@ Contributions should make a calculator more accurate, understandable, or useful.
 - Test the calculator with keyboard navigation and a narrow screen.
 - Run `npm test` and `npm run build`.
 - Keep unrelated cleanup out of the pull request.
+- Obtain approval from another contributor with repository write access.
 
 ## Data corrections
 
