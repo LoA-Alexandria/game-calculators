@@ -1,10 +1,35 @@
+import Link from "next/link";
+
 const calculators = [
   {
-    name: "Example resource calculator",
-    description:
-      "A small reference implementation showing validation, calculations, and responsive results.",
-    href: "/calculators/example/",
-    status: "Template",
+    name: "Goddess materials",
+    description: "Convert Olive Branches, Corollas, and Tribute Plates into Goddess points.",
+    href: "/calculators/goddess-materials/",
+    status: "Goddess",
+  },
+  {
+    name: "Goddess XP",
+    description: "Find the XP required to progress between two Goddess levels.",
+    href: "/calculators/goddess-xp/",
+    status: "Goddess",
+  },
+  {
+    name: "Red Carpet materials",
+    description: "Calculate event points from Cheer Sticks, Clappers, and Vintage Cameras.",
+    href: "/calculators/red-carpet-materials/",
+    status: "Event",
+  },
+  {
+    name: "City upgrade",
+    description: "Plan Bills of Exchange for a city and its required group milestones.",
+    href: "/calculators/city-upgrade/",
+    status: "Grand Voyage",
+  },
+  {
+    name: "Route calculator",
+    description: "Compare travel time, profit, and efficiency for a two-to-six-city round trip.",
+    href: "/calculators/grand-voyage-route/",
+    status: "Grand Voyage",
   },
 ];
 
@@ -67,4 +92,3 @@ export default function Home() {
     </main>
   );
 }
-import Link from "next/link";
