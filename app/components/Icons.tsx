@@ -278,8 +278,20 @@ export function ChevronIcon({ className }: IconProps) {
   );
 }
 
+/** A month page with a marked day. */
+export function EventsIcon({ className }: IconProps) {
+  return (
+    <svg className={className} {...base}>
+      <rect x="3.5" y="5" width="17" height="15.5" rx="2.5" />
+      <path d="M3.5 10h17M8 3.5V6M16 3.5V6" />
+      <rect x="7" y="13" width="3.4" height="3.2" rx=".7" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
 export const SECTION_ICONS = {
   news: NewsIcon,
+  events: EventsIcon,
   guides: GuidesIcon,
   calculators: CalculatorsIcon,
   simulations: SimulationsIcon,
