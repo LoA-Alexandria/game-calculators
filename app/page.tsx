@@ -72,18 +72,6 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="principles section">
-        <div>
-          <div className="eyebrow">Project principles</div>
-          <h2>Small tools.<br />Clear answers.</h2>
-        </div>
-        <div className="principle-list">
-          <article><span>01</span><div><h3>Transparent</h3><p>Formulas and assumptions live next to the code that uses them.</p></div></article>
-          <article><span>02</span><div><h3>Testable</h3><p>Pure calculation logic stays separate from the interface and has automated tests.</p></div></article>
-          <article><span>03</span><div><h3>Accessible</h3><p>Every tool works with a keyboard, on small screens, and without unnecessary friction.</p></div></article>
-        </div>
-      </section>
-
       <footer>
         <span>LoA Alexandria · Game Calculators</span>
         <a href="https://github.com/LoA-Alexandria/game-calculators">Source and documentation</a>
