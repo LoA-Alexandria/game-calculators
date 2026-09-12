@@ -2,7 +2,7 @@
 
 ## Overview
 
-The project is a browser-only Next.js site using the App Router and static export. GitHub Pages serves the generated `out/` directory. There is no server runtime.
+The project is a statically exported Next.js site. GitHub Pages serves the generated `out/` directory. Supabase provides Discord authentication, persistent wiki data, row-level authorization, and the small server-side functions needed for Discord role checks.
 
 ## Structure
 
@@ -24,6 +24,6 @@ tests/                         Calculation and output tests
 - Pure functions perform calculations and validation.
 - Versioned constants hold game data.
 - Tests describe the expected rules and edge cases.
-- Static export means calculators must not depend on server actions, private environment variables, databases, or runtime APIs.
+- Calculators remain browser-only and independent of authentication. Wiki features use the Supabase browser client with its publishable key and RLS-protected tables. Discord and Supabase secrets exist only in their respective dashboards and Supabase Edge Functions.
 
 When a calculation grows beyond a few lines, place it in `lib/calculators/<slug>.ts` and test it independently.

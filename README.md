@@ -1,6 +1,6 @@
 # Game Calculators
 
-A shared collection of focused game calculators maintained by LoA Alexandria. The site is a static Next.js application deployed through GitHub Pages.
+A shared collection of focused game calculators maintained by LoA Alexandria. The site is a static Next.js application deployed through GitHub Pages, with Supabase providing Discord authentication and wiki services.
 
 ## Start locally
 
@@ -34,6 +34,8 @@ Start with [`AGENTS.md`](AGENTS.md) and [`docs/AGENT-WORKFLOW.md`](docs/AGENT-WO
 ## Deployment
 
 Every push to `main` runs tests, builds a static export, and deploys it to GitHub Pages. In the repository settings, select **GitHub Actions** as the Pages source if it is not already selected.
+
+Discord authentication and wiki-editor access are configured separately in Supabase. See [`docs/SUPABASE-SETUP.md`](docs/SUPABASE-SETUP.md).
 
 ## Repository protection
 

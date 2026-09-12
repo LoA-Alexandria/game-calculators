@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AuthControls } from "./components/AuthControls";
 
 const calculators = [
   {
@@ -37,6 +38,7 @@ export default function Home() {
   return (
     <main>
       <section className="hero">
+        <div className="hero-auth"><AuthControls /></div>
         <div className="eyebrow">LoA Alexandria</div>
         <h1>Your strategy room.</h1>
         <p className="lede">
