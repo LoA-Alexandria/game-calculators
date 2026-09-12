@@ -26,7 +26,7 @@ function matches(haystack: string, needle: string): boolean {
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const { t } = useLocale();
-  const { allows, session, loading, signIn, signOut } = useAuth();
+  const { allows, session, loading, error: authError, signIn, signOut } = useAuth();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [filter, setFilter] = useState("");
@@ -225,6 +225,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           <LanguageMenu />
           <ThemeToggle />
         </header>
+
+        {authError && (
+          <div className="auth-banner" role="alert">
+            <strong>Discord sign-in failed.</strong> {authError}
+          </div>
+        )}
 
         <main className="content" id="content">{children}</main>
 
