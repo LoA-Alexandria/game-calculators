@@ -18,6 +18,27 @@ type AuthContextValue = {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
+/**
+ * `functions.invoke` reports any non-2xx as one generic error, which hid the
+ * reason behind "temporarily unavailable" — a member missing from the guild and
+ * an undeployed function looked identical. The failing `Response` hangs off the
+ * error as `context`; this reads the function's own `{ error }` out of it.
+ *
+ * Duck-typed on purpose: `FunctionsHttpError` lives in a sub-package, and
+ * matching on the shape survives that moving.
+ */
+async function functionErrorDetail(error: unknown): Promise<string> {
+  const context = (error as { context?: unknown } | null)?.context;
+  if (!(context instanceof Response)) return "";
+  try {
+    const body: unknown = await context.clone().json();
+    const reported = (body as { error?: unknown })?.error;
+    return typeof reported === "string" ? reported : "";
+  } catch {
+    return "";
+  }
+}
+
 function displaySession(session: SupabaseSession, canEdit: boolean): Session {
   const metadata = session.user.user_metadata;
   return {
@@ -40,7 +61,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setError("");
     if (current.provider_token) {
       const { error: verificationError } = await supabase.functions.invoke("verify-discord-role", { body: { providerToken: current.provider_token } });
-      if (verificationError) setError("Discord role verification is temporarily unavailable.");
+      if (verificationError) {
+        const detail = await functionErrorDetail(verificationError);
+        setError(detail || "Discord role verification is temporarily unavailable.");
+      }
     }
     const { data, error: accessError } = await supabase.from("editor_access").select("can_edit").eq("user_id", current.user.id).maybeSingle();
     if (accessError) setError("Editor access could not be loaded.");
