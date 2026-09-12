@@ -314,7 +314,44 @@ p { margin: 0; }
 }
 .nav-link.is-active .nav-count { color: var(--accent); }
 
+/* section header row: the label navigates, the chevron only opens and closes */
+.nav-row { display: flex; align-items: center; gap: 2px; }
+.nav-row .nav-link { flex: 1; min-width: 0; }
+.nav-row .nav-link span:not(.nav-count) { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.nav-toggle {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  flex: none;
+  cursor: pointer;
+  border: 0;
+  border-radius: var(--r-xs);
+  background: transparent;
+  color: var(--ink-faint);
+  transition: background-color .14s ease, color .14s ease;
+}
+.nav-toggle:hover { background: var(--surface-2); color: var(--ink); }
+.nav-toggle .icon { transition: transform .2s ease; }
+.nav-toggle.is-open .icon { transform: rotate(90deg); }
+
+/* max-height rather than the 0fr/1fr grid trick, which did not expand here.
+   A fixed ceiling is safe because a section shows at most VISIBLE_ITEMS + 1
+   rows (~320px) and the sidebar scrolls on its own.
+   visibility keeps the collapsed links out of the tab order and the
+   accessibility tree, and margin-block: 0 stops a closed section leaving a
+   few pixels of gap behind. */
+.nav-collapse {
+  overflow: hidden;
+  max-height: 0;
+  visibility: hidden;
+  transition: max-height .22s ease, visibility .22s;
+}
+.nav-collapse.is-open { max-height: 26rem; visibility: visible; }
+.nav-collapse .nav-sublist { margin-block: 0; padding-block: 1px 3px; }
+
 .nav-sublist { margin: 1px 0 3px 27px; }
+.nav-more { color: var(--accent); font-weight: 600; }
 .nav-sublink {
   display: block;
   min-height: 32px;
@@ -1237,4 +1274,6 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; animation: none !important; }
+  .nav-collapse { max-height: 0; }
+  .nav-collapse.is-open { max-height: 26rem; }
 }

@@ -269,6 +269,15 @@ export function PenIcon({ className }: IconProps) {
   );
 }
 
+/** Chevron for the collapsible sidebar sections; CSS rotates it when open. */
+export function ChevronIcon({ className }: IconProps) {
+  return (
+    <svg className={className} {...base}>
+      <path d="M9 5.5 15.5 12 9 18.5" />
+    </svg>
+  );
+}
+
 export const SECTION_ICONS = {
   news: NewsIcon,
   guides: GuidesIcon,
