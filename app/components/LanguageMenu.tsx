@@ -37,7 +37,7 @@ export function LanguageMenu() {
     <div className="lang" ref={root}>
       <button
         type="button"
-        className="icon-button lang-trigger"
+        className="icon-button"
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-label={t.shell.language}
@@ -48,7 +48,7 @@ export function LanguageMenu() {
         <span className="lang-code">{current.short}</span>
       </button>
       {open && (
-        <ul className="lang-menu" role="listbox" aria-label={t.shell.language}>
+        <ul className="menu-pop" role="listbox" aria-label={t.shell.language}>
           {LOCALES.map((entry) => (
             <li key={entry.code}>
               <button
