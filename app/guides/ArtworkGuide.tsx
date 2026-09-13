@@ -12,6 +12,7 @@ import {
   type PaintingSet,
   type PaintingStat,
 } from "../../lib/content/artwork";
+import { CheckIcon } from "../components/Icons";
 import { fill, type Dictionary } from "../../lib/i18n";
 
 type Guide = Dictionary["guideEntries"]["artwork"];
@@ -216,7 +217,10 @@ export function ArtworkGuide({ guide }: { guide: Guide }) {
       </div>
       <ul className="tip-list">
         {guide.tips.map((tip) => (
-          <li key={tip}>{tip}</li>
+          <li key={tip}>
+            <CheckIcon className="icon icon-sm" />
+            <span>{tip}</span>
+          </li>
         ))}
       </ul>
 
