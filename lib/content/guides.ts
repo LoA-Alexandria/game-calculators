@@ -36,5 +36,20 @@ export function guideCategoryId(
   const item = sectionById("guides").items.find((entry) => entry.href === href);
   const id = item?.categoryId;
   if (id && Object.hasOwn(categories, id)) return id as GuideCategoryId;
-  return "cityLayout";
+  return "layouts";
+}
+
+export type GuideLayout = "goddesses" | "artwork" | "heroLayouts" | "heroes" | "article";
+
+/**
+ * Which renderer a guide entry needs. Each custom layout is recognised by a
+ * field no other entry has — `builds` alone is not enough, because Artwork and
+ * Hero layouts both have one. `tests/guides.test.mjs` pins every entry.
+ */
+export function guideLayout(guide: object): GuideLayout {
+  if ("phases" in guide) return "goddesses";
+  if ("utility" in guide) return "heroLayouts";
+  if ("levels" in guide) return "artwork";
+  if ("filterAll" in guide) return "heroes";
+  return "article";
 }

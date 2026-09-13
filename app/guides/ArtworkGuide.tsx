@@ -1,5 +1,6 @@
 "use client";
 
+import { guideLayout } from "../../lib/content/guides";
 import type { Dictionary } from "../../lib/i18n";
 
 type Guide = Dictionary["guideEntries"]["artwork"];
@@ -8,7 +9,7 @@ type Build = NonNullable<Guide["builds"]>[number];
 export function isArtworkGuide(
   guide: Dictionary["guideEntries"][keyof Dictionary["guideEntries"]],
 ): guide is Dictionary["guideEntries"]["artwork"] {
-  return "builds" in guide && Array.isArray((guide as { builds?: unknown }).builds);
+  return guideLayout(guide) === "artwork";
 }
 
 function BuildCard({

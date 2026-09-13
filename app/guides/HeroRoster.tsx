@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { guideLayout } from "../../lib/content/guides";
 import { fill, type Dictionary } from "../../lib/i18n";
 import {
   HERO_FRAGMENT_KEYS,
@@ -16,7 +17,7 @@ type Guide = Dictionary["guideEntries"]["heroes"];
 export function isHeroesGuide(
   guide: Dictionary["guideEntries"][keyof Dictionary["guideEntries"]],
 ): guide is Dictionary["guideEntries"]["heroes"] {
-  return "starHeading" in guide && "filterAll" in guide;
+  return guideLayout(guide) === "heroes";
 }
 
 function initial(name: string): string {

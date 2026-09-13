@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { guideLayout } from "../../lib/content/guides";
 import { sectionById } from "../../lib/navigation";
 import type { Dictionary } from "../../lib/i18n";
 import { ToolCard } from "../components/Ui";
@@ -12,7 +13,7 @@ type RosterRow = NonNullable<Guide["roster"]>[number];
 export function isGoddessesGuide(
   guide: Dictionary["guideEntries"][keyof Dictionary["guideEntries"]],
 ): guide is Dictionary["guideEntries"]["goddesses"] {
-  return "phases" in guide && Array.isArray((guide as { phases?: unknown }).phases);
+  return guideLayout(guide) === "goddesses";
 }
 
 function initial(name: string): string {

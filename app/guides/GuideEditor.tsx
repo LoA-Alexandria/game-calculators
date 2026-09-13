@@ -155,7 +155,7 @@ export function GuideEditor({
   const [categoryId, setCategoryId] = useState<GuideCategoryId>(
     editing || removing
       ? guideCategoryId(guideHref((editing ?? removing) as string), t.guideCategories)
-      : "cityLayout",
+      : "layouts",
   );
   const [images, setImages] = useState<PickedImage[]>([]);
   const [copied, setCopied] = useState(false);
