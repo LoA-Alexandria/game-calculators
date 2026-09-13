@@ -20,9 +20,11 @@ test("converts guide slugs and dictionary ids both ways", () => {
   assert.equal(guideHref("waterSupply"), "/guides/water-supply/");
   assert.equal(guideHref("goddesses"), "/guides/goddesses/");
   assert.equal(guideHref("artwork"), "/guides/artwork/");
+  assert.equal(guideHref("heroes"), "/guides/heroes/");
   assert.equal(guideIdFromHref("/guides/water-supply/"), "waterSupply");
   assert.equal(guideIdFromHref("/guides/goddesses/"), "goddesses");
   assert.equal(guideIdFromHref("/guides/artwork/"), "artwork");
+  assert.equal(guideIdFromHref("/guides/heroes/"), "heroes");
   assert.equal(guideIdFromHref("/guides/new/"), null);
 });
 
@@ -54,7 +56,13 @@ test("goddesses phase 2 stops Fortuna and Bastet at 60", () => {
 });
 
 test("each guide entry is claimed by exactly the renderer it was written for", () => {
-  const custom = { goddesses: "goddesses", artwork: "artwork", heroLayouts: "heroLayouts", heroTierList: "heroTierList" };
+  const custom = {
+    goddesses: "goddesses",
+    artwork: "artwork",
+    heroLayouts: "heroLayouts",
+    heroes: "heroes",
+    heroTierList: "heroTierList",
+  };
   for (const [code, dictionary] of Object.entries({ en, de, fr })) {
     for (const [id, guide] of Object.entries(dictionary.guideEntries)) {
       assert.equal(guideLayout(guide), custom[id] ?? "article", `${code}.${id}`);

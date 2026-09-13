@@ -296,19 +296,44 @@ const de: Dictionary = {
   guideEntries: {
     heroes: {
       title: "Helden",
-      summary: "Wo Helden in der Stadt sitzen — die detaillierten Tabellen werden noch geschrieben.",
-      intro:
-        "Helden sind der erste lange Fortschrittspfad: Sie besetzen Produktionsgebäude, füllen später Museion-Vitrinen und tragen Sterne und Fertigkeiten, die diese Boni erhöhen. Diese Seite hält den Platz, bis die Zuordnungslisten geprüft sind.",
+      summary: "Raritäten-Roster, Fragmentkosten für Sterne, und die Skills, die schon stehen.",
+      intro: "Helden führen einen Truppentyp, besetzen Produktionsgebäude und wachsen über Stufen, Aufstieg und Sterne. Filter den Roster nach Seltenheit.",
+      basicsHeading: "Wie sie wachsen",
+      basics: [
+        { title: "Truppen", body: "Jeder Held führt Pikeniere, Bogenschützen, Schildträger oder Kavallerie. Beim Einsatz den Truppentyp treffen." },
+        { title: "Stufe und Aufstieg", body: "Ressourcen für Stufen ausgeben. Am Cap aufsteigen, um Cap und Werte zu heben." },
+        { title: "Sterne", body: "Helden-Fragmente für Sterne ausgeben. Manche Sterne verbessern den Kampfskill." },
+      ],
+      starHeading: "Fragmentkosten für Sterne",
+      colStar: "Stern",
+      fragments: {
+        green: "Grün",
+        blue: "Blau",
+        purple: "Lila",
+        gold: "Gold",
+        red: "Rot",
+        goldShiny: "Gold glänzend",
+        blueShiny: "Blau glänzend",
+        shiny: "Glänzend",
+      },
+      rosterHeading: "Roster",
+      filterLabel: "Seltenheit",
+      filterAll: "Alle",
+      searchLabel: "Helden suchen",
+      searchPlaceholder: "Name, Skill oder Event…",
+      countLabel: "{count} angezeigt",
+      colObtain: "Bezug",
+      artifactLabel: "Artefakt",
+      empty: "Kein Held passt zu diesem Filter.",
       sections: [
         {
-          heading: "Was dieser Guide abdecken wird",
+          heading: "Roster",
           body: [
-            "Welche Helden auf welche Gebäude gehören, wie Sterne und Fertigkeitsstufen ihre Boni ändern und wie die Museion-Platzierung sich von einer Produktionszuweisung unterscheidet.",
-            "Bis diese Tabellen stehen, ist diese Seite der Kernelemente-Eintrag für Helden, kein vollständiges Nachschlagewerk.",
+            "Filter UR+, UR, SSR, SR und R. Skills stehen, wo Text vorlag; leere Karten bleiben im Roster.",
           ],
         },
       ],
-      note: "Die detaillierten Heldenlisten kommen in einer späteren Änderung. Wenn du auf Discord schon eine geprüfte Liste führst, schick sie, damit wir sie hier versionieren können.",
+      note: "",
     },
     technology: {
       title: "Technologie",

@@ -39,7 +39,7 @@ export function guideCategoryId(
   return "layouts";
 }
 
-export type GuideLayout = "goddesses" | "artwork" | "heroLayouts" | "heroTierList" | "article";
+export type GuideLayout = "goddesses" | "artwork" | "heroLayouts" | "heroes" | "heroTierList" | "article";
 
 /**
  * Which renderer a guide entry needs. Each custom layout is recognised by a
@@ -51,5 +51,6 @@ export function guideLayout(guide: object): GuideLayout {
   if ("battleTiers" in guide) return "heroTierList";
   if ("utility" in guide) return "heroLayouts";
   if ("levels" in guide) return "artwork";
+  if ("filterAll" in guide) return "heroes";
   return "article";
 }

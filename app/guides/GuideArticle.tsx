@@ -10,6 +10,7 @@ import { GuideEditor, type GuideEditorTarget } from "./GuideEditor";
 import { GoddessesGuide, isGoddessesGuide } from "./GoddessesGuide";
 import { ArtworkGuide, isArtworkGuide } from "./ArtworkGuide";
 import { HeroLayoutsGuide, isHeroLayoutsGuide } from "./HeroLayoutsGuide";
+import { HeroRoster, isHeroesGuide } from "./HeroRoster";
 import { HeroTierListGuide, isHeroTierListGuide } from "./HeroTierListGuide";
 
 export function GuideArticle({ id }: { id: GuideEntryId }) {
@@ -48,6 +49,8 @@ export function GuideArticle({ id }: { id: GuideEntryId }) {
           <ArtworkGuide guide={guide} />
         ) : isHeroLayoutsGuide(guide) ? (
           <HeroLayoutsGuide guide={guide} />
+        ) : isHeroesGuide(guide) ? (
+          <HeroRoster guide={guide} />
         ) : isHeroTierListGuide(guide) ? (
           <HeroTierListGuide guide={guide} />
         ) : (
