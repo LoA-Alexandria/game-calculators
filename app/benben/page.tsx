@@ -107,10 +107,12 @@ export default function BenbenPage() {
     <div className="benben-stage">
       <section className="benben-character-card" aria-label="Benben">
         <div className="benben-sun" aria-hidden="true" />
-        <Image className={acting ? `benben-image is-${acting}` : "benben-image"} src={asset("/benben.png")} width={1240} height={1240} alt="Benben, the communal stone pyramid" priority />
-        {acting === "feed" && <div className="benben-effect benben-feed-effect" aria-hidden="true"><span>🍇</span><span>🍇</span><span>🍇</span></div>}
-        {acting === "polish" && <div className="benben-effect benben-polish-effect" aria-hidden="true"><span>✦</span><span>✧</span><span>✦</span><span>✧</span></div>}
-        {acting === "rest" && <div className="benben-effect benben-rest-effect" aria-hidden="true"><span>Z</span><span>z</span><span>z</span></div>}
+        <div className="benben-sprite-wrap">
+          <Image className={acting ? `benben-image is-${acting}` : "benben-image"} src={asset("/benben.png")} width={1240} height={1240} alt="Benben, the communal stone pyramid" priority />
+          {acting === "feed" && <div className="benben-effect benben-feed-effect" aria-hidden="true"><span /><span /><span /><i className="benben-chew-mouth" /></div>}
+          {acting === "polish" && <div className="benben-effect benben-polish-effect" aria-hidden="true"><span>✦</span><span>✧</span><span>✦</span><span>✧</span></div>}
+          {acting === "rest" && <div className="benben-effect benben-rest-effect" aria-hidden="true"><span>Z</span><span>z</span><span>z</span></div>}
+        </div>
         <div className="benben-mood"><span>{average >= 65 ? "◕‿◕" : "◕︵◕"}</span> {mood}</div>
       </section>
       <section className="benben-care-card">
