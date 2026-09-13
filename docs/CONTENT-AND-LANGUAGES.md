@@ -69,13 +69,14 @@ filter. There is no second list to keep in step.
    including a `badge` and `categoryId` from `guideCategories`. Reuse an existing
    category when the guide belongs next to one already there. Core systems
    (heroes, technology, collection, manor, support, goddesses, cryptides)
-   use `coreElements`; placement guides (water supply, hero layouts, artwork) use
-   `layouts`.
+   use `coreElements`; placement guides (water supply, hero layouts, artwork)
+   use `layouts`; ranking guides (hero tier list) use `tierLists`.
 4. For a new slug, copy `app/guides/water-supply/page.tsx` and pass the new id
    to `GuideArticle`.
 
 A guide that needs more than headings and paragraphs gets its own renderer next
-to `GuideArticle`: `GoddessesGuide`, `ArtworkGuide`, and `HeroLayoutsGuide`.
+to `GuideArticle`: `GoddessesGuide`, `ArtworkGuide`, `HeroLayoutsGuide`, and
+`HeroTierListGuide`.
 `guideLayout()` in `lib/content/guides.ts` picks the renderer from a field only
 that guide has, and `tests/guides.test.mjs` pins every entry, so two guides
 cannot claim the same renderer by sharing a field name. Keep `sections` and
@@ -83,6 +84,13 @@ cannot claim the same renderer by sharing a field name. Keep `sections` and
 `sections` are the rule cards next to the formation board, and the slot order
 lives in `lib/content/hero-layouts.ts`. Painting names, set effects, and hero
 matches for Artwork layouts live in `lib/content/artwork.ts`.
+
+The Hero tier list keeps its grades, names, resources, and bonuses in
+`lib/content/hero-tiers.ts`, once for all languages. The dictionaries only hold
+the text those rows point at (`roles`, `effects`, `resources`, `notes`,
+`variants`), so moving a hero to another tier is a one-line change there.
+`tests/hero-tiers.test.mjs` checks that every key has text in every language and
+that hero names match the Hero layouts guide.
 
 Community-written guides name their author in the entry (`credit`). Ask the
 author before publishing their text, and keep the credit when you edit it.
