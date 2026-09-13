@@ -59,7 +59,7 @@ test("every best-collection pick is styled as a Collection item", () => {
   }
 });
 
-test("the water supply and hero layout guides share the Layouts category", () => {
+test("the water supply, hero layout, and artwork guides share the Layouts category", () => {
   for (const dictionary of Object.values(LANGUAGES)) {
     assert.equal(typeof dictionary.guideCategories.layouts, "string");
     assert.equal("cityLayout" in dictionary.guideCategories, false);

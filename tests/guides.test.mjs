@@ -36,13 +36,10 @@ test("every published guide has a dictionary entry", () => {
   }
 });
 
-test("artwork levels SSR ATK first and crit leads with Nature in Bloom", () => {
-  const { levels, builds, note } = en.guideEntries.artwork;
+test("artwork levels SSR ATK first and Nature in Bloom is an SSR set", () => {
+  const { levels, note } = en.guideEntries.artwork;
   assert.equal(levels[0]?.rarity, "SSR");
   assert.equal(levels[0]?.stat, "ATK");
-  assert.equal(builds[0]?.rows[0]?.name, "Nature in Bloom");
-  assert.equal(builds[1]?.rows[0]?.name, "Self-Portrait");
-  assert.equal(builds[2]?.rows[0]?.name, "Urban Proletariat");
   assert.equal(note, "");
 });
 

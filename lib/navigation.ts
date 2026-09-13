@@ -77,13 +77,6 @@ export const SECTIONS: NavSection[] = [
         categoryId: "coreElements",
       },
       {
-        href: "/guides/artwork/",
-        label: (t) => t.guideEntries.artwork.title,
-        description: (t) => t.guideEntries.artwork.summary,
-        badge: (t) => t.guideCategories.coreElements,
-        categoryId: "coreElements",
-      },
-      {
         href: "/guides/manor/",
         label: (t) => t.guideEntries.manor.title,
         description: (t) => t.guideEntries.manor.summary,
@@ -122,6 +115,13 @@ export const SECTIONS: NavSection[] = [
         href: "/guides/hero-layouts/",
         label: (t) => t.guideEntries.heroLayouts.title,
         description: (t) => t.guideEntries.heroLayouts.summary,
+        badge: (t) => t.guideCategories.layouts,
+        categoryId: "layouts",
+      },
+      {
+        href: "/guides/artwork/",
+        label: (t) => t.guideEntries.artwork.title,
+        description: (t) => t.guideEntries.artwork.summary,
         badge: (t) => t.guideCategories.layouts,
         categoryId: "layouts",
       },
