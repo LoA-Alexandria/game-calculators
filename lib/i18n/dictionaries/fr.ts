@@ -352,6 +352,8 @@ const fr: Dictionary = {
       "Un stockage d’images et un point d’envoi qui vérifie le type et la taille.",
       "Une vérification des droits sur chaque écriture, avec le même tableau que l’onglet Droits.",
     ],
+    roleRefreshNote:
+      "Le rôle d’un membre est recalculé depuis Discord à sa prochaine connexion. Modifier la correspondance n’a d’effet qu’à ce moment-là.",
   },
   editor: {
     title: "Nouveau guide",

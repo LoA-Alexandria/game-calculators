@@ -349,6 +349,8 @@ const en = {
       "Image storage plus an upload endpoint that checks type and size.",
       "Permission checks on every write endpoint, using the same table as the Permissions tab.",
     ],
+    roleRefreshNote:
+      "A member’s role is recomputed from Discord when they next sign in. Changing the mapping does not move anyone until they do.",
   },
   editor: {
     title: "New guide",
