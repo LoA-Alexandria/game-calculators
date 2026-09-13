@@ -347,10 +347,14 @@ p { margin: 0; }
   visibility: hidden;
   transition: max-height .22s ease, visibility .22s;
 }
-.nav-collapse.is-open { max-height: 26rem; visibility: visible; }
+.nav-collapse.is-open { max-height: 40rem; visibility: visible; }
 .nav-collapse .nav-sublist { margin-block: 0; padding-block: 1px 3px; }
 
 .nav-sublist { margin: 1px 0 3px 27px; }
+.nav-sublist .nav-row { gap: 2px; }
+.nav-sublist .nav-row .nav-sublink { flex: 1; min-width: 0; }
+.nav-sublist .nav-sublist { margin-left: 12px; }
+.nav-category { font-weight: 550; color: var(--ink-soft); }
 .nav-more { color: var(--accent); font-weight: 600; }
 .nav-sublink {
   display: block;
@@ -1356,6 +1360,7 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
 .event-body p { margin: 3px 0 5px; color: var(--ink-soft); font-size: .87rem; }
 .event-when { display: block; font-size: .74rem; color: var(--ink-faint); }
 .event-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.entry-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
 
 .event-card { border-left: 3px solid var(--ink-faint); }
 .event-card.event-main { border-left-color: var(--accent); }
@@ -1580,5 +1585,5 @@ button.calendar-day:hover { background: var(--surface-2); }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { transition: none !important; animation: none !important; }
   .nav-collapse { max-height: 0; }
-  .nav-collapse.is-open { max-height: 26rem; }
+  .nav-collapse.is-open { max-height: 40rem; }
 }

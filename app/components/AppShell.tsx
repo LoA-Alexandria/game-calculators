@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { SECTIONS, type NavItem, type NavSection } from "../../lib/navigation";
+import { SECTIONS, groupByBadge, type NavGroup, type NavItem, type NavSection } from "../../lib/navigation";
 import { DISCORD_CONFIGURED, DISCORD_URL, REPOSITORY_URL } from "../../lib/site";
 import { useAuth } from "./AuthProvider";
 import { useLocale } from "./LocaleProvider";
@@ -47,6 +47,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
    * shows its neighbours without every other section unfolding too.
    */
   const [toggled, setToggled] = useState<Record<string, boolean>>({});
+  /**
+   * Which guide categories the reader opened by hand. Anything absent falls
+   * back to "open if it contains the current page".
+   */
+  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
+  const [hash, setHash] = useState("");
 
   /**
    * On a phone the overlay covers the page, so following any link inside it
@@ -68,6 +74,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     };
   }, [open]);
 
+  useEffect(() => {
+    const apply = () => setHash(window.location.hash.replace(/^#/, ""));
+    apply();
+    window.addEventListener("hashchange", apply);
+    return () => window.removeEventListener("hashchange", apply);
+  }, [pathname]);
+
   const query = filter.trim().toLocaleLowerCase();
 
   /** Sections keep their heading while filtering; only the items narrow. */
@@ -80,7 +93,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         (item) =>
           sectionHit ||
           matches(item.label(t), query) ||
-          matches(item.description?.(t) ?? "", query),
+          matches(item.description?.(t) ?? "", query) ||
+          matches(item.badge?.(t) ?? "", query),
       );
       return { section, items, sectionHit };
     })
@@ -94,6 +108,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const isOpen = (section: NavSection) => {
     if (query) return true;
     return toggled[section.id] ?? (pathname?.startsWith(section.href) ?? false);
+  };
+  const groupKey = (section: NavSection, group: NavGroup) => `${section.id}:${group.id}`;
+  const isGroupOpen = (section: NavSection, group: NavGroup) => {
+    if (query) return true;
+    if (group.items.some((item) => pathname === item.href)) return true;
+    if (pathname === section.href && hash === group.id) return true;
+    return openGroups[groupKey(section, group)] ?? false;
   };
   const activeSection = SECTIONS.find((section) => pathname?.startsWith(section.href));
   // Create pages are not browsable sections, so name them directly.
@@ -160,8 +181,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           {sections.map(({ section, items }) => {
             const Icon = SECTION_ICONS[section.icon];
             const sectionActive = pathname?.startsWith(section.href) ?? false;
-            const open = isOpen(section);
+            const sectionOpen = isOpen(section);
             const label = section.label(t);
+            const groups = section.id === "guides"
+              ? groupByBadge(items, t, t.guides.other)
+              : null;
             // A filtered list is already narrow, so show every match.
             const shown = query ? items : items.slice(0, VISIBLE_ITEMS);
             const hidden = items.length - shown.length;
@@ -181,14 +205,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   {section.items.length > 0 && (
                     <button
                       type="button"
-                      className={open ? "nav-toggle is-open" : "nav-toggle"}
-                      aria-expanded={open}
+                      className={sectionOpen ? "nav-toggle is-open" : "nav-toggle"}
+                      aria-expanded={sectionOpen}
                       aria-controls={`nav-section-${section.id}`}
                       aria-label={tf(
-                        open ? t.shell.collapseSection : t.shell.expandSection,
+                        sectionOpen ? t.shell.collapseSection : t.shell.expandSection,
                         { section: label },
                       )}
-                      onClick={() => setToggled((current) => ({ ...current, [section.id]: !open }))}
+                      onClick={() => setToggled((current) => ({ ...current, [section.id]: !sectionOpen }))}
                     >
                       <ChevronIcon className="icon icon-sm" />
                     </button>
@@ -196,28 +220,83 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 </div>
                 {section.items.length > 0 && (
                   <div
-                    className={open ? "nav-collapse is-open" : "nav-collapse"}
+                    className={sectionOpen ? "nav-collapse is-open" : "nav-collapse"}
                     id={`nav-section-${section.id}`}
                   >
-                    <ul className="nav-sublist">
-                      {shown.map((item) => (
-                        <li key={item.href}>
-                          <Link
-                            className={pathname === item.href ? "nav-sublink is-active" : "nav-sublink"}
-                            href={item.href}
-                          >
-                            {item.label(t)}
-                          </Link>
-                        </li>
-                      ))}
-                      {hidden > 0 && (
-                        <li>
-                          <Link className="nav-sublink nav-more" href={section.href}>
-                            {tf(t.shell.showAll, { count: items.length })}
-                          </Link>
-                        </li>
-                      )}
-                    </ul>
+                    {groups ? (
+                      <ul className="nav-sublist">
+                        {groups.map((group) => {
+                          const groupOpen = isGroupOpen(section, group);
+                          const key = groupKey(section, group);
+                          const groupActive = group.items.some((item) => pathname === item.href)
+                            || (pathname === section.href && hash === group.id);
+                          return (
+                            <li key={group.id}>
+                              <div className="nav-row">
+                                <Link
+                                  className={groupActive ? "nav-sublink nav-category is-active" : "nav-sublink nav-category"}
+                                  href={`${section.href}#${group.id}`}
+                                >
+                                  {group.category}
+                                </Link>
+                                <button
+                                  type="button"
+                                  className={groupOpen ? "nav-toggle is-open" : "nav-toggle"}
+                                  aria-expanded={groupOpen}
+                                  aria-controls={`nav-group-${key}`}
+                                  aria-label={tf(
+                                    groupOpen ? t.shell.collapseSection : t.shell.expandSection,
+                                    { section: group.category },
+                                  )}
+                                  onClick={() =>
+                                    setOpenGroups((current) => ({ ...current, [key]: !groupOpen }))
+                                  }
+                                >
+                                  <ChevronIcon className="icon icon-sm" />
+                                </button>
+                              </div>
+                              <div
+                                className={groupOpen ? "nav-collapse is-open" : "nav-collapse"}
+                                id={`nav-group-${key}`}
+                              >
+                                <ul className="nav-sublist">
+                                  {group.items.map((item) => (
+                                    <li key={item.href}>
+                                      <Link
+                                        className={pathname === item.href ? "nav-sublink is-active" : "nav-sublink"}
+                                        href={item.href}
+                                      >
+                                        {item.label(t)}
+                                      </Link>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    ) : (
+                      <ul className="nav-sublist">
+                        {shown.map((item) => (
+                          <li key={item.href}>
+                            <Link
+                              className={pathname === item.href ? "nav-sublink is-active" : "nav-sublink"}
+                              href={item.href}
+                            >
+                              {item.label(t)}
+                            </Link>
+                          </li>
+                        ))}
+                        {hidden > 0 && (
+                          <li>
+                            <Link className="nav-sublink nav-more" href={section.href}>
+                              {tf(t.shell.showAll, { count: items.length })}
+                            </Link>
+                          </li>
+                        )}
+                      </ul>
+                    )}
                   </div>
                 )}
               </div>

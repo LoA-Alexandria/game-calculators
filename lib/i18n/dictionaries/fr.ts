@@ -88,6 +88,8 @@ const fr: Dictionary = {
     title: "Actualités",
     lede: "Ce qui a changé sur ce site et ce qui a été ajouté.",
     empty: "Aucune entrée pour l’instant.",
+    edit: "Modifier",
+    remove: "Retirer",
   },
   guides: {
     title: "Guides",
@@ -95,6 +97,9 @@ const fr: Dictionary = {
     empty:
       "Les premiers guides sont en cours de rédaction. En attendant, chaque outil explique ses hypothèses à côté du résultat.",
     other: "Autres",
+    allCategories: "Toutes les catégories",
+    pickGuide: "Choisissez un guide dans cette catégorie.",
+    categoryCount: "{count} dans cette catégorie",
   },
   guideCategories: {
     cityLayout: "Plan de ville",
@@ -493,6 +498,16 @@ const fr: Dictionary = {
     output: "Entrée pour lib/content/news.ts",
     outputNote:
       "Collez la ligne dans NEWS et ajoutez les textes sous newsEntries dans chaque dictionnaire.",
+    editTitle: "Modifier l’actualité",
+    editLede: "Modifiez le texte et exportez le remplacement. C’est le commit qui met la page à jour.",
+    replaceNote:
+      "Remplacez la ligne existante avec cet identifiant. N’ajoutez pas une seconde copie. Mettez à jour newsEntries dans chaque dictionnaire ; le texte ici est la langue que vous consultez.",
+    removeTitle: "Retirer cette actualité",
+    removeLede: "Rien n’est supprimé tant que vous n’avez pas commité les notes ci-dessous.",
+    removeNote:
+      "Supprimez la ligne NEWS et le bloc newsEntries avec cet identifiant en anglais, allemand et français.",
+    removeOutput: "Notes de suppression",
+    cancel: "Retour à une nouvelle entrée",
   },
   footer: {
     disclaimer:

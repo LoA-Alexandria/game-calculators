@@ -62,8 +62,10 @@ filter. There is no second list to keep in step.
 2. Create `app/guides/<slug>/page.tsx` — copy `app/guides/water-supply/page.tsx`,
    it is a dozen lines.
 3. Add one entry to the `guides` section in `lib/navigation.ts`, including a
-   `badge` from `guideCategories` so the Guides index can group it. Reuse an
-   existing category when the guide belongs next to one already there.
+   `badge` and `categoryId` from `guideCategories` so the Guides index and the
+   sidebar can group it. Reuse an existing category when the guide belongs next
+   to one already there. The sidebar shows the category first; opening it lists
+   the guides.
 
 Guides describe game mechanics, so treat their numbers the way the repository
 treats any other game data: say where they came from, and correct them in the
@@ -92,10 +94,11 @@ deriving it from each reader's clock would show different answers.
 ## Adding a news entry
 
 1. Open `/news/new/` signed in with `news.write`. The editor prints both the row
-   and the dictionary block.
-2. Add a row at the top of `NEWS` in `lib/content/news.ts` with an ISO date and,
+   and the dictionary block. Existing entries on `/news/` have Edit and Remove,
+   which load that row or print the deletion notes — the same pattern as events.
+2. Add or replace the row in `NEWS` in `lib/content/news.ts` with an ISO date and,
    optionally, an `href` to the thing the entry is about.
-3. Write the text under `newsEntries.<id>` in all three dictionaries
+3. Write or update the text under `newsEntries.<id>` in all three dictionaries
    (`title`, `summary`, `body[]`).
 
 Dates are formatted for the reader's language, so store them as `YYYY-MM-DD`.

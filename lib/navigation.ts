@@ -15,6 +15,11 @@ export type NavItem = {
   label: (t: Dictionary) => string;
   description?: (t: Dictionary) => string;
   badge?: (t: Dictionary) => string;
+  /**
+   * Stable grouping key for nested sidebar rows and the Guides index.
+   * `badge` is the translated label shown for that group.
+   */
+  categoryId?: string;
 };
 
 export type NavSection = {
@@ -55,6 +60,7 @@ export const SECTIONS: NavSection[] = [
         label: (t) => t.guideEntries.waterSupply.title,
         description: (t) => t.guideEntries.waterSupply.summary,
         badge: (t) => t.guideCategories.cityLayout,
+        categoryId: "cityLayout",
       },
     ],
   },
@@ -130,26 +136,34 @@ export function guideCount(): number {
   return sectionById("guides").items.length;
 }
 
+export type NavGroup = {
+  id: string;
+  category: string;
+  items: NavItem[];
+};
+
 /**
- * Groups items by their translated badge, keeping the order categories and
- * items first appear. Items without a badge land in `uncategorized`.
+ * Groups items by `categoryId` when present, otherwise by the translated
+ * badge. Order follows first appearance. Items without either land in
+ * `uncategorized`.
  */
 export function groupByBadge(
   items: NavItem[],
   t: Dictionary,
   uncategorized: string,
-): { category: string; items: NavItem[] }[] {
+): NavGroup[] {
   const order: string[] = [];
-  const groups = new Map<string, NavItem[]>();
+  const groups = new Map<string, NavGroup>();
   for (const item of items) {
     const category = item.badge?.(t) ?? uncategorized;
-    const existing = groups.get(category);
+    const id = item.categoryId ?? category;
+    const existing = groups.get(id);
     if (!existing) {
-      order.push(category);
-      groups.set(category, [item]);
+      order.push(id);
+      groups.set(id, { id, category, items: [item] });
       continue;
     }
-    existing.push(item);
+    existing.items.push(item);
   }
-  return order.map((category) => ({ category, items: groups.get(category) ?? [] }));
+  return order.map((id) => groups.get(id) ?? { id, category: uncategorized, items: [] });
 }

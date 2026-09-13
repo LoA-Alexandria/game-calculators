@@ -89,12 +89,17 @@ const en = {
     title: "News",
     lede: "What changed on this site, and what was added.",
     empty: "No entries yet.",
+    edit: "Edit",
+    remove: "Remove",
   },
   guides: {
     title: "Guides",
     lede: "How the systems behind the tools actually work — written down so you do not have to rediscover it.",
     empty: "The first guides are being written. Until then, every tool explains its own assumptions next to the result.",
     other: "Other",
+    allCategories: "All categories",
+    pickGuide: "Choose a guide in this category.",
+    categoryCount: "{count} in this category",
   },
   guideCategories: {
     cityLayout: "City layout",
@@ -490,6 +495,16 @@ const en = {
     output: "Entry for lib/content/news.ts",
     outputNote:
       "Paste the row into NEWS and add the texts under newsEntries in every dictionary.",
+    editTitle: "Edit news entry",
+    editLede: "Change the text and export the replacement. Committing it is what updates the live page.",
+    replaceNote:
+      "Replace the existing row with this id. Do not add a second copy. Update newsEntries in every dictionary; the text here is the language you are viewing.",
+    removeTitle: "Remove this news entry",
+    removeLede: "Nothing is deleted until you commit the notes below.",
+    removeNote:
+      "Delete the NEWS row and the newsEntries block with this id from English, German, and French.",
+    removeOutput: "Removal notes",
+    cancel: "Back to a new entry",
   },
   footer: {
     disclaimer:
