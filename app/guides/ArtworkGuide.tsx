@@ -1,6 +1,7 @@
 "use client";
 
 import { useId, useMemo, useState, type KeyboardEvent } from "react";
+import Link from "next/link";
 import { guideLayout } from "../../lib/content/guides";
 import {
   PAINTING_RARITIES,
@@ -223,46 +224,9 @@ export function ArtworkGuide({ guide }: { guide: Guide }) {
           </li>
         ))}
       </ul>
-
-      <div className="formation-intro artwork-spend">
-        <div>
-          <h2>{guide.spendHeading}</h2>
-          <div className="formation-rules">
-            {guide.steps.map((step, index) => (
-              <article className="formation-rule" key={step.title}>
-                <span className="formation-rule-index" aria-hidden="true">{index + 1}</span>
-                <h3>{step.title}</h3>
-                <p>{step.body}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-        <div>
-          <h2>{guide.levelsHeading}</h2>
-          <div className="table-scroll panel guide-table-panel">
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>{guide.colRank}</th>
-                  <th>{guide.colRarity}</th>
-                  <th>{guide.colStat}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {guide.levels.map((row) => (
-                  <tr key={`${row.rarity}-${row.stat}`}>
-                    <td data-label={guide.colRank}><strong className="mono">{row.rank}</strong></td>
-                    <td data-label={guide.colRarity}>
-                      <span className="rarity" data-rarity={row.rarity}>{row.rarity}</span>
-                    </td>
-                    <td data-label={guide.colStat}>{row.stat}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+      <p className="callout">
+        <Link href="/guides/artwork-layouts/">{guide.layoutsLink}</Link>
+      </p>
 
       <h2>{query.trim() ? guide.filterHeading : guide.setsHeading}</h2>
       {query.trim() ? null : guide.setsLede ? <p className="utility-lede">{guide.setsLede}</p> : null}

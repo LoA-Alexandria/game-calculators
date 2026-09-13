@@ -63,6 +63,13 @@ export const SECTIONS: NavSection[] = [
         categoryId: "coreElements",
       },
       {
+        href: "/guides/artwork/",
+        label: (t) => t.guideEntries.artwork.title,
+        description: (t) => t.guideEntries.artwork.summary,
+        badge: (t) => t.guideCategories.coreElements,
+        categoryId: "coreElements",
+      },
+      {
         href: "/guides/technology/",
         label: (t) => t.guideEntries.technology.title,
         description: (t) => t.guideEntries.technology.summary,
@@ -119,9 +126,9 @@ export const SECTIONS: NavSection[] = [
         categoryId: "layouts",
       },
       {
-        href: "/guides/artwork/",
-        label: (t) => t.guideEntries.artwork.title,
-        description: (t) => t.guideEntries.artwork.summary,
+        href: "/guides/artwork-layouts/",
+        label: (t) => t.guideEntries.artworkLayouts.title,
+        description: (t) => t.guideEntries.artworkLayouts.summary,
         badge: (t) => t.guideCategories.layouts,
         categoryId: "layouts",
       },

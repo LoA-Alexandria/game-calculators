@@ -41,11 +41,13 @@ test("hero filter matches Discord short names and keeps Joan as the UR+ exceptio
   }
 });
 
-test("artwork layouts sits with the other Layouts guides", () => {
-  const item = sectionById("guides").items.find((entry) => entry.href === "/guides/artwork/");
-  assert.equal(item?.categoryId, "layouts");
+test("artwork sits in Core elements and artwork layouts stays under Layouts", () => {
+  const artwork = sectionById("guides").items.find((entry) => entry.href === "/guides/artwork/");
+  const layouts = sectionById("guides").items.find((entry) => entry.href === "/guides/artwork-layouts/");
+  assert.equal(artwork?.categoryId, "coreElements");
+  assert.equal(layouts?.categoryId, "layouts");
   for (const dictionary of [en, de, fr]) {
     assert.equal(dictionary.guideEntries.artwork.status.length > 0, true);
-    assert.equal(dictionary.guideEntries.artwork.levels[0]?.stat, "ATK");
+    assert.equal(dictionary.guideEntries.artworkLayouts.levels[0]?.stat, "ATK");
   }
 });
