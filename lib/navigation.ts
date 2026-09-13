@@ -103,6 +103,12 @@ export const SECTIONS: NavSection[] = [
     icon: "simulations",
     items: [
       {
+        href: "/benben/",
+        label: (t) => t.benben.title,
+        description: (t) => t.benben.lede,
+        badge: (t) => t.benben.badge,
+      },
+      {
         href: "/simulations/irrigation-planner/",
         label: (t) => t.tools.irrigation.name,
         description: (t) => t.tools.irrigation.description,

@@ -1487,3 +1487,37 @@ button.calendar-day:hover { background: var(--surface-2); }
   .nav-collapse { max-height: 0; }
   .nav-collapse.is-open { max-height: 26rem; }
 }
+/* Benben, the communal pyramid */
+.benben-stage { display: grid; grid-template-columns: minmax(280px, .9fr) minmax(360px, 1.1fr); gap: 22px; align-items: stretch; }
+.benben-character-card, .benben-care-card { position: relative; overflow: hidden; border: 1px solid var(--line); border-radius: var(--r-xl); background: var(--surface); box-shadow: var(--shadow-2); }
+.benben-character-card { min-height: 520px; display: grid; place-items: end center; padding: 30px 26px 10px; isolation: isolate; background: linear-gradient(155deg, #ffdb9d 0%, #e99d79 46%, #665687 100%); }
+.benben-character-card::before { content: ""; position: absolute; z-index: -1; inset: auto -8% 0; height: 34%; background: linear-gradient(#cf9a69, #8c5d47); clip-path: polygon(0 44%, 14% 25%, 28% 42%, 44% 8%, 61% 38%, 76% 19%, 100% 43%, 100% 100%, 0 100%); }
+.benben-sun { position: absolute; z-index: -1; top: 42px; right: 46px; width: 120px; aspect-ratio: 1; border-radius: 50%; background: #ffe9ae; box-shadow: 0 0 70px rgba(255,238,181,.65); }
+.benben-image { width: min(100%, 490px); height: auto; filter: drop-shadow(0 24px 20px rgba(38,26,32,.32)); transform-origin: 50% 90%; }
+.benben-image.is-bopping { animation: benben-bop .5s ease-in-out; }
+@keyframes benben-bop { 30% { transform: translateY(-14px) rotate(-2deg); } 65% { transform: translateY(-6px) rotate(2deg); } }
+.benben-mood { position: absolute; top: 20px; left: 20px; display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border: 1px solid rgba(255,255,255,.45); border-radius: 999px; background: rgba(20,17,28,.64); color: #fff; font-weight: 700; backdrop-filter: blur(8px); }
+.benben-mood span { color: #ffd76c; }
+.benben-care-card { padding: clamp(20px, 4vw, 34px); }
+.benben-stats { display: grid; gap: 18px; }
+.benben-stat > div:first-child { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 7px; color: var(--ink-soft); font-size: .86rem; font-weight: 650; }
+.benben-stat strong { color: var(--ink); }
+.benben-meter { overflow: hidden; height: 10px; border-radius: 999px; background: var(--surface-3); }
+.benben-meter span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--gold-hi), var(--accent)); transition: width .35s ease; }
+.benben-community-numbers { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 26px 0 20px; }
+.benben-community-numbers > div { display: flex; flex-direction: column; gap: 3px; padding: 14px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface-2); }
+.benben-community-numbers strong { font-family: var(--font-display); font-size: 1.45rem; }
+.benben-community-numbers span { color: var(--ink-soft); font-size: .75rem; }
+.benben-action-note { min-height: 42px; color: var(--ink-soft); font-size: .86rem; }
+.benben-actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.benben-action { min-width: 0; flex-direction: column; height: 70px; gap: 4px; }
+.benben-action span { font-size: 1.2rem; }
+.benben-signin, .benben-share { width: 100%; margin-top: 10px; justify-content: center; }
+.benben-recent { margin-top: 22px; }
+.benben-recent ul { list-style: none; margin: 12px 0 0; padding: 0; }
+.benben-recent li { display: grid; grid-template-columns: 34px 1fr auto; align-items: center; gap: 8px; padding: 10px 0; border-top: 1px solid var(--line); color: var(--ink-soft); font-size: .84rem; }
+.benben-recent li strong { color: var(--ink); }
+.benben-recent time { color: var(--ink-faint); font-size: .74rem; }
+.benben-log-icon { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--gold-soft); }
+@media (max-width: 850px) { .benben-stage { grid-template-columns: 1fr; } .benben-character-card { min-height: 420px; } }
+@media (max-width: 520px) { .benben-actions { grid-template-columns: 1fr 1fr; } .benben-recent li { grid-template-columns: 34px 1fr; } .benben-recent time { grid-column: 2; } }
