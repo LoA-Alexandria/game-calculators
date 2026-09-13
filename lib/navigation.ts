@@ -77,6 +77,13 @@ export const SECTIONS: NavSection[] = [
         categoryId: "coreElements",
       },
       {
+        href: "/guides/artwork/",
+        label: (t) => t.guideEntries.artwork.title,
+        description: (t) => t.guideEntries.artwork.summary,
+        badge: (t) => t.guideCategories.coreElements,
+        categoryId: "coreElements",
+      },
+      {
         href: "/guides/manor/",
         label: (t) => t.guideEntries.manor.title,
         description: (t) => t.guideEntries.manor.summary,

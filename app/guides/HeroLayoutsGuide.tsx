@@ -1,6 +1,7 @@
 "use client";
 
 import { useId, useState, type CSSProperties, type KeyboardEvent } from "react";
+import { guideLayout } from "../../lib/content/guides";
 import type { Dictionary } from "../../lib/i18n";
 import {
   COLLECTION_ITEMS,
@@ -41,7 +42,7 @@ type UtilityRole = { role: string; groups: readonly PickGroup[] };
 export function isHeroLayoutsGuide(
   guide: Dictionary["guideEntries"][keyof Dictionary["guideEntries"]],
 ): guide is Guide {
-  return "builds" in guide && Array.isArray((guide as { builds?: unknown }).builds);
+  return guideLayout(guide) === "heroLayouts";
 }
 
 function initial(name: string): string {
@@ -246,10 +247,10 @@ export function HeroLayoutsGuide({ guide }: { guide: Guide }) {
         </div>
         <div>
           <h2>{guide.rulesHeading}</h2>
-          <div className="rule-grid">
+          <div className="formation-rules">
             {guide.sections.map((section, index) => (
-              <article className="rule-card" key={section.heading}>
-                <span className="rule-index" aria-hidden="true">{index + 1}</span>
+              <article className="formation-rule" key={section.heading}>
+                <span className="formation-rule-index" aria-hidden="true">{index + 1}</span>
                 <h3>{section.heading}</h3>
                 {section.body.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
               </article>
