@@ -100,6 +100,8 @@ const de: Dictionary = {
     allCategories: "Alle Kategorien",
     pickGuide: "Wähle einen Guide in dieser Kategorie.",
     categoryCount: "{count} in dieser Kategorie",
+    edit: "Bearbeiten",
+    remove: "Entfernen",
   },
   guideCategories: {
     cityLayout: "Stadtaufbau",
@@ -378,10 +380,11 @@ const de: Dictionary = {
   editor: {
     title: "Neuer Guide",
     lede:
-      "Guide schreiben, Bilder hinzufügen und das Ergebnis exportieren. Sobald das Backend steht, speichert dieses Formular direkt.",
+      "Guide schreiben und das Snippet exportieren. Erst der Commit macht ihn sichtbar; eine statische Seite kann die Änderung nicht selbst speichern.",
     fieldTitle: "Titel",
     fieldSlug: "URL-Abschnitt",
     fieldSlugNote: "Wird zu /guides/<abschnitt>/",
+    fieldCategory: "Kategorie",
     fieldSummary: "Kurzfassung",
     fieldSummaryNote: "Ein Satz, erscheint in der Guide-Liste",
     fieldIntro: "Einleitung",
@@ -412,9 +415,24 @@ const de: Dictionary = {
     clearDraft: "Entwurf verwerfen",
     noServerTitle: "Es wird nichts hochgeladen",
     noServerBody:
-      "Hinter diesem Formular steht kein Server. Bilder liegen nur in diesem Tab und sind beim Schließen weg — nutze den Export, um deine Arbeit zu sichern.",
+      "Hinter diesem Formular steht kein Server. Bilder liegen nur in diesem Tab. Kopiere das Snippet und committe es, damit alle den Guide sehen.",
     translationNote:
-      "Ein veröffentlichter Guide braucht seinen Text in jeder Sprache der Seite. Exportiere den Entwurf und gib ihn an die Person weiter, die die Übersetzungen einträgt.",
+      "Ein veröffentlichter Guide braucht seinen Text in jeder Sprache der Seite. Das Snippet hier ist die Sprache, die du gerade siehst; die anderen beiden trägst du von Hand nach.",
+    output: "Eintrag zum Committen",
+    outputLede:
+      "Füge den Wörterbuch-Block und die Navigationszeile ein und lege die Seite an, wie unten beschrieben.",
+    outputNote:
+      "Einfügen unter guideEntries in jedem Wörterbuch und in guides.items in lib/navigation.ts. Für einen neuen Slug die water-supply-Seite kopieren.",
+    editTitle: "Guide bearbeiten",
+    editLede: "Ändere den Text und exportiere den Ersatz. Erst der Commit aktualisiert die live Seite.",
+    replaceNote:
+      "Ersetze den bestehenden guideEntries-Block mit dieser id. Lege keine zweite Kopie an. Aktualisiere jedes Wörterbuch; der Text hier ist die Sprache, die du gerade siehst.",
+    removeTitle: "Diesen Guide entfernen",
+    removeLede: "Nichts wird gelöscht, bis du die Notizen unten committest.",
+    removeNote:
+      "Lösche den guideEntries-Block, die Navigationszeile und den Seitenordner für diesen Slug in Englisch, Deutsch und Französisch.",
+    removeOutput: "Notizen zum Entfernen",
+    cancel: "Zurück",
   },
   events: {
     title: "Events",

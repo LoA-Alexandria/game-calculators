@@ -8,7 +8,7 @@ The project is a statically exported Next.js site. GitHub Pages serves the gener
 
 ```text
 app/
-  page.tsx                     Home: news slide and site stats
+  page.tsx                     Home: news slide, site stats, and the event calendar
   news/                        News index
   events/                      Event calendar and schedule editor
   guides/<slug>/               Guides
@@ -23,6 +23,7 @@ lib/
   i18n/                        Language registry and dictionaries
   content/news.ts              News entries
   content/events.ts            Event schedule
+  content/guides.ts            Guide slug and dictionary-id helpers
   content/banners.ts           Optional section banner images
   navigation.ts                Section tree driving sidebar and indexes
   site.ts                      Base path, Discord, repository, storage keys
@@ -78,10 +79,10 @@ membership and the `role_mappings` table. The resulting `editor_access` row is
 server-maintained and protected with RLS. `/admin/` is shown to members with
 `roles.assign`; writes are enforced by RLS.
 
-`/guides/new/` requires verified guide-writer access. It currently saves drafts
-only in the editor's browser; shared publishing and revision storage are still
-to be implemented. Read [`AUTH-AND-CMS.md`](AUTH-AND-CMS.md) before adding any
-write path.
+`/guides/new/` requires verified guide-writer access. New, edit, and remove
+print a snippet to commit into the dictionaries and navigation; shared wiki
+tables are still to be implemented. Read [`AUTH-AND-CMS.md`](AUTH-AND-CMS.md)
+before adding any write path.
 
 ## Vendored applications
 

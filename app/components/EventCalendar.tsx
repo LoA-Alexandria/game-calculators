@@ -46,8 +46,8 @@ export function useMonthOccurrences(days: Date[]) {
 /**
  * A month grid with a dot per event kind on each day.
  *
- * `compact` is the sidebar version: smaller cells, no day selection, no
- * weekday header beyond a single letter.
+ * `compact` is a denser grid: smaller cells, no day selection, no weekday
+ * header beyond a single letter.
  */
 export function MonthCalendar({
   today,
@@ -168,48 +168,68 @@ export function MonthCalendar({
 }
 
 /**
- * A short live/upcoming list for the sidebar. The month grid lives on /events/;
- * six weeks of cells crowded the navigation on a laptop.
+ * Live and upcoming events plus the month grid, for the overview under the
+ * site stats. The sidebar used to hold a three-row list; that belonged next
+ * to the counts once the main column had room for a real calendar.
  */
-export function SidebarAgenda({ now }: { now: Date | null }) {
+export function OverviewAgenda({ now }: { now: Date | null }) {
   const { t, locale } = useLocale();
-  const live = now ? activeAt(EVENTS, now).slice(0, 2) : [];
-  const next = now ? upcomingAfter(EVENTS, now, 21, 3) : [];
-  const rows = [...live, ...next].slice(0, 3);
+  const live = now ? activeAt(EVENTS, now) : [];
+  const next = now ? upcomingAfter(EVENTS, now, 21, 5) : [];
   const when = new Intl.DateTimeFormat(locale, { dateStyle: "medium", timeStyle: "short", timeZone: "UTC" });
 
   return (
-    <div className="sidebar-agenda">
-      <div className="sidebar-agenda-head">
-        <strong>{t.nav.events}</strong>
-        <Link className="sidebar-calendar-link" href="/events/">
+    <section className="section overview-events" aria-label={t.nav.events}>
+      <div className="section-heading">
+        <h2>{t.nav.events}</h2>
+        <Link href="/events/">
           {t.events.openCalendar} <span aria-hidden="true">→</span>
         </Link>
       </div>
-      {now === null ? (
-        <p className="sidebar-agenda-empty">…</p>
-      ) : rows.length === 0 ? (
-        <p className="sidebar-agenda-empty">{t.events.sidebarEmpty}</p>
-      ) : (
-        <ul className="sidebar-agenda-list">
-          {rows.map((occurrence) => {
-            const running = live.some((item) => item.event.id === occurrence.event.id && item.start.getTime() === occurrence.start.getTime());
-            return (
-              <li key={`${occurrence.event.id}-${occurrence.start.toISOString()}`}>
-                <Link className={`sidebar-agenda-item event-${occurrence.event.kind}`} href="/events/">
+      <div className="events-layout">
+        <section className="panel">
+          <h2>{t.events.upcoming}</h2>
+          {now === null ? (
+            <p className="assumption" style={{ margin: 0 }}>…</p>
+          ) : live.length === 0 && next.length === 0 ? (
+            <p className="assumption" style={{ margin: 0 }}>{t.events.sidebarEmpty}</p>
+          ) : (
+            <ul className="event-list">
+              {live.map((occurrence) => (
+                <li
+                  className={`event-row event-${occurrence.event.kind}`}
+                  key={`${occurrence.event.id}-${occurrence.start.toISOString()}-live`}
+                >
                   <span className={`dot dot-${occurrence.event.kind}`} aria-hidden="true" />
-                  <span>
+                  <div className="event-body">
                     <strong>{occurrence.event.name(t)}</strong>
-                    <span className="mono">
-                      {running ? t.events.liveNow : when.format(occurrence.start)}
-                    </span>
-                  </span>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      )}
-    </div>
+                    <p>{occurrence.event.summary(t)}</p>
+                    <p className="mono">{t.events.liveNow}</p>
+                  </div>
+                </li>
+              ))}
+              {next.map((occurrence) => (
+                <li
+                  className={`event-row event-${occurrence.event.kind}`}
+                  key={`${occurrence.event.id}-${occurrence.start.toISOString()}`}
+                >
+                  <span className={`dot dot-${occurrence.event.kind}`} aria-hidden="true" />
+                  <div className="event-body">
+                    <strong>{occurrence.event.name(t)}</strong>
+                    <p>{occurrence.event.summary(t)}</p>
+                    <p className="mono">{when.format(occurrence.start)}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+        <section className="panel">
+          <h2>{t.events.calendar}</h2>
+          <MonthCalendar today={now} />
+          <p className="assumption">{t.events.timesAreUtc}</p>
+        </section>
+      </div>
+    </section>
   );
 }

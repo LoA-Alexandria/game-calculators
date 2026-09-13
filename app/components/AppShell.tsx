@@ -7,8 +7,6 @@ import { SECTIONS, groupByBadge, type NavGroup, type NavItem, type NavSection } 
 import { DISCORD_CONFIGURED, DISCORD_URL, REPOSITORY_URL } from "../../lib/site";
 import { useAuth } from "./AuthProvider";
 import { useLocale } from "./LocaleProvider";
-import { SidebarAgenda } from "./EventCalendar";
-import { useNow } from "./useNow";
 import { AccountMenu } from "./AccountMenu";
 import { LanguageMenu } from "./LanguageMenu";
 import { ThemeToggle } from "./ThemeToggle";
@@ -37,7 +35,6 @@ function matches(haystack: string, needle: string): boolean {
 export function AppShell({ children }: { children: React.ReactNode }) {
   const { t, tf } = useLocale();
   const { error: authError } = useAuth();
-  const now = useNow();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [filter, setFilter] = useState("");
@@ -305,8 +302,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
           {nothingFound && <p className="nav-empty">{t.shell.filterEmpty}</p>}
         </nav>
-
-        <SidebarAgenda now={now} />
 
         <div className="sidebar-foot">
           <a
