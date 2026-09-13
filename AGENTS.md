@@ -12,7 +12,7 @@ This repository contains small, browser-only game calculators published as a sta
 - Preserve keyboard access, visible labels, mobile layouts, and reduced-motion behavior.
 - Do not commit generated `out/`, `.next/`, secrets, personal data, or local environment files.
 - Work on a feature branch and open a pull request. Never push directly to `main`.
-- Do not merge a pull request without approval from another contributor and passing checks.
+- Merge a pull request only after the verification below and passing checks. Approval is not required, but request a review for large or risky changes (authentication, roles, database migrations, redesigns) and tell the person you are working for, so they can mention it in the team chat — review requests arrive by email and are easy to miss.
 
 ## Before editing
 
@@ -25,8 +25,11 @@ This repository contains small, browser-only game calculators published as a sta
 Run these commands before handing work back:
 
 ```sh
-npm test
-npm run build
+pnpm lint
+pnpm test
+pnpm build
 ```
+
+Check interface changes in a browser as well, including a narrow screen.
 
 Report what changed, which assumptions were made, and the verification result. Do not claim a calculation is correct without a test covering its important boundaries.

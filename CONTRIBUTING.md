@@ -4,10 +4,14 @@ Contributions should make a calculator more accurate, understandable, or useful.
 
 ## Protected main branch
 
-All changes must arrive through a pull request. A contributor with repository
-write access must approve the pull request, and automated checks must pass,
-before it can be merged. Do not push directly to `main` or merge your own
-unreviewed changes.
+All changes must arrive through a pull request. Do not push directly to `main`.
+
+An approving review is not required: a contributor with write access may merge
+their own pull request once it is tested and the automated checks pass. Ask for
+a review when a change is large or risky — authentication, roles, database
+migrations, or a redesign — or whenever a second opinion would help. Request it
+from the reviewers menu on the pull request, and mention it in the team chat as
+well, since review requests arrive by email and are easy to miss.
 
 ## Pull-request checklist
 
@@ -17,9 +21,9 @@ unreviewed changes.
 - Add tests for normal, zero, minimum, maximum, and invalid inputs.
 - Explain rounding, caps, unlock conditions, and other assumptions in the interface.
 - Test the calculator with keyboard navigation and a narrow screen.
-- Run `npm test` and `npm run build`.
+- Run `pnpm lint`, `pnpm test`, and `pnpm build`, and check interface changes in a browser.
 - Keep unrelated cleanup out of the pull request.
-- Obtain approval from another contributor with repository write access.
+- Wait for the automated checks to pass before merging.
 
 ## Data corrections
 
