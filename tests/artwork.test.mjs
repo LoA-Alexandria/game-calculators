@@ -7,6 +7,7 @@ import {
   paintingsForHero,
   setsByRarity,
 } from "../lib/content/artwork.ts";
+import { SET_SKILL_BUILDS, setSkillRank } from "../lib/content/artwork-layouts.ts";
 import en from "../lib/i18n/dictionaries/en.ts";
 import de from "../lib/i18n/dictionaries/de.ts";
 import fr from "../lib/i18n/dictionaries/fr.ts";
@@ -41,11 +42,26 @@ test("hero filter matches Discord short names and keeps Joan as the UR+ exceptio
   }
 });
 
-test("artwork layouts sits with the other Layouts guides", () => {
-  const item = sectionById("guides").items.find((entry) => entry.href === "/guides/artwork/");
-  assert.equal(item?.categoryId, "layouts");
+test("artwork sits in Core elements and artwork layouts stays under Layouts", () => {
+  const artwork = sectionById("guides").items.find((entry) => entry.href === "/guides/artwork/");
+  const layouts = sectionById("guides").items.find((entry) => entry.href === "/guides/artwork-layouts/");
+  assert.equal(artwork?.categoryId, "coreElements");
+  assert.equal(layouts?.categoryId, "layouts");
   for (const dictionary of [en, de, fr]) {
     assert.equal(dictionary.guideEntries.artwork.status.length > 0, true);
-    assert.equal(dictionary.guideEntries.artwork.levels[0]?.stat, "ATK");
+    assert.equal(dictionary.guideEntries.artworkLayouts.levels[0]?.stat, "ATK");
+    assert.equal(dictionary.guideEntries.artworkLayouts.buildNames.crit.length > 0, true);
+  }
+});
+
+test("set-skill ranking swaps the first slot and keeps Autumn's eight named sets", () => {
+  assert.equal(setSkillRank("crit")[0]?.set.name, "Nature in Bloom");
+  assert.equal(setSkillRank("pursuit")[0]?.set.name, "Self-Portrait");
+  assert.equal(setSkillRank("dot")[0]?.set.name, "Urban Proletariat");
+  const hybrid = setSkillRank("hybrid");
+  assert.equal(hybrid.length, 8);
+  assert.equal(hybrid.find((row) => row.insert)?.set.name, "Ukiya-e Masterpieces");
+  for (const build of SET_SKILL_BUILDS) {
+    assert.equal(setSkillRank(build).length, 8, build);
   }
 });

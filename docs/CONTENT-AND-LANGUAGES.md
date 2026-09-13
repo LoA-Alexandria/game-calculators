@@ -61,30 +61,35 @@ filter. There is no second list to keep in step.
    an existing guide. The editor prints the dictionary block, the navigation
    row, and (for a new slug) a note to copy the page file. Existing guides on
    `/guides/` and on the guide page have Edit and Remove — the same commit-snippet
-   pattern as news and events.
+   pattern as news and events. Artwork layouts and the Hero tier list skip those
+   buttons: they have their own editors instead.
 2. Write or replace the text under `guideEntries.<id>` in all three dictionaries,
    following the shape of `waterSupply`: `title`, `summary`, `intro`,
    `sections[]`, `note`.
 3. Add or replace the item in the `guides` section in `lib/navigation.ts`,
    including a `badge` and `categoryId` from `guideCategories`. Reuse an existing
    category when the guide belongs next to one already there. Core systems
-   (heroes, technology, collection, manor, support, goddesses, cryptides)
-   use `coreElements`; placement guides (water supply, hero layouts, artwork)
-   use `layouts`; ranking guides (hero tier list) use `tierLists`.
+   (heroes, artwork, technology, collection, manor, support, goddesses, cryptides)
+   use `coreElements`; placement guides (water supply, hero layouts, artwork
+   layouts) use `layouts`; ranking guides (hero tier list) use `tierLists`.
 4. For a new slug, copy `app/guides/water-supply/page.tsx` and pass the new id
    to `GuideArticle`.
 
 A guide that needs more than headings and paragraphs gets its own renderer next
-to `GuideArticle`: `GoddessesGuide`, `ArtworkGuide`, `HeroLayoutsGuide`, and
-`HeroTierListGuide`.
+to `GuideArticle`: `GoddessesGuide`, `ArtworkGuide`, `ArtworkLayoutsGuide`,
+`HeroLayoutsGuide`, and `HeroTierListGuide`.
 `guideLayout()` in `lib/content/guides.ts` picks the renderer from a field only
 that guide has, and `tests/guides.test.mjs` pins every entry, so two guides
 cannot claim the same renderer by sharing a field name. Keep `sections` and
 `note` in those entries too, since the editor reads them. In the Hero layouts guide,
 `sections` are the rule cards next to the formation board, and the slot order
 lives in `lib/content/hero-layouts.ts` (builds and utility groups: see *Editing
-hero layouts* below). Painting names, set effects, and hero
-matches for Artwork layouts live in `lib/content/artwork.ts`.
+hero layouts* below). Painting names, set effects, and hero matches for Artwork
+live in `lib/content/artwork.ts`. Unlock order and level priority for Artwork
+layouts live in the guide dictionary. The SSR set-skill ranking lives in
+`lib/data/artwork-layouts.json`, once for all languages;
+`lib/content/artwork-layouts.ts` types and exports it. Dictionaries hold the
+build names, reasons, and notes those rows point at.
 
 The Hero tier list keeps its rows (hero names, grades, resources, bonuses) in
 `lib/data/hero-tiers.json`, once for all languages; `lib/content/hero-tiers.ts`
@@ -137,7 +142,8 @@ other spelling. Remove an entry there once the roster and the guides agree.
 ## Editing the hero tier list
 
 Members with `guides.draft` see **Edit tier list** on the tier list page, which
-opens `/guides/hero-tier-list/edit/`.
+opens `/guides/hero-tier-list/edit/`. The dictionary-snippet Edit / Remove at
+the top of the page is hidden here.
 
 - Drag a hero by its handle to another tier or position. The handle also works
   from the keyboard: focus it, press space, move with the arrow keys, and press
@@ -160,6 +166,33 @@ The export dialog lists problems first: missing names, duplicates, invalid
 grades, and text keys without text. An untouched draft exports the published file
 byte for byte (`tests/hero-tier-editor.test.mjs`), so a diff only ever contains
 real changes.
+
+## Editing artwork layouts
+
+Members with `guides.draft` see **Edit set skills** on Artwork layouts, which
+opens `/guides/artwork-layouts/edit/`. The dictionary-snippet Edit / Remove at
+the top of the page is hidden here.
+
+- Each build is a ranked list of painting sets from the Artwork catalogue.
+  Change order with the rank dropdown, pick a reason, or remove a set.
+- **Add a painting set** lists catalogue sets that are not already in that
+  build, grouped by rarity.
+- **Add build** / **Remove build** create or delete a ranking. A new build can
+  start empty or copy an existing one. The last remaining build cannot be
+  deleted.
+- A text the dictionaries do not have yet (a new build name, note, or reason)
+  can be typed in English, German, and French from the **New text…** option.
+
+The draft is saved in that browser only
+(`localStorage['popepoch-artwork-layout-draft']`). **Export** produces:
+
+1. the complete `lib/data/artwork-layouts.json`, one row per line so a pull
+   request shows exactly which sets moved, and
+2. for new text, one block per dictionary to paste under
+   `guideEntries.artworkLayouts`.
+
+An untouched draft exports the published file byte for byte
+(`tests/artwork-layout-editor.test.mjs`).
 
 Community-written guides name their author in the entry (`credit`). Ask the
 author before publishing their text, and keep the credit when you edit it.

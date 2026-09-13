@@ -29,6 +29,17 @@ export function isGuideEntryId(
   return Object.hasOwn(entries, id);
 }
 
+/**
+ * Artwork layouts, Hero layouts, and the Hero tier list have their own
+ * editors. The dictionary-snippet Edit / Remove on the guide page would only
+ * rewrite surrounding copy, so those skip it.
+ */
+const SNIPPET_EDITOR_SKIP = new Set<string>(["artworkLayouts", "heroLayouts", "heroTierList"]);
+
+export function guideHasSnippetEditor(id: string): boolean {
+  return !SNIPPET_EDITOR_SKIP.has(id);
+}
+
 export function guideCategoryId(
   href: string,
   categories: Dictionary["guideCategories"],
@@ -39,7 +50,7 @@ export function guideCategoryId(
   return "layouts";
 }
 
-export type GuideLayout = "goddesses" | "artwork" | "heroLayouts" | "heroes" | "heroTierList" | "article";
+export type GuideLayout = "goddesses" | "artwork" | "artworkLayouts" | "heroLayouts" | "heroes" | "heroTierList" | "article";
 
 /**
  * Which renderer a guide entry needs. Each custom layout is recognised by a
@@ -50,7 +61,8 @@ export function guideLayout(guide: object): GuideLayout {
   if ("phases" in guide) return "goddesses";
   if ("battleTiers" in guide) return "heroTierList";
   if ("buildTexts" in guide) return "heroLayouts";
-  if ("levels" in guide) return "artwork";
+  if ("levels" in guide) return "artworkLayouts";
+  if ("setsHeading" in guide) return "artwork";
   if ("filterAll" in guide) return "heroes";
   return "article";
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { isGuideEntryId, type GuideEntryId } from "../../lib/content/guides";
+import { guideHasSnippetEditor, isGuideEntryId, type GuideEntryId } from "../../lib/content/guides";
 import { useAuth } from "../components/AuthProvider";
 import { useDocumentTitle, useLocale } from "../components/LocaleProvider";
 import { BackLink, PageHead } from "../components/Ui";
@@ -9,6 +9,7 @@ import { PenIcon, TrashIcon } from "../components/Icons";
 import { GuideEditor, type GuideEditorTarget } from "./GuideEditor";
 import { GoddessesGuide, isGoddessesGuide } from "./GoddessesGuide";
 import { ArtworkGuide, isArtworkGuide } from "./ArtworkGuide";
+import { ArtworkLayoutsGuide, isArtworkLayoutsGuide } from "./ArtworkLayoutsGuide";
 import { HeroLayoutsGuide, isHeroLayoutsGuide } from "./HeroLayoutsGuide";
 import { HeroRoster, isHeroesGuide } from "./HeroRoster";
 import { HeroTierListGuide, isHeroTierListGuide } from "./HeroTierListGuide";
@@ -17,7 +18,7 @@ export function GuideArticle({ id }: { id: GuideEntryId }) {
   const { t } = useLocale();
   const { allows } = useAuth();
   const guide = t.guideEntries[id];
-  const canWrite = allows("guides.draft");
+  const canWrite = allows("guides.draft") && guideHasSnippetEditor(id);
   const [target, setTarget] = useState<GuideEditorTarget | null>(null);
   useDocumentTitle(guide.title);
 
@@ -45,6 +46,8 @@ export function GuideArticle({ id }: { id: GuideEntryId }) {
       <article className="article">
         {isGoddessesGuide(guide) ? (
           <GoddessesGuide guide={guide} />
+        ) : isArtworkLayoutsGuide(guide) ? (
+          <ArtworkLayoutsGuide guide={guide} />
         ) : isArtworkGuide(guide) ? (
           <ArtworkGuide guide={guide} />
         ) : isHeroLayoutsGuide(guide) ? (

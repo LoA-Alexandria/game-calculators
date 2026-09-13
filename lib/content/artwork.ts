@@ -228,6 +228,10 @@ export function setsByRarity(rarity: PaintingRarity): PaintingSet[] {
   return PAINTING_SETS.filter((entry) => entry.rarity === rarity);
 }
 
+export function paintingSetById(id: string): PaintingSet | undefined {
+  return PAINTING_SETS.find((entry) => entry.id === id);
+}
+
 export type PaintingHit = {
   set: PaintingSet;
   painting: Painting;

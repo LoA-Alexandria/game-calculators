@@ -9,6 +9,7 @@ import {
   camelToKebab,
   guideHref,
   guideIdFromHref,
+  guideHasSnippetEditor,
   guideLayout,
   isGuideEntryId,
   kebabToCamel,
@@ -20,10 +21,12 @@ test("converts guide slugs and dictionary ids both ways", () => {
   assert.equal(guideHref("waterSupply"), "/guides/water-supply/");
   assert.equal(guideHref("goddesses"), "/guides/goddesses/");
   assert.equal(guideHref("artwork"), "/guides/artwork/");
+  assert.equal(guideHref("artworkLayouts"), "/guides/artwork-layouts/");
   assert.equal(guideHref("heroes"), "/guides/heroes/");
   assert.equal(guideIdFromHref("/guides/water-supply/"), "waterSupply");
   assert.equal(guideIdFromHref("/guides/goddesses/"), "goddesses");
   assert.equal(guideIdFromHref("/guides/artwork/"), "artwork");
+  assert.equal(guideIdFromHref("/guides/artwork-layouts/"), "artworkLayouts");
   assert.equal(guideIdFromHref("/guides/heroes/"), "heroes");
   assert.equal(guideIdFromHref("/guides/new/"), null);
 });
@@ -36,10 +39,19 @@ test("every published guide has a dictionary entry", () => {
   }
 });
 
-test("artwork levels SSR ATK first and Nature in Bloom is an SSR set", () => {
-  const { levels, note } = en.guideEntries.artwork;
+test("structured ranking guides skip the snippet Edit / Remove", () => {
+  assert.equal(guideHasSnippetEditor("artworkLayouts"), false);
+  assert.equal(guideHasSnippetEditor("heroTierList"), false);
+  assert.equal(guideHasSnippetEditor("heroLayouts"), false);
+  assert.equal(guideHasSnippetEditor("artwork"), true);
+  assert.equal(guideHasSnippetEditor("waterSupply"), true);
+});
+
+test("artwork layouts levels SSR ATK first", () => {
+  const { levels, note, buildNames } = en.guideEntries.artworkLayouts;
   assert.equal(levels[0]?.rarity, "SSR");
   assert.equal(levels[0]?.stat, "ATK");
+  assert.equal(Object.keys(buildNames).join(), "crit,pursuit,dot,hybrid");
   assert.equal(note, "");
 });
 
@@ -56,6 +68,7 @@ test("each guide entry is claimed by exactly the renderer it was written for", (
   const custom = {
     goddesses: "goddesses",
     artwork: "artwork",
+    artworkLayouts: "artworkLayouts",
     heroLayouts: "heroLayouts",
     heroes: "heroes",
     heroTierList: "heroTierList",
