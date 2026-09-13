@@ -1449,6 +1449,23 @@ button.calendar-day:hover { background: var(--surface-2); }
   font-size: .87rem;
   font-weight: 600;
 }
+.overview-events .events-layout {
+  grid-template-columns: 1fr 1fr;
+  align-items: stretch;
+}
+.overview-events .events-layout > .panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+}
+.overview-events .events-layout > .panel + .panel {
+  margin-top: 0;
+}
+.overview-events .event-list {
+  flex: 1;
+  min-height: 0;
+}
 
 .weekday-picker { display: flex; flex-wrap: wrap; gap: 5px; }
 .weekday {
@@ -1501,6 +1518,7 @@ button.calendar-day:hover { background: var(--surface-2); }
 
 @media (max-width: 1000px) {
   .events-layout { grid-template-columns: minmax(0, 1fr); }
+  .overview-events .events-layout > .panel + .panel { margin-top: 12px; }
 }
 
 @media (max-width: 700px) {
