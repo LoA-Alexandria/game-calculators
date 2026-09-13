@@ -4,7 +4,7 @@ import test from "node:test";
 import en from "../lib/i18n/dictionaries/en.ts";
 import de from "../lib/i18n/dictionaries/de.ts";
 import fr from "../lib/i18n/dictionaries/fr.ts";
-import { COLLECTION_ITEMS, pickName } from "../lib/content/hero-layouts.ts";
+import { LAYOUT_DATA, placedHeroes } from "../lib/content/hero-layouts.ts";
 import {
   BATTLE_TIERS,
   OVERALL_TIERS,
@@ -97,12 +97,7 @@ test("hero names match the Hero layouts guide", () => {
     ...UTILITY_TIERS.flatMap((row) => row.entries.map((entry) => entry.hero)),
     ...productivityEntries.map((entry) => entry.hero),
   ]);
-  const layouts = en.guideEntries.heroLayouts;
-  const layoutHeroes = [
-    ...layouts.builds.flatMap((build) => [...build.key, ...build.important, ...build.other, ...build.counters.flatMap((counter) => counter.picks)]),
-    ...layouts.utility.flatMap((role) => role.groups.flatMap((group) => group.picks)),
-  ].map(pickName).filter((name) => !COLLECTION_ITEMS.has(name));
-  for (const name of new Set(layoutHeroes)) {
+  for (const name of placedHeroes(LAYOUT_DATA)) {
     assert.ok(tierHeroes.has(name), `${name} from Hero layouts is missing or spelled differently in the tier list`);
   }
 });

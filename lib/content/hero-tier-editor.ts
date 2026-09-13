@@ -323,7 +323,7 @@ export function serializeTierData(data: TierListData): string {
 }
 
 /** Length of the longest strictly increasing subsequence. */
-function longestIncreasing(values: number[]): number {
+export function longestIncreasing(values: number[]): number {
   const tails: number[] = [];
   for (const value of values) {
     let low = 0;
