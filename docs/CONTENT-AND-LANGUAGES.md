@@ -68,22 +68,23 @@ filter. There is no second list to keep in step.
 3. Add or replace the item in the `guides` section in `lib/navigation.ts`,
    including a `badge` and `categoryId` from `guideCategories`. Reuse an existing
    category when the guide belongs next to one already there. Core systems
-   (heroes, technology, collection, manor, support, goddesses, cryptides)
-   use `coreElements`; placement guides (water supply, hero layouts, artwork)
-   use `layouts`; ranking guides (hero tier list) use `tierLists`.
+   (heroes, artwork, technology, collection, manor, support, goddesses, cryptides)
+   use `coreElements`; placement guides (water supply, hero layouts, artwork
+   layouts) use `layouts`; ranking guides (hero tier list) use `tierLists`.
 4. For a new slug, copy `app/guides/water-supply/page.tsx` and pass the new id
    to `GuideArticle`.
 
 A guide that needs more than headings and paragraphs gets its own renderer next
-to `GuideArticle`: `GoddessesGuide`, `ArtworkGuide`, `HeroLayoutsGuide`, and
-`HeroTierListGuide`.
+to `GuideArticle`: `GoddessesGuide`, `ArtworkGuide`, `ArtworkLayoutsGuide`,
+`HeroLayoutsGuide`, and `HeroTierListGuide`.
 `guideLayout()` in `lib/content/guides.ts` picks the renderer from a field only
 that guide has, and `tests/guides.test.mjs` pins every entry, so two guides
 cannot claim the same renderer by sharing a field name. Keep `sections` and
 `note` in those entries too, since the editor reads them. In the Hero layouts guide,
 `sections` are the rule cards next to the formation board, and the slot order
 lives in `lib/content/hero-layouts.ts`. Painting names, set effects, and hero
-matches for Artwork layouts live in `lib/content/artwork.ts`.
+matches for Artwork live in `lib/content/artwork.ts`. Unlock and level order
+for Artwork layouts live in that guide's dictionary.
 
 The Hero tier list keeps its rows (hero names, grades, resources, bonuses) in
 `lib/data/hero-tiers.json`, once for all languages; `lib/content/hero-tiers.ts`

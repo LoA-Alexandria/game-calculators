@@ -9,6 +9,7 @@ import { PenIcon, TrashIcon } from "../components/Icons";
 import { GuideEditor, type GuideEditorTarget } from "./GuideEditor";
 import { GoddessesGuide, isGoddessesGuide } from "./GoddessesGuide";
 import { ArtworkGuide, isArtworkGuide } from "./ArtworkGuide";
+import { ArtworkLayoutsGuide, isArtworkLayoutsGuide } from "./ArtworkLayoutsGuide";
 import { HeroLayoutsGuide, isHeroLayoutsGuide } from "./HeroLayoutsGuide";
 import { HeroRoster, isHeroesGuide } from "./HeroRoster";
 import { HeroTierListGuide, isHeroTierListGuide } from "./HeroTierListGuide";
@@ -45,6 +46,8 @@ export function GuideArticle({ id }: { id: GuideEntryId }) {
       <article className="article">
         {isGoddessesGuide(guide) ? (
           <GoddessesGuide guide={guide} />
+        ) : isArtworkLayoutsGuide(guide) ? (
+          <ArtworkLayoutsGuide guide={guide} />
         ) : isArtworkGuide(guide) ? (
           <ArtworkGuide guide={guide} />
         ) : isHeroLayoutsGuide(guide) ? (
