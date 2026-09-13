@@ -13,6 +13,9 @@ type CareAction = "feed" | "polish" | "play" | "rest";
 type BenbenState = { fed: number; happy: number; polished: number; rested: number; total_actions: number; community_streak: number; actions_left: number };
 type CareEntry = { id: number; caretaker_name: string; action: CareAction; created_at: string };
 const ICON: Record<CareAction, string> = { feed: "🍇", polish: "✨", play: "🎲", rest: "🌙" };
+const LOCAL_PREVIEW = process.env.NODE_ENV === "development";
+const LOCAL_KEY = "benben-local-preview";
+const LOCAL_START: BenbenState = { fed: 72, happy: 76, polished: 68, rested: 80, total_actions: 0, community_streak: 1, actions_left: 3 };
 
 export default function BenbenPage() {
   const { t, tf, d } = useLocale();
@@ -25,6 +28,14 @@ export default function BenbenPage() {
   useDocumentTitle(t.benben.title);
 
   const refresh = useCallback(async () => {
+    if (LOCAL_PREVIEW) {
+      try {
+        const saved = window.localStorage.getItem(LOCAL_KEY);
+        setPet(saved ? JSON.parse(saved) as BenbenState : LOCAL_START);
+      } catch { setPet(LOCAL_START); }
+      setError("");
+      return;
+    }
     const supabase = getSupabaseBrowserClient();
     if (!supabase) { setError(t.benben.unavailable); return; }
     const [stateResult, logResult] = await Promise.all([
@@ -39,6 +50,7 @@ export default function BenbenPage() {
 
   useEffect(() => {
     const initialRefresh = window.setTimeout(() => void refresh(), 0);
+    if (LOCAL_PREVIEW) return () => window.clearTimeout(initialRefresh);
     const supabase = getSupabaseBrowserClient();
     if (!supabase) return () => window.clearTimeout(initialRefresh);
     const channel = supabase.channel("benben-community")
@@ -53,6 +65,20 @@ export default function BenbenPage() {
   ] as const, [t]);
 
   const care = async (action: CareAction) => {
+    if (LOCAL_PREVIEW) {
+      if (!pet || pet.actions_left === 0 || acting) return;
+      setActing(action);
+      const next = { ...pet, total_actions: pet.total_actions + 1, actions_left: pet.actions_left - 1 };
+      if (action === "feed") { next.fed = Math.min(100, next.fed + 14); next.rested = Math.min(100, next.rested + 2); }
+      if (action === "polish") { next.polished = Math.min(100, next.polished + 15); next.happy = Math.min(100, next.happy + 2); }
+      if (action === "play") { next.happy = Math.min(100, next.happy + 14); next.rested = Math.max(0, next.rested - 4); next.fed = Math.max(0, next.fed - 2); }
+      if (action === "rest") { next.rested = Math.min(100, next.rested + 15); next.fed = Math.max(0, next.fed - 2); }
+      window.localStorage.setItem(LOCAL_KEY, JSON.stringify(next));
+      setPet(next);
+      setRecent((current) => [{ id: Date.now(), caretaker_name: "Local caretaker", action, created_at: new Date().toISOString() }, ...current].slice(0, 8));
+      window.setTimeout(() => setActing(null), 500);
+      return;
+    }
     if (!session) { await signIn(); return; }
     const supabase = getSupabaseBrowserClient();
     if (!supabase || acting) return;
@@ -88,9 +114,9 @@ export default function BenbenPage() {
         {pet && <>
           <div className="benben-stats">{stats.map(([label, value, emoji]) => <div className="benben-stat" key={label}><div><span>{emoji} {label}</span><strong>{value}%</strong></div><div className="benben-meter"><span style={{ width: `${value}%` }} /></div></div>)}</div>
           <div className="benben-community-numbers"><div><strong>{pet.community_streak}</strong><span>🔥 {t.benben.streak} · {t.benben.days}</span></div><div><strong>{pet.total_actions}</strong><span>🤲 {t.benben.careCount}</span></div></div>
-          <p className="benben-action-note">{session ? (pet.actions_left > 0 ? tf(t.benben.actionsLeft, { count: pet.actions_left }) : t.benben.noActions) : t.benben.signInNote}</p>
-          <div className="benben-actions">{actions.map(([action, label]) => <button className="button benben-action" type="button" key={action} disabled={Boolean(acting) || Boolean(session && pet.actions_left === 0)} onClick={() => void care(action)}><span>{ICON[action]}</span>{acting === action ? "…" : label}</button>)}</div>
-          {!session && <button className="button button-primary benben-signin" type="button" onClick={() => void signIn()}><DiscordIcon className="icon" /> {t.auth.signIn}</button>}
+          <p className="benben-action-note">{LOCAL_PREVIEW || session ? (pet.actions_left > 0 ? tf(t.benben.actionsLeft, { count: pet.actions_left }) : t.benben.noActions) : t.benben.signInNote}</p>
+          <div className="benben-actions">{actions.map(([action, label]) => <button className="button benben-action" type="button" key={action} disabled={Boolean(acting) || Boolean((LOCAL_PREVIEW || session) && pet.actions_left === 0)} onClick={() => void care(action)}><span>{ICON[action]}</span>{acting === action ? "…" : label}</button>)}</div>
+          {!LOCAL_PREVIEW && !session && <button className="button button-primary benben-signin" type="button" onClick={() => void signIn()}><DiscordIcon className="icon" /> {t.auth.signIn}</button>}
           <button className="button benben-share" type="button" onClick={() => void share()}>{copied ? t.benben.copied : t.benben.share}</button>
         </>}
         {error && <div className="notice notice-warn" role="alert"><p>{error}</p></div>}
