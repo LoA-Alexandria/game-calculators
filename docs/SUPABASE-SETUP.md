@@ -27,7 +27,7 @@ Install the Supabase CLI, log in, and link this repository to project `puaggqclh
 ```sh
 supabase link --project-ref puaggqclhyzckitetsfc
 supabase db push
-supabase functions deploy verify-discord-role
+supabase functions deploy verify-discord-role --use-api
 ```
 
 Supabase automatically provides the function with its project URL, anon key, and service-role key. Do not commit those secrets.
@@ -45,21 +45,48 @@ the two in step.
 
 ### The first admin
 
-Nobody can grant `admin` through the interface until an admin exists, so promote
-one by hand once after applying the migration:
+The function rewrites `role` from the member's Discord roles on every sign-in,
+so `admin` has to come from a Discord role as well. Setting `role = 'admin'` on
+`editor_access` by hand does not stick: it is overwritten the next time that
+member signs in. That is intended — whoever loses the Discord role loses the
+site role with it.
+
+Nobody can add a mapping at `/admin/` until an admin exists, so add the first
+one once in the Supabase SQL editor. It runs as the table owner, so row level
+security does not stop it:
 
 ```sql
-update public.editor_access set role = 'admin' where discord_user_id = '<your discord id>';
+insert into public.role_mappings (discord_role_id, discord_role_name, role)
+values ('<discord role id>', 'Admin', 'admin');
 ```
+
+Pick a Discord role only admins hold. To copy its id, turn on **Developer Mode**
+in Discord (**User Settings → Advanced**), open **Server Settings → Roles**, and
+choose **Copy Role ID** from the role's menu. Members with that role become admin
+the next time they sign out and back in.
 
 ### Deploying this change
 
-Apply the migration and redeploy the function together — the function writes
-`role`, which the migration adds:
+Apply the migration first, then deploy the function — the function reads
+`role_mappings`, which the migration creates. Pages redeploys on its own when
+the pull request merges, and that frontend reads `role`, so do both right after
+merging:
 
 ```sh
 supabase db push
-supabase functions deploy verify-discord-role
+supabase functions deploy verify-discord-role --use-api
+```
+
+`--use-api` bundles the function on Supabase's side, so Docker is not needed.
+
+If `db push` stops at `20260912150000_create_editor_access.sql` because
+`editor_access` already exists, the table was created before migrations were
+tracked, and nothing after it has been applied. Check with
+`supabase migration list`, mark that one as applied, and push again:
+
+```sh
+supabase migration repair --status applied 20260912150000
+supabase db push
 ```
 
 The old `can_edit` column is kept in step by the function so the currently
