@@ -445,6 +445,20 @@ const en = {
     editorOutput: "Entry for lib/content/events.ts",
     editorOutputNote:
       "Paste this into EVENTS, add the two texts to every dictionary, and commit. That is what makes the event visible to everyone.",
+    editEvent: "Edit",
+    removeEvent: "Remove",
+    editorEditTitle: "Edit event",
+    editorRemoveTitle: "Remove this event",
+    editorRemoveLede:
+      "This writes the steps to take the event out of the committed schedule. It does not disappear until those files change.",
+    editorCancel: "Back to a new event",
+    scheduleTitle: "All scheduled events",
+    scheduleLede: "Edit or remove a definition. Occurrences on the calendar come from these rows.",
+    editorReplaceNote: "Replace the existing row with this id. Do not add a second copy.",
+    editorRemoveNote:
+      "Delete this id from EVENTS and its texts from eventEntries in every dictionary.",
+    editorRemoveOutput: "Removal notes",
+    sidebarEmpty: "Nothing in the next few weeks.",
   },
   eventEntries: {
     grandVoyage: { name: "Grand Voyage season", summary: "Trade routes score double for the whole run." },

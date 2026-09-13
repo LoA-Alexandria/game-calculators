@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { NEWS } from "../../lib/content/news";
 import { useDocumentTitle, useLocale } from "../components/LocaleProvider";
-import { PageHead } from "../components/Ui";
+import { PageHead, SectionBanner } from "../components/Ui";
 
 export default function NewsPage() {
   const { t, d } = useLocale();
@@ -11,6 +11,7 @@ export default function NewsPage() {
 
   return (
     <>
+      <SectionBanner id="news" />
       <PageHead eyebrow={t.navDescriptions.news} title={t.news.title} lede={t.news.lede} />
       {NEWS.length === 0 ? (
         <div className="empty-state">{t.news.empty}</div>

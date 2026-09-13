@@ -447,6 +447,20 @@ const de: Dictionary = {
     editorOutput: "Eintrag für lib/content/events.ts",
     editorOutputNote:
       "Füge das in EVENTS ein, ergänze die beiden Texte in jedem Wörterbuch und committe. Erst dadurch sehen alle das Event.",
+    editEvent: "Bearbeiten",
+    removeEvent: "Entfernen",
+    editorEditTitle: "Event bearbeiten",
+    editorRemoveTitle: "Dieses Event entfernen",
+    editorRemoveLede:
+      "Hier stehen die Schritte, um das Event aus dem gespeicherten Plan zu nehmen. Es bleibt sichtbar, bis diese Dateien geändert sind.",
+    editorCancel: "Zurück zu einem neuen Event",
+    scheduleTitle: "Alle geplanten Events",
+    scheduleLede: "Eine Definition bearbeiten oder entfernen. Die Termine im Kalender kommen aus diesen Zeilen.",
+    editorReplaceNote: "Ersetze die vorhandene Zeile mit dieser ID. Füge keine zweite Kopie hinzu.",
+    editorRemoveNote:
+      "Lösche diese ID aus EVENTS und die Texte unter eventEntries in jedem Wörterbuch.",
+    editorRemoveOutput: "Notizen zum Entfernen",
+    sidebarEmpty: "In den nächsten Wochen steht nichts an.",
   },
   eventEntries: {
     grandVoyage: { name: "Große-Reise-Saison", summary: "Handelsrouten zählen während des gesamten Laufs doppelt." },

@@ -1,9 +1,9 @@
 # Content and languages
 
-The site is organised into four sections — News, Guides, Calculators, and
-Simulations — and speaks English, German, and French. Both the navigation and
-the translations are driven by data, so adding an entry or a language does not
-mean touching the layout.
+The site is organised into five sections — News, Events, Guides, Calculators,
+and Simulations — and speaks English, German, and French. Both the navigation
+and the translations are driven by data, so adding an entry or a language does
+not mean touching the layout.
 
 ## Where things live
 
@@ -12,8 +12,9 @@ lib/i18n/dictionaries/en.ts   reference language; its shape defines the type
 lib/i18n/dictionaries/de.ts   German
 lib/i18n/dictionaries/fr.ts   French
 lib/i18n/index.ts             language registry, negotiation, {placeholder} filling
-lib/navigation.ts             the section tree: sidebar, indexes, home page
+lib/navigation.ts             the section tree: sidebar and indexes
 lib/content/news.ts           news entries (dates and links only; text is in the dictionaries)
+lib/content/banners.ts        optional images for the section banners
 app/components/LocaleProvider.tsx  the active language and its formatters
 ```
 
@@ -51,8 +52,8 @@ and date formatting all read the registry.
    dictionaries, and its labels under `calculator.*`.
 3. Add one entry to the matching section's `items` in `lib/navigation.ts`.
 
-It then appears in the sidebar, in the section index, in the home page grid, and
-in the sidebar filter. There is no second list to keep in step.
+It then appears in the sidebar, in the section index, and in the sidebar
+filter. There is no second list to keep in step.
 
 ## Adding a guide
 
@@ -72,10 +73,12 @@ Events are versioned data, not database rows — the same reason news is. An ent
 typed into a browser on a static site would exist only in that browser, so
 committing it is what makes it visible.
 
-1. Open `/events/` signed in with `events.write` and fill in the editor. It
-   prints the row and the dictionary keys.
-2. Paste the row into `EVENTS` in `lib/content/events.ts`.
-3. Add `eventEntries.<id>` with `name` and `summary` to all three dictionaries.
+1. Open `/events/` signed in with `events.write`. The schedule list can load an
+   existing row into the editor or produce the notes for removing it. A blank
+   form still prints a new row and the dictionary keys.
+2. Paste or replace the row in `EVENTS` in `lib/content/events.ts`.
+3. Add, update, or delete `eventEntries.<id>` with `name` and `summary` in all
+   three dictionaries.
 4. Delete `EVENTS_ARE_PLACEHOLDER` once the example schedule is gone.
 
 The recurrence rules live in `lib/events.ts` and are covered by
@@ -94,6 +97,13 @@ deriving it from each reader's clock would show different answers.
    (`title`, `summary`, `body[]`).
 
 Dates are formatted for the reader's language, so store them as `YYYY-MM-DD`.
+
+## Section banners
+
+News, Events, Guides, Calculators, and Simulations each reserve a banner slot
+above the heading. Until an image is configured they draw a decorative CSS
+banner. To use a real image, put the file in `public/banners/` and set the path
+in `lib/content/banners.ts`.
 
 ## Translating validation messages
 

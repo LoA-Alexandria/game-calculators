@@ -1,9 +1,9 @@
 import type { Dictionary } from "./i18n/index.ts";
 
 /**
- * The single source of truth for the sidebar, the section index pages, and the
- * home page. Every label is a lookup into the dictionary rather than a literal,
- * so a new language needs no change here.
+ * The single source of truth for the sidebar and the section index pages.
+ * Every label is a lookup into the dictionary rather than a literal, so a new
+ * language needs no change here.
  *
  * Adding a tool or guide: add one entry to the matching section's `items`. It
  * then appears in the sidebar, in the section index, and in the filter.
