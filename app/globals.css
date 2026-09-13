@@ -1607,6 +1607,47 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
 .hero-layouts [data-build="dot"] { --build: var(--good); }
 .hero-layouts [data-build="pursuit"] { --build: var(--accent); }
 .hero-layouts [data-build="execute"] { --build: var(--gold); }
+.artwork-layouts [data-build="SSR"] { --build: var(--gold); }
+.artwork-layouts [data-build="SR"] { --build: #9b6bd6; }
+.artwork-layouts [data-build="R"] { --build: var(--accent); }
+.artwork-layouts { --build: var(--gold); }
+
+.artwork-spend { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.artwork-filter { display: block; max-width: 420px; margin: 10px 0 12px; }
+.painting-panel { padding: 14px; background: color-mix(in srgb, var(--bg) 55%, var(--surface)); }
+.painting-sets { display: grid; gap: 12px; }
+.painting-set-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+  margin-bottom: 8px;
+}
+.painting-set-head h3 { margin: 0; font-size: 1.05rem; }
+.article .painting-effect { margin: 0 0 12px; color: var(--ink-soft); font-size: .9rem; line-height: 1.55; }
+.painting-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 12px;
+}
+.painting-block {
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface);
+}
+.painting-block h4 { margin: 0 0 8px; font-size: .92rem; }
+.painting-facts { display: grid; gap: 8px; margin: 10px 0 0; }
+.painting-facts > div { display: grid; gap: 4px; }
+.painting-facts dt {
+  color: var(--ink-faint);
+  font-size: .66rem;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.painting-facts dd { margin: 0; color: var(--ink-soft); font-size: .84rem; }
+.pick-stat { padding: 4px 10px; }
 
 /* Four short tabs wrap instead of scrolling, so none hides off-screen on a phone. */
 .build-tabs {
