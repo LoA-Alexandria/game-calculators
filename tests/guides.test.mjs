@@ -17,9 +17,11 @@ test("converts guide slugs and dictionary ids both ways", () => {
   assert.equal(guideHref("waterSupply"), "/guides/water-supply/");
   assert.equal(guideHref("goddesses"), "/guides/goddesses/");
   assert.equal(guideHref("artwork"), "/guides/artwork/");
+  assert.equal(guideHref("heroes"), "/guides/heroes/");
   assert.equal(guideIdFromHref("/guides/water-supply/"), "waterSupply");
   assert.equal(guideIdFromHref("/guides/goddesses/"), "goddesses");
   assert.equal(guideIdFromHref("/guides/artwork/"), "artwork");
+  assert.equal(guideIdFromHref("/guides/heroes/"), "heroes");
   assert.equal(guideIdFromHref("/guides/new/"), null);
 });
 

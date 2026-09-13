@@ -2,6 +2,6 @@
 
 import { GuideArticle } from "../GuideArticle";
 
-export default function HeroesGuide() {
+export default function HeroesPage() {
   return <GuideArticle id="heroes" />;
 }
