@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { asset } from "../../lib/site";
 import { getSupabaseBrowserClient } from "../../lib/supabase/client";
 import { useAuth } from "../components/AuthProvider";
@@ -25,7 +25,19 @@ export default function BenbenPage() {
   const [error, setError] = useState("");
   const [acting, setActing] = useState<CareAction | null>(null);
   const [copied, setCopied] = useState(false);
+  const [celebrating, setCelebrating] = useState(false);
+  const happyTimer = useRef<number | null>(null);
   useDocumentTitle(t.benben.title);
+
+  const showHappyFace = () => {
+    if (happyTimer.current !== null) window.clearTimeout(happyTimer.current);
+    setCelebrating(true);
+    happyTimer.current = window.setTimeout(() => setCelebrating(false), 2600);
+  };
+
+  useEffect(() => () => {
+    if (happyTimer.current !== null) window.clearTimeout(happyTimer.current);
+  }, []);
 
   const refresh = useCallback(async () => {
     if (LOCAL_PREVIEW) {
@@ -76,6 +88,7 @@ export default function BenbenPage() {
       window.localStorage.setItem(LOCAL_KEY, JSON.stringify(next));
       setPet(next);
       setRecent((current) => [{ id: Date.now(), caretaker_name: "Local caretaker", action, created_at: new Date().toISOString() }, ...current].slice(0, 8));
+      showHappyFace();
       window.setTimeout(() => setActing(null), 1100);
       return;
     }
@@ -85,7 +98,7 @@ export default function BenbenPage() {
     setActing(action);
     const result = await supabase.rpc("care_for_benben", { p_action: action });
     if (result.error) setError(result.error.message.includes("Daily care limit") ? t.benben.noActions : result.error.message);
-    else { setPet(result.data as BenbenState); await refresh(); }
+    else { setPet(result.data as BenbenState); showHappyFace(); await refresh(); }
     setActing(null);
   };
 
@@ -108,7 +121,7 @@ export default function BenbenPage() {
       <section className="benben-character-card" aria-label="Benben">
         <div className="benben-sun" aria-hidden="true" />
         <div className="benben-sprite-wrap">
-          <Image className={acting ? `benben-image is-${acting}` : "benben-image"} src={asset("/benben.png")} width={1240} height={1240} alt="Benben, the communal stone pyramid" priority />
+          <Image className={`${acting ? `benben-image is-${acting}` : "benben-image"}${celebrating ? " is-happy" : ""}`} src={asset(celebrating ? "/benben-happy.png" : "/benben.png")} width={1240} height={1240} alt="Benben, the communal stone pyramid" priority />
           {acting === "feed" && <div className="benben-effect benben-feed-effect" aria-hidden="true"><span /><span /><span /><i className="benben-chew-mouth" /></div>}
           {acting === "polish" && <div className="benben-effect benben-polish-effect" aria-hidden="true"><span>✦</span><span>✧</span><span>✦</span><span>✧</span></div>}
           {acting === "rest" && <div className="benben-effect benben-rest-effect" aria-hidden="true"><span>Z</span><span>z</span><span>z</span></div>}
