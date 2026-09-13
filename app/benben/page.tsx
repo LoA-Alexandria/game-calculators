@@ -152,7 +152,7 @@ export default function BenbenPage() {
           {acting === "feed" && <div className="benben-effect benben-feed-effect" aria-hidden="true"><span /><span /><span /><i className="benben-chew-mouth" /></div>}
           {acting === "polish" && <div className="benben-effect benben-polish-effect" aria-hidden="true"><span>✦</span><span>✧</span><span>✦</span><span>✧</span></div>}
           {acting === "rest" && <div className="benben-effect benben-rest-effect" aria-hidden="true"><span>Z</span><span>z</span><span>z</span></div>}
-          {acting === "play" && <div className="benben-effect benben-sunbath-effect" aria-hidden="true"><span /> <span /> <span /> <i>☀</i></div>}
+          {acting === "play" && <div className="benben-effect benben-sunbath-effect" aria-hidden="true"><span /><span /><span /></div>}
         </div>
         {pet?.phoenix_active && <div className="benben-phoenix-banner">🔥🐦 {t.benben.phoenixVisit}</div>}
         <div className="benben-mood"><span>{average >= 65 ? "◕‿◕" : "◕︵◕"}</span> {mood}</div>
