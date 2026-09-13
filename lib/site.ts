@@ -37,3 +37,6 @@ export const GUIDE_DRAFT_STORAGE_KEY = "popepoch-guide-draft";
 
 /** Local draft of the Hero tier list editor. */
 export const TIER_DRAFT_STORAGE_KEY = "popepoch-tier-draft";
+
+/** Local draft of the Hero layouts editor. */
+export const LAYOUT_DRAFT_STORAGE_KEY = "popepoch-layout-draft";

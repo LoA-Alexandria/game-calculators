@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useId, useState, type CSSProperties, type KeyboardEvent } from "react";
 import { guideLayout } from "../../lib/content/guides";
 import type { Dictionary } from "../../lib/i18n";
@@ -7,37 +8,18 @@ import {
   COLLECTION_ITEMS,
   FORMATION_COLUMNS,
   FORMATION_ORDER,
-  pickName,
-  pickNote,
+  LAYOUT_DATA,
+  layoutTexts,
   slotWeight,
   type LayoutPick,
+  type LayoutTexts,
 } from "../../lib/content/hero-layouts";
+import { useAuth } from "../components/AuthProvider";
 import { useLocale } from "../components/LocaleProvider";
-import { CheckIcon, CloseIcon } from "../components/Icons";
+import { CheckIcon, CloseIcon, PenIcon } from "../components/Icons";
 
 type Guide = Dictionary["guideEntries"]["heroLayouts"];
 
-/*
- * The dictionary infers a union per array (a build with no "other" heroes is
- * `never[]`); these shapes are what the page actually relies on, and assigning
- * the dictionary to them is the type check.
- */
-type PickGroup = { label: string; picks: readonly LayoutPick[] };
-type Build = {
-  id: string;
-  name: string;
-  status: string;
-  tagline: string;
-  key: readonly LayoutPick[];
-  important: readonly LayoutPick[];
-  other: readonly LayoutPick[];
-  collection: readonly LayoutPick[];
-  counters: readonly PickGroup[];
-  pros: readonly string[];
-  cons: readonly string[];
-  notes: readonly string[];
-};
-type UtilityRole = { role: string; groups: readonly PickGroup[] };
 
 export function isHeroLayoutsGuide(
   guide: Dictionary["guideEntries"][keyof Dictionary["guideEntries"]],
@@ -49,9 +31,9 @@ function initial(name: string): string {
   return (name.trim().charAt(0) || "?").toUpperCase();
 }
 
-function Pick({ pick, guide }: { pick: LayoutPick; guide: Guide }) {
-  const name = pickName(pick);
-  const note = pickNote(pick);
+function Pick({ pick, guide, texts }: { pick: LayoutPick; guide: Guide; texts: LayoutTexts }) {
+  const name = pick.hero;
+  const note = pick.note ? texts.pickNotes[pick.note] ?? "" : "";
   const item = COLLECTION_ITEMS.has(name);
   return (
     <li className={item ? "pick pick-item" : "pick"}>
@@ -63,11 +45,11 @@ function Pick({ pick, guide }: { pick: LayoutPick; guide: Guide }) {
   );
 }
 
-function PickList({ picks, guide }: { picks: readonly LayoutPick[]; guide: Guide }) {
+function PickList({ picks, guide, texts }: { picks: readonly LayoutPick[]; guide: Guide; texts: LayoutTexts }) {
   return (
     <ul className="pick-list">
       {picks.map((pick) => (
-        <Pick key={`${pickName(pick)}-${pickNote(pick)}`} pick={pick} guide={guide} />
+        <Pick key={`${pick.hero}-${pick.note ?? ""}`} pick={pick} guide={guide} texts={texts} />
       ))}
     </ul>
   );
@@ -111,8 +93,8 @@ function FormationBoard({ guide }: { guide: Guide }) {
   );
 }
 
-function BuildTabs({ guide }: { guide: Guide }) {
-  const builds: readonly Build[] = guide.builds;
+function BuildTabs({ guide, texts }: { guide: Guide; texts: LayoutTexts }) {
+  const builds = LAYOUT_DATA.builds;
   const base = useId();
   const [activeId, setActiveId] = useState(builds[0]?.id ?? "");
   const active = builds.find((build) => build.id === activeId) ?? builds[0];
@@ -133,6 +115,9 @@ function BuildTabs({ guide }: { guide: Guide }) {
     setActiveId(builds[next].id);
     document.getElementById(tabId(builds[next].id))?.focus();
   };
+
+  const text = texts.buildTexts[active.id] ?? { name: active.id, status: "", tagline: "", pros: [], cons: [], notes: [] };
+  const nameOf = (id: string) => texts.buildTexts[id]?.name || id;
 
   const tiers = [
     { id: "key", label: guide.labelKey, picks: active.key },
@@ -161,7 +146,7 @@ function BuildTabs({ guide }: { guide: Guide }) {
               onKeyDown={(event) => onKeyDown(event, index)}
             >
               <span className="build-dot" aria-hidden="true" />
-              {build.name}
+              {nameOf(build.id)}
             </button>
           );
         })}
@@ -176,10 +161,10 @@ function BuildTabs({ guide }: { guide: Guide }) {
       >
         <header className="build-head">
           <div className="build-title">
-            <h3>{active.name}</h3>
-            {active.status ? <span className="build-status">{active.status}</span> : null}
+            <h3>{text.name}</h3>
+            {text.status ? <span className="build-status">{text.status}</span> : null}
           </div>
-          <p>{active.tagline}</p>
+          {text.tagline ? <p>{text.tagline}</p> : null}
         </header>
 
         <div className="build-body">
@@ -187,7 +172,7 @@ function BuildTabs({ guide }: { guide: Guide }) {
             {tiers.map((tier) => (
               <div className="build-tier" data-tier={tier.id} key={tier.id}>
                 <h4>{tier.label}</h4>
-                <PickList picks={tier.picks} guide={guide} />
+                <PickList picks={tier.picks} guide={guide} texts={texts} />
               </div>
             ))}
           </div>
@@ -196,9 +181,9 @@ function BuildTabs({ guide }: { guide: Guide }) {
             <h4>{guide.labelCounters}</h4>
             <ul>
               {active.counters.map((counter) => (
-                <li key={counter.label}>
-                  <span className="counter-label">{counter.label}</span>
-                  {counter.picks.length > 0 ? <PickList picks={counter.picks} guide={guide} /> : null}
+                <li key={counter.id}>
+                  <span className="counter-label">{texts.counterLabels[counter.id]}</span>
+                  {counter.picks.length > 0 ? <PickList picks={counter.picks} guide={guide} texts={texts} /> : null}
                 </li>
               ))}
             </ul>
@@ -209,20 +194,20 @@ function BuildTabs({ guide }: { guide: Guide }) {
           <div className="procon procon-pros">
             <h4><CheckIcon className="icon icon-sm" />{guide.labelPros}</h4>
             <ul>
-              {active.pros.map((line) => <li key={line}>{line}</li>)}
+              {text.pros.map((line, index) => <li key={index}>{line}</li>)}
             </ul>
           </div>
           <div className="procon procon-cons">
             <h4><CloseIcon className="icon icon-sm" />{guide.labelCons}</h4>
             <ul>
-              {active.cons.map((line) => <li key={line}>{line}</li>)}
+              {text.cons.map((line, index) => <li key={index}>{line}</li>)}
             </ul>
           </div>
         </div>
 
-        {active.notes.length > 0 ? (
+        {text.notes.length > 0 ? (
           <div className="build-notes">
-            {active.notes.map((line) => <p key={line}>{line}</p>)}
+            {text.notes.map((line, index) => <p key={index}>{line}</p>)}
           </div>
         ) : null}
       </div>
@@ -231,7 +216,9 @@ function BuildTabs({ guide }: { guide: Guide }) {
 }
 
 export function HeroLayoutsGuide({ guide }: { guide: Guide }) {
-  const utility: readonly UtilityRole[] = guide.utility;
+  const { t } = useLocale();
+  const { allows } = useAuth();
+  const texts = layoutTexts(guide);
   return (
     <div className="guide-wide hero-layouts">
       <p className="intro">{guide.intro}</p>
@@ -270,7 +257,15 @@ export function HeroLayoutsGuide({ guide }: { guide: Guide }) {
       </ul>
       {guide.note ? <p className="callout">{guide.note}</p> : null}
 
-      <h2>{guide.buildsHeading}</h2>
+      <div className="tier-lists-head">
+        <h2>{guide.buildsHeading}</h2>
+        {allows("guides.draft") ? (
+          <Link className="small-button" href="/guides/hero-layouts/edit/">
+            <PenIcon className="icon icon-sm" />
+            {t.layoutEditor.openEditor}
+          </Link>
+        ) : null}
+      </div>
       <div className="build-lede">
         <p>{guide.buildsLede}</p>
         <ul className="pick-list pick-legend" aria-hidden="true">
@@ -278,18 +273,18 @@ export function HeroLayoutsGuide({ guide }: { guide: Guide }) {
           <li className="pick pick-item"><span className="pick-avatar">◆</span><span className="pick-name">{guide.legendCollection}</span></li>
         </ul>
       </div>
-      <BuildTabs guide={guide} />
+      <BuildTabs guide={guide} texts={texts} />
 
       <h2>{guide.utilityHeading}</h2>
       <p className="utility-lede">{guide.utilityLede}</p>
       <div className="utility-grid">
-        {utility.map((role) => (
-          <article className="utility-card" key={role.role}>
-            <h3>{role.role}</h3>
+        {LAYOUT_DATA.utility.map((role) => (
+          <article className="utility-card" key={role.id}>
+            <h3>{texts.roleNames[role.id]}</h3>
             {role.groups.map((group) => (
-              <div className="utility-group" key={group.label || role.role}>
-                {group.label ? <h4>{group.label}</h4> : null}
-                <PickList picks={group.picks} guide={guide} />
+              <div className="utility-group" key={group.id}>
+                {texts.groupLabels[group.id] ? <h4>{texts.groupLabels[group.id]}</h4> : null}
+                <PickList picks={group.picks} guide={guide} texts={texts} />
               </div>
             ))}
           </article>

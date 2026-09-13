@@ -49,7 +49,7 @@ export type GuideLayout = "goddesses" | "artwork" | "heroLayouts" | "heroes" | "
 export function guideLayout(guide: object): GuideLayout {
   if ("phases" in guide) return "goddesses";
   if ("battleTiers" in guide) return "heroTierList";
-  if ("utility" in guide) return "heroLayouts";
+  if ("buildTexts" in guide) return "heroLayouts";
   if ("levels" in guide) return "artwork";
   if ("filterAll" in guide) return "heroes";
   return "article";
