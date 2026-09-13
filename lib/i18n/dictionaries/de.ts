@@ -94,6 +94,13 @@ const de: Dictionary = {
     lede: "Wie die Systeme hinter den Werkzeugen wirklich funktionieren — aufgeschrieben, damit du es nicht selbst herausfinden musst.",
     empty:
       "Die ersten Guides entstehen gerade. Bis dahin erklärt jedes Werkzeug seine Annahmen direkt neben dem Ergebnis.",
+    other: "Sonstiges",
+  },
+  guideCategories: {
+    cityLayout: "Stadtaufbau",
+    goddess: "Göttin",
+    event: "Event",
+    grandVoyage: "Große Reise",
   },
   calculators: {
     title: "Rechner",
@@ -314,6 +321,7 @@ const de: Dictionary = {
     signIn: "Anmelden",
     signOut: "Abmelden",
     signedInAs: "Angemeldet als",
+    accountMenu: "Konto",
     noAccess: "Deine Rolle deckt diese Seite nicht ab.",
     needSignIn: "Melde dich an, um diese Seite zu öffnen.",
   },

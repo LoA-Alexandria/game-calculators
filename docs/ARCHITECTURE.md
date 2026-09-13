@@ -8,7 +8,7 @@ The project is a statically exported Next.js site. GitHub Pages serves the gener
 
 ```text
 app/
-  page.tsx                     Home: news slide
+  page.tsx                     Home: news slide and site stats
   news/                        News index
   events/                      Event calendar and schedule editor
   guides/<slug>/               Guides

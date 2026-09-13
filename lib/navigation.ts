@@ -7,6 +7,7 @@ import type { Dictionary } from "./i18n/index.ts";
  *
  * Adding a tool or guide: add one entry to the matching section's `items`. It
  * then appears in the sidebar, in the section index, and in the filter.
+ * Guides should also set `badge` so the Guides index can group them.
  */
 export type NavItem = {
   href: string;
@@ -53,6 +54,7 @@ export const SECTIONS: NavSection[] = [
         href: "/guides/water-supply/",
         label: (t) => t.guideEntries.waterSupply.title,
         description: (t) => t.guideEntries.waterSupply.summary,
+        badge: (t) => t.guideCategories.cityLayout,
       },
     ],
   },
@@ -121,4 +123,33 @@ export function sectionById(id: NavSection["id"]): NavSection {
 /** Total number of tools offered, used for the counter on the home page. */
 export function toolCount(): number {
   return sectionById("calculators").items.length + sectionById("simulations").items.length;
+}
+
+/** Published guides, used for the counter on the home page. */
+export function guideCount(): number {
+  return sectionById("guides").items.length;
+}
+
+/**
+ * Groups items by their translated badge, keeping the order categories and
+ * items first appear. Items without a badge land in `uncategorized`.
+ */
+export function groupByBadge(
+  items: NavItem[],
+  t: Dictionary,
+  uncategorized: string,
+): { category: string; items: NavItem[] }[] {
+  const order: string[] = [];
+  const groups = new Map<string, NavItem[]>();
+  for (const item of items) {
+    const category = item.badge?.(t) ?? uncategorized;
+    const existing = groups.get(category);
+    if (!existing) {
+      order.push(category);
+      groups.set(category, [item]);
+      continue;
+    }
+    existing.push(item);
+  }
+  return order.map((category) => ({ category, items: groups.get(category) ?? [] }));
 }

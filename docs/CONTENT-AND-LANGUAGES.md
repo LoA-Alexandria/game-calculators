@@ -61,7 +61,9 @@ filter. There is no second list to keep in step.
    the shape of `waterSupply`: `title`, `summary`, `intro`, `sections[]`, `note`.
 2. Create `app/guides/<slug>/page.tsx` — copy `app/guides/water-supply/page.tsx`,
    it is a dozen lines.
-3. Add one entry to the `guides` section in `lib/navigation.ts`.
+3. Add one entry to the `guides` section in `lib/navigation.ts`, including a
+   `badge` from `guideCategories` so the Guides index can group it. Reuse an
+   existing category when the guide belongs next to one already there.
 
 Guides describe game mechanics, so treat their numbers the way the repository
 treats any other game data: say where they came from, and correct them in the

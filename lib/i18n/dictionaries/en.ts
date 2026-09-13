@@ -94,6 +94,13 @@ const en = {
     title: "Guides",
     lede: "How the systems behind the tools actually work — written down so you do not have to rediscover it.",
     empty: "The first guides are being written. Until then, every tool explains its own assumptions next to the result.",
+    other: "Other",
+  },
+  guideCategories: {
+    cityLayout: "City layout",
+    goddess: "Goddess",
+    event: "Event",
+    grandVoyage: "Grand Voyage",
   },
   calculators: {
     title: "Calculators",
@@ -312,6 +319,7 @@ const en = {
     signIn: "Sign in",
     signOut: "Sign out",
     signedInAs: "Signed in as",
+    accountMenu: "Account",
     noAccess: "Your role does not cover this page.",
     needSignIn: "Sign in to open this page.",
   },

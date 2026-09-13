@@ -9,6 +9,7 @@ import { useAuth } from "./AuthProvider";
 import { useLocale } from "./LocaleProvider";
 import { SidebarAgenda } from "./EventCalendar";
 import { useNow } from "./useNow";
+import { AccountMenu } from "./AccountMenu";
 import { LanguageMenu } from "./LanguageMenu";
 import { ThemeToggle } from "./ThemeToggle";
 import {
@@ -18,10 +19,8 @@ import {
   DiscordIcon,
   HomeIcon,
   MenuIcon,
-  PenIcon,
   SearchIcon,
   SECTION_ICONS,
-  ShieldIcon,
 } from "./Icons";
 
 /**
@@ -37,7 +36,7 @@ function matches(haystack: string, needle: string): boolean {
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const { t, tf } = useLocale();
-  const { allows, session, loading, error: authError, signIn, signOut } = useAuth();
+  const { error: authError } = useAuth();
   const now = useNow();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
@@ -97,12 +96,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     return toggled[section.id] ?? (pathname?.startsWith(section.href) ?? false);
   };
   const activeSection = SECTIONS.find((section) => pathname?.startsWith(section.href));
-  // /guides/new/ and /admin/ are not browsable sections, so name them directly.
+  // Create pages are not browsable sections, so name them directly.
   const context = pathname === "/guides/new/"
       ? t.nav.newGuide
-      : pathname === "/admin/"
-        ? t.nav.admin
-        : (activeSection?.label(t) ?? t.nav.home);
+      : pathname === "/news/new/"
+        ? t.nav.newNews
+        : pathname === "/admin/"
+          ? t.nav.admin
+          : (activeSection?.label(t) ?? t.nav.home);
 
   return (
     <div className="layout-root">
@@ -229,42 +230,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <SidebarAgenda now={now} />
 
         <div className="sidebar-foot">
-          {allows("events.write") && (
-            <Link
-              className={pathname === "/events/" ? "discord-link is-active" : "discord-link"}
-              href="/events/"
-            >
-              <PenIcon className="icon" />
-              <span>{t.nav.newEvent}</span>
-            </Link>
-          )}
-          {allows("news.write") && (
-            <Link
-              className={pathname === "/news/new/" ? "discord-link is-active" : "discord-link"}
-              href="/news/new/"
-            >
-              <PenIcon className="icon" />
-              <span>{t.nav.newNews}</span>
-            </Link>
-          )}
-          {allows("guides.draft") && (
-            <Link
-              className={pathname === "/guides/new/" ? "discord-link is-active" : "discord-link"}
-              href="/guides/new/"
-            >
-              <PenIcon className="icon" />
-              <span>{t.nav.newGuide}</span>
-            </Link>
-          )}
-          {allows("roles.assign") && (
-            <Link
-              className={pathname === "/admin/" ? "discord-link is-active" : "discord-link"}
-              href="/admin/"
-            >
-              <ShieldIcon className="icon" />
-              <span>{t.nav.admin}</span>
-            </Link>
-          )}
           <a
             className="discord-link"
             href={DISCORD_URL}
@@ -297,10 +262,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </button>
           <div className="topbar-context">{context}</div>
           <span className="topbar-spacer" />
-          {!loading && (session
-            ? <div className="topbar-account"><span>{session.name}</span><button type="button" onClick={() => void signOut()}>{t.auth.signOut}</button></div>
-            : <button className="topbar-sign-in" type="button" onClick={() => void signIn()}>{t.auth.signIn}</button>
-          )}
+          <AccountMenu />
           <a
             className="icon-button topbar-discord"
             href={DISCORD_URL}

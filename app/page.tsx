@@ -3,18 +3,39 @@
 import { useState } from "react";
 import Link from "next/link";
 import { NEWS } from "../lib/content/news";
+import { guideCount, toolCount } from "../lib/navigation";
 import { useDocumentTitle, useLocale } from "./components/LocaleProvider";
 import { ChevronIcon } from "./components/Icons";
 
 export default function Home() {
-  const { t } = useLocale();
+  const { t, n } = useLocale();
   useDocumentTitle(t.nav.home);
-  return <NewsHero />;
+  return (
+    <>
+      <NewsHero />
+      <section className="section" aria-label={t.home.eyebrow}>
+        <dl className="stat-row">
+          <div>
+            <dt>{t.home.statTools}</dt>
+            <dd>{n(toolCount())}</dd>
+          </div>
+          <div>
+            <dt>{t.home.statGuides}</dt>
+            <dd>{n(guideCount())}</dd>
+          </div>
+          <div>
+            <dt>{t.home.statCost}</dt>
+            <dd>{t.home.statCostValue}</dd>
+          </div>
+        </dl>
+      </section>
+    </>
+  );
 }
 
 /**
- * The overview is the news slide. Tools, events, and guides live in the
- * sidebar, so this page does not repeat them.
+ * The overview leads with the news slide. Tools, events, and guides live in
+ * the sidebar; the counts below only summarise what the site currently offers.
  */
 function NewsHero() {
   const { t, tf, d } = useLocale();
