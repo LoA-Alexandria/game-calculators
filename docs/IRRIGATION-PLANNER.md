@@ -34,9 +34,8 @@ stored formats are untouched.
 ## Changes made to the vendored copy
 
 1. **Title** — `Irrigation Planner · Pop Epoch Tools`.
-2. **Light palette** — `--panel` is `#fffaf0` and `--line` is `#ddcda6`, matching
-   the site tokens in `app/globals.css`. Every other colour already agreed with
-   the site, and the dark palette is unchanged.
+2. **Palette** — light and dark tokens match `app/globals.css` (warm stone,
+   teal accent). Change one, change both.
 3. **Embed flag** — with `?embed=1` the document adds `embedded` to
    `<html>`, which hides its own eyebrow and `<h1>` (the wrapper page supplies
    both) and trims the body padding. The instruction paragraph is kept. Without

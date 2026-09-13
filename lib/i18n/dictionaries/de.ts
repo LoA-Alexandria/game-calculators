@@ -88,6 +88,8 @@ const de: Dictionary = {
     title: "News",
     lede: "Was sich auf dieser Seite geändert hat und was dazugekommen ist.",
     empty: "Noch keine Einträge.",
+    edit: "Bearbeiten",
+    remove: "Entfernen",
   },
   guides: {
     title: "Guides",
@@ -95,6 +97,9 @@ const de: Dictionary = {
     empty:
       "Die ersten Guides entstehen gerade. Bis dahin erklärt jedes Werkzeug seine Annahmen direkt neben dem Ergebnis.",
     other: "Sonstiges",
+    allCategories: "Alle Kategorien",
+    pickGuide: "Wähle einen Guide in dieser Kategorie.",
+    categoryCount: "{count} in dieser Kategorie",
   },
   guideCategories: {
     cityLayout: "Stadtaufbau",
@@ -492,6 +497,16 @@ const de: Dictionary = {
     output: "Eintrag für lib/content/news.ts",
     outputNote:
       "Füge die Zeile in NEWS ein und ergänze die Texte unter newsEntries in jedem Wörterbuch.",
+    editTitle: "News-Eintrag bearbeiten",
+    editLede: "Ändere den Text und exportiere den Ersatz. Sichtbar wird er durch das Committen.",
+    replaceNote:
+      "Ersetze die vorhandene Zeile mit dieser ID. Füge keine zweite Kopie hinzu. Aktualisiere newsEntries in jedem Wörterbuch; der Text hier ist die Sprache, die du gerade siehst.",
+    removeTitle: "Diesen News-Eintrag entfernen",
+    removeLede: "Gelöscht wird erst, wenn du die Notizen unten committest.",
+    removeNote:
+      "Lösche die NEWS-Zeile und den newsEntries-Block mit dieser ID in Englisch, Deutsch und Französisch.",
+    removeOutput: "Notizen zum Entfernen",
+    cancel: "Zurück zu einem neuen Eintrag",
   },
   footer: {
     disclaimer:

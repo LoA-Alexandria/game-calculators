@@ -61,9 +61,9 @@ choice wins in both directions. `app/components/ThemeToggle.tsx` writes that
 choice to `localStorage['popepoch-theme']`, and a small script in the root layout
 applies it before first paint.
 
-The palette is cool graphite neutrals with a lapis-blue primary and a warm gold
-secondary — the Egyptian pairing in saturated modern tones. Type is Sora for
-headings and Inter for text, both self-hosted by `next/font`.
+The palette is warm stone neutrals with a teal primary (from the section-banner
+HUDs) and copper-gold from the plaques. Type is Sora for headings and Inter
+for text, both self-hosted by `next/font`.
 
 The visual identity is built from original CSS geometry and hand-drawn SVG in
 `app/components/Icons.tsx`. It evokes the setting without reproducing any
