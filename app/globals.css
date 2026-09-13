@@ -1503,8 +1503,10 @@ button.calendar-day:hover { background: var(--surface-2); }
 @keyframes benben-bop { 30% { transform: translateY(-14px) rotate(-2deg); } 65% { transform: translateY(-6px) rotate(2deg); } }
 @keyframes benben-breathe { 0%, 100% { transform: translateY(2px) scaleX(1); } 50% { transform: translateY(-3px) scaleX(1.012) scaleY(1.006); } }
 @keyframes benben-bask { 0%, 100% { transform: rotate(-1deg) translateY(2px); } 50% { transform: rotate(1deg) translateY(-4px) scale(1.008); } }
-.benben-phoenix { position: absolute; z-index: 4; top: -29%; left: 39%; width: 34%; height: auto; filter: drop-shadow(0 8px 14px rgba(145,46,8,.42)); animation: benben-phoenix-perch 2.6s ease-in-out infinite; }
+.benben-phoenix { position: absolute; z-index: 4; top: -18%; left: 39%; width: 34%; height: auto; filter: drop-shadow(0 8px 14px rgba(145,46,8,.42)); animation: benben-phoenix-perch 2.6s ease-in-out infinite; }
+.benben-phoenix.is-flying { top: -9%; left: 28%; width: 44%; animation: benben-phoenix-fly .72s ease-in-out infinite alternate; }
 @keyframes benben-phoenix-perch { 0%, 100% { transform: translateY(0) rotate(1deg); } 50% { transform: translateY(-4px) rotate(-1deg); } }
+@keyframes benben-phoenix-fly { 0% { transform: translateY(4px) rotate(-2deg); } 100% { transform: translateY(-16px) rotate(2deg) scale(1.025); } }
 .benben-effect { position: absolute; z-index: 3; inset: 0; pointer-events: none; overflow: hidden; }
 .benben-feed-effect span { --pebble-x: 1%; --pebble-y: 76%; position: absolute; z-index: 4; left: var(--pebble-x); top: var(--pebble-y); width: 6.5%; aspect-ratio: 1.15; border: 1px solid rgba(55,48,44,.45); border-radius: 48% 40% 52% 36%; background: linear-gradient(145deg, #ddd6c9 8%, #8e887e 56%, #57534e); box-shadow: inset 2px 2px 3px rgba(255,255,255,.5), 0 3px 5px rgba(42,31,27,.28); opacity: 0; animation: benben-pebble 1s cubic-bezier(.3,.05,.55,1) forwards; }
 .benben-feed-effect span:nth-child(2) { --pebble-x: 7%; --pebble-y: 84%; width: 4.8%; animation-delay: .12s; }
