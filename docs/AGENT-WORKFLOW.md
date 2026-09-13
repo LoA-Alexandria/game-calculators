@@ -24,7 +24,7 @@ Acceptance criteria:
 - Important boundaries and invalid inputs are covered.
 - The page explains assumptions and units.
 - The home page links to the calculator.
-- npm test and npm run build pass.
+- pnpm test and pnpm build pass.
 ```
 
 ## Prompt: verify a calculation

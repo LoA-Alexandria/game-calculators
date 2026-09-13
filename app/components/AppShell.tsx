@@ -21,6 +21,7 @@ import {
   PenIcon,
   SearchIcon,
   SECTION_ICONS,
+  ShieldIcon,
 } from "./Icons";
 
 /**
@@ -96,10 +97,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     return toggled[section.id] ?? (pathname?.startsWith(section.href) ?? false);
   };
   const activeSection = SECTIONS.find((section) => pathname?.startsWith(section.href));
-  // /guides/new/ is not a browsable section, so name it directly.
+  // /guides/new/ and /admin/ are not browsable sections, so name them directly.
   const context = pathname === "/guides/new/"
       ? t.nav.newGuide
-      : (activeSection?.label(t) ?? t.nav.home);
+      : pathname === "/admin/"
+        ? t.nav.admin
+        : (activeSection?.label(t) ?? t.nav.home);
 
   return (
     <div className="layout-root">
@@ -256,6 +259,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             >
               <PenIcon className="icon" />
               <span>{t.nav.newGuide}</span>
+            </Link>
+          )}
+          {allows("roles.assign") && (
+            <Link
+              className={pathname === "/admin/" ? "discord-link is-active" : "discord-link"}
+              href="/admin/"
+            >
+              <ShieldIcon className="icon" />
+              <span>{t.nav.admin}</span>
             </Link>
           )}
           <a

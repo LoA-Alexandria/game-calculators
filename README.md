@@ -10,8 +10,8 @@ a toggle to override it.
 Requires Node.js 22 or newer.
 
 ```sh
-npm install
-npm run dev
+pnpm install
+pnpm dev
 ```
 
 Open `http://localhost:3000`.
@@ -19,9 +19,9 @@ Open `http://localhost:3000`.
 ## Useful commands
 
 ```sh
-npm test       # run calculation tests
-npm run build  # create the static site in out/
-npm run lint   # check source style
+pnpm test       # run calculation tests
+pnpm build      # create the static site in out/
+pnpm lint       # check source style
 ```
 
 ## Sections and languages
