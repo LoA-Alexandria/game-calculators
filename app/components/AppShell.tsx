@@ -11,6 +11,7 @@ import { LanguageMenu } from "./LanguageMenu";
 import { ThemeToggle } from "./ThemeToggle";
 import {
   BrandMark,
+  ChevronIcon,
   CloseIcon,
   DiscordIcon,
   HomeIcon,
@@ -20,16 +21,29 @@ import {
   SECTION_ICONS,
 } from "./Icons";
 
+/**
+ * How many entries a section shows before it offers its index page instead.
+ * Collapsing alone is not enough: one open section with forty guides would
+ * still be an endless list.
+ */
+const VISIBLE_ITEMS = 8;
+
 function matches(haystack: string, needle: string): boolean {
   return haystack.toLocaleLowerCase().includes(needle);
 }
 
 export function AppShell({ children }: { children: React.ReactNode }) {
-  const { t } = useLocale();
+  const { t, tf } = useLocale();
   const { allows, session, loading, error: authError, signIn, signOut } = useAuth();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [filter, setFilter] = useState("");
+  /**
+   * Which sections the reader opened or closed by hand. Anything absent falls
+   * back to "open if it contains the current page", so arriving on a guide
+   * shows its neighbours without every other section unfolding too.
+   */
+  const [toggled, setToggled] = useState<Record<string, boolean>>({});
 
   /**
    * On a phone the overlay covers the page, so following any link inside it
@@ -72,6 +86,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   }, [query, t]);
 
   const nothingFound = query.length > 0 && sections.length === 0;
+
+  /** While filtering, every section with a match is revealed. */
+  const isOpen = (section: NavSection) => {
+    if (query) return true;
+    return toggled[section.id] ?? (pathname?.startsWith(section.href) ?? false);
+  };
   const activeSection = SECTIONS.find((section) => pathname?.startsWith(section.href));
   // /guides/new/ is not a browsable section, so name it directly.
   const context = pathname === "/guides/new/"
@@ -133,31 +153,65 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           {sections.map(({ section, items }) => {
             const Icon = SECTION_ICONS[section.icon];
             const sectionActive = pathname?.startsWith(section.href) ?? false;
+            const open = isOpen(section);
+            const label = section.label(t);
+            // A filtered list is already narrow, so show every match.
+            const shown = query ? items : items.slice(0, VISIBLE_ITEMS);
+            const hidden = items.length - shown.length;
             return (
               <div className="nav-group" key={section.id}>
-                <Link
-                  className={sectionActive ? "nav-link is-active" : "nav-link"}
-                  href={section.href}
-                >
-                  <Icon className="icon" />
-                  <span>{section.label(t)}</span>
+                <div className="nav-row">
+                  <Link
+                    className={sectionActive ? "nav-link is-active" : "nav-link"}
+                    href={section.href}
+                  >
+                    <Icon className="icon" />
+                    <span>{label}</span>
+                    {section.items.length > 0 && (
+                      <span className="nav-count">{section.items.length}</span>
+                    )}
+                  </Link>
                   {section.items.length > 0 && (
-                    <span className="nav-count">{section.items.length}</span>
+                    <button
+                      type="button"
+                      className={open ? "nav-toggle is-open" : "nav-toggle"}
+                      aria-expanded={open}
+                      aria-controls={`nav-section-${section.id}`}
+                      aria-label={tf(
+                        open ? t.shell.collapseSection : t.shell.expandSection,
+                        { section: label },
+                      )}
+                      onClick={() => setToggled((current) => ({ ...current, [section.id]: !open }))}
+                    >
+                      <ChevronIcon className="icon icon-sm" />
+                    </button>
                   )}
-                </Link>
-                {items.length > 0 && (
-                  <ul className="nav-sublist">
-                    {items.map((item) => (
-                      <li key={item.href}>
-                        <Link
-                          className={pathname === item.href ? "nav-sublink is-active" : "nav-sublink"}
-                          href={item.href}
-                        >
-                          {item.label(t)}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
+                </div>
+                {section.items.length > 0 && (
+                  <div
+                    className={open ? "nav-collapse is-open" : "nav-collapse"}
+                    id={`nav-section-${section.id}`}
+                  >
+                    <ul className="nav-sublist">
+                      {shown.map((item) => (
+                        <li key={item.href}>
+                          <Link
+                            className={pathname === item.href ? "nav-sublink is-active" : "nav-sublink"}
+                            href={item.href}
+                          >
+                            {item.label(t)}
+                          </Link>
+                        </li>
+                      ))}
+                      {hidden > 0 && (
+                        <li>
+                          <Link className="nav-sublink nav-more" href={section.href}>
+                            {tf(t.shell.showAll, { count: items.length })}
+                          </Link>
+                        </li>
+                      )}
+                    </ul>
+                  </div>
                 )}
               </div>
             );

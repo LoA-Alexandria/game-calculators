@@ -23,6 +23,9 @@ const fr: Dictionary = {
     github: "GitHub",
     skipToContent: "Aller au contenu",
     sectionLabel: "Section",
+    expandSection: "Afficher les entrées de {section}",
+    collapseSection: "Masquer les entrées de {section}",
+    showAll: "Afficher les {count}",
   },
   nav: {
     home: "Aperçu",

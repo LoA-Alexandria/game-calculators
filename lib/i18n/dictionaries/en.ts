@@ -24,6 +24,9 @@ const en = {
     github: "GitHub",
     skipToContent: "Skip to content",
     sectionLabel: "Section",
+    expandSection: "Show the {section} entries",
+    collapseSection: "Hide the {section} entries",
+    showAll: "Show all {count}",
   },
   nav: {
     home: "Overview",
