@@ -6,6 +6,10 @@ create table public.benben_state (
   rested smallint not null default 80 check (rested between 0 and 100),
   total_actions bigint not null default 0,
   community_streak integer not null default 0,
+  solar_charge integer not null default 0 check (solar_charge >= 0),
+  solar_goal integer not null default 30 check (solar_goal between 25 and 35),
+  phoenix_arrived_at timestamptz,
+  phoenix_leaves_at timestamptz,
   last_active_date date,
   updated_at timestamptz not null default now()
 );
@@ -42,6 +46,8 @@ begin
     'fed', greatest(0, pet.fed - decay_steps * 2), 'happy', greatest(0, pet.happy - decay_steps),
     'polished', greatest(0, pet.polished - decay_steps), 'rested', greatest(0, pet.rested - decay_steps),
     'total_actions', pet.total_actions, 'community_streak', pet.community_streak,
+    'phoenix_active', coalesce(pet.phoenix_leaves_at > now(), false),
+    'phoenix_leaves_at', case when pet.phoenix_leaves_at > now() then pet.phoenix_leaves_at else null end,
     'actions_left', greatest(0, 3 - used_today), 'updated_at', pet.updated_at);
 end; $$;
 
@@ -61,9 +67,20 @@ begin
   decay_steps := greatest(0, floor(extract(epoch from (now() - pet.updated_at)) / 21600)::integer);
   pet.fed := greatest(0, pet.fed - decay_steps * 2); pet.happy := greatest(0, pet.happy - decay_steps);
   pet.polished := greatest(0, pet.polished - decay_steps); pet.rested := greatest(0, pet.rested - decay_steps);
+  if pet.phoenix_leaves_at is not null and pet.phoenix_leaves_at <= now() then
+    pet.phoenix_arrived_at := null; pet.phoenix_leaves_at := null;
+  end if;
   if p_action = 'feed' then pet.fed := least(100, pet.fed + 14); pet.rested := least(100, pet.rested + 2);
   elsif p_action = 'polish' then pet.polished := least(100, pet.polished + 15); pet.happy := least(100, pet.happy + 2);
-  elsif p_action = 'play' then pet.happy := least(100, pet.happy + 14); pet.rested := greatest(0, pet.rested - 4); pet.fed := greatest(0, pet.fed - 2);
+  elsif p_action = 'play' then
+    pet.happy := least(100, pet.happy + 14); pet.rested := greatest(0, pet.rested - 4); pet.fed := greatest(0, pet.fed - 2);
+    if pet.phoenix_leaves_at is null then
+      pet.solar_charge := pet.solar_charge + 1;
+      if pet.solar_charge >= pet.solar_goal then
+        pet.phoenix_arrived_at := now(); pet.phoenix_leaves_at := now() + interval '24 hours';
+        pet.solar_charge := 0; pet.solar_goal := 25 + floor(random() * 11)::integer;
+      end if;
+    end if;
   else pet.rested := least(100, pet.rested + 15); pet.fed := greatest(0, pet.fed - 2); end if;
 
   if pet.last_active_date is null then pet.community_streak := 1;
@@ -71,7 +88,10 @@ begin
   elsif pet.last_active_date < today - 1 then pet.community_streak := 1; end if;
   caretaker := coalesce(auth.jwt() -> 'user_metadata' ->> 'full_name', auth.jwt() -> 'user_metadata' ->> 'name', 'A caretaker');
   update public.benben_state set fed = pet.fed, happy = pet.happy, polished = pet.polished, rested = pet.rested,
-    total_actions = pet.total_actions + 1, community_streak = pet.community_streak, last_active_date = today, updated_at = now() where singleton;
+    total_actions = pet.total_actions + 1, community_streak = pet.community_streak,
+    solar_charge = pet.solar_charge, solar_goal = pet.solar_goal,
+    phoenix_arrived_at = pet.phoenix_arrived_at, phoenix_leaves_at = pet.phoenix_leaves_at,
+    last_active_date = today, updated_at = now() where singleton;
   insert into public.benben_actions (user_id, caretaker_name, action) values (auth.uid(), left(caretaker, 80), p_action);
   return public.get_benben_state();
 end; $$;

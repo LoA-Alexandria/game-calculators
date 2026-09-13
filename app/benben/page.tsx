@@ -10,13 +10,14 @@ import { useDocumentTitle, useLocale } from "../components/LocaleProvider";
 import { BackLink, PageHead } from "../components/Ui";
 
 type CareAction = "feed" | "polish" | "play" | "rest";
-type BenbenState = { fed: number; happy: number; polished: number; rested: number; total_actions: number; community_streak: number; actions_left: number };
+type BenbenState = { fed: number; happy: number; polished: number; rested: number; total_actions: number; community_streak: number; actions_left: number; phoenix_active: boolean; phoenix_leaves_at: string | null; solar_charge?: number; solar_goal?: number };
 type CareEntry = { id: number; caretaker_name: string; action: CareAction; created_at: string };
-const ICON: Record<CareAction, string> = { feed: "🍇", polish: "✨", play: "🎲", rest: "🌙" };
+const ICON: Record<CareAction, string> = { feed: "🍇", polish: "✨", play: "☀️", rest: "🌙" };
 const LOCAL_PREVIEW = process.env.NODE_ENV === "development";
 const LOCAL_KEY = "benben-local-preview";
 const ACTION_ANIMATION_MS = 1100;
-const LOCAL_START: BenbenState = { fed: 72, happy: 76, polished: 68, rested: 80, total_actions: 0, community_streak: 1, actions_left: 3 };
+const LOCAL_START: BenbenState = { fed: 72, happy: 76, polished: 68, rested: 80, total_actions: 0, community_streak: 1, actions_left: 3, phoenix_active: false, phoenix_leaves_at: null, solar_charge: 0, solar_goal: 5 };
+const phoenixDeparture = () => new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
 
 export default function BenbenPage() {
   const { t, tf, d } = useLocale();
@@ -54,7 +55,9 @@ export default function BenbenPage() {
     if (LOCAL_PREVIEW) {
       try {
         const saved = window.localStorage.getItem(LOCAL_KEY);
-        setPet(saved ? JSON.parse(saved) as BenbenState : LOCAL_START);
+        const localPet = saved ? JSON.parse(saved) as BenbenState : LOCAL_START;
+        const phoenixActive = Boolean(localPet.phoenix_leaves_at && new Date(localPet.phoenix_leaves_at) > new Date());
+        setPet({ ...LOCAL_START, ...localPet, phoenix_active: phoenixActive, phoenix_leaves_at: phoenixActive ? localPet.phoenix_leaves_at : null });
       } catch { setPet(LOCAL_START); }
       setError("");
       return;
@@ -88,14 +91,26 @@ export default function BenbenPage() {
   ] as const, [t]);
 
   const care = async (action: CareAction) => {
-    const animationDuration = action === "rest" ? 2600 : ACTION_ANIMATION_MS;
+    const animationDuration = action === "rest" ? 2600 : action === "play" ? 2400 : ACTION_ANIMATION_MS;
     if (LOCAL_PREVIEW) {
       if (!pet || acting) return;
       setActing(action);
-      const next = { ...pet, total_actions: pet.total_actions + 1, actions_left: 3 };
+      const phoenixStillHere = Boolean(pet.phoenix_leaves_at && new Date(pet.phoenix_leaves_at) > new Date());
+      const next = { ...pet, total_actions: pet.total_actions + 1, actions_left: 3, phoenix_active: phoenixStillHere };
       if (action === "feed") { next.fed = Math.min(100, next.fed + 14); next.rested = Math.min(100, next.rested + 2); }
       if (action === "polish") { next.polished = Math.min(100, next.polished + 15); next.happy = Math.min(100, next.happy + 2); }
-      if (action === "play") { next.happy = Math.min(100, next.happy + 14); next.rested = Math.max(0, next.rested - 4); next.fed = Math.max(0, next.fed - 2); }
+      if (action === "play") {
+        next.happy = Math.min(100, next.happy + 14); next.rested = Math.max(0, next.rested - 4); next.fed = Math.max(0, next.fed - 2);
+        if (!phoenixStillHere) {
+          next.solar_charge = (pet.solar_charge ?? 0) + 1;
+          if (next.solar_charge >= (pet.solar_goal ?? 5)) {
+            next.phoenix_active = true;
+            next.phoenix_leaves_at = phoenixDeparture();
+            next.solar_charge = 0;
+            next.solar_goal = 5;
+          }
+        }
+      }
       if (action === "rest") { next.rested = Math.min(100, next.rested + 15); next.fed = Math.max(0, next.fed - 2); }
       window.localStorage.setItem(LOCAL_KEY, JSON.stringify(next));
       setPet(next);
@@ -120,7 +135,7 @@ export default function BenbenPage() {
   const share = async () => {
     if (!pet) return;
     const bar = (value: number) => `${"■".repeat(Math.round(value / 20))}${"□".repeat(5 - Math.round(value / 20))}`;
-    const text = [`Benben — ${mood} 🪨`, `🍇 ${bar(pet.fed)}  ✨ ${bar(pet.polished)}`, `💛 ${bar(pet.happy)}  🌙 ${bar(pet.rested)}`, `🔥 ${pet.community_streak} day community streak`, "https://loa-alexandria.github.io/game-calculators/benben/"].join("\n");
+    const text = [`Benben — ${mood} 🪨`, `🍇 ${bar(pet.fed)}  ✨ ${bar(pet.polished)}`, `💛 ${bar(pet.happy)}  🌙 ${bar(pet.rested)}`, `🔥 ${pet.community_streak} day community streak`, ...(pet.phoenix_active ? ["🔥🐦 A phoenix is visiting Benben!"] : []), "https://loa-alexandria.github.io/game-calculators/benben/"].join("\n");
     await navigator.clipboard.writeText(text);
     setCopied(true); window.setTimeout(() => setCopied(false), 2200);
   };
@@ -132,11 +147,14 @@ export default function BenbenPage() {
       <section className="benben-character-card" aria-label="Benben">
         <div className="benben-sun" aria-hidden="true" />
         <div className="benben-sprite-wrap">
-          <Image className={`${acting ? `benben-image is-${acting}` : "benben-image"}${celebrating ? " is-happy" : ""}`} src={asset(acting === "rest" ? "/benben-sleeping.png" : celebrating ? "/benben-happy.png" : "/benben.png")} width={1240} height={1240} alt="Benben, the communal stone pyramid" priority />
+          <Image className={`${acting ? `benben-image is-${acting}` : "benben-image"}${celebrating ? " is-happy" : ""}`} src={asset(acting === "rest" || acting === "play" ? "/benben-sleeping.png" : celebrating ? "/benben-happy.png" : "/benben.png")} width={1240} height={1240} alt="Benben, the communal stone pyramid" priority />
+          {pet?.phoenix_active && <Image className="benben-phoenix" src={asset("/benben-phoenix.png")} width={1254} height={1254} alt="A little phoenix visiting Benben" />}
           {acting === "feed" && <div className="benben-effect benben-feed-effect" aria-hidden="true"><span /><span /><span /><i className="benben-chew-mouth" /></div>}
           {acting === "polish" && <div className="benben-effect benben-polish-effect" aria-hidden="true"><span>✦</span><span>✧</span><span>✦</span><span>✧</span></div>}
           {acting === "rest" && <div className="benben-effect benben-rest-effect" aria-hidden="true"><span>Z</span><span>z</span><span>z</span></div>}
+          {acting === "play" && <div className="benben-effect benben-sunbath-effect" aria-hidden="true"><span /> <span /> <span /> <i>☀</i></div>}
         </div>
+        {pet?.phoenix_active && <div className="benben-phoenix-banner">🔥🐦 {t.benben.phoenixVisit}</div>}
         <div className="benben-mood"><span>{average >= 65 ? "◕‿◕" : "◕︵◕"}</span> {mood}</div>
       </section>
       <section className="benben-care-card">
