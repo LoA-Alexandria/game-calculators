@@ -232,68 +232,6 @@ export function paintingSetById(id: string): PaintingSet | undefined {
   return PAINTING_SETS.find((entry) => entry.id === id);
 }
 
-/**
- * SSR set-skill ranking from Autumn (Ice, S12) on Discord, 4 September 2026.
- * Pursuit and DoT swap the first slot; Hybrid inserts the other damage type
- * between Ukiya-e Masterpieces and Modernist New Voice.
- */
-export const SET_SKILL_BUILDS = ["crit", "pursuit", "dot", "hybrid"] as const;
-export type SetSkillBuild = (typeof SET_SKILL_BUILDS)[number];
-
-export const SET_SKILL_REASONS = [
-  "critBuff",
-  "finalDamage",
-  "cryptidBonus",
-  "dispel",
-  "defense",
-  "finalReduce",
-  "cryptidReduce",
-  "shield",
-  "extraDamage",
-  "dotDamage",
-] as const;
-export type SetSkillReason = (typeof SET_SKILL_REASONS)[number];
-
-const CRIT_SET_SKILLS = [
-  { id: "nature-in-bloom", reason: "critBuff" },
-  { id: "tragic-maiden", reason: "finalDamage" },
-  { id: "beyond-the-earth", reason: "cryptidBonus" },
-  { id: "chinese-landscape", reason: "dispel" },
-  { id: "rococo-curtain", reason: "defense" },
-  { id: "ukiya-e-masterpieces", reason: "finalReduce" },
-  { id: "modernist-new-voice", reason: "cryptidReduce" },
-  { id: "glory-and-shadow", reason: "shield" },
-] as const satisfies readonly { id: string; reason: SetSkillReason }[];
-
-export type SetSkillRow = {
-  set: PaintingSet;
-  reason: SetSkillReason;
-  hybridSlot: boolean;
-};
-
-type SetSkillSeed = { id: string; reason: SetSkillReason };
-
-function leadSwap(id: string, reason: SetSkillReason): SetSkillSeed[] {
-  const [, ...rest] = CRIT_SET_SKILLS;
-  return [{ id, reason }, ...rest];
-}
-
-export function setSkillRank(build: SetSkillBuild): SetSkillRow[] {
-  const rows =
-    build === "pursuit" ? leadSwap("self-portrait", "extraDamage")
-    : build === "dot" ? leadSwap("urban-proletariat", "dotDamage")
-    : CRIT_SET_SKILLS;
-  return rows.flatMap((row) => {
-    const entry = paintingSetById(row.id);
-    if (!entry) return [];
-    return [{
-      set: entry,
-      reason: row.reason,
-      hybridSlot: build === "hybrid" && row.id === "ukiya-e-masterpieces",
-    }];
-  });
-}
-
 export type PaintingHit = {
   set: PaintingSet;
   painting: Painting;
