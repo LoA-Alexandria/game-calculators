@@ -7,6 +7,8 @@ import { SECTIONS, type NavItem, type NavSection } from "../../lib/navigation";
 import { DISCORD_CONFIGURED, DISCORD_URL, REPOSITORY_URL } from "../../lib/site";
 import { useAuth } from "./AuthProvider";
 import { useLocale } from "./LocaleProvider";
+import { MonthCalendar } from "./EventCalendar";
+import { useNow } from "./useNow";
 import { LanguageMenu } from "./LanguageMenu";
 import { ThemeToggle } from "./ThemeToggle";
 import {
@@ -35,6 +37,7 @@ function matches(haystack: string, needle: string): boolean {
 export function AppShell({ children }: { children: React.ReactNode }) {
   const { t, tf } = useLocale();
   const { allows, session, loading, error: authError, signIn, signOut } = useAuth();
+  const now = useNow();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [filter, setFilter] = useState("");
@@ -220,7 +223,32 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           {nothingFound && <p className="nav-empty">{t.shell.filterEmpty}</p>}
         </nav>
 
+        <div className="sidebar-calendar">
+          <MonthCalendar today={now} compact />
+          <Link className="sidebar-calendar-link" href="/events/">
+            {t.events.openCalendar} <span aria-hidden="true">→</span>
+          </Link>
+        </div>
+
         <div className="sidebar-foot">
+          {allows("events.write") && (
+            <Link
+              className={pathname === "/events/" ? "discord-link is-active" : "discord-link"}
+              href="/events/"
+            >
+              <PenIcon className="icon" />
+              <span>{t.nav.newEvent}</span>
+            </Link>
+          )}
+          {allows("news.write") && (
+            <Link
+              className={pathname === "/news/new/" ? "discord-link is-active" : "discord-link"}
+              href="/news/new/"
+            >
+              <PenIcon className="icon" />
+              <span>{t.nav.newNews}</span>
+            </Link>
+          )}
           {allows("guides.draft") && (
             <Link
               className={pathname === "/guides/new/" ? "discord-link is-active" : "discord-link"}

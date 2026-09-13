@@ -18,6 +18,8 @@ export const PERMISSIONS = [
   "guides.publish",
   /** Write news entries. */
   "news.write",
+  /** Add and change entries in the event calendar. */
+  "events.write",
   /** Upload images for guides and news. */
   "media.upload",
   /** Map Discord roles onto site roles. */
@@ -31,7 +33,7 @@ export type Permission = (typeof PERMISSIONS)[number];
 
 export const ROLE_PERMISSIONS: Record<Role, readonly Permission[]> = {
   admin: PERMISSIONS,
-  manager: ["guides.draft", "guides.publish", "news.write", "media.upload", "members.manage"],
+  manager: ["guides.draft", "guides.publish", "news.write", "events.write", "media.upload", "members.manage"],
   guide_writer: ["guides.draft", "media.upload"],
 };
 
