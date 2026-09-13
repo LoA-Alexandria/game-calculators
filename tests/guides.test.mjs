@@ -39,10 +39,10 @@ test("every published guide has a dictionary entry", () => {
 });
 
 test("artwork layouts levels SSR ATK first", () => {
-  const { levels, note, setSkills } = en.guideEntries.artworkLayouts;
+  const { levels, note, buildNames } = en.guideEntries.artworkLayouts;
   assert.equal(levels[0]?.rarity, "SSR");
   assert.equal(levels[0]?.stat, "ATK");
-  assert.equal(setSkills.map((tab) => tab.id).join(), "crit,pursuit,dot,hybrid");
+  assert.equal(Object.keys(buildNames).join(), "crit,pursuit,dot,hybrid");
   assert.equal(note, "");
 });
 

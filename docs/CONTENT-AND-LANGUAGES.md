@@ -83,9 +83,11 @@ cannot claim the same renderer by sharing a field name. Keep `sections` and
 `note` in those entries too, since the editor reads them. In the Hero layouts guide,
 `sections` are the rule cards next to the formation board, and the slot order
 lives in `lib/content/hero-layouts.ts`. Painting names, set effects, and hero
-matches for Artwork live in `lib/content/artwork.ts`. Unlock order, level
-priority, and the SSR set-skill ranking for Artwork layouts live in that same
-file plus the guide dictionary.
+matches for Artwork live in `lib/content/artwork.ts`. Unlock order and level
+priority for Artwork layouts live in the guide dictionary. The SSR set-skill
+ranking lives in `lib/data/artwork-layouts.json`, once for all languages;
+`lib/content/artwork-layouts.ts` types and exports it. Dictionaries hold the
+build names, reasons, and notes those rows point at.
 
 The Hero tier list keeps its rows (hero names, grades, resources, bonuses) in
 `lib/data/hero-tiers.json`, once for all languages; `lib/content/hero-tiers.ts`
@@ -120,6 +122,32 @@ The export dialog lists problems first: missing names, duplicates, invalid
 grades, and text keys without text. An untouched draft exports the published file
 byte for byte (`tests/hero-tier-editor.test.mjs`), so a diff only ever contains
 real changes.
+
+## Editing artwork layouts
+
+Members with `guides.draft` see **Edit set skills** on Artwork layouts, which
+opens `/guides/artwork-layouts/edit/`.
+
+- Each build is a ranked list of painting sets from the Artwork catalogue.
+  Change order with the rank dropdown, pick a reason, or remove a set.
+- **Add a painting set** lists catalogue sets that are not already in that
+  build, grouped by rarity.
+- **Add build** / **Remove build** create or delete a ranking. A new build can
+  start empty or copy an existing one. The last remaining build cannot be
+  deleted.
+- A text the dictionaries do not have yet (a new build name, note, or reason)
+  can be typed in English, German, and French from the **New text…** option.
+
+The draft is saved in that browser only
+(`localStorage['popepoch-artwork-layout-draft']`). **Export** produces:
+
+1. the complete `lib/data/artwork-layouts.json`, one row per line so a pull
+   request shows exactly which sets moved, and
+2. for new text, one block per dictionary to paste under
+   `guideEntries.artworkLayouts`.
+
+An untouched draft exports the published file byte for byte
+(`tests/artwork-layout-editor.test.mjs`).
 
 Community-written guides name their author in the entry (`credit`). Ask the
 author before publishing their text, and keep the credit when you edit it.

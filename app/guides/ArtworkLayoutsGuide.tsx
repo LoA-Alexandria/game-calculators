@@ -3,12 +3,11 @@
 import { useId, useState, type KeyboardEvent } from "react";
 import Link from "next/link";
 import { guideLayout } from "../../lib/content/guides";
-import {
-  SET_SKILL_BUILDS,
-  setSkillRank,
-  type SetSkillBuild,
-} from "../../lib/content/artwork";
+import { ARTWORK_LAYOUT_DATA, setSkillRank } from "../../lib/content/artwork-layouts";
 import type { Dictionary } from "../../lib/i18n";
+import { useAuth } from "../components/AuthProvider";
+import { useLocale } from "../components/LocaleProvider";
+import { PenIcon } from "../components/Icons";
 
 type Guide = Dictionary["guideEntries"]["artworkLayouts"];
 
@@ -18,18 +17,23 @@ export function isArtworkLayoutsGuide(
   return guideLayout(guide) === "artworkLayouts";
 }
 
-function asBuild(id: string): SetSkillBuild {
-  return (SET_SKILL_BUILDS as readonly string[]).includes(id) ? id as SetSkillBuild : "crit";
+function labelOf(map: Record<string, string>, key: string): string {
+  return map[key] ?? key;
 }
 
 function SetSkillTabs({ guide }: { guide: Guide }) {
   const base = useId();
-  const [build, setBuild] = useState<SetSkillBuild>("crit");
-  const rows = setSkillRank(build);
-  const tabId = (id: SetSkillBuild) => `${base}-tab-${id}`;
+  const builds = ARTWORK_LAYOUT_DATA.builds;
+  const [buildId, setBuildId] = useState(builds[0]?.id ?? "");
+  const build = builds.find((entry) => entry.id === buildId) ?? builds[0];
+  const rows = build ? setSkillRank(build.id) : [];
+  const tabId = (id: string) => `${base}-tab-${id}`;
+  const names = guide.buildNames as Record<string, string>;
+  const notes = guide.notes as Record<string, string>;
+  const reasons = guide.reasons as Record<string, string>;
 
   const onKeyDown = (event: KeyboardEvent<HTMLButtonElement>, index: number) => {
-    const last = SET_SKILL_BUILDS.length - 1;
+    const last = builds.length - 1;
     const next =
       event.key === "ArrowRight" ? (index === last ? 0 : index + 1)
       : event.key === "ArrowLeft" ? (index === 0 ? last : index - 1)
@@ -38,58 +42,53 @@ function SetSkillTabs({ guide }: { guide: Guide }) {
       : null;
     if (next === null) return;
     event.preventDefault();
-    setBuild(SET_SKILL_BUILDS[next]);
-    document.getElementById(tabId(SET_SKILL_BUILDS[next]))?.focus();
+    setBuildId(builds[next].id);
+    document.getElementById(tabId(builds[next].id))?.focus();
   };
 
-  const note =
-    build === "pursuit" ? guide.pursuitNote
-    : build === "dot" ? guide.dotNote
-    : build === "hybrid" ? guide.hybridNote
-    : guide.restNote;
+  const note = build?.note ? notes[build.note] : "";
 
   return (
     <>
       <div className="build-tabs" role="tablist" aria-label={guide.setSkillsHeading}>
-        {guide.setSkills.map((tab, index) => {
-          const id = asBuild(tab.id);
-          const selected = id === build;
+        {builds.map((tab, index) => {
+          const selected = tab.id === build?.id;
           return (
             <button
               key={tab.id}
-              id={tabId(id)}
+              id={tabId(tab.id)}
               type="button"
               role="tab"
               className="build-tab"
-              data-build={id}
+              data-build={tab.id}
               aria-selected={selected}
               aria-controls={`${base}-panel`}
               tabIndex={selected ? 0 : -1}
-              onClick={() => setBuild(id)}
+              onClick={() => setBuildId(tab.id)}
               onKeyDown={(event) => onKeyDown(event, index)}
             >
               <span className="build-dot" aria-hidden="true" />
-              {tab.name}
+              {labelOf(names, tab.id)}
             </button>
           );
         })}
       </div>
       <div
         className="build-panel painting-panel"
-        data-build={build}
+        data-build={build?.id}
         id={`${base}-panel`}
         role="tabpanel"
-        aria-labelledby={tabId(build)}
+        aria-labelledby={build ? tabId(build.id) : undefined}
       >
         <ol className="set-skill-rank">
           {rows.map((row, index) => (
-            <li key={row.set.id}>
+            <li key={`${row.set.id}-${index}`}>
               <article className="formation-rule">
                 <span className="formation-rule-index" aria-hidden="true">{index + 1}</span>
                 <h3>{row.set.name}</h3>
-                <p>{guide.reasons[row.reason]}</p>
+                <p>{labelOf(reasons, row.reason)}</p>
               </article>
-              {row.hybridSlot ? (
+              {row.insert ? (
                 <p className="set-skill-insert">{guide.hybridSlot}</p>
               ) : null}
             </li>
@@ -102,6 +101,9 @@ function SetSkillTabs({ guide }: { guide: Guide }) {
 }
 
 export function ArtworkLayoutsGuide({ guide }: { guide: Guide }) {
+  const { t } = useLocale();
+  const { allows } = useAuth();
+
   return (
     <div className="guide-wide hero-layouts artwork-layouts">
       <p className="intro">{guide.intro}</p>
@@ -156,7 +158,15 @@ export function ArtworkLayoutsGuide({ guide }: { guide: Guide }) {
         </div>
       </div>
 
-      <h2>{guide.setSkillsHeading}</h2>
+      <div className="tier-lists-head">
+        <h2>{guide.setSkillsHeading}</h2>
+        {allows("guides.draft") ? (
+          <Link className="small-button" href="/guides/artwork-layouts/edit/">
+            <PenIcon className="icon icon-sm" />
+            {t.artworkLayoutEditor.openEditor}
+          </Link>
+        ) : null}
+      </div>
       <p className="utility-lede">{guide.setSkillsLede}</p>
       <SetSkillTabs guide={guide} />
     </div>

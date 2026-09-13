@@ -1,0 +1,44 @@
+{
+  "builds": [
+    { "id": "crit", "note": "rest", "rows": [
+      {"setId":"nature-in-bloom","reason":"critBuff"},
+      {"setId":"tragic-maiden","reason":"finalDamage"},
+      {"setId":"beyond-the-earth","reason":"cryptidBonus"},
+      {"setId":"chinese-landscape","reason":"dispel"},
+      {"setId":"rococo-curtain","reason":"defense"},
+      {"setId":"ukiya-e-masterpieces","reason":"finalReduce"},
+      {"setId":"modernist-new-voice","reason":"cryptidReduce"},
+      {"setId":"glory-and-shadow","reason":"shield"}
+    ] },
+    { "id": "pursuit", "note": "pursuit", "rows": [
+      {"setId":"self-portrait","reason":"extraDamage"},
+      {"setId":"tragic-maiden","reason":"finalDamage"},
+      {"setId":"beyond-the-earth","reason":"cryptidBonus"},
+      {"setId":"chinese-landscape","reason":"dispel"},
+      {"setId":"rococo-curtain","reason":"defense"},
+      {"setId":"ukiya-e-masterpieces","reason":"finalReduce"},
+      {"setId":"modernist-new-voice","reason":"cryptidReduce"},
+      {"setId":"glory-and-shadow","reason":"shield"}
+    ] },
+    { "id": "dot", "note": "dot", "rows": [
+      {"setId":"urban-proletariat","reason":"dotDamage"},
+      {"setId":"tragic-maiden","reason":"finalDamage"},
+      {"setId":"beyond-the-earth","reason":"cryptidBonus"},
+      {"setId":"chinese-landscape","reason":"dispel"},
+      {"setId":"rococo-curtain","reason":"defense"},
+      {"setId":"ukiya-e-masterpieces","reason":"finalReduce"},
+      {"setId":"modernist-new-voice","reason":"cryptidReduce"},
+      {"setId":"glory-and-shadow","reason":"shield"}
+    ] },
+    { "id": "hybrid", "note": "hybrid", "rows": [
+      {"setId":"nature-in-bloom","reason":"critBuff"},
+      {"setId":"tragic-maiden","reason":"finalDamage"},
+      {"setId":"beyond-the-earth","reason":"cryptidBonus"},
+      {"setId":"chinese-landscape","reason":"dispel"},
+      {"setId":"rococo-curtain","reason":"defense"},
+      {"setId":"ukiya-e-masterpieces","reason":"finalReduce","insert":true},
+      {"setId":"modernist-new-voice","reason":"cryptidReduce"},
+      {"setId":"glory-and-shadow","reason":"shield"}
+    ] }
+  ]
+}
