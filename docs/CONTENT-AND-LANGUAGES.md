@@ -57,15 +57,19 @@ filter. There is no second list to keep in step.
 
 ## Adding a guide
 
-1. Write the text under `guideEntries.<id>` in all three dictionaries, following
-   the shape of `waterSupply`: `title`, `summary`, `intro`, `sections[]`, `note`.
-2. Create `app/guides/<slug>/page.tsx` — copy `app/guides/water-supply/page.tsx`,
-   it is a dozen lines.
-3. Add one entry to the `guides` section in `lib/navigation.ts`, including a
-   `badge` and `categoryId` from `guideCategories` so the Guides index and the
-   sidebar can group it. Reuse an existing category when the guide belongs next
-   to one already there. The sidebar shows the category first; opening it lists
-   the guides.
+1. Open `/guides/new/` signed in with `guides.draft`, or use Edit / Remove on
+   an existing guide. The editor prints the dictionary block, the navigation
+   row, and (for a new slug) a note to copy the page file. Existing guides on
+   `/guides/` and on the guide page have Edit and Remove — the same commit-snippet
+   pattern as news and events.
+2. Write or replace the text under `guideEntries.<id>` in all three dictionaries,
+   following the shape of `waterSupply`: `title`, `summary`, `intro`,
+   `sections[]`, `note`.
+3. Add or replace the item in the `guides` section in `lib/navigation.ts`,
+   including a `badge` and `categoryId` from `guideCategories`. Reuse an existing
+   category when the guide belongs next to one already there.
+4. For a new slug, copy `app/guides/water-supply/page.tsx` and pass the new id
+   to `GuideArticle`.
 
 Guides describe game mechanics, so treat their numbers the way the repository
 treats any other game data: say where they came from, and correct them in the

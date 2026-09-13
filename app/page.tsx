@@ -4,11 +4,14 @@ import { useState } from "react";
 import Link from "next/link";
 import { NEWS } from "../lib/content/news";
 import { guideCount, toolCount } from "../lib/navigation";
+import { OverviewAgenda } from "./components/EventCalendar";
 import { useDocumentTitle, useLocale } from "./components/LocaleProvider";
+import { useNow } from "./components/useNow";
 import { ChevronIcon } from "./components/Icons";
 
 export default function Home() {
   const { t, n } = useLocale();
+  const now = useNow();
   useDocumentTitle(t.nav.home);
   return (
     <>
@@ -29,13 +32,14 @@ export default function Home() {
           </div>
         </dl>
       </section>
+      <OverviewAgenda now={now} />
     </>
   );
 }
 
 /**
- * The overview leads with the news slide. Tools, events, and guides live in
- * the sidebar; the counts below only summarise what the site currently offers.
+ * The overview leads with the news slide, then the site counts, then the
+ * event calendar that used to sit in the sidebar.
  */
 function NewsHero() {
   const { t, tf, d } = useLocale();

@@ -1444,49 +1444,11 @@ button.calendar-day:hover { background: var(--surface-2); }
 }
 .calendar-legend span { display: inline-flex; align-items: center; gap: 6px; }
 
-/* live and upcoming events in the sidebar, instead of a month grid */
-.sidebar-agenda { padding: 12px 12px 10px; border-top: 1px solid var(--line); }
-.sidebar-agenda-head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 8px;
-  margin-bottom: 8px;
-}
-.sidebar-agenda-head strong { font-size: .78rem; font-weight: 600; }
-.sidebar-agenda-empty {
-  margin: 0;
-  color: var(--ink-faint);
-  font-size: .78rem;
-}
-.sidebar-agenda-list { display: grid; gap: 4px; }
-.sidebar-agenda-item {
-  display: grid;
-  grid-template-columns: 7px minmax(0, 1fr);
-  gap: 8px;
-  align-items: start;
-  padding: 7px 8px;
-  border-radius: var(--r-sm);
-}
-.sidebar-agenda-item:hover { background: var(--surface-2); }
-.sidebar-agenda-item .dot { margin-top: 6px; }
-.sidebar-agenda-item span { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-.sidebar-agenda-item strong {
-  font-size: .8rem;
-  font-weight: 600;
-  line-height: 1.3;
-}
-.sidebar-agenda-item .mono { font-size: .68rem; color: var(--ink-faint); }
-.sidebar-calendar-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  min-height: 28px;
+.overview-events .section-heading a {
   color: var(--accent);
-  font-size: .74rem;
+  font-size: .87rem;
   font-weight: 600;
 }
-.sidebar-calendar-link:hover { gap: 10px; }
 
 .weekday-picker { display: flex; flex-wrap: wrap; gap: 5px; }
 .weekday {
@@ -1546,6 +1508,7 @@ button.calendar-day:hover { background: var(--surface-2); }
   .metric-grid { grid-template-columns: 1fr 1fr; }
   .input-row { grid-template-columns: 1fr; gap: 0; }
   .section-heading { flex-direction: column; align-items: flex-start; }
+  .stat-row { grid-template-columns: 1fr; }
   .topbar .topbar-discord { display: none; }
   .admin-head { flex-direction: column; align-items: stretch; }
   .planner-frame { height: clamp(520px, calc(100dvh - 210px), 1200px); }

@@ -100,6 +100,8 @@ const en = {
     allCategories: "All categories",
     pickGuide: "Choose a guide in this category.",
     categoryCount: "{count} in this category",
+    edit: "Edit",
+    remove: "Remove",
   },
   guideCategories: {
     cityLayout: "City layout",
@@ -376,10 +378,11 @@ const en = {
   editor: {
     title: "New guide",
     lede:
-      "Write a guide, add images, and export the result. Once the backend exists, this form will save directly.",
+      "Write a guide and export the snippet. Committing it is what publishes it; a static site cannot store the change itself.",
     fieldTitle: "Title",
     fieldSlug: "URL segment",
     fieldSlugNote: "Becomes /guides/<segment>/",
+    fieldCategory: "Category",
     fieldSummary: "Summary",
     fieldSummaryNote: "One sentence, shown in the guide list",
     fieldIntro: "Introduction",
@@ -410,9 +413,24 @@ const en = {
     clearDraft: "Discard draft",
     noServerTitle: "Nothing is uploaded",
     noServerBody:
-      "There is no server behind this form. Images live in this tab only and are gone when you close it, so use Export to keep your work.",
+      "There is no server behind this form. Images live in this tab only. Copy the snippet and commit it so everyone can see the guide.",
     translationNote:
-      "A published guide needs its text in every language the site offers. Export the draft and pass it to whoever adds the translations.",
+      "A published guide needs its text in every language the site offers. The snippet here is the language you are viewing; add the other two by hand.",
+    output: "Entry to commit",
+    outputLede:
+      "Paste the dictionary block and the navigation row, then add the page file as noted.",
+    outputNote:
+      "Paste into guideEntries in every dictionary and into guides.items in lib/navigation.ts. Copy the water-supply page for a new slug.",
+    editTitle: "Edit guide",
+    editLede: "Change the text and export the replacement. Committing it is what updates the live page.",
+    replaceNote:
+      "Replace the existing guideEntries block with this id. Do not add a second copy. Update every dictionary; the text here is the language you are viewing.",
+    removeTitle: "Remove this guide",
+    removeLede: "Nothing is deleted until you commit the notes below.",
+    removeNote:
+      "Delete the guideEntries block, the navigation row, and the page folder for this slug from English, German, and French.",
+    removeOutput: "Removal notes",
+    cancel: "Back",
   },
   events: {
     title: "Events",

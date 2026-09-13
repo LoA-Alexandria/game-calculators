@@ -100,6 +100,8 @@ const fr: Dictionary = {
     allCategories: "Toutes les catégories",
     pickGuide: "Choisissez un guide dans cette catégorie.",
     categoryCount: "{count} dans cette catégorie",
+    edit: "Modifier",
+    remove: "Retirer",
   },
   guideCategories: {
     cityLayout: "Plan de ville",
@@ -379,10 +381,11 @@ const fr: Dictionary = {
   editor: {
     title: "Nouveau guide",
     lede:
-      "Rédigez un guide, ajoutez des images et exportez le résultat. Dès que le backend existera, ce formulaire enregistrera directement.",
+      "Rédigez un guide et exportez l’extrait. C’est le commit qui le publie ; un site statique ne peut pas enregistrer le changement lui-même.",
     fieldTitle: "Titre",
     fieldSlug: "Segment d’URL",
     fieldSlugNote: "Devient /guides/<segment>/",
+    fieldCategory: "Catégorie",
     fieldSummary: "Résumé",
     fieldSummaryNote: "Une phrase, affichée dans la liste des guides",
     fieldIntro: "Introduction",
@@ -413,9 +416,24 @@ const fr: Dictionary = {
     clearDraft: "Abandonner le brouillon",
     noServerTitle: "Rien n’est envoyé",
     noServerBody:
-      "Aucun serveur ne se trouve derrière ce formulaire. Les images ne vivent que dans cet onglet et disparaissent à sa fermeture : utilisez l’export pour conserver votre travail.",
+      "Aucun serveur ne se trouve derrière ce formulaire. Les images restent dans cet onglet. Copiez l’extrait et commitez-le pour que tout le monde voie le guide.",
     translationNote:
-      "Un guide publié a besoin de son texte dans chaque langue du site. Exportez le brouillon et confiez-le à la personne qui saisit les traductions.",
+      "Un guide publié a besoin de son texte dans chaque langue du site. L’extrait ici est la langue que vous consultez ; ajoutez les deux autres à la main.",
+    output: "Entrée à committer",
+    outputLede:
+      "Collez le bloc du dictionnaire et la ligne de navigation, puis créez le fichier de page comme indiqué.",
+    outputNote:
+      "Collez sous guideEntries dans chaque dictionnaire et dans guides.items dans lib/navigation.ts. Pour un nouveau slug, copiez la page water-supply.",
+    editTitle: "Modifier le guide",
+    editLede: "Modifiez le texte et exportez le remplacement. C’est le commit qui met à jour la page en ligne.",
+    replaceNote:
+      "Remplacez le bloc guideEntries existant avec cet identifiant. N’ajoutez pas une seconde copie. Mettez à jour chaque dictionnaire ; le texte ici est la langue que vous consultez.",
+    removeTitle: "Retirer ce guide",
+    removeLede: "Rien n’est supprimé tant que vous n’avez pas commité les notes ci-dessous.",
+    removeNote:
+      "Supprimez le bloc guideEntries, la ligne de navigation et le dossier de page de ce slug en anglais, allemand et français.",
+    removeOutput: "Notes de retrait",
+    cancel: "Retour",
   },
   events: {
     title: "Événements",
