@@ -7,7 +7,7 @@ import { SECTIONS, type NavItem, type NavSection } from "../../lib/navigation";
 import { DISCORD_CONFIGURED, DISCORD_URL, REPOSITORY_URL } from "../../lib/site";
 import { useAuth } from "./AuthProvider";
 import { useLocale } from "./LocaleProvider";
-import { MonthCalendar } from "./EventCalendar";
+import { SidebarAgenda } from "./EventCalendar";
 import { useNow } from "./useNow";
 import { LanguageMenu } from "./LanguageMenu";
 import { ThemeToggle } from "./ThemeToggle";
@@ -226,12 +226,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           {nothingFound && <p className="nav-empty">{t.shell.filterEmpty}</p>}
         </nav>
 
-        <div className="sidebar-calendar">
-          <MonthCalendar today={now} compact />
-          <Link className="sidebar-calendar-link" href="/events/">
-            {t.events.openCalendar} <span aria-hidden="true">→</span>
-          </Link>
-        </div>
+        <SidebarAgenda now={now} />
 
         <div className="sidebar-foot">
           {allows("events.write") && (

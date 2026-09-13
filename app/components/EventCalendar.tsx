@@ -1,12 +1,15 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import { EVENTS, type EventEntry } from "../../lib/content/events";
 import {
+  activeAt,
   dayKey,
   daysCovered,
   monthGrid,
   occurrencesInRange,
+  upcomingAfter,
   type EventKind,
   type Occurrence,
 } from "../../lib/events";
@@ -160,6 +163,53 @@ export function MonthCalendar({
           </span>
         ))}
       </div>
+    </div>
+  );
+}
+
+/**
+ * A short live/upcoming list for the sidebar. The month grid lives on /events/;
+ * six weeks of cells crowded the navigation on a laptop.
+ */
+export function SidebarAgenda({ now }: { now: Date | null }) {
+  const { t, locale } = useLocale();
+  const live = now ? activeAt(EVENTS, now).slice(0, 2) : [];
+  const next = now ? upcomingAfter(EVENTS, now, 21, 3) : [];
+  const rows = [...live, ...next].slice(0, 3);
+  const when = new Intl.DateTimeFormat(locale, { dateStyle: "medium", timeStyle: "short", timeZone: "UTC" });
+
+  return (
+    <div className="sidebar-agenda">
+      <div className="sidebar-agenda-head">
+        <strong>{t.nav.events}</strong>
+        <Link className="sidebar-calendar-link" href="/events/">
+          {t.events.openCalendar} <span aria-hidden="true">→</span>
+        </Link>
+      </div>
+      {now === null ? (
+        <p className="sidebar-agenda-empty">…</p>
+      ) : rows.length === 0 ? (
+        <p className="sidebar-agenda-empty">{t.events.sidebarEmpty}</p>
+      ) : (
+        <ul className="sidebar-agenda-list">
+          {rows.map((occurrence) => {
+            const running = live.some((item) => item.event.id === occurrence.event.id && item.start.getTime() === occurrence.start.getTime());
+            return (
+              <li key={`${occurrence.event.id}-${occurrence.start.toISOString()}`}>
+                <Link className={`sidebar-agenda-item event-${occurrence.event.kind}`} href="/events/">
+                  <span className={`dot dot-${occurrence.event.kind}`} aria-hidden="true" />
+                  <span>
+                    <strong>{occurrence.event.name(t)}</strong>
+                    <span className="mono">
+                      {running ? t.events.liveNow : when.format(occurrence.start)}
+                    </span>
+                  </span>
+                </Link>
+              </li>
+            );
+          })}
+        </ul>
+      )}
     </div>
   );
 }

@@ -8,9 +8,9 @@ import { useAuth } from "../components/AuthProvider";
 import { kindLabel, MonthCalendar, useMonthOccurrences } from "../components/EventCalendar";
 import { useDocumentTitle, useLocale } from "../components/LocaleProvider";
 import { useNow } from "../components/useNow";
-import { PageHead } from "../components/Ui";
-import { EventEditor } from "./EventEditor";
-import { AlertIcon } from "../components/Icons";
+import { PageHead, SectionBanner } from "../components/Ui";
+import { EventEditor, type EventEditorTarget } from "./EventEditor";
+import { AlertIcon, PenIcon, TrashIcon } from "../components/Icons";
 
 export default function EventsPage() {
   const { t, locale, tf } = useLocale();
@@ -19,6 +19,7 @@ export default function EventsPage() {
   useDocumentTitle(t.events.title);
 
   const [selected, setSelected] = useState<string | null>(null);
+  const [target, setTarget] = useState<EventEditorTarget | null>(null);
 
   const live = useMemo(() => (now ? activeAt(EVENTS, now) : []), [now]);
   const next = useMemo(() => (now ? upcomingAfter(EVENTS, now, 60, 6) : []), [now]);
@@ -32,6 +33,7 @@ export default function EventsPage() {
 
   return (
     <>
+      <SectionBanner id="events" />
       <PageHead eyebrow={t.nav.events} title={t.events.title} lede={t.events.lede} />
 
       {EVENTS_ARE_PLACEHOLDER && (
@@ -106,7 +108,61 @@ export default function EventsPage() {
         </div>
       </div>
 
-      {allows("events.write") && <EventEditor />}
+      {allows("events.write") && (
+        <>
+          <section className="panel" style={{ marginTop: 24 }}>
+            <h2>{t.events.scheduleTitle}</h2>
+            <p>{t.events.scheduleLede}</p>
+            {EVENTS.length === 0 ? (
+              <p className="assumption" style={{ margin: 0 }}>{t.common.empty}</p>
+            ) : (
+              <ul className="event-list">
+                {EVENTS.map((event) => (
+                  <li className={`event-row event-${event.kind}`} key={event.id}>
+                    <span className={`dot dot-${event.kind}`} aria-hidden="true" />
+                    <div className="event-body">
+                      <div className="event-title">
+                        <strong>{event.name(t)}</strong>
+                        <span className="pill">{kindLabel(event.kind, t)}</span>
+                      </div>
+                      <p>{event.summary(t)}</p>
+                      <div className="event-actions">
+                        <button
+                          className="small-button"
+                          type="button"
+                          onClick={() => {
+                            setTarget({ event, action: "edit" });
+                            window.setTimeout(() => document.getElementById("event-editor")?.scrollIntoView({ block: "start" }), 0);
+                          }}
+                        >
+                          <PenIcon className="icon icon-sm" />
+                          {t.events.editEvent}
+                        </button>
+                        <button
+                          className="small-button button-danger"
+                          type="button"
+                          onClick={() => {
+                            setTarget({ event, action: "remove" });
+                            window.setTimeout(() => document.getElementById("event-editor")?.scrollIntoView({ block: "start" }), 0);
+                          }}
+                        >
+                          <TrashIcon className="icon icon-sm" />
+                          {t.events.removeEvent}
+                        </button>
+                      </div>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+          <EventEditor
+            key={target ? `${target.action}-${target.event.id}` : "new"}
+            target={target}
+            onClose={() => setTarget(null)}
+          />
+        </>
+      )}
     </>
   );
 }

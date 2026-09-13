@@ -1,8 +1,28 @@
 "use client";
 
 import Link from "next/link";
+import { sectionBannerUrl } from "../../lib/content/banners";
 import type { NavItem, NavSection } from "../../lib/navigation";
+import { SECTION_ICONS } from "./Icons";
 import { useLocale } from "./LocaleProvider";
+
+export function SectionBanner({ id }: { id: NavSection["id"] }) {
+  const src = sectionBannerUrl(id);
+  const Icon = SECTION_ICONS[id];
+  return (
+    <div className={`section-banner section-banner-${id}`} aria-hidden="true">
+      {src ? (
+        // Decorative until a section supplies a real image with its own alt.
+        // eslint-disable-next-line @next/next/no-img-element
+        <img src={src} alt="" />
+      ) : (
+        <div className="section-banner-art" aria-hidden="true">
+          <Icon className="icon" />
+        </div>
+      )}
+    </div>
+  );
+}
 
 export function PageHead({
   eyebrow,
@@ -59,6 +79,7 @@ export function SectionIndex({
   const { t } = useLocale();
   return (
     <>
+      <SectionBanner id={section.id} />
       <PageHead eyebrow={section.description(t)} title={title} lede={lede} />
       {section.items.length === 0 ? (
         <div className="empty-state">{emptyMessage}</div>

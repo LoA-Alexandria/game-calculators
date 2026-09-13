@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { sectionById } from "../../lib/navigation";
 import { useDocumentTitle, useLocale } from "../components/LocaleProvider";
-import { PageHead } from "../components/Ui";
+import { PageHead, SectionBanner } from "../components/Ui";
 
 export default function GuidesPage() {
   const { t } = useLocale();
@@ -12,6 +12,7 @@ export default function GuidesPage() {
 
   return (
     <>
+      <SectionBanner id="guides" />
       <PageHead eyebrow={t.navDescriptions.guides} title={t.guides.title} lede={t.guides.lede} />
       {section.items.length === 0 ? (
         <div className="empty-state">{t.guides.empty}</div>

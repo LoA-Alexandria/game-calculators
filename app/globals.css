@@ -513,6 +513,63 @@ p { margin: 0; }
 
 /* --- page furniture ------------------------------------------------------ */
 
+.section-banner {
+  position: relative;
+  height: clamp(140px, 22vw, 200px);
+  margin: 0 0 clamp(18px, 2.4vw, 28px);
+  overflow: hidden;
+  border-radius: var(--r-xl);
+  background: var(--inverse);
+}
+.section-banner img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.section-banner-art {
+  position: absolute;
+  inset: 0;
+}
+.section-banner-art::before {
+  content: "";
+  position: absolute;
+  inset: -30% auto auto -10%;
+  width: 22rem;
+  height: 22rem;
+  background: radial-gradient(circle, rgba(91, 140, 255, .32), transparent 64%);
+}
+.section-banner-art::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent), var(--gold-hi), transparent);
+  opacity: .8;
+}
+.section-banner-art .icon {
+  position: absolute;
+  right: 7%;
+  bottom: -12%;
+  width: 168px;
+  height: 168px;
+  color: rgba(238, 241, 247, .14);
+}
+.section-banner-news .section-banner-art::before {
+  background: radial-gradient(circle, rgba(214, 156, 46, .28), transparent 64%);
+}
+.section-banner-events .section-banner-art::before { inset: auto -8% -40% auto; }
+.section-banner-guides .section-banner-art::before { inset: -20% -20% auto auto; }
+.section-banner-calculators .section-banner-art::before {
+  background: radial-gradient(circle, rgba(58, 102, 232, .38), transparent 62%);
+}
+.section-banner-simulations .section-banner-art {
+  background-image:
+    linear-gradient(rgba(152, 163, 186, .12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(152, 163, 186, .12) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
 .page-head { margin-bottom: clamp(22px, 3vw, 32px); }
 .page-head h1 { margin: 9px 0 10px; font-size: clamp(1.75rem, 3.6vw, 2.6rem); }
 .page-head p { max-width: 68ch; color: var(--ink-soft); font-size: 1.01rem; }
@@ -1229,13 +1286,12 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
   letter-spacing: -.03em;
 }
 
-/* the newest entries, inside the hero */
+/* the newest entries fill the overview hero */
 .news-slide {
-  margin-top: 30px;
-  padding: 18px 20px;
-  border: 1px solid rgba(152, 163, 186, .2);
-  border-radius: var(--r-md);
-  background: rgba(233, 237, 245, .05);
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
 }
 .news-slide-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .news-slide-head .eyebrow { color: var(--gold-hi); }
@@ -1252,20 +1308,14 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
   color: var(--on-inverse);
 }
 .news-slide-controls button:hover { border-color: var(--accent); color: var(--accent-hi); }
-.news-slide time { display: block; margin-top: 12px; font-size: .72rem; color: var(--on-inverse-soft); }
-.news-slide h2 { margin: 5px 0 7px; font-size: 1.25rem; }
-.news-slide p { color: var(--on-inverse-soft); font-size: .92rem; max-width: 62ch; }
-.news-slide-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  min-height: 36px;
-  margin-top: 10px;
-  color: var(--accent-hi);
-  font-size: .87rem;
-  font-weight: 600;
+.news-slide time { display: block; margin-top: 14px; font-size: .78rem; color: var(--on-inverse-soft); }
+.hero-news .news-slide h1 {
+  max-width: 22ch;
+  margin: 8px 0 12px;
+  font-size: clamp(1.85rem, 4.6vw, 3.15rem);
 }
-.news-slide-link:hover { gap: 10px; }
+.hero-news .lede { max-width: 62ch; }
+.hero-news .hero-actions { margin-top: 22px; }
 
 .events-layout { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 14px; align-items: start; }
 
@@ -1285,6 +1335,7 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
 .event-title strong { font-size: .95rem; }
 .event-body p { margin: 3px 0 5px; color: var(--ink-soft); font-size: .87rem; }
 .event-when { display: block; font-size: .74rem; color: var(--ink-faint); }
+.event-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
 
 .event-card { border-left: 3px solid var(--ink-faint); }
 .event-card.event-main { border-left-color: var(--accent); }
@@ -1358,22 +1409,46 @@ button.calendar-day:hover { background: var(--surface-2); }
 }
 .calendar-legend span { display: inline-flex; align-items: center; gap: 6px; }
 
-/* the compact copy that lives in the sidebar */
-.sidebar-calendar { padding: 12px; border-top: 1px solid var(--line); }
-.calendar-compact .calendar-head strong { font-size: .78rem; }
-.calendar-compact .calendar-step { width: 24px; height: 24px; }
-.calendar-compact .calendar-day { min-height: 28px; font-size: .72rem; gap: 2px; padding: 2px 0 3px; }
-.calendar-compact .calendar-weekday { font-size: .58rem; padding-bottom: 3px; }
-.calendar-compact .dot { width: 5px; height: 5px; }
-.calendar-compact .calendar-legend { display: none; }
+/* live and upcoming events in the sidebar, instead of a month grid */
+.sidebar-agenda { padding: 12px 12px 10px; border-top: 1px solid var(--line); }
+.sidebar-agenda-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.sidebar-agenda-head strong { font-size: .78rem; font-weight: 600; }
+.sidebar-agenda-empty {
+  margin: 0;
+  color: var(--ink-faint);
+  font-size: .78rem;
+}
+.sidebar-agenda-list { display: grid; gap: 4px; }
+.sidebar-agenda-item {
+  display: grid;
+  grid-template-columns: 7px minmax(0, 1fr);
+  gap: 8px;
+  align-items: start;
+  padding: 7px 8px;
+  border-radius: var(--r-sm);
+}
+.sidebar-agenda-item:hover { background: var(--surface-2); }
+.sidebar-agenda-item .dot { margin-top: 6px; }
+.sidebar-agenda-item span { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.sidebar-agenda-item strong {
+  font-size: .8rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+.sidebar-agenda-item .mono { font-size: .68rem; color: var(--ink-faint); }
 .sidebar-calendar-link {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  min-height: 32px;
-  margin-top: 8px;
+  min-height: 28px;
   color: var(--accent);
-  font-size: .78rem;
+  font-size: .74rem;
   font-weight: 600;
 }
 .sidebar-calendar-link:hover { gap: 10px; }

@@ -8,8 +8,9 @@ The project is a statically exported Next.js site. GitHub Pages serves the gener
 
 ```text
 app/
-  page.tsx                     Home: hero, featured simulation, tools, news
+  page.tsx                     Home: news slide
   news/                        News index
+  events/                      Event calendar and schedule editor
   guides/<slug>/               Guides
   calculators/<slug>/          Calculators, plus their index
   simulations/<slug>/          Simulations, plus their index
@@ -21,7 +22,9 @@ lib/
   calculators/errors.ts        Validation errors with translatable codes
   i18n/                        Language registry and dictionaries
   content/news.ts              News entries
-  navigation.ts                Section tree driving sidebar, indexes, home
+  content/events.ts            Event schedule
+  content/banners.ts           Optional section banner images
+  navigation.ts                Section tree driving sidebar and indexes
   site.ts                      Base path, Discord, repository, storage keys
 docs/                          Human and agent guidance
 public/
@@ -32,10 +35,10 @@ tests/                         Calculation and output tests
 
 ## Navigation
 
-`lib/navigation.ts` is the single source of truth for the four sections and
-their entries. The sidebar, the section index pages, the home page, and the
-sidebar filter all read it, so a new tool is added in one place. Labels are
-functions of the dictionary rather than literals.
+`lib/navigation.ts` is the single source of truth for the five sections and
+their entries. The sidebar, the section index pages, and the sidebar filter all
+read it, so a new tool is added in one place. Labels are functions of the
+dictionary rather than literals.
 
 ## Languages
 

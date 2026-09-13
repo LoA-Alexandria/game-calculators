@@ -448,6 +448,20 @@ const fr: Dictionary = {
     editorOutput: "Entrée pour lib/content/events.ts",
     editorOutputNote:
       "Collez ceci dans EVENTS, ajoutez les deux textes dans chaque dictionnaire, puis committez. C’est ce qui rend l’événement visible pour tous.",
+    editEvent: "Modifier",
+    removeEvent: "Retirer",
+    editorEditTitle: "Modifier l’événement",
+    editorRemoveTitle: "Retirer cet événement",
+    editorRemoveLede:
+      "Ceci écrit les étapes pour retirer l’événement du calendrier enregistré. Il reste visible tant que ces fichiers ne changent pas.",
+    editorCancel: "Retour à un nouvel événement",
+    scheduleTitle: "Tous les événements planifiés",
+    scheduleLede: "Modifiez ou retirez une définition. Les occurrences du calendrier viennent de ces lignes.",
+    editorReplaceNote: "Remplacez la ligne existante avec cet identifiant. N’ajoutez pas une seconde copie.",
+    editorRemoveNote:
+      "Supprimez cet identifiant de EVENTS et ses textes de eventEntries dans chaque dictionnaire.",
+    editorRemoveOutput: "Notes de suppression",
+    sidebarEmpty: "Rien dans les prochaines semaines.",
   },
   eventEntries: {
     grandVoyage: { name: "Saison du Grand Voyage", summary: "Les routes commerciales comptent double pendant toute la durée." },
