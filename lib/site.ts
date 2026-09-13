@@ -40,3 +40,6 @@ export const TIER_DRAFT_STORAGE_KEY = "popepoch-tier-draft";
 
 /** Local draft of the Artwork layouts editor. */
 export const ARTWORK_LAYOUT_DRAFT_STORAGE_KEY = "popepoch-artwork-layout-draft";
+
+/** Local draft of the Artwork catalogue editor. */
+export const ARTWORK_CATALOGUE_DRAFT_STORAGE_KEY = "popepoch-artwork-catalogue-draft";

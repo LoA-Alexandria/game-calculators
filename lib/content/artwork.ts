@@ -3,7 +3,12 @@
  * Short Discord names are expanded to the Heroes roster spelling where the
  * match is unambiguous. Incomplete lines are stored as printed: missing heroes
  * and stats are omitted, not invented.
+ *
+ * Rows live in `lib/data/paintings.json`. The catalogue editor exports a
+ * replacement for that file.
  */
+
+import catalogue from "../data/paintings.json" with { type: "json" };
 
 export const PAINTING_RARITIES = ["SSR", "SR", "R"] as const;
 export type PaintingRarity = (typeof PAINTING_RARITIES)[number];
@@ -28,171 +33,38 @@ export type PaintingSet = {
   paintings: Painting[];
 };
 
-function idFor(name: string): string {
-  return name
-    .toLowerCase()
-    .normalize("NFKD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "");
+type RawPainting = {
+  id: string;
+  name: string;
+  heroes: string[];
+  stats: string[];
+  starStats?: string[];
+  productivity?: string;
+};
+
+type RawSet = {
+  id: string;
+  name: string;
+  rarity: PaintingRarity;
+  effect: string;
+  paintings: RawPainting[];
+};
+
+function asPainting(canvas: RawPainting): Painting {
+  return {
+    id: canvas.id,
+    name: canvas.name,
+    heroes: canvas.heroes,
+    stats: canvas.stats as PaintingStat[],
+    productivity: canvas.productivity ?? "",
+    ...(canvas.starStats?.length ? { starStats: canvas.starStats as PaintingStat[] } : {}),
+  };
 }
 
-function painting(
-  name: string,
-  heroes: string[],
-  stats: readonly PaintingStat[],
-  productivity = "",
-  starStats?: readonly PaintingStat[],
-): Painting {
-  return { id: idFor(name), name, heroes, stats, productivity, starStats };
-}
-
-function set(
-  name: string,
-  rarity: PaintingRarity,
-  effect: string,
-  paintings: Painting[],
-): PaintingSet {
-  return { id: idFor(name), name, rarity, effect, paintings };
-}
-
-const AH = ["allAtk", "heroAtk"] as const satisfies PaintingStat[];
-const HA = ["heroAtk", "allAtk"] as const satisfies PaintingStat[];
-const HP = ["allHp", "heroHp"] as const satisfies PaintingStat[];
-const ALL = ["allHp", "allAtk"] as const satisfies PaintingStat[];
-const ATA = ["allAtk", "allHp"] as const satisfies PaintingStat[];
-
-export const PAINTING_SETS: PaintingSet[] = [
-  set("Glory and Shadow", "SSR", "At battle start, gains 10% of max HP as a shield.", [
-    painting("The Coronation of Napoleon", ["Napoleon Bonaparte", "Augustus", "Livia Drusilla", "Louis XIV"], ["heroAtk", "allAtk", "res"], "Glass"),
-    painting("Napoleon Crossing The Alps", ["Napoleon Bonaparte", "Alexander the Great", "Dante", "Louis XIV"], ["heroHp", "allHp", "fs"], "Paper Mill"),
-    painting("The Third of May 1808", ["Napoleon Bonaparte", "Joan of Arc", "Gawain", "Galileo Galilei"], ["heroAtk", "allAtk", "res"], "Art Workshop"),
-  ]),
-  set("Self-Portrait", "SSR", "Each time an ally deals skill or extra damage, Extra damage bonus +10% for 1 turn.", [
-    painting("Self-Portrait", ["Da Vinci", "Michelangelo", "Galileo Galilei", "Richard I"], ["heroHp", "allHp", "fs"], "Horses"),
-    painting("Self-Portrait with Fur-Trimmed Robe", ["Michelangelo", "Da Vinci", "Queen Victoria", "Hammurabi"], ["heroAtk", "res", "allAtk"], "Alcohol"),
-    painting("Self-Portrait with Damaged Ear", ["Beethoven", "Tutankhamun", "Charles the Great", "Alfred the Great"], ["heroHp", "allHp", "fs"], "Leather"),
-  ]),
-  set("Nature in Bloom", "SSR", "On crit hit, allies' crit damage increases by extra 5–50%.", [
-    painting("Almond Bloom", ["Charles Darwin", "Achilles", "Alexander the Great", "Hammurabi"], [...AH, "res"], "Copper"),
-    painting("Irises", ["Charles Darwin", "Blackbeard", "Achilles", "Gilgamesh"], [...HP, "fs"], "Cloth"),
-    painting("Water Lilies", ["Charles Darwin", "Confucius", "Napoleon Bonaparte", "Achilles"], [...AH, "res"], "Iron"),
-  ]),
-  set("Urban Proletariat", "SSR", "For the first 3 turns of battle, DoT damage +12% until battle ends.", [
-    painting("The Gleaners", ["Confucius", "Richard I", "Isaac Newton", "Hector"], [...HP, "fs"], "Wood"),
-    painting("The Floor Scrapers", ["Da Vinci", "Franklin", "Alexander the Great", "Joan of Arc"], [...AH, "res"], "Food"),
-    painting("The Stone Breakers", ["Queen Victoria", "Richard I", "Franklin", "Alfred the Great"], [...HP, "fs"], "Stone"),
-  ]),
-  set("Rococo Curtain", "SSR", "First skill damage an ally takes each turn is reduced by 20%.", [
-    painting("Madame de Pompadour", ["Louis XIV", "Achilles", "Augustus", "Gilgamesh"], [...HA, "res"], "Coffee Beans"),
-    painting("The Swing", ["Louis XIV", "Eleanor of Aquitaine", "Tutankhamun", "Augustus"], [...HP, "fs"], "Coal"),
-    painting("The Embarkation for Cythera", ["Blackbeard", "Da Vinci", "Michelangelo", "Dante"], [...HA, "res"], "Precision Parts"),
-  ]),
-  set("Chinese Landscape", "SSR", "Every 2 turns (if not Sealed), 15% chance to dispel 1 debuff from an ally.", [
-    painting("A Thousand Li of Rivers and Mountains", ["Confucius", "Tutankhamun", "Achilles", "Joan of Arc"], [...HP, "fs"], "Steel"),
-    painting("Dwelling in the Fuchun Mountains", ["Confucius", "Gawain", "Alexander the Great", "Galileo Galilei"], [...AH, "res"], "Gunpowder"),
-    painting("Travelers Among Mountains and Streams", ["Morgana", "Augustus", "Franklin", "Alfred the Great"], [...HP, "fs"], "Lemons"),
-  ]),
-  set("Ukiya-e Masterpieces", "SSR", "Allies' Final Damage Reduction +12% until battle ends.", [
-    painting("The Great Wave of Kanagawa", ["Charles the Great", "Augustus", "Columbus", "Hector"], [...AH, "res"], "Glass"),
-    painting("Kabuki Actor", ["Charles the Great", "Napoleon Bonaparte", "Hector", "Dante"], [...HP, "fs"], "Paper"),
-    painting("Three Beauties of the Present Day", ["Blackbeard", "Richard I", "Eleanor of Aquitaine", "Gilgamesh"], [...AH, "res"], "Art Workshop"),
-  ]),
-  set("Tragic Maiden", "SSR", "Allies' Final Damage Bonus +12% until battle ends.", [
-    painting("Ophelia", ["William Shakespeare", "Guinevere", "Columbus", "Socrates"], [...HP, "fs"], "Horses"),
-    painting("The Lady of Shalott", ["Gawain", "Morgana", "Socrates", "Nikola Tesla"], [...AH, "res"], "Alcohol"),
-    painting("Romeo and Juliet", ["William Shakespeare", "Eleanor of Aquitaine", "Guinevere", "Livia Drusilla"], [...HP, "fs"], "Leather"),
-  ]),
-  set("Modernist New Voice", "SSR", "Collection and Cryptid Damage Reduction +12% until battle ends.", [
-    painting("Composition", ["Da Vinci", "Nikola Tesla", "Beethoven", "Richard I"], [...AH, "res"], "Copper"),
-    painting("Dance", ["Beethoven", "Guinevere", "Charles the Great", "Socrates"], [...HP, "fs"], "Cloth"),
-    painting("Composition VIII", ["Beethoven", "Nikola Tesla", "Isaac Newton", "Blackbeard"], [...AH, "res"], "Iron"),
-  ]),
-  set("Beyond The Earth", "SSR", "Collection and Cryptid Damage Bonus +12% until battle ends.", [
-    painting("Buzz Aldrin on the Moon", ["Galileo Galilei", "Isaac Newton", "Nikola Tesla"], [...HP, "fs"], "Wood"),
-    painting("Earthrise", ["Charles Darwin", "Columbus", "Morgana", "Charles the Great"], [...AH, "res"], "Food"),
-    painting("Pale Blue Dot", ["Galileo Galilei", "Isaac Newton", "Confucius", "Richard I"], [...HP, "fs"], "Stone"),
-  ]),
-  set("Sheltered by Night", "SR", "Every 3 turns, when an ally acts, Extra Damage Reduction +5% for 2 turns.", [
-    painting("Nightshade", ["Thomas Edison", "Nikola Tesla", "Napoleon Bonaparte", "Elizabeth I"], [...AH, "heroHp"], "Glass"),
-    painting("Cafe Terrace at Night", ["Thomas Edison", "Beethoven", "Andersen", "Gawain"], ["allHp"]),
-    painting("Evening on Karl Johan St", ["Dante", "Morgana", "Mary I", "Hatshepsut"], [...AH, "heroHp"], "Art Workshop"),
-  ]),
-  set("Impression: Warmth", "SR", "Every 3 turns, when an ally acts, Extra Damage Bonus +5% for 2 turns.", [
-    painting("The Umbrellas", ["Queen Victoria", "Elizabeth I", "Hammurabi", "Isabella I"], ["allHp"]),
-    painting("The Dance Class", ["Louis XIV", "Queen Victoria", "Drake", "Saladin"], [...AH, "heroHp"], "Alcohol"),
-    painting("Luncheon of the Boating Party", ["Franklin", "Queen Victoria", "Andersen", "Hypatia"], [...HP, "heroAtk"], "Leather"),
-  ]),
-  set("Roar of Steam", "SR", "Every 3 turns, when an ally acts, DoT Damage Reduction +5% for 2 turns.", [
-    painting("Rain, Steam and Speed", ["James Watt", "Queen Victoria", "Nikola Tesla", "Thomas Edison"], [...AH, "heroHp"], "Copper"),
-    painting("The Gare Saint-Lazare", ["James Watt", "Thomas Edison", "Queen Victoria", "Nikola Tesla"], [...HP, "heroAtk"], "Cloth"),
-    painting("The Fighting Temeraire", ["Drake", "Blackbeard", "Columbus", "Noah"], [...AH, "heroHp"], "Iron"),
-  ]),
-  set("Echoes of Death", "SR", "Every 3 turns, DoT Bonus +5% for 2 turns.", [
-    painting("The Death of Socrates", ["Socrates", "Hypatia", "Gawain", "Adam"], [...HP, "heroAtk"], "Wood"),
-    painting("The Death of Marat", ["Victor Hugo", "Joan of Arc", "Morgana", "Mary I"], [...AH, "heroHp"], "Food"),
-    painting("The Anatomy Lesson", ["Charles Darwin", "Da Vinci", "Hypatia", "Hatshepsut"], [...HP, "heroAtk"], "Stone"),
-  ]),
-  set("Faithful Companion", "SR", "Every 3 turns if not Sealed, Damage Reduction +5% for 2 turns.", [
-    painting("Young Hare", ["Charles Darwin", "Noah", "Achilles", "Hatshepsut"], [...AH, "heroHp"], "Coffee"),
-    painting("Friends in Need", ["Blackbeard", "Livia Drusilla", "Homer", "Mary I"], [...HP, "heroAtk"], "Coal"),
-    painting("Hall of the Bulls, Lascaux", ["Adam", "Noah", "Gilgamesh", "Guinevere"], [...AH, "heroHp"], "Precision Parts"),
-  ]),
-  set("Heaven and Earth Surge", "SR", "Every 3 turns if not Sealed, Damage Bonus +5% for 2 turns.", [
-    painting("Wanderer above the Sea of Fog", ["Beethoven", "Andersen", "Guinevere", "Elizabeth I"], [...HP, "heroAtk"], "Steel"),
-    painting("The Hay Wain", ["James Watt", "Queen Victoria", "Charles Darwin", "Homer"], [...AH, "heroHp"], "Gunpowder"),
-    painting("The Oxbow", ["Franklin", "Morgana", "Hannibal", "Drake"], [...HP, "heroAtk"], "Lemons"),
-  ]),
-  set("Gaze of An Age", "SR", "Every 3 turns if not Sealed, ATK bonus +5% for 2 turns.", [
-    painting("Portrait of Charles Darwin", ["Isaac Newton", "Galileo Galilei", "Homer", "Prometheus"], [...AH, "heroHp"], "Glass"),
-    painting("Portrait of Oscar Wilde", ["William Shakespeare", "Andersen", "Dante", "Prometheus"], [...HP, "heroAtk"], "Paper"),
-    painting("Portrait of Abraham Lincoln", ["Franklin", "Victor Hugo", "Isaac Newton", "Wallace"], [...AH, "heroHp"], "Art Workshop"),
-  ]),
-  set("Wall of Mosaics", "SR", "Every 4 turns if not Sealed, gains a shield equal to 5% of max HP.", [
-    painting("Empress Theodora and her Attendants", ["Hatshepsut", "Tutankhamun", "Livia Drusilla", "Catherine de'Medici"], [...HP, "heroAtk"], "Horses"),
-    painting("Alexander Mosaic", ["Alexander the Great", "Hannibal", "Hector", "Wallace"], [...AH], "Alcohol"),
-    painting("Madaba Mosaic Map", ["Saladin", "Noah", "Blackbeard", "Hammurabi"], [...HP, "heroAtk"], "Leather"),
-  ]),
-  set("Sacred Window Radiance", "SR", "Every 4 turns if not Sealed, heals 5% of max HP.", [
-    painting("Rose Windows of Notre Dame", ["Victor Hugo", "Charles the Great", "Eleanor of Aquitaine", "Andersen"], [...AH, "heroHp"], "Copper"),
-    painting("King's College Chapel", ["Alfred the Great", "Elizabeth I", "Mary I", "Augustus"], [...HP, "heroAtk"], "Cloth"),
-    painting("Chartres Cathedral", ["Eleanor of Aquitaine", "Richard I", "Saladin", "Hannibal"], [...AH, "heroHp"], "Iron"),
-  ]),
-  set("Master's Sketch", "SR", "Every 4 turns if not Sealed, deals skill damage equal to 80% of ATK to the enemy.", [
-    painting("Portrait of Isabella d'Este", ["Isabella I", "Catherine de'Medici", "Da Vinci", "Michelangelo"], [...HP, "heroAtk"], "Wood"),
-    painting("Lion", ["Gilgamesh", "Tutankhamun", "Wallace", "Isabella I"], [...AH, "heroHp"], "Food"),
-    painting("The Resurrection", ["Adam", "Prometheus", "Michelangelo", "William Shakespeare"], [...HP, "heroAtk"], "Stone"),
-  ]),
-  set("Monkey Society", "R", "At Turn 4, if not Sealed, Skill Damage Reduction +5% for 2 turns.", [
-    painting("The Monkey Painter", ["Cervantes", "Saladin", "Mary Shelley"], ["allHp"], "Coal", ALL),
-    painting("The Monkey Dentist", ["Florence Nightingale", "Thomas Edison", "Cu Chulainn"], ["allAtk"], "Precision Parts", ALL),
-    painting("The Monkey Antiquarian", ["Marco Polo", "Isabella I", "Himiko"], ["allHp"], "Food", ALL),
-  ]),
-  set("So Delicious", "R", "At Turn 4, if not Sealed, Skill Damage Bonus +5% for 2 turns.", [
-    painting("The Ricotta Eaters", ["Chaucer", "Cervantes", "Noah"], ["allHp"], "Steel", ALL),
-    painting("The Beaneater", ["Cervantes", "Robin Hood", "Saladin"], ["allAtk"], "Gunpowder", ALL),
-    painting("The Fat Kitchen", ["Mary I", "Anne Bonny", "Cu Chulainn"], ["allHp"], "Lemons", ALL),
-    painting("The Thin Kitchen", ["Robin Hood", "Wallace", "Florence Nightingale"], ["allAtk"], "Coffee", ALL),
-  ]),
-  set("Hidden Face", "R", "At Turn 4, if not Sealed, ATK bonus +5% for 2 turns.", [
-    painting("The Gardener", ["Mary Shelley", "James Watt", "Florence Nightingale"], ["allHp"], "Leather", ATA),
-    painting("The Cook", ["Chaucer", "Catherine de'Medici", "Dido"], ["allAtk"], "Glass", ALL),
-    painting("Summer", ["Marco Polo", "Adam", "Alexander Hamilton"], ["allHp"], "Paper", ALL),
-    painting("Landscape Shaped Like A Face", ["Archimedes", "Prometheus", "Himiko"], ["allAtk"], "Art Workshop", ALL),
-  ]),
-  set("Four Seasons Reborn", "R", "At Turn 6, if not Sealed, heals 5% of max HP.", [
-    painting("The Four Seasons II: Spring", ["Himiko", "Wallace", "Archimedes"], ["allHp"], "Cloth", ATA),
-    painting("The Four Seasons II: Summer", ["Adam", "Anne Bonny", "Robin Hood"], ["allAtk"], "Iron", ALL),
-    painting("The Four Seasons II: Autumn", ["Chaucer", "Robin Hood", "Hannibal"], ["allHp"], "Horses", ATA),
-    painting("The Four Seasons II: Winter", ["Victor Hugo", "Alexander Hamilton", "Dido"], ["allAtk"], "Alcohol", ALL),
-  ]),
-  set("Four Seasonal Beauties", "R", "At Turn 6, if not Sealed, deals skill damage equal to 50% of ATK to the enemy.", [
-    painting("The Four Seasons I: Spring", ["Catherine de'Medici", "Cervantes", "Chaucer"], ["allHp"], "Wood", ALL),
-    painting("The Four Seasons I: Summer", ["Dido", "Hypatia", "Alexander Hamilton"], ["allAtk"], "Food", ALL),
-    painting("The Four Seasons I: Autumn", ["Isabella I", "Dido", "Anne Bonny"], ["allHp"], "Stone", ATA),
-    painting("The Four Seasons I: Winter", ["Mary Shelley", "Hannibal", "Cu Chulainn"], ["allAtk"], "Copper", ALL),
-  ]),
-];
+export const PAINTING_SETS: PaintingSet[] = (catalogue.sets as RawSet[]).map((set) => ({
+  ...set,
+  paintings: set.paintings.map(asPainting),
+}));
 
 /** Short Discord forms that should still match a roster name in the hero filter. */
 const HERO_ALIASES: Record<string, string[]> = {

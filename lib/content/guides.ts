@@ -30,11 +30,11 @@ export function isGuideEntryId(
 }
 
 /**
- * Artwork layouts and the Hero tier list have their own editors. The
+ * Artwork, Artwork layouts, and the Hero tier list have their own editors. The
  * dictionary-snippet Edit / Remove on the guide page would only rewrite
  * surrounding copy, so those two skip it.
  */
-const SNIPPET_EDITOR_SKIP = new Set<string>(["artworkLayouts", "heroTierList"]);
+const SNIPPET_EDITOR_SKIP = new Set<string>(["artwork", "artworkLayouts", "heroTierList"]);
 
 export function guideHasSnippetEditor(id: string): boolean {
   return !SNIPPET_EDITOR_SKIP.has(id);
