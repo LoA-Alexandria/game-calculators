@@ -26,6 +26,9 @@ export const DISCORD_CONFIGURED = !DISCORD_URL.includes("REPLACE-ME");
 /** Key shared with the vendored Irrigation Planner for its theme override. */
 export const THEME_STORAGE_KEY = "popepoch-theme";
 
+/** Key shared with the Irrigation Planner for the colour-scheme palette. */
+export const SCHEME_STORAGE_KEY = "popepoch-scheme";
+
 /** Key holding the reader's language choice. */
 export const LOCALE_STORAGE_KEY = "popepoch-locale";
 

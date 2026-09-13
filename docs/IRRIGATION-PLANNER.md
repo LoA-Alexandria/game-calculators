@@ -34,23 +34,26 @@ stored formats are untouched.
 ## Changes made to the vendored copy
 
 1. **Title** — `Irrigation Planner · Pop Epoch Tools`.
-2. **Palette** — light and dark tokens match `app/globals.css` (warm stone,
-   teal accent). Change one, change both.
+2. **Palette** — light, dark, and colour-scheme tokens match `app/globals.css`
+   (stone, lapis, papyrus, steam). Change one, change both.
 3. **Embed flag** — with `?embed=1` the document adds `embedded` to
    `<html>`, which hides its own eyebrow and `<h1>` (the wrapper page supplies
    both) and trims the body padding. The instruction paragraph is kept. Without
    the flag the file behaves exactly as it did standalone.
-4. **Theme bridge** — a small script in `<head>` reads the reader's theme choice
-   from `localStorage['popepoch-theme']` and applies it as `data-theme` on
-   `<html>`. Because the iframe is same-origin, a later change from the site
-   arrives as a `storage` event and the planner follows it live. With no stored
-   value the planner falls back to `prefers-color-scheme`, as before.
+4. **Theme and scheme bridge** — a small script in `<head>` reads
+   `localStorage['popepoch-theme']` and `localStorage['popepoch-scheme']` and
+   applies them as `data-theme` and `data-scheme` on `<html>`. Because the iframe
+   is same-origin, a later change from the site arrives as a `storage` event and
+   the planner follows it live. With no stored theme the planner falls back to
+   `prefers-color-scheme`; with no stored scheme it keeps the default stone
+   palette.
 
 ## Contract with the site
 
 | Concern | Owner |
 | --- | --- |
 | `localStorage['popepoch-theme']` | written by `app/components/ThemeToggle.tsx`, read by both |
+| `localStorage['popepoch-scheme']` | written by `app/components/SchemeMenu.tsx`, read by both |
 | `?embed=1` | set by the wrapper page only |
 | `irrigation_planner_*`, `irrigation_prod_v1`, `irrigation_tab_v1` | the planner alone |
 
@@ -63,8 +66,8 @@ path changes, change it in `next.config.ts` only.
 1. Replace `public/tools/irrigation-planner/index.html` with the new revision.
 2. Re-apply the four changes above.
 3. Record the new revision number in the **Origin** section.
-4. Open `/simulations/irrigation-planner/`, switch the site theme both ways, and
-   check that the heading is not duplicated and the palette follows.
+4. Open `/simulations/irrigation-planner/`, switch the site theme and colour
+   scheme, and check that the heading is not duplicated and the palette follows.
 
 ## Assumptions shown to players
 

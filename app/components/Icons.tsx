@@ -149,6 +149,17 @@ export function GlobeIcon({ className }: IconProps) {
   );
 }
 
+/** Three overlapping discs — a palette, not a brand mark. */
+export function PaletteIcon({ className }: IconProps) {
+  return (
+    <svg className={className} {...base}>
+      <circle cx="9" cy="10" r="5" />
+      <circle cx="15" cy="10" r="5" />
+      <circle cx="12" cy="15" r="5" />
+    </svg>
+  );
+}
+
 export function SearchIcon({ className }: IconProps) {
   return (
     <svg className={className} {...base}>

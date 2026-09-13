@@ -9,6 +9,7 @@ import { useAuth } from "./AuthProvider";
 import { useLocale } from "./LocaleProvider";
 import { AccountMenu } from "./AccountMenu";
 import { LanguageMenu } from "./LanguageMenu";
+import { SchemeMenu } from "./SchemeMenu";
 import { ThemeToggle } from "./ThemeToggle";
 import {
   BrandMark,
@@ -348,6 +349,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <DiscordIcon className="icon" />
           </a>
           <LanguageMenu />
+          <SchemeMenu />
           <ThemeToggle />
         </header>
 
