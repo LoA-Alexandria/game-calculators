@@ -66,12 +66,32 @@ Guides describe game mechanics, so treat their numbers the way the repository
 treats any other game data: say where they came from, and correct them in the
 same change as the tool that relies on them.
 
+## Adding an event
+
+Events are versioned data, not database rows — the same reason news is. An entry
+typed into a browser on a static site would exist only in that browser, so
+committing it is what makes it visible.
+
+1. Open `/events/` signed in with `events.write` and fill in the editor. It
+   prints the row and the dictionary keys.
+2. Paste the row into `EVENTS` in `lib/content/events.ts`.
+3. Add `eventEntries.<id>` with `name` and `summary` to all three dictionaries.
+4. Delete `EVENTS_ARE_PLACEHOLDER` once the example schedule is gone.
+
+The recurrence rules live in `lib/events.ts` and are covered by
+`tests/events.test.mjs`: weekly with an interval and a set of weekdays, monthly
+on a day that clamps to the end of shorter months, or a one-off. Everything is
+computed in UTC, because a game event starts at the same moment for everyone and
+deriving it from each reader's clock would show different answers.
+
 ## Adding a news entry
 
-1. Write the text under `newsEntries.<id>` in all three dictionaries
-   (`title`, `summary`, `body[]`).
+1. Open `/news/new/` signed in with `news.write`. The editor prints both the row
+   and the dictionary block.
 2. Add a row at the top of `NEWS` in `lib/content/news.ts` with an ISO date and,
    optionally, an `href` to the thing the entry is about.
+3. Write the text under `newsEntries.<id>` in all three dictionaries
+   (`title`, `summary`, `body[]`).
 
 Dates are formatted for the reader's language, so store them as `YYYY-MM-DD`.
 
