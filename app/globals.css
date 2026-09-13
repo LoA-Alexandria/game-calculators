@@ -2217,6 +2217,218 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
   .star-steps li { padding: 6px 2px; font-size: .66rem; }
 }
 
+/* --- hero tier list editor ----------------------------------------------- */
+.tier-lists-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 14px; }
+.tier-lists-head .small-button { display: inline-flex; align-items: center; gap: 6px; }
+
+.tier-edit-toolbar { position: sticky; top: calc(var(--topbar) + 6px); z-index: 5; padding: 8px 0; background: var(--bg); }
+.tier-edit-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.tier-edit-status { color: var(--ink-faint); font-size: .8rem; }
+.tier-edit-count {
+  display: inline-grid;
+  place-items: center;
+  min-width: 18px;
+  height: 18px;
+  margin-left: 6px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-size: .66rem;
+  font-weight: 700;
+}
+
+.tier-edit-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 14px;
+  align-items: start;
+  margin-top: 6px;
+}
+.tier-edit-board { margin-top: 0; }
+.tier-edit-board .tier-content { gap: 8px; }
+
+.tier-edit-check { display: inline-flex; align-items: center; gap: 8px; margin: 0; color: var(--ink-soft); font-size: .82rem; font-weight: 500; }
+.tier-edit-check input { flex: none; }
+
+.tier-edit-group h4 {
+  margin: 0 0 6px;
+  color: var(--tier);
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.tier-edit-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-height: 48px;
+  margin: 0;
+  padding: 6px;
+  border: 1px dashed transparent;
+  border-radius: var(--r-md);
+  list-style: none;
+  transition: border-color .12s ease, background-color .12s ease;
+}
+.tier-edit-list.is-over { border-color: var(--tier); background: color-mix(in srgb, var(--tier) 8%, transparent); }
+.tier-edit-item {
+  display: flex;
+  align-items: stretch;
+  min-width: 0;
+  max-width: 100%;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: color-mix(in srgb, var(--tier) 6%, var(--surface));
+  touch-action: manipulation;
+}
+.tier-edit-item.is-selected { border-color: var(--accent); box-shadow: var(--ring); }
+.tier-edit-item.is-dragging { opacity: .35; }
+.tier-edit-item.is-overlay { border-color: var(--tier, var(--accent)); box-shadow: var(--shadow-2); cursor: grabbing; }
+.tier-edit-handle {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  flex: none;
+  border: 0;
+  border-right: 1px solid var(--line);
+  border-radius: var(--r-md) 0 0 var(--r-md);
+  background: transparent;
+  color: var(--ink-faint);
+  cursor: grab;
+  touch-action: none;
+}
+.tier-edit-handle:hover { color: var(--ink); background: var(--surface-2); }
+.tier-edit-card {
+  display: grid;
+  gap: 1px;
+  min-width: 0;
+  padding: 6px 10px 6px 8px;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.tier-edit-card .tier-hero-name { font-size: .84rem; }
+.tier-edit-card small { color: var(--ink-faint); font-size: .68rem; }
+.tier-edit-summary {
+  max-width: 220px;
+  overflow: hidden;
+  color: var(--ink-soft);
+  font-size: .7rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tier-edit-empty { align-self: center; padding: 0 6px; color: var(--ink-faint); font-size: .78rem; }
+.tier-edit-add-item { display: flex; }
+.tier-edit-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 36px;
+  padding: 0 10px;
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--r-md);
+  background: transparent;
+  color: var(--ink-soft);
+  font: inherit;
+  font-size: .78rem;
+  cursor: pointer;
+}
+.tier-edit-add:hover { border-color: var(--accent); color: var(--accent); }
+.tier-edit-add-group select { width: auto; min-height: 34px; padding: 4px 10px; font-size: .8rem; }
+
+.tier-edit-inspector {
+  position: sticky;
+  top: calc(var(--topbar) + 64px);
+  max-height: calc(100vh - var(--topbar) - 80px);
+  overflow: auto;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+}
+.tier-edit-form { display: grid; gap: 12px; }
+.tier-edit-form .field { margin: 0; }
+.tier-edit-form-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.tier-edit-form-head h2 { margin: 0; font-size: 1.05rem; }
+.tier-edit-pair { display: grid; grid-template-columns: 90px minmax(0, 1fr); gap: 10px; align-items: end; }
+.tier-edit-grade { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 0; padding: 8px 0 0; }
+.tier-edit-grade legend { margin-bottom: 6px; font-size: .86rem; font-weight: 550; }
+.tier-edit-grade select { width: auto; min-height: 36px; padding: 4px 8px; font-size: .86rem; }
+.tier-edit-warning { flex-basis: 100%; margin: 0; color: var(--bad); font-family: var(--font-mono); font-size: .78rem; }
+.tier-edit-roles { margin: 0; padding: 8px 0 0; }
+.tier-edit-roles legend { margin-bottom: 6px; font-size: .86rem; font-weight: 550; }
+.tier-edit-role-grid { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 8px; }
+.tier-edit-role {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin: 0;
+  padding: 3px 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink-soft);
+  font-size: .74rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+.tier-edit-role input { width: 13px; height: 13px; min-height: 13px; }
+.tier-edit-role.is-on { border-color: var(--accent); background: var(--accent-soft); color: var(--ink); }
+.tier-edit-newtext {
+  display: grid;
+  gap: 8px;
+  margin-top: 8px;
+  padding: 10px;
+  border: 1px solid var(--accent-line);
+  border-radius: var(--r-md);
+  background: var(--accent-soft);
+}
+.tier-edit-newtext .field { margin: 0; }
+.tier-edit-newtext-title { margin: 0; font-size: .82rem; font-weight: 650; }
+.tier-edit-row-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+.tier-edit-row-actions .small-button, .tier-edit-roles .small-button, .tier-edit-remove { display: inline-flex; align-items: center; gap: 6px; }
+.tier-edit-remove { justify-self: start; margin-top: 4px; }
+
+.tier-export {
+  width: min(760px, calc(100vw - 24px));
+  max-height: calc(100vh - 40px);
+  padding: 18px 20px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-xl);
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: var(--shadow-2);
+}
+.tier-export::backdrop { background: rgba(10, 8, 6, .55); }
+.tier-export-problems { margin: 12px 0 0; }
+.tier-export-problems ul { margin: 6px 0 0; padding-left: 18px; font-size: .84rem; }
+.tier-export-block { display: grid; gap: 8px; margin-top: 16px; }
+.tier-export-block h3 { margin: 0; font-size: .98rem; }
+.tier-export-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; }
+.tier-export-head code { color: var(--ink-soft); font-size: .8rem; }
+.tier-export-head .small-button { display: inline-flex; align-items: center; gap: 6px; }
+.tier-export textarea { font-family: var(--font-mono); font-size: .74rem; line-height: 1.45; white-space: pre; }
+.tier-export-snippet { display: grid; gap: 6px; }
+
+@media (max-width: 980px) {
+  .tier-edit-layout { grid-template-columns: minmax(0, 1fr); }
+  /* On narrow screens the inspector becomes a sheet over the bottom of the page. */
+  .tier-edit-inspector {
+    position: fixed;
+    inset: auto 0 0;
+    z-index: 30;
+    display: none;
+    max-height: 72vh;
+    border-radius: var(--r-xl) var(--r-xl) 0 0;
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, .25);
+  }
+  .tier-edit-inspector.is-open { display: block; }
+  .tier-edit-toolbar { position: static; }
+}
+
 /* --- notices ------------------------------------------------------------- */
 
 .notice {
