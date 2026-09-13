@@ -71,8 +71,9 @@ is an unofficial fan project.
 
 `lib/auth/roles.ts` defines UI permissions. Supabase Auth supplies the signed-in
 Discord identity, and the `verify-discord-role` Edge Function checks server
-membership and the configured roles. The resulting `editor_access` row is
-server-maintained and protected with RLS.
+membership and the `role_mappings` table. The resulting `editor_access` row is
+server-maintained and protected with RLS. `/admin/` is shown to members with
+`roles.assign`; writes are enforced by RLS.
 
 `/guides/new/` requires verified guide-writer access. It currently saves drafts
 only in the editor's browser; shared publishing and revision storage are still

@@ -1,11 +1,15 @@
 # Instructions for coding agents
 
-This repository contains small, browser-only game calculators published as a static GitHub Pages site.
+This repository is a statically exported Next.js site of game calculators,
+guides, and a Discord-authenticated editor, published on GitHub Pages.
 
 ## Working rules
 
 - Keep calculation logic deterministic and separate from presentation code.
-- Do not add a backend, database, tracking, authentication, or external API unless the issue explicitly requires it.
+- Calculators stay browser-only and independent of authentication. Do not add a
+  new backend, database, tracking, or external API unless the issue explicitly
+  requires it. Discord login and role checks already use Supabase; extend that
+  path rather than inventing a second one.
 - Treat source data as versioned code. Cite its origin and effective date in the relevant calculator documentation.
 - Never silently change a formula or assumption. Update tests and user-facing notes in the same change.
 - Prefer a focused calculator over a large shared abstraction. Extract shared code only after two real consumers need it.

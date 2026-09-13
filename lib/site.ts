@@ -17,11 +17,7 @@ export function asset(path: string): string {
 
 export const REPOSITORY_URL = "https://github.com/LoA-Alexandria/game-calculators";
 
-/**
- * TODO: replace with the real invite before going live.
- * A Discord invite is a public URL and safe to commit; prefer a non-expiring
- * one so the link in the sidebar does not go dead.
- */
+/** Public Discord invite for the Pop Epoch community. Safe to commit. */
 export const DISCORD_URL = "https://discord.gg/dNdQB6MVW8";
 
 /** True while `DISCORD_URL` is still the placeholder above. */
