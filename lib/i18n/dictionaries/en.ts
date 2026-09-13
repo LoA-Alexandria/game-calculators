@@ -111,6 +111,7 @@ const en = {
     remove: "Remove",
   },
   guideCategories: {
+    coreElements: "Core elements",
     cityLayout: "City layout",
     goddess: "Goddess",
     event: "Event",
@@ -290,6 +291,151 @@ const en = {
     },
   },
   guideEntries: {
+    heroes: {
+      title: "Heroes",
+      summary: "Where heroes sit in the city — the detailed tables are still being written.",
+      intro:
+        "Heroes are the first long-running progression track: they staff production buildings, later fill Museion exhibits, and carry stars and skills that raise those bonuses. This page holds the slot until the assignment lists are checked.",
+      sections: [
+        {
+          heading: "What this guide will cover",
+          body: [
+            "Which heroes belong on which buildings, how stars and skill levels change their bonuses, and how Museion placement differs from a production assignment.",
+            "Until those tables are in, use this page as the Core elements entry for heroes rather than as a complete reference.",
+          ],
+        },
+      ],
+      note: "The detailed hero lists will be added in a later change. If you already keep a checked list on Discord, send it so we can version it here.",
+    },
+    technology: {
+      title: "Technology",
+      summary: "Research gates that unlock the rest of the game — the full tree is still being written.",
+      intro:
+        "Technology is the unlock map: a research node often has to finish before a building, a campaign chapter, or a later system such as Goddess even appears. This page is the placeholder for that tree.",
+      sections: [
+        {
+          heading: "What this guide will cover",
+          body: [
+            "The research that gates Campaign, Goddess, and the other Core elements, and the order worth following when several nodes are available at once.",
+            "Until that list is checked against the current client, treat this page as the category entry rather than a complete order.",
+          ],
+        },
+      ],
+      note: "The research order will be added once it is checked against the current client. Corrections belong on Discord so the page and any calculator that depends on it can move together.",
+    },
+    collection: {
+      title: "Collection",
+      summary: "Exhibits and collection bonuses — the catalogue is still being written.",
+      intro:
+        "Collection covers the exhibits and sets that grant account-wide bonuses once they are completed. This page holds the Core elements slot until that catalogue is versioned here.",
+      sections: [
+        {
+          heading: "What this guide will cover",
+          body: [
+            "Which sets exist, what each completed set grants, and how Museion exhibits overlap with hero assignment.",
+            "Until those rows are checked, this page is the category entry rather than a complete catalogue.",
+          ],
+        },
+      ],
+      note: "The collection catalogue will be added in a later change. Bring a checked list if you already keep one.",
+    },
+    manor: {
+      title: "Manor",
+      summary: "Population, housing, and manor upgrades — the numbers are still being written.",
+      intro:
+        "The manor is the housing and population track that feeds workers into the rest of the city. This page holds its Core elements slot until the upgrade table is versioned here.",
+      sections: [
+        {
+          heading: "What this guide will cover",
+          body: [
+            "How population is gained, what manor upgrades cost, and which later systems wait on a population gate.",
+            "Until those numbers are checked, use this page as the category entry rather than a complete table.",
+          ],
+        },
+      ],
+      note: "Manor costs and population gates will be added once they are checked against the current client.",
+    },
+    support: {
+      title: "Support",
+      summary: "Account-wide support bonuses — the list is still being written.",
+      intro:
+        "Support covers the systems that buff the rest of the city rather than producing a resource themselves. This page holds the Core elements slot until that list is versioned here.",
+      sections: [
+        {
+          heading: "What this guide will cover",
+          body: [
+            "Which support tracks exist, what they buff, and the order worth raising them in.",
+            "Until those tracks are checked, this page is the category entry rather than a complete order.",
+          ],
+        },
+      ],
+      note: "The support tracks will be added in a later change. Send a checked list on Discord if you already keep one.",
+    },
+    goddesses: {
+      title: "Goddesses",
+      summary: "Affinity, who to raise first, and the current level targets — including where to stop without an SSR skin.",
+      intro:
+        "Goddesses unlock after you obtain the first one. Gifts raise affinity; crossing affinity thresholds grants bonuses, and each goddess also has acquaintance conditions before she can be recruited. The upgrade order below is the current LoA Alexandria sequence: skip any goddess you do not have and continue with the next.",
+      sections: [
+        {
+          heading: "How affinity and recruitment work",
+          body: [
+            "Giving gifts raises a goddess’s affinity. Reaching the next affinity level unlocks her listed bonuses. Recruitment is separate: you can only get acquainted with her after her conditions are met, often through an event, a bundle, or a VIP gate.",
+            "Athena has been tied to VIP 4. Venus comes from the first-purchase bundle. Medusa, Hela, Bastet, Moirai, and Muse have appeared across successive Ringtoss events; Lady Liberty in Tap Football; Ixchel in Grand Voyage. Several others still have no confirmed source on the community sheet.",
+          ],
+        },
+        {
+          heading: "Phase 1 — Core fundamentals",
+          body: [
+            "Demeter to level 180, or stop at 90 if she has no SSR skin. Venus to level 180, or stop at 150 if she has no SSR skin.",
+            "Demeter’s affinity cuts production-building upgrade costs by 5% and boosts Shieldman heroes. Venus raises all building productivity by 20% and boosts Pikeman heroes. Those two bonuses are why they sit first.",
+          ],
+        },
+        {
+          heading: "Phase 2 — First milestones",
+          body: [
+            "Calypso, Lady Liberty, Medusa, Hela, and Athena to level 90. Fortuna and Bastet to level 60.",
+            "Lady Liberty and Medusa both add 5% all-hero battle damage plus 3% ATK and HP. Hela instead gives 5% damage reduction with the same 3% ATK and HP. Athena adds 3% command value. Fortuna raises Wonder population gain by 5%. Bastet’s affinity line is still blank on the community sheet.",
+          ],
+        },
+        {
+          heading: "Phase 3 — Mid-game push",
+          body: [
+            "Calypso, Lady Liberty, and Medusa to level 180. Athena, Hela, Fortuna, and Bastet to level 120.",
+          ],
+        },
+        {
+          heading: "Phase 4 — Late game and global milestones",
+          body: [
+            "After that, finish maxing the goddesses already on this list. For every other goddess, walk them together through the global milestones: all to 30, then all to 60, then all to 90, and so on until they are maxed.",
+          ],
+        },
+        {
+          heading: "Tools on this site",
+          body: [
+            "Goddess materials converts Olive Branches, Corollas, and Tribute Plates into Goddess points. Goddess XP sums the XP between two levels. The XP calculator currently supports levels 1–150, copied from the Pop Bot dataset; in-game targets on this page go to 180, so treat anything above 150 as outside that calculator until the table is extended.",
+          ],
+        },
+      ],
+      note:
+        "Upgrade targets are the LoA Alexandria sequence as of 13 September 2026. They differ from an earlier community sheet that put Fortuna and Bastet at 90 in phase 2; this page uses 60. Affinity and obtain notes were rewritten from the same community Goddess sheet later published on the Pop Epoch Mobile Fandom wiki. No official artwork is used. Tell us on Discord if a target or affinity line has changed.",
+    },
+    cryptides: {
+      title: "Cryptides",
+      summary: "Catching and raising Cryptides — the tables are still being written.",
+      intro:
+        "Cryptides are the cryptid creatures you collect and raise. This page holds the Core elements slot until catch locations and growth tables are versioned here.",
+      sections: [
+        {
+          heading: "What this guide will cover",
+          body: [
+            "Where each Cryptide appears, how it grows, and which bonuses are worth the catch.",
+            "Until those rows are checked, this page is the category entry rather than a complete bestiary.",
+          ],
+        },
+      ],
+      note: "Cryptide locations and growth tables will be added in a later change.",
+    },
     waterSupply: {
       title: "Water supply and production bonuses",
       summary: "How a building’s water total is counted, and what each bonus tier is worth.",

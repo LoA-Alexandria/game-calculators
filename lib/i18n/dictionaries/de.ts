@@ -111,6 +111,7 @@ const de: Dictionary = {
     remove: "Entfernen",
   },
   guideCategories: {
+    coreElements: "Kernelemente",
     cityLayout: "Stadtaufbau",
     goddess: "Göttin",
     event: "Event",
@@ -292,6 +293,151 @@ const de: Dictionary = {
     },
   },
   guideEntries: {
+    heroes: {
+      title: "Helden",
+      summary: "Wo Helden in der Stadt sitzen — die detaillierten Tabellen werden noch geschrieben.",
+      intro:
+        "Helden sind der erste lange Fortschrittspfad: Sie besetzen Produktionsgebäude, füllen später Museion-Vitrinen und tragen Sterne und Fertigkeiten, die diese Boni erhöhen. Diese Seite hält den Platz, bis die Zuordnungslisten geprüft sind.",
+      sections: [
+        {
+          heading: "Was dieser Guide abdecken wird",
+          body: [
+            "Welche Helden auf welche Gebäude gehören, wie Sterne und Fertigkeitsstufen ihre Boni ändern und wie die Museion-Platzierung sich von einer Produktionszuweisung unterscheidet.",
+            "Bis diese Tabellen stehen, ist diese Seite der Kernelemente-Eintrag für Helden, kein vollständiges Nachschlagewerk.",
+          ],
+        },
+      ],
+      note: "Die detaillierten Heldenlisten kommen in einer späteren Änderung. Wenn du auf Discord schon eine geprüfte Liste führst, schick sie, damit wir sie hier versionieren können.",
+    },
+    technology: {
+      title: "Technologie",
+      summary: "Forschungs-Tore, die den Rest des Spiels freischalten — der volle Baum wird noch geschrieben.",
+      intro:
+        "Technologie ist die Freischaltkarte: Ein Forschungsknoten muss oft fertig sein, bevor ein Gebäude, ein Kampagnenkapitel oder ein späteres System wie Göttin überhaupt erscheint. Diese Seite ist der Platzhalter für diesen Baum.",
+      sections: [
+        {
+          heading: "Was dieser Guide abdecken wird",
+          body: [
+            "Die Forschung, die Kampagne, Göttin und die anderen Kernelemente freischaltet, und die Reihenfolge, die sich lohnt, wenn mehrere Knoten gleichzeitig offen sind.",
+            "Bis diese Liste gegen den aktuellen Client geprüft ist, ist diese Seite der Kategorie-Eintrag, keine vollständige Reihenfolge.",
+          ],
+        },
+      ],
+      note: "Die Forschungsreihenfolge kommt, sobald sie gegen den aktuellen Client geprüft ist. Korrekturen gehören auf Discord, damit Seite und jeder Rechner, der davon abhängt, gemeinsam nachziehen.",
+    },
+    collection: {
+      title: "Sammlung",
+      summary: "Vitrinen und Sammlungsboni — der Katalog wird noch geschrieben.",
+      intro:
+        "Sammlung umfasst die Vitrinen und Sets, die nach Abschluss konto-weite Boni geben. Diese Seite hält den Kernelemente-Platz, bis dieser Katalog hier versioniert ist.",
+      sections: [
+        {
+          heading: "Was dieser Guide abdecken wird",
+          body: [
+            "Welche Sets es gibt, was ein abgeschlossenes Set gewährt und wie Museion-Vitrinen sich mit Heldenzuweisung überschneiden.",
+            "Bis diese Zeilen geprüft sind, ist diese Seite der Kategorie-Eintrag, kein vollständiger Katalog.",
+          ],
+        },
+      ],
+      note: "Der Sammlungskatalog kommt in einer späteren Änderung. Bring eine geprüfte Liste mit, wenn du schon eine führst.",
+    },
+    manor: {
+      title: "Anwesen",
+      summary: "Bevölkerung, Wohnraum und Anwesen-Ausbauten — die Zahlen werden noch geschrieben.",
+      intro:
+        "Das Anwesen ist der Wohn- und Bevölkerungspfad, der Arbeiter in den Rest der Stadt speist. Diese Seite hält den Kernelemente-Platz, bis die Ausbautabelle hier versioniert ist.",
+      sections: [
+        {
+          heading: "Was dieser Guide abdecken wird",
+          body: [
+            "Wie Bevölkerung gewonnen wird, was Anwesen-Ausbauten kosten und welche späteren Systeme auf einem Bevölkerungstor warten.",
+            "Bis diese Zahlen geprüft sind, ist diese Seite der Kategorie-Eintrag, keine vollständige Tabelle.",
+          ],
+        },
+      ],
+      note: "Anwesen-Kosten und Bevölkerungstore kommen, sobald sie gegen den aktuellen Client geprüft sind.",
+    },
+    support: {
+      title: "Unterstützung",
+      summary: "Konto-weite Unterstützungsboni — die Liste wird noch geschrieben.",
+      intro:
+        "Unterstützung umfasst die Systeme, die den Rest der Stadt stärken, statt selbst eine Ressource herzustellen. Diese Seite hält den Kernelemente-Platz, bis diese Liste hier versioniert ist.",
+      sections: [
+        {
+          heading: "Was dieser Guide abdecken wird",
+          body: [
+            "Welche Unterstützungspfade es gibt, was sie stärken und in welcher Reihenfolge sie sich lohnen.",
+            "Bis diese Pfade geprüft sind, ist diese Seite der Kategorie-Eintrag, keine vollständige Reihenfolge.",
+          ],
+        },
+      ],
+      note: "Die Unterstützungspfade kommen in einer späteren Änderung. Schick eine geprüfte Liste auf Discord, wenn du schon eine führst.",
+    },
+    goddesses: {
+      title: "Göttinnen",
+      summary: "Affinität, wen du zuerst hebst und die aktuellen Stufenziele — inklusive wo du ohne SSR-Skin stoppst.",
+      intro:
+        "Göttinnen schalten frei, sobald du die erste hast. Geschenke erhöhen die Affinität; das Überschreiten von Affinitätsschwellen gibt Boni, und jede Göttin hat zusätzlich Bekanntschaftsbedingungen, bevor du sie anwerben kannst. Die Ausbaureihenfolge unten ist die aktuelle LoA-Alexandria-Sequenz: Fehlt dir eine gelistete Göttin, überspringe sie und mach mit der nächsten weiter.",
+      sections: [
+        {
+          heading: "Wie Affinität und Anwerbung funktionieren",
+          body: [
+            "Geschenke erhöhen die Affinität einer Göttin. Das Erreichen der nächsten Affinitätsstufe schaltet ihre gelisteten Boni frei. Die Anwerbung ist getrennt: Du kannst dich erst mit ihr bekannt machen, wenn ihre Bedingungen erfüllt sind — oft durch ein Event, ein Bundle oder ein VIP-Tor.",
+            "Athena ist an VIP 4 gebunden. Venus kommt aus dem Erstkauf-Bundle. Medusa, Hela, Bastet, Moirai und Muse sind über aufeinanderfolgende Ringtoss-Events aufgetaucht; Lady Liberty bei Tap Football; Ixchel in der Großen Reise. Bei mehreren anderen steht auf dem Community-Bogen noch keine bestätigte Quelle.",
+          ],
+        },
+        {
+          heading: "Phase 1 — Kernfundament",
+          body: [
+            "Demeter auf Stufe 180, oder bei 90 stoppen, wenn sie keinen SSR-Skin hat. Venus auf Stufe 180, oder bei 150 stoppen, wenn sie keinen SSR-Skin hat.",
+            "Demeters Affinität senkt die Ausbaukosten von Produktionsgebäuden um 5 % und stärkt Schildhelden. Venus hebt die Produktivität aller Gebäude um 20 % und stärkt Pikenhelden. Deshalb stehen die beiden zuerst.",
+          ],
+        },
+        {
+          heading: "Phase 2 — Erste Meilensteine",
+          body: [
+            "Calypso, Lady Liberty, Medusa, Hela und Athena auf Stufe 90. Fortuna und Bastet auf Stufe 60.",
+            "Lady Liberty und Medusa geben beide 5 % Kampfschaden aller Helden plus 3 % ATK und HP. Hela gibt stattdessen 5 % Schadensreduktion mit denselben 3 % ATK und HP. Athena gibt 3 % Befehlswert. Fortuna hebt den Bevölkerungsgewinn im Wunder um 5 %. Bastets Affinitätszeile ist auf dem Community-Bogen noch leer.",
+          ],
+        },
+        {
+          heading: "Phase 3 — Midgame-Schub",
+          body: [
+            "Calypso, Lady Liberty und Medusa auf Stufe 180. Athena, Hela, Fortuna und Bastet auf Stufe 120.",
+          ],
+        },
+        {
+          heading: "Phase 4 — Endgame und globale Meilensteine",
+          body: [
+            "Danach die Göttinnen auf dieser Liste zu Ende maxen. Alle anderen Göttinnen gemeinsam durch die globalen Meilensteine führen: alle auf 30, dann alle auf 60, dann alle auf 90, und so weiter bis zum Maximum.",
+          ],
+        },
+        {
+          heading: "Werkzeuge auf dieser Seite",
+          body: [
+            "Göttinnen-Materialien rechnet Olivenzweige, Blütenkronen und Tributplatten in Göttinnen-Punkte um. Göttinnen-EP summiert die EP zwischen zwei Stufen. Der EP-Rechner unterstützt derzeit die Stufen 1–150 aus dem Pop-Bot-Datensatz; die Ziele auf dieser Seite gehen bis 180, alles darüber liegt also außerhalb dieses Rechners, bis die Tabelle erweitert wird.",
+          ],
+        },
+      ],
+      note:
+        "Die Ausbauziele sind die LoA-Alexandria-Sequenz vom 13. September 2026. Sie weichen von einem älteren Community-Bogen ab, der Fortuna und Bastet in Phase 2 auf 90 setzte; diese Seite nutzt 60. Affinität und Bezugsnoten wurden aus demselben Community-Göttinnenbogen umgeschrieben, der später im Pop-Epoch-Mobile-Fandom-Wiki stand. Es wird keine offizielle Grafik verwendet. Sag uns auf Discord Bescheid, wenn ein Ziel oder eine Affinitätszeile sich geändert hat.",
+    },
+    cryptides: {
+      title: "Cryptides",
+      summary: "Cryptides fangen und aufziehen — die Tabellen werden noch geschrieben.",
+      intro:
+        "Cryptides sind die Kryptiden, die du sammelst und aufziehst. Diese Seite hält den Kernelemente-Platz, bis Fangorte und Wachstumstabellen hier versioniert sind.",
+      sections: [
+        {
+          heading: "Was dieser Guide abdecken wird",
+          body: [
+            "Wo jeder Cryptide auftaucht, wie er wächst und welche Boni den Fang lohnen.",
+            "Bis diese Zeilen geprüft sind, ist diese Seite der Kategorie-Eintrag, kein vollständiges Bestiarium.",
+          ],
+        },
+      ],
+      note: "Cryptide-Orte und Wachstumstabellen kommen in einer späteren Änderung.",
+    },
     waterSupply: {
       title: "Wasserversorgung und Produktionsboni",
       summary: "Wie das Wasser eines Gebäudes gezählt wird und was jede Bonusstufe bringt.",

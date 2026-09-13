@@ -111,6 +111,7 @@ const fr: Dictionary = {
     remove: "Retirer",
   },
   guideCategories: {
+    coreElements: "Éléments fondamentaux",
     cityLayout: "Plan de ville",
     goddess: "Déesse",
     event: "Événement",
@@ -292,6 +293,151 @@ const fr: Dictionary = {
     },
   },
   guideEntries: {
+    heroes: {
+      title: "Héros",
+      summary: "Où les héros se placent dans la ville — les tableaux détaillés sont encore en rédaction.",
+      intro:
+        "Les héros sont la première progression de longue haleine : ils occupent les bâtiments de production, remplissent plus tard les vitrines du Museion, et portent étoiles et compétences qui augmentent ces bonus. Cette page tient la place jusqu’à ce que les listes d’affectation soient vérifiées.",
+      sections: [
+        {
+          heading: "Ce que ce guide couvrira",
+          body: [
+            "Quels héros vont sur quels bâtiments, comment étoiles et niveaux de compétence changent leurs bonus, et en quoi le placement au Museion diffère d’une affectation de production.",
+            "En attendant ces tableaux, cette page est l’entrée Éléments fondamentaux pour les héros, pas une référence complète.",
+          ],
+        },
+      ],
+      note: "Les listes détaillées de héros viendront dans un changement ultérieur. Si vous tenez déjà une liste vérifiée sur Discord, envoyez-la pour que nous puissions la versionner ici.",
+    },
+    technology: {
+      title: "Technologie",
+      summary: "Les recherches qui déverrouillent le reste du jeu — l’arbre complet est encore en rédaction.",
+      intro:
+        "La technologie est la carte des déblocages : un nœud de recherche doit souvent être terminé avant qu’un bâtiment, un chapitre de campagne ou un système plus tardif comme la Déesse n’apparaisse. Cette page est le substitut de cet arbre.",
+      sections: [
+        {
+          heading: "Ce que ce guide couvrira",
+          body: [
+            "Les recherches qui ouvrent la Campagne, la Déesse et les autres éléments fondamentaux, et l’ordre à suivre lorsque plusieurs nœuds sont disponibles en même temps.",
+            "Tant que cette liste n’est pas vérifiée contre le client actuel, cette page est l’entrée de catégorie, pas un ordre complet.",
+          ],
+        },
+      ],
+      note: "L’ordre des recherches sera ajouté une fois vérifié contre le client actuel. Les corrections appartiennent à Discord, pour que la page et tout calculateur qui en dépend avancent ensemble.",
+    },
+    collection: {
+      title: "Collection",
+      summary: "Vitrines et bonus de collection — le catalogue est encore en rédaction.",
+      intro:
+        "La collection couvre les vitrines et les ensembles qui, une fois complétés, octroient des bonus à tout le compte. Cette page tient l’emplacement Éléments fondamentaux jusqu’à ce que ce catalogue soit versionné ici.",
+      sections: [
+        {
+          heading: "Ce que ce guide couvrira",
+          body: [
+            "Quels ensembles existent, ce que chacun accorde une fois complété, et comment les vitrines du Museion se recoupent avec l’affectation des héros.",
+            "Tant que ces lignes ne sont pas vérifiées, cette page est l’entrée de catégorie, pas un catalogue complet.",
+          ],
+        },
+      ],
+      note: "Le catalogue de collection viendra dans un changement ultérieur. Apportez une liste vérifiée si vous en tenez déjà une.",
+    },
+    manor: {
+      title: "Manoir",
+      summary: "Population, logements et améliorations du manoir — les chiffres sont encore en rédaction.",
+      intro:
+        "Le manoir est la piste de logement et de population qui alimente le reste de la ville en ouvriers. Cette page tient l’emplacement Éléments fondamentaux jusqu’à ce que le tableau d’amélioration soit versionné ici.",
+      sections: [
+        {
+          heading: "Ce que ce guide couvrira",
+          body: [
+            "Comment la population est gagnée, ce que coûtent les améliorations du manoir, et quels systèmes plus tardifs attendent un seuil de population.",
+            "Tant que ces chiffres ne sont pas vérifiés, cette page est l’entrée de catégorie, pas un tableau complet.",
+          ],
+        },
+      ],
+      note: "Les coûts du manoir et les seuils de population seront ajoutés une fois vérifiés contre le client actuel.",
+    },
+    support: {
+      title: "Soutien",
+      summary: "Bonus de soutien à l’échelle du compte — la liste est encore en rédaction.",
+      intro:
+        "Le soutien couvre les systèmes qui renforcent le reste de la ville plutôt que de produire une ressource eux-mêmes. Cette page tient l’emplacement Éléments fondamentaux jusqu’à ce que cette liste soit versionnée ici.",
+      sections: [
+        {
+          heading: "Ce que ce guide couvrira",
+          body: [
+            "Quelles pistes de soutien existent, ce qu’elles renforcent, et l’ordre dans lequel il vaut la peine de les monter.",
+            "Tant que ces pistes ne sont pas vérifiées, cette page est l’entrée de catégorie, pas un ordre complet.",
+          ],
+        },
+      ],
+      note: "Les pistes de soutien viendront dans un changement ultérieur. Envoyez une liste vérifiée sur Discord si vous en tenez déjà une.",
+    },
+    goddesses: {
+      title: "Déesses",
+      summary: "Affinité, qui monter en premier, et les cibles de niveau actuelles — y compris où s’arrêter sans skin SSR.",
+      intro:
+        "Les déesses se débloquent après l’obtention de la première. Les cadeaux augmentent l’affinité ; franchir un seuil d’affinité octroie des bonus, et chaque déesse a aussi des conditions de connaissance avant d’être recrutée. L’ordre ci-dessous est la séquence actuelle de LoA Alexandria : sautez toute déesse que vous n’avez pas et continuez avec la suivante.",
+      sections: [
+        {
+          heading: "Comment fonctionnent l’affinité et le recrutement",
+          body: [
+            "Offrir des cadeaux augmente l’affinité d’une déesse. Atteindre le niveau d’affinité suivant débloque ses bonus listés. Le recrutement est distinct : on ne peut faire sa connaissance qu’après ses conditions, souvent via un événement, un pack ou un palier VIP.",
+            "Athéna est liée au VIP 4. Vénus vient du pack de premier achat. Méduse, Hela, Bastet, Moirai et Muse sont apparues au fil des événements Ringtoss successifs ; Lady Liberty au Tap Football ; Ixchel dans le Grand Voyage. Plusieurs autres n’ont encore aucune source confirmée sur la fiche communautaire.",
+          ],
+        },
+        {
+          heading: "Phase 1 — Fondamentaux",
+          body: [
+            "Déméter au niveau 180, ou s’arrêter à 90 si elle n’a pas de skin SSR. Vénus au niveau 180, ou s’arrêter à 150 si elle n’a pas de skin SSR.",
+            "L’affinité de Déméter réduit de 5 % le coût d’amélioration des bâtiments de production et renforce les héros boucliers. Vénus augmente de 20 % la productivité de tous les bâtiments et renforce les héros piquiers. C’est pour cela qu’elles viennent en premier.",
+          ],
+        },
+        {
+          heading: "Phase 2 — Premiers paliers",
+          body: [
+            "Calypso, Lady Liberty, Méduse, Hela et Athéna au niveau 90. Fortuna et Bastet au niveau 60.",
+            "Lady Liberty et Méduse ajoutent toutes deux 5 % de dégâts de tous les héros en combat plus 3 % d’ATQ et de PV. Hela donne à la place 5 % de réduction de dégâts avec les mêmes 3 % d’ATQ et de PV. Athéna ajoute 3 % de valeur de commandement. Fortuna augmente de 5 % le gain de population de la Merveille. La ligne d’affinité de Bastet est encore vide sur la fiche communautaire.",
+          ],
+        },
+        {
+          heading: "Phase 3 — Poussée de milieu de partie",
+          body: [
+            "Calypso, Lady Liberty et Méduse au niveau 180. Athéna, Hela, Fortuna et Bastet au niveau 120.",
+          ],
+        },
+        {
+          heading: "Phase 4 — Fin de partie et paliers globaux",
+          body: [
+            "Ensuite, terminez de maxer les déesses déjà sur cette liste. Pour toutes les autres, faites-les avancer ensemble par paliers globaux : toutes à 30, puis toutes à 60, puis toutes à 90, et ainsi de suite jusqu’au maximum.",
+          ],
+        },
+        {
+          heading: "Outils sur ce site",
+          body: [
+            "Matériaux de la Déesse convertit rameaux d’olivier, corolles et plaques de tribut en points de Déesse. XP de la Déesse additionne l’XP entre deux niveaux. Le calculateur d’XP prend actuellement les niveaux 1–150, copiés du jeu de données Pop Bot ; les cibles de cette page vont jusqu’à 180, donc tout au-delà de 150 reste hors de ce calculateur jusqu’à l’extension de la table.",
+          ],
+        },
+      ],
+      note:
+        "Les cibles d’amélioration sont la séquence LoA Alexandria au 13 septembre 2026. Elles diffèrent d’une fiche communautaire plus ancienne qui mettait Fortuna et Bastet à 90 en phase 2 ; cette page utilise 60. Les notes d’affinité et d’obtention ont été réécrites à partir de la même fiche communautaire Déesse, plus tard publiée sur le wiki Fandom Pop Epoch Mobile. Aucune illustration officielle n’est utilisée. Signalez sur Discord si une cible ou une ligne d’affinité a changé.",
+    },
+    cryptides: {
+      title: "Cryptides",
+      summary: "Attraper et élever les Cryptides — les tableaux sont encore en rédaction.",
+      intro:
+        "Les Cryptides sont les créatures cryptides que vous collectionnez et élevez. Cette page tient l’emplacement Éléments fondamentaux jusqu’à ce que lieux de capture et tables de croissance soient versionnés ici.",
+      sections: [
+        {
+          heading: "Ce que ce guide couvrira",
+          body: [
+            "Où chaque Cryptide apparaît, comment il grandit, et quels bonus valent la capture.",
+            "Tant que ces lignes ne sont pas vérifiées, cette page est l’entrée de catégorie, pas un bestiaire complet.",
+          ],
+        },
+      ],
+      note: "Les lieux et tables de croissance des Cryptides viendront dans un changement ultérieur.",
+    },
     waterSupply: {
       title: "Alimentation en eau et bonus de production",
       summary: "Comment l’eau d’un bâtiment est comptée et ce que vaut chaque palier de bonus.",
