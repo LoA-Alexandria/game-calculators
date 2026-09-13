@@ -371,54 +371,105 @@ const en = {
       ],
       note: "The support tracks will be added in a later change. Send a checked list on Discord if you already keep one.",
     },
+    // Upgrade order is the LoA Alexandria sequence (13 Sep 2026).
+    // Phase 2 Fortuna and Bastet are 60, not the older community sheet's 90.
     goddesses: {
       title: "Goddesses",
-      summary: "Affinity, who to raise first, and the current level targets — including where to stop without an SSR skin.",
-      intro:
-        "Goddesses unlock after you obtain the first one. Gifts raise affinity; crossing affinity thresholds grants bonuses, and each goddess also has acquaintance conditions before she can be recruited. The upgrade order below is the current LoA Alexandria sequence: skip any goddess you do not have and continue with the next.",
-      sections: [
+      summary: "Who to raise first, where to stop without an SSR skin, and what each affinity is worth.",
+      intro: "Gifts raise affinity and unlock bonuses. Recruit a goddess once her conditions are met. Skip anyone you do not have and continue with the next.",
+      orderHeading: "Upgrade order",
+      rosterHeading: "Affinity and obtain",
+      toolsHeading: "Calculators",
+      toolsMore: "All calculators",
+      colName: "Goddess",
+      colTarget: "Level",
+      colHint: "Without SSR",
+      colAffinity: "Affinity",
+      colObtain: "Obtain",
+      phases: [
         {
-          heading: "How affinity and recruitment work",
-          body: [
-            "Giving gifts raises a goddess’s affinity. Reaching the next affinity level unlocks her listed bonuses. Recruitment is separate: you can only get acquainted with her after her conditions are met, often through an event, a bundle, or a VIP gate.",
-            "Athena has been tied to VIP 4. Venus comes from the first-purchase bundle. Medusa, Hela, Bastet, Moirai, and Muse have appeared across successive Ringtoss events; Lady Liberty in Tap Football; Ixchel in Grand Voyage. Several others still have no confirmed source on the community sheet.",
+          tone: "1",
+          title: "Phase 1",
+          subtitle: "Core fundamentals",
+          lede: "",
+          rows: [
+            { name: "Demeter", target: "180", hint: "90" },
+            { name: "Venus", target: "180", hint: "150" },
           ],
         },
         {
-          heading: "Phase 1 — Core fundamentals",
-          body: [
-            "Demeter to level 180, or stop at 90 if she has no SSR skin. Venus to level 180, or stop at 150 if she has no SSR skin.",
-            "Demeter’s affinity cuts production-building upgrade costs by 5% and boosts Shieldman heroes. Venus raises all building productivity by 20% and boosts Pikeman heroes. Those two bonuses are why they sit first.",
+          tone: "2",
+          title: "Phase 2",
+          subtitle: "First milestones",
+          lede: "",
+          rows: [
+            { name: "Calypso", target: "90", hint: "" },
+            { name: "Lady Liberty", target: "90", hint: "" },
+            { name: "Medusa", target: "90", hint: "" },
+            { name: "Hela", target: "90", hint: "" },
+            { name: "Athena", target: "90", hint: "" },
+            { name: "Fortuna", target: "60", hint: "" },
+            { name: "Bastet", target: "60", hint: "" },
           ],
         },
         {
-          heading: "Phase 2 — First milestones",
-          body: [
-            "Calypso, Lady Liberty, Medusa, Hela, and Athena to level 90. Fortuna and Bastet to level 60.",
-            "Lady Liberty and Medusa both add 5% all-hero battle damage plus 3% ATK and HP. Hela instead gives 5% damage reduction with the same 3% ATK and HP. Athena adds 3% command value. Fortuna raises Wonder population gain by 5%. Bastet’s affinity line is still blank on the community sheet.",
+          tone: "3",
+          title: "Phase 3",
+          subtitle: "Mid-game push",
+          lede: "",
+          rows: [
+            { name: "Calypso", target: "180", hint: "" },
+            { name: "Lady Liberty", target: "180", hint: "" },
+            { name: "Medusa", target: "180", hint: "" },
+            { name: "Athena", target: "120", hint: "" },
+            { name: "Hela", target: "120", hint: "" },
+            { name: "Fortuna", target: "120", hint: "" },
+            { name: "Bastet", target: "120", hint: "" },
           ],
         },
         {
-          heading: "Phase 3 — Mid-game push",
-          body: [
-            "Calypso, Lady Liberty, and Medusa to level 180. Athena, Hela, Fortuna, and Bastet to level 120.",
-          ],
-        },
-        {
-          heading: "Phase 4 — Late game and global milestones",
-          body: [
-            "After that, finish maxing the goddesses already on this list. For every other goddess, walk them together through the global milestones: all to 30, then all to 60, then all to 90, and so on until they are maxed.",
-          ],
-        },
-        {
-          heading: "Tools on this site",
-          body: [
-            "Goddess materials converts Olive Branches, Corollas, and Tribute Plates into Goddess points. Goddess XP sums the XP between two levels. The XP calculator currently supports levels 1–150, copied from the Pop Bot dataset; in-game targets on this page go to 180, so treat anything above 150 as outside that calculator until the table is extended.",
+          tone: "4",
+          title: "Phase 4",
+          subtitle: "Late game",
+          lede: "Finish maxing the goddesses above, then take every other goddess through the same milestones together.",
+          rows: [
+            { name: "Everyone else", target: "30 → 60 → 90 → max", hint: "" },
           ],
         },
       ],
-      note:
-        "Upgrade targets are the LoA Alexandria sequence as of 13 September 2026. They differ from an earlier community sheet that put Fortuna and Bastet at 90 in phase 2; this page uses 60. Affinity and obtain notes were rewritten from the same community Goddess sheet later published on the Pop Epoch Mobile Fandom wiki. No official artwork is used. Tell us on Discord if a target or affinity line has changed.",
+      roster: [
+        { name: "Demeter", affinity: "Production building upgrade cost −5%. Shieldman ATK/HP +6%.", obtain: "" },
+        { name: "Venus", affinity: "All building productivity +20%. Pikeman ATK/HP +6%.", obtain: "First purchase bundle" },
+        { name: "Lady Liberty", affinity: "All-hero battle damage +5%. All-hero ATK/HP +3%.", obtain: "Tap Football" },
+        { name: "Medusa", affinity: "All-hero battle damage +5%. All-hero ATK/HP +3%.", obtain: "1st Ringtoss" },
+        { name: "Hela", affinity: "All-hero damage reduction +5%. All-hero ATK/HP +3%.", obtain: "2nd Ringtoss" },
+        { name: "Bastet", affinity: "", obtain: "3rd Ringtoss" },
+        { name: "Moirai", affinity: "Goddess Theater income +2%. All-hero ATK/HP +3%.", obtain: "4th Ringtoss" },
+        { name: "Muse", affinity: "Muse Coin +2% in Museion. All-hero ATK/HP +3%.", obtain: "4th Ringtoss" },
+        { name: "Athena", affinity: "All-hero command +3%. All-hero ATK/HP +3%.", obtain: "VIP 4" },
+        { name: "Ixchel", affinity: "Grand Voyage city dividends +2%. All-hero ATK/HP +3%.", obtain: "Grand Voyage" },
+        { name: "Fortuna", affinity: "Wonder population +5%. Shieldman ATK/HP +6%.", obtain: "" },
+        { name: "Brunhild", affinity: "Campaign damage taken −5%. Cavalry ATK/HP +11%.", obtain: "" },
+        { name: "Vivian", affinity: "Mystic Tower sweep rewards +6%. Shieldman ATK/HP +6%.", obtain: "" },
+        { name: "Artemis", affinity: "Crown Glory Honor Fortune +2%. Archer ATK/HP +6%.", obtain: "" },
+        { name: "Freya", affinity: "Glory Arena damage dealt +5%. Pikeman ATK/HP +6%.", obtain: "" },
+        { name: "Hera", affinity: "Northern Enemy ally damage reduction +5%. Cavalry ATK/HP +6%.", obtain: "" },
+        { name: "Eve", affinity: "Population recruitment +5/sec. Archer ATK/HP +6%.", obtain: "" },
+        { name: "Hestia", affinity: "Campaign gold +5%. Pikeman ATK/HP +11%.", obtain: "" },
+        { name: "Nike", affinity: "4% chance for +1 Norman Oak in Glory Arena. Pikeman ATK/HP +6%.", obtain: "" },
+      ],
+      sections: [
+        {
+          heading: "Upgrade order",
+          body: [
+            "Phase 1: Demeter 180 (90 without SSR), Venus 180 (150 without SSR).",
+            "Phase 2: Calypso, Lady Liberty, Medusa, Hela, Athena to 90; Fortuna and Bastet to 60.",
+            "Phase 3: Calypso, Lady Liberty, Medusa to 180; Athena, Hela, Fortuna, Bastet to 120.",
+            "Phase 4: Max the list above, then take everyone else 30 → 60 → 90 → max.",
+          ],
+        },
+      ],
+      note: "",
     },
     cryptides: {
       title: "Cryptides",

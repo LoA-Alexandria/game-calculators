@@ -375,52 +375,101 @@ const de: Dictionary = {
     },
     goddesses: {
       title: "Göttinnen",
-      summary: "Affinität, wen du zuerst hebst und die aktuellen Stufenziele — inklusive wo du ohne SSR-Skin stoppst.",
-      intro:
-        "Göttinnen schalten frei, sobald du die erste hast. Geschenke erhöhen die Affinität; das Überschreiten von Affinitätsschwellen gibt Boni, und jede Göttin hat zusätzlich Bekanntschaftsbedingungen, bevor du sie anwerben kannst. Die Ausbaureihenfolge unten ist die aktuelle LoA-Alexandria-Sequenz: Fehlt dir eine gelistete Göttin, überspringe sie und mach mit der nächsten weiter.",
-      sections: [
+      summary: "Wen du zuerst hebst, wo du ohne SSR-Skin stoppst, und was jede Affinität bringt.",
+      intro: "Geschenke erhöhen die Affinität und schalten Boni frei. Eine Göttin wirbst du an, sobald ihre Bedingungen erfüllt sind. Fehlt dir jemand, überspringe sie und mach mit der nächsten weiter.",
+      orderHeading: "Ausbaureihenfolge",
+      rosterHeading: "Affinität und Bezug",
+      toolsHeading: "Rechner",
+      toolsMore: "Alle Rechner",
+      colName: "Göttin",
+      colTarget: "Stufe",
+      colHint: "Ohne SSR",
+      colAffinity: "Affinität",
+      colObtain: "Bezug",
+      phases: [
         {
-          heading: "Wie Affinität und Anwerbung funktionieren",
-          body: [
-            "Geschenke erhöhen die Affinität einer Göttin. Das Erreichen der nächsten Affinitätsstufe schaltet ihre gelisteten Boni frei. Die Anwerbung ist getrennt: Du kannst dich erst mit ihr bekannt machen, wenn ihre Bedingungen erfüllt sind — oft durch ein Event, ein Bundle oder ein VIP-Tor.",
-            "Athena ist an VIP 4 gebunden. Venus kommt aus dem Erstkauf-Bundle. Medusa, Hela, Bastet, Moirai und Muse sind über aufeinanderfolgende Ringtoss-Events aufgetaucht; Lady Liberty bei Tap Football; Ixchel in der Großen Reise. Bei mehreren anderen steht auf dem Community-Bogen noch keine bestätigte Quelle.",
+          tone: "1",
+          title: "Phase 1",
+          subtitle: "Kernfundament",
+          lede: "",
+          rows: [
+            { name: "Demeter", target: "180", hint: "90" },
+            { name: "Venus", target: "180", hint: "150" },
           ],
         },
         {
-          heading: "Phase 1 — Kernfundament",
-          body: [
-            "Demeter auf Stufe 180, oder bei 90 stoppen, wenn sie keinen SSR-Skin hat. Venus auf Stufe 180, oder bei 150 stoppen, wenn sie keinen SSR-Skin hat.",
-            "Demeters Affinität senkt die Ausbaukosten von Produktionsgebäuden um 5 % und stärkt Schildhelden. Venus hebt die Produktivität aller Gebäude um 20 % und stärkt Pikenhelden. Deshalb stehen die beiden zuerst.",
+          tone: "2",
+          title: "Phase 2",
+          subtitle: "Erste Meilensteine",
+          lede: "",
+          rows: [
+            { name: "Calypso", target: "90", hint: "" },
+            { name: "Lady Liberty", target: "90", hint: "" },
+            { name: "Medusa", target: "90", hint: "" },
+            { name: "Hela", target: "90", hint: "" },
+            { name: "Athena", target: "90", hint: "" },
+            { name: "Fortuna", target: "60", hint: "" },
+            { name: "Bastet", target: "60", hint: "" },
           ],
         },
         {
-          heading: "Phase 2 — Erste Meilensteine",
-          body: [
-            "Calypso, Lady Liberty, Medusa, Hela und Athena auf Stufe 90. Fortuna und Bastet auf Stufe 60.",
-            "Lady Liberty und Medusa geben beide 5 % Kampfschaden aller Helden plus 3 % ATK und HP. Hela gibt stattdessen 5 % Schadensreduktion mit denselben 3 % ATK und HP. Athena gibt 3 % Befehlswert. Fortuna hebt den Bevölkerungsgewinn im Wunder um 5 %. Bastets Affinitätszeile ist auf dem Community-Bogen noch leer.",
+          tone: "3",
+          title: "Phase 3",
+          subtitle: "Midgame-Schub",
+          lede: "",
+          rows: [
+            { name: "Calypso", target: "180", hint: "" },
+            { name: "Lady Liberty", target: "180", hint: "" },
+            { name: "Medusa", target: "180", hint: "" },
+            { name: "Athena", target: "120", hint: "" },
+            { name: "Hela", target: "120", hint: "" },
+            { name: "Fortuna", target: "120", hint: "" },
+            { name: "Bastet", target: "120", hint: "" },
           ],
         },
         {
-          heading: "Phase 3 — Midgame-Schub",
-          body: [
-            "Calypso, Lady Liberty und Medusa auf Stufe 180. Athena, Hela, Fortuna und Bastet auf Stufe 120.",
-          ],
-        },
-        {
-          heading: "Phase 4 — Endgame und globale Meilensteine",
-          body: [
-            "Danach die Göttinnen auf dieser Liste zu Ende maxen. Alle anderen Göttinnen gemeinsam durch die globalen Meilensteine führen: alle auf 30, dann alle auf 60, dann alle auf 90, und so weiter bis zum Maximum.",
-          ],
-        },
-        {
-          heading: "Werkzeuge auf dieser Seite",
-          body: [
-            "Göttinnen-Materialien rechnet Olivenzweige, Blütenkronen und Tributplatten in Göttinnen-Punkte um. Göttinnen-EP summiert die EP zwischen zwei Stufen. Der EP-Rechner unterstützt derzeit die Stufen 1–150 aus dem Pop-Bot-Datensatz; die Ziele auf dieser Seite gehen bis 180, alles darüber liegt also außerhalb dieses Rechners, bis die Tabelle erweitert wird.",
+          tone: "4",
+          title: "Phase 4",
+          subtitle: "Endgame",
+          lede: "Die Göttinnen oben zu Ende maxen, danach alle anderen gemeinsam durch dieselben Meilensteine.",
+          rows: [
+            { name: "Alle anderen", target: "30 → 60 → 90 → max", hint: "" },
           ],
         },
       ],
-      note:
-        "Die Ausbauziele sind die LoA-Alexandria-Sequenz vom 13. September 2026. Sie weichen von einem älteren Community-Bogen ab, der Fortuna und Bastet in Phase 2 auf 90 setzte; diese Seite nutzt 60. Affinität und Bezugsnoten wurden aus demselben Community-Göttinnenbogen umgeschrieben, der später im Pop-Epoch-Mobile-Fandom-Wiki stand. Es wird keine offizielle Grafik verwendet. Sag uns auf Discord Bescheid, wenn ein Ziel oder eine Affinitätszeile sich geändert hat.",
+      roster: [
+        { name: "Demeter", affinity: "Ausbaukosten von Produktionsgebäuden −5 %. Schildhelden ATK/HP +6 %.", obtain: "" },
+        { name: "Venus", affinity: "Produktivität aller Gebäude +20 %. Pikenhelden ATK/HP +6 %.", obtain: "Erstkauf-Bundle" },
+        { name: "Lady Liberty", affinity: "Kampfschaden aller Helden +5 %. ATK/HP aller Helden +3 %.", obtain: "Tap Football" },
+        { name: "Medusa", affinity: "Kampfschaden aller Helden +5 %. ATK/HP aller Helden +3 %.", obtain: "1. Ringtoss" },
+        { name: "Hela", affinity: "Schadensreduktion aller Helden +5 %. ATK/HP aller Helden +3 %.", obtain: "2. Ringtoss" },
+        { name: "Bastet", affinity: "", obtain: "3. Ringtoss" },
+        { name: "Moirai", affinity: "Einkommen im Göttinnen-Theater +2 %. ATK/HP aller Helden +3 %.", obtain: "4. Ringtoss" },
+        { name: "Muse", affinity: "Muse-Münzen im Museion +2 %. ATK/HP aller Helden +3 %.", obtain: "4. Ringtoss" },
+        { name: "Athena", affinity: "Befehlswert aller Helden +3 %. ATK/HP aller Helden +3 %.", obtain: "VIP 4" },
+        { name: "Ixchel", affinity: "Dividenden der Großen Reise +2 %. ATK/HP aller Helden +3 %.", obtain: "Große Reise" },
+        { name: "Fortuna", affinity: "Bevölkerung im Wunder +5 %. Schildhelden ATK/HP +6 %.", obtain: "" },
+        { name: "Brunhild", affinity: "Kampagnen-Schaden erlitten −5 %. Kavallerie ATK/HP +11 %.", obtain: "" },
+        { name: "Vivian", affinity: "Mystic-Tower-Sweep-Belohnungen +6 %. Schildhelden ATK/HP +6 %.", obtain: "" },
+        { name: "Artemis", affinity: "Honor Fortune in Crown Glory +2 %. Bogenschützen ATK/HP +6 %.", obtain: "" },
+        { name: "Freya", affinity: "Glory-Arena-Schaden +5 %. Pikenhelden ATK/HP +6 %.", obtain: "" },
+        { name: "Hera", affinity: "Schadensreduktion Verbündeter bei Northern Enemy +5 %. Kavallerie ATK/HP +6 %.", obtain: "" },
+        { name: "Eve", affinity: "Bevölkerungsrekrutierung +5/Sek. Bogenschützen ATK/HP +6 %.", obtain: "" },
+        { name: "Hestia", affinity: "Kampagnen-Gold +5 %. Pikenhelden ATK/HP +11 %.", obtain: "" },
+        { name: "Nike", affinity: "4 % Chance auf +1 Norman Oak in der Glory Arena. Pikenhelden ATK/HP +6 %.", obtain: "" },
+      ],
+      sections: [
+        {
+          heading: "Ausbaureihenfolge",
+          body: [
+            "Phase 1: Demeter 180 (90 ohne SSR), Venus 180 (150 ohne SSR).",
+            "Phase 2: Calypso, Lady Liberty, Medusa, Hela, Athena auf 90; Fortuna und Bastet auf 60.",
+            "Phase 3: Calypso, Lady Liberty, Medusa auf 180; Athena, Hela, Fortuna, Bastet auf 120.",
+            "Phase 4: Liste oben maxen, danach alle anderen 30 → 60 → 90 → max.",
+          ],
+        },
+      ],
+      note: "",
     },
     cryptides: {
       title: "Cryptides",

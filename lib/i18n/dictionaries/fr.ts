@@ -375,52 +375,101 @@ const fr: Dictionary = {
     },
     goddesses: {
       title: "Déesses",
-      summary: "Affinité, qui monter en premier, et les cibles de niveau actuelles — y compris où s’arrêter sans skin SSR.",
-      intro:
-        "Les déesses se débloquent après l’obtention de la première. Les cadeaux augmentent l’affinité ; franchir un seuil d’affinité octroie des bonus, et chaque déesse a aussi des conditions de connaissance avant d’être recrutée. L’ordre ci-dessous est la séquence actuelle de LoA Alexandria : sautez toute déesse que vous n’avez pas et continuez avec la suivante.",
-      sections: [
+      summary: "Qui monter en premier, où s’arrêter sans skin SSR, et ce que vaut chaque affinité.",
+      intro: "Les cadeaux augmentent l’affinité et débloquent des bonus. Recrutez une déesse une fois ses conditions remplies. Sautez celle que vous n’avez pas et continuez avec la suivante.",
+      orderHeading: "Ordre d’amélioration",
+      rosterHeading: "Affinité et obtention",
+      toolsHeading: "Calculateurs",
+      toolsMore: "Tous les calculateurs",
+      colName: "Déesse",
+      colTarget: "Niveau",
+      colHint: "Sans SSR",
+      colAffinity: "Affinité",
+      colObtain: "Obtention",
+      phases: [
         {
-          heading: "Comment fonctionnent l’affinité et le recrutement",
-          body: [
-            "Offrir des cadeaux augmente l’affinité d’une déesse. Atteindre le niveau d’affinité suivant débloque ses bonus listés. Le recrutement est distinct : on ne peut faire sa connaissance qu’après ses conditions, souvent via un événement, un pack ou un palier VIP.",
-            "Athéna est liée au VIP 4. Vénus vient du pack de premier achat. Méduse, Hela, Bastet, Moirai et Muse sont apparues au fil des événements Ringtoss successifs ; Lady Liberty au Tap Football ; Ixchel dans le Grand Voyage. Plusieurs autres n’ont encore aucune source confirmée sur la fiche communautaire.",
+          tone: "1",
+          title: "Phase 1",
+          subtitle: "Fondamentaux",
+          lede: "",
+          rows: [
+            { name: "Demeter", target: "180", hint: "90" },
+            { name: "Venus", target: "180", hint: "150" },
           ],
         },
         {
-          heading: "Phase 1 — Fondamentaux",
-          body: [
-            "Déméter au niveau 180, ou s’arrêter à 90 si elle n’a pas de skin SSR. Vénus au niveau 180, ou s’arrêter à 150 si elle n’a pas de skin SSR.",
-            "L’affinité de Déméter réduit de 5 % le coût d’amélioration des bâtiments de production et renforce les héros boucliers. Vénus augmente de 20 % la productivité de tous les bâtiments et renforce les héros piquiers. C’est pour cela qu’elles viennent en premier.",
+          tone: "2",
+          title: "Phase 2",
+          subtitle: "Premiers paliers",
+          lede: "",
+          rows: [
+            { name: "Calypso", target: "90", hint: "" },
+            { name: "Lady Liberty", target: "90", hint: "" },
+            { name: "Medusa", target: "90", hint: "" },
+            { name: "Hela", target: "90", hint: "" },
+            { name: "Athena", target: "90", hint: "" },
+            { name: "Fortuna", target: "60", hint: "" },
+            { name: "Bastet", target: "60", hint: "" },
           ],
         },
         {
-          heading: "Phase 2 — Premiers paliers",
-          body: [
-            "Calypso, Lady Liberty, Méduse, Hela et Athéna au niveau 90. Fortuna et Bastet au niveau 60.",
-            "Lady Liberty et Méduse ajoutent toutes deux 5 % de dégâts de tous les héros en combat plus 3 % d’ATQ et de PV. Hela donne à la place 5 % de réduction de dégâts avec les mêmes 3 % d’ATQ et de PV. Athéna ajoute 3 % de valeur de commandement. Fortuna augmente de 5 % le gain de population de la Merveille. La ligne d’affinité de Bastet est encore vide sur la fiche communautaire.",
+          tone: "3",
+          title: "Phase 3",
+          subtitle: "Milieu de partie",
+          lede: "",
+          rows: [
+            { name: "Calypso", target: "180", hint: "" },
+            { name: "Lady Liberty", target: "180", hint: "" },
+            { name: "Medusa", target: "180", hint: "" },
+            { name: "Athena", target: "120", hint: "" },
+            { name: "Hela", target: "120", hint: "" },
+            { name: "Fortuna", target: "120", hint: "" },
+            { name: "Bastet", target: "120", hint: "" },
           ],
         },
         {
-          heading: "Phase 3 — Poussée de milieu de partie",
-          body: [
-            "Calypso, Lady Liberty et Méduse au niveau 180. Athéna, Hela, Fortuna et Bastet au niveau 120.",
-          ],
-        },
-        {
-          heading: "Phase 4 — Fin de partie et paliers globaux",
-          body: [
-            "Ensuite, terminez de maxer les déesses déjà sur cette liste. Pour toutes les autres, faites-les avancer ensemble par paliers globaux : toutes à 30, puis toutes à 60, puis toutes à 90, et ainsi de suite jusqu’au maximum.",
-          ],
-        },
-        {
-          heading: "Outils sur ce site",
-          body: [
-            "Matériaux de la Déesse convertit rameaux d’olivier, corolles et plaques de tribut en points de Déesse. XP de la Déesse additionne l’XP entre deux niveaux. Le calculateur d’XP prend actuellement les niveaux 1–150, copiés du jeu de données Pop Bot ; les cibles de cette page vont jusqu’à 180, donc tout au-delà de 150 reste hors de ce calculateur jusqu’à l’extension de la table.",
+          tone: "4",
+          title: "Phase 4",
+          subtitle: "Fin de partie",
+          lede: "Terminez de maxer les déesses ci-dessus, puis faites passer toutes les autres par les mêmes paliers, ensemble.",
+          rows: [
+            { name: "Toutes les autres", target: "30 → 60 → 90 → max", hint: "" },
           ],
         },
       ],
-      note:
-        "Les cibles d’amélioration sont la séquence LoA Alexandria au 13 septembre 2026. Elles diffèrent d’une fiche communautaire plus ancienne qui mettait Fortuna et Bastet à 90 en phase 2 ; cette page utilise 60. Les notes d’affinité et d’obtention ont été réécrites à partir de la même fiche communautaire Déesse, plus tard publiée sur le wiki Fandom Pop Epoch Mobile. Aucune illustration officielle n’est utilisée. Signalez sur Discord si une cible ou une ligne d’affinité a changé.",
+      roster: [
+        { name: "Demeter", affinity: "Coût d’amélioration des bâtiments de production −5 %. Héros boucliers ATQ/PV +6 %.", obtain: "" },
+        { name: "Venus", affinity: "Productivité de tous les bâtiments +20 %. Héros piquiers ATQ/PV +6 %.", obtain: "Pack de premier achat" },
+        { name: "Lady Liberty", affinity: "Dégâts de tous les héros +5 %. ATQ/PV de tous les héros +3 %.", obtain: "Tap Football" },
+        { name: "Medusa", affinity: "Dégâts de tous les héros +5 %. ATQ/PV de tous les héros +3 %.", obtain: "1er Ringtoss" },
+        { name: "Hela", affinity: "Réduction de dégâts de tous les héros +5 %. ATQ/PV de tous les héros +3 %.", obtain: "2e Ringtoss" },
+        { name: "Bastet", affinity: "", obtain: "3e Ringtoss" },
+        { name: "Moirai", affinity: "Revenu du Théâtre des Déesses +2 %. ATQ/PV de tous les héros +3 %.", obtain: "4e Ringtoss" },
+        { name: "Muse", affinity: "Pièces de Muse au Museion +2 %. ATQ/PV de tous les héros +3 %.", obtain: "4e Ringtoss" },
+        { name: "Athena", affinity: "Commandement de tous les héros +3 %. ATQ/PV de tous les héros +3 %.", obtain: "VIP 4" },
+        { name: "Ixchel", affinity: "Dividendes du Grand Voyage +2 %. ATQ/PV de tous les héros +3 %.", obtain: "Grand Voyage" },
+        { name: "Fortuna", affinity: "Population de la Merveille +5 %. Héros boucliers ATQ/PV +6 %.", obtain: "" },
+        { name: "Brunhild", affinity: "Dégâts subis en Campagne −5 %. Cavalerie ATQ/PV +11 %.", obtain: "" },
+        { name: "Vivian", affinity: "Récompenses de sweep de la Tour mystique +6 %. Héros boucliers ATQ/PV +6 %.", obtain: "" },
+        { name: "Artemis", affinity: "Honor Fortune de Crown Glory +2 %. Archers ATQ/PV +6 %.", obtain: "" },
+        { name: "Freya", affinity: "Dégâts infligés en Glory Arena +5 %. Héros piquiers ATQ/PV +6 %.", obtain: "" },
+        { name: "Hera", affinity: "Réduction de dégâts alliés contre Northern Enemy +5 %. Cavalerie ATQ/PV +6 %.", obtain: "" },
+        { name: "Eve", affinity: "Recrutement de population +5/s. Archers ATQ/PV +6 %.", obtain: "" },
+        { name: "Hestia", affinity: "Or de Campagne +5 %. Héros piquiers ATQ/PV +11 %.", obtain: "" },
+        { name: "Nike", affinity: "4 % de chance d’+1 Norman Oak en Glory Arena. Héros piquiers ATQ/PV +6 %.", obtain: "" },
+      ],
+      sections: [
+        {
+          heading: "Ordre d’amélioration",
+          body: [
+            "Phase 1 : Demeter 180 (90 sans SSR), Venus 180 (150 sans SSR).",
+            "Phase 2 : Calypso, Lady Liberty, Medusa, Hela, Athena à 90 ; Fortuna et Bastet à 60.",
+            "Phase 3 : Calypso, Lady Liberty, Medusa à 180 ; Athena, Hela, Fortuna, Bastet à 120.",
+            "Phase 4 : maxer la liste ci-dessus, puis toutes les autres 30 → 60 → 90 → max.",
+          ],
+        },
+      ],
+      note: "",
     },
     cryptides: {
       title: "Cryptides",

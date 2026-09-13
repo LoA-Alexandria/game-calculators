@@ -28,3 +28,12 @@ test("every published guide has a dictionary entry", () => {
     assert.equal(isGuideEntryId(id, en.guideEntries), true);
   }
 });
+
+test("goddesses phase 2 stops Fortuna and Bastet at 60", () => {
+  const { phases, note } = en.guideEntries.goddesses;
+  const phase2 = phases.find((phase) => phase.tone === "2");
+  assert.ok(phase2, "missing phase 2");
+  assert.equal(phase2.rows.find((row) => row.name === "Fortuna")?.target, "60");
+  assert.equal(phase2.rows.find((row) => row.name === "Bastet")?.target, "60");
+  assert.equal(note, "");
+});
