@@ -34,3 +34,6 @@ export const LOCALE_STORAGE_KEY = "popepoch-locale";
 
 /** Local autosave key for an editor's in-progress guide draft. */
 export const GUIDE_DRAFT_STORAGE_KEY = "popepoch-guide-draft";
+
+/** Local draft of the Hero tier list editor. */
+export const TIER_DRAFT_STORAGE_KEY = "popepoch-tier-draft";

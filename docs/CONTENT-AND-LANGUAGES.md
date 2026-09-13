@@ -85,12 +85,39 @@ cannot claim the same renderer by sharing a field name. Keep `sections` and
 lives in `lib/content/hero-layouts.ts`. Painting names, set effects, and hero
 matches for Artwork layouts live in `lib/content/artwork.ts`.
 
-The Hero tier list keeps its grades, names, resources, and bonuses in
-`lib/content/hero-tiers.ts`, once for all languages. The dictionaries only hold
-the text those rows point at (`roles`, `effects`, `resources`, `notes`,
-`variants`), so moving a hero to another tier is a one-line change there.
+The Hero tier list keeps its rows (hero names, grades, resources, bonuses) in
+`lib/data/hero-tiers.json`, once for all languages; `lib/content/hero-tiers.ts`
+types and exports them. The dictionaries only hold the text those rows point at
+(`roles`, `effects`, `resources`, `notes`, `variants`, `reasons`).
 `tests/hero-tiers.test.mjs` checks that every key has text in every language and
 that hero names match the Hero layouts guide.
+
+## Editing the hero tier list
+
+Members with `guides.draft` see **Edit tier list** on the tier list page, which
+opens `/guides/hero-tier-list/edit/`.
+
+- Drag a hero by its handle to another tier or position. The handle also works
+  from the keyboard: focus it, press space, move with the arrow keys, and press
+  space again to drop.
+- Select a hero to change its name, tier, grades, skill tags, effect, resource,
+  bonus, note, or reason, or to remove it. **Add hero** sits at the end of every
+  tier.
+- A text the dictionaries do not have yet (a new effect, note, or reason) can be
+  typed in English, German, and French from the **New text…** option.
+
+The draft is saved in that browser only (`localStorage['popepoch-tier-draft']`).
+**Export** produces:
+
+1. the complete `lib/data/hero-tiers.json`, one entry per line so a pull request
+   shows exactly which heroes changed, and
+2. for new text, one block per dictionary to paste under
+   `guideEntries.heroTierList`.
+
+The export dialog lists problems first: missing names, duplicates, invalid
+grades, and text keys without text. An untouched draft exports the published file
+byte for byte (`tests/hero-tier-editor.test.mjs`), so a diff only ever contains
+real changes.
 
 Community-written guides name their author in the entry (`credit`). Ask the
 author before publishing their text, and keep the credit when you edit it.

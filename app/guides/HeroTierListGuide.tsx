@@ -7,6 +7,7 @@ import {
   BATTLE_TIERS,
   OVERALL_TIERS,
   PRODUCTIVITY_TIERS,
+  TIER_IDS,
   UTILITY_TIERS,
   matchesHero,
   parseGrade,
@@ -18,7 +19,8 @@ import {
 } from "../../lib/content/hero-tiers";
 import type { Dictionary } from "../../lib/i18n";
 import { useLocale } from "../components/LocaleProvider";
-import { CloseIcon, SearchIcon } from "../components/Icons";
+import { useAuth } from "../components/AuthProvider";
+import { CloseIcon, PenIcon, SearchIcon } from "../components/Icons";
 
 type Guide = Dictionary["guideEntries"]["heroTierList"];
 
@@ -232,9 +234,11 @@ function UtilityList({ guide, query }: { guide: Guide; query: string }) {
 }
 
 function ProductivityList({ guide, query }: { guide: Guide; query: string }) {
-  const rows = PRODUCTIVITY_TIERS.map((row) => ({
-    ...row,
-    groups: row.groups
+  // Every tier is considered, so a tier with only a description (D: replaceable)
+  // still shows when the data has no row for it.
+  const rows = TIER_IDS.map((tier) => ({
+    tier,
+    groups: (PRODUCTIVITY_TIERS.find((row) => row.tier === tier)?.groups ?? [])
       .map((group) => ({ ...group, entries: group.entries.filter((entry) => matchesHero(entry.hero, query)) }))
       .filter((group) => group.entries.length > 0),
   })).filter((row) => row.groups.length > 0 || (query.trim() === "" && guide.productivityTiers[row.tier]));
@@ -373,6 +377,8 @@ function TierTabs({ guide }: { guide: Guide }) {
 }
 
 export function HeroTierListGuide({ guide }: { guide: Guide }) {
+  const { t } = useLocale();
+  const { allows } = useAuth();
   return (
     <div className="guide-wide hero-tiers">
       <p className="intro">{guide.intro}</p>
@@ -430,7 +436,15 @@ export function HeroTierListGuide({ guide }: { guide: Guide }) {
       </div>
       {guide.note ? <p className="callout">{guide.note}</p> : null}
 
-      <h2>{guide.listsLabel}</h2>
+      <div className="tier-lists-head">
+        <h2>{guide.listsLabel}</h2>
+        {allows("guides.draft") ? (
+          <Link className="small-button" href="/guides/hero-tier-list/edit/">
+            <PenIcon className="icon icon-sm" />
+            {t.tierEditor.openEditor}
+          </Link>
+        ) : null}
+      </div>
       <TierTabs guide={guide} />
 
       <Changelog guide={guide} />
