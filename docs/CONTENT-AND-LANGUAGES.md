@@ -61,7 +61,8 @@ filter. There is no second list to keep in step.
    an existing guide. The editor prints the dictionary block, the navigation
    row, and (for a new slug) a note to copy the page file. Existing guides on
    `/guides/` and on the guide page have Edit and Remove — the same commit-snippet
-   pattern as news and events.
+   pattern as news and events. Artwork layouts and the Hero tier list skip those
+   buttons: they have their own editors instead.
 2. Write or replace the text under `guideEntries.<id>` in all three dictionaries,
    following the shape of `waterSupply`: `title`, `summary`, `intro`,
    `sections[]`, `note`.
@@ -99,7 +100,8 @@ that hero names match the Hero layouts guide.
 ## Editing the hero tier list
 
 Members with `guides.draft` see **Edit tier list** on the tier list page, which
-opens `/guides/hero-tier-list/edit/`.
+opens `/guides/hero-tier-list/edit/`. The dictionary-snippet Edit / Remove at
+the top of the page is hidden here.
 
 - Drag a hero by its handle to another tier or position. The handle also works
   from the keyboard: focus it, press space, move with the arrow keys, and press
@@ -126,7 +128,8 @@ real changes.
 ## Editing artwork layouts
 
 Members with `guides.draft` see **Edit set skills** on Artwork layouts, which
-opens `/guides/artwork-layouts/edit/`.
+opens `/guides/artwork-layouts/edit/`. The dictionary-snippet Edit / Remove at
+the top of the page is hidden here.
 
 - Each build is a ranked list of painting sets from the Artwork catalogue.
   Change order with the rank dropdown, pick a reason, or remove a set.

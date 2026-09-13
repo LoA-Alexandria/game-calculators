@@ -9,6 +9,7 @@ import {
   camelToKebab,
   guideHref,
   guideIdFromHref,
+  guideHasSnippetEditor,
   guideLayout,
   isGuideEntryId,
   kebabToCamel,
@@ -36,6 +37,13 @@ test("every published guide has a dictionary entry", () => {
     assert.ok(id, `no id for ${item.href}`);
     assert.equal(isGuideEntryId(id, en.guideEntries), true);
   }
+});
+
+test("structured ranking guides skip the snippet Edit / Remove", () => {
+  assert.equal(guideHasSnippetEditor("artworkLayouts"), false);
+  assert.equal(guideHasSnippetEditor("heroTierList"), false);
+  assert.equal(guideHasSnippetEditor("artwork"), true);
+  assert.equal(guideHasSnippetEditor("waterSupply"), true);
 });
 
 test("artwork layouts levels SSR ATK first", () => {
