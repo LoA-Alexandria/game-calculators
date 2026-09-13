@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { isGuideEntryId, type GuideEntryId } from "../../lib/content/guides";
+import { guideHasSnippetEditor, isGuideEntryId, type GuideEntryId } from "../../lib/content/guides";
 import { useAuth } from "../components/AuthProvider";
 import { useDocumentTitle, useLocale } from "../components/LocaleProvider";
 import { BackLink, PageHead } from "../components/Ui";
@@ -18,7 +18,7 @@ export function GuideArticle({ id }: { id: GuideEntryId }) {
   const { t } = useLocale();
   const { allows } = useAuth();
   const guide = t.guideEntries[id];
-  const canWrite = allows("guides.draft");
+  const canWrite = allows("guides.draft") && guideHasSnippetEditor(id);
   const [target, setTarget] = useState<GuideEditorTarget | null>(null);
   useDocumentTitle(guide.title);
 

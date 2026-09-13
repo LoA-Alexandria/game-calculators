@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { guideIdFromHref, isGuideEntryId } from "../../lib/content/guides";
+import { guideHasSnippetEditor, guideIdFromHref, isGuideEntryId } from "../../lib/content/guides";
 import { groupByBadge, sectionById, type NavGroup, type NavItem } from "../../lib/navigation";
 import { useAuth } from "../components/AuthProvider";
 import { useDocumentTitle, useLocale } from "../components/LocaleProvider";
@@ -111,8 +111,10 @@ function CategoryGuides({
       </Link>
       <PageHead eyebrow={t.guides.title} title={group.category} lede={t.guides.pickGuide} />
       <div className="entry-list">
-        {group.items.map((item) =>
-          canWrite ? (
+        {group.items.map((item) => {
+          const id = guideIdFromHref(item.href);
+          const showSnippetActions = canWrite && Boolean(id && guideHasSnippetEditor(id));
+          return showSnippetActions ? (
             <article className="entry-card" key={item.href}>
               <Link href={item.href}>
                 <h3>{item.label(t)}</h3>
@@ -142,8 +144,8 @@ function CategoryGuides({
               <h3>{item.label(t)}</h3>
               <p>{item.description?.(t)}</p>
             </Link>
-          ),
-        )}
+          );
+        })}
       </div>
     </>
   );
