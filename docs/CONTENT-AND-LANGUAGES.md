@@ -106,10 +106,11 @@ Dates are formatted for the reader's language, so store them as `YYYY-MM-DD`.
 ## Section banners
 
 News, Events, Calculators, and Simulations use illustrated banners in
-`public/banners/`. Guides still draws the decorative CSS banner until it has
-its own image. To change or add one, put the file in `public/banners/` and set
-the path in `lib/content/banners.ts`. The illustrations are original splash art
-for this unofficial fan site, not artwork from the game.
+`public/banners/`. They span the main column as a slim strip under the top bar.
+Guides still draws the decorative CSS banner until it has its own image. To
+change or add one, put the file in `public/banners/` and set the path in
+`lib/content/banners.ts`. The illustrations are original splash art for this
+unofficial fan site, not artwork from the game.
 
 ## Translating validation messages
 
