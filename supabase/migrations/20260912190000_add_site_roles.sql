@@ -88,8 +88,11 @@ create policy "Admins can read every editor access row"
   using (public.current_site_role() = 'admin');
 
 -- ---------------------------------------------------------------------------
--- After applying this, promote the first admin by hand — nobody can grant it
--- through the interface until one exists:
+-- After applying this, map the first admin role by hand — nobody can add a
+-- mapping through the interface until an admin exists. Map a Discord role, not
+-- a member: verify-discord-role rewrites editor_access.role from the mapping on
+-- every sign-in, so a role set directly on editor_access does not survive.
 --
---   update public.editor_access set role = 'admin' where discord_user_id = '…';
+--   insert into public.role_mappings (discord_role_id, discord_role_name, role)
+--   values ('…', 'Admin', 'admin');
 -- ---------------------------------------------------------------------------
