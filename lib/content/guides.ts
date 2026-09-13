@@ -36,5 +36,5 @@ export function guideCategoryId(
   const item = sectionById("guides").items.find((entry) => entry.href === href);
   const id = item?.categoryId;
   if (id && Object.hasOwn(categories, id)) return id as GuideCategoryId;
-  return "cityLayout";
+  return "layouts";
 }

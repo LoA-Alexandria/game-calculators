@@ -112,7 +112,7 @@ const en = {
   },
   guideCategories: {
     coreElements: "Core elements",
-    cityLayout: "City layout",
+    layouts: "Layouts",
     goddess: "Goddess",
     event: "Event",
     grandVoyage: "Grand Voyage",
@@ -524,6 +524,255 @@ const en = {
       ],
       note:
         "The thresholds above are the planner’s defaults. If your game shows different numbers, change them in the planner’s settings tab and tell us on Discord so the defaults can be corrected.",
+    },
+    heroLayouts: {
+      title: "Hero layouts",
+      summary: "How formation slots decide who falls and who casts, and the Crit, DoT, Pursuit, and Execute builds.",
+      intro:
+        "Where a hero stands decides when they fall and when their skill fires. This guide covers how the formation board works, how to place heroes, and the builds players run right now.",
+      credit: "Guide by Autumn (Ice, S12), shared on Discord",
+      creditDate: "August 2026 · Execute added in September",
+      boardHeading: "The formation board",
+      boardCaption: "Slots as the Formation screen numbers them. The frontline is the right-hand column.",
+      columnBack: "Backline",
+      columnMiddle: "Middle",
+      columnFront: "Frontline",
+      slotLabel: "Slot {slot}",
+      legendLast: "Falls last · casts first",
+      legendFirst: "Falls first",
+      rulesHeading: "How the formation works",
+      sections: [
+        {
+          heading: "Low numbers last longest",
+          body: [
+            "Slot 1 is the last hero to fall and slot 25 the first. The frontline and the middle of each column hold on longest, so that is where your most invested heroes belong.",
+          ],
+        },
+        {
+          heading: "The lowest number casts",
+          body: [
+            "When several heroes could use a skill in the same turn, the one on the lowest number goes first.",
+          ],
+        },
+        {
+          heading: "Command sets the pace",
+          body: [
+            "Command value decides who acts first. Higher rarities have more of it and gain more per level, so level a lower-rarity hero if you want them to trigger more often.",
+          ],
+        },
+        {
+          heading: "Every hero alive adds damage",
+          body: [
+            "The more heroes are still standing, the more damage the formation deals. Grenade gives some skill damage back as heroes fall, but unless it is high-star, not losing them is worth more.",
+          ],
+        },
+        {
+          heading: "Quick Deploy sorts by rarity",
+          body: [
+            "Quick Deploy used to produce a usable formation. It now orders heroes by rarity, which puts low-star UR+ heroes in the frontline, so set your formation by hand.",
+          ],
+        },
+        {
+          heading: "Forced triggers",
+          body: [
+            "SSR Nidhogg (Cryptid) makes the entire frontline trigger. Boat (Collection) makes the lowest-numbered hero with a skill ready cast it on turns 4, 8, 12, and so on, with four times the damage.",
+          ],
+        },
+      ],
+      tipsHeading: "Placement tips",
+      tips: [
+        "Drag a hero onto another slot to swap the two; tap a hero to remove them.",
+        "Stack heroes of the same damage type: Crit, DoT, or Pursuit.",
+        "Keep a few healers and shielders so the formation lasts. Put DoT healers and shielders on low numbers, because their effect needs time to build up.",
+        "If a DoT hero and a Pursuit hero deal about the same damage, give the DoT hero the lower number.",
+        "Unless a hero is heavily invested, the higher their skill activation chance, the lower their number should be.",
+        "Some utility is worth a forward slot too, for example Hermes.",
+      ],
+      note: "There is no single correct formation. Build yours around the heroes you have invested in, then add healers, shielders, and utility.",
+      buildsHeading: "Builds",
+      buildsLede: "Pick the build that matches the heroes you have invested in.",
+      legendHero: "Hero",
+      legendCollection: "Collection",
+      labelKey: "Key heroes",
+      labelImportant: "Important heroes",
+      labelOther: "Other heroes",
+      labelCollection: "Best collection",
+      labelCounters: "Countered by",
+      labelPros: "Pros",
+      labelCons: "Cons",
+      builds: [
+        {
+          id: "crit",
+          name: "Pure Crit",
+          status: "Most recommended",
+          tagline:
+            "Front-load overwhelming critical hits and end the fight early; there is little left to do afterwards. The key heroes have common shard sources, which makes them the easiest to invest in.",
+          key: [{ name: "Joan of Arc", note: "UR minimum" }, "Achilles"],
+          important: ["Tutankhamen", "Blackbeard", "Spartacus", "Newton", "Charles Darwin", "Bjorn", "Lagertha", "Guan Yu"],
+          other: ["Saladin", "Drake", "Catherine de Medici"],
+          collection: ["Grenade"],
+          counters: [
+            { label: "Damage cap or reduction", picks: ["Hammer", "Bicycle", "Pompey"] },
+            { label: "Strong healing or shielding", picks: [{ name: "Odysseus", note: "item" }] },
+            { label: "Delay", picks: ["Wreath", "Horse", "Wings"] },
+            { label: "ATK steal", picks: ["Mask"] },
+            { label: "Dodge", picks: ["Hermes"] },
+            { label: "Death immunity", picks: ["Tesla"] },
+          ],
+          pros: [
+            "Very, very strong upfront damage.",
+            "Needs the least utility to perform well, although utility still helps.",
+            "Easy to build early: the key heroes are available from day one.",
+            "Easy to invest in, and it carries you well into the late game.",
+          ],
+          cons: [
+            "It is an alpha strike: if the opening burst does not kill, you are in trouble.",
+            "Reaches full strength only with Achilles’ item, which is expensive; without it the build is about 60–70 % as effective.",
+            "Needs the most heroes to reach its highest damage.",
+          ],
+          notes: [
+            "Bjorn is excellent here but expensive to star. If you can focus on him, he moves up to key hero.",
+          ],
+        },
+        {
+          id: "dot",
+          name: "DoT / Stall",
+          status: "",
+          tagline:
+            "Outlast the enemy with strong heals and shields while damage over time builds up, and layer as many debuffs on them as you can.",
+          key: ["King Arthur", "Odysseus", "Gawain", "Lancelot"],
+          important: ["Guinevere", "Pompey", "Richard I", "Alfred I", "Hector", "Da Vinci", "Columbus", "Franklin", "Queen Victoria", "Tesla", "Sun-Sin"],
+          other: ["Hannibal", "Archimedes", "Andersen", "Himiko", "Florence Nightingale"],
+          collection: ["Dagger", "Wings", "David/Adam"],
+          counters: [
+            { label: "Debuff immunity", picks: ["Dante", "Homer", "Pompey"] },
+            { label: "Delay", picks: ["Wreath", "Horse", "Hammurabi"] },
+            { label: "Heal block or reduction", picks: ["Spartacus", "Livia"] },
+          ],
+          pros: [
+            "The direct opposite of Crit: very strong heals and shields outlast the burst while debuffs pile up.",
+            "Enemy counters trigger at random and often sit in the backline, so they tend to fall first.",
+            "Offers the most varied tactics thanks to all the utility.",
+          ],
+          cons: [
+            "Every key hero is expensive to obtain and upgrade, although all of them are available early.",
+            "Enemy counters trigger at random and can cancel your damage outright.",
+            "If healing and shielding cannot keep up, the formation falls fast.",
+            "Outside the key heroes, DoT is a random trigger too; no trigger, no damage.",
+            "Needs the most utility: healers, shielders, buffers, and debuffers.",
+            "Fussy to play well unless you clearly overpower the enemy.",
+          ],
+          notes: [
+            "Lancelot wants as many debuffers in the formation as you can reasonably fit.",
+            "Honourable mention: Diabolus.",
+          ],
+        },
+        {
+          id: "pursuit",
+          name: "Pure Pursuit",
+          status: "",
+          tagline:
+            "The middle ground between Crit and DoT: land as many hits on the enemy as possible. Some utility is needed.",
+          key: [{ name: "Caesar", note: "with Nidhogg" }, "William Shakespeare", { name: "Billy the Kid", note: "with item" }, "Louis XIV", "Merlin"],
+          important: ["Augustus", "Alexander the Great", "Napoleon", "Galileo Galilei", "Musashi"],
+          other: ["Isabella I", "Mary I", "Elizabeth I", "Robin Hood"],
+          collection: ["Replica"],
+          counters: [
+            { label: "Collection", picks: ["Hammer", "Mask", "Pedal Car"] },
+          ],
+          pros: [
+            "Needs the fewest heroes to perform well.",
+            "Not as slow as DoT, and still gives some sustained damage.",
+            "Has very few direct counters.",
+            "Available early.",
+          ],
+          cons: [
+            "Clearly lower damage unless heavily invested, because the fewest heroes deal the damage.",
+            "Augustus has to sit in the frontline in one of the top three slots despite weaker ATK scaling, because his skill needs to trigger within the first five turns.",
+            "Needs heavy buff and debuff support to match the other builds.",
+            "Replica is a random trigger as well.",
+            "The most luck-dependent of the pure builds, in battle and when investing.",
+          ],
+          notes: [],
+        },
+        {
+          id: "execute",
+          name: "Execute",
+          status: "Late game · in testing",
+          tagline:
+            "Knock enemies out for good. Once they are down, they stay down, and losing their strongest heroes can break their whole build.",
+          key: ["Circe", { name: "Billy the Kid", note: "with item" }, "Guan Yu", "Musashi", "Lu Bu", { name: "Joan of Arc", note: "UR+" }],
+          important: ["Gawain"],
+          other: [],
+          collection: ["Noah’s Ark"],
+          counters: [
+            { label: "Dodge", picks: ["Hermes"] },
+            { label: "Heavy shields or heals", picks: [] },
+            { label: "Death immunity", picks: ["Tesla"] },
+          ],
+          pros: [
+            "Once enemies are knocked down, they do not get back up.",
+            "Counters wide builds with evenly levelled heroes.",
+            "Knocking out the enemy’s strongest heroes early makes their whole build fall apart.",
+            "Needs very few specific heroes, so it mixes easily into other builds.",
+          ],
+          cons: [
+            "Still needs strong damage to bring enemies into execute range.",
+            "Still needs decent healing to survive that long.",
+            "Still being tested.",
+            "A late-game build: Circe, who makes it work, is only available from the 5th Atlantis onwards.",
+          ],
+          notes: [
+            "Any strong damage dealer also counts as an important hero.",
+          ],
+        },
+      ],
+      utilityHeading: "Battle utility",
+      utilityLede:
+        "Not a build of its own: these utility heroes fit into any formation, including up front. Every pick is a trade-off.",
+      utility: [
+        {
+          role: "Healers",
+          groups: [
+            { label: "", picks: ["Odysseus", "Queen Victoria", "Pompey", "Franklin", "Confucius", "Wallace", "Noah", "Blackbeard", "William Shakespeare", "Eleanor of Aquitaine", "Victor Hugo", "Cervantes"] },
+          ],
+        },
+        {
+          role: "Shielders",
+          groups: [
+            { label: "", picks: ["Da Vinci", "Pompey", "Queen Victoria", "Michelangelo"] },
+          ],
+        },
+        {
+          role: "Buffers",
+          groups: [
+            { label: "ATK buff", picks: ["Prometheus", "Da Vinci", "Alexander Hamilton", "Anne Bonny", "Adam"] },
+            { label: "Damage reduction", picks: ["Socrates", "Marco Polo", "King Arthur"] },
+            { label: "Death immunity", picks: ["Tesla"] },
+            { label: "Debuff removal or immunity", picks: ["Dante", "Thomas Edison", { name: "Heracles", note: "with item" }] },
+            { label: "Dodge", picks: ["Hermes"] },
+            { label: "Shield break", picks: ["Merlin"] },
+          ],
+        },
+        {
+          role: "Debuffers",
+          groups: [
+            { label: "Enemy buff removal", picks: ["Tutankhamen", "Beethoven", "Homer", { name: "Ragnar", note: "Enlightenment Age and later" }, "Hatshepsut", "Heracles"] },
+            { label: "Enemy ATK or skill damage down", picks: ["Charles the Great", "Chaucer", "Mary Shelley", "James Watt"] },
+            { label: "Enemy damage taken up", picks: ["Gilgamesh", "Hypatia", "Dido", "Beethoven"] },
+            { label: "Delay or seal", picks: ["Hammurabi", "Cleopatra"] },
+            { label: "Enemy skill steal", picks: [{ name: "Cleopatra", note: "with item" }] },
+            { label: "Heal block or reduction", picks: ["Livia", "Spartacus"] },
+            { label: "Collection denial", picks: ["Morgana"] },
+          ],
+        },
+        {
+          role: "Execute",
+          groups: [
+            { label: "", picks: ["Lu Bu", "Circe"] },
+          ],
+        },
+      ],
     },
   },
   auth: {
