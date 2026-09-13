@@ -68,7 +68,7 @@ filter. There is no second list to keep in step.
 3. Add or replace the item in the `guides` section in `lib/navigation.ts`,
    including a `badge` and `categoryId` from `guideCategories`. Reuse an existing
    category when the guide belongs next to one already there. Core systems
-   (heroes, technology, collection, manor, support, goddesses, cryptides) use
+   (heroes, technology, collection, artwork, manor, support, goddesses, cryptides) use
    `coreElements`.
 4. For a new slug, copy `app/guides/water-supply/page.tsx` and pass the new id
    to `GuideArticle`.

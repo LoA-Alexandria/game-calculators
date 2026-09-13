@@ -8,6 +8,7 @@ import { BackLink, PageHead } from "../components/Ui";
 import { PenIcon, TrashIcon } from "../components/Icons";
 import { GuideEditor, type GuideEditorTarget } from "./GuideEditor";
 import { GoddessesGuide, isGoddessesGuide } from "./GoddessesGuide";
+import { ArtworkGuide, isArtworkGuide } from "./ArtworkGuide";
 
 export function GuideArticle({ id }: { id: GuideEntryId }) {
   const { t } = useLocale();
@@ -41,6 +42,8 @@ export function GuideArticle({ id }: { id: GuideEntryId }) {
       <article className="article">
         {isGoddessesGuide(guide) ? (
           <GoddessesGuide guide={guide} />
+        ) : isArtworkGuide(guide) ? (
+          <ArtworkGuide guide={guide} />
         ) : (
           <>
             <p className="intro">{guide.intro}</p>
