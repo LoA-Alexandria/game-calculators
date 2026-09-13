@@ -111,6 +111,7 @@ const en = {
     remove: "Remove",
   },
   guideCategories: {
+    coreElements: "Core elements",
     cityLayout: "City layout",
     goddess: "Goddess",
     event: "Event",
@@ -290,6 +291,202 @@ const en = {
     },
   },
   guideEntries: {
+    heroes: {
+      title: "Heroes",
+      summary: "Where heroes sit in the city — the detailed tables are still being written.",
+      intro:
+        "Heroes are the first long-running progression track: they staff production buildings, later fill Museion exhibits, and carry stars and skills that raise those bonuses. This page holds the slot until the assignment lists are checked.",
+      sections: [
+        {
+          heading: "What this guide will cover",
+          body: [
+            "Which heroes belong on which buildings, how stars and skill levels change their bonuses, and how Museion placement differs from a production assignment.",
+            "Until those tables are in, use this page as the Core elements entry for heroes rather than as a complete reference.",
+          ],
+        },
+      ],
+      note: "The detailed hero lists will be added in a later change. If you already keep a checked list on Discord, send it so we can version it here.",
+    },
+    technology: {
+      title: "Technology",
+      summary: "Research gates that unlock the rest of the game — the full tree is still being written.",
+      intro:
+        "Technology is the unlock map: a research node often has to finish before a building, a campaign chapter, or a later system such as Goddess even appears. This page is the placeholder for that tree.",
+      sections: [
+        {
+          heading: "What this guide will cover",
+          body: [
+            "The research that gates Campaign, Goddess, and the other Core elements, and the order worth following when several nodes are available at once.",
+            "Until that list is checked against the current client, treat this page as the category entry rather than a complete order.",
+          ],
+        },
+      ],
+      note: "The research order will be added once it is checked against the current client. Corrections belong on Discord so the page and any calculator that depends on it can move together.",
+    },
+    collection: {
+      title: "Collection",
+      summary: "Exhibits and collection bonuses — the catalogue is still being written.",
+      intro:
+        "Collection covers the exhibits and sets that grant account-wide bonuses once they are completed. This page holds the Core elements slot until that catalogue is versioned here.",
+      sections: [
+        {
+          heading: "What this guide will cover",
+          body: [
+            "Which sets exist, what each completed set grants, and how Museion exhibits overlap with hero assignment.",
+            "Until those rows are checked, this page is the category entry rather than a complete catalogue.",
+          ],
+        },
+      ],
+      note: "The collection catalogue will be added in a later change. Bring a checked list if you already keep one.",
+    },
+    manor: {
+      title: "Manor",
+      summary: "Population, housing, and manor upgrades — the numbers are still being written.",
+      intro:
+        "The manor is the housing and population track that feeds workers into the rest of the city. This page holds its Core elements slot until the upgrade table is versioned here.",
+      sections: [
+        {
+          heading: "What this guide will cover",
+          body: [
+            "How population is gained, what manor upgrades cost, and which later systems wait on a population gate.",
+            "Until those numbers are checked, use this page as the category entry rather than a complete table.",
+          ],
+        },
+      ],
+      note: "Manor costs and population gates will be added once they are checked against the current client.",
+    },
+    support: {
+      title: "Support",
+      summary: "Account-wide support bonuses — the list is still being written.",
+      intro:
+        "Support covers the systems that buff the rest of the city rather than producing a resource themselves. This page holds the Core elements slot until that list is versioned here.",
+      sections: [
+        {
+          heading: "What this guide will cover",
+          body: [
+            "Which support tracks exist, what they buff, and the order worth raising them in.",
+            "Until those tracks are checked, this page is the category entry rather than a complete order.",
+          ],
+        },
+      ],
+      note: "The support tracks will be added in a later change. Send a checked list on Discord if you already keep one.",
+    },
+    // Upgrade order is the LoA Alexandria sequence (13 Sep 2026).
+    // Phase 2 Fortuna and Bastet are 60, not the older community sheet's 90.
+    goddesses: {
+      title: "Goddesses",
+      summary: "Who to raise first, where to stop without an SSR skin, and what each affinity is worth.",
+      intro: "Gifts raise affinity and unlock bonuses. Recruit a goddess once her conditions are met. Skip anyone you do not have and continue with the next.",
+      orderHeading: "Upgrade order",
+      rosterHeading: "Affinity and obtain",
+      toolsHeading: "Calculators",
+      toolsMore: "All calculators",
+      colName: "Goddess",
+      colTarget: "Level",
+      colHint: "Without SSR",
+      colAffinity: "Affinity",
+      colObtain: "Obtain",
+      phases: [
+        {
+          tone: "1",
+          title: "Phase 1",
+          subtitle: "Core fundamentals",
+          lede: "",
+          rows: [
+            { name: "Demeter", target: "180", hint: "90" },
+            { name: "Venus", target: "180", hint: "150" },
+          ],
+        },
+        {
+          tone: "2",
+          title: "Phase 2",
+          subtitle: "First milestones",
+          lede: "",
+          rows: [
+            { name: "Calypso", target: "90", hint: "" },
+            { name: "Lady Liberty", target: "90", hint: "" },
+            { name: "Medusa", target: "90", hint: "" },
+            { name: "Hela", target: "90", hint: "" },
+            { name: "Athena", target: "90", hint: "" },
+            { name: "Fortuna", target: "60", hint: "" },
+            { name: "Bastet", target: "60", hint: "" },
+          ],
+        },
+        {
+          tone: "3",
+          title: "Phase 3",
+          subtitle: "Mid-game push",
+          lede: "",
+          rows: [
+            { name: "Calypso", target: "180", hint: "" },
+            { name: "Lady Liberty", target: "180", hint: "" },
+            { name: "Medusa", target: "180", hint: "" },
+            { name: "Athena", target: "120", hint: "" },
+            { name: "Hela", target: "120", hint: "" },
+            { name: "Fortuna", target: "120", hint: "" },
+            { name: "Bastet", target: "120", hint: "" },
+          ],
+        },
+        {
+          tone: "4",
+          title: "Phase 4",
+          subtitle: "Late game",
+          lede: "Finish maxing the goddesses above, then take every other goddess through the same milestones together.",
+          rows: [
+            { name: "Everyone else", target: "30 → 60 → 90 → max", hint: "" },
+          ],
+        },
+      ],
+      roster: [
+        { name: "Demeter", affinity: "Production building upgrade cost −5%. Shieldman ATK/HP +6%.", obtain: "" },
+        { name: "Venus", affinity: "All building productivity +20%. Pikeman ATK/HP +6%.", obtain: "First purchase bundle" },
+        { name: "Lady Liberty", affinity: "All-hero battle damage +5%. All-hero ATK/HP +3%.", obtain: "Tap Football" },
+        { name: "Medusa", affinity: "All-hero battle damage +5%. All-hero ATK/HP +3%.", obtain: "1st Ringtoss" },
+        { name: "Hela", affinity: "All-hero damage reduction +5%. All-hero ATK/HP +3%.", obtain: "2nd Ringtoss" },
+        { name: "Bastet", affinity: "", obtain: "3rd Ringtoss" },
+        { name: "Moirai", affinity: "Goddess Theater income +2%. All-hero ATK/HP +3%.", obtain: "4th Ringtoss" },
+        { name: "Muse", affinity: "Muse Coin +2% in Museion. All-hero ATK/HP +3%.", obtain: "4th Ringtoss" },
+        { name: "Athena", affinity: "All-hero command +3%. All-hero ATK/HP +3%.", obtain: "VIP 4" },
+        { name: "Ixchel", affinity: "Grand Voyage city dividends +2%. All-hero ATK/HP +3%.", obtain: "Grand Voyage" },
+        { name: "Fortuna", affinity: "Wonder population +5%. Shieldman ATK/HP +6%.", obtain: "" },
+        { name: "Brunhild", affinity: "Campaign damage taken −5%. Cavalry ATK/HP +11%.", obtain: "" },
+        { name: "Vivian", affinity: "Mystic Tower sweep rewards +6%. Shieldman ATK/HP +6%.", obtain: "" },
+        { name: "Artemis", affinity: "Crown Glory Honor Fortune +2%. Archer ATK/HP +6%.", obtain: "" },
+        { name: "Freya", affinity: "Glory Arena damage dealt +5%. Pikeman ATK/HP +6%.", obtain: "" },
+        { name: "Hera", affinity: "Northern Enemy ally damage reduction +5%. Cavalry ATK/HP +6%.", obtain: "" },
+        { name: "Eve", affinity: "Population recruitment +5/sec. Archer ATK/HP +6%.", obtain: "" },
+        { name: "Hestia", affinity: "Campaign gold +5%. Pikeman ATK/HP +11%.", obtain: "" },
+        { name: "Nike", affinity: "4% chance for +1 Norman Oak in Glory Arena. Pikeman ATK/HP +6%.", obtain: "" },
+      ],
+      sections: [
+        {
+          heading: "Upgrade order",
+          body: [
+            "Phase 1: Demeter 180 (90 without SSR), Venus 180 (150 without SSR).",
+            "Phase 2: Calypso, Lady Liberty, Medusa, Hela, Athena to 90; Fortuna and Bastet to 60.",
+            "Phase 3: Calypso, Lady Liberty, Medusa to 180; Athena, Hela, Fortuna, Bastet to 120.",
+            "Phase 4: Max the list above, then take everyone else 30 → 60 → 90 → max.",
+          ],
+        },
+      ],
+      note: "",
+    },
+    cryptides: {
+      title: "Cryptides",
+      summary: "Catching and raising Cryptides — the tables are still being written.",
+      intro:
+        "Cryptides are the cryptid creatures you collect and raise. This page holds the Core elements slot until catch locations and growth tables are versioned here.",
+      sections: [
+        {
+          heading: "What this guide will cover",
+          body: [
+            "Where each Cryptide appears, how it grows, and which bonuses are worth the catch.",
+            "Until those rows are checked, this page is the category entry rather than a complete bestiary.",
+          ],
+        },
+      ],
+      note: "Cryptide locations and growth tables will be added in a later change.",
+    },
     waterSupply: {
       title: "Water supply and production bonuses",
       summary: "How a building’s water total is counted, and what each bonus tier is worth.",

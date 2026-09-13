@@ -7,6 +7,7 @@ import { useDocumentTitle, useLocale } from "../components/LocaleProvider";
 import { BackLink, PageHead } from "../components/Ui";
 import { PenIcon, TrashIcon } from "../components/Icons";
 import { GuideEditor, type GuideEditorTarget } from "./GuideEditor";
+import { GoddessesGuide, isGoddessesGuide } from "./GoddessesGuide";
 
 export function GuideArticle({ id }: { id: GuideEntryId }) {
   const { t } = useLocale();
@@ -38,16 +39,22 @@ export function GuideArticle({ id }: { id: GuideEntryId }) {
         </div>
       )}
       <article className="article">
-        <p className="intro">{guide.intro}</p>
-        {guide.sections.map((section) => (
-          <section key={section.heading}>
-            <h2>{section.heading}</h2>
-            {section.body.map((paragraph, index) => (
-              <p key={index}>{paragraph}</p>
+        {isGoddessesGuide(guide) ? (
+          <GoddessesGuide guide={guide} />
+        ) : (
+          <>
+            <p className="intro">{guide.intro}</p>
+            {guide.sections.map((section) => (
+              <section key={section.heading}>
+                <h2>{section.heading}</h2>
+                {section.body.map((paragraph, index) => (
+                  <p key={index}>{paragraph}</p>
+                ))}
+              </section>
             ))}
-          </section>
-        ))}
-        <p className="callout">{guide.note}</p>
+            {guide.note ? <p className="callout">{guide.note}</p> : null}
+          </>
+        )}
       </article>
       {canWrite && target && isGuideEntryId(target.id, t.guideEntries) && (
         <GuideEditor

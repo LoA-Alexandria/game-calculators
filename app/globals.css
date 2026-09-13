@@ -1150,6 +1150,130 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
   font-size: .92rem;
 }
 
+.article:has(.guide-wide) { max-width: none; }
+.guide-wide { max-width: 980px; }
+.guide-wide .intro { max-width: 62ch; margin-bottom: 8px; }
+.guide-wide h2 { margin-top: 28px; font-size: 1.22rem; }
+
+.guide-figure {
+  position: relative;
+  height: 120px;
+  margin: 0 0 22px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--r-xl);
+  background:
+    radial-gradient(circle at 78% 40%, color-mix(in srgb, var(--gold) 28%, transparent), transparent 52%),
+    radial-gradient(circle at 18% 80%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 48%),
+    var(--inverse);
+}
+.guide-figure-moon {
+  position: absolute;
+  top: 22px;
+  right: 12%;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--gold-hi);
+  box-shadow: inset -14px -8px 0 0 color-mix(in srgb, var(--inverse) 55%, var(--gold));
+}
+.guide-figure-orbit {
+  position: absolute;
+  top: 10px;
+  right: 7%;
+  width: 96px;
+  height: 96px;
+  border: 1px dashed color-mix(in srgb, var(--gold) 45%, transparent);
+  border-radius: 50%;
+}
+.guide-figure-spark {
+  position: absolute;
+  left: 14%;
+  bottom: 28px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent-hi);
+  box-shadow: 28px -18px 0 0 color-mix(in srgb, var(--gold) 80%, white), 52px 8px 0 -2px var(--accent);
+}
+
+.phase-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.phase-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+}
+.phase-card-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  color: #fff;
+}
+.phase-kicker {
+  margin: 0;
+  font-size: .68rem;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  opacity: .85;
+}
+.phase-card-head h3 { margin: 2px 0 0; font-size: 1.05rem; color: inherit; }
+.phase-index {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  flex: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .18);
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+.guide-wide .phase-lede {
+  margin: 0;
+  padding: 12px 16px 0;
+  color: var(--ink-soft);
+  font-size: .88rem;
+  line-height: 1.5;
+}
+.phase-card .table-scroll { padding: 6px 8px 10px; }
+.phase-card[data-tone="1"] .phase-card-head { background: linear-gradient(120deg, #1d6aa5, #3d9ad6); }
+.phase-card[data-tone="2"] .phase-card-head { background: linear-gradient(120deg, #6b3fa0, #9b6bd6); }
+.phase-card[data-tone="3"] .phase-card-head { background: linear-gradient(120deg, #b45a16, #e0893a); }
+.phase-card[data-tone="4"] .phase-card-head { background: linear-gradient(120deg, #a4332c, #d45b52); }
+
+.guide-table-panel { padding: 8px 10px 12px; }
+.guide-name { display: inline-flex; align-items: center; gap: 10px; font-weight: 600; }
+.guide-avatar {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: .72rem;
+  font-weight: 700;
+}
+.guide-more { margin-top: 12px; }
+.guide-more a { color: var(--accent); font-weight: 600; }
+
+@media (max-width: 760px) {
+  .phase-grid { grid-template-columns: 1fr; }
+  .guide-figure { height: 88px; }
+}
+
 /* --- notices ------------------------------------------------------------- */
 
 .notice {

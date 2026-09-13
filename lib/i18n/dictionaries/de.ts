@@ -111,6 +111,7 @@ const de: Dictionary = {
     remove: "Entfernen",
   },
   guideCategories: {
+    coreElements: "Kernelemente",
     cityLayout: "Stadtaufbau",
     goddess: "Göttin",
     event: "Event",
@@ -292,6 +293,200 @@ const de: Dictionary = {
     },
   },
   guideEntries: {
+    heroes: {
+      title: "Helden",
+      summary: "Wo Helden in der Stadt sitzen — die detaillierten Tabellen werden noch geschrieben.",
+      intro:
+        "Helden sind der erste lange Fortschrittspfad: Sie besetzen Produktionsgebäude, füllen später Museion-Vitrinen und tragen Sterne und Fertigkeiten, die diese Boni erhöhen. Diese Seite hält den Platz, bis die Zuordnungslisten geprüft sind.",
+      sections: [
+        {
+          heading: "Was dieser Guide abdecken wird",
+          body: [
+            "Welche Helden auf welche Gebäude gehören, wie Sterne und Fertigkeitsstufen ihre Boni ändern und wie die Museion-Platzierung sich von einer Produktionszuweisung unterscheidet.",
+            "Bis diese Tabellen stehen, ist diese Seite der Kernelemente-Eintrag für Helden, kein vollständiges Nachschlagewerk.",
+          ],
+        },
+      ],
+      note: "Die detaillierten Heldenlisten kommen in einer späteren Änderung. Wenn du auf Discord schon eine geprüfte Liste führst, schick sie, damit wir sie hier versionieren können.",
+    },
+    technology: {
+      title: "Technologie",
+      summary: "Forschungs-Tore, die den Rest des Spiels freischalten — der volle Baum wird noch geschrieben.",
+      intro:
+        "Technologie ist die Freischaltkarte: Ein Forschungsknoten muss oft fertig sein, bevor ein Gebäude, ein Kampagnenkapitel oder ein späteres System wie Göttin überhaupt erscheint. Diese Seite ist der Platzhalter für diesen Baum.",
+      sections: [
+        {
+          heading: "Was dieser Guide abdecken wird",
+          body: [
+            "Die Forschung, die Kampagne, Göttin und die anderen Kernelemente freischaltet, und die Reihenfolge, die sich lohnt, wenn mehrere Knoten gleichzeitig offen sind.",
+            "Bis diese Liste gegen den aktuellen Client geprüft ist, ist diese Seite der Kategorie-Eintrag, keine vollständige Reihenfolge.",
+          ],
+        },
+      ],
+      note: "Die Forschungsreihenfolge kommt, sobald sie gegen den aktuellen Client geprüft ist. Korrekturen gehören auf Discord, damit Seite und jeder Rechner, der davon abhängt, gemeinsam nachziehen.",
+    },
+    collection: {
+      title: "Sammlung",
+      summary: "Vitrinen und Sammlungsboni — der Katalog wird noch geschrieben.",
+      intro:
+        "Sammlung umfasst die Vitrinen und Sets, die nach Abschluss konto-weite Boni geben. Diese Seite hält den Kernelemente-Platz, bis dieser Katalog hier versioniert ist.",
+      sections: [
+        {
+          heading: "Was dieser Guide abdecken wird",
+          body: [
+            "Welche Sets es gibt, was ein abgeschlossenes Set gewährt und wie Museion-Vitrinen sich mit Heldenzuweisung überschneiden.",
+            "Bis diese Zeilen geprüft sind, ist diese Seite der Kategorie-Eintrag, kein vollständiger Katalog.",
+          ],
+        },
+      ],
+      note: "Der Sammlungskatalog kommt in einer späteren Änderung. Bring eine geprüfte Liste mit, wenn du schon eine führst.",
+    },
+    manor: {
+      title: "Anwesen",
+      summary: "Bevölkerung, Wohnraum und Anwesen-Ausbauten — die Zahlen werden noch geschrieben.",
+      intro:
+        "Das Anwesen ist der Wohn- und Bevölkerungspfad, der Arbeiter in den Rest der Stadt speist. Diese Seite hält den Kernelemente-Platz, bis die Ausbautabelle hier versioniert ist.",
+      sections: [
+        {
+          heading: "Was dieser Guide abdecken wird",
+          body: [
+            "Wie Bevölkerung gewonnen wird, was Anwesen-Ausbauten kosten und welche späteren Systeme auf einem Bevölkerungstor warten.",
+            "Bis diese Zahlen geprüft sind, ist diese Seite der Kategorie-Eintrag, keine vollständige Tabelle.",
+          ],
+        },
+      ],
+      note: "Anwesen-Kosten und Bevölkerungstore kommen, sobald sie gegen den aktuellen Client geprüft sind.",
+    },
+    support: {
+      title: "Unterstützung",
+      summary: "Konto-weite Unterstützungsboni — die Liste wird noch geschrieben.",
+      intro:
+        "Unterstützung umfasst die Systeme, die den Rest der Stadt stärken, statt selbst eine Ressource herzustellen. Diese Seite hält den Kernelemente-Platz, bis diese Liste hier versioniert ist.",
+      sections: [
+        {
+          heading: "Was dieser Guide abdecken wird",
+          body: [
+            "Welche Unterstützungspfade es gibt, was sie stärken und in welcher Reihenfolge sie sich lohnen.",
+            "Bis diese Pfade geprüft sind, ist diese Seite der Kategorie-Eintrag, keine vollständige Reihenfolge.",
+          ],
+        },
+      ],
+      note: "Die Unterstützungspfade kommen in einer späteren Änderung. Schick eine geprüfte Liste auf Discord, wenn du schon eine führst.",
+    },
+    goddesses: {
+      title: "Göttinnen",
+      summary: "Wen du zuerst hebst, wo du ohne SSR-Skin stoppst, und was jede Affinität bringt.",
+      intro: "Geschenke erhöhen die Affinität und schalten Boni frei. Eine Göttin wirbst du an, sobald ihre Bedingungen erfüllt sind. Fehlt dir jemand, überspringe sie und mach mit der nächsten weiter.",
+      orderHeading: "Ausbaureihenfolge",
+      rosterHeading: "Affinität und Bezug",
+      toolsHeading: "Rechner",
+      toolsMore: "Alle Rechner",
+      colName: "Göttin",
+      colTarget: "Stufe",
+      colHint: "Ohne SSR",
+      colAffinity: "Affinität",
+      colObtain: "Bezug",
+      phases: [
+        {
+          tone: "1",
+          title: "Phase 1",
+          subtitle: "Kernfundament",
+          lede: "",
+          rows: [
+            { name: "Demeter", target: "180", hint: "90" },
+            { name: "Venus", target: "180", hint: "150" },
+          ],
+        },
+        {
+          tone: "2",
+          title: "Phase 2",
+          subtitle: "Erste Meilensteine",
+          lede: "",
+          rows: [
+            { name: "Calypso", target: "90", hint: "" },
+            { name: "Lady Liberty", target: "90", hint: "" },
+            { name: "Medusa", target: "90", hint: "" },
+            { name: "Hela", target: "90", hint: "" },
+            { name: "Athena", target: "90", hint: "" },
+            { name: "Fortuna", target: "60", hint: "" },
+            { name: "Bastet", target: "60", hint: "" },
+          ],
+        },
+        {
+          tone: "3",
+          title: "Phase 3",
+          subtitle: "Midgame-Schub",
+          lede: "",
+          rows: [
+            { name: "Calypso", target: "180", hint: "" },
+            { name: "Lady Liberty", target: "180", hint: "" },
+            { name: "Medusa", target: "180", hint: "" },
+            { name: "Athena", target: "120", hint: "" },
+            { name: "Hela", target: "120", hint: "" },
+            { name: "Fortuna", target: "120", hint: "" },
+            { name: "Bastet", target: "120", hint: "" },
+          ],
+        },
+        {
+          tone: "4",
+          title: "Phase 4",
+          subtitle: "Endgame",
+          lede: "Die Göttinnen oben zu Ende maxen, danach alle anderen gemeinsam durch dieselben Meilensteine.",
+          rows: [
+            { name: "Alle anderen", target: "30 → 60 → 90 → max", hint: "" },
+          ],
+        },
+      ],
+      roster: [
+        { name: "Demeter", affinity: "Ausbaukosten von Produktionsgebäuden −5 %. Schildhelden ATK/HP +6 %.", obtain: "" },
+        { name: "Venus", affinity: "Produktivität aller Gebäude +20 %. Pikenhelden ATK/HP +6 %.", obtain: "Erstkauf-Bundle" },
+        { name: "Lady Liberty", affinity: "Kampfschaden aller Helden +5 %. ATK/HP aller Helden +3 %.", obtain: "Tap Football" },
+        { name: "Medusa", affinity: "Kampfschaden aller Helden +5 %. ATK/HP aller Helden +3 %.", obtain: "1. Ringtoss" },
+        { name: "Hela", affinity: "Schadensreduktion aller Helden +5 %. ATK/HP aller Helden +3 %.", obtain: "2. Ringtoss" },
+        { name: "Bastet", affinity: "", obtain: "3. Ringtoss" },
+        { name: "Moirai", affinity: "Einkommen im Göttinnen-Theater +2 %. ATK/HP aller Helden +3 %.", obtain: "4. Ringtoss" },
+        { name: "Muse", affinity: "Muse-Münzen im Museion +2 %. ATK/HP aller Helden +3 %.", obtain: "4. Ringtoss" },
+        { name: "Athena", affinity: "Befehlswert aller Helden +3 %. ATK/HP aller Helden +3 %.", obtain: "VIP 4" },
+        { name: "Ixchel", affinity: "Dividenden der Großen Reise +2 %. ATK/HP aller Helden +3 %.", obtain: "Große Reise" },
+        { name: "Fortuna", affinity: "Bevölkerung im Wunder +5 %. Schildhelden ATK/HP +6 %.", obtain: "" },
+        { name: "Brunhild", affinity: "Kampagnen-Schaden erlitten −5 %. Kavallerie ATK/HP +11 %.", obtain: "" },
+        { name: "Vivian", affinity: "Mystic-Tower-Sweep-Belohnungen +6 %. Schildhelden ATK/HP +6 %.", obtain: "" },
+        { name: "Artemis", affinity: "Honor Fortune in Crown Glory +2 %. Bogenschützen ATK/HP +6 %.", obtain: "" },
+        { name: "Freya", affinity: "Glory-Arena-Schaden +5 %. Pikenhelden ATK/HP +6 %.", obtain: "" },
+        { name: "Hera", affinity: "Schadensreduktion Verbündeter bei Northern Enemy +5 %. Kavallerie ATK/HP +6 %.", obtain: "" },
+        { name: "Eve", affinity: "Bevölkerungsrekrutierung +5/Sek. Bogenschützen ATK/HP +6 %.", obtain: "" },
+        { name: "Hestia", affinity: "Kampagnen-Gold +5 %. Pikenhelden ATK/HP +11 %.", obtain: "" },
+        { name: "Nike", affinity: "4 % Chance auf +1 Norman Oak in der Glory Arena. Pikenhelden ATK/HP +6 %.", obtain: "" },
+      ],
+      sections: [
+        {
+          heading: "Ausbaureihenfolge",
+          body: [
+            "Phase 1: Demeter 180 (90 ohne SSR), Venus 180 (150 ohne SSR).",
+            "Phase 2: Calypso, Lady Liberty, Medusa, Hela, Athena auf 90; Fortuna und Bastet auf 60.",
+            "Phase 3: Calypso, Lady Liberty, Medusa auf 180; Athena, Hela, Fortuna, Bastet auf 120.",
+            "Phase 4: Liste oben maxen, danach alle anderen 30 → 60 → 90 → max.",
+          ],
+        },
+      ],
+      note: "",
+    },
+    cryptides: {
+      title: "Cryptides",
+      summary: "Cryptides fangen und aufziehen — die Tabellen werden noch geschrieben.",
+      intro:
+        "Cryptides sind die Kryptiden, die du sammelst und aufziehst. Diese Seite hält den Kernelemente-Platz, bis Fangorte und Wachstumstabellen hier versioniert sind.",
+      sections: [
+        {
+          heading: "Was dieser Guide abdecken wird",
+          body: [
+            "Wo jeder Cryptide auftaucht, wie er wächst und welche Boni den Fang lohnen.",
+            "Bis diese Zeilen geprüft sind, ist diese Seite der Kategorie-Eintrag, kein vollständiges Bestiarium.",
+          ],
+        },
+      ],
+      note: "Cryptide-Orte und Wachstumstabellen kommen in einer späteren Änderung.",
+    },
     waterSupply: {
       title: "Wasserversorgung und Produktionsboni",
       summary: "Wie das Wasser eines Gebäudes gezählt wird und was jede Bonusstufe bringt.",

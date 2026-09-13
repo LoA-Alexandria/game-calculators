@@ -111,6 +111,7 @@ const fr: Dictionary = {
     remove: "Retirer",
   },
   guideCategories: {
+    coreElements: "Éléments fondamentaux",
     cityLayout: "Plan de ville",
     goddess: "Déesse",
     event: "Événement",
@@ -292,6 +293,200 @@ const fr: Dictionary = {
     },
   },
   guideEntries: {
+    heroes: {
+      title: "Héros",
+      summary: "Où les héros se placent dans la ville — les tableaux détaillés sont encore en rédaction.",
+      intro:
+        "Les héros sont la première progression de longue haleine : ils occupent les bâtiments de production, remplissent plus tard les vitrines du Museion, et portent étoiles et compétences qui augmentent ces bonus. Cette page tient la place jusqu’à ce que les listes d’affectation soient vérifiées.",
+      sections: [
+        {
+          heading: "Ce que ce guide couvrira",
+          body: [
+            "Quels héros vont sur quels bâtiments, comment étoiles et niveaux de compétence changent leurs bonus, et en quoi le placement au Museion diffère d’une affectation de production.",
+            "En attendant ces tableaux, cette page est l’entrée Éléments fondamentaux pour les héros, pas une référence complète.",
+          ],
+        },
+      ],
+      note: "Les listes détaillées de héros viendront dans un changement ultérieur. Si vous tenez déjà une liste vérifiée sur Discord, envoyez-la pour que nous puissions la versionner ici.",
+    },
+    technology: {
+      title: "Technologie",
+      summary: "Les recherches qui déverrouillent le reste du jeu — l’arbre complet est encore en rédaction.",
+      intro:
+        "La technologie est la carte des déblocages : un nœud de recherche doit souvent être terminé avant qu’un bâtiment, un chapitre de campagne ou un système plus tardif comme la Déesse n’apparaisse. Cette page est le substitut de cet arbre.",
+      sections: [
+        {
+          heading: "Ce que ce guide couvrira",
+          body: [
+            "Les recherches qui ouvrent la Campagne, la Déesse et les autres éléments fondamentaux, et l’ordre à suivre lorsque plusieurs nœuds sont disponibles en même temps.",
+            "Tant que cette liste n’est pas vérifiée contre le client actuel, cette page est l’entrée de catégorie, pas un ordre complet.",
+          ],
+        },
+      ],
+      note: "L’ordre des recherches sera ajouté une fois vérifié contre le client actuel. Les corrections appartiennent à Discord, pour que la page et tout calculateur qui en dépend avancent ensemble.",
+    },
+    collection: {
+      title: "Collection",
+      summary: "Vitrines et bonus de collection — le catalogue est encore en rédaction.",
+      intro:
+        "La collection couvre les vitrines et les ensembles qui, une fois complétés, octroient des bonus à tout le compte. Cette page tient l’emplacement Éléments fondamentaux jusqu’à ce que ce catalogue soit versionné ici.",
+      sections: [
+        {
+          heading: "Ce que ce guide couvrira",
+          body: [
+            "Quels ensembles existent, ce que chacun accorde une fois complété, et comment les vitrines du Museion se recoupent avec l’affectation des héros.",
+            "Tant que ces lignes ne sont pas vérifiées, cette page est l’entrée de catégorie, pas un catalogue complet.",
+          ],
+        },
+      ],
+      note: "Le catalogue de collection viendra dans un changement ultérieur. Apportez une liste vérifiée si vous en tenez déjà une.",
+    },
+    manor: {
+      title: "Manoir",
+      summary: "Population, logements et améliorations du manoir — les chiffres sont encore en rédaction.",
+      intro:
+        "Le manoir est la piste de logement et de population qui alimente le reste de la ville en ouvriers. Cette page tient l’emplacement Éléments fondamentaux jusqu’à ce que le tableau d’amélioration soit versionné ici.",
+      sections: [
+        {
+          heading: "Ce que ce guide couvrira",
+          body: [
+            "Comment la population est gagnée, ce que coûtent les améliorations du manoir, et quels systèmes plus tardifs attendent un seuil de population.",
+            "Tant que ces chiffres ne sont pas vérifiés, cette page est l’entrée de catégorie, pas un tableau complet.",
+          ],
+        },
+      ],
+      note: "Les coûts du manoir et les seuils de population seront ajoutés une fois vérifiés contre le client actuel.",
+    },
+    support: {
+      title: "Soutien",
+      summary: "Bonus de soutien à l’échelle du compte — la liste est encore en rédaction.",
+      intro:
+        "Le soutien couvre les systèmes qui renforcent le reste de la ville plutôt que de produire une ressource eux-mêmes. Cette page tient l’emplacement Éléments fondamentaux jusqu’à ce que cette liste soit versionnée ici.",
+      sections: [
+        {
+          heading: "Ce que ce guide couvrira",
+          body: [
+            "Quelles pistes de soutien existent, ce qu’elles renforcent, et l’ordre dans lequel il vaut la peine de les monter.",
+            "Tant que ces pistes ne sont pas vérifiées, cette page est l’entrée de catégorie, pas un ordre complet.",
+          ],
+        },
+      ],
+      note: "Les pistes de soutien viendront dans un changement ultérieur. Envoyez une liste vérifiée sur Discord si vous en tenez déjà une.",
+    },
+    goddesses: {
+      title: "Déesses",
+      summary: "Qui monter en premier, où s’arrêter sans skin SSR, et ce que vaut chaque affinité.",
+      intro: "Les cadeaux augmentent l’affinité et débloquent des bonus. Recrutez une déesse une fois ses conditions remplies. Sautez celle que vous n’avez pas et continuez avec la suivante.",
+      orderHeading: "Ordre d’amélioration",
+      rosterHeading: "Affinité et obtention",
+      toolsHeading: "Calculateurs",
+      toolsMore: "Tous les calculateurs",
+      colName: "Déesse",
+      colTarget: "Niveau",
+      colHint: "Sans SSR",
+      colAffinity: "Affinité",
+      colObtain: "Obtention",
+      phases: [
+        {
+          tone: "1",
+          title: "Phase 1",
+          subtitle: "Fondamentaux",
+          lede: "",
+          rows: [
+            { name: "Demeter", target: "180", hint: "90" },
+            { name: "Venus", target: "180", hint: "150" },
+          ],
+        },
+        {
+          tone: "2",
+          title: "Phase 2",
+          subtitle: "Premiers paliers",
+          lede: "",
+          rows: [
+            { name: "Calypso", target: "90", hint: "" },
+            { name: "Lady Liberty", target: "90", hint: "" },
+            { name: "Medusa", target: "90", hint: "" },
+            { name: "Hela", target: "90", hint: "" },
+            { name: "Athena", target: "90", hint: "" },
+            { name: "Fortuna", target: "60", hint: "" },
+            { name: "Bastet", target: "60", hint: "" },
+          ],
+        },
+        {
+          tone: "3",
+          title: "Phase 3",
+          subtitle: "Milieu de partie",
+          lede: "",
+          rows: [
+            { name: "Calypso", target: "180", hint: "" },
+            { name: "Lady Liberty", target: "180", hint: "" },
+            { name: "Medusa", target: "180", hint: "" },
+            { name: "Athena", target: "120", hint: "" },
+            { name: "Hela", target: "120", hint: "" },
+            { name: "Fortuna", target: "120", hint: "" },
+            { name: "Bastet", target: "120", hint: "" },
+          ],
+        },
+        {
+          tone: "4",
+          title: "Phase 4",
+          subtitle: "Fin de partie",
+          lede: "Terminez de maxer les déesses ci-dessus, puis faites passer toutes les autres par les mêmes paliers, ensemble.",
+          rows: [
+            { name: "Toutes les autres", target: "30 → 60 → 90 → max", hint: "" },
+          ],
+        },
+      ],
+      roster: [
+        { name: "Demeter", affinity: "Coût d’amélioration des bâtiments de production −5 %. Héros boucliers ATQ/PV +6 %.", obtain: "" },
+        { name: "Venus", affinity: "Productivité de tous les bâtiments +20 %. Héros piquiers ATQ/PV +6 %.", obtain: "Pack de premier achat" },
+        { name: "Lady Liberty", affinity: "Dégâts de tous les héros +5 %. ATQ/PV de tous les héros +3 %.", obtain: "Tap Football" },
+        { name: "Medusa", affinity: "Dégâts de tous les héros +5 %. ATQ/PV de tous les héros +3 %.", obtain: "1er Ringtoss" },
+        { name: "Hela", affinity: "Réduction de dégâts de tous les héros +5 %. ATQ/PV de tous les héros +3 %.", obtain: "2e Ringtoss" },
+        { name: "Bastet", affinity: "", obtain: "3e Ringtoss" },
+        { name: "Moirai", affinity: "Revenu du Théâtre des Déesses +2 %. ATQ/PV de tous les héros +3 %.", obtain: "4e Ringtoss" },
+        { name: "Muse", affinity: "Pièces de Muse au Museion +2 %. ATQ/PV de tous les héros +3 %.", obtain: "4e Ringtoss" },
+        { name: "Athena", affinity: "Commandement de tous les héros +3 %. ATQ/PV de tous les héros +3 %.", obtain: "VIP 4" },
+        { name: "Ixchel", affinity: "Dividendes du Grand Voyage +2 %. ATQ/PV de tous les héros +3 %.", obtain: "Grand Voyage" },
+        { name: "Fortuna", affinity: "Population de la Merveille +5 %. Héros boucliers ATQ/PV +6 %.", obtain: "" },
+        { name: "Brunhild", affinity: "Dégâts subis en Campagne −5 %. Cavalerie ATQ/PV +11 %.", obtain: "" },
+        { name: "Vivian", affinity: "Récompenses de sweep de la Tour mystique +6 %. Héros boucliers ATQ/PV +6 %.", obtain: "" },
+        { name: "Artemis", affinity: "Honor Fortune de Crown Glory +2 %. Archers ATQ/PV +6 %.", obtain: "" },
+        { name: "Freya", affinity: "Dégâts infligés en Glory Arena +5 %. Héros piquiers ATQ/PV +6 %.", obtain: "" },
+        { name: "Hera", affinity: "Réduction de dégâts alliés contre Northern Enemy +5 %. Cavalerie ATQ/PV +6 %.", obtain: "" },
+        { name: "Eve", affinity: "Recrutement de population +5/s. Archers ATQ/PV +6 %.", obtain: "" },
+        { name: "Hestia", affinity: "Or de Campagne +5 %. Héros piquiers ATQ/PV +11 %.", obtain: "" },
+        { name: "Nike", affinity: "4 % de chance d’+1 Norman Oak en Glory Arena. Héros piquiers ATQ/PV +6 %.", obtain: "" },
+      ],
+      sections: [
+        {
+          heading: "Ordre d’amélioration",
+          body: [
+            "Phase 1 : Demeter 180 (90 sans SSR), Venus 180 (150 sans SSR).",
+            "Phase 2 : Calypso, Lady Liberty, Medusa, Hela, Athena à 90 ; Fortuna et Bastet à 60.",
+            "Phase 3 : Calypso, Lady Liberty, Medusa à 180 ; Athena, Hela, Fortuna, Bastet à 120.",
+            "Phase 4 : maxer la liste ci-dessus, puis toutes les autres 30 → 60 → 90 → max.",
+          ],
+        },
+      ],
+      note: "",
+    },
+    cryptides: {
+      title: "Cryptides",
+      summary: "Attraper et élever les Cryptides — les tableaux sont encore en rédaction.",
+      intro:
+        "Les Cryptides sont les créatures cryptides que vous collectionnez et élevez. Cette page tient l’emplacement Éléments fondamentaux jusqu’à ce que lieux de capture et tables de croissance soient versionnés ici.",
+      sections: [
+        {
+          heading: "Ce que ce guide couvrira",
+          body: [
+            "Où chaque Cryptide apparaît, comment il grandit, et quels bonus valent la capture.",
+            "Tant que ces lignes ne sont pas vérifiées, cette page est l’entrée de catégorie, pas un bestiaire complet.",
+          ],
+        },
+      ],
+      note: "Les lieux et tables de croissance des Cryptides viendront dans un changement ultérieur.",
+    },
     waterSupply: {
       title: "Alimentation en eau et bonus de production",
       summary: "Comment l’eau d’un bâtiment est comptée et ce que vaut chaque palier de bonus.",
