@@ -12,6 +12,7 @@ import {
   parseGrade,
   type Grade,
   type NoteKey,
+  type ReasonKey,
   type TierId,
   type VariantKey,
 } from "../../lib/content/hero-tiers";
@@ -45,6 +46,29 @@ function HeroName({ guide, hero, variant }: { guide: Guide; hero: string; varian
 
 function Note({ guide, note }: { guide: Guide; note?: NoteKey }) {
   return note ? <p className="tier-note">{guide.notes[note]}</p> : null;
+}
+
+function Reason({ guide, hero, reason }: { guide: Guide; hero: string; reason?: ReasonKey }) {
+  const { tf } = useLocale();
+  const id = useId();
+  const [open, setOpen] = useState(false);
+  if (!reason) return null;
+  return (
+    <>
+      <button
+        type="button"
+        className="tier-why"
+        aria-expanded={open}
+        aria-controls={id}
+        onClick={() => setOpen((value) => !value)}
+      >
+        {open ? guide.reasonHide : guide.reasonShow}
+      </button>
+      <p className="tier-reason" id={id} hidden={!open} aria-label={tf(guide.reasonLabel, { hero })}>
+        {guide.reasons[reason]}
+      </p>
+    </>
+  );
 }
 
 function GradeCell({ grade, label, short, empty }: { grade?: Grade; label: string; short: string; empty: string }) {
@@ -126,6 +150,7 @@ function OverallList({ guide, query }: { guide: Guide; query: string }) {
                         <GradeCell grade={entry.productivity} label={guide.gradeProductivity} short={guide.gradeProductivityShort} empty={guide.noGrade} />
                       </div>
                       <Note guide={guide} note={entry.note} />
+                      <Reason guide={guide} hero={entry.hero} reason={entry.reason} />
                     </li>
                   );
                 })}
@@ -407,6 +432,8 @@ export function HeroTierListGuide({ guide }: { guide: Guide }) {
 
       <h2>{guide.listsLabel}</h2>
       <TierTabs guide={guide} />
+
+      <Changelog guide={guide} />
     </div>
   );
 }
@@ -421,5 +448,27 @@ function StarStep({ star, effect, label }: { star: number; effect: string; label
       </span>
       <span>{effect}</span>
     </li>
+  );
+}
+
+function Changelog({ guide }: { guide: Guide }) {
+  const { d } = useLocale();
+  return (
+    <details className="tier-changelog">
+      <summary>
+        <span>{guide.changelogHeading}</span>
+      </summary>
+      <p className="tier-small">{guide.changelogLede}</p>
+      <ol className="changelog-list">
+        {guide.changelog.map((entry) => (
+          <li key={entry.date}>
+            <time dateTime={entry.date}>{d(entry.date)}</time>
+            <ul>
+              {entry.items.map((item) => <li key={item}>{item}</li>)}
+            </ul>
+          </li>
+        ))}
+      </ol>
+    </details>
   );
 }
