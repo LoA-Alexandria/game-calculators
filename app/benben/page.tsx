@@ -15,6 +15,7 @@ type CareEntry = { id: number; caretaker_name: string; action: CareAction; creat
 const ICON: Record<CareAction, string> = { feed: "🍇", polish: "✨", play: "🎲", rest: "🌙" };
 const LOCAL_PREVIEW = process.env.NODE_ENV === "development";
 const LOCAL_KEY = "benben-local-preview";
+const ACTION_ANIMATION_MS = 1100;
 const LOCAL_START: BenbenState = { fed: 72, happy: 76, polished: 68, rested: 80, total_actions: 0, community_streak: 1, actions_left: 3 };
 
 export default function BenbenPage() {
@@ -27,6 +28,7 @@ export default function BenbenPage() {
   const [copied, setCopied] = useState(false);
   const [celebrating, setCelebrating] = useState(false);
   const happyTimer = useRef<number | null>(null);
+  const actionTimer = useRef<number | null>(null);
   useDocumentTitle(t.benben.title);
 
   const showHappyFace = () => {
@@ -37,7 +39,16 @@ export default function BenbenPage() {
 
   useEffect(() => () => {
     if (happyTimer.current !== null) window.clearTimeout(happyTimer.current);
+    if (actionTimer.current !== null) window.clearTimeout(actionTimer.current);
   }, []);
+
+  const finishAction = (delay = ACTION_ANIMATION_MS, happy = true) => {
+    if (actionTimer.current !== null) window.clearTimeout(actionTimer.current);
+    actionTimer.current = window.setTimeout(() => {
+      setActing(null);
+      if (happy) showHappyFace();
+    }, delay);
+  };
 
   const refresh = useCallback(async () => {
     if (LOCAL_PREVIEW) {
@@ -88,8 +99,7 @@ export default function BenbenPage() {
       window.localStorage.setItem(LOCAL_KEY, JSON.stringify(next));
       setPet(next);
       setRecent((current) => [{ id: Date.now(), caretaker_name: "Local caretaker", action, created_at: new Date().toISOString() }, ...current].slice(0, 8));
-      showHappyFace();
-      window.setTimeout(() => setActing(null), 1100);
+      finishAction();
       return;
     }
     if (!session) { await signIn(); return; }
@@ -98,8 +108,8 @@ export default function BenbenPage() {
     setActing(action);
     const result = await supabase.rpc("care_for_benben", { p_action: action });
     if (result.error) setError(result.error.message.includes("Daily care limit") ? t.benben.noActions : result.error.message);
-    else { setPet(result.data as BenbenState); showHappyFace(); await refresh(); }
-    setActing(null);
+    else { setPet(result.data as BenbenState); await refresh(); }
+    finishAction(ACTION_ANIMATION_MS, !result.error);
   };
 
   const average = pet ? Math.round((pet.fed + pet.happy + pet.polished + pet.rested) / 4) : 0;
