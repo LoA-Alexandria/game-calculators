@@ -1610,9 +1610,36 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
 .artwork-layouts [data-build="SSR"] { --build: var(--gold); }
 .artwork-layouts [data-build="SR"] { --build: #9b6bd6; }
 .artwork-layouts [data-build="R"] { --build: var(--accent); }
+.artwork-layouts [data-build="crit"] { --build: var(--bad); }
+.artwork-layouts [data-build="dot"] { --build: var(--good); }
+.artwork-layouts [data-build="pursuit"] { --build: var(--accent); }
+.artwork-layouts [data-build="hybrid"] { --build: var(--gold); }
 .artwork-layouts { --build: var(--gold); }
 
 .artwork-spend { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+.set-skill-rank {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.set-skill-rank > li { display: grid; gap: 8px; }
+.set-skill-insert,
+.article .set-skill-note {
+  margin: 0;
+  padding: 10px 12px;
+  border: 1px dashed var(--line);
+  border-radius: var(--r-md);
+  color: var(--ink-soft);
+  font-size: .88rem;
+  line-height: 1.5;
+}
+.set-skill-insert {
+  border-color: color-mix(in srgb, var(--build) 45%, var(--line));
+  background: color-mix(in srgb, var(--build) 8%, var(--surface));
+}
+.article .set-skill-note { margin-top: 12px; }
 .artwork-filter { display: block; max-width: 420px; margin: 10px 0 12px; }
 .painting-panel { padding: 14px; background: color-mix(in srgb, var(--bg) 55%, var(--surface)); }
 .painting-sets { display: grid; gap: 12px; }
