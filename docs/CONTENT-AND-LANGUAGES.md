@@ -83,8 +83,9 @@ cannot claim the same renderer by sharing a field name. Keep `sections` and
 `note` in those entries too, since the editor reads them. In the Hero layouts guide,
 `sections` are the rule cards next to the formation board, and the slot order
 lives in `lib/content/hero-layouts.ts`. Painting names, set effects, and hero
-matches for Artwork live in `lib/content/artwork.ts`. Unlock and level order
-for Artwork layouts live in that guide's dictionary.
+matches for Artwork live in `lib/content/artwork.ts`. Unlock order, level
+priority, and the SSR set-skill ranking for Artwork layouts live in that same
+file plus the guide dictionary.
 
 The Hero tier list keeps its rows (hero names, grades, resources, bonuses) in
 `lib/data/hero-tiers.json`, once for all languages; `lib/content/hero-tiers.ts`

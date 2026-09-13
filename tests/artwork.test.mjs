@@ -4,7 +4,9 @@ import test from "node:test";
 import { HEROES } from "../lib/content/heroes.ts";
 import {
   PAINTING_SETS,
+  SET_SKILL_BUILDS,
   paintingsForHero,
+  setSkillRank,
   setsByRarity,
 } from "../lib/content/artwork.ts";
 import en from "../lib/i18n/dictionaries/en.ts";
@@ -49,5 +51,18 @@ test("artwork sits in Core elements and artwork layouts stays under Layouts", ()
   for (const dictionary of [en, de, fr]) {
     assert.equal(dictionary.guideEntries.artwork.status.length > 0, true);
     assert.equal(dictionary.guideEntries.artworkLayouts.levels[0]?.stat, "ATK");
+    assert.equal(dictionary.guideEntries.artworkLayouts.setSkills[0]?.id, "crit");
+  }
+});
+
+test("set-skill ranking swaps the first slot and keeps Autumn's eight named sets", () => {
+  assert.equal(setSkillRank("crit")[0]?.set.name, "Nature in Bloom");
+  assert.equal(setSkillRank("pursuit")[0]?.set.name, "Self-Portrait");
+  assert.equal(setSkillRank("dot")[0]?.set.name, "Urban Proletariat");
+  const hybrid = setSkillRank("hybrid");
+  assert.equal(hybrid.length, 8);
+  assert.equal(hybrid.find((row) => row.hybridSlot)?.set.name, "Ukiya-e Masterpieces");
+  for (const build of SET_SKILL_BUILDS) {
+    assert.equal(setSkillRank(build).length, 8, build);
   }
 });
