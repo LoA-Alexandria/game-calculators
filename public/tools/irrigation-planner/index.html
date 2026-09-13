@@ -89,6 +89,162 @@
   --gap-river-line:#244246;
 }
 
+:root[data-scheme="lapis"]{
+  --bg:#f6f7fa;
+  --panel:#ffffff;
+  --panel-2:#f1f3f8;
+  --ink:#101521;
+  --ink-soft:#55607a;
+  --line:#e2e6ef;
+  --accent:#3a66e8;
+  --accent-deep:#2a50c8;
+  --accent-soft:#e4eafd;
+  --heat-1:#e8eeff;
+  --heat-2:#b9caff;
+  --heat-3:#7b9bf5;
+  --gap-neutral:#e7ebf3;
+  --gap-river:#dbe6ff;
+  --gap-river-line:#b9caff;
+}
+:root[data-scheme="papyrus"]{
+  --bg:#f6edd4;
+  --panel:#fff8e6;
+  --panel-2:#f3e6c8;
+  --ink:#24190c;
+  --ink-soft:#6b542e;
+  --line:#e6d4a8;
+  --accent:#9a5a18;
+  --accent-deep:#7a4610;
+  --accent-soft:#f3e6c8;
+  --heat-1:#f6e6c4;
+  --heat-2:#e8c47a;
+  --heat-3:#c48922;
+  --gap-neutral:#e8d5a8;
+  --gap-river:#f3e6c8;
+  --gap-river-line:#e8c47a;
+}
+:root[data-scheme="steam"]{
+  --bg:#eeeae6;
+  --panel:#faf7f3;
+  --panel-2:#e8e3dc;
+  --ink:#1a1714;
+  --ink-soft:#5c564e;
+  --line:#ddd6cd;
+  --accent:#8f4a2a;
+  --accent-deep:#733a20;
+  --accent-soft:#f0e4dc;
+  --heat-1:#f0e0d4;
+  --heat-2:#e0b090;
+  --heat-3:#c06a42;
+  --gap-neutral:#ddd6cd;
+  --gap-river:#f0e4dc;
+  --gap-river-line:#e0b090;
+}
+@media (prefers-color-scheme: dark){
+  :root[data-scheme="lapis"]:not([data-theme="light"]){
+    --bg:#0a0c11;
+    --panel:#14181f;
+    --panel-2:#1a1f28;
+    --ink:#e9edf5;
+    --ink-soft:#98a3ba;
+    --line:#232a36;
+    --accent:#5b8cff;
+    --accent-deep:#86a9ff;
+    --accent-soft:#1b2336;
+    --heat-1:#18202f;
+    --heat-2:#243351;
+    --heat-3:#3a548f;
+    --gap-neutral:#181d26;
+    --gap-river:#16203a;
+    --gap-river-line:#243351;
+  }
+  :root[data-scheme="papyrus"]:not([data-theme="light"]){
+    --bg:#161008;
+    --panel:#221a0e;
+    --panel-2:#2c2214;
+    --ink:#f4e6c8;
+    --ink-soft:#c4a878;
+    --line:#3a2e1c;
+    --accent:#e0a35a;
+    --accent-deep:#f0c07a;
+    --accent-soft:#2c2214;
+    --heat-1:#2c2214;
+    --heat-2:#4a3818;
+    --heat-3:#8a6420;
+    --gap-neutral:#2c2214;
+    --gap-river:#2a2010;
+    --gap-river-line:#4a3818;
+  }
+  :root[data-scheme="steam"]:not([data-theme="light"]){
+    --bg:#131110;
+    --panel:#1c1917;
+    --panel-2:#26221f;
+    --ink:#efe8e0;
+    --ink-soft:#b5aca2;
+    --line:#322c28;
+    --accent:#e08a58;
+    --accent-deep:#f0a878;
+    --accent-soft:#2a1c16;
+    --heat-1:#2a1c16;
+    --heat-2:#4a2e22;
+    --heat-3:#8a4a30;
+    --gap-neutral:#26221f;
+    --gap-river:#2a1c16;
+    --gap-river-line:#4a2e22;
+  }
+}
+:root[data-scheme="lapis"][data-theme="dark"]{
+  --bg:#0a0c11;
+  --panel:#14181f;
+  --panel-2:#1a1f28;
+  --ink:#e9edf5;
+  --ink-soft:#98a3ba;
+  --line:#232a36;
+  --accent:#5b8cff;
+  --accent-deep:#86a9ff;
+  --accent-soft:#1b2336;
+  --heat-1:#18202f;
+  --heat-2:#243351;
+  --heat-3:#3a548f;
+  --gap-neutral:#181d26;
+  --gap-river:#16203a;
+  --gap-river-line:#243351;
+}
+:root[data-scheme="papyrus"][data-theme="dark"]{
+  --bg:#161008;
+  --panel:#221a0e;
+  --panel-2:#2c2214;
+  --ink:#f4e6c8;
+  --ink-soft:#c4a878;
+  --line:#3a2e1c;
+  --accent:#e0a35a;
+  --accent-deep:#f0c07a;
+  --accent-soft:#2c2214;
+  --heat-1:#2c2214;
+  --heat-2:#4a3818;
+  --heat-3:#8a6420;
+  --gap-neutral:#2c2214;
+  --gap-river:#2a2010;
+  --gap-river-line:#4a3818;
+}
+:root[data-scheme="steam"][data-theme="dark"]{
+  --bg:#131110;
+  --panel:#1c1917;
+  --panel-2:#26221f;
+  --ink:#efe8e0;
+  --ink-soft:#b5aca2;
+  --line:#322c28;
+  --accent:#e08a58;
+  --accent-deep:#f0a878;
+  --accent-soft:#2a1c16;
+  --heat-1:#2a1c16;
+  --heat-2:#4a2e22;
+  --heat-3:#8a4a30;
+  --gap-neutral:#26221f;
+  --gap-river:#2a1c16;
+  --gap-river-line:#4a2e22;
+}
+
 *{box-sizing:border-box;}
 html,body{margin:0;}
 body{
@@ -440,9 +596,10 @@ html.embedded .head{margin-bottom:12px;}
 html.embedded .head h1, html.embedded .head .eyebrow{display:none;}
 </style>
 <script>
-/* Embed flag and theme bridge. The host site stores the reader's theme choice
-   under 'popepoch-theme'; this document is served from the same origin, so the
-   value is visible here and later changes arrive as a 'storage' event. */
+/* Embed flag, theme bridge, and colour-scheme bridge. The host site stores
+   the reader's choices under 'popepoch-theme' and 'popepoch-scheme'; this
+   document is served from the same origin, so the values are visible here
+   and later changes arrive as a 'storage' event. */
 (function(){
   try{
     if (new URLSearchParams(location.search).get('embed') === '1'){
@@ -450,12 +607,22 @@ html.embedded .head h1, html.embedded .head .eyebrow{display:none;}
     }
   }catch(e){}
   var KEY = 'popepoch-theme';
+  var SCHEME_KEY = 'popepoch-scheme';
   function apply(v){
     if (v === 'light' || v === 'dark') document.documentElement.setAttribute('data-theme', v);
     else document.documentElement.removeAttribute('data-theme');
   }
+  function applyScheme(v){
+    if (v === 'stone' || v === 'lapis' || v === 'papyrus' || v === 'steam')
+      document.documentElement.setAttribute('data-scheme', v);
+    else document.documentElement.removeAttribute('data-scheme');
+  }
   try{ apply(localStorage.getItem(KEY)); }catch(e){}
-  window.addEventListener('storage', function(e){ if (e.key === KEY) apply(e.newValue); });
+  try{ applyScheme(localStorage.getItem(SCHEME_KEY)); }catch(e){}
+  window.addEventListener('storage', function(e){
+    if (e.key === KEY) apply(e.newValue);
+    if (e.key === SCHEME_KEY) applyScheme(e.newValue);
+  });
 })();
 </script>
 </head>

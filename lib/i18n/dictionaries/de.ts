@@ -15,6 +15,13 @@ const de: Dictionary = {
     filterPlaceholder: "Werkzeug oder Guide finden…",
     filterEmpty: "Dazu passt nichts.",
     language: "Sprache",
+    scheme: "Farbschema",
+    schemes: {
+      stone: "Stein",
+      lapis: "Lapis",
+      papyrus: "Papyrus",
+      steam: "Dampf",
+    },
     theme: "Darstellung",
     themeToLight: "Zur hellen Darstellung wechseln",
     themeToDark: "Zur dunklen Darstellung wechseln",

@@ -27,6 +27,7 @@ lib/
   content/banners.ts           Optional section banner images
   navigation.ts                Section tree driving sidebar and indexes
   site.ts                      Base path, Discord, repository, storage keys
+  theme.ts                     Colour-scheme ids and validation
 docs/                          Human and agent guidance
 public/
   tools/irrigation-planner/    Vendored standalone planner (see below)
@@ -55,16 +56,18 @@ do not export `metadata`. Tab titles are set with `useDocumentTitle`.
 
 ## Theming
 
-`app/globals.css` defines the colour, spacing, and type tokens. The light
-palette sits on bare `:root`; the dark palette is repeated under
-`prefers-color-scheme: dark` and under `:root[data-theme="dark"]`, so an explicit
-choice wins in both directions. `app/components/ThemeToggle.tsx` writes that
-choice to `localStorage['popepoch-theme']`, and a small script in the root layout
-applies it before first paint.
+`app/globals.css` defines the colour, spacing, and type tokens. Light sits on
+bare `:root`; dark is repeated under `prefers-color-scheme: dark` and under
+`:root[data-theme="dark"]`, so an explicit brightness choice wins in both
+directions. Colour schemes sit on `[data-scheme]` (`stone`, `lapis`, `papyrus`,
+`steam`) and keep light/dark as a separate axis. `ThemeToggle` writes
+`localStorage['popepoch-theme']`; `SchemeMenu` writes
+`localStorage['popepoch-scheme']`. A small script in the root layout applies
+both before first paint.
 
-The palette is warm stone neutrals with a teal primary (from the section-banner
-HUDs) and copper-gold from the plaques. Type is Sora for headings and Inter
-for text, both self-hosted by `next/font`.
+The default palette is warm stone neutrals with a teal primary (from the
+section-banner HUDs) and copper-gold from the plaques. Type is Sora for
+headings and Inter for text, both self-hosted by `next/font`.
 
 The visual identity is built from original CSS geometry and hand-drawn SVG in
 `app/components/Icons.tsx`. It evokes the setting without reproducing any

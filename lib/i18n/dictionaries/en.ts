@@ -16,6 +16,13 @@ const en = {
     filterPlaceholder: "Find a tool or guide…",
     filterEmpty: "Nothing matches that.",
     language: "Language",
+    scheme: "Colour scheme",
+    schemes: {
+      stone: "Stone",
+      lapis: "Lapis",
+      papyrus: "Papyrus",
+      steam: "Steam",
+    },
     theme: "Theme",
     themeToLight: "Switch to the light theme",
     themeToDark: "Switch to the dark theme",
