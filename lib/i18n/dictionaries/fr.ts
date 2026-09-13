@@ -295,19 +295,44 @@ const fr: Dictionary = {
   guideEntries: {
     heroes: {
       title: "Héros",
-      summary: "Où les héros se placent dans la ville — les tableaux détaillés sont encore en rédaction.",
-      intro:
-        "Les héros sont la première progression de longue haleine : ils occupent les bâtiments de production, remplissent plus tard les vitrines du Museion, et portent étoiles et compétences qui augmentent ces bonus. Cette page tient la place jusqu’à ce que les listes d’affectation soient vérifiées.",
+      summary: "Roster par rareté, coût d’étoiles en fragments, et les compétences déjà renseignées.",
+      intro: "Les héros dirigent un type de troupe, occupent les bâtiments de production, et progressent par niveaux, élévations et étoiles. Filtrez le roster par rareté.",
+      basicsHeading: "Comment ils progressent",
+      basics: [
+        { title: "Troupes", body: "Chaque héros mène piquiers, archers, boucliers ou cavalerie. Alignez le type de troupe au déploiement." },
+        { title: "Niveau et élévation", body: "Dépensez des ressources pour monter. Au plafond, élevez pour relever le plafond et les attributs." },
+        { title: "Étoiles", body: "Dépensez des fragments de héros pour étoiler. Certains paliers améliorent la compétence de combat." },
+      ],
+      starHeading: "Coût d’étoiles en fragments",
+      colStar: "Étoile",
+      fragments: {
+        green: "Vert",
+        blue: "Bleu",
+        purple: "Violet",
+        gold: "Or",
+        red: "Rouge",
+        goldShiny: "Or brillant",
+        blueShiny: "Bleu brillant",
+        shiny: "Brillant",
+      },
+      rosterHeading: "Roster",
+      filterLabel: "Rareté",
+      filterAll: "Tous",
+      searchLabel: "Rechercher un héros",
+      searchPlaceholder: "Nom, compétence ou événement…",
+      countLabel: "{count} affichés",
+      colObtain: "Obtention",
+      artifactLabel: "Artéfact",
+      empty: "Aucun héros ne correspond à ce filtre.",
       sections: [
         {
-          heading: "Ce que ce guide couvrira",
+          heading: "Roster",
           body: [
-            "Quels héros vont sur quels bâtiments, comment étoiles et niveaux de compétence changent leurs bonus, et en quoi le placement au Museion diffère d’une affectation de production.",
-            "En attendant ces tableaux, cette page est l’entrée Éléments fondamentaux pour les héros, pas une référence complète.",
+            "Filtrez UR+, UR, SSR, SR et R. Les compétences sont renseignées là où le texte existait ; les cartes vides restent dans le roster.",
           ],
         },
       ],
-      note: "Les listes détaillées de héros viendront dans un changement ultérieur. Si vous tenez déjà une liste vérifiée sur Discord, envoyez-la pour que nous puissions la versionner ici.",
+      note: "",
     },
     technology: {
       title: "Technologie",

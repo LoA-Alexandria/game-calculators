@@ -293,19 +293,44 @@ const en = {
   guideEntries: {
     heroes: {
       title: "Heroes",
-      summary: "Where heroes sit in the city — the detailed tables are still being written.",
-      intro:
-        "Heroes are the first long-running progression track: they staff production buildings, later fill Museion exhibits, and carry stars and skills that raise those bonuses. This page holds the slot until the assignment lists are checked.",
+      summary: "Rarity roster, fragment star costs, and the skills that are filled in so far.",
+      intro: "Heroes lead a troop type, staff production buildings, and grow through levels, ascends, and stars. Filter the roster by rarity.",
+      basicsHeading: "How they grow",
+      basics: [
+        { title: "Troops", body: "Each hero leads Pikeman, Archer, Shieldman, or Cavalry. Match the troop type when you deploy." },
+        { title: "Level and ascend", body: "Spend resources to level. At the cap, ascend to raise the cap and attributes." },
+        { title: "Stars", body: "Spend hero fragments to star up. Some star tiers improve the combat skill." },
+      ],
+      starHeading: "Fragment star costs",
+      colStar: "Star",
+      fragments: {
+        green: "Green",
+        blue: "Blue",
+        purple: "Purple",
+        gold: "Gold",
+        red: "Red",
+        goldShiny: "Gold shiny",
+        blueShiny: "Blue shiny",
+        shiny: "Shiny",
+      },
+      rosterHeading: "Roster",
+      filterLabel: "Rarity",
+      filterAll: "All",
+      searchLabel: "Search heroes",
+      searchPlaceholder: "Name, skill, or event…",
+      countLabel: "{count} shown",
+      colObtain: "Obtain",
+      artifactLabel: "Artifact",
+      empty: "No hero matches that filter.",
       sections: [
         {
-          heading: "What this guide will cover",
+          heading: "Roster",
           body: [
-            "Which heroes belong on which buildings, how stars and skill levels change their bonuses, and how Museion placement differs from a production assignment.",
-            "Until those tables are in, use this page as the Core elements entry for heroes rather than as a complete reference.",
+            "Filter UR+, UR, SSR, SR, and R.",
           ],
         },
       ],
-      note: "The detailed hero lists will be added in a later change. If you already keep a checked list on Discord, send it so we can version it here.",
+      note: "",
     },
     technology: {
       title: "Technology",
