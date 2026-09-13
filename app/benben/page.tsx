@@ -88,6 +88,7 @@ export default function BenbenPage() {
   ] as const, [t]);
 
   const care = async (action: CareAction) => {
+    const animationDuration = action === "rest" ? 2600 : ACTION_ANIMATION_MS;
     if (LOCAL_PREVIEW) {
       if (!pet || acting) return;
       setActing(action);
@@ -99,7 +100,7 @@ export default function BenbenPage() {
       window.localStorage.setItem(LOCAL_KEY, JSON.stringify(next));
       setPet(next);
       setRecent((current) => [{ id: Date.now(), caretaker_name: "Local caretaker", action, created_at: new Date().toISOString() }, ...current].slice(0, 8));
-      finishAction();
+      finishAction(animationDuration);
       return;
     }
     if (!session) { await signIn(); return; }
@@ -109,7 +110,7 @@ export default function BenbenPage() {
     const result = await supabase.rpc("care_for_benben", { p_action: action });
     if (result.error) setError(result.error.message.includes("Daily care limit") ? t.benben.noActions : result.error.message);
     else { setPet(result.data as BenbenState); await refresh(); }
-    finishAction(ACTION_ANIMATION_MS, !result.error);
+    finishAction(animationDuration, !result.error);
   };
 
   const average = pet ? Math.round((pet.fed + pet.happy + pet.polished + pet.rested) / 4) : 0;
@@ -131,7 +132,7 @@ export default function BenbenPage() {
       <section className="benben-character-card" aria-label="Benben">
         <div className="benben-sun" aria-hidden="true" />
         <div className="benben-sprite-wrap">
-          <Image className={`${acting ? `benben-image is-${acting}` : "benben-image"}${celebrating ? " is-happy" : ""}`} src={asset(celebrating ? "/benben-happy.png" : "/benben.png")} width={1240} height={1240} alt="Benben, the communal stone pyramid" priority />
+          <Image className={`${acting ? `benben-image is-${acting}` : "benben-image"}${celebrating ? " is-happy" : ""}`} src={asset(acting === "rest" ? "/benben-sleeping.png" : celebrating ? "/benben-happy.png" : "/benben.png")} width={1240} height={1240} alt="Benben, the communal stone pyramid" priority />
           {acting === "feed" && <div className="benben-effect benben-feed-effect" aria-hidden="true"><span /><span /><span /><i className="benben-chew-mouth" /></div>}
           {acting === "polish" && <div className="benben-effect benben-polish-effect" aria-hidden="true"><span>✦</span><span>✧</span><span>✦</span><span>✧</span></div>}
           {acting === "rest" && <div className="benben-effect benben-rest-effect" aria-hidden="true"><span>Z</span><span>z</span><span>z</span></div>}
