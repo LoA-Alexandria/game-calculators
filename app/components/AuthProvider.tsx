@@ -2,7 +2,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import type { Session as SupabaseSession } from "@supabase/supabase-js";
-import { can, type Permission, type Role } from "../../lib/auth/roles";
+import { can, isRole, type Permission, type Role } from "../../lib/auth/roles";
 import { getSupabaseBrowserClient } from "../../lib/supabase/client";
 import { BASE_PATH } from "../../lib/site";
 
@@ -39,13 +39,13 @@ async function functionErrorDetail(error: unknown): Promise<string> {
   }
 }
 
-function displaySession(session: SupabaseSession, canEdit: boolean): Session {
+function displaySession(session: SupabaseSession, role: Role | null): Session {
   const metadata = session.user.user_metadata;
   return {
     userId: session.user.id,
     name: metadata.full_name ?? metadata.name ?? metadata.preferred_username ?? "Discord member",
     handle: metadata.preferred_username ?? metadata.name ?? "discord-member",
-    role: canEdit ? "guide_writer" : null,
+    role,
   };
 }
 
@@ -66,9 +66,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setError(detail || "Discord role verification is temporarily unavailable.");
       }
     }
-    const { data, error: accessError } = await supabase.from("editor_access").select("can_edit").eq("user_id", current.user.id).maybeSingle();
+    const { data, error: accessError } = await supabase
+      .from("editor_access")
+      .select("role, can_edit")
+      .eq("user_id", current.user.id)
+      .maybeSingle();
     if (accessError) setError("Editor access could not be loaded.");
-    setSession(displaySession(current, data?.can_edit === true));
+    // `role` is the real answer; `can_edit` is the older column, still read so
+    // a session that predates the migration keeps working until it is dropped.
+    const stored = isRole(data?.role) ? data.role : data?.can_edit === true ? "guide_writer" : null;
+    setSession(displaySession(current, stored));
     setLoading(false);
   }, [supabase]);
 

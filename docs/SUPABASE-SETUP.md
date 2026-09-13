@@ -32,9 +32,36 @@ supabase functions deploy verify-discord-role
 
 Supabase automatically provides the function with its project URL, anon key, and service-role key. Do not commit those secrets.
 
-The role check currently grants access for:
+The guild is `1534685294371274822` and stays in the function.
 
-- Coders: `1534890988588498944`
-- Builders: `1534693394692178161`
+Which Discord role grants which site role is **no longer in the function**: it
+lives in the `role_mappings` table and is edited at `/admin/` by an admin. The
+migration seeds it with the two roles that used to be hardcoded (Coders and
+Builders, both `guide_writer`), so applying it changes nothing on its own.
 
-The guild is `1534685294371274822`. Update the function and deploy it again if any of these IDs change.
+A member holding several mapped roles gets the highest one, ranked
+`guide_writer < manager < admin`. The same rule is in `lib/auth/roles.ts`; keep
+the two in step.
+
+### The first admin
+
+Nobody can grant `admin` through the interface until an admin exists, so promote
+one by hand once after applying the migration:
+
+```sql
+update public.editor_access set role = 'admin' where discord_user_id = '<your discord id>';
+```
+
+### Deploying this change
+
+Apply the migration and redeploy the function together — the function writes
+`role`, which the migration adds:
+
+```sh
+supabase db push
+supabase functions deploy verify-discord-role
+```
+
+The old `can_edit` column is kept in step by the function so the currently
+deployed frontend keeps working until Pages redeploys. It can be dropped once no
+deployed frontend reads it.

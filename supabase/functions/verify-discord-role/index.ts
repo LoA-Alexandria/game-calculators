@@ -1,10 +1,21 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 
 const GUILD_ID = "1534685294371274822";
-const EDITOR_ROLE_IDS = new Set([
-  "1534890988588498944", // Coders
-  "1534693394692178161", // Builders
-]);
+
+/**
+ * Higher wins when a member holds several mapped Discord roles. Without a fixed
+ * rule the effective role would depend on the order Discord happens to return
+ * them in. Mirrors ROLE_RANK in lib/auth/roles.ts — keep the two in step.
+ */
+const ROLE_RANK: Record<string, number> = { guide_writer: 1, manager: 2, admin: 3 };
+
+function highestRole(roles: string[]): string | null {
+  let best: string | null = null;
+  for (const role of roles) {
+    if (best === null || (ROLE_RANK[role] ?? 0) > (ROLE_RANK[best] ?? 0)) best = role;
+  }
+  return best;
+}
 
 const allowedOrigins = new Set([
   "https://loa-alexandria.github.io",
@@ -52,14 +63,31 @@ Deno.serve(async (request) => {
   ].filter((value): value is string => typeof value === "string"));
   if (!discordUserId || !identityIds.has(discordUserId)) return Response.json({ error: "Discord identity mismatch" }, { status: 403, headers });
 
-  const canEdit = member.roles.some((roleId) => EDITOR_ROLE_IDS.has(roleId));
   const adminClient = createClient(supabaseUrl, serviceRoleKey);
+
+  // The mapping is data now, so an admin can change who gets what without a
+  // deploy. Read it with the service role: the caller may not be allowed to.
+  const { data: mappings, error: mappingError } = await adminClient
+    .from("role_mappings")
+    .select("discord_role_id, role");
+  if (mappingError) return Response.json({ error: "Could not read the role mapping" }, { status: 500, headers });
+
+  const byDiscordRole = new Map((mappings ?? []).map((row) => [row.discord_role_id as string, row.role as string]));
+  const granted = member.roles.flatMap((roleId) => {
+    const role = byDiscordRole.get(roleId);
+    return role ? [role] : [];
+  });
+  const role = highestRole(granted);
+  const canEdit = role !== null;
+
   const { error: saveError } = await adminClient.from("editor_access").upsert({
     user_id: user.id,
     discord_user_id: discordUserId,
+    role,
+    // kept in step until no deployed frontend reads it any more
     can_edit: canEdit,
     checked_at: new Date().toISOString(),
   });
   if (saveError) return Response.json({ error: "Could not save editor access" }, { status: 500, headers });
-  return Response.json({ canEdit }, { headers });
+  return Response.json({ role, canEdit }, { headers });
 });

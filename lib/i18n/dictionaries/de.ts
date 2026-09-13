@@ -359,6 +359,8 @@ const de: Dictionary = {
       "Bildspeicher plus ein Upload-Endpunkt, der Typ und Größe prüft.",
       "Rechteprüfung an jedem schreibenden Endpunkt, mit derselben Tabelle wie im Reiter „Rechte“.",
     ],
+    roleRefreshNote:
+      "Die Rolle eines Mitglieds wird bei der nächsten Anmeldung neu aus Discord ermittelt. Eine geänderte Zuordnung wirkt erst dann.",
   },
   editor: {
     title: "Neuer Guide",
