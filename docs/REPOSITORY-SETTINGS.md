@@ -8,15 +8,16 @@ In **Settings → Rules → Rulesets**, create an active branch ruleset named `P
 
 - Restrict deletions.
 - Block force pushes.
-- Require a pull request before merging.
-- Require at least one approving review.
-- Dismiss stale approvals when new commits are pushed.
-- Require approval of the most recent reviewable push.
+- Require a pull request before merging, with **0** required approving reviews.
 - Require conversation resolution before merging.
 - Require the `Test, lint, and build` status check.
 - Prevent bypassing the ruleset. Add bypass actors only when an emergency release process genuinely needs them.
 
-This makes approval come from another repository contributor with sufficient access. Add trusted contributors under **Settings → Collaborators and teams**, using the lowest role that lets them perform their work.
+Approvals are not required, so contributors merge their own tested pull requests
+and ask for a review when a change is large or risky. That makes the status check
+the only thing that stops a broken build from reaching `main`. Add trusted
+contributors under **Settings → Collaborators and teams**, using the lowest role
+that lets them perform their work.
 
 ## Recommended repository settings
 
