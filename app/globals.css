@@ -1503,8 +1503,8 @@ button.calendar-day:hover { background: var(--surface-2); }
 @keyframes benben-bop { 30% { transform: translateY(-14px) rotate(-2deg); } 65% { transform: translateY(-6px) rotate(2deg); } }
 @keyframes benben-breathe { 0%, 100% { transform: translateY(2px) scaleX(1); } 50% { transform: translateY(-3px) scaleX(1.012) scaleY(1.006); } }
 @keyframes benben-bask { 0%, 100% { transform: rotate(-1deg) translateY(2px); } 50% { transform: rotate(1deg) translateY(-4px) scale(1.008); } }
-.benben-phoenix { position: absolute; z-index: 4; right: -4%; bottom: 5%; width: 38%; height: auto; filter: drop-shadow(0 8px 14px rgba(145,46,8,.42)); animation: benben-phoenix-hover 2.6s ease-in-out infinite; }
-@keyframes benben-phoenix-hover { 0%, 100% { transform: translateY(0) rotate(1deg); } 50% { transform: translateY(-10px) rotate(-2deg); } }
+.benben-phoenix { position: absolute; z-index: 4; top: -29%; left: 39%; width: 34%; height: auto; filter: drop-shadow(0 8px 14px rgba(145,46,8,.42)); animation: benben-phoenix-perch 2.6s ease-in-out infinite; }
+@keyframes benben-phoenix-perch { 0%, 100% { transform: translateY(0) rotate(1deg); } 50% { transform: translateY(-4px) rotate(-1deg); } }
 .benben-effect { position: absolute; z-index: 3; inset: 0; pointer-events: none; overflow: hidden; }
 .benben-feed-effect span { --pebble-x: 1%; --pebble-y: 76%; position: absolute; z-index: 4; left: var(--pebble-x); top: var(--pebble-y); width: 6.5%; aspect-ratio: 1.15; border: 1px solid rgba(55,48,44,.45); border-radius: 48% 40% 52% 36%; background: linear-gradient(145deg, #ddd6c9 8%, #8e887e 56%, #57534e); box-shadow: inset 2px 2px 3px rgba(255,255,255,.5), 0 3px 5px rgba(42,31,27,.28); opacity: 0; animation: benben-pebble 1s cubic-bezier(.3,.05,.55,1) forwards; }
 .benben-feed-effect span:nth-child(2) { --pebble-x: 7%; --pebble-y: 84%; width: 4.8%; animation-delay: .12s; }
@@ -1526,7 +1526,7 @@ button.calendar-day:hover { background: var(--surface-2); }
 .benben-sunbath-effect span:nth-child(2) { top: 17%; left: -18%; width: 104%; height: 11%; rotate: 58deg; animation-delay: .12s; }
 .benben-sunbath-effect span:nth-child(3) { top: 3%; left: -12%; width: 98%; height: 8%; rotate: 47deg; animation-delay: .24s; }
 @keyframes benben-sun-ray { 0%, 100% { opacity: 0; scale: .88 1; } 45% { opacity: .72; } 55% { opacity: 1; scale: 1.04 1; } }
-.benben-phoenix-banner { position: absolute; z-index: 6; top: 70px; left: 20px; right: 20px; padding: 9px 12px; border: 1px solid rgba(255,239,163,.7); border-radius: 12px; background: linear-gradient(90deg, rgba(111,34,22,.86), rgba(185,80,23,.84)); color: #fff8d7; font-size: .8rem; font-weight: 750; text-align: center; box-shadow: 0 8px 24px rgba(77,28,20,.22); backdrop-filter: blur(8px); }
+.benben-phoenix-banner { position: absolute; z-index: 6; bottom: 18px; left: 20px; right: 20px; padding: 9px 12px; border: 1px solid rgba(255,239,163,.7); border-radius: 12px; background: linear-gradient(90deg, rgba(111,34,22,.86), rgba(185,80,23,.84)); color: #fff8d7; font-size: .8rem; font-weight: 750; text-align: center; box-shadow: 0 8px 24px rgba(77,28,20,.22); backdrop-filter: blur(8px); }
 .benben-mood { position: absolute; top: 20px; right: 20px; display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border: 1px solid rgba(255,255,255,.45); border-radius: 999px; background: rgba(20,17,28,.64); color: #fff; font-weight: 700; backdrop-filter: blur(8px); }
 .benben-mood span { color: #ffd76c; }
 .benben-care-card { padding: clamp(20px, 4vw, 34px); }
