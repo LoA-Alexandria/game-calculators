@@ -112,7 +112,7 @@ const de: Dictionary = {
   },
   guideCategories: {
     coreElements: "Kernelemente",
-    cityLayout: "Stadtaufbau",
+    layouts: "Layouts",
     goddess: "Göttin",
     event: "Event",
     grandVoyage: "Große Reise",
@@ -618,6 +618,255 @@ const de: Dictionary = {
       ],
       note:
         "Die genannten Schwellen sind die Standardwerte des Planers. Zeigt dein Spiel andere Zahlen, ändere sie im Einstellungs-Tab und sag uns auf Discord Bescheid, damit wir die Standardwerte korrigieren.",
+    },
+    heroLayouts: {
+      title: "Helden-Layouts",
+      summary: "Wie die Plätze der Formation bestimmen, wer fällt und wer auslöst, dazu die Builds Crit, DoT, Pursuit und Execute.",
+      intro:
+        "Wo ein Held steht, entscheidet, wann er fällt und wann sein Skill auslöst. Dieser Guide erklärt das Formationsbrett, wie du Helden platzierst und welche Builds gerade gespielt werden.",
+      credit: "Guide von Autumn (Ice, S12), geteilt auf Discord",
+      creditDate: "August 2026 · Execute im September ergänzt",
+      boardHeading: "Das Formationsbrett",
+      boardCaption: "Die Plätze so nummeriert wie im Formationsbildschirm. Die Vorderreihe ist die rechte Spalte.",
+      columnBack: "Hinterreihe",
+      columnMiddle: "Mitte",
+      columnFront: "Vorderreihe",
+      slotLabel: "Platz {slot}",
+      legendLast: "Fällt zuletzt · löst zuerst aus",
+      legendFirst: "Fällt zuerst",
+      rulesHeading: "So funktioniert die Formation",
+      sections: [
+        {
+          heading: "Niedrige Nummern halten am längsten",
+          body: [
+            "Platz 1 fällt als Letzter, Platz 25 als Erster. Die Vorderreihe und die Mitte jeder Spalte halten am längsten durch, dort gehören deine am stärksten ausgebauten Helden hin.",
+          ],
+        },
+        {
+          heading: "Die niedrigste Nummer löst aus",
+          body: [
+            "Können mehrere Helden in derselben Runde einen Skill einsetzen, kommt der mit der niedrigsten Nummer zuerst.",
+          ],
+        },
+        {
+          heading: "Der Befehlswert gibt das Tempo vor",
+          body: [
+            "Der Befehlswert entscheidet, wer zuerst handelt. Höhere Seltenheiten haben mehr davon und gewinnen pro Stufe mehr dazu. Soll ein Held niedrigerer Seltenheit öfter auslösen, level ihn hoch.",
+          ],
+        },
+        {
+          heading: "Jeder lebende Held bringt Schaden",
+          body: [
+            "Je mehr Helden noch stehen, desto mehr Schaden macht die Formation. Grenade gibt etwas Skill-Schaden zurück, wenn Helden fallen, aber solange sie nicht viele Sterne hat, lohnt es sich mehr, keine Helden zu verlieren.",
+          ],
+        },
+        {
+          heading: "Quick Deploy sortiert nach Seltenheit",
+          body: [
+            "Früher ergab Quick Deploy eine brauchbare Formation. Inzwischen sortiert es nach Seltenheit und stellt UR+-Helden mit wenigen Sternen in die Vorderreihe. Stell deine Formation deshalb von Hand auf.",
+          ],
+        },
+        {
+          heading: "Erzwungene Auslöser",
+          body: [
+            "SSR Nidhogg (Cryptide) lässt die gesamte Vorderreihe auslösen. Boat (Sammlung) lässt den Helden mit der niedrigsten Nummer, dessen Skill bereit ist, in den Runden 4, 8, 12 usw. auslösen, mit vierfachem Schaden.",
+          ],
+        },
+      ],
+      tipsHeading: "Tipps zur Platzierung",
+      tips: [
+        "Zieh einen Helden auf einen anderen Platz, um die beiden zu tauschen; tipp ihn an, um ihn zu entfernen.",
+        "Setz auf Helden mit derselben Schadensart: Crit, DoT oder Pursuit.",
+        "Nimm ein paar Heiler und Schildgeber mit, damit die Formation länger hält. DoT-Heiler und -Schildgeber gehören auf niedrige Nummern, weil ihre Wirkung Zeit braucht.",
+        "Machen ein DoT- und ein Pursuit-Held etwa gleich viel Schaden, bekommt der DoT-Held die niedrigere Nummer.",
+        "Solange ein Held nicht stark ausgebaut ist, gilt: Je höher seine Skill-Auslösechance, desto niedriger seine Nummer.",
+        "Auch manche Utility-Helden verdienen einen Platz weiter vorn, zum Beispiel Hermes.",
+      ],
+      note: "Die eine richtige Formation gibt es nicht. Bau deine um die Helden, in die du investiert hast, und ergänze Heiler, Schildgeber und Utility.",
+      buildsHeading: "Builds",
+      buildsLede: "Wähle den Build, der zu deinen ausgebauten Helden passt.",
+      legendHero: "Held",
+      legendCollection: "Sammlung",
+      labelKey: "Schlüsselhelden",
+      labelImportant: "Wichtige Helden",
+      labelOther: "Weitere Helden",
+      labelCollection: "Beste Sammlung",
+      labelCounters: "Gekontert durch",
+      labelPros: "Vorteile",
+      labelCons: "Nachteile",
+      builds: [
+        {
+          id: "crit",
+          name: "Pure Crit",
+          status: "Am meisten empfohlen",
+          tagline:
+            "Überwältigende kritische Treffer ganz am Anfang beenden den Kampf früh; danach passiert nicht mehr viel. Die Schlüsselhelden haben häufige Splitter-Quellen und lassen sich deshalb am leichtesten ausbauen.",
+          key: [{ name: "Joan of Arc", note: "mindestens UR" }, "Achilles"],
+          important: ["Tutankhamen", "Blackbeard", "Spartacus", "Newton", "Charles Darwin", "Bjorn", "Lagertha", "Guan Yu"],
+          other: ["Saladin", "Drake", "Catherine de Medici"],
+          collection: ["Grenade"],
+          counters: [
+            { label: "Schadensobergrenze oder -reduktion", picks: ["Hammer", "Bicycle", "Pompey"] },
+            { label: "Starke Heilung oder Schilde", picks: [{ name: "Odysseus", note: "Item" }] },
+            { label: "Verzögerung", picks: ["Wreath", "Horse", "Wings"] },
+            { label: "ATK-Raub", picks: ["Mask"] },
+            { label: "Ausweichen", picks: ["Hermes"] },
+            { label: "Todesimmunität", picks: ["Tesla"] },
+          ],
+          pros: [
+            "Sehr, sehr starker Schaden gleich zu Beginn.",
+            "Braucht am wenigsten Utility, auch wenn Utility trotzdem hilft.",
+            "Früh leicht aufzubauen: Die Schlüsselhelden gibt es ab dem ersten Tag.",
+            "Leicht auszubauen und trägt dich bis weit ins Late Game.",
+          ],
+          cons: [
+            "Ein Alpha-Strike: Tötet der erste Schlag nicht, hast du ein Problem.",
+            "Volle Stärke nur mit dem Item von Achilles, und das ist teuer; ohne es erreicht der Build etwa 60–70 % seiner Wirkung.",
+            "Braucht die meisten Helden für den höchsten Schaden.",
+          ],
+          notes: [
+            "Bjorn ist hier hervorragend, aber teuer zu besternen. Kannst du dich auf ihn konzentrieren, wird er zum Schlüsselhelden.",
+          ],
+        },
+        {
+          id: "dot",
+          name: "DoT / Stall",
+          status: "",
+          tagline:
+            "Den Gegner mit starker Heilung und starken Schilden aussitzen, während der Schaden über Zeit wächst, und so viele Debuffs wie möglich auf ihn stapeln.",
+          key: ["King Arthur", "Odysseus", "Gawain", "Lancelot"],
+          important: ["Guinevere", "Pompey", "Richard I", "Alfred I", "Hector", "Da Vinci", "Columbus", "Franklin", "Queen Victoria", "Tesla", "Sun-Sin"],
+          other: ["Hannibal", "Archimedes", "Andersen", "Himiko", "Florence Nightingale"],
+          collection: ["Dagger", "Wings", "David/Adam"],
+          counters: [
+            { label: "Debuff-Immunität", picks: ["Dante", "Homer", "Pompey"] },
+            { label: "Verzögerung", picks: ["Wreath", "Horse", "Hammurabi"] },
+            { label: "Heilblockade oder -reduktion", picks: ["Spartacus", "Livia"] },
+          ],
+          pros: [
+            "Das genaue Gegenteil von Crit: Sehr starke Heilung und Schilde überstehen den Burst, während sich Debuffs stapeln.",
+            "Gegnerische Konter lösen zufällig aus und stehen oft in der Hinterreihe, fallen also meist zuerst.",
+            "Bietet dank der vielen Utility die abwechslungsreichste Taktik.",
+          ],
+          cons: [
+            "Alle Schlüsselhelden sind teuer zu bekommen und auszubauen, auch wenn es sie alle schon früh gibt.",
+            "Gegnerische Konter lösen zufällig aus und können deinen Schaden komplett zunichtemachen.",
+            "Kommen Heilung und Schilde nicht hinterher, fällt die Formation schnell.",
+            "Außerhalb der Schlüsselhelden ist DoT ebenfalls ein Zufallsauslöser; kein Auslöser, kein Schaden.",
+            "Braucht die meiste Utility: Heiler, Schildgeber, Buffer und Debuffer.",
+            "Schwierig gut zu spielen, solange du dem Gegner nicht klar überlegen bist.",
+          ],
+          notes: [
+            "Lancelot möchte so viele Debuffer in der Formation, wie sinnvoll hineinpassen.",
+            "Lobende Erwähnung: Diabolus.",
+          ],
+        },
+        {
+          id: "pursuit",
+          name: "Pure Pursuit",
+          status: "",
+          tagline:
+            "Der Mittelweg zwischen Crit und DoT: so viele Treffer wie möglich auf den Gegner bringen. Etwas Utility ist nötig.",
+          key: [{ name: "Caesar", note: "mit Nidhogg" }, "William Shakespeare", { name: "Billy the Kid", note: "mit Item" }, "Louis XIV", "Merlin"],
+          important: ["Augustus", "Alexander the Great", "Napoleon", "Galileo Galilei", "Musashi"],
+          other: ["Isabella I", "Mary I", "Elizabeth I", "Robin Hood"],
+          collection: ["Replica"],
+          counters: [
+            { label: "Sammlung", picks: ["Hammer", "Mask", "Pedal Car"] },
+          ],
+          pros: [
+            "Braucht die wenigsten Helden, um gut zu funktionieren.",
+            "Nicht so langsam wie DoT und liefert trotzdem etwas anhaltenden Schaden.",
+            "Hat nur sehr wenige direkte Konter.",
+            "Früh verfügbar.",
+          ],
+          cons: [
+            "Deutlich weniger Schaden, solange er nicht stark ausgebaut ist, weil die wenigsten Helden den Schaden machen.",
+            "Augustus muss trotz schwächerer ATK-Skalierung in der Vorderreihe auf einem der drei obersten Plätze stehen, weil sein Skill in den ersten fünf Runden auslösen muss.",
+            "Braucht viel Buff- und Debuff-Unterstützung, um mit den anderen Builds mitzuhalten.",
+            "Auch Replica ist ein Zufallsauslöser.",
+            "Der glücksabhängigste der reinen Builds, im Kampf wie beim Ausbauen.",
+          ],
+          notes: [],
+        },
+        {
+          id: "execute",
+          name: "Execute",
+          status: "Late Game · im Test",
+          tagline:
+            "Gegner endgültig ausschalten. Wer einmal liegt, steht nicht wieder auf, und fallen die stärksten Helden, bricht oft der ganze Build zusammen.",
+          key: ["Circe", { name: "Billy the Kid", note: "mit Item" }, "Guan Yu", "Musashi", "Lu Bu", { name: "Joan of Arc", note: "UR+" }],
+          important: ["Gawain"],
+          other: [],
+          collection: ["Noah’s Ark"],
+          counters: [
+            { label: "Ausweichen", picks: ["Hermes"] },
+            { label: "Starke Schilde oder Heilung", picks: [] },
+            { label: "Todesimmunität", picks: ["Tesla"] },
+          ],
+          pros: [
+            "Einmal ausgeschaltete Gegner stehen nicht wieder auf.",
+            "Kontert breite Builds mit gleichmäßig gelevelten Helden.",
+            "Fallen die stärksten gegnerischen Helden früh, bricht der ganze gegnerische Build auseinander.",
+            "Braucht nur sehr wenige bestimmte Helden und lässt sich deshalb leicht mit anderen Builds mischen.",
+          ],
+          cons: [
+            "Braucht trotzdem starken Schaden, um Gegner in Execute-Reichweite zu bringen.",
+            "Braucht trotzdem ordentliche Heilung, um so lange zu überleben.",
+            "Wird noch getestet.",
+            "Ein Late-Game-Build: Circe, die ihn erst möglich macht, gibt es erst ab dem 5. Atlantis.",
+          ],
+          notes: [
+            "Jeder starke Schadensverursacher zählt ebenfalls als wichtiger Held.",
+          ],
+        },
+      ],
+      utilityHeading: "Kampf-Utility",
+      utilityLede:
+        "Kein eigener Build: Diese Utility-Helden passen in jede Formation, auch nach vorn. Jede Wahl ist ein Kompromiss.",
+      utility: [
+        {
+          role: "Heiler",
+          groups: [
+            { label: "", picks: ["Odysseus", "Queen Victoria", "Pompey", "Franklin", "Confucius", "Wallace", "Noah", "Blackbeard", "William Shakespeare", "Eleanor of Aquitaine", "Victor Hugo", "Cervantes"] },
+          ],
+        },
+        {
+          role: "Schildgeber",
+          groups: [
+            { label: "", picks: ["Da Vinci", "Pompey", "Queen Victoria", "Michelangelo"] },
+          ],
+        },
+        {
+          role: "Buffer",
+          groups: [
+            { label: "ATK-Buff", picks: ["Prometheus", "Da Vinci", "Alexander Hamilton", "Anne Bonny", "Adam"] },
+            { label: "Schadensreduktion", picks: ["Socrates", "Marco Polo", "King Arthur"] },
+            { label: "Todesimmunität", picks: ["Tesla"] },
+            { label: "Debuffs entfernen oder Immunität", picks: ["Dante", "Thomas Edison", { name: "Heracles", note: "mit Item" }] },
+            { label: "Ausweichen", picks: ["Hermes"] },
+            { label: "Schildbruch", picks: ["Merlin"] },
+          ],
+        },
+        {
+          role: "Debuffer",
+          groups: [
+            { label: "Gegnerische Buffs entfernen", picks: ["Tutankhamen", "Beethoven", "Homer", { name: "Ragnar", note: "ab dem Zeitalter der Aufklärung" }, "Hatshepsut", "Heracles"] },
+            { label: "Gegnerischen ATK oder Skill-Schaden senken", picks: ["Charles the Great", "Chaucer", "Mary Shelley", "James Watt"] },
+            { label: "Erlittenen Schaden des Gegners erhöhen", picks: ["Gilgamesh", "Hypatia", "Dido", "Beethoven"] },
+            { label: "Verzögern oder versiegeln", picks: ["Hammurabi", "Cleopatra"] },
+            { label: "Gegnerischen Skill stehlen", picks: [{ name: "Cleopatra", note: "mit Item" }] },
+            { label: "Heilblockade oder -reduktion", picks: ["Livia", "Spartacus"] },
+            { label: "Sammlung blockieren", picks: ["Morgana"] },
+          ],
+        },
+        {
+          role: "Execute",
+          groups: [
+            { label: "", picks: ["Lu Bu", "Circe"] },
+          ],
+        },
+      ],
     },
   },
   auth: {

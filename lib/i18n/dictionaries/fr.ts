@@ -112,7 +112,7 @@ const fr: Dictionary = {
   },
   guideCategories: {
     coreElements: "Éléments fondamentaux",
-    cityLayout: "Plan de ville",
+    layouts: "Dispositions",
     goddess: "Déesse",
     event: "Événement",
     grandVoyage: "Grand Voyage",
@@ -618,6 +618,255 @@ const fr: Dictionary = {
       ],
       note:
         "Les seuils ci-dessus sont les valeurs par défaut du planificateur. Si votre jeu affiche d’autres chiffres, modifiez-les dans l’onglet Réglages et signalez-le sur Discord afin que les valeurs par défaut soient corrigées.",
+    },
+    heroLayouts: {
+      title: "Formations des héros",
+      summary: "Comment les emplacements décident qui tombe et qui déclenche, et les builds Crit, DoT, Pursuit et Execute.",
+      intro:
+        "L’emplacement d’un héros décide quand il tombe et quand sa compétence se déclenche. Ce guide explique le plateau de formation, comment placer ses héros et les builds joués en ce moment.",
+      credit: "Guide d’Autumn (Ice, S12), partagé sur Discord",
+      creditDate: "Août 2026 · Execute ajouté en septembre",
+      boardHeading: "Le plateau de formation",
+      boardCaption: "Les emplacements numérotés comme sur l’écran Formation. La première ligne est la colonne de droite.",
+      columnBack: "Arrière",
+      columnMiddle: "Milieu",
+      columnFront: "Première ligne",
+      slotLabel: "Emplacement {slot}",
+      legendLast: "Tombe en dernier · déclenche en premier",
+      legendFirst: "Tombe en premier",
+      rulesHeading: "Comment fonctionne la formation",
+      sections: [
+        {
+          heading: "Les petits numéros tiennent le plus longtemps",
+          body: [
+            "L’emplacement 1 tombe en dernier, l’emplacement 25 en premier. La première ligne et le centre de chaque colonne résistent le plus longtemps : c’est là que vont vos héros les plus investis.",
+          ],
+        },
+        {
+          heading: "Le plus petit numéro déclenche",
+          body: [
+            "Quand plusieurs héros peuvent utiliser une compétence au même tour, celui qui a le plus petit numéro passe en premier.",
+          ],
+        },
+        {
+          heading: "Le commandement donne le rythme",
+          body: [
+            "La valeur de commandement décide qui agit en premier. Les raretés supérieures en ont davantage et en gagnent plus par niveau : montez de niveau un héros de rareté inférieure si vous voulez qu’il déclenche plus souvent.",
+          ],
+        },
+        {
+          heading: "Chaque héros en vie ajoute des dégâts",
+          body: [
+            "Plus il reste de héros debout, plus la formation inflige de dégâts. Grenade rend un peu de dégâts de compétence quand des héros tombent, mais tant qu’elle n’a pas beaucoup d’étoiles, mieux vaut ne pas les perdre.",
+          ],
+        },
+        {
+          heading: "Quick Deploy trie par rareté",
+          body: [
+            "Quick Deploy donnait autrefois une formation utilisable. Il trie désormais par rareté et place en première ligne des héros UR+ peu étoilés : composez votre formation à la main.",
+          ],
+        },
+        {
+          heading: "Déclenchements forcés",
+          body: [
+            "SSR Nidhogg (Cryptide) fait déclencher toute la première ligne. Boat (Collection) fait déclencher le héros au plus petit numéro dont la compétence est prête aux tours 4, 8, 12 et ainsi de suite, avec des dégâts multipliés par quatre.",
+          ],
+        },
+      ],
+      tipsHeading: "Conseils de placement",
+      tips: [
+        "Faites glisser un héros sur un autre emplacement pour échanger les deux ; touchez un héros pour le retirer.",
+        "Regroupez des héros du même type de dégâts : Crit, DoT ou Pursuit.",
+        "Gardez quelques soigneurs et donneurs de bouclier pour tenir plus longtemps. Placez les soigneurs et boucliers à DoT sur de petits numéros, car leur effet met du temps à monter.",
+        "Si un héros DoT et un héros Pursuit infligent à peu près les mêmes dégâts, donnez le plus petit numéro au héros DoT.",
+        "Sauf si un héros est très investi, plus sa chance de déclenchement est élevée, plus son numéro doit être petit.",
+        "Certains héros utilitaires méritent aussi une place à l’avant, par exemple Hermes.",
+      ],
+      note: "Il n’existe pas de formation parfaite. Construisez la vôtre autour des héros dans lesquels vous avez investi, puis ajoutez soigneurs, boucliers et utilitaires.",
+      buildsHeading: "Builds",
+      buildsLede: "Choisissez le build qui correspond aux héros dans lesquels vous avez investi.",
+      legendHero: "Héros",
+      legendCollection: "Collection",
+      labelKey: "Héros clés",
+      labelImportant: "Héros importants",
+      labelOther: "Autres héros",
+      labelCollection: "Meilleure collection",
+      labelCounters: "Contré par",
+      labelPros: "Points forts",
+      labelCons: "Points faibles",
+      builds: [
+        {
+          id: "crit",
+          name: "Pure Crit",
+          status: "Le plus recommandé",
+          tagline:
+            "Des coups critiques écrasants dès le début pour finir le combat vite ; ensuite, il ne reste plus grand-chose à faire. Les héros clés ont des sources de fragments courantes, ce qui les rend les plus faciles à investir.",
+          key: [{ name: "Joan of Arc", note: "UR minimum" }, "Achilles"],
+          important: ["Tutankhamen", "Blackbeard", "Spartacus", "Newton", "Charles Darwin", "Bjorn", "Lagertha", "Guan Yu"],
+          other: ["Saladin", "Drake", "Catherine de Medici"],
+          collection: ["Grenade"],
+          counters: [
+            { label: "Plafond ou réduction de dégâts", picks: ["Hammer", "Bicycle", "Pompey"] },
+            { label: "Soins ou boucliers puissants", picks: [{ name: "Odysseus", note: "objet" }] },
+            { label: "Retard", picks: ["Wreath", "Horse", "Wings"] },
+            { label: "Vol d’ATK", picks: ["Mask"] },
+            { label: "Esquive", picks: ["Hermes"] },
+            { label: "Immunité à la mort", picks: ["Tesla"] },
+          ],
+          pros: [
+            "Des dégâts d’entrée très, très élevés.",
+            "Demande le moins d’utilitaires pour bien fonctionner, même s’ils aident toujours.",
+            "Facile à monter tôt : les héros clés sont disponibles dès le premier jour.",
+            "Facile à investir, et il vous porte loin en fin de partie.",
+          ],
+          cons: [
+            "C’est une frappe d’ouverture : si le premier assaut ne tue pas, vous êtes en difficulté.",
+            "N’atteint sa pleine puissance qu’avec l’objet d’Achilles, qui coûte cher ; sans lui, le build est efficace à environ 60–70 %.",
+            "Demande le plus de héros pour atteindre ses dégâts maximaux.",
+          ],
+          notes: [
+            "Bjorn est excellent ici mais coûteux à étoiler. Si vous pouvez vous concentrer sur lui, il devient un héros clé.",
+          ],
+        },
+        {
+          id: "dot",
+          name: "DoT / Stall",
+          status: "",
+          tagline:
+            "Tenir face à l’ennemi avec des soins et des boucliers puissants pendant que les dégâts sur la durée montent, et empiler un maximum d’affaiblissements sur lui.",
+          key: ["King Arthur", "Odysseus", "Gawain", "Lancelot"],
+          important: ["Guinevere", "Pompey", "Richard I", "Alfred I", "Hector", "Da Vinci", "Columbus", "Franklin", "Queen Victoria", "Tesla", "Sun-Sin"],
+          other: ["Hannibal", "Archimedes", "Andersen", "Himiko", "Florence Nightingale"],
+          collection: ["Dagger", "Wings", "David/Adam"],
+          counters: [
+            { label: "Immunité aux affaiblissements", picks: ["Dante", "Homer", "Pompey"] },
+            { label: "Retard", picks: ["Wreath", "Horse", "Hammurabi"] },
+            { label: "Blocage ou réduction des soins", picks: ["Spartacus", "Livia"] },
+          ],
+          pros: [
+            "L’exact opposé du Crit : des soins et boucliers très puissants encaissent l’assaut pendant que les affaiblissements s’accumulent.",
+            "Les contres ennemis se déclenchent au hasard et sont souvent à l’arrière, donc ils tombent généralement en premier.",
+            "Offre les tactiques les plus variées grâce à tous les utilitaires.",
+          ],
+          cons: [
+            "Tous les héros clés coûtent cher à obtenir et à améliorer, même s’ils sont tous disponibles tôt.",
+            "Les contres ennemis se déclenchent au hasard et peuvent annuler complètement vos dégâts.",
+            "Si les soins et les boucliers ne suivent pas, la formation tombe vite.",
+            "En dehors des héros clés, le DoT se déclenche lui aussi au hasard ; pas de déclenchement, pas de dégâts.",
+            "Demande le plus d’utilitaires : soigneurs, boucliers, renforts et affaiblissements.",
+            "Délicat à bien jouer, sauf si vous surpassez nettement l’ennemi.",
+          ],
+          notes: [
+            "Lancelot veut autant d’affaiblisseurs dans la formation que vous pouvez raisonnablement en placer.",
+            "Mention honorable : Diabolus.",
+          ],
+        },
+        {
+          id: "pursuit",
+          name: "Pure Pursuit",
+          status: "",
+          tagline:
+            "Le juste milieu entre Crit et DoT : porter le plus de coups possible à l’ennemi. Un peu d’utilitaires est nécessaire.",
+          key: [{ name: "Caesar", note: "avec Nidhogg" }, "William Shakespeare", { name: "Billy the Kid", note: "avec objet" }, "Louis XIV", "Merlin"],
+          important: ["Augustus", "Alexander the Great", "Napoleon", "Galileo Galilei", "Musashi"],
+          other: ["Isabella I", "Mary I", "Elizabeth I", "Robin Hood"],
+          collection: ["Replica"],
+          counters: [
+            { label: "Collection", picks: ["Hammer", "Mask", "Pedal Car"] },
+          ],
+          pros: [
+            "Demande le moins de héros pour bien fonctionner.",
+            "Moins lent que le DoT, tout en offrant des dégâts soutenus.",
+            "A très peu de contres directs.",
+            "Disponible tôt.",
+          ],
+          cons: [
+            "Des dégâts nettement plus faibles sans gros investissement, car c’est le build où le moins de héros infligent les dégâts.",
+            "Augustus doit être en première ligne, sur l’un des trois emplacements du haut, malgré une progression d’ATK plus faible, car sa compétence doit se déclencher dans les cinq premiers tours.",
+            "Demande beaucoup de renforts et d’affaiblissements pour égaler les autres builds.",
+            "Replica se déclenche lui aussi au hasard.",
+            "Le plus dépendant de la chance des builds purs, en combat comme à l’investissement.",
+          ],
+          notes: [],
+        },
+        {
+          id: "execute",
+          name: "Execute",
+          status: "Fin de partie · en test",
+          tagline:
+            "Mettre les ennemis hors de combat pour de bon. Une fois à terre, ils ne se relèvent pas, et perdre leurs meilleurs héros peut faire s’effondrer tout leur build.",
+          key: ["Circe", { name: "Billy the Kid", note: "avec objet" }, "Guan Yu", "Musashi", "Lu Bu", { name: "Joan of Arc", note: "UR+" }],
+          important: ["Gawain"],
+          other: [],
+          collection: ["Noah’s Ark"],
+          counters: [
+            { label: "Esquive", picks: ["Hermes"] },
+            { label: "Boucliers ou soins puissants", picks: [] },
+            { label: "Immunité à la mort", picks: ["Tesla"] },
+          ],
+          pros: [
+            "Une fois à terre, les ennemis ne se relèvent pas.",
+            "Contre les builds larges aux héros montés de façon égale.",
+            "Éliminer tôt les meilleurs héros adverses fait s’effondrer tout leur build.",
+            "Demande très peu de héros précis, donc il se combine facilement avec d’autres builds.",
+          ],
+          cons: [
+            "Demande quand même de gros dégâts pour amener les ennemis à portée d’exécution.",
+            "Demande quand même des soins corrects pour survivre assez longtemps.",
+            "Encore en test.",
+            "Un build de fin de partie : Circe, qui le rend possible, n’est disponible qu’à partir du 5e Atlantis.",
+          ],
+          notes: [
+            "Tout héros infligeant de gros dégâts compte aussi comme héros important.",
+          ],
+        },
+      ],
+      utilityHeading: "Utilitaires de combat",
+      utilityLede:
+        "Ce n’est pas un build à part entière : ces héros utilitaires trouvent leur place dans n’importe quelle formation, y compris à l’avant. Chaque choix est un compromis.",
+      utility: [
+        {
+          role: "Soigneurs",
+          groups: [
+            { label: "", picks: ["Odysseus", "Queen Victoria", "Pompey", "Franklin", "Confucius", "Wallace", "Noah", "Blackbeard", "William Shakespeare", "Eleanor of Aquitaine", "Victor Hugo", "Cervantes"] },
+          ],
+        },
+        {
+          role: "Boucliers",
+          groups: [
+            { label: "", picks: ["Da Vinci", "Pompey", "Queen Victoria", "Michelangelo"] },
+          ],
+        },
+        {
+          role: "Renforts",
+          groups: [
+            { label: "Bonus d’ATK", picks: ["Prometheus", "Da Vinci", "Alexander Hamilton", "Anne Bonny", "Adam"] },
+            { label: "Réduction des dégâts", picks: ["Socrates", "Marco Polo", "King Arthur"] },
+            { label: "Immunité à la mort", picks: ["Tesla"] },
+            { label: "Retrait ou immunité aux affaiblissements", picks: ["Dante", "Thomas Edison", { name: "Heracles", note: "avec objet" }] },
+            { label: "Esquive", picks: ["Hermes"] },
+            { label: "Brise-bouclier", picks: ["Merlin"] },
+          ],
+        },
+        {
+          role: "Affaiblissements",
+          groups: [
+            { label: "Retrait des bonus ennemis", picks: ["Tutankhamen", "Beethoven", "Homer", { name: "Ragnar", note: "à partir du siècle des Lumières" }, "Hatshepsut", "Heracles"] },
+            { label: "Baisse de l’ATK ou des dégâts de compétence ennemis", picks: ["Charles the Great", "Chaucer", "Mary Shelley", "James Watt"] },
+            { label: "Hausse des dégâts subis par l’ennemi", picks: ["Gilgamesh", "Hypatia", "Dido", "Beethoven"] },
+            { label: "Retard ou sceau", picks: ["Hammurabi", "Cleopatra"] },
+            { label: "Vol de compétence ennemie", picks: [{ name: "Cleopatra", note: "avec objet" }] },
+            { label: "Blocage ou réduction des soins", picks: ["Livia", "Spartacus"] },
+            { label: "Blocage de la collection", picks: ["Morgana"] },
+          ],
+        },
+        {
+          role: "Execute",
+          groups: [
+            { label: "", picks: ["Lu Bu", "Circe"] },
+          ],
+        },
+      ],
     },
   },
   auth: {
