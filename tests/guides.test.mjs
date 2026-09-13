@@ -16,8 +16,10 @@ test("converts guide slugs and dictionary ids both ways", () => {
   assert.equal(camelToKebab("waterSupply"), "water-supply");
   assert.equal(guideHref("waterSupply"), "/guides/water-supply/");
   assert.equal(guideHref("goddesses"), "/guides/goddesses/");
+  assert.equal(guideHref("artwork"), "/guides/artwork/");
   assert.equal(guideIdFromHref("/guides/water-supply/"), "waterSupply");
   assert.equal(guideIdFromHref("/guides/goddesses/"), "goddesses");
+  assert.equal(guideIdFromHref("/guides/artwork/"), "artwork");
   assert.equal(guideIdFromHref("/guides/new/"), null);
 });
 
@@ -27,6 +29,16 @@ test("every published guide has a dictionary entry", () => {
     assert.ok(id, `no id for ${item.href}`);
     assert.equal(isGuideEntryId(id, en.guideEntries), true);
   }
+});
+
+test("artwork levels SSR ATK first and crit leads with Nature in Bloom", () => {
+  const { levels, builds, note } = en.guideEntries.artwork;
+  assert.equal(levels[0]?.rarity, "SSR");
+  assert.equal(levels[0]?.stat, "ATK");
+  assert.equal(builds[0]?.rows[0]?.name, "Nature in Bloom");
+  assert.equal(builds[1]?.rows[0]?.name, "Self-Portrait");
+  assert.equal(builds[2]?.rows[0]?.name, "Urban Proletariat");
+  assert.equal(note, "");
 });
 
 test("goddesses phase 2 stops Fortuna and Bastet at 60", () => {
