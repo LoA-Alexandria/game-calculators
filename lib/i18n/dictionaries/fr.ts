@@ -94,6 +94,13 @@ const fr: Dictionary = {
     lede: "Comment fonctionnent réellement les systèmes derrière les outils — écrit pour que vous n’ayez pas à le redécouvrir.",
     empty:
       "Les premiers guides sont en cours de rédaction. En attendant, chaque outil explique ses hypothèses à côté du résultat.",
+    other: "Autres",
+  },
+  guideCategories: {
+    cityLayout: "Plan de ville",
+    goddess: "Déesse",
+    event: "Événement",
+    grandVoyage: "Grand Voyage",
   },
   calculators: {
     title: "Calculateurs",
@@ -314,6 +321,7 @@ const fr: Dictionary = {
     signIn: "Se connecter",
     signOut: "Se déconnecter",
     signedInAs: "Connecté en tant que",
+    accountMenu: "Compte",
     noAccess: "Votre rôle ne couvre pas cette page.",
     needSignIn: "Connectez-vous pour ouvrir cette page.",
   },

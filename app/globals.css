@@ -422,11 +422,11 @@ p { margin: 0; }
 .topbar .topbar-menu { display: none; }
 .topbar-context { font-size: .87rem; font-weight: 550; color: var(--ink-soft); }
 .topbar-spacer { flex: 1; }
-.topbar-account { display: flex; align-items: center; gap: 9px; min-width: 0; color: var(--ink-soft); font-size: .8rem; }
-.topbar-account > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 14ch; }
+.topbar-account { position: relative; display: flex; align-items: center; min-width: 0; }
+.topbar-account-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 14ch; }
 /* the metrics live on .icon-button below; these only add the text treatment,
    so the sign-in control can never end up a different height again */
-.topbar-account button, .topbar-sign-in { font-size: .82rem; font-weight: 600; color: var(--ink); }
+.topbar-account-trigger, .topbar-sign-in { font-size: .82rem; font-weight: 600; color: var(--ink); }
 .auth-banner {
   margin: 14px clamp(14px, 3vw, 30px) 0;
   padding: 10px 12px;
@@ -439,7 +439,7 @@ p { margin: 0; }
 .auth-banner strong { color: var(--bad); }
 
 .icon-button,
-.topbar-account button,
+.topbar-account-trigger,
 .topbar-sign-in {
   display: inline-flex;
   align-items: center;
@@ -456,8 +456,10 @@ p { margin: 0; }
   transition: color .14s ease, border-color .14s ease, background-color .14s ease;
 }
 .icon-button:hover,
-.topbar-account button:hover,
+.topbar-account-trigger:hover,
 .topbar-sign-in:hover { color: var(--accent); border-color: var(--accent-line); background: var(--accent-soft); }
+.topbar-account-trigger .icon-sm { transform: rotate(90deg); }
+.topbar-account-trigger.is-open .icon-sm { transform: rotate(-90deg); }
 
 .lang { position: relative; }
 .lang-code { font-family: var(--font-mono); font-size: .73rem; font-weight: 600; }
@@ -487,8 +489,17 @@ p { margin: 0; }
   font-size: .87rem;
   text-align: left;
 }
+a.lang-option { color: inherit; text-decoration: none; }
 .lang-option:hover { background: var(--surface-2); }
 .lang-option.is-active { color: var(--accent); font-weight: 600; }
+.menu-sep {
+  height: 1px;
+  margin: 6px 4px;
+  padding: 0;
+  list-style: none;
+  background: var(--line);
+  border: 0;
+}
 .lang-short { width: 22px; font-family: var(--font-mono); font-size: .68rem; font-weight: 600; color: var(--ink-faint); }
 .lang-option.is-active .lang-short { color: var(--accent); }
 .lang-check { margin-left: auto; }
@@ -807,6 +818,15 @@ p { margin: 0; }
 
 /* --- lists --------------------------------------------------------------- */
 
+.guide-category + .guide-category { margin-top: 32px; }
+.guide-category > h2 {
+  margin: 0 0 12px;
+  font-size: .78rem;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
 .entry-list { display: grid; gap: 10px; }
 .entry-card {
   display: block;
