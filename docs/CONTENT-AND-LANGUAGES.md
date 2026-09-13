@@ -83,8 +83,9 @@ that guide has, and `tests/guides.test.mjs` pins every entry, so two guides
 cannot claim the same renderer by sharing a field name. Keep `sections` and
 `note` in those entries too, since the editor reads them. In the Hero layouts guide,
 `sections` are the rule cards next to the formation board, and the slot order
-lives in `lib/content/hero-layouts.ts`. Painting names, set effects, and hero
-matches for Artwork live in `lib/data/paintings.json`, once for all languages;
+lives in `lib/content/hero-layouts.ts` (builds and utility groups: see *Editing
+hero layouts* below). Painting names, set effects, and hero matches for Artwork
+live in `lib/data/paintings.json`, once for all languages;
 `lib/content/artwork.ts` types and exports them. Unlock order and level
 priority for Artwork layouts live in the guide dictionary. The SSR set-skill
 ranking lives in `lib/data/artwork-layouts.json`, once for all languages;
@@ -97,6 +98,47 @@ types and exports them. The dictionaries only hold the text those rows point at
 (`roles`, `effects`, `resources`, `notes`, `variants`, `reasons`).
 `tests/hero-tiers.test.mjs` checks that every key has text in every language and
 that hero names match the Hero layouts guide.
+
+## Editing hero layouts
+
+The Hero layouts guide keeps which hero sits in which build, counter, or utility
+group in `lib/data/hero-layouts.json`. The readable parts are keyed maps inside
+`guideEntries.heroLayouts` in every dictionary: `buildTexts` (name, label, short
+description, pros, cons, notes per build), `counterLabels`, `pickNotes` (such as
+"with item"), `roleNames`, and `groupLabels`. Hero and Collection names appear
+only in the JSON, so they are the same in every language.
+`tests/hero-layouts.test.mjs` checks that every key has text in every language
+and that pros, cons, and notes have the same number of lines in each.
+
+Members with `guides.draft` see **Edit builds** on the guide, which opens
+`/guides/hero-layouts/edit/`:
+
+- **Hero pool** (beside the builds, above them on a phone): heroes from Core
+  elements › Heroes. By default it shows only heroes that are not in the layout
+  yet; it can also show heroes missing from the selected build, or all heroes,
+  filtered by rarity or name. Drag a hero into any zone, or tap **Key**,
+  **Important**, or **Other** to add it to the selected build.
+- **Builds**: switch with the tabs, add one with **New build**, reorder with the
+  arrows, or delete one. Name, label, and description are edited in place;
+  pros, cons, and notes are lines you can add and remove.
+- **Zones**: drag heroes between key, important, other, best collection,
+  counters, and utility groups, or type a name into a zone. Selecting a hero
+  sets a qualifier ("with item", or a new one) or moves it to any zone from a
+  list.
+- **Languages**: text fields edit the language the site is shown in. **Edit all
+  languages** shows English, German, and French side by side. A new build,
+  counter, or group starts with the same text in all three.
+
+The draft is saved in that browser only (`localStorage['popepoch-layout-draft']`).
+**Export** gives the complete `lib/data/hero-layouts.json` and, per dictionary,
+the block from `buildTexts` to `groupLabels` to replace inside
+`guideEntries.heroLayouts`. An untouched draft exports both byte for byte
+(`tests/hero-layout-editor.test.mjs`).
+
+The Heroes roster spells some heroes differently from the layouts and the tier
+list ("Isaac Newton" for Newton, "Garwain" for Gawain). `lib/content/hero-names.ts`
+maps them, so the pool does not offer a hero that is already placed under the
+other spelling. Remove an entry there once the roster and the guides agree.
 
 ## Editing the hero tier list
 
@@ -239,7 +281,6 @@ hand and are **not** verified against the wording those game clients use. They
 are collected in `materials`, `cityTypes`, and `cityGroups` in each dictionary,
 so they can be corrected in one place.
 
-Hero and Collection names in `guideEntries.heroLayouts` deliberately stay in
-English in every language, and `tests/hero-layouts.test.mjs` fails if one
-dictionary drifts from the others. Only the qualifiers next to a name ("with
-item") are translated.
+Hero and Collection names in the Hero layouts and tier list data are not
+translated at all: they live in the JSON files, and only qualifiers such as
+"with item" (`pickNotes`) are translated.

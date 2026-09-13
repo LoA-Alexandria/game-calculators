@@ -1,8 +1,12 @@
+import layoutData from "../data/hero-layouts.json" with { type: "json" };
+
 /**
- * Language-independent parts of the Hero layouts guide. The text lives in
- * `guideEntries.heroLayouts` in every dictionary; hero and Collection names
- * there stay in English so all three languages point at the same in-game
- * names.
+ * Language-independent parts of the Hero layouts guide. Which hero sits in
+ * which build, counter, or utility group is in `lib/data/hero-layouts.json`,
+ * the file the layouts editor exports. Everything readable (build names and
+ * texts, counter and group labels, notes such as "with item") lives in
+ * `guideEntries.heroLayouts` under keys the JSON points at. Hero and Collection
+ * names are the same in every language.
  */
 
 /**
@@ -49,13 +53,65 @@ export const COLLECTION_ITEMS: ReadonlySet<string> = new Set([
   "Wreath",
 ]);
 
-/** A hero or item, optionally with a translated qualifier such as "with item". */
-export type LayoutPick = string | { name: string; note: string };
+/** A hero or Collection item; `note` is a key into `pickNotes` ("with item"). */
+export type LayoutPick = { hero: string; note?: string };
+export type LayoutCounter = { id: string; picks: LayoutPick[] };
+export type LayoutGroup = { id: string; picks: LayoutPick[] };
+export type LayoutRole = { id: string; groups: LayoutGroup[] };
 
-export function pickName(pick: LayoutPick): string {
-  return typeof pick === "string" ? pick : pick.name;
+export const BUILD_ZONES = ["key", "important", "other", "collection"] as const;
+export type BuildZone = (typeof BUILD_ZONES)[number];
+
+export type LayoutBuild = Record<BuildZone, LayoutPick[]> & { id: string; counters: LayoutCounter[] };
+export type LayoutData = { builds: LayoutBuild[]; utility: LayoutRole[] };
+
+export const LAYOUT_DATA = layoutData as LayoutData;
+
+export type BuildText = {
+  name: string;
+  status: string;
+  tagline: string;
+  pros: readonly string[];
+  cons: readonly string[];
+  notes: readonly string[];
+};
+
+/** The keyed text maps in `guideEntries.heroLayouts` that the JSON points at. */
+export type LayoutTexts = {
+  buildTexts: Record<string, BuildText>;
+  counterLabels: Record<string, string>;
+  pickNotes: Record<string, string>;
+  roleNames: Record<string, string>;
+  groupLabels: Record<string, string>;
+};
+
+export const LAYOUT_TEXT_MAPS = ["buildTexts", "counterLabels", "pickNotes", "roleNames", "groupLabels"] as const;
+
+/**
+ * Reads the keyed maps out of a dictionary entry. The dictionary infers a
+ * literal key per build, which is right for type-checking the languages
+ * against each other but too narrow to index with an id from the JSON.
+ */
+export function layoutTexts(entry: { [key in (typeof LAYOUT_TEXT_MAPS)[number]]: object }): LayoutTexts {
+  return {
+    buildTexts: entry.buildTexts as Record<string, BuildText>,
+    counterLabels: entry.counterLabels as Record<string, string>,
+    pickNotes: entry.pickNotes as Record<string, string>,
+    roleNames: entry.roleNames as Record<string, string>,
+    groupLabels: entry.groupLabels as Record<string, string>,
+  };
 }
 
-export function pickNote(pick: LayoutPick): string {
-  return typeof pick === "string" ? "" : pick.note;
+/** Every hero named anywhere in the layout, Collection items excluded. */
+export function placedHeroes(data: LayoutData): Set<string> {
+  const names = new Set<string>();
+  const add = (picks: readonly LayoutPick[]) => {
+    for (const pick of picks) if (!COLLECTION_ITEMS.has(pick.hero)) names.add(pick.hero);
+  };
+  for (const build of data.builds) {
+    for (const zone of BUILD_ZONES) add(build[zone]);
+    for (const counter of build.counters) add(counter.picks);
+  }
+  for (const role of data.utility) for (const group of role.groups) add(group.picks);
+  return names;
 }
