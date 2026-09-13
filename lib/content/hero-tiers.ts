@@ -18,6 +18,7 @@ export type EffectKey = keyof TierListText["effects"];
 export type ResourceKey = keyof TierListText["resources"];
 export type NoteKey = keyof TierListText["notes"];
 export type VariantKey = keyof TierListText["variants"];
+export type ReasonKey = keyof TierListText["reasons"];
 
 export const TIER_IDS = ["SS", "S", "A", "B", "C", "D"] as const;
 export type TierId = (typeof TIER_IDS)[number];
@@ -51,6 +52,8 @@ export type OverallEntry = Tagged & {
   utility?: Grade;
   productivity?: Grade;
   linker?: boolean;
+  /** Autumn's explanation for the placement, shown behind a "Why?" toggle. */
+  reason?: ReasonKey;
 };
 export type BattleEntry = Tagged & { roles: readonly RoleKey[]; linker?: boolean };
 export type UtilityEntry = Tagged & { effect: EffectKey; situational?: boolean };
@@ -64,47 +67,47 @@ export const OVERALL_TIERS: readonly TierRow<OverallEntry>[] = [
     tier: "SS",
     ordered: true,
     entries: [
-      { hero: "Joan of Arc", variant: "atUrPlus", battle: "SS(SS+)", utility: "C", productivity: "A" },
-      { hero: "Odysseus", variant: "withItem", battle: "SS(S+)", utility: "A", productivity: "B" },
-      { hero: "Achilles", variant: "withItem", battle: "SS", utility: "S", productivity: "A" },
+      { hero: "Joan of Arc", variant: "atUrPlus", battle: "SS(SS+)", utility: "C", productivity: "A", reason: "joanUrPlus" },
+      { hero: "Odysseus", variant: "withItem", battle: "SS(S+)", utility: "A", productivity: "B", reason: "odysseusItem" },
+      { hero: "Achilles", variant: "withItem", battle: "SS", utility: "S", productivity: "B", reason: "achillesItem" },
     ],
   },
   {
     tier: "S",
     ordered: true,
     entries: [
-      { hero: "Odysseus", variant: "withoutItem", battle: "SS", utility: "A", productivity: "B" },
-      { hero: "King Arthur", battle: "SS", utility: "S", productivity: "C", linker: true },
-      { hero: "Pompey", battle: "S", utility: "A", productivity: "C" },
-      { hero: "Caesar", battle: "A>S", utility: "S", productivity: "A" },
-      { hero: "Achilles", variant: "withoutItem", battle: "S", utility: "S", productivity: "B" },
-      { hero: "Hammurabi", battle: "A", utility: "SS(S+)", productivity: "B" },
-      { hero: "Joan of Arc", variant: "atUr", battle: "S", utility: "C", productivity: "A" },
+      { hero: "Odysseus", variant: "withoutItem", battle: "SS", utility: "A", productivity: "B", reason: "odysseus" },
+      { hero: "King Arthur", battle: "SS", utility: "S", productivity: "C", linker: true, reason: "kingArthur" },
+      { hero: "Pompey", battle: "S", utility: "A", productivity: "C", reason: "pompey" },
+      { hero: "Caesar", battle: "A>S", utility: "S", productivity: "A", reason: "caesar" },
+      { hero: "Achilles", variant: "withoutItem", battle: "S", utility: "S", productivity: "B", reason: "achilles" },
+      { hero: "Hammurabi", battle: "A", utility: "SS(S+)", productivity: "B", reason: "hammurabi" },
+      { hero: "Joan of Arc", variant: "atUr", battle: "S", utility: "C", productivity: "A", reason: "joanUr" },
       { hero: "Circe", battle: "S", utility: "A", productivity: "S" },
-      { hero: "Lu Bu", battle: "S", utility: "A", productivity: "S" },
+      { hero: "Lu Bu", battle: "S", utility: "A", productivity: "S", reason: "luBu" },
       { hero: "Lagertha", battle: "S", utility: "S", productivity: "B" },
-      { hero: "Billy the Kid", variant: "withItem", battle: "S", utility: "S", productivity: "S" },
-      { hero: "William Shakespeare", variant: "withItem", battle: "S", utility: "SS", productivity: "A" },
+      { hero: "Billy the Kid", variant: "withItem", battle: "S", utility: "S", productivity: "S", reason: "billyItem" },
+      { hero: "William Shakespeare", variant: "withItem", battle: "S", utility: "SS", productivity: "A", reason: "shakespeareItem" },
     ],
   },
   {
     tier: "A",
     entries: [
-      { hero: "Spartacus", battle: "A", utility: "B", productivity: "A" },
-      { hero: "Musashi", battle: "S", utility: "A", productivity: "S" },
-      { hero: "Gawain", battle: "A", utility: "A", productivity: "A" },
-      { hero: "Da Vinci", battle: "A", utility: "B", productivity: "C" },
-      { hero: "Guan Yu", battle: "A", utility: "A", productivity: "S" },
-      { hero: "Sun-Sin", battle: "B>A", utility: "A", productivity: "S" },
-      { hero: "Tutankhamen", battle: "A>S", utility: "D", productivity: "A" },
-      { hero: "Blackbeard", battle: "A", utility: "C", productivity: "B" },
-      { hero: "Billy the Kid", variant: "withoutItem", battle: "A", utility: "S", productivity: "S" },
-      { hero: "William Shakespeare", variant: "withoutItem", battle: "A", utility: "SS", productivity: "A" },
-      { hero: "Newton", variant: "withItem", battle: "B", utility: "A", productivity: "A" },
-      { hero: "Napoleon", variant: "withOrWithoutItem", battle: "B", utility: "A", productivity: "A" },
-      { hero: "Lancelot", battle: "SS", utility: "C", productivity: "A>C", linker: true },
-      { hero: "Ragnar", battle: "B", utility: "A", productivity: "C", linker: true },
-      { hero: "Queen Victoria", battle: "S", utility: "B", productivity: "A" },
+      { hero: "Spartacus", battle: "A", utility: "B", productivity: "A", reason: "spartacus" },
+      { hero: "Musashi", battle: "S", utility: "A", productivity: "S", reason: "musashi" },
+      { hero: "Gawain", battle: "A", utility: "A", productivity: "A", reason: "gawain" },
+      { hero: "Da Vinci", battle: "A", utility: "B", productivity: "C", reason: "daVinci" },
+      { hero: "Guan Yu", battle: "A", utility: "A", productivity: "S", reason: "guanYu" },
+      { hero: "Sun-Sin", battle: "B>A", utility: "A", productivity: "S", reason: "sunSin" },
+      { hero: "Tutankhamen", battle: "A>S", utility: "D", productivity: "A", reason: "tutankhamen" },
+      { hero: "Blackbeard", battle: "A", utility: "C", productivity: "B", reason: "blackbeard" },
+      { hero: "Billy the Kid", variant: "withoutItem", battle: "A", utility: "S", productivity: "S", reason: "billy" },
+      { hero: "William Shakespeare", variant: "withoutItem", battle: "A", utility: "SS", productivity: "A", reason: "shakespeare" },
+      { hero: "Newton", variant: "withItem", battle: "B", utility: "A", productivity: "A", reason: "newtonItem" },
+      { hero: "Napoleon", variant: "withOrWithoutItem", battle: "B", utility: "A", productivity: "A", reason: "napoleon" },
+      { hero: "Lancelot", battle: "SS", utility: "C", productivity: "A>C", linker: true, reason: "lancelot" },
+      { hero: "Ragnar", battle: "B", utility: "A", productivity: "C", linker: true, reason: "ragnar" },
+      { hero: "Queen Victoria", battle: "S", utility: "B", productivity: "A", reason: "queenVictoria" },
       { hero: "Heracles", variant: "withOrWithoutItem", battle: "A", utility: "A", productivity: "A" },
       { hero: "Merlin", variant: "withoutItem", battle: "A>S", utility: "C", productivity: "S" },
       { hero: "Morgana", variant: "withoutItem", battle: "A>S", utility: "C*", productivity: "S", note: "morganaChaplin" },
@@ -116,10 +119,10 @@ export const OVERALL_TIERS: readonly TierRow<OverallEntry>[] = [
   {
     tier: "B",
     entries: [
-      { hero: "Charles the Great", battle: "B", utility: "D", productivity: "B" },
-      { hero: "Hermes", variant: "withoutItem", battle: "B", utility: "C", productivity: "S" },
+      { hero: "Charles the Great", battle: "B", utility: "D", productivity: "B", reason: "charlesTheGreat" },
+      { hero: "Hermes", variant: "withoutItem", battle: "B", utility: "C", productivity: "S", reason: "hermes" },
       { hero: "Alexander the Great", battle: "C", utility: "B", productivity: "A" },
-      { hero: "Franklin", battle: "B", utility: "B", productivity: "A" },
+      { hero: "Franklin", battle: "B", utility: "B", productivity: "A", reason: "franklin" },
       { hero: "Gilgamesh", battle: "A", utility: "C>B", productivity: "A" },
       { hero: "Alfred I", battle: "B", utility: "S", productivity: "B" },
       { hero: "Livia", battle: "B", utility: "B", productivity: "A" },

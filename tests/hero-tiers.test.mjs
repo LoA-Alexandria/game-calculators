@@ -113,3 +113,16 @@ test("the hero filter ignores case and accents", () => {
   assert.equal(matchesHero("Tesla", "arthur"), false);
   assert.equal(matchesHero("Tesla", "   "), true);
 });
+
+test("every reason key has text in every language, and every reason is used once", () => {
+  const used = OVERALL_TIERS.flatMap((row) => row.entries.map((entry) => entry.reason).filter(Boolean));
+  assert.equal(new Set(used).size, used.length, "a reason is attached to two entries");
+  for (const [code, dictionary] of Object.entries(LANGUAGES)) {
+    const reasons = dictionary.guideEntries.heroTierList.reasons;
+    assert.deepEqual(Object.keys(reasons).sort(), [...used].sort(), `${code} reasons differ from the entries that use them`);
+    for (const key of used) assert.notEqual(reasons[key].trim(), "", `${code}.reasons.${key} is empty`);
+    for (const entry of dictionary.guideEntries.heroTierList.changelog) {
+      assert.match(entry.date, /^\d{4}-\d{2}-\d{2}$/, `${code} changelog date`);
+    }
+  }
+});
