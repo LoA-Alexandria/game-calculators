@@ -35,6 +35,7 @@ import {
 import { HERO_RARITIES } from "../../lib/content/heroes";
 import type { Dictionary } from "../../lib/i18n";
 import { ARTWORK_CATALOGUE_DRAFT_STORAGE_KEY } from "../../lib/site";
+import { HeroAvatar } from "../components/HeroAvatar";
 import { useLocale } from "../components/LocaleProvider";
 import { createPersistentStore } from "../components/persistentStore";
 import { BackLink, PageHead } from "../components/Ui";
@@ -320,6 +321,7 @@ function PaintingForm({ ctx, canvas, onClose }: { ctx: Ctx; canvas: EditorPainti
           <ul className="pick-list">
             {canvas.heroes.map((hero) => (
               <li className="pick" key={hero}>
+                <HeroAvatar name={hero} />
                 <span className="pick-name">{hero}</span>
                 <button
                   type="button"

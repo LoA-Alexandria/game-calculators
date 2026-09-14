@@ -67,6 +67,7 @@ import { HERO_RARITIES, HEROES, type HeroRarity } from "../../lib/content/heroes
 import { siteName } from "../../lib/content/hero-names";
 import { getDictionary, type Dictionary } from "../../lib/i18n";
 import { LAYOUT_DRAFT_STORAGE_KEY } from "../../lib/site";
+import { HeroAvatar } from "../components/HeroAvatar";
 import { useLocale } from "../components/LocaleProvider";
 import { createPersistentStore } from "../components/persistentStore";
 import { BackLink, PageHead } from "../components/Ui";
@@ -515,6 +516,7 @@ function SortableChip({ ctx, chip }: { ctx: Ctx; chip: Chip }) {
         <GripIcon className="icon icon-sm" />
       </button>
       <button type="button" className="layout-chip-name" aria-expanded={selected} aria-label={ctx.tf(ctx.e.editChip, { hero: name })} onClick={() => ctx.select(selected ? null : chip.uid)}>
+        {item ? null : <HeroAvatar name={chip.hero} />}
         <span className="pick-name">{name}</span>
         {note ? <small className="pick-note">{note}</small> : null}
       </button>
@@ -770,6 +772,7 @@ function PoolHero({ ctx, name, rarity, buildId }: { ctx: Ctx; name: string; rari
       <button type="button" className="layout-chip-handle" aria-label={tf(e.dragHandle, { hero: name })} {...attributes} {...listeners}>
         <GripIcon className="icon icon-sm" />
       </button>
+      <HeroAvatar name={name} />
       <span className="layout-pool-name">{name}</span>
       <span className="layout-rarity">{rarity}</span>
       {buildId ? (

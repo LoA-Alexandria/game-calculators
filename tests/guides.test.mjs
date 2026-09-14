@@ -44,6 +44,7 @@ test("structured ranking guides skip the snippet Edit / Remove", () => {
   assert.equal(guideHasSnippetEditor("heroTierList"), false);
   assert.equal(guideHasSnippetEditor("heroLayouts"), false);
   assert.equal(guideHasSnippetEditor("artwork"), false);
+  assert.equal(guideHasSnippetEditor("heroes"), false);
   assert.equal(guideHasSnippetEditor("waterSupply"), true);
 });
 

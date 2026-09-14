@@ -20,6 +20,7 @@ import {
 import type { Dictionary } from "../../lib/i18n";
 import { useLocale } from "../components/LocaleProvider";
 import { useAuth } from "../components/AuthProvider";
+import { HeroAvatar } from "../components/HeroAvatar";
 import { CloseIcon, PenIcon, SearchIcon } from "../components/Icons";
 
 type Guide = Dictionary["guideEntries"]["heroTierList"];
@@ -40,6 +41,7 @@ function percent(values: readonly number[]): string {
 function HeroName({ guide, hero, variant }: { guide: Guide; hero: string; variant?: VariantKey }) {
   return (
     <span className="tier-hero">
+      <HeroAvatar name={hero} className="pick-avatar tier-avatar" />
       <span className="tier-hero-name">{hero}</span>
       {variant ? <small>{guide.variants[variant]}</small> : null}
     </span>
@@ -255,7 +257,10 @@ function ProductivityList({ guide, query }: { guide: Guide; query: string }) {
                   <ul>
                     {group.entries.map((entry) => (
                       <li key={entry.hero}>
-                        <span className="tier-hero-name">{entry.hero}</span>
+                        <span className="tier-resource-hero">
+                          <HeroAvatar name={entry.hero} />
+                          <span className="tier-hero-name">{entry.hero}</span>
+                        </span>
                         <span className="resource-bonus">{percent(entry.bonus)}</span>
                         {entry.note ? <small>{guide.notes[entry.note]}</small> : null}
                       </li>

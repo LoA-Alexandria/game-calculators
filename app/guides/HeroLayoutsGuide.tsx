@@ -15,6 +15,7 @@ import {
   type LayoutTexts,
 } from "../../lib/content/hero-layouts";
 import { useAuth } from "../components/AuthProvider";
+import { HeroAvatar } from "../components/HeroAvatar";
 import { useLocale } from "../components/LocaleProvider";
 import { CheckIcon, CloseIcon, PenIcon } from "../components/Icons";
 
@@ -37,7 +38,7 @@ function Pick({ pick, guide, texts }: { pick: LayoutPick; guide: Guide; texts: L
   const item = COLLECTION_ITEMS.has(name);
   return (
     <li className={item ? "pick pick-item" : "pick"}>
-      <span className="pick-avatar" aria-hidden="true">{item ? "◆" : initial(name)}</span>
+      {item ? <span className="pick-avatar" aria-hidden="true">◆</span> : <HeroAvatar name={name} fallback={initial(name)} />}
       <span className="pick-name">{name}</span>
       {note ? <small className="pick-note">{note}</small> : null}
       {item ? <span className="visually-hidden"> ({guide.legendCollection})</span> : null}

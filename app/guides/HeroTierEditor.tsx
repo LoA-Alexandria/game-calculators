@@ -52,6 +52,7 @@ import {
 } from "../../lib/content/hero-tier-editor";
 import type { Dictionary } from "../../lib/i18n";
 import { TIER_DRAFT_STORAGE_KEY } from "../../lib/site";
+import { HeroAvatar } from "../components/HeroAvatar";
 import { useLocale } from "../components/LocaleProvider";
 import { createPersistentStore } from "../components/persistentStore";
 import { BackLink, PageHead } from "../components/Ui";
@@ -388,6 +389,7 @@ function SortableHero({ ctx, item, selected, onSelect }: { ctx: Ctx; item: Edito
         <GripIcon className="icon icon-sm" />
       </button>
       <button type="button" className="tier-edit-card" aria-pressed={selected} onClick={onSelect}>
+        <HeroAvatar name={item.entry.hero} className="pick-avatar tier-avatar" />
         <span className="tier-hero-name">{name}</span>
         {item.entry.variant ? <small>{ctx.labelFor("variants", item.entry.variant)}</small> : null}
         <span className="tier-edit-summary">{summaryOf(ctx, item.entry)}</span>
