@@ -61,7 +61,8 @@ export type GuideLayout = "goddesses" | "artwork" | "artworkLayouts" | "heroLayo
 /**
  * Which renderer a guide entry needs. Each custom layout is recognised by a
  * field no other entry has — `builds` alone is not enough, because Artwork and
- * Hero layouts both have one. `tests/guides.test.mjs` pins every entry.
+ * Hero layouts both have one. Goddesses also has `filterAll` like Heroes, so
+ * `phases` is checked first. `tests/guides.test.mjs` pins every entry.
  */
 export function guideLayout(guide: object): GuideLayout {
   if ("phases" in guide) return "goddesses";

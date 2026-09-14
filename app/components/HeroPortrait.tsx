@@ -24,7 +24,7 @@ export function HeroPortrait({
   return (
     <span className={className ? `hero-portrait ${className}` : "hero-portrait"} data-rarity={rarity} aria-hidden="true">
       {src ? (
-        // Pre-sized WebP from public/heroes or a data URL from the editor; nothing for next/image to do.
+        // Pre-sized WebP from public/heroes or public/goddesses, or a data URL from the editor.
         // eslint-disable-next-line @next/next/no-img-element
         <img src={src} alt="" width={120} height={121} loading="lazy" decoding="async" />
       ) : (
