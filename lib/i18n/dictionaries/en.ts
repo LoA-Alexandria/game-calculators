@@ -34,6 +34,11 @@ const en = {
     expandSection: "Show the {section} entries",
     collapseSection: "Hide the {section} entries",
     showAll: "Show all {count}",
+    collapseNav: "Collapse navigation",
+    expandNav: "Expand navigation",
+    clearFilter: "Clear search",
+    breadcrumb: "You are here",
+    filterShortcut: "/",
   },
   nav: {
     home: "Overview",

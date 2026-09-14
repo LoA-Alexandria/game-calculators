@@ -122,6 +122,16 @@ export function CloseIcon({ className }: IconProps) {
   );
 }
 
+/** A panel with a left rail — collapse or expand the sidebar. */
+export function SidebarIcon({ className }: IconProps) {
+  return (
+    <svg className={className} {...base}>
+      <rect x="3.5" y="4" width="17" height="16" rx="2.5" />
+      <path d="M9 4v16" />
+    </svg>
+  );
+}
+
 export function SunIcon({ className }: IconProps) {
   return (
     <svg className={className} {...base}>

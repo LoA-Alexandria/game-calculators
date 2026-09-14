@@ -33,6 +33,11 @@ const de: Dictionary = {
     expandSection: "Einträge unter {section} anzeigen",
     collapseSection: "Einträge unter {section} ausblenden",
     showAll: "Alle {count} anzeigen",
+    collapseNav: "Navigation einklappen",
+    expandNav: "Navigation ausklappen",
+    clearFilter: "Suche leeren",
+    breadcrumb: "Du bist hier",
+    filterShortcut: "/",
   },
   nav: {
     home: "Übersicht",

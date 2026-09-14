@@ -40,7 +40,8 @@ tests/                         Calculation and output tests
 `lib/navigation.ts` is the single source of truth for the five sections and
 their entries. The sidebar, the section index pages, and the sidebar filter all
 read it, so a new tool is added in one place. Labels are functions of the
-dictionary rather than literals.
+dictionary rather than literals. The sidebar can collapse to an icon rail on
+wide screens; `/` or Ctrl/Cmd+K focuses the filter.
 
 ## Languages
 
