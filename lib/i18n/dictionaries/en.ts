@@ -118,6 +118,7 @@ const en = {
   guideCategories: {
     coreElements: "Core elements",
     layouts: "Layouts",
+    buildings: "Buildings",
     tierLists: "Tier lists",
     goddess: "Goddess",
     event: "Events",
@@ -1455,7 +1456,7 @@ const en = {
   },
   theaterEditor: {
     title: "Edit Goddess Theater",
-    eyebrow: "Events",
+    eyebrow: "Buildings",
     lede: "Add plays, edit the ones already here, and assign goddesses from Core elements › Goddesses. Your draft, covers included, is saved in this browser only; export it when you are done.",
     back: "Back to Goddess Theater",
     openEditor: "Edit plays",

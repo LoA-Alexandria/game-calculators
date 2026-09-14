@@ -115,8 +115,8 @@ export const SECTIONS: NavSection[] = [
         href: "/guides/goddess-theater/",
         label: (t) => t.guideEntries.goddessTheater.title,
         description: (t) => t.guideEntries.goddessTheater.summary,
-        badge: (t) => t.guideCategories.event,
-        categoryId: "event",
+        badge: (t) => t.guideCategories.buildings,
+        categoryId: "buildings",
       },
       {
         href: "/guides/water-supply/",

@@ -118,6 +118,7 @@ const de: Dictionary = {
   guideCategories: {
     coreElements: "Kernelemente",
     layouts: "Layouts",
+    buildings: "Gebäude",
     tierLists: "Tier-Listen",
     goddess: "Göttin",
     event: "Events",
@@ -1454,7 +1455,7 @@ const de: Dictionary = {
   },
   theaterEditor: {
     title: "Göttinnen-Theater bearbeiten",
-    eyebrow: "Events",
+    eyebrow: "Gebäude",
     lede: "Stücke hinzufügen, vorhandene bearbeiten und Göttinnen aus Kernelemente › Göttinnen zuweisen. Der Entwurf, Cover inklusive, bleibt nur in diesem Browser; exportiere ihn, wenn du fertig bist.",
     back: "Zurück zum Göttinnen-Theater",
     openEditor: "Stücke bearbeiten",
