@@ -23,11 +23,13 @@ test("converts guide slugs and dictionary ids both ways", () => {
   assert.equal(guideHref("artwork"), "/guides/artwork/");
   assert.equal(guideHref("artworkLayouts"), "/guides/artwork-layouts/");
   assert.equal(guideHref("heroes"), "/guides/heroes/");
+  assert.equal(guideHref("goddessTheater"), "/guides/goddess-theater/");
   assert.equal(guideIdFromHref("/guides/water-supply/"), "waterSupply");
   assert.equal(guideIdFromHref("/guides/goddesses/"), "goddesses");
   assert.equal(guideIdFromHref("/guides/artwork/"), "artwork");
   assert.equal(guideIdFromHref("/guides/artwork-layouts/"), "artworkLayouts");
   assert.equal(guideIdFromHref("/guides/heroes/"), "heroes");
+  assert.equal(guideIdFromHref("/guides/goddess-theater/"), "goddessTheater");
   assert.equal(guideIdFromHref("/guides/new/"), null);
 });
 
@@ -45,6 +47,7 @@ test("structured ranking guides skip the snippet Edit / Remove", () => {
   assert.equal(guideHasSnippetEditor("heroLayouts"), false);
   assert.equal(guideHasSnippetEditor("artwork"), false);
   assert.equal(guideHasSnippetEditor("heroes"), false);
+  assert.equal(guideHasSnippetEditor("goddessTheater"), false);
   assert.equal(guideHasSnippetEditor("waterSupply"), true);
 });
 
@@ -73,6 +76,7 @@ test("each guide entry is claimed by exactly the renderer it was written for", (
     heroLayouts: "heroLayouts",
     heroes: "heroes",
     heroTierList: "heroTierList",
+    goddessTheater: "goddessTheater",
   };
   for (const [code, dictionary] of Object.entries({ en, de, fr })) {
     for (const [id, guide] of Object.entries(dictionary.guideEntries)) {

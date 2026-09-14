@@ -13,6 +13,7 @@ import { ArtworkLayoutsGuide, isArtworkLayoutsGuide } from "./ArtworkLayoutsGuid
 import { HeroLayoutsGuide, isHeroLayoutsGuide } from "./HeroLayoutsGuide";
 import { HeroRoster, isHeroesGuide } from "./HeroRoster";
 import { HeroTierListGuide, isHeroTierListGuide } from "./HeroTierListGuide";
+import { GoddessTheaterGuide, isGoddessTheaterGuide } from "./GoddessTheaterGuide";
 
 export function GuideArticle({ id }: { id: GuideEntryId }) {
   const { t } = useLocale();
@@ -46,6 +47,8 @@ export function GuideArticle({ id }: { id: GuideEntryId }) {
       <article className="article">
         {isGoddessesGuide(guide) ? (
           <GoddessesGuide guide={guide} />
+        ) : isGoddessTheaterGuide(guide) ? (
+          <GoddessTheaterGuide guide={guide} />
         ) : isArtworkLayoutsGuide(guide) ? (
           <ArtworkLayoutsGuide guide={guide} />
         ) : isArtworkGuide(guide) ? (

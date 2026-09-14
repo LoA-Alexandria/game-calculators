@@ -61,8 +61,9 @@ filter. There is no second list to keep in step.
    an existing guide. The editor prints the dictionary block, the navigation
    row, and (for a new slug) a note to copy the page file. Existing guides on
    `/guides/` and on the guide page have Edit and Remove — the same commit-snippet
-   pattern as news and events. Artwork, Artwork layouts, and the Hero tier list
-   skip those buttons: they have their own editors instead.
+   pattern as news and events. Artwork, Artwork layouts, Heroes, Hero layouts,
+   the Hero tier list, and Goddess Theater skip those buttons: they have their
+   own editors instead.
 2. Write or replace the text under `guideEntries.<id>` in all three dictionaries,
    following the shape of `waterSupply`: `title`, `summary`, `intro`,
    `sections[]`, `note`.
@@ -71,21 +72,27 @@ filter. There is no second list to keep in step.
    category when the guide belongs next to one already there. Core systems
    (heroes, artwork, technology, collection, manor, support, goddesses, cryptides)
    use `coreElements`; placement guides (water supply, hero layouts, artwork
-   layouts) use `layouts`; ranking guides (hero tier list) use `tierLists`.
+   layouts) use `layouts`; ranking guides (hero tier list) use `tierLists`;
+   event guides (Goddess Theater) use `event`.
 4. For a new slug, copy `app/guides/water-supply/page.tsx` and pass the new id
    to `GuideArticle`.
 
 A guide that needs more than headings and paragraphs gets its own renderer next
 to `GuideArticle`: `GoddessesGuide`, `ArtworkGuide`, `ArtworkLayoutsGuide`,
-`HeroLayoutsGuide`, `HeroRoster`, and `HeroTierListGuide`.
+`HeroLayoutsGuide`, `HeroRoster`, `HeroTierListGuide`, and `GoddessTheaterGuide`.
 `guideLayout()` in `lib/content/guides.ts` picks the renderer from a field only
-that guide has (`phases` for Goddesses, before `filterAll` for Heroes), and
+that guide has (`phases` for Goddesses, `playsHeading` for Goddess Theater,
+before `filterAll` for Heroes), and
 `tests/guides.test.mjs` pins every entry, so two guides cannot claim the same
 renderer by sharing a field name. Keep `sections` and `note` in those entries
 too, since the editor reads them. Goddess names, rarity, and portraits live in
 `lib/data/goddesses.json`, once for all languages; affinity and obtain stay in
 the dictionaries so they can be translated. `tests/goddesses.test.mjs` checks
-the roster against `public/goddesses/`. In the Hero layouts guide,
+the roster against `public/goddesses/`. Goddess Theater casts live in
+`lib/data/goddess-theater.json`, once for all languages; `tests/goddess-theater.test.mjs`
+checks every name against that roster and every cover against
+`public/goddess-theater/`. The dedicated editor is at `/guides/goddess-theater/edit/`
+(`tests/goddess-theater-editor.test.mjs`). In the Hero layouts guide,
 `sections` are the rule cards next to the formation board, and the slot order
 lives in `lib/content/hero-layouts.ts` (builds and utility groups: see *Editing
 hero layouts* below). Painting names, set effects, and hero matches for Artwork
@@ -283,6 +290,40 @@ no wiki card and no roster row. The upgrade-order numbers are the published
 community sequence on this site (phase 2 Fortuna and Bastet stop at 60), not
 the wiki's level list. To take the pictures down, delete the folder and empty
 the `images` lists.
+
+Goddess Theater covers in `public/goddess-theater/` are the first image on each
+card on https://pop-epochmobile.fandom.com/wiki/Goddess_Theater as of
+14 September 2026 (`scripts/fetch-theater-covers.py`). That first picture is
+the rarity-framed poster (UR / SSR / SR / R); the stills beside it stay off
+the site. To take the pictures down, delete the folder and empty each play's
+`image` field.
+
+## Editing Goddess Theater
+
+Members with `guides.draft` see **Edit plays** on Goddess Theater, which opens
+`/guides/goddess-theater/edit/`. The dictionary-snippet Edit / Remove is hidden
+here as well.
+
+- The list on the left is every play. Select one to change its name, order,
+  tutorial unlock, cover, or cast. **Add play** creates an empty play; new
+  plays get an id from the name on export. Published plays keep their id when
+  renamed.
+- **Cast**: **Add a goddess** lists the Core Goddesses roster that is not
+  already in that play, grouped by rarity. Each row has a role name and a
+  relevant mark for stills. The same goddess cannot appear twice in one play.
+- **Cover**: upload or drop the rarity-framed poster (not a still). The browser
+  shrinks it to 240 px on the long side and re-encodes it as WebP.
+
+The draft, pictures included, is saved in that browser only
+(`localStorage['popepoch-theater-draft']`). **Export** produces:
+
+1. the complete `lib/data/goddess-theater.json`,
+2. each new cover as a download at `public/goddess-theater/<id>.webp`, and
+3. the pictures to delete from that folder because the draft no longer uses
+   them.
+
+An untouched draft exports the published file byte for byte
+(`tests/goddess-theater-editor.test.mjs`). Play and role names stay in English.
 
 Community-written guides name their author in the entry (`credit`). Ask the
 author before publishing their text, and keep the credit when you edit it.
