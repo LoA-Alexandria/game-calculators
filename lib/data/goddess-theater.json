@@ -1,0 +1,295 @@
+{
+  "plays": [
+    {
+      "id": "oedipus-rex",
+      "name": "Oedipus Rex",
+      "image": "oedipus-rex.webp",
+      "roles": [
+        { "goddess": "Vivian", "role": "Jocasta" },
+        { "goddess": "Brunhild", "role": "The Shepherd" },
+        { "goddess": "Demeter", "role": "Creon" },
+        { "goddess": "Hestia", "role": "Tiresias" },
+        { "goddess": "Hera", "role": "Oedipus" }
+      ]
+    },
+    {
+      "id": "phantom-of-the-opera",
+      "name": "The Phantom of the Opera",
+      "image": "phantom-of-the-opera.webp",
+      "roles": [
+        { "goddess": "Venus", "role": "Phantom" },
+        { "goddess": "Hela", "role": "Carlotta" },
+        { "goddess": "Ixchel", "role": "Manager" },
+        { "goddess": "Medusa", "role": "Raoul" },
+        { "goddess": "Muse", "role": "Christine" }
+      ]
+    },
+    {
+      "id": "alice-in-wonderland",
+      "name": "Alice in Wonderland",
+      "image": "alice-in-wonderland.webp",
+      "roles": [
+        { "goddess": "Demeter", "role": "Cheshire Cat" },
+        { "goddess": "Ixchel", "role": "Mad Hatter" },
+        { "goddess": "Freya", "role": "White rabbit" },
+        { "goddess": "Medusa", "role": "Alice" },
+        { "goddess": "Hestia", "role": "Dormouse" }
+      ]
+    },
+    {
+      "id": "count-of-monte-cristo",
+      "name": "The Count of Monte Cristo",
+      "image": "count-of-monte-cristo.webp",
+      "roles": [
+        { "goddess": "Fortuna", "role": "Edmond Dantès", "relevant": true },
+        { "goddess": "Eve", "role": "Abbé Faria", "relevant": true },
+        { "goddess": "Brunhild", "role": "Mercedes" },
+        { "goddess": "Nike", "role": "Fernand" }
+      ]
+    },
+    {
+      "id": "robinson-crusoe",
+      "name": "Robinson Crusoe",
+      "image": "robinson-crusoe.webp",
+      "roles": [
+        { "goddess": "Ixchel", "role": "Robinson Crusoe" },
+        { "goddess": "Brunhild", "role": "Friday" },
+        { "goddess": "Artemis", "role": "Cannibal" },
+        { "goddess": "Freya", "role": "English" }
+      ]
+    },
+    {
+      "id": "cats",
+      "name": "Cats",
+      "image": "cats.webp",
+      "roles": [
+        { "goddess": "Eve", "role": "Macavity" },
+        { "goddess": "Ixchel", "role": "Tugger" },
+        { "goddess": "Bastet", "role": "Grizabella" },
+        { "goddess": "Venus", "role": "Mrs Mistoffelees" }
+      ]
+    },
+    {
+      "id": "frankenstein",
+      "name": "Frankenstein",
+      "image": "frankenstein.webp",
+      "roles": [
+        { "goddess": "Eve", "role": "Elizabeth" },
+        { "goddess": "Fortuna", "role": "Henry Clerval" },
+        { "goddess": "Brunhild", "role": "The Creatur" },
+        { "goddess": "Hela", "role": "Frankenstein", "relevant": true }
+      ]
+    },
+    {
+      "id": "macbeth",
+      "name": "Macbeth",
+      "image": "macbeth.webp",
+      "roles": [
+        { "goddess": "Nike", "role": "MacDuff" },
+        { "goddess": "Vivian", "role": "Lady Macbeth" },
+        { "goddess": "Hera", "role": "Banquo" },
+        { "goddess": "Brunhild", "role": "Macbeth" }
+      ]
+    },
+    {
+      "id": "hamlet",
+      "name": "Hamlet",
+      "image": "hamlet.webp",
+      "roles": [
+        { "goddess": "Medusa", "role": "Hamlet" },
+        { "goddess": "Athena", "role": "Claudius" },
+        { "goddess": "Moirai", "role": "Ophelia" },
+        { "goddess": "Hela", "role": "Laertes" }
+      ]
+    },
+    {
+      "id": "pride-and-prejudice",
+      "name": "Pride and Prejudice",
+      "image": "pride-and-prejudice.webp",
+      "roles": [
+        { "goddess": "Athena", "role": "Elizabeth" },
+        { "goddess": "Hera", "role": "Darcy" },
+        { "goddess": "Freya", "role": "Jans" }
+      ]
+    },
+    {
+      "id": "romeo-and-juliet",
+      "name": "Romeo and Juliet",
+      "image": "romeo-and-juliet.webp",
+      "roles": [
+        { "goddess": "Eve", "role": "Mercutio" },
+        { "goddess": "Hela", "role": "Juliet" },
+        { "goddess": "Venus", "role": "Romeo" },
+        { "goddess": "Brunhild", "role": "Tybalt" }
+      ]
+    },
+    {
+      "id": "treasure-island",
+      "name": "Treasure Island",
+      "image": "treasure-island.webp",
+      "roles": [
+        { "goddess": "Muse", "role": "Jim Hawkins", "relevant": true },
+        { "goddess": "Brunhild", "role": "Long John" },
+        { "goddess": "Athena", "role": "Squire Trelawney" },
+        { "goddess": "Medusa", "role": "Captain Smollett" }
+      ]
+    },
+    {
+      "id": "don-quixote",
+      "name": "Don Quixote",
+      "image": "don-quixote.webp",
+      "roles": [
+        { "goddess": "Fortuna", "role": "Sancho Panza" },
+        { "goddess": "Athena", "role": "Support 1" },
+        { "goddess": "Hestia", "role": "Priest" },
+        { "goddess": "Brunhild", "role": "Don Quixote" }
+      ]
+    },
+    {
+      "id": "peter-pan",
+      "name": "Peter Pan",
+      "image": "peter-pan.webp",
+      "roles": [
+        { "goddess": "Eve", "role": "Wendy" },
+        { "goddess": "Hestia", "role": "Tinkerbell" },
+        { "goddess": "Artemis", "role": "Peter", "relevant": true }
+      ]
+    },
+    {
+      "id": "midsummer-nights-dream",
+      "name": "A Midsummer Night's Dream",
+      "image": "midsummer-nights-dream.webp",
+      "roles": [
+        { "goddess": "Eve", "role": "Hermia" },
+        { "goddess": "Fortuna", "role": "Oberon" },
+        { "goddess": "Venus", "role": "Puck" },
+        { "goddess": "Hera", "role": "Titania", "relevant": true }
+      ]
+    },
+    {
+      "id": "chicago",
+      "name": "Chicago",
+      "image": "chicago.webp",
+      "roles": [
+        { "goddess": "Vivian", "role": "Mama" },
+        { "goddess": "Fortuna", "role": "Billy" },
+        { "goddess": "Hera", "role": "Velma" },
+        { "goddess": "Muse", "role": "Roxie" }
+      ]
+    },
+    {
+      "id": "sound-of-music",
+      "name": "The Sound of Music",
+      "image": "sound-of-music.webp",
+      "roles": [
+        { "goddess": "Freya", "role": "Maria" },
+        { "goddess": "Demeter", "role": "Mother Abbess" },
+        { "goddess": "Artemis", "role": "Liesl" },
+        { "goddess": "Hera", "role": "Cpt Von Trapp" }
+      ]
+    },
+    {
+      "id": "robin-hood",
+      "name": "Robin Hood",
+      "image": "robin-hood.webp",
+      "roles": [
+        { "goddess": "Artemis", "role": "Robin hood", "relevant": true },
+        { "goddess": "Hera", "role": "Sheriff", "relevant": true },
+        { "goddess": "Demeter", "role": "Little John" },
+        { "goddess": "Venus", "role": "Maid Marian" }
+      ]
+    },
+    {
+      "id": "wizard-of-oz",
+      "name": "The Wizard of Oz",
+      "image": "wizard-of-oz.webp",
+      "roles": [
+        { "goddess": "Eve", "role": "Dorothy", "relevant": true },
+        { "goddess": "Hestia", "role": "Scarecrow" },
+        { "goddess": "Demeter", "role": "Tin Man" }
+      ]
+    },
+    {
+      "id": "aladdin",
+      "name": "Aladdin",
+      "image": "aladdin.webp",
+      "roles": [
+        { "goddess": "Freya", "role": "Jasmine" },
+        { "goddess": "Fortuna", "role": "Genie" },
+        { "goddess": "Brunhild", "role": "Jafar" },
+        { "goddess": "Artemis", "role": "Aladdin" }
+      ]
+    },
+    {
+      "id": "sleeping-beauty",
+      "name": "Sleeping Beauty",
+      "image": "sleeping-beauty.webp",
+      "roles": [
+        { "goddess": "Eve", "role": "Aurora" },
+        { "goddess": "Hestia", "role": "Prince" },
+        { "goddess": "Venus", "role": "Maleficient", "relevant": true },
+        { "goddess": "Demeter", "role": "Fairy" }
+      ]
+    },
+    {
+      "id": "little-women",
+      "name": "Little Women",
+      "image": "little-women.webp",
+      "roles": [
+        { "goddess": "Artemis", "role": "Jo March" },
+        { "goddess": "Hestia", "role": "Meg March" }
+      ]
+    },
+    {
+      "id": "little-red-riding-hood",
+      "name": "Little Red Riding Hood",
+      "image": "little-red-riding-hood.webp",
+      "roles": [
+        { "goddess": "Freya", "role": "Grandmother" },
+        { "goddess": "Eve", "role": "Little Red Riding Hood" },
+        { "goddess": "Artemis", "role": "Hunter" },
+        { "goddess": "Brunhild", "role": "Big Bad Wolf" }
+      ]
+    },
+    {
+      "id": "happy-prince",
+      "name": "The Happy Prince",
+      "image": "happy-prince.webp",
+      "roles": [
+        { "goddess": "Medusa", "role": "Prince", "relevant": true },
+        { "goddess": "Hestia", "role": "Swallow" },
+        { "goddess": "Vivian", "role": "Mayor" },
+        { "goddess": "Venus", "role": "Seamstress" }
+      ]
+    },
+    {
+      "id": "lion-king",
+      "name": "The Lion King",
+      "image": "lion-king.webp",
+      "roles": [
+        { "goddess": "Hera", "role": "Scar" },
+        { "goddess": "Eve", "role": "Simba" },
+        { "goddess": "Vivian", "role": "Mufasa" },
+        { "goddess": "Artemis", "role": "Nala" }
+      ]
+    },
+    {
+      "id": "mozart",
+      "name": "Mozart",
+      "image": "mozart.webp",
+      "roles": [
+        { "goddess": "Freya", "role": "Mozart" },
+        { "goddess": "Hela", "role": "Salieri" },
+        { "goddess": "Athena", "role": "Constanze" },
+        { "goddess": "Fortuna", "role": "Joseph II" }
+      ]
+    },
+    {
+      "id": "three-musketeers",
+      "name": "The Three Musketeers",
+      "image": "three-musketeers.webp",
+      "unlock": "tutorial",
+      "roles": []
+    }
+  ]
+}

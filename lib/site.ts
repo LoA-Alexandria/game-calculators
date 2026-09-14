@@ -50,5 +50,8 @@ export const ARTWORK_CATALOGUE_DRAFT_STORAGE_KEY = "popepoch-artwork-catalogue-d
 /** Local draft of the Heroes roster editor, uploaded portraits included. */
 export const HERO_DRAFT_STORAGE_KEY = "popepoch-hero-draft";
 
+/** Local draft of the Goddess Theater editor, uploaded covers included. */
+export const THEATER_DRAFT_STORAGE_KEY = "popepoch-theater-draft";
+
 /** Whether the desktop sidebar is collapsed to an icon rail. */
 export const NAV_COLLAPSED_STORAGE_KEY = "popepoch-nav-collapsed";

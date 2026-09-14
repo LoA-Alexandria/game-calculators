@@ -112,6 +112,13 @@ export const SECTIONS: NavSection[] = [
         categoryId: "coreElements",
       },
       {
+        href: "/guides/goddess-theater/",
+        label: (t) => t.guideEntries.goddessTheater.title,
+        description: (t) => t.guideEntries.goddessTheater.summary,
+        badge: (t) => t.guideCategories.event,
+        categoryId: "event",
+      },
+      {
         href: "/guides/water-supply/",
         label: (t) => t.guideEntries.waterSupply.title,
         description: (t) => t.guideEntries.waterSupply.summary,
