@@ -5,9 +5,10 @@
  * screenshots the same day.
  *
  * Rows live in `lib/data/heroes.json`; the roster editor exports a replacement
- * for that file. Empty `skills` means the wiki card had no ability text yet. Do
- * not invent it. The fragment table is copied as printed on every rarity page
- * (identical).
+ * for that file. A missing `skill`, `buff`, or `production` means the wiki card
+ * had no text for it yet. Do not invent it. The "Lv. N" skill cards became the
+ * levels of one ability. The fragment table is copied as printed on every
+ * rarity page (identical).
  *
  * Portraits are in `public/heroes/`, saved from the same wiki pages on 14
  * September 2026 (Cleopatra had none). The first file in `images` is the
@@ -23,10 +24,20 @@ import { asset } from "../site.ts";
 export const HERO_RARITIES = ["UR+", "UR", "SSR", "SR", "R"] as const;
 export type HeroRarity = (typeof HERO_RARITIES)[number];
 
+/** An artifact: one effect, no levels. */
 export type HeroSkill = {
   name: string;
   text: string;
 };
+
+/**
+ * Every hero has three abilities: a battle skill, a buff, and a production
+ * bonus. `levels[0]` is the text at Lv. 1; an empty string marks a level whose
+ * text is not known yet (Cleopatra's Lv. 1).
+ */
+export const HERO_ABILITY_KINDS = ["skill", "buff", "production"] as const;
+export type HeroAbilityKind = (typeof HERO_ABILITY_KINDS)[number];
+export type HeroAbility = { name: string; levels: string[] };
 
 export type Hero = {
   id: string;
@@ -35,9 +46,16 @@ export type Hero = {
   obtain: string;
   /** File names in `public/heroes/`; the first is the portrait. */
   images: string[];
-  skills: HeroSkill[];
+  skill?: HeroAbility;
+  buff?: HeroAbility;
+  production?: HeroAbility;
   artifact?: HeroSkill;
 };
+
+/** How many of the three abilities have been filled in. */
+export function abilityCount(hero: Hero): number {
+  return HERO_ABILITY_KINDS.filter((kind) => hero[kind]).length;
+}
 
 export type HeroData = { heroes: Hero[] };
 
@@ -76,7 +94,8 @@ export function searchHeroes(query: string, rarity: HeroRarity | "all"): Hero[] 
   const pool = heroesByRarity(rarity);
   if (!needle) return pool;
   return pool.filter((hero) => {
-    const hay = [hero.name, hero.obtain, ...hero.skills.map((skill) => `${skill.name} ${skill.text}`), hero.artifact?.name ?? "", hero.artifact?.text ?? ""]
+    const abilities = HERO_ABILITY_KINDS.flatMap((kind) => [hero[kind]?.name ?? "", ...(hero[kind]?.levels ?? [])]);
+    const hay = [hero.name, hero.obtain, ...abilities, hero.artifact?.name ?? "", hero.artifact?.text ?? ""]
       .join(" ")
       .toLowerCase();
     return hay.includes(needle);

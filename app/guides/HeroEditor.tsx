@@ -3,9 +3,10 @@
 import { useId, useMemo, useRef, useState, useSyncExternalStore, type DragEvent } from "react";
 import {
   PORTRAIT_MAX_EDGE,
+  addAbilityLevel,
   addHero,
   addImage,
-  addSkill,
+  clearAbility,
   countHeroChanges,
   exportHeroes,
   findHeroProblems,
@@ -13,29 +14,30 @@ import {
   heroByUid,
   makePortrait,
   moveHero,
-  moveSkill,
   parseHeroDraft,
+  removeAbilityLevel,
   removeHero,
   removeImage,
-  removeSkill,
   serializeHeroData,
+  setAbilityLevel,
+  setAbilityName,
   setArtifact,
   updateHero,
-  updateSkill,
   type EditorHero,
   type EditorImage,
   type HeroEditorState,
   type HeroExport,
   type HeroProblem,
 } from "../../lib/content/hero-editor";
-import { HERO_DATA, HERO_RARITIES, heroImageUrl, type HeroRarity } from "../../lib/content/heroes";
+import { HERO_ABILITY_KINDS, HERO_DATA, HERO_RARITIES, heroImageUrl, type HeroAbilityKind, type HeroRarity } from "../../lib/content/heroes";
 import { fill, type Dictionary } from "../../lib/i18n";
 import { HERO_DRAFT_STORAGE_KEY } from "../../lib/site";
 import { CheckIcon, ChevronIcon, CloseIcon, CopyIcon, DownloadIcon, PlusIcon, TrashIcon, UploadIcon } from "../components/Icons";
 import { useLocale } from "../components/LocaleProvider";
 import { createPersistentStore } from "../components/persistentStore";
 import { BackLink, PageHead } from "../components/Ui";
-import { HeroPortrait, counted } from "./HeroRoster";
+import { HeroPortrait } from "../components/HeroPortrait";
+import { counted } from "./HeroRoster";
 
 type EditorText = Dictionary["heroEditor"];
 type Tf = (template: string, values: Record<string, string | number>) => string;
@@ -94,6 +96,7 @@ function download(href: string, name: string) {
 type Ctx = {
   state: HeroEditorState;
   commit: (next: HeroEditorState) => void;
+  t: Dictionary;
   e: EditorText;
   tf: Tf;
 };
@@ -106,7 +109,7 @@ export function HeroEditor() {
   const draft = useSyncExternalStore(draftStore.subscribe, draftStore.getSnapshot, draftStore.getServerSnapshot);
   const state = draft ?? PUBLISHED;
   const commit = (next: HeroEditorState) => draftStore.set(next);
-  const ctx: Ctx = { state, commit, e, tf };
+  const ctx: Ctx = { state, commit, t, e, tf };
 
   const [rarity, setRarity] = useState<HeroRarity | "all">("all");
   const [query, setQuery] = useState("");
@@ -315,40 +318,10 @@ function HeroForm({
         </div>
       </div>
 
-      <fieldset className="hero-edit-skills">
-        <legend>{e.skillsHeading}</legend>
-        {hero.skills.length === 0 ? <p className="tier-small">{e.noSkills}</p> : (
-          <ol>
-            {hero.skills.map((skill, index) => (
-              <li key={skill.uid} className="hero-edit-skill">
-                <div className="field">
-                  <label htmlFor={`${id}-${skill.uid}-name`}>{tf(e.skillName, { number: index + 1 })}</label>
-                  <input id={`${id}-${skill.uid}-name`} value={skill.name} onChange={(event) => commit(updateSkill(state, hero.uid, skill.uid, { name: event.target.value }))} />
-                </div>
-                <div className="field">
-                  <label htmlFor={`${id}-${skill.uid}-text`}>{e.skillText}</label>
-                  <textarea id={`${id}-${skill.uid}-text`} rows={3} value={skill.text} onChange={(event) => commit(updateSkill(state, hero.uid, skill.uid, { text: event.target.value }))} />
-                </div>
-                <div className="tier-edit-row-actions">
-                  <button type="button" className="icon-button hero-edit-up" aria-label={e.moveUp} disabled={index === 0} onClick={() => commit(moveSkill(state, hero.uid, skill.uid, -1))}>
-                    <ChevronIcon className="icon icon-sm" />
-                  </button>
-                  <button type="button" className="icon-button hero-edit-down" aria-label={e.moveDown} disabled={index === hero.skills.length - 1} onClick={() => commit(moveSkill(state, hero.uid, skill.uid, 1))}>
-                    <ChevronIcon className="icon icon-sm" />
-                  </button>
-                  <button type="button" className="icon-button" aria-label={tf(e.removeSkill, { number: index + 1 })} onClick={() => commit(removeSkill(state, hero.uid, skill.uid))}>
-                    <TrashIcon className="icon icon-sm" />
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ol>
-        )}
-        <button type="button" className="small-button" onClick={() => commit(addSkill(state, hero.uid).state)}>
-          <PlusIcon className="icon icon-sm" />
-          {e.addSkill}
-        </button>
-      </fieldset>
+      <p className="tier-small hero-edit-abilities-hint">{e.abilitiesHint}</p>
+      {HERO_ABILITY_KINDS.map((kind) => (
+        <AbilityField key={kind} ctx={ctx} hero={hero} kind={kind} />
+      ))}
 
       <fieldset className="hero-edit-skills">
         <legend>{e.artifactHeading}</legend>
@@ -377,6 +350,65 @@ function HeroForm({
         )}
       </fieldset>
     </section>
+  );
+}
+
+function AbilityField({ ctx, hero, kind }: { ctx: Ctx; hero: EditorHero; kind: HeroAbilityKind }) {
+  const id = useId();
+  const { state, commit, e, tf, t } = ctx;
+  const ability = hero.abilities[kind];
+  const label = t.guideEntries.heroes.abilityKinds[kind];
+  const filled = Boolean(ability.name.trim() || ability.levels.some((level) => level.trim()));
+
+  return (
+    <fieldset className="hero-edit-skills hero-edit-ability" data-kind={kind}>
+      <legend>
+        <span className="ability-kind">{label}</span>
+      </legend>
+      <div className="field">
+        <label htmlFor={`${id}-name`}>{e.abilityName}</label>
+        <input id={`${id}-name`} value={ability.name} onChange={(event) => commit(setAbilityName(state, hero.uid, kind, event.target.value))} />
+      </div>
+      <ol className="hero-edit-levels">
+        {ability.levels.map((text, index) => (
+          <li key={index} className="hero-edit-skill">
+            <div className="field">
+              <label htmlFor={`${id}-level-${index}`}>{tf(e.levelText, { level: index + 1 })}</label>
+              <textarea
+                id={`${id}-level-${index}`}
+                rows={3}
+                value={text}
+                onChange={(event) => commit(setAbilityLevel(state, hero.uid, kind, index, event.target.value))}
+              />
+            </div>
+            {ability.levels.length > 1 ? (
+              <div className="tier-edit-row-actions">
+                <button
+                  type="button"
+                  className="icon-button"
+                  aria-label={tf(e.removeLevel, { level: index + 1 })}
+                  onClick={() => commit(removeAbilityLevel(state, hero.uid, kind, index))}
+                >
+                  <TrashIcon className="icon icon-sm" />
+                </button>
+              </div>
+            ) : null}
+          </li>
+        ))}
+      </ol>
+      <div className="tier-edit-row-actions">
+        <button type="button" className="small-button" onClick={() => commit(addAbilityLevel(state, hero.uid, kind))}>
+          <PlusIcon className="icon icon-sm" />
+          {tf(e.addLevel, { level: ability.levels.length + 1 })}
+        </button>
+        {filled ? (
+          <button type="button" className="small-button" onClick={() => commit(clearAbility(state, hero.uid, kind))}>
+            <TrashIcon className="icon icon-sm" />
+            {tf(e.clearAbility, { ability: label })}
+          </button>
+        ) : null}
+      </div>
+    </fieldset>
   );
 }
 
@@ -477,11 +509,11 @@ function ImagesField({ ctx, hero }: { ctx: Ctx; hero: EditorHero }) {
   );
 }
 
-function problemText(e: EditorText, tf: Tf, problem: HeroProblem): string {
+function problemText(e: EditorText, tf: Tf, kinds: Record<HeroAbilityKind, string>, problem: HeroProblem): string {
   switch (problem.code) {
     case "emptyName": return tf(e.problemEmptyName, { rarity: problem.rarity });
     case "duplicateName": return tf(e.problemDuplicateName, { name: problem.name });
-    case "emptySkill": return tf(e.problemEmptySkill, { hero: problem.hero, number: problem.index });
+    case "incompleteAbility": return tf(e.problemIncompleteAbility, { hero: problem.hero, ability: kinds[problem.kind] });
     case "emptyArtifact": return tf(e.problemEmptyArtifact, { hero: problem.hero });
     case "stillUsed": return tf(e.problemStillUsed, { name: problem.name, where: problem.where.map((where) => e.where[where]).join(", ") });
   }
@@ -529,7 +561,7 @@ function ExportDialog({ ctx, result, problems, onClose }: { ctx: Ctx; result: He
         <div className="notice notice-warn tier-export-problems" role="alert">
           <div>
             <strong>{e.problemsTitle}</strong>
-            <ul>{problems.map((problem, index) => <li key={index}>{problemText(e, tf, problem)}</li>)}</ul>
+            <ul>{problems.map((problem, index) => <li key={index}>{problemText(e, tf, ctx.t.guideEntries.heroes.abilityKinds, problem)}</li>)}</ul>
           </div>
         </div>
       ) : null}

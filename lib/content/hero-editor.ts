@@ -1,7 +1,7 @@
 /**
  * Pure state logic for the Heroes roster editor. The page only renders this
- * state and calls these functions, so adding heroes, skills, and portraits can
- * be tested without a browser.
+ * state and calls these functions, so adding heroes, abilities, and portraits
+ * can be tested without a browser.
  *
  * The editor works on a copy of `lib/data/heroes.json`. A static site cannot
  * save for everyone, so the result leaves the browser as that JSON file plus
@@ -11,8 +11,11 @@
 
 import { heroReferences, rosterName, type HeroReference } from "./hero-links.ts";
 import {
+  HERO_ABILITY_KINDS,
   HERO_RARITIES,
   type Hero,
+  type HeroAbility,
+  type HeroAbilityKind,
   type HeroData,
   type HeroRarity,
   type HeroSkill,
@@ -20,7 +23,6 @@ import {
 
 /** A published portrait has `file`; one uploaded in the editor has `data`. */
 export type EditorImage = { uid: string; file?: string; data?: string };
-export type EditorSkill = HeroSkill & { uid: string };
 
 export type EditorHero = {
   uid: string;
@@ -30,12 +32,13 @@ export type EditorHero = {
   rarity: HeroRarity;
   obtain: string;
   images: EditorImage[];
-  skills: EditorSkill[];
+  /** Every slot is always present in the editor; export leaves out the empty ones. */
+  abilities: Record<HeroAbilityKind, HeroAbility>;
   artifact: HeroSkill | null;
 };
 
 export type HeroEditorState = {
-  version: 1;
+  version: 2;
   heroes: EditorHero[];
   nextId: number;
 };
@@ -61,20 +64,33 @@ export function heroIdFrom(name: string, taken: Iterable<string>): string {
   return `${base}-${counter}`;
 }
 
+const emptyAbility = (): HeroAbility => ({ name: "", levels: [""] });
+
+function emptyAbilities(): Record<HeroAbilityKind, HeroAbility> {
+  return { skill: emptyAbility(), buff: emptyAbility(), production: emptyAbility() };
+}
+
 export function fromHeroData(data: HeroData): HeroEditorState {
   let nextId = 1;
   return {
-    version: 1,
-    heroes: data.heroes.map((hero) => ({
-      uid: `h${nextId++}`,
-      id: hero.id,
-      name: hero.name,
-      rarity: hero.rarity,
-      obtain: hero.obtain,
-      images: hero.images.map((file) => ({ uid: `i${nextId++}`, file })),
-      skills: hero.skills.map((skill) => ({ uid: `k${nextId++}`, name: skill.name, text: skill.text })),
-      artifact: hero.artifact ? { name: hero.artifact.name, text: hero.artifact.text } : null,
-    })),
+    version: 2,
+    heroes: data.heroes.map((hero) => {
+      const abilities = emptyAbilities();
+      for (const kind of HERO_ABILITY_KINDS) {
+        const ability = hero[kind];
+        if (ability) abilities[kind] = { name: ability.name, levels: ability.levels.length ? [...ability.levels] : [""] };
+      }
+      return {
+        uid: `h${nextId++}`,
+        id: hero.id,
+        name: hero.name,
+        rarity: hero.rarity,
+        obtain: hero.obtain,
+        images: hero.images.map((file) => ({ uid: `i${nextId++}`, file })),
+        abilities,
+        artifact: hero.artifact ? { name: hero.artifact.name, text: hero.artifact.text } : null,
+      };
+    }),
     nextId,
   };
 }
@@ -92,6 +108,15 @@ export function isImageData(value: unknown): value is string {
 function extensionOf(dataUrl: string): string {
   const mime = IMAGE_DATA.exec(dataUrl)?.[1] ?? "webp";
   return mime === "jpeg" ? "jpg" : mime;
+}
+
+/** Trimmed, without trailing unknown levels; null when nothing is filled in. */
+function cleanAbility(ability: HeroAbility): HeroAbility | null {
+  const name = ability.name.trim();
+  const levels = ability.levels.map((level) => level.trim());
+  while (levels.length > 0 && levels[levels.length - 1] === "") levels.pop();
+  if (!name && levels.length === 0) return null;
+  return { name, levels };
 }
 
 /**
@@ -121,14 +146,11 @@ export function exportHeroes(state: HeroEditorState, published: HeroData): HeroE
       uploads.push({ file, data: image.data ?? "", hero: hero.name.trim() || id });
       return file;
     });
-    const row: Hero = {
-      id,
-      name: hero.name.trim(),
-      rarity: hero.rarity,
-      obtain: hero.obtain.trim(),
-      images,
-      skills: hero.skills.map((skill) => ({ name: skill.name.trim(), text: skill.text.trim() })),
-    };
+    const row: Hero = { id, name: hero.name.trim(), rarity: hero.rarity, obtain: hero.obtain.trim(), images };
+    for (const kind of HERO_ABILITY_KINDS) {
+      const ability = cleanAbility(hero.abilities[kind]);
+      if (ability) row[kind] = ability;
+    }
     if (hero.artifact) row.artifact = { name: hero.artifact.name.trim(), text: hero.artifact.text.trim() };
     return row;
   });
@@ -158,7 +180,7 @@ function groupEnd(heroes: readonly EditorHero[], rarity: HeroRarity, skipUid?: s
 
 export function addHero(state: HeroEditorState, rarity: HeroRarity, name = ""): { state: HeroEditorState; uid: string } {
   const uid = `h${state.nextId}`;
-  const hero: EditorHero = { uid, id: "", name, rarity, obtain: "", images: [], skills: [], artifact: null };
+  const hero: EditorHero = { uid, id: "", name, rarity, obtain: "", images: [], abilities: emptyAbilities(), artifact: null };
   const heroes = [...state.heroes];
   heroes.splice(groupEnd(heroes, rarity), 0, hero);
   return { state: { ...state, heroes, nextId: state.nextId + 1 }, uid };
@@ -197,37 +219,48 @@ export function moveHero(state: HeroEditorState, uid: string, offset: -1 | 1): H
   return { ...state, heroes };
 }
 
-export function addSkill(state: HeroEditorState, heroUid: string): { state: HeroEditorState; uid: string } {
-  const uid = `k${state.nextId}`;
-  const next = mapHero(state, heroUid, (hero) => ({ ...hero, skills: [...hero.skills, { uid, name: "", text: "" }] }));
-  return { state: { ...next, nextId: state.nextId + 1 }, uid };
-}
-
-export function updateSkill(
+function mapAbility(
   state: HeroEditorState,
   heroUid: string,
-  skillUid: string,
-  patch: Partial<HeroSkill>,
+  kind: HeroAbilityKind,
+  change: (ability: HeroAbility) => HeroAbility,
 ): HeroEditorState {
-  return mapHero(state, heroUid, (hero) => ({
-    ...hero,
-    skills: hero.skills.map((skill) => (skill.uid === skillUid ? { ...skill, ...patch } : skill)),
+  return mapHero(state, heroUid, (hero) => ({ ...hero, abilities: { ...hero.abilities, [kind]: change(hero.abilities[kind]) } }));
+}
+
+export function setAbilityName(state: HeroEditorState, heroUid: string, kind: HeroAbilityKind, name: string): HeroEditorState {
+  return mapAbility(state, heroUid, kind, (ability) => ({ ...ability, name }));
+}
+
+/** Text for one level; `index` 0 is Lv. 1. */
+export function setAbilityLevel(state: HeroEditorState, heroUid: string, kind: HeroAbilityKind, index: number, text: string): HeroEditorState {
+  return mapAbility(state, heroUid, kind, (ability) => {
+    if (index < 0 || index >= ability.levels.length) return ability;
+    const levels = [...ability.levels];
+    levels[index] = text;
+    return { ...ability, levels };
+  });
+}
+
+/** Adds the next level, starting from the previous level's text, which usually only changes in its numbers. */
+export function addAbilityLevel(state: HeroEditorState, heroUid: string, kind: HeroAbilityKind): HeroEditorState {
+  return mapAbility(state, heroUid, kind, (ability) => ({
+    ...ability,
+    levels: [...ability.levels, ability.levels[ability.levels.length - 1] ?? ""],
   }));
 }
 
-export function removeSkill(state: HeroEditorState, heroUid: string, skillUid: string): HeroEditorState {
-  return mapHero(state, heroUid, (hero) => ({ ...hero, skills: hero.skills.filter((skill) => skill.uid !== skillUid) }));
+/** Removes a level; the last remaining level is emptied instead. */
+export function removeAbilityLevel(state: HeroEditorState, heroUid: string, kind: HeroAbilityKind, index: number): HeroEditorState {
+  return mapAbility(state, heroUid, kind, (ability) => {
+    if (index < 0 || index >= ability.levels.length) return ability;
+    const levels = ability.levels.filter((_, position) => position !== index);
+    return { ...ability, levels: levels.length ? levels : [""] };
+  });
 }
 
-export function moveSkill(state: HeroEditorState, heroUid: string, skillUid: string, offset: -1 | 1): HeroEditorState {
-  return mapHero(state, heroUid, (hero) => {
-    const index = hero.skills.findIndex((skill) => skill.uid === skillUid);
-    const target = index + offset;
-    if (index < 0 || target < 0 || target >= hero.skills.length) return hero;
-    const skills = [...hero.skills];
-    [skills[index], skills[target]] = [skills[target], skills[index]];
-    return { ...hero, skills };
-  });
+export function clearAbility(state: HeroEditorState, heroUid: string, kind: HeroAbilityKind): HeroEditorState {
+  return mapAbility(state, heroUid, kind, () => emptyAbility());
 }
 
 export function setArtifact(state: HeroEditorState, heroUid: string, artifact: HeroSkill | null): HeroEditorState {
@@ -254,20 +287,26 @@ export function makePortrait(state: HeroEditorState, heroUid: string, imageUid: 
   });
 }
 
-function skillJson(skill: HeroSkill): string {
-  return `{ "name": ${JSON.stringify(skill.name)}, "text": ${JSON.stringify(skill.text)} }`;
+const json = (value: unknown) => JSON.stringify(value);
+
+function abilityJson(ability: HeroAbility): string {
+  return `{ "name": ${json(ability.name)}, "levels": [${ability.levels.map(json).join(", ")}] }`;
 }
 
-/** One hero per line, and one line per skill, so a roster diff stays readable. */
+/** One line per hero, and one line per ability or artifact, so a roster diff stays readable. */
 export function serializeHeroData(data: HeroData): string {
   const rows = data.heroes.map((hero, index, all) => {
     const comma = index < all.length - 1 ? "," : "";
-    const images = `[${hero.images.map((file) => JSON.stringify(file)).join(", ")}]`;
-    const head = `    { "id": ${JSON.stringify(hero.id)}, "name": ${JSON.stringify(hero.name)}, "rarity": ${JSON.stringify(hero.rarity)}, "obtain": ${JSON.stringify(hero.obtain)}, "images": ${images}, "skills": [`;
-    const artifact = hero.artifact ? `, "artifact": ${skillJson(hero.artifact)}` : "";
-    if (hero.skills.length === 0) return `${head}]${artifact} }${comma}`;
-    const skills = hero.skills.map((skill, skillIndex) => `      ${skillJson(skill)}${skillIndex < hero.skills.length - 1 ? "," : ""}`);
-    return [head, ...skills, `    ]${artifact} }${comma}`].join("\n");
+    const images = `[${hero.images.map(json).join(", ")}]`;
+    const head = `    { "id": ${json(hero.id)}, "name": ${json(hero.name)}, "rarity": ${json(hero.rarity)}, "obtain": ${json(hero.obtain)}, "images": ${images}`;
+    const parts: string[] = [];
+    for (const kind of HERO_ABILITY_KINDS) {
+      const ability = hero[kind];
+      if (ability) parts.push(`      ${json(kind)}: ${abilityJson(ability)}`);
+    }
+    if (hero.artifact) parts.push(`      "artifact": { "name": ${json(hero.artifact.name)}, "text": ${json(hero.artifact.text)} }`);
+    if (parts.length === 0) return `${head} }${comma}`;
+    return `${head},\n${parts.join(",\n")} }${comma}`;
   });
   return ["{", `  "heroes": [`, ...rows, "  ]", "}", ""].join("\n");
 }
@@ -276,7 +315,7 @@ export function countHeroChanges(published: HeroData, draft: HeroData): number {
   const before = new Map(published.heroes.map((hero) => [hero.id, JSON.stringify(hero)]));
   const after = new Map(draft.heroes.map((hero) => [hero.id, JSON.stringify(hero)]));
   let changes = 0;
-  for (const [id, json] of after) if (before.get(id) !== json) changes += 1;
+  for (const [id, text] of after) if (before.get(id) !== text) changes += 1;
   for (const id of before.keys()) if (!after.has(id)) changes += 1;
   const order = (data: HeroData) => data.heroes.map((hero) => hero.id).join("\0");
   if (changes === 0 && order(published) !== order(draft)) changes = 1;
@@ -286,7 +325,7 @@ export function countHeroChanges(published: HeroData, draft: HeroData): number {
 export type HeroProblem =
   | { code: "emptyName"; rarity: HeroRarity }
   | { code: "duplicateName"; name: string }
-  | { code: "emptySkill"; hero: string; index: number }
+  | { code: "incompleteAbility"; hero: string; kind: HeroAbilityKind }
   | { code: "emptyArtifact"; hero: string }
   | { code: "stillUsed"; name: string; where: HeroReference[] };
 
@@ -299,9 +338,13 @@ export function findHeroProblems(state: HeroEditorState, published: HeroData): H
     const key = name.toLowerCase();
     if (name && seen.has(key)) problems.push({ code: "duplicateName", name });
     seen.add(key);
-    hero.skills.forEach((skill, index) => {
-      if (!skill.name.trim() || !skill.text.trim()) problems.push({ code: "emptySkill", hero: name || hero.rarity, index: index + 1 });
-    });
+    for (const kind of HERO_ABILITY_KINDS) {
+      const ability = cleanAbility(hero.abilities[kind]);
+      // A level may be unknown, but a named ability needs some text and text needs a name.
+      if (ability && (!ability.name || ability.levels.every((level) => level === ""))) {
+        problems.push({ code: "incompleteAbility", hero: name || hero.rarity, kind });
+      }
+    }
     if (hero.artifact && (!hero.artifact.name.trim() || !hero.artifact.text.trim())) {
       problems.push({ code: "emptyArtifact", hero: name || hero.rarity });
     }
@@ -321,22 +364,32 @@ function isSkill(value: unknown): value is HeroSkill {
   return typeof skill?.name === "string" && typeof skill.text === "string";
 }
 
+function isAbility(value: unknown): value is HeroAbility {
+  const ability = value as HeroAbility;
+  return (
+    typeof ability?.name === "string"
+    && Array.isArray(ability.levels)
+    && ability.levels.length > 0
+    && ability.levels.every((level) => typeof level === "string")
+  );
+}
+
 export function parseHeroDraft(raw: string | null): HeroEditorState | null {
   if (!raw) return null;
   try {
     const value = JSON.parse(raw) as HeroEditorState;
-    if (value?.version !== 1 || typeof value.nextId !== "number" || !Array.isArray(value.heroes)) return null;
+    if (value?.version !== 2 || typeof value.nextId !== "number" || !Array.isArray(value.heroes)) return null;
     for (const hero of value.heroes) {
       if (typeof hero.uid !== "string" || typeof hero.id !== "string" || typeof hero.name !== "string") return null;
       if (!RARITY_SET.has(hero.rarity) || typeof hero.obtain !== "string") return null;
-      if (!Array.isArray(hero.images) || !Array.isArray(hero.skills)) return null;
+      if (!Array.isArray(hero.images) || typeof hero.abilities !== "object" || hero.abilities === null) return null;
       for (const image of hero.images) {
         if (typeof image?.uid !== "string") return null;
         const hasFile = typeof image.file === "string" && image.file.length > 0;
         const hasData = isImageData(image.data);
         if (hasFile === hasData) return null;
       }
-      for (const skill of hero.skills) if (!isSkill(skill) || typeof skill.uid !== "string") return null;
+      for (const kind of HERO_ABILITY_KINDS) if (!isAbility(hero.abilities[kind])) return null;
       if (hero.artifact !== null && !isSkill(hero.artifact)) return null;
     }
     return value;

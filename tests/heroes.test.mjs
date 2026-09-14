@@ -49,10 +49,10 @@ test("roster covers every wiki rarity and names the screenshot fills", () => {
   assert.equal(HEROES.some((hero) => JSON.stringify(hero).includes("Data pending")), false);
 
   const merlin = HEROES.find((hero) => hero.id === "merlin");
-  assert.equal(merlin?.skills[0]?.name, "Ice Dragon's Breath");
+  assert.equal(merlin?.skill?.name, "Ice Dragon's Breath");
   const morgana = HEROES.find((hero) => hero.id === "morgana");
   assert.equal(morgana?.rarity, "UR");
-  assert.match(morgana?.skills[0]?.text ?? "", /Strip/);
+  assert.match(morgana?.skill?.levels[0] ?? "", /Strip/);
   const cleopatra = HEROES.find((hero) => hero.id === "cleopatra");
   assert.equal(cleopatra?.rarity, "UR+");
   const hermes = HEROES.find((hero) => hero.id === "hermes");

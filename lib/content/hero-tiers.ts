@@ -93,3 +93,75 @@ export function matchesHero(hero: string, query: string): boolean {
   const needle = searchable(query);
   return needle === "" || searchable(hero).includes(needle);
 }
+
+/**
+ * Columns for the battle list, like the role columns of a gacha tier list. A
+ * hero sits in the column of their first skill label; Autumn lists the main
+ * effect first. The two Ragnar rows have no label and deal damage.
+ */
+export const ROLE_GROUPS = ["damage", "sustain", "support", "control"] as const;
+export type RoleGroup = (typeof ROLE_GROUPS)[number];
+
+const GROUP_OF_ROLE: Record<RoleKey, RoleGroup> = {
+  crit: "damage",
+  dot: "damage",
+  pursuit: "damage",
+  execute: "damage",
+  thresholdExecute: "damage",
+  scalingAtk: "damage",
+  shieldBreak: "damage",
+  heal: "sustain",
+  dotHeal: "sustain",
+  healIfCrit: "sustain",
+  rngHeal: "sustain",
+  healBuff: "sustain",
+  shield: "sustain",
+  overflowShield: "sustain",
+  invincibilityBarrier: "sustain",
+  deathImmunity: "sustain",
+  rngDodge: "sustain",
+  rngDebuffImmunity: "sustain",
+  dmgReductionBuff: "sustain",
+  buff: "support",
+  atkBuff: "support",
+  defBuff: "support",
+  dotBuff: "support",
+  dotBuffDouble: "support",
+  rngDotBuff: "support",
+  critBuff: "support",
+  rngCritBuff: "support",
+  atkDebuff: "control",
+  defDebuff: "control",
+  debuffToDot: "control",
+  buffRemoval: "control",
+  rngBuffRemoval: "control",
+  noEnemyBuffs: "control",
+  healBlock: "control",
+  healReduction: "control",
+  silence: "control",
+  collectionDenial: "control",
+};
+
+export function roleGroup(roles: readonly RoleKey[]): RoleGroup {
+  return roles.length > 0 ? GROUP_OF_ROLE[roles[0]] ?? "damage" : "damage";
+}
+
+export type TierListId = "overall" | "battle" | "utility" | "productivity";
+
+export type TierPlacement = { list: TierListId; tier: TierId; variant?: VariantKey; resource?: ResourceKey };
+
+/** Every row a hero appears in across the four lists, in list order. */
+export function tierPlacements(hero: string): TierPlacement[] {
+  const found: TierPlacement[] = [];
+  const add = (list: TierListId, tier: TierId, entry: Tagged, resource?: ResourceKey) => {
+    if (entry.hero !== hero) return;
+    found.push({ list, tier, ...(entry.variant ? { variant: entry.variant } : {}), ...(resource ? { resource } : {}) });
+  };
+  for (const row of OVERALL_TIERS) for (const entry of row.entries) add("overall", row.tier, entry);
+  for (const row of BATTLE_TIERS) for (const entry of row.entries) add("battle", row.tier, entry);
+  for (const row of UTILITY_TIERS) for (const entry of row.entries) add("utility", row.tier, entry);
+  for (const row of PRODUCTIVITY_TIERS) {
+    for (const group of row.groups) for (const entry of group.entries) add("productivity", row.tier, entry, group.resource);
+  }
+  return found;
+}

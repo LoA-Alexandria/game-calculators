@@ -10,6 +10,7 @@ import {
   HERO_RARITIES,
   HERO_STAR_COSTS,
   HEROES,
+  abilityCount,
   heroImageUrl,
   heroesByRarity,
   searchHeroes,
@@ -19,7 +20,9 @@ import {
 import { fill, type Dictionary } from "../../lib/i18n";
 import { useAuth } from "../components/AuthProvider";
 import { ChevronIcon, CloseIcon, PenIcon } from "../components/Icons";
+import { HeroPortrait } from "../components/HeroPortrait";
 import { useLocale } from "../components/LocaleProvider";
+import { HeroAbilities } from "./HeroAbilities";
 
 type Guide = Dictionary["guideEntries"]["heroes"];
 
@@ -29,39 +32,8 @@ export function isHeroesGuide(
   return guideLayout(guide) === "heroes";
 }
 
-function initial(name: string): string {
-  const parts = name.trim().split(/\s+/);
-  const last = parts[parts.length - 1] ?? name;
-  return (last.charAt(0) || "?").toUpperCase();
-}
-
 export function counted(count: number, one: string, many: string): string {
   return count === 1 ? one : fill(many, { count });
-}
-
-/** A portrait in its rarity frame, or the initial when there is no picture. */
-export function HeroPortrait({
-  name,
-  rarity,
-  src,
-  className,
-}: {
-  name: string;
-  rarity: HeroRarity;
-  src: string | null;
-  className?: string;
-}) {
-  return (
-    <span className={className ? `hero-portrait ${className}` : "hero-portrait"} data-rarity={rarity} aria-hidden="true">
-      {src ? (
-        // Pre-sized WebP from public/heroes or a data URL from the editor; nothing for next/image to do.
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={src} alt="" width={120} height={121} loading="lazy" decoding="async" />
-      ) : (
-        <span className="hero-portrait-initial">{initial(name)}</span>
-      )}
-    </span>
-  );
 }
 
 function HeroTile({ hero, guide, onOpen }: { hero: Hero; guide: Guide; onOpen: (hero: Hero) => void }) {
@@ -73,8 +45,8 @@ function HeroTile({ hero, guide, onOpen }: { hero: Hero; guide: Guide; onOpen: (
         <span className="hero-tile-name">{hero.name}</span>
         <span className="hero-tile-meta">
           <span className="rarity" data-rarity={hero.rarity}>{hero.rarity}</span>
-          {hero.skills.length > 0 ? (
-            <span className="hero-tile-skills">{counted(hero.skills.length, guide.skillCountOne, guide.skillCount)}</span>
+          {abilityCount(hero) > 0 ? (
+            <span className="hero-tile-skills">{fill(guide.abilityProgress, { count: abilityCount(hero) })}</span>
           ) : null}
         </span>
         {skins > 0 ? (
@@ -372,24 +344,7 @@ function HeroDetail({ hero, guide, nameId }: { hero: Hero; guide: Guide; nameId:
 
       <div className="hero-detail-body">
         <h3>{guide.skillsHeading}</h3>
-        {hero.skills.length > 0 || hero.artifact ? (
-          <dl className="hero-skills">
-            {hero.skills.map((skill, position) => (
-              <div key={`${skill.name}-${position}`}>
-                <dt>{skill.name}</dt>
-                <dd>{skill.text}</dd>
-              </div>
-            ))}
-            {hero.artifact ? (
-              <div className="hero-artifact">
-                <dt>{guide.artifactLabel}: {hero.artifact.name}</dt>
-                <dd>{hero.artifact.text}</dd>
-              </div>
-            ) : null}
-          </dl>
-        ) : (
-          <p className="hero-pending">{guide.skillsPending}</p>
-        )}
+        <HeroAbilities hero={hero} guide={guide} />
 
         <h3>{guide.appearsHeading}</h3>
         {nothing ? (
