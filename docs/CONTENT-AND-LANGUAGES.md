@@ -163,6 +163,12 @@ The draft is saved in that browser only (`localStorage['popepoch-tier-draft']`).
 2. for new text, one block per dictionary to paste under
    `guideEntries.heroTierList`.
 
+On the page, each tier is a coloured strip of portrait cards. A card opens the
+hero's placement, reason, and tiers in every list. The battle list splits into
+Damage, Sustain, Buffs, and Debuffs & control columns by each hero's first skill
+tag (`ROLE_GROUPS` in `lib/content/hero-tiers.ts`). A new role key needs a
+column there, and TypeScript enforces that through the dictionary type.
+
 The export dialog lists problems first: missing names, duplicates, invalid
 grades, and text keys without text. An untouched draft exports the published file
 byte for byte (`tests/hero-tier-editor.test.mjs`), so a diff only ever contains
@@ -221,7 +227,14 @@ Heroes as well.
 
 - The list on the left filters by rarity and name, and marks heroes that are
   **new** or **changed** in the draft. Select one to edit their name, rarity,
-  obtain text, skills, and artifact, or to move them within their rarity.
+  obtain text, abilities, and artifact, or to move them within their rarity.
+- **Abilities**: every hero has exactly three, a **Skill**, a **Buff**, and a
+  **Production** bonus. Each holds a name and one text per level (Lv. 1, Lv. 2,
+  …). **Add Lv. N** copies the level before it, so only the numbers need
+  changing. A level may stay empty when its text is not known yet (Cleopatra's
+  Lv. 1). Empty slots are left out of the export. On the Heroes page, each
+  ability is a card with a level slider, and the numbers that changed since
+  the level below are highlighted.
 - **Add hero** creates an empty hero in the selected rarity. Their id, which
   also names their picture files, comes from the name on export. Published
   heroes keep their id when renamed.
@@ -230,8 +243,8 @@ Heroes as well.
   The browser shrinks it to 240 px on the long side and re-encodes it as WebP
   before it is stored in the draft. **Use as portrait** moves a skin to the
   front.
-- The export dialog warns about empty names, duplicates, and incomplete
-  skills. It also warns when a hero that the tier list, Hero layouts, or
+- The export dialog warns about empty names, duplicates, and abilities that
+  have a name but no text, or text but no name. It also warns when a hero that the tier list, Hero layouts, or
   Artwork still name is renamed or removed.
 
 The draft, pictures included, is saved in that browser only
@@ -239,7 +252,7 @@ The draft, pictures included, is saved in that browser only
 which is enough for dozens of pictures. The editor tells you when it is full.
 **Export** produces:
 
-1. the complete `lib/data/heroes.json`, one line per hero and per skill,
+1. the complete `lib/data/heroes.json`, one line per hero and per ability,
 2. each new picture as a download, with the path it belongs at
    (`public/heroes/<id>.webp`, or `<id>-2.webp` and so on for skins), and
 3. the pictures to delete from `public/heroes/` because the draft no longer

@@ -121,3 +121,26 @@ test("every reason key has text in every language, and every reason is used once
     }
   }
 });
+
+test("every battle entry lands in a role column", async () => {
+  const { ROLE_GROUPS, roleGroup, tierPlacements } = await import("../lib/content/hero-tiers.ts");
+  const counts = Object.fromEntries(ROLE_GROUPS.map((group) => [group, 0]));
+  for (const row of BATTLE_TIERS) {
+    for (const entry of row.entries) {
+      for (const role of entry.roles) assert.ok(Object.hasOwn(en.guideEntries.heroTierList.roles, role), role);
+      counts[roleGroup(entry.roles)] += 1;
+    }
+  }
+  for (const group of ROLE_GROUPS) {
+    assert.ok(counts[group] > 0, `${group} has heroes`);
+    for (const dictionary of [en, de, fr]) assert.ok(dictionary.guideEntries.heroTierList.roleGroups[group], `${group} has a label`);
+  }
+  assert.equal(roleGroup(["heal", "crit"]), "sustain");
+  assert.equal(roleGroup(["crit", "healIfCrit"]), "damage");
+  assert.equal(roleGroup([]), "damage");
+
+  const joan = tierPlacements("Joan of Arc");
+  assert.deepEqual(joan[0], { list: "overall", tier: "SS", variant: "atUrPlus" });
+  assert.ok(joan.some((placement) => placement.list === "battle"));
+  assert.deepEqual(tierPlacements("Nobody"), []);
+});

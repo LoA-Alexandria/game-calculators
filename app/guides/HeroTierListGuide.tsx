@@ -1,32 +1,38 @@
 "use client";
 
 import Link from "next/link";
-import { useId, useState, type KeyboardEvent, type ReactNode } from "react";
+import { useCallback, useId, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import { guideLayout } from "../../lib/content/guides";
 import {
   BATTLE_TIERS,
   OVERALL_TIERS,
   PRODUCTIVITY_TIERS,
+  ROLE_GROUPS,
   TIER_IDS,
   UTILITY_TIERS,
   matchesHero,
   parseGrade,
+  roleGroup,
+  tierPlacements,
+  type BattleEntry,
   type Grade,
-  type NoteKey,
-  type ReasonKey,
+  type OverallEntry,
+  type ProductivityEntry,
+  type ResourceKey,
   type TierId,
-  type VariantKey,
+  type TierListId,
+  type UtilityEntry,
 } from "../../lib/content/hero-tiers";
+import { HERO_RARITIES, heroNamed, heroPortrait, type HeroRarity } from "../../lib/content/heroes";
 import type { Dictionary } from "../../lib/i18n";
-import { useLocale } from "../components/LocaleProvider";
 import { useAuth } from "../components/AuthProvider";
-import { HeroAvatar } from "../components/HeroAvatar";
+import { HeroPortrait } from "../components/HeroPortrait";
 import { CloseIcon, PenIcon, SearchIcon } from "../components/Icons";
+import { useLocale } from "../components/LocaleProvider";
 
 type Guide = Dictionary["guideEntries"]["heroTierList"];
 
-const LISTS = ["overall", "battle", "utility", "productivity"] as const;
-type ListId = (typeof LISTS)[number];
+const LISTS: readonly TierListId[] = ["overall", "battle", "utility", "productivity"];
 
 export function isHeroTierListGuide(
   guide: Dictionary["guideEntries"][keyof Dictionary["guideEntries"]],
@@ -38,41 +44,23 @@ function percent(values: readonly number[]): string {
   return `${values.map((value) => `+${value}`).join(" / ")} %`;
 }
 
-function HeroName({ guide, hero, variant }: { guide: Guide; hero: string; variant?: VariantKey }) {
-  return (
-    <span className="tier-hero">
-      <HeroAvatar name={hero} className="pick-avatar tier-avatar" />
-      <span className="tier-hero-name">{hero}</span>
-      {variant ? <small>{guide.variants[variant]}</small> : null}
-    </span>
-  );
+/** One hero on the board, with everything its card and detail dialog need. */
+type Card =
+  | { list: "overall"; tier: TierId; entry: OverallEntry; rank?: number }
+  | { list: "battle"; tier: TierId; entry: BattleEntry }
+  | { list: "utility"; tier: TierId; entry: UtilityEntry }
+  | { list: "productivity"; tier: TierId; entry: ProductivityEntry; resource: ResourceKey };
+
+type Filter = { query: string; rarity: HeroRarity | "all" };
+
+function visible(hero: string, filter: Filter): boolean {
+  if (!matchesHero(hero, filter.query)) return false;
+  return filter.rarity === "all" || heroNamed(hero)?.rarity === filter.rarity;
 }
 
-function Note({ guide, note }: { guide: Guide; note?: NoteKey }) {
-  return note ? <p className="tier-note">{guide.notes[note]}</p> : null;
-}
-
-function Reason({ guide, hero, reason }: { guide: Guide; hero: string; reason?: ReasonKey }) {
-  const { tf } = useLocale();
-  const id = useId();
-  const [open, setOpen] = useState(false);
-  if (!reason) return null;
-  return (
-    <>
-      <button
-        type="button"
-        className="tier-why"
-        aria-expanded={open}
-        aria-controls={id}
-        onClick={() => setOpen((value) => !value)}
-      >
-        {open ? guide.reasonHide : guide.reasonShow}
-      </button>
-      <p className="tier-reason" id={id} hidden={!open} aria-label={tf(guide.reasonLabel, { hero })}>
-        {guide.reasons[reason]}
-      </p>
-    </>
-  );
+function cardKey(card: Card): string {
+  const extra = card.list === "utility" ? card.entry.effect : card.list === "productivity" ? card.resource : "";
+  return `${card.list}-${card.tier}-${card.entry.hero}-${card.entry.variant ?? ""}-${extra}-${card.entry.note ?? ""}`;
 }
 
 function GradeCell({ grade, label, short, empty }: { grade?: Grade; label: string; short: string; empty: string }) {
@@ -97,197 +85,183 @@ function GradeCell({ grade, label, short, empty }: { grade?: Grade; label: strin
   );
 }
 
-function TierRow({
-  tier,
-  meta,
-  description,
-  children,
-}: {
-  tier: TierId;
-  meta?: string;
-  description?: string;
-  children?: ReactNode;
-}) {
-  return (
-    <section className="tier-row" data-tier={tier} aria-label={tier}>
-      <div className="tier-badge" aria-hidden="true">{tier}</div>
-      <div className="tier-content">
-        {meta || description ? (
-          <p className="tier-meta">
-            {meta ? <strong>{meta}</strong> : null}
-            {description ? <span>{description}</span> : null}
-          </p>
-        ) : null}
-        {children}
-      </div>
-    </section>
-  );
+/** The short text under a card: grades, skill labels, effect, or bonus. */
+function CardTags({ card, guide }: { card: Card; guide: Guide }) {
+  if (card.list === "overall") {
+    const grades: [string, Grade | undefined][] = [
+      [guide.gradeBattleShort, card.entry.battle],
+      [guide.gradeUtilityShort, card.entry.utility],
+      [guide.gradeProductivityShort, card.entry.productivity],
+    ];
+    return (
+      <span className="tl-grades">
+        {grades.map(([short, grade]) => {
+          const parsed = grade ? parseGrade(grade) : null;
+          return (
+            <span key={short} className="tl-grade" data-tier={parsed?.tier ?? "none"} title={short}>
+              <small aria-hidden="true">{short.charAt(0)}</small>
+              <span className="visually-hidden">{short}: </span>
+              {parsed ? parsed.tier : guide.noGrade}
+            </span>
+          );
+        })}
+      </span>
+    );
+  }
+  if (card.list === "battle") {
+    return card.entry.roles.length ? <span className="tl-tags">{card.entry.roles.map((role) => guide.roles[role]).join(", ")}</span> : null;
+  }
+  if (card.list === "utility") return <span className="tl-tags tl-tags-effect">{guide.effects[card.entry.effect]}</span>;
+  return <span className="tl-tags tl-tags-bonus">{percent(card.entry.bonus)}</span>;
 }
 
-function OverallList({ guide, query }: { guide: Guide; query: string }) {
+function TierCard({ card, guide, onOpen }: { card: Card; guide: Guide; onOpen: (card: Card) => void }) {
   const { tf } = useLocale();
-  const rows = OVERALL_TIERS.map((row) => ({
-    ...row,
-    entries: row.entries.filter((entry) => matchesHero(entry.hero, query)),
-  })).filter((row) => row.entries.length > 0);
-  if (rows.length === 0) return null;
+  const { entry } = card;
+  const hero = heroNamed(entry.hero);
+  const linker = (card.list === "overall" || card.list === "battle") && card.entry.linker;
+  const situational = card.list === "utility" && card.entry.situational;
+  const hasMore = Boolean(entry.note || (card.list === "overall" && card.entry.reason));
   return (
-    <>
-      {rows.map((row) => {
-        const graded = row.entries.some((entry) => entry.battle);
-        return (
-          <TierRow key={row.tier} tier={row.tier} meta={row.ordered ? guide.ordered : guide.unordered}>
-            {graded ? (
-              <ol className="tier-cards">
-                {row.entries.map((entry) => {
-                  const rank = OVERALL_TIERS.find((source) => source.tier === row.tier)?.entries.indexOf(entry) ?? 0;
-                  return (
-                    <li className="tier-card" key={`${entry.hero}-${entry.variant ?? ""}`}>
-                      <div className="tier-card-head">
-                        {row.ordered ? <span className="tier-rank">{tf(guide.rank, { rank: rank + 1 })}</span> : null}
-                        <HeroName guide={guide} hero={entry.hero} variant={entry.variant} />
-                        {entry.linker ? <span className="tier-tag">{guide.linker}</span> : null}
-                      </div>
-                      <div className="grade-strip">
-                        <GradeCell grade={entry.battle} label={guide.gradeBattle} short={guide.gradeBattleShort} empty={guide.noGrade} />
-                        <GradeCell grade={entry.utility} label={guide.gradeUtility} short={guide.gradeUtilityShort} empty={guide.noGrade} />
-                        <GradeCell grade={entry.productivity} label={guide.gradeProductivity} short={guide.gradeProductivityShort} empty={guide.noGrade} />
-                      </div>
-                      <Note guide={guide} note={entry.note} />
-                      <Reason guide={guide} hero={entry.hero} reason={entry.reason} />
-                    </li>
-                  );
-                })}
-              </ol>
-            ) : (
-              <ul className="tier-chips">
-                {row.entries.map((entry) => (
-                  <li key={entry.hero}>{entry.hero}</li>
-                ))}
-              </ul>
-            )}
-          </TierRow>
-        );
-      })}
-    </>
+    <li className="tl-card" data-rarity={hero?.rarity}>
+      <button type="button" className="tl-card-button" aria-haspopup="dialog" onClick={() => onOpen(card)}>
+        <span className="tl-card-art">
+          <HeroPortrait name={entry.hero} rarity={hero?.rarity} src={heroPortrait(entry.hero)} className="tl-portrait" />
+          {card.list === "overall" && card.rank ? <span className="tl-rank">{tf(guide.rank, { rank: card.rank })}</span> : null}
+          {linker ? <span className="tl-flag" title={guide.linker}>L</span> : null}
+          {situational ? <span className="tl-flag" title={guide.situational}>~</span> : null}
+          {hasMore ? <span className="tl-more" aria-hidden="true">i</span> : null}
+        </span>
+        <span className="tl-card-name">{entry.hero}</span>
+        {entry.variant ? <span className="tl-card-variant">{guide.variants[entry.variant]}</span> : null}
+        <CardTags card={card} guide={guide} />
+        {linker ? <span className="visually-hidden">{guide.linker}</span> : null}
+        {situational ? <span className="visually-hidden">{guide.situational}</span> : null}
+      </button>
+    </li>
   );
 }
 
-function BattleList({ guide, query }: { guide: Guide; query: string }) {
-  const rows = BATTLE_TIERS.map((row) => ({
-    ...row,
-    entries: row.entries.filter((entry) => matchesHero(entry.hero, query)),
-  })).filter((row) => row.entries.length > 0);
-  if (rows.length === 0) return null;
+function CardList({ cards, guide, onOpen }: { cards: readonly Card[]; guide: Guide; onOpen: (card: Card) => void }) {
   return (
-    <>
-      {rows.map((row) => (
-        <TierRow key={row.tier} tier={row.tier} description={guide.battleTiers[row.tier]}>
-          <ul className="tier-cards">
-            {row.entries.map((entry) => (
-              <li className="tier-card" key={`${entry.hero}-${entry.variant ?? ""}`}>
-                <div className="tier-card-head">
-                  <HeroName guide={guide} hero={entry.hero} variant={entry.variant} />
-                  {entry.linker ? <span className="tier-tag">{guide.linker}</span> : null}
-                </div>
-                {entry.roles.length > 0 ? (
-                  <ul className="role-tags">
-                    {entry.roles.map((role) => (
-                      <li key={role}>{guide.roles[role]}</li>
-                    ))}
-                  </ul>
-                ) : null}
-                <Note guide={guide} note={entry.note} />
-              </li>
-            ))}
-          </ul>
-        </TierRow>
-      ))}
-    </>
+    <ul className="tl-cards">
+      {cards.map((card) => <TierCard key={cardKey(card)} card={card} guide={guide} onOpen={onOpen} />)}
+    </ul>
   );
 }
 
-function UtilityList({ guide, query }: { guide: Guide; query: string }) {
-  const rows = UTILITY_TIERS.map((row) => ({
-    ...row,
-    entries: row.entries.filter((entry) => matchesHero(entry.hero, query)),
-  })).filter((row) => row.entries.length > 0);
-  if (rows.length === 0) return null;
-  return (
-    <>
-      {rows.map((row) => (
-        <TierRow key={row.tier} tier={row.tier} description={guide.utilityTiers[row.tier]}>
-          <ul className="tier-cards">
-            {row.entries.map((entry) => (
-              <li className="tier-card" key={`${entry.hero}-${entry.effect}-${entry.note ?? ""}`}>
-                <div className="tier-card-head">
-                  <HeroName guide={guide} hero={entry.hero} variant={entry.variant} />
-                  {entry.situational ? <span className="tier-tag">{guide.situational}</span> : null}
-                </div>
-                <p className="tier-effect">{guide.effects[entry.effect]}</p>
-                <Note guide={guide} note={entry.note} />
-              </li>
-            ))}
-          </ul>
-        </TierRow>
-      ))}
-    </>
-  );
-}
+type Row = { tier: TierId; meta?: string; description?: string; cards: Card[] };
 
-function ProductivityList({ guide, query }: { guide: Guide; query: string }) {
-  // Every tier is considered, so a tier with only a description (D: replaceable)
-  // still shows when the data has no row for it.
-  const rows = TIER_IDS.map((tier) => ({
+function rowsFor(list: TierListId, guide: Guide, filter: Filter): Row[] {
+  if (list === "overall") {
+    return OVERALL_TIERS.map((row) => ({
+      tier: row.tier,
+      meta: row.ordered ? guide.ordered : undefined,
+      cards: row.entries
+        .map((entry, index): Card => ({ list: "overall", tier: row.tier, entry, ...(row.ordered ? { rank: index + 1 } : {}) }))
+        .filter((card) => visible(card.entry.hero, filter)),
+    }));
+  }
+  if (list === "battle") {
+    return BATTLE_TIERS.map((row) => ({
+      tier: row.tier,
+      description: guide.battleTiers[row.tier],
+      cards: row.entries.map((entry): Card => ({ list: "battle", tier: row.tier, entry })).filter((card) => visible(card.entry.hero, filter)),
+    }));
+  }
+  if (list === "utility") {
+    return UTILITY_TIERS.map((row) => ({
+      tier: row.tier,
+      description: guide.utilityTiers[row.tier],
+      cards: row.entries.map((entry): Card => ({ list: "utility", tier: row.tier, entry })).filter((card) => visible(card.entry.hero, filter)),
+    }));
+  }
+  return TIER_IDS.map((tier) => ({
     tier,
-    groups: (PRODUCTIVITY_TIERS.find((row) => row.tier === tier)?.groups ?? [])
-      .map((group) => ({ ...group, entries: group.entries.filter((entry) => matchesHero(entry.hero, query)) }))
-      .filter((group) => group.entries.length > 0),
-  })).filter((row) => row.groups.length > 0 || (query.trim() === "" && guide.productivityTiers[row.tier]));
-  if (rows.length === 0) return null;
-  return (
-    <>
-      {rows.map((row) => (
-        <TierRow key={row.tier} tier={row.tier} description={guide.productivityTiers[row.tier]}>
-          {row.groups.length > 0 ? (
-            <div className="resource-groups">
-              {row.groups.map((group) => (
-                <div className="resource-group" data-resource={group.resource} key={group.resource}>
-                  <h4>{guide.resources[group.resource]}</h4>
-                  <ul>
-                    {group.entries.map((entry) => (
-                      <li key={entry.hero}>
-                        <span className="tier-resource-hero">
-                          <HeroAvatar name={entry.hero} />
-                          <span className="tier-hero-name">{entry.hero}</span>
-                        </span>
-                        <span className="resource-bonus">{percent(entry.bonus)}</span>
-                        {entry.note ? <small>{guide.notes[entry.note]}</small> : null}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-          ) : null}
-        </TierRow>
-      ))}
-    </>
-  );
+    description: guide.productivityTiers[tier],
+    cards: (PRODUCTIVITY_TIERS.find((row) => row.tier === tier)?.groups ?? []).flatMap((group) =>
+      group.entries
+        .map((entry): Card => ({ list: "productivity", tier, entry, resource: group.resource }))
+        .filter((card) => visible(card.entry.hero, filter)),
+    ),
+  }));
 }
 
-function TierTabs({ guide }: { guide: Guide }) {
+function listSize(list: TierListId): number {
+  const heroes = new Set<string>();
+  if (list === "overall") OVERALL_TIERS.forEach((row) => row.entries.forEach((entry) => heroes.add(entry.hero)));
+  if (list === "battle") BATTLE_TIERS.forEach((row) => row.entries.forEach((entry) => heroes.add(entry.hero)));
+  if (list === "utility") UTILITY_TIERS.forEach((row) => row.entries.forEach((entry) => heroes.add(entry.hero)));
+  if (list === "productivity") PRODUCTIVITY_TIERS.forEach((row) => row.groups.forEach((group) => group.entries.forEach((entry) => heroes.add(entry.hero))));
+  return heroes.size;
+}
+
+const LIST_SIZES = Object.fromEntries(LISTS.map((list) => [list, listSize(list)])) as Record<TierListId, number>;
+
+function RowBody({ row, list, guide, onOpen }: { row: Row; list: TierListId; guide: Guide; onOpen: (card: Card) => void }) {
+  if (list === "battle") {
+    return (
+      <div className="tl-cells">
+        {ROLE_GROUPS.map((group) => {
+          const cards = row.cards.filter((card) => card.list === "battle" && roleGroup(card.entry.roles) === group);
+          return (
+            <div className="tl-cell" data-group={group} key={group}>
+              <span className="tl-cell-label">{guide.roleGroups[group]}</span>
+              {cards.length ? <CardList cards={cards} guide={guide} onOpen={onOpen} /> : null}
+            </div>
+          );
+        })}
+      </div>
+    );
+  }
+  if (list === "productivity") {
+    const resources = [...new Set(row.cards.map((card) => (card.list === "productivity" ? card.resource : null)))].filter(
+      (resource): resource is ResourceKey => resource !== null,
+    );
+    return (
+      <div className="tl-resources">
+        {resources.map((resource) => (
+          <div className="tl-resource" data-resource={resource} key={resource}>
+            <h4>{guide.resources[resource]}</h4>
+            <CardList
+              cards={row.cards.filter((card) => card.list === "productivity" && card.resource === resource)}
+              guide={guide}
+              onOpen={onOpen}
+            />
+          </div>
+        ))}
+      </div>
+    );
+  }
+  return <CardList cards={row.cards} guide={guide} onOpen={onOpen} />;
+}
+
+function TierBoard({ guide }: { guide: Guide }) {
   const { tf } = useLocale();
   const base = useId();
-  const [active, setActive] = useState<ListId>("overall");
+  const [active, setActive] = useState<TierListId>("overall");
   const [query, setQuery] = useState("");
-  const labels: Record<ListId, string> = {
+  const [rarity, setRarity] = useState<HeroRarity | "all">("all");
+  const [open, setOpen] = useState<Card | null>(null);
+  const labels: Record<TierListId, string> = {
     overall: guide.tabOverall,
     battle: guide.tabBattle,
     utility: guide.tabUtility,
     productivity: guide.tabProductivity,
   };
-  const tabId = (id: ListId) => `${base}-tab-${id}`;
+  const ledes: Record<TierListId, string> = {
+    overall: guide.overallLede,
+    battle: guide.battleLede,
+    utility: guide.utilityLede,
+    productivity: guide.productivityLede,
+  };
+  const tabId = (id: TierListId) => `${base}-tab-${id}`;
+  const filter = useMemo(() => ({ query, rarity }), [query, rarity]);
+  const rows = useMemo(() => rowsFor(active, guide, filter), [active, guide, filter]);
+  const filtering = query.trim() !== "" || rarity !== "all";
+  // While filtering, empty tiers collapse; otherwise a described tier stays so D ("replaceable") still reads.
+  const shown = rows.filter((row) => row.cards.length > 0 || (!filtering && row.description));
+  const matches = rows.reduce((sum, row) => sum + row.cards.length, 0);
 
   const onKeyDown = (event: KeyboardEvent<HTMLButtonElement>, index: number) => {
     const last = LISTS.length - 1;
@@ -303,47 +277,30 @@ function TierTabs({ guide }: { guide: Guide }) {
     document.getElementById(tabId(LISTS[next]))?.focus();
   };
 
-  const list =
-    active === "overall" ? <OverallList guide={guide} query={query} />
-    : active === "battle" ? <BattleList guide={guide} query={query} />
-    : active === "utility" ? <UtilityList guide={guide} query={query} />
-    : <ProductivityList guide={guide} query={query} />;
-
-  // The list components render nothing when nothing matches, but an element is
-  // never null, so emptiness is checked against the data itself.
-  const hasMatches =
-    active === "overall" ? OVERALL_TIERS.some((row) => row.entries.some((entry) => matchesHero(entry.hero, query)))
-    : active === "battle" ? BATTLE_TIERS.some((row) => row.entries.some((entry) => matchesHero(entry.hero, query)))
-    : active === "utility" ? UTILITY_TIERS.some((row) => row.entries.some((entry) => matchesHero(entry.hero, query)))
-    : query.trim() === "" || PRODUCTIVITY_TIERS.some((row) => row.groups.some((group) => group.entries.some((entry) => matchesHero(entry.hero, query))));
-
-  const lede =
-    active === "overall" ? guide.overallLede
-    : active === "battle" ? guide.battleLede
-    : active === "utility" ? guide.utilityLede
-    : guide.productivityLede;
-
   return (
-    <div className="tier-lists">
-      <div className="tier-toolbar">
-        <div className="tier-tabs" role="tablist" aria-label={guide.listsLabel}>
-          {LISTS.map((id, index) => (
-            <button
-              key={id}
-              id={tabId(id)}
-              type="button"
-              role="tab"
-              className="tier-tab"
-              aria-selected={active === id}
-              aria-controls={`${base}-panel`}
-              tabIndex={active === id ? 0 : -1}
-              onClick={() => setActive(id)}
-              onKeyDown={(event) => onKeyDown(event, index)}
-            >
-              {labels[id]}
-            </button>
-          ))}
-        </div>
+    <div className="tl">
+      <div className="tl-modes" role="tablist" aria-label={guide.listsLabel}>
+        {LISTS.map((id, index) => (
+          <button
+            key={id}
+            id={tabId(id)}
+            type="button"
+            role="tab"
+            className="tl-mode"
+            data-list={id}
+            aria-selected={active === id}
+            aria-controls={`${base}-panel`}
+            tabIndex={active === id ? 0 : -1}
+            onClick={() => setActive(id)}
+            onKeyDown={(event) => onKeyDown(event, index)}
+          >
+            <span className="tl-mode-title">{labels[id]}</span>
+            <span className="tl-mode-count">{tf(guide.listCount, { count: LIST_SIZES[id] })}</span>
+          </button>
+        ))}
+      </div>
+
+      <div className="tl-filters">
         <div className="tier-filter">
           <label className="visually-hidden" htmlFor={`${base}-filter`}>{guide.filterLabel}</label>
           <SearchIcon className="icon icon-sm" />
@@ -361,10 +318,20 @@ function TierTabs({ guide }: { guide: Guide }) {
             </button>
           ) : null}
         </div>
+        <div className="hero-filters" role="group" aria-label={guide.rarityLabel}>
+          <button type="button" className="hero-filter" aria-pressed={rarity === "all"} onClick={() => setRarity("all")}>
+            {guide.rarityAll}
+          </button>
+          {HERO_RARITIES.map((tier) => (
+            <button key={tier} type="button" className="hero-filter" data-rarity={tier} aria-pressed={rarity === tier} onClick={() => setRarity(tier)}>
+              {tier}
+            </button>
+          ))}
+        </div>
       </div>
 
-      <div className="tier-panel" id={`${base}-panel`} role="tabpanel" aria-labelledby={tabId(active)}>
-        <p className="tier-lede">{lede}</p>
+      <div className="tl-panel" id={`${base}-panel`} role="tabpanel" aria-labelledby={tabId(active)}>
+        <p className="tier-lede">{ledes[active]}</p>
         {active === "battle" ? (
           <details className="tier-types">
             <summary>{guide.battleTypesHeading}</summary>
@@ -373,11 +340,149 @@ function TierTabs({ guide }: { guide: Guide }) {
             </ul>
           </details>
         ) : null}
-        <div className="tier-board" aria-live="polite">
-          {hasMatches ? list : <p className="tier-empty">{tf(guide.filterEmpty, { query: query.trim() })}</p>}
+
+        <div className="tl-board" data-list={active} aria-live="polite">
+          {matches === 0 && filtering ? (
+            <p className="tier-empty">{tf(guide.filterEmpty, { query: query.trim() || rarity })}</p>
+          ) : (
+            <>
+              {active === "battle" ? (
+                <div className="tl-columns" aria-hidden="true">
+                  <span />
+                  {ROLE_GROUPS.map((group) => (
+                    <span key={group} data-group={group}>{guide.roleGroups[group]}</span>
+                  ))}
+                </div>
+              ) : null}
+              {shown.map((row) => (
+                <section className="tl-row" data-tier={row.tier} key={row.tier} aria-label={row.tier}>
+                  <div className="tl-label">
+                    <strong>{row.tier}</strong>
+                    {row.meta ? <small>{row.meta}</small> : null}
+                  </div>
+                  <div className="tl-body">
+                    {row.description ? <p className="tl-desc">{row.description}</p> : null}
+                    {row.cards.length > 0 ? <RowBody row={row} list={active} guide={guide} onOpen={setOpen} /> : null}
+                  </div>
+                </section>
+              ))}
+            </>
+          )}
         </div>
+        {active === "battle" ? <p className="tier-small">{guide.columnsNote}</p> : null}
       </div>
+
+      {open ? <TierDetail card={open} guide={guide} labels={labels} onClose={() => setOpen(null)} /> : null}
     </div>
+  );
+}
+
+function TierDetail({
+  card,
+  guide,
+  labels,
+  onClose,
+}: {
+  card: Card;
+  guide: Guide;
+  labels: Record<TierListId, string>;
+  onClose: () => void;
+}) {
+  const id = useId();
+  const dialog = useRef<HTMLDialogElement>(null);
+  const attach = useCallback((node: HTMLDialogElement | null) => {
+    dialog.current = node;
+    if (node && !node.open) node.showModal();
+  }, []);
+  const { entry } = card;
+  const hero = heroNamed(entry.hero);
+  const placements = tierPlacements(entry.hero);
+  const reason = card.list === "overall" ? card.entry.reason : undefined;
+
+  return (
+    <dialog ref={attach} className="hero-detail tl-detail" data-rarity={hero?.rarity} aria-labelledby={`${id}-name`} onClose={onClose}>
+      <div className="hero-detail-nav">
+        <button type="button" className="icon-button hero-detail-close" aria-label={guide.detailClose} onClick={() => dialog.current?.close()}>
+          <CloseIcon className="icon icon-sm" />
+        </button>
+      </div>
+      <header className="hero-detail-head">
+        <HeroPortrait name={entry.hero} rarity={hero?.rarity} src={heroPortrait(entry.hero)} className="hero-portrait-large" />
+        <div className="hero-detail-title">
+          <h2 id={`${id}-name`}>{entry.hero}</h2>
+          <p>
+            {hero ? <span className="rarity" data-rarity={hero.rarity}>{hero.rarity}</span> : null}
+            {entry.variant ? <span className="hero-obtain">{guide.variants[entry.variant]}</span> : null}
+          </p>
+          {hero ? (
+            <p className="tl-detail-link">
+              <Link href={`/guides/heroes/#${hero.id}`}>{guide.detailHeroLink} →</Link>
+            </p>
+          ) : null}
+        </div>
+      </header>
+
+      <div className="hero-detail-body">
+        <h3>{labels[card.list]}</h3>
+        <div className="tl-detail-main">
+          <span className="tl-detail-tier" data-tier={card.tier}>{card.tier}</span>
+          <div className="tl-detail-facts">
+            {card.list === "overall" ? (
+              <div className="grade-strip">
+                <GradeCell grade={card.entry.battle} label={guide.gradeBattle} short={guide.gradeBattleShort} empty={guide.noGrade} />
+                <GradeCell grade={card.entry.utility} label={guide.gradeUtility} short={guide.gradeUtilityShort} empty={guide.noGrade} />
+                <GradeCell grade={card.entry.productivity} label={guide.gradeProductivity} short={guide.gradeProductivityShort} empty={guide.noGrade} />
+              </div>
+            ) : null}
+            {card.list === "battle" && card.entry.roles.length ? (
+              <ul className="role-tags">
+                {card.entry.roles.map((role) => <li key={role}>{guide.roles[role]}</li>)}
+              </ul>
+            ) : null}
+            {card.list === "utility" ? <p className="tier-effect">{guide.effects[card.entry.effect]}</p> : null}
+            {card.list === "productivity" ? (
+              <p className="tier-effect">
+                {guide.resources[card.resource]} · <span className="resource-bonus">{percent(card.entry.bonus)}</span>
+              </p>
+            ) : null}
+            {(card.list === "overall" || card.list === "battle") && card.entry.linker ? <span className="tier-tag">{guide.linker}</span> : null}
+            {card.list === "utility" && card.entry.situational ? <span className="tier-tag">{guide.situational}</span> : null}
+            {entry.note ? <p className="tier-note">{guide.notes[entry.note]}</p> : null}
+          </div>
+        </div>
+
+        {reason ? (
+          <>
+            <h3>{guide.reasonHeading}</h3>
+            <p className="tl-detail-reason">{guide.reasons[reason]}</p>
+          </>
+        ) : null}
+
+        {placements.length > 1 ? (
+          <>
+            <h3>{guide.detailAllLists}</h3>
+            <ul className="hero-links">
+              {LISTS.filter((list) => placements.some((placement) => placement.list === list)).map((list) => (
+                <li key={list}>
+                  <span className="tl-detail-list">{labels[list]}</span>
+                  <span className="hero-link-values">
+                    {placements
+                      .filter((placement) => placement.list === list)
+                      .map((placement, index) => (
+                        <span className="hero-link-tier" data-tier={placement.tier} key={`${placement.tier}-${index}`}>
+                          <strong>{placement.tier}</strong>
+                          {placement.variant ? <small>{guide.variants[placement.variant]}</small> : null}
+                          {placement.resource ? <small>{guide.resources[placement.resource]}</small> : null}
+                        </span>
+                      ))}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </>
+        ) : null}
+      </div>
+    </dialog>
   );
 }
 
@@ -392,55 +497,6 @@ export function HeroTierListGuide({ guide }: { guide: Guide }) {
         <span>{guide.creditDate}</span>
       </p>
 
-      <h2>{guide.purposesHeading}</h2>
-      <div className="tier-purposes">
-        {guide.purposes.map((purpose) => (
-          <article className="tier-purpose" data-purpose={purpose.id} key={purpose.id}>
-            <h3>{purpose.title}</h3>
-            <p>{purpose.body}</p>
-          </article>
-        ))}
-      </div>
-
-      <div className="tier-overview">
-        <section className="tier-panel-card">
-          <h3>{guide.starsHeading}</h3>
-          <p className="tier-small">{guide.starsLede}</p>
-          <ol className="star-steps">
-            {guide.stars.map((effect, index) => (
-              <StarStep key={index} star={index + 1} effect={effect} label={guide.starLabel} />
-            ))}
-          </ol>
-          <p className="tier-small">{guide.starsNote}</p>
-        </section>
-        <section className="tier-panel-card">
-          <h3>{guide.stagesHeading}</h3>
-          <ol className="stage-steps">
-            {guide.stages.map((stage) => (
-              <li key={stage.label}>
-                <strong>{stage.label}</strong>
-                <span>{stage.range}</span>
-              </li>
-            ))}
-          </ol>
-        </section>
-      </div>
-
-      <h2>{guide.rulesHeading}</h2>
-      <div className="tier-rules">
-        {guide.sections.map((section) => (
-          <article className="tier-rule" key={section.heading}>
-            <h3>{section.heading}</h3>
-            {section.body.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
-          </article>
-        ))}
-        <Link className="tier-rule tier-rule-link" href="/guides/hero-layouts/">
-          <h3>{guide.layoutsLink}</h3>
-          <span aria-hidden="true">→</span>
-        </Link>
-      </div>
-      {guide.note ? <p className="callout">{guide.note}</p> : null}
-
       <div className="tier-lists-head">
         <h2>{guide.listsLabel}</h2>
         {allows("guides.draft") ? (
@@ -450,7 +506,62 @@ export function HeroTierListGuide({ guide }: { guide: Guide }) {
           </Link>
         ) : null}
       </div>
-      <TierTabs guide={guide} />
+      <TierBoard guide={guide} />
+
+      <details className="tier-changelog tier-howto">
+        <summary>
+          <span>{guide.howToRead}</span>
+        </summary>
+
+        <h3>{guide.purposesHeading}</h3>
+        <div className="tier-purposes">
+          {guide.purposes.map((purpose) => (
+            <article className="tier-purpose" data-purpose={purpose.id} key={purpose.id}>
+              <h3>{purpose.title}</h3>
+              <p>{purpose.body}</p>
+            </article>
+          ))}
+        </div>
+
+        <div className="tier-overview">
+          <section className="tier-panel-card">
+            <h3>{guide.starsHeading}</h3>
+            <p className="tier-small">{guide.starsLede}</p>
+            <ol className="star-steps">
+              {guide.stars.map((effect, index) => (
+                <StarStep key={index} star={index + 1} effect={effect} label={guide.starLabel} />
+              ))}
+            </ol>
+            <p className="tier-small">{guide.starsNote}</p>
+          </section>
+          <section className="tier-panel-card">
+            <h3>{guide.stagesHeading}</h3>
+            <ol className="stage-steps">
+              {guide.stages.map((stage) => (
+                <li key={stage.label}>
+                  <strong>{stage.label}</strong>
+                  <span>{stage.range}</span>
+                </li>
+              ))}
+            </ol>
+          </section>
+        </div>
+
+        <h3>{guide.rulesHeading}</h3>
+        <div className="tier-rules">
+          {guide.sections.map((section) => (
+            <article className="tier-rule" key={section.heading}>
+              <h3>{section.heading}</h3>
+              {section.body.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+            </article>
+          ))}
+          <Link className="tier-rule tier-rule-link" href="/guides/hero-layouts/">
+            <h3>{guide.layoutsLink}</h3>
+            <span aria-hidden="true">→</span>
+          </Link>
+        </div>
+        {guide.note ? <p className="callout">{guide.note}</p> : null}
+      </details>
 
       <Changelog guide={guide} />
     </div>

@@ -3,9 +3,10 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 
 import {
+  addAbilityLevel,
   addHero,
   addImage,
-  addSkill,
+  clearAbility,
   countHeroChanges,
   exportHeroes,
   findHeroProblems,
@@ -14,15 +15,15 @@ import {
   heroIdFrom,
   makePortrait,
   moveHero,
-  moveSkill,
   parseHeroDraft,
+  removeAbilityLevel,
   removeHero,
   removeImage,
-  removeSkill,
   serializeHeroData,
+  setAbilityLevel,
+  setAbilityName,
   setArtifact,
   updateHero,
-  updateSkill,
 } from "../lib/content/hero-editor.ts";
 import { heroAppearances, heroReferences } from "../lib/content/hero-links.ts";
 import { HERO_DATA } from "../lib/content/heroes.ts";
@@ -51,7 +52,7 @@ test("a new hero joins the end of its rarity and gets an id from its name", () =
 
   const { data } = exportHeroes(state, HERO_DATA);
   const added = data.heroes.find((hero) => hero.name === "Lu Bu");
-  assert.deepEqual(added, { id: "lu-bu", name: "Lu Bu", rarity: "UR", obtain: "Warlord event", images: [], skills: [] });
+  assert.deepEqual(added, { id: "lu-bu", name: "Lu Bu", rarity: "UR", obtain: "Warlord event", images: [] });
   assert.equal(countHeroChanges(HERO_DATA, data), 1);
 
   const second = addHero(state, "R", "Merlin");
@@ -99,36 +100,65 @@ test("rarity changes regroup a hero and moves stay inside the rarity", () => {
   assert.equal(state.heroes[0].name, "Merlin");
 });
 
-test("skills and artifacts are edited in place", () => {
+test("abilities keep their three slots and their levels", () => {
   let state = fromHeroData(HERO_DATA);
+  const heracles = heroByUid(state, uidOf(state, "Heracles"));
+  assert.deepEqual(Object.keys(heracles.abilities), ["skill", "buff", "production"]);
+  assert.equal(heracles.abilities.skill.levels.length, 3);
+  assert.deepEqual(heracles.abilities.buff, { name: "", levels: [""] });
+
   const circe = uidOf(state, "Circe");
-  const added = addSkill(state, circe);
-  state = updateSkill(added.state, circe, added.uid, { name: "Beast Form", text: "Turns an enemy into a pig." });
-  state = moveSkill(state, circe, added.uid, -1);
+  state = addAbilityLevel(state, circe, "skill");
+  const copied = heroByUid(state, circe).abilities.skill.levels;
+  assert.equal(copied[1], copied[0], "a new level starts from the one before");
+  state = setAbilityLevel(state, circe, "skill", 1, copied[0].replace("200%", "210%"));
+  state = setAbilityName(state, circe, "production", "  Farm Mastery ");
+  state = setAbilityLevel(state, circe, "production", 0, "Farm Resource Productivity +40%. ");
   state = setArtifact(state, circe, { name: "Wand", text: "Longer curses." });
 
   let row = exportHeroes(state, HERO_DATA).data.heroes.find((hero) => hero.name === "Circe");
-  assert.deepEqual(row.skills.map((skill) => skill.name), ["Beast Form", "Animal Companion"]);
+  assert.equal(row.skill.levels.length, 2);
+  assert.match(row.skill.levels[1], /210% of ATK/);
+  assert.deepEqual(row.production, { name: "Farm Mastery", levels: ["Farm Resource Productivity +40%."] });
+  assert.equal(row.buff, undefined, "an empty slot is left out");
   assert.deepEqual(row.artifact, { name: "Wand", text: "Longer curses." });
+  assert.ok(
+    serializeHeroData({ heroes: [row] }).includes('\n      "production": { "name": "Farm Mastery", "levels": ["Farm Resource Productivity +40%."] },\n'),
+    "each ability sits on its own line",
+  );
 
-  state = removeSkill(setArtifact(state, circe, null), circe, added.uid);
+  state = removeAbilityLevel(state, circe, "skill", 1);
+  state = clearAbility(setArtifact(state, circe, null), circe, "production");
   row = exportHeroes(state, HERO_DATA).data.heroes.find((hero) => hero.name === "Circe");
   assert.deepEqual(row, HERO_DATA.heroes.find((hero) => hero.name === "Circe"));
+  assert.deepEqual(heroByUid(removeAbilityLevel(state, circe, "skill", 0), circe).abilities.skill.levels, [""]);
+
+  // Cleopatra's Lv. 1 is unknown: the gap stays, only trailing blanks are dropped.
+  const cleopatra = uidOf(state, "Cleopatra");
+  state = addAbilityLevel(state, cleopatra, "skill");
+  state = setAbilityLevel(state, cleopatra, "skill", 2, "   ");
+  row = exportHeroes(state, HERO_DATA).data.heroes.find((hero) => hero.name === "Cleopatra");
+  assert.equal(row.skill.levels[0], "");
+  assert.equal(row.skill.levels.length, 2);
 });
 
 test("problems flag blanks, duplicates, and heroes other guides still name", () => {
   let state = fromHeroData(HERO_DATA);
   const blank = addHero(state, "SSR");
   state = addHero(blank.state, "R", "circe").state;
-  const skill = addSkill(state, uidOf(state, "Hermes"));
-  state = setArtifact(skill.state, uidOf(state, "Merlin"), { name: "Staff", text: " " });
+  state = setAbilityName(state, uidOf(state, "Merlin"), "buff", "Arcane Wisdom");
+  state = setAbilityLevel(state, uidOf(state, "Circe"), "production", 0, "Productivity +10%");
+  state = setArtifact(state, uidOf(state, "Merlin"), { name: "Staff", text: " " });
   state = removeHero(state, uidOf(state, "Isaac Newton"));
   state = updateHero(state, uidOf(state, "Cu Chulainn"), { name: "Cú Chulainn" });
 
   const problems = findHeroProblems(state, HERO_DATA);
   assert.deepEqual(problems.find((problem) => problem.code === "emptyName"), { code: "emptyName", rarity: "SSR" });
   assert.deepEqual(problems.find((problem) => problem.code === "duplicateName"), { code: "duplicateName", name: "circe" });
-  assert.deepEqual(problems.find((problem) => problem.code === "emptySkill"), { code: "emptySkill", hero: "Hermes", index: 4 });
+  assert.deepEqual(problems.filter((problem) => problem.code === "incompleteAbility"), [
+    { code: "incompleteAbility", hero: "Merlin", kind: "buff" },
+    { code: "incompleteAbility", hero: "Circe", kind: "production" },
+  ]);
   assert.deepEqual(problems.find((problem) => problem.code === "emptyArtifact"), { code: "emptyArtifact", hero: "Merlin" });
   const used = problems.filter((problem) => problem.code === "stillUsed");
   assert.deepEqual(used.map((problem) => problem.name), ["Isaac Newton", "Cu Chulainn"]);
@@ -152,7 +182,7 @@ test("drafts are validated before they are used", () => {
   assert.deepEqual(parseHeroDraft(JSON.stringify(state)), state);
   assert.equal(parseHeroDraft(null), null);
   assert.equal(parseHeroDraft("{"), null);
-  assert.equal(parseHeroDraft(JSON.stringify({ ...state, version: 2 })), null);
+  assert.equal(parseHeroDraft(JSON.stringify({ ...state, version: 1 })), null, "drafts from before abilities are dropped");
 
   const bad = structuredClone(state);
   bad.heroes[0].rarity = "SSS";
@@ -163,4 +193,7 @@ test("drafts are validated before they are used", () => {
   const script = structuredClone(state);
   script.heroes[3].images.push({ uid: "x", data: "javascript:alert(1)" });
   assert.equal(parseHeroDraft(JSON.stringify(script)), null);
+  const levels = structuredClone(state);
+  levels.heroes[1].abilities.skill.levels = [];
+  assert.equal(parseHeroDraft(JSON.stringify(levels)), null);
 });
