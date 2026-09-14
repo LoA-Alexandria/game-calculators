@@ -61,8 +61,8 @@ filter. There is no second list to keep in step.
    an existing guide. The editor prints the dictionary block, the navigation
    row, and (for a new slug) a note to copy the page file. Existing guides on
    `/guides/` and on the guide page have Edit and Remove — the same commit-snippet
-   pattern as news and events. Artwork layouts and the Hero tier list skip those
-   buttons: they have their own editors instead.
+   pattern as news and events. Artwork, Artwork layouts, and the Hero tier list
+   skip those buttons: they have their own editors instead.
 2. Write or replace the text under `guideEntries.<id>` in all three dictionaries,
    following the shape of `waterSupply`: `title`, `summary`, `intro`,
    `sections[]`, `note`.
@@ -85,9 +85,10 @@ cannot claim the same renderer by sharing a field name. Keep `sections` and
 `sections` are the rule cards next to the formation board, and the slot order
 lives in `lib/content/hero-layouts.ts` (builds and utility groups: see *Editing
 hero layouts* below). Painting names, set effects, and hero matches for Artwork
-live in `lib/content/artwork.ts`. Unlock order and level priority for Artwork
-layouts live in the guide dictionary. The SSR set-skill ranking lives in
-`lib/data/artwork-layouts.json`, once for all languages;
+live in `lib/data/paintings.json`, once for all languages;
+`lib/content/artwork.ts` types and exports them. Unlock order and level
+priority for Artwork layouts live in the guide dictionary. The SSR set-skill
+ranking lives in `lib/data/artwork-layouts.json`, once for all languages;
 `lib/content/artwork-layouts.ts` types and exports it. Dictionaries hold the
 build names, reasons, and notes those rows point at.
 
@@ -193,6 +194,24 @@ The draft is saved in that browser only
 
 An untouched draft exports the published file byte for byte
 (`tests/artwork-layout-editor.test.mjs`).
+
+## Editing the artwork catalogue
+
+Members with `guides.draft` see **Edit catalogue** on Artwork, which opens
+`/guides/artwork/edit/`. The dictionary-snippet Edit / Remove at the top of the
+page is hidden here.
+
+- Sets are grouped by rarity. Select a set to change its name, rarity, effect,
+  or paintings.
+- **Add set** / **Add painting** create empty rows. **Add a hero** lists the
+  Heroes roster that is not already on that canvas, grouped by rarity.
+- Autumn’s catalogue has no UR+ heroes except Joan of Arc; the export dialog
+  warns if a UR+ name is attached.
+
+The draft is saved in that browser only
+(`localStorage['popepoch-artwork-catalogue-draft']`). **Export** produces the
+complete `lib/data/paintings.json`. An untouched draft exports the published
+file byte for byte (`tests/artwork-editor.test.mjs`).
 
 Community-written guides name their author in the entry (`credit`). Ask the
 author before publishing their text, and keep the credit when you edit it.

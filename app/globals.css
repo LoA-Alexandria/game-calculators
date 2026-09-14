@@ -1692,6 +1692,61 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
   .layout-edit-row .tier-edit-check,
   .layout-edit-row .small-button { grid-column: 1 / -1; }
 }
+
+.artwork-cat-board { gap: 16px; }
+.artwork-cat-sets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.artwork-cat-set {
+  display: grid;
+  gap: 2px;
+  min-width: 10rem;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  color: var(--ink);
+  text-align: start;
+  cursor: pointer;
+}
+.artwork-cat-set span { color: var(--ink-faint); font-size: .78rem; }
+.artwork-cat-set.is-selected { border-color: var(--accent); box-shadow: var(--ring); }
+.artwork-cat-form { margin: 0; }
+.artwork-cat-form h3 { margin: 8px 0 0; font-size: 1rem; }
+.artwork-cat-row { grid-template-columns: 72px minmax(0, 1fr); }
+.artwork-cat-pick {
+  display: flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--bg);
+  color: var(--ink);
+  text-align: start;
+  cursor: pointer;
+}
+.artwork-cat-pick.is-selected { border-color: var(--accent); box-shadow: var(--ring); }
+.artwork-cat-painting {
+  display: grid;
+  gap: 12px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line);
+}
+.artwork-cat-heroes,
+.artwork-cat-stats { margin: 0; padding: 0; }
+.artwork-cat-heroes .pick {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.artwork-cat-heroes .icon-button { width: 28px; height: 28px; min-height: 28px; }
 .artwork-filter { display: block; max-width: 420px; margin: 10px 0 12px; }
 .painting-panel { padding: 14px; background: color-mix(in srgb, var(--bg) 55%, var(--surface)); }
 .painting-sets { display: grid; gap: 12px; }

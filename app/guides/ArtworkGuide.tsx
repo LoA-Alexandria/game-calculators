@@ -13,8 +13,10 @@ import {
   type PaintingSet,
   type PaintingStat,
 } from "../../lib/content/artwork";
-import { CheckIcon } from "../components/Icons";
+import { CheckIcon, PenIcon } from "../components/Icons";
 import { fill, type Dictionary } from "../../lib/i18n";
+import { useAuth } from "../components/AuthProvider";
+import { useLocale } from "../components/LocaleProvider";
 
 type Guide = Dictionary["guideEntries"]["artwork"];
 
@@ -196,6 +198,8 @@ export function ArtworkGuide({ guide }: { guide: Guide }) {
   const [query, setQuery] = useState("");
   const hits = useMemo(() => paintingsForHero(query), [query]);
   const grouped = useMemo(() => groupHits(hits), [hits]);
+  const { t } = useLocale();
+  const { allows } = useAuth();
 
   return (
     <div className="guide-wide hero-layouts artwork-layouts">
@@ -228,7 +232,15 @@ export function ArtworkGuide({ guide }: { guide: Guide }) {
         <Link href="/guides/artwork-layouts/">{guide.layoutsLink}</Link>
       </p>
 
-      <h2>{query.trim() ? guide.filterHeading : guide.setsHeading}</h2>
+      <div className="tier-lists-head">
+        <h2>{query.trim() ? guide.filterHeading : guide.setsHeading}</h2>
+        {allows("guides.draft") ? (
+          <Link className="small-button" href="/guides/artwork/edit/">
+            <PenIcon className="icon icon-sm" />
+            {t.artworkEditor.openEditor}
+          </Link>
+        ) : null}
+      </div>
       {query.trim() ? null : guide.setsLede ? <p className="utility-lede">{guide.setsLede}</p> : null}
       <label className="hero-search artwork-filter">
         <span className="visually-hidden">{guide.filterLabel}</span>
