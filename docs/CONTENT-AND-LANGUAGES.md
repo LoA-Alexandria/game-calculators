@@ -213,6 +213,47 @@ The draft is saved in that browser only
 complete `lib/data/paintings.json`. An untouched draft exports the published
 file byte for byte (`tests/artwork-editor.test.mjs`).
 
+## Editing heroes
+
+Members with `guides.draft` see **Edit heroes** above the Heroes roster, which
+opens `/guides/heroes/edit/`. The dictionary-snippet Edit / Remove is hidden on
+Heroes as well.
+
+- The list on the left filters by rarity and name, and marks heroes that are
+  **new** or **changed** in the draft. Select one to edit their name, rarity,
+  obtain text, skills, and artifact, or to move them within their rarity.
+- **Add hero** creates an empty hero in the selected rarity. Their id, which
+  also names their picture files, comes from the name on export. Published
+  heroes keep their id when renamed.
+- **Portrait and skins**: the first picture is the portrait, and the others
+  show as skins in the hero dialog. Upload a picture or drop one onto the box.
+  The browser shrinks it to 240 px on the long side and re-encodes it as WebP
+  before it is stored in the draft. **Use as portrait** moves a skin to the
+  front.
+- The export dialog warns about empty names, duplicates, and incomplete
+  skills. It also warns when a hero that the tier list, Hero layouts, or
+  Artwork still name is renamed or removed.
+
+The draft, pictures included, is saved in that browser only
+(`localStorage['popepoch-hero-draft']`). A browser keeps about 5 MB per site,
+which is enough for dozens of pictures. The editor tells you when it is full.
+**Export** produces:
+
+1. the complete `lib/data/heroes.json`, one line per hero and per skill,
+2. each new picture as a download, with the path it belongs at
+   (`public/heroes/<id>.webp`, or `<id>-2.webp` and so on for skins), and
+3. the pictures to delete from `public/heroes/` because the draft no longer
+   uses them.
+
+An untouched draft exports the published file byte for byte
+(`tests/hero-editor.test.mjs`). `tests/heroes.test.mjs` checks the roster
+against the folder: every listed file exists, and no file is left over.
+
+The portraits in `public/heroes/` were saved from the Pop Epoch Wiki rarity
+pages on 14 September 2026. The artwork belongs to the game's publisher. The
+roster credits it under the grid. To take the pictures down, delete the folder
+and empty the `images` lists.
+
 Community-written guides name their author in the entry (`credit`). Ask the
 author before publishing their text, and keep the credit when you edit it.
 

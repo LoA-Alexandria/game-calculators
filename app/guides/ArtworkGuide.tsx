@@ -16,6 +16,7 @@ import {
 import { CheckIcon, PenIcon } from "../components/Icons";
 import { fill, type Dictionary } from "../../lib/i18n";
 import { useAuth } from "../components/AuthProvider";
+import { HeroAvatar } from "../components/HeroAvatar";
 import { useLocale } from "../components/LocaleProvider";
 
 type Guide = Dictionary["guideEntries"]["artwork"];
@@ -24,12 +25,6 @@ export function isArtworkGuide(
   guide: Dictionary["guideEntries"][keyof Dictionary["guideEntries"]],
 ): guide is Guide {
   return guideLayout(guide) === "artwork";
-}
-
-function initial(name: string): string {
-  const parts = name.trim().split(/\s+/);
-  const last = parts[parts.length - 1] ?? name;
-  return (last.charAt(0) || "?").toUpperCase();
 }
 
 function dash(value: string): string {
@@ -60,7 +55,7 @@ function HeroPicks({ heroes }: { heroes: readonly string[] }) {
     <ul className="pick-list">
       {heroes.map((name) => (
         <li className="pick" key={name}>
-          <span className="pick-avatar" aria-hidden="true">{initial(name)}</span>
+          <HeroAvatar name={name} />
           <span className="pick-name">{name}</span>
         </li>
       ))}

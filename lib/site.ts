@@ -46,3 +46,6 @@ export const ARTWORK_LAYOUT_DRAFT_STORAGE_KEY = "popepoch-artwork-layout-draft";
 
 /** Local draft of the Artwork catalogue editor. */
 export const ARTWORK_CATALOGUE_DRAFT_STORAGE_KEY = "popepoch-artwork-catalogue-draft";
+
+/** Local draft of the Heroes roster editor, uploaded portraits included. */
+export const HERO_DRAFT_STORAGE_KEY = "popepoch-hero-draft";
