@@ -1,4 +1,4 @@
-import { heroPortrait } from "../../lib/content/heroes";
+import { heroNamed, heroPortrait } from "../../lib/content/heroes";
 
 function lastInitial(name: string): string {
   const parts = name.trim().split(/\s+/);
@@ -22,7 +22,7 @@ export function HeroAvatar({
 }) {
   const src = heroPortrait(name);
   return (
-    <span className={src ? `${className} has-portrait` : className} aria-hidden="true">
+    <span className={src ? `${className} has-portrait` : className} data-rarity={heroNamed(name)?.rarity} aria-hidden="true">
       {src ? (
         // A static export cannot run next/image optimisation; the files are already small WebP.
         // eslint-disable-next-line @next/next/no-img-element
