@@ -7,7 +7,7 @@ import {
   COVER_MAX_EDGE,
   addPlay,
   addRole,
-  countChanges,
+  countTheaterChanges,
   exportTheater,
   findProblems,
   parseDraft,
@@ -19,16 +19,19 @@ import {
   setCover,
   setTutorial,
   unusedGoddesses,
-  updatePlay,
   updateRole,
   movePlay,
+  playTextOf,
+  setPlayName,
+  setRoleName,
+  textBlocks,
   type EditorPlay,
   type TheaterEditorState,
   type TheaterProblem,
   PUBLISHED_THEATER,
 } from "../../lib/content/goddess-theater-editor";
 import { THEATER_DATA } from "../../lib/content/goddess-theater";
-import type { Dictionary } from "../../lib/i18n";
+import { DEFAULT_LOCALE, LOCALES, localeMeta, type Dictionary, type Locale } from "../../lib/i18n";
 import { THEATER_DRAFT_STORAGE_KEY } from "../../lib/site";
 import { HeroPortrait } from "../components/HeroPortrait";
 import { useLocale } from "../components/LocaleProvider";
@@ -90,27 +93,35 @@ type Ctx = {
   commit: (next: TheaterEditorState) => void;
   e: EditorText;
   tf: (template: string, values: Record<string, string | number>) => string;
+  language: Locale;
+  languages: Locale[];
 };
 
 export function GoddessTheaterEditor() {
-  const { t, tf } = useLocale();
+  const { t, tf, locale } = useLocale();
   const e = t.theaterEditor;
+  const language = (LOCALES.some((entry) => entry.code === locale) ? locale : DEFAULT_LOCALE) as Locale;
 
   const draft = useSyncExternalStore(draftStore.subscribe, draftStore.getSnapshot, draftStore.getServerSnapshot);
   const state = draft ?? PUBLISHED_THEATER;
   const commit = (next: TheaterEditorState) => draftStore.set(next);
-  const ctx: Ctx = { state, commit, e, tf };
+  const [allLanguages, setAllLanguages] = useState(false);
+  const languages = allLanguages ? LOCALES.map((entry) => entry.code) : [...new Set<Locale>([DEFAULT_LOCALE, language])];
+  const ctx: Ctx = { state, commit, e, tf, language, languages };
 
   const [playUid, setPlayUid] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [exportOpen, setExportOpen] = useState(false);
 
-  const exported = useMemo(() => exportTheater(state, THEATER_DATA), [state]);
-  const changes = useMemo(() => countChanges(THEATER_DATA, exported.data), [exported]);
+  const changes = useMemo(() => countTheaterChanges(PUBLISHED_THEATER, state), [state]);
   const needle = query.trim().toLowerCase();
   const visible = needle
     ? state.plays.filter((play) => {
-        const hay = [play.name, ...play.roles.flatMap((row) => [row.goddess, row.role])].join(" ").toLowerCase();
+        const names = LOCALES.flatMap((entry) => {
+          const text = playTextOf(state, entry.code, play.uid);
+          return [text.name, ...Object.values(text.roles)];
+        });
+        const hay = [play.name, ...play.roles.flatMap((row) => [row.goddess, row.role]), ...names].join(" ").toLowerCase();
         return hay.includes(needle);
       })
     : state.plays;
@@ -138,6 +149,10 @@ export function GoddessTheaterEditor() {
           <span className="visually-hidden">{e.searchLabel}</span>
           <input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder={e.searchPlaceholder} />
         </label>
+        <label className="tier-edit-check">
+          <input type="checkbox" checked={allLanguages} onChange={(event) => setAllLanguages(event.target.checked)} />
+          {e.allLanguages}
+        </label>
         <div className="tier-edit-actions">
           <span className="tier-edit-status" aria-live="polite">
             {changes > 0 ? `${changes === 1 ? e.changeOne : tf(e.changes, { count: changes })} · ${e.savedNote}` : e.unchanged}
@@ -158,7 +173,7 @@ export function GoddessTheaterEditor() {
                 aria-pressed={play.uid === active?.uid}
                 onClick={() => setPlayUid(play.uid)}
               >
-                <strong>{play.name.trim() || e.unnamedPlay}</strong>
+                <strong>{playTextOf(state, language, play.uid).name.trim() || play.name.trim() || e.unnamedPlay}</strong>
                 <span>
                   {play.unlock === "tutorial"
                     ? e.tutorialShort
@@ -182,6 +197,40 @@ export function GoddessTheaterEditor() {
   );
 }
 
+function LanguageFields({
+  ctx,
+  id,
+  label,
+  get,
+  set,
+  english,
+}: {
+  ctx: Ctx;
+  id: string;
+  label: string;
+  get: (language: Locale) => string;
+  set: (language: Locale, value: string) => void;
+  english: string;
+}) {
+  return (
+    <div className="field layout-text-field">
+      <label htmlFor={`${id}-${ctx.languages[0]}`}>{label}</label>
+      {ctx.languages.map((language) => (
+        <div className="layout-lang-input" key={language}>
+          {ctx.languages.length > 1 ? <span className="layout-lang" title={localeMeta(language).label}>{language.toUpperCase()}</span> : null}
+          <input
+            id={`${id}-${language}`}
+            value={get(language)}
+            placeholder={language === DEFAULT_LOCALE ? undefined : english}
+            aria-label={ctx.languages.length > 1 ? `${label} (${localeMeta(language).label})` : undefined}
+            onChange={(event) => set(language, event.target.value)}
+          />
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function PlayForm({ ctx, play, onRemoved }: { ctx: Ctx; play: EditorPlay; onRemoved: () => void }) {
   const id = useId();
   const { state, commit, e, tf } = ctx;
@@ -189,8 +238,9 @@ function PlayForm({ ctx, play, onRemoved }: { ctx: Ctx; play: EditorPlay; onRemo
   const available = unusedGoddesses(play);
   const index = state.plays.findIndex((entry) => entry.uid === play.uid);
 
+  const englishName = playTextOf(state, DEFAULT_LOCALE, play.uid).name.trim() || play.name.trim();
   const remove = () => {
-    if (!window.confirm(tf(e.removePlayConfirm, { play: play.name.trim() || e.unnamedPlay }))) return;
+    if (!window.confirm(tf(e.removePlayConfirm, { play: englishName || e.unnamedPlay }))) return;
     commit(removePlay(state, play.uid));
     onRemoved();
   };
@@ -204,10 +254,14 @@ function PlayForm({ ctx, play, onRemoved }: { ctx: Ctx; play: EditorPlay; onRemo
           {e.removePlay}
         </button>
       </div>
-      <div className="field">
-        <label htmlFor={`${id}-name`}>{e.fieldName}</label>
-        <input id={`${id}-name`} value={play.name} onChange={(event) => commit(updatePlay(state, play.uid, { name: event.target.value }))} />
-      </div>
+      <LanguageFields
+        ctx={ctx}
+        id={`${id}-name`}
+        label={e.fieldName}
+        english={englishName}
+        get={(language) => playTextOf(state, language, play.uid).name}
+        set={(language, value) => commit(setPlayName(state, play.uid, language, value))}
+      />
       <div className="field">
         <label htmlFor={`${id}-rank`}>{e.fieldRank}</label>
         <select
@@ -244,14 +298,14 @@ function PlayForm({ ctx, play, onRemoved }: { ctx: Ctx; play: EditorPlay; onRemo
                       {row.goddess}
                     </span>
                   </div>
-                  <div className="field">
-                    <label htmlFor={`${id}-role-${row.uid}`}>{e.fieldRole}</label>
-                    <input
-                      id={`${id}-role-${row.uid}`}
-                      value={row.role}
-                      onChange={(event) => commit(updateRole(state, play.uid, row.uid, { role: event.target.value }))}
-                    />
-                  </div>
+                  <LanguageFields
+                    ctx={ctx}
+                    id={`${id}-role-${row.uid}`}
+                    label={e.fieldRole}
+                    english={playTextOf(state, DEFAULT_LOCALE, play.uid).roles[row.goddess] || row.role}
+                    get={(language) => playTextOf(state, language, play.uid).roles[row.goddess] ?? ""}
+                    set={(language, value) => commit(setRoleName(state, play.uid, row.goddess, language, value))}
+                  />
                   <label className="tier-edit-role">
                     <input
                       type="checkbox"
@@ -399,14 +453,15 @@ function problemText(ctx: Ctx, problem: TheaterProblem): string {
 function ExportDialog({ ctx, onClose }: { ctx: Ctx; onClose: () => void }) {
   const id = useId();
   const dialog = useRef<HTMLDialogElement>(null);
-  const [copied, setCopied] = useState(false);
+  const [copied, setCopied] = useState("");
   const result = useMemo(() => exportTheater(ctx.state, THEATER_DATA), [ctx.state]);
   const json = useMemo(() => serializeTheaterData(result.data), [result]);
+  const blocks = useMemo(() => textBlocks(ctx.state), [ctx.state]);
   const problems = useMemo(() => findProblems(ctx.state), [ctx.state]);
   const { e, tf } = ctx;
 
-  const copy = () =>
-    navigator.clipboard?.writeText(json).then(() => setCopied(true), () => { /* clipboard blocked */ });
+  const copy = (key: string, value: string) =>
+    navigator.clipboard?.writeText(value).then(() => setCopied(key), () => { /* clipboard blocked */ });
   const downloadJson = () => {
     const url = URL.createObjectURL(new Blob([json], { type: "application/json" }));
     download(url, "goddess-theater.json");
@@ -485,9 +540,9 @@ function ExportDialog({ ctx, onClose }: { ctx: Ctx; onClose: () => void }) {
         <div className="tier-export-head">
           <code>lib/data/goddess-theater.json</code>
           <div className="tier-edit-row-actions">
-            <button className="small-button" type="button" onClick={() => void copy()}>
-              {copied ? <CheckIcon className="icon icon-sm" /> : <CopyIcon className="icon icon-sm" />}
-              {copied ? e.copied : e.copy}
+            <button className="small-button" type="button" onClick={() => void copy("json", json)}>
+              {copied === "json" ? <CheckIcon className="icon icon-sm" /> : <CopyIcon className="icon icon-sm" />}
+              {copied === "json" ? e.copied : e.copy}
             </button>
             <button className="small-button" type="button" onClick={downloadJson}>
               <DownloadIcon className="icon icon-sm" />
@@ -496,6 +551,22 @@ function ExportDialog({ ctx, onClose }: { ctx: Ctx; onClose: () => void }) {
           </div>
         </div>
         <textarea readOnly value={json} rows={12} spellCheck={false} aria-label="lib/data/goddess-theater.json" />
+      </div>
+
+      <div className="tier-export-block">
+        <h3>{e.exportTexts}</h3>
+        {LOCALES.map((locale) => (
+          <div key={locale.code} className="tier-export-snippet">
+            <div className="tier-export-head">
+              <code>{`lib/i18n/dictionaries/${locale.code}.ts`}</code>
+              <button className="small-button" type="button" onClick={() => void copy(locale.code, blocks[locale.code])}>
+                {copied === locale.code ? <CheckIcon className="icon icon-sm" /> : <CopyIcon className="icon icon-sm" />}
+                {copied === locale.code ? e.copied : e.copy}
+              </button>
+            </div>
+            <textarea readOnly value={blocks[locale.code]} rows={6} spellCheck={false} aria-label={`lib/i18n/dictionaries/${locale.code}.ts`} />
+          </div>
+        ))}
       </div>
     </dialog>
   );

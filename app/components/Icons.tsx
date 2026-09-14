@@ -283,6 +283,19 @@ export function CheckIcon({ className }: IconProps) {
   );
 }
 
+/** Compact mark for a relevant theater role; sits next to the goddess name. */
+export function StarIcon({ className }: IconProps) {
+  return (
+    <svg className={className} {...base}>
+      <path
+        d="M12 3.8 14.2 9.1 20 9.7 15.7 13.5 16.9 19.2 12 16.2 7.1 19.2 8.3 13.5 4 9.7 9.8 9.1z"
+        fill="currentColor"
+        stroke="none"
+      />
+    </svg>
+  );
+}
+
 export function InfoIcon({ className }: IconProps) {
   return (
     <svg className={className} {...base}>
