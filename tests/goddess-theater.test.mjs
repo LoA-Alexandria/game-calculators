@@ -67,9 +67,10 @@ test("every play cover is a WebP in public/goddess-theater and none is a still o
   }
 });
 
-test("Goddess Theater sits in the Events guide category", () => {
+test("Goddess Theater sits in the Buildings guide category", () => {
   const item = sectionById("guides").items.find((entry) => entry.href === "/guides/goddess-theater/");
-  assert.equal(item?.categoryId, "event");
+  assert.equal(item?.categoryId, "buildings");
   assert.equal(guideLayout(en.guideEntries.goddessTheater), "goddessTheater");
+  assert.equal(en.guideCategories.buildings, "Buildings");
   assert.equal(en.guideCategories.event, "Events");
 });

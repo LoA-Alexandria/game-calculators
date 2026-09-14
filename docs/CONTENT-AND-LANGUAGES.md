@@ -73,7 +73,8 @@ filter. There is no second list to keep in step.
    (heroes, artwork, technology, collection, manor, support, goddesses, cryptides)
    use `coreElements`; placement guides (water supply, hero layouts, artwork
    layouts) use `layouts`; ranking guides (hero tier list) use `tierLists`;
-   event guides (Goddess Theater) use `event`.
+   building guides (Goddess Theater) use `buildings`. The top-level Events
+   section is the calendar; keep `event` for a future event-related guide.
 4. For a new slug, copy `app/guides/water-supply/page.tsx` and pass the new id
    to `GuideArticle`.
 

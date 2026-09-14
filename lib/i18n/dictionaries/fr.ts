@@ -118,6 +118,7 @@ const fr: Dictionary = {
   guideCategories: {
     coreElements: "Éléments fondamentaux",
     layouts: "Dispositions",
+    buildings: "Bâtiments",
     tierLists: "Classements",
     goddess: "Déesse",
     event: "Événements",
@@ -1454,7 +1455,7 @@ const fr: Dictionary = {
   },
   theaterEditor: {
     title: "Modifier le Théâtre des déesses",
-    eyebrow: "Events",
+    eyebrow: "Bâtiments",
     lede: "Ajoutez des pièces, modifiez celles déjà là, et attribuez des déesses depuis Éléments fondamentaux › Déesses. Le brouillon, affiches comprises, reste dans ce navigateur ; exportez-le quand vous avez fini.",
     back: "Retour au Théâtre des déesses",
     openEditor: "Modifier les pièces",
