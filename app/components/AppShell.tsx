@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { SECTIONS, groupByBadge, type NavGroup, type NavItem, type NavSection } from "../../lib/navigation";
-import { DISCORD_CONFIGURED, DISCORD_URL, REPOSITORY_URL } from "../../lib/site";
+import { SECTIONS, groupByBadge, type NavItem, type NavSection } from "../../lib/navigation";
+import { navCrumbs, pathIsCurrentOrNested, pathIsExact } from "../../lib/content/nav-shell";
+import { DISCORD_CONFIGURED, DISCORD_URL, NAV_COLLAPSED_STORAGE_KEY, REPOSITORY_URL } from "../../lib/site";
 import { useAuth } from "./AuthProvider";
 import { useLocale } from "./LocaleProvider";
 import { AccountMenu } from "./AccountMenu";
@@ -20,17 +21,66 @@ import {
   MenuIcon,
   SearchIcon,
   SECTION_ICONS,
+  SidebarIcon,
 } from "./Icons";
 
 /**
  * How many entries a section shows before it offers its index page instead.
  * Collapsing alone is not enough: one open section with forty guides would
- * still be an endless list.
+ * still be an endless list. Guides skip this because they are grouped.
  */
 const VISIBLE_ITEMS = 8;
+const DRAWER_QUERY = "(max-width: 1024px)";
 
 function matches(haystack: string, needle: string): boolean {
   return haystack.toLocaleLowerCase().includes(needle);
+}
+
+function isTypingTarget(target: EventTarget | null): boolean {
+  return Boolean(
+    (target as HTMLElement | null)?.closest("input, textarea, select, [contenteditable=true]"),
+  );
+}
+
+function focusableIn(root: HTMLElement): HTMLElement[] {
+  return [...root.querySelectorAll<HTMLElement>("a[href], button:not([disabled]), input, select, textarea")]
+    .filter((element) => !element.closest("[inert]") && element.tabIndex !== -1);
+}
+
+const NAV_COLLAPSED_EVENT = "popepoch-nav-collapsed";
+
+function subscribeCollapsed(onChange: () => void) {
+  window.addEventListener("storage", onChange);
+  window.addEventListener(NAV_COLLAPSED_EVENT, onChange);
+  return () => {
+    window.removeEventListener("storage", onChange);
+    window.removeEventListener(NAV_COLLAPSED_EVENT, onChange);
+  };
+}
+
+function readCollapsed() {
+  try {
+    return localStorage.getItem(NAV_COLLAPSED_STORAGE_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+function writeCollapsed(next: boolean) {
+  try {
+    localStorage.setItem(NAV_COLLAPSED_STORAGE_KEY, next ? "1" : "0");
+  } catch { /* storage unavailable */ }
+  window.dispatchEvent(new Event(NAV_COLLAPSED_EVENT));
+}
+
+function subscribeDrawer(onChange: () => void) {
+  const media = window.matchMedia(DRAWER_QUERY);
+  media.addEventListener("change", onChange);
+  return () => media.removeEventListener("change", onChange);
+}
+
+function readDrawer() {
+  return window.matchMedia(DRAWER_QUERY).matches;
 }
 
 export function AppShell({ children }: { children: React.ReactNode }) {
@@ -45,12 +95,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
    * shows its neighbours without every other section unfolding too.
    */
   const [toggled, setToggled] = useState<Record<string, boolean>>({});
-  /**
-   * Which guide categories the reader opened by hand. Anything absent falls
-   * back to "open if it contains the current page".
-   */
-  const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({});
   const [hash, setHash] = useState("");
+  const collapsed = useSyncExternalStore(subscribeCollapsed, readCollapsed, () => false);
+  const narrow = useSyncExternalStore(subscribeDrawer, readDrawer, () => false);
+  const wantFilterFocus = useRef(false);
+  const sidebarRef = useRef<HTMLElement>(null);
+  const filterRef = useRef<HTMLInputElement>(null);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+
+  const railCollapsed = collapsed && !narrow;
 
   /**
    * On a phone the overlay covers the page, so following any link inside it
@@ -73,11 +126,88 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   }, [open]);
 
   useEffect(() => {
+    const media = window.matchMedia(DRAWER_QUERY);
+    const onChange = () => { if (!media.matches) setOpen(false); };
+    media.addEventListener("change", onChange);
+    return () => media.removeEventListener("change", onChange);
+  }, []);
+
+  useEffect(() => {
+    if (!open || !narrow) return;
+    const root = sidebarRef.current;
+    if (!root) return;
+    const menuButton = menuButtonRef.current;
+    const start = focusableIn(root)[0];
+    start?.focus();
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Tab") return;
+      const items = focusableIn(root);
+      if (items.length === 0) return;
+      const first = items[0];
+      const last = items[items.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      menuButton?.focus();
+    };
+  }, [open, narrow]);
+
+  useEffect(() => {
     const apply = () => setHash(window.location.hash.replace(/^#/, ""));
     apply();
     window.addEventListener("hashchange", apply);
     return () => window.removeEventListener("hashchange", apply);
   }, [pathname]);
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      const chord = event.key.toLowerCase() === "k" && (event.metaKey || event.ctrlKey);
+      const slash = event.key === "/" && !event.metaKey && !event.ctrlKey && !event.altKey;
+      if (slash && isTypingTarget(event.target)) return;
+      if (!chord && !slash) return;
+      event.preventDefault();
+      if (narrow) {
+        if (open) filterRef.current?.focus();
+        else {
+          wantFilterFocus.current = true;
+          setOpen(true);
+        }
+        return;
+      }
+      if (collapsed) {
+        wantFilterFocus.current = true;
+        writeCollapsed(false);
+        return;
+      }
+      filterRef.current?.focus();
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [narrow, open, collapsed]);
+
+  useEffect(() => {
+    if (!wantFilterFocus.current) return;
+    if (narrow && !open) return;
+    if (!narrow && collapsed) return;
+    wantFilterFocus.current = false;
+    filterRef.current?.focus();
+  }, [narrow, open, collapsed]);
+
+  useEffect(() => {
+    if (railCollapsed) return;
+    const active = sidebarRef.current?.querySelector<HTMLElement>(
+      ".nav-sublink.is-active, .nav-link.is-active",
+    );
+    active?.scrollIntoView({ block: "nearest" });
+  }, [pathname, hash, railCollapsed]);
 
   const query = filter.trim().toLocaleLowerCase();
 
@@ -105,27 +235,19 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   /** While filtering, every section with a match is revealed. */
   const isOpen = (section: NavSection) => {
     if (query) return true;
-    return toggled[section.id] ?? (pathname?.startsWith(section.href) ?? false);
+    return toggled[section.id] ?? (pathIsCurrentOrNested(pathname, section.href));
   };
-  const groupKey = (section: NavSection, group: NavGroup) => `${section.id}:${group.id}`;
-  const isGroupOpen = (section: NavSection, group: NavGroup) => {
-    if (query) return true;
-    if (group.items.some((item) => pathname === item.href)) return true;
-    if (pathname === section.href && hash === group.id) return true;
-    return openGroups[groupKey(section, group)] ?? false;
+
+  const crumbs = useMemo(() => navCrumbs(pathname, t), [pathname, t]);
+  const linkClass = (active: boolean, current = false) => {
+    const names = ["nav-link"];
+    if (active) names.push("is-active");
+    else if (current) names.push("is-current");
+    return names.join(" ");
   };
-  const activeSection = SECTIONS.find((section) => pathname?.startsWith(section.href));
-  // Create pages are not browsable sections, so name them directly.
-  const context = pathname === "/guides/new/"
-      ? t.nav.newGuide
-      : pathname === "/news/new/"
-        ? t.nav.newNews
-        : pathname === "/admin/"
-          ? t.nav.admin
-          : (activeSection?.label(t) ?? t.nav.home);
 
   return (
-    <div className="layout-root">
+    <div className={railCollapsed ? "layout-root is-nav-collapsed" : "layout-root"}>
       <a className="skip-link" href="#content">{t.shell.skipToContent}</a>
 
       <button
@@ -137,18 +259,29 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       />
 
       <aside
+        ref={(node) => { sidebarRef.current = node; }}
         className={open ? "sidebar is-open" : "sidebar"}
         aria-label={t.shell.sectionLabel}
         onClick={closeIfNavigating}
       >
         <div className="sidebar-head">
-          <Link className="brand" href="/">
+          <Link className="brand" href="/" title={t.shell.brand}>
             <span className="brand-mark"><BrandMark className="icon" /></span>
             <span className="brand-text">
               <strong>{t.shell.brand}</strong>
               <span>{t.shell.tagline}</span>
             </span>
           </Link>
+          <button
+            type="button"
+            className="icon-button sidebar-collapse"
+            aria-label={railCollapsed ? t.shell.expandNav : t.shell.collapseNav}
+            title={railCollapsed ? t.shell.expandNav : t.shell.collapseNav}
+            aria-pressed={railCollapsed}
+            onClick={() => writeCollapsed(!collapsed)}
+          >
+            <SidebarIcon className="icon" />
+          </button>
           <button
             type="button"
             className="icon-button sidebar-close"
@@ -162,37 +295,65 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         <div className="nav-filter">
           <SearchIcon className="icon" />
           <input
+            ref={filterRef}
             type="search"
             value={filter}
+            autoComplete="off"
+            spellCheck={false}
             aria-label={t.shell.filterLabel}
+            title={`${t.shell.filterLabel} (${t.shell.filterShortcut})`}
+            aria-keyshortcuts="/ Control+k Meta+k"
             placeholder={t.shell.filterPlaceholder}
             onChange={(event) => setFilter(event.target.value)}
           />
+          {filter ? (
+            <button
+              type="button"
+              className="nav-filter-clear"
+              aria-label={t.shell.clearFilter}
+              onClick={() => {
+                setFilter("");
+                filterRef.current?.focus();
+              }}
+            >
+              <CloseIcon className="icon icon-sm" />
+            </button>
+          ) : null}
         </div>
 
         <nav className="sidebar-nav" aria-label={t.shell.sectionLabel}>
-          <Link className={pathname === "/" ? "nav-link is-active" : "nav-link"} href="/">
+          <Link
+            className={linkClass(pathIsExact(pathname, "/"))}
+            href="/"
+            title={t.nav.home}
+            aria-label={railCollapsed ? t.nav.home : undefined}
+            aria-current={pathIsExact(pathname, "/") ? "page" : undefined}
+          >
             <HomeIcon className="icon" />
             <span>{t.nav.home}</span>
           </Link>
 
           {sections.map(({ section, items }) => {
             const Icon = SECTION_ICONS[section.icon];
-            const sectionActive = pathname?.startsWith(section.href) ?? false;
+            const sectionExact = pathIsExact(pathname, section.href);
+            const sectionCurrent = pathIsCurrentOrNested(pathname, section.href);
             const sectionOpen = isOpen(section);
             const label = section.label(t);
             const groups = section.id === "guides"
               ? groupByBadge(items, t, t.guides.other)
               : null;
             // A filtered list is already narrow, so show every match.
-            const shown = query ? items : items.slice(0, VISIBLE_ITEMS);
-            const hidden = items.length - shown.length;
+            const shown = query || groups ? items : items.slice(0, VISIBLE_ITEMS);
+            const hidden = groups ? 0 : items.length - shown.length;
             return (
               <div className="nav-group" key={section.id}>
                 <div className="nav-row">
                   <Link
-                    className={sectionActive ? "nav-link is-active" : "nav-link"}
+                    className={linkClass(sectionExact, sectionCurrent)}
                     href={section.href}
+                    title={label}
+                    aria-label={railCollapsed ? label : undefined}
+                    aria-current={sectionExact ? "page" : undefined}
                   >
                     <Icon className="icon" />
                     <span>{label}</span>
@@ -221,80 +382,72 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                     className={sectionOpen ? "nav-collapse is-open" : "nav-collapse"}
                     id={`nav-section-${section.id}`}
                   >
-                    {groups ? (
-                      <ul className="nav-sublist">
-                        {groups.map((group) => {
-                          const groupOpen = isGroupOpen(section, group);
-                          const key = groupKey(section, group);
-                          const groupActive = group.items.some((item) => pathname === item.href)
-                            || (pathname === section.href && hash === group.id);
-                          return (
-                            <li key={group.id}>
-                              <div className="nav-row">
+                    <div
+                      className="nav-collapse-inner"
+                      inert={!sectionOpen}
+                      aria-hidden={!sectionOpen}
+                    >
+                      {groups ? (
+                        <ul className="nav-sublist">
+                          {groups.map((group) => {
+                            const groupCurrent = group.items.some((item) => pathIsCurrentOrNested(pathname, item.href))
+                              || (sectionExact && hash === group.id);
+                            return (
+                              <li key={group.id}>
                                 <Link
-                                  className={groupActive ? "nav-sublink nav-category is-active" : "nav-sublink nav-category"}
+                                  className={groupCurrent ? "nav-sublink nav-category is-current" : "nav-sublink nav-category"}
                                   href={`${section.href}#${group.id}`}
                                 >
                                   {group.category}
                                 </Link>
-                                <button
-                                  type="button"
-                                  className={groupOpen ? "nav-toggle is-open" : "nav-toggle"}
-                                  aria-expanded={groupOpen}
-                                  aria-controls={`nav-group-${key}`}
-                                  aria-label={tf(
-                                    groupOpen ? t.shell.collapseSection : t.shell.expandSection,
-                                    { section: group.category },
-                                  )}
-                                  onClick={() =>
-                                    setOpenGroups((current) => ({ ...current, [key]: !groupOpen }))
-                                  }
-                                >
-                                  <ChevronIcon className="icon icon-sm" />
-                                </button>
-                              </div>
-                              <div
-                                className={groupOpen ? "nav-collapse is-open" : "nav-collapse"}
-                                id={`nav-group-${key}`}
-                              >
                                 <ul className="nav-sublist">
-                                  {group.items.map((item) => (
-                                    <li key={item.href}>
-                                      <Link
-                                        className={pathname === item.href ? "nav-sublink is-active" : "nav-sublink"}
-                                        href={item.href}
-                                      >
-                                        {item.label(t)}
-                                      </Link>
-                                    </li>
-                                  ))}
+                                  {group.items.map((item) => {
+                                    const active = pathIsCurrentOrNested(pathname, item.href);
+                                    const exact = pathIsExact(pathname, item.href);
+                                    return (
+                                      <li key={item.href}>
+                                        <Link
+                                          className={active ? "nav-sublink is-active" : "nav-sublink"}
+                                          href={item.href}
+                                          aria-current={exact ? "page" : undefined}
+                                        >
+                                          {item.label(t)}
+                                        </Link>
+                                      </li>
+                                    );
+                                  })}
                                 </ul>
-                              </div>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      ) : (
+                        <ul className="nav-sublist">
+                          {shown.map((item) => {
+                            const active = pathIsCurrentOrNested(pathname, item.href);
+                            const exact = pathIsExact(pathname, item.href);
+                            return (
+                              <li key={item.href}>
+                                <Link
+                                  className={active ? "nav-sublink is-active" : "nav-sublink"}
+                                  href={item.href}
+                                  aria-current={exact ? "page" : undefined}
+                                >
+                                  {item.label(t)}
+                                </Link>
+                              </li>
+                            );
+                          })}
+                          {hidden > 0 && (
+                            <li>
+                              <Link className="nav-sublink nav-more" href={section.href}>
+                                {tf(t.shell.showAll, { count: items.length })}
+                              </Link>
                             </li>
-                          );
-                        })}
-                      </ul>
-                    ) : (
-                      <ul className="nav-sublist">
-                        {shown.map((item) => (
-                          <li key={item.href}>
-                            <Link
-                              className={pathname === item.href ? "nav-sublink is-active" : "nav-sublink"}
-                              href={item.href}
-                            >
-                              {item.label(t)}
-                            </Link>
-                          </li>
-                        ))}
-                        {hidden > 0 && (
-                          <li>
-                            <Link className="nav-sublink nav-more" href={section.href}>
-                              {tf(t.shell.showAll, { count: items.length })}
-                            </Link>
-                          </li>
-                        )}
-                      </ul>
-                    )}
+                          )}
+                        </ul>
+                      )}
+                    </div>
                   </div>
                 )}
               </div>
@@ -324,18 +477,35 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </div>
       </aside>
 
-      <div className="layout-main">
+      <div className="layout-main" {...(open && narrow ? { inert: true } : {})}>
         <header className="topbar">
           <button
+            ref={menuButtonRef}
             type="button"
             className="icon-button topbar-menu"
-            aria-label={t.shell.openMenu}
-            aria-expanded={open}
-            onClick={() => setOpen(true)}
+            aria-label={narrow ? t.shell.openMenu : t.shell.expandNav}
+            aria-expanded={narrow ? open : !collapsed}
+            onClick={() => {
+              if (narrow) setOpen(true);
+              else writeCollapsed(false);
+            }}
           >
             <MenuIcon className="icon" />
           </button>
-          <div className="topbar-context">{context}</div>
+          <nav className="topbar-crumbs" aria-label={t.shell.breadcrumb}>
+            <ol>
+              {crumbs.map((crumb, index) => (
+                <li key={`${crumb.href}:${index}`}>
+                  {index > 0 && <span className="topbar-sep" aria-hidden="true">/</span>}
+                  {crumb.current ? (
+                    <span className="topbar-crumb is-current" aria-current="page">{crumb.label}</span>
+                  ) : (
+                    <Link className="topbar-crumb" href={crumb.href}>{crumb.label}</Link>
+                  )}
+                </li>
+              ))}
+            </ol>
+          </nav>
           <span className="topbar-spacer" />
           <AccountMenu />
           <a
