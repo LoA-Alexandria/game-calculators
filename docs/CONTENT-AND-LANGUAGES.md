@@ -92,7 +92,9 @@ the dictionaries so they can be translated. `tests/goddesses.test.mjs` checks
 the roster against `public/goddesses/`. Goddess Theater casts live in
 `lib/data/goddess-theater.json`, once for all languages; `tests/goddess-theater.test.mjs`
 checks every name against that roster and every cover against
-`public/goddess-theater/`. The dedicated editor is at `/guides/goddess-theater/edit/`
+`public/goddess-theater/`. Play and role names in that JSON are the English wiki
+spelling; `playTexts` in each dictionary can override them, and the dedicated
+editor at `/guides/goddess-theater/edit/` edits every language in `LOCALES`
 (`tests/goddess-theater-editor.test.mjs`). In the Hero layouts guide,
 `sections` are the rule cards next to the formation board, and the slot order
 lives in `lib/content/hero-layouts.ts` (builds and utility groups: see *Editing

@@ -3,11 +3,11 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { guideHref, guideLayout } from "../../lib/content/guides";
-import { searchTheaterPlays, theaterCoverUrl, type TheaterPlay, type TheaterRole } from "../../lib/content/goddess-theater";
+import { searchTheaterPlays, theaterCoverUrl, localizedPlayName, localizedRoleName, type TheaterPlay, type TheaterRole } from "../../lib/content/goddess-theater";
 import { goddessNamed, goddessPortrait } from "../../lib/content/goddesses";
-import { fill, type Dictionary } from "../../lib/i18n";
+import { fill, LOCALES, getDictionary, type Dictionary } from "../../lib/i18n";
 import { useAuth } from "../components/AuthProvider";
-import { PenIcon } from "../components/Icons";
+import { PenIcon, StarIcon } from "../components/Icons";
 import { HeroPortrait } from "../components/HeroPortrait";
 import { useLocale } from "../components/LocaleProvider";
 
@@ -19,20 +19,26 @@ export function isGoddessTheaterGuide(
   return guideLayout(guide) === "goddessTheater";
 }
 
-function RoleRow({ row, guide }: { row: TheaterRole; guide: Guide }) {
+function RoleRow({ play, row, guide }: { play: TheaterPlay; row: TheaterRole; guide: Guide }) {
   const goddess = goddessNamed(row.goddess);
   const href = goddess ? `${guideHref("goddesses")}#${encodeURIComponent(goddess.id)}` : null;
+  const role = localizedRoleName(play, row, guide.playTexts);
   const name = (
     <span className="guide-name">
       <HeroPortrait name={row.goddess} rarity={goddess?.rarity} src={goddessPortrait(row.goddess)} className="hero-portrait-small" />
       {row.goddess}
+      {row.relevant ? (
+        <span className="theater-relevant" title={guide.relevantLabel}>
+          <StarIcon className="theater-relevant-icon" />
+          <span className="visually-hidden">{guide.relevantLabel}</span>
+        </span>
+      ) : null}
     </span>
   );
   return (
     <li className={row.relevant ? "theater-role is-relevant" : "theater-role"}>
       {href ? <Link href={href}>{name}</Link> : name}
-      <span className="theater-role-part">{row.role}</span>
-      {row.relevant ? <span className="theater-relevant">{guide.relevantLabel}</span> : null}
+      <span className="theater-role-part">{role}</span>
     </li>
   );
 }
@@ -54,14 +60,14 @@ function PlayCard({ play, guide }: { play: TheaterPlay; guide: Guide }) {
             decoding="async"
           />
         ) : null}
-        <h3>{play.name}</h3>
+        <h3>{localizedPlayName(play, guide.playTexts)}</h3>
       </header>
       {play.unlock === "tutorial" ? (
         <p className="theater-unlock">{guide.tutorialNote}</p>
       ) : (
         <ul className="theater-roles">
           {play.roles.map((row) => (
-            <RoleRow key={`${row.goddess}-${row.role}`} row={row} guide={guide} />
+            <RoleRow key={`${row.goddess}-${row.role}`} row={row} play={play} guide={guide} />
           ))}
         </ul>
       )}
@@ -73,7 +79,10 @@ export function GoddessTheaterGuide({ guide }: { guide: Guide }) {
   const { t } = useLocale();
   const { allows } = useAuth();
   const [query, setQuery] = useState("");
-  const plays = useMemo(() => searchTheaterPlays(query), [query]);
+  const plays = useMemo(
+    () => searchTheaterPlays(query, LOCALES.map((locale) => getDictionary(locale.code).guideEntries.goddessTheater.playTexts)),
+    [query],
+  );
 
   return (
     <div className="guide-wide theater-guide">

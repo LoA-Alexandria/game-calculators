@@ -1413,8 +1413,8 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
 .theater-roles { margin: 0 -8px; padding: 0; list-style: none; }
 .theater-role {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 5.75rem;
-  gap: 8px 10px;
+  grid-template-columns: minmax(7rem, 0.9fr) minmax(0, 1.35fr);
+  gap: 8px 12px;
   align-items: center;
   padding: 6px 8px;
   border-top: 1px solid var(--line);
@@ -1423,31 +1423,28 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
 .theater-role:first-child { border-top: 0; padding-top: 0; }
 .theater-role a { color: inherit; text-decoration: none; }
 .theater-role a:hover { color: var(--accent); }
+.theater-role .guide-name { white-space: nowrap; min-width: 0; }
 .theater-role-part { color: var(--ink-soft); min-width: 0; }
 .theater-relevant {
-  justify-self: end;
-  padding: 2px 8px;
-  border-radius: 999px;
-  background: var(--accent-soft);
+  display: inline-flex;
+  flex: none;
   color: var(--accent);
-  font-size: .7rem;
-  font-weight: 700;
-  letter-spacing: .04em;
-  text-transform: uppercase;
 }
-.theater-role.is-relevant { background: color-mix(in srgb, var(--accent) 6%, transparent); border-radius: 8px; }
+.theater-relevant-icon { width: .95rem; height: .95rem; }
+.theater-role.is-relevant {
+  background: color-mix(in srgb, var(--accent) 6%, transparent);
+  border-radius: 8px;
+  box-shadow: inset 3px 0 0 var(--accent);
+}
 @media (max-width: 520px) {
   .theater-cover { width: 72px; }
-  .theater-role { grid-template-columns: minmax(0, 1fr) 5.75rem; }
-  .theater-role-part { grid-column: 1; }
-  .theater-relevant { grid-column: 2; grid-row: 1; }
 }
 .theater-edit-roles { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
 .theater-edit-role {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto auto;
+  grid-template-columns: minmax(7rem, 10rem) minmax(0, 1fr) auto auto;
   gap: 8px 10px;
-  align-items: end;
+  align-items: start;
 }
 .theater-edit-cover {
   display: flex;

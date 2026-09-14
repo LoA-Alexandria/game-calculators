@@ -3,10 +3,12 @@ import { readdirSync, readFileSync } from "node:fs";
 import test from "node:test";
 
 import { GODDESSES } from "../lib/content/goddesses.ts";
-import { THEATER_PLAYS, searchTheaterPlays, theaterCoverUrl } from "../lib/content/goddess-theater.ts";
+import { THEATER_PLAYS, localizedPlayName, localizedRoleName, searchTheaterPlays, theaterCoverUrl } from "../lib/content/goddess-theater.ts";
 import { guideLayout } from "../lib/content/guides.ts";
 import { sectionById } from "../lib/navigation.ts";
+import de from "../lib/i18n/dictionaries/de.ts";
 import en from "../lib/i18n/dictionaries/en.ts";
+import fr from "../lib/i18n/dictionaries/fr.ts";
 
 test("every theater cast names a roster goddess and no Brunhilde spelling remains", () => {
   const names = new Set(GODDESSES.map((goddess) => goddess.name));
@@ -47,6 +49,8 @@ test("theater search matches play, goddess, and role", () => {
   assert.equal(searchTheaterPlays("bastet").some((play) => play.id === "cats"), true);
   assert.equal(searchTheaterPlays("tutorial")[0]?.id, "three-musketeers");
   assert.equal(searchTheaterPlays("zzzz").length, 0);
+  const translated = { "peter-pan": { name: "Peter Panos" } };
+  assert.equal(searchTheaterPlays("panos", [translated])[0]?.id, "peter-pan");
 });
 
 test("every play cover is a WebP in public/goddess-theater and none is a still or leftover", () => {
@@ -73,4 +77,18 @@ test("Goddess Theater sits in the Buildings guide category", () => {
   assert.equal(guideLayout(en.guideEntries.goddessTheater), "goddessTheater");
   assert.equal(en.guideCategories.buildings, "Buildings");
   assert.equal(en.guideCategories.event, "Events");
+});
+
+test("play and role names fall back to English until a language overrides them", () => {
+  const play = THEATER_PLAYS.find((entry) => entry.id === "count-of-monte-cristo");
+  assert.ok(play);
+  const fortuna = play.roles.find((row) => row.goddess === "Fortuna");
+  assert.ok(fortuna);
+  assert.equal(localizedPlayName(play, {}), play.name);
+  assert.equal(localizedRoleName(play, fortuna, {}), fortuna.role);
+  assert.equal(localizedPlayName(play, { "count-of-monte-cristo": { name: "Der Graf von Monte Christo" } }), "Der Graf von Monte Christo");
+  assert.equal(localizedRoleName(play, fortuna, { "count-of-monte-cristo": { roles: { Fortuna: "Edmond" } } }), "Edmond");
+  for (const dictionary of [en, de, fr]) {
+    assert.deepEqual(dictionary.guideEntries.goddessTheater.playTexts, {});
+  }
 });

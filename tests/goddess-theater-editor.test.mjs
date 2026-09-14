@@ -7,18 +7,24 @@ import {
   addPlay,
   addRole,
   countChanges,
+  countTheaterChanges,
   exportTheater,
+  exportedPlayTexts,
   findProblems,
   fromTheaterData,
   movePlay,
   parseDraft,
   playByUid,
+  playTextOf,
   removeCover,
   removePlay,
   removeRole,
   serializeTheaterData,
   setCover,
+  setPlayName,
+  setRoleName,
   setTutorial,
+  textBlocks,
   unusedGoddesses,
   updatePlay,
   updateRole,
@@ -93,7 +99,23 @@ test("a tutorial play drops its cast on export, and a missing cover is reported"
 });
 
 test("stored drafts are validated before use", () => {
-  assert.equal(parseDraft(JSON.stringify(published))?.version, 1);
+  assert.equal(parseDraft(JSON.stringify(published))?.version, 2);
   assert.equal(parseDraft("{"), null);
-  assert.equal(parseDraft(JSON.stringify({ ...published, version: 2 })), null);
+  assert.equal(parseDraft(JSON.stringify({ ...published, version: 1 })), null);
+});
+
+test("English names stay in the JSON; other languages export playTexts", () => {
+  const monte = published.plays.find((play) => play.id === "count-of-monte-cristo");
+  assert.ok(monte);
+  const german = setPlayName(published, monte.uid, "de", "Der Graf von Monte Christo");
+  const named = setRoleName(german, monte.uid, "Fortuna", "de", "Edmond");
+  const exported = exportTheater(named, THEATER_DATA);
+  assert.equal(exported.data.plays.find((play) => play.id === "count-of-monte-cristo")?.name, "The Count of Monte Cristo");
+  assert.equal(countChanges(THEATER_DATA, exported.data), 0);
+  assert.equal(countTheaterChanges(published, named) > 0, true);
+  assert.equal(exportedPlayTexts(named).de["count-of-monte-cristo"].name, "Der Graf von Monte Christo");
+  assert.equal(exportedPlayTexts(named).de["count-of-monte-cristo"].roles.Fortuna, "Edmond");
+  assert.equal(textBlocks(published).de, "      playTexts: {},");
+  assert.match(textBlocks(named).de, /Der Graf von Monte Christo/);
+  assert.equal(playTextOf(named, "fr", monte.uid).name, "");
 });
