@@ -77,11 +77,15 @@ filter. There is no second list to keep in step.
 
 A guide that needs more than headings and paragraphs gets its own renderer next
 to `GuideArticle`: `GoddessesGuide`, `ArtworkGuide`, `ArtworkLayoutsGuide`,
-`HeroLayoutsGuide`, and `HeroTierListGuide`.
+`HeroLayoutsGuide`, `HeroRoster`, and `HeroTierListGuide`.
 `guideLayout()` in `lib/content/guides.ts` picks the renderer from a field only
-that guide has, and `tests/guides.test.mjs` pins every entry, so two guides
-cannot claim the same renderer by sharing a field name. Keep `sections` and
-`note` in those entries too, since the editor reads them. In the Hero layouts guide,
+that guide has (`phases` for Goddesses, before `filterAll` for Heroes), and
+`tests/guides.test.mjs` pins every entry, so two guides cannot claim the same
+renderer by sharing a field name. Keep `sections` and `note` in those entries
+too, since the editor reads them. Goddess names, rarity, and portraits live in
+`lib/data/goddesses.json`, once for all languages; affinity and obtain stay in
+the dictionaries so they can be translated. `tests/goddesses.test.mjs` checks
+the roster against `public/goddesses/`. In the Hero layouts guide,
 `sections` are the rule cards next to the formation board, and the slot order
 lives in `lib/content/hero-layouts.ts` (builds and utility groups: see *Editing
 hero layouts* below). Painting names, set effects, and hero matches for Artwork
@@ -266,6 +270,19 @@ The portraits in `public/heroes/` were saved from the Pop Epoch Wiki rarity
 pages on 14 September 2026. The artwork belongs to the game's publisher. The
 roster credits it under the grid. To take the pictures down, delete the folder
 and empty the `images` lists.
+
+The Goddesses guide uses the same tile grid. Rows live in
+`lib/data/goddesses.json` (id, English name, rarity, images). Affinity and
+obtain stay in `guideEntries.goddesses.roster` so they stay translatable.
+Rarity follows the wiki card colours on
+https://pop-epochmobile.fandom.com/wiki/Goddess as of 14 September 2026: gold
+SSR, purple SR, blue R. Portraits in `public/goddesses/` come from that page
+(`scripts/fetch-goddess-portraits.py`). Bastet's wiki card is a placeholder, so
+she has no picture. Calypso appears only in the upgrade-order phases; she has
+no wiki card and no roster row. The upgrade-order numbers are the published
+community sequence on this site (phase 2 Fortuna and Bastet stop at 60), not
+the wiki's level list. To take the pictures down, delete the folder and empty
+the `images` lists.
 
 Community-written guides name their author in the entry (`credit`). Ask the
 author before publishing their text, and keep the credit when you edit it.

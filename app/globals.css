@@ -1501,6 +1501,7 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
 :is(.hero-portrait, .hero-tile, .hero-group, .hero-detail, .hero-edit-form)[data-rarity="UR"] { --rarity: #d45b52; }
 :is(.hero-portrait, .hero-tile, .hero-group, .hero-detail, .hero-edit-form)[data-rarity="SSR"] { --rarity: var(--gold); }
 :is(.hero-portrait, .hero-tile, .hero-group, .hero-detail, .hero-edit-form)[data-rarity="SR"] { --rarity: #9b6bd6; }
+:is(.hero-portrait, .hero-tile, .hero-group, .hero-detail, .hero-edit-form)[data-rarity="R"] { --rarity: #4a89dc; }
 
 .hero-portrait {
   --size: 76px;
