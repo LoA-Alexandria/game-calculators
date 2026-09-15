@@ -8,7 +8,9 @@
  * for that file. A missing `skill`, `buff`, or `production` means the wiki card
  * had no text for it yet. Do not invent it. The "Lv. N" skill cards became the
  * levels of one ability. The fragment table is copied as printed on every
- * rarity page (identical).
+ * rarity page (identical). The wording in this file is the English wiki text;
+ * `guideEntries.heroes.heroTexts` can override the obtain note, ability names,
+ * level texts, and artifact per language.
  *
  * Portraits are in `public/heroes/`, saved from the same wiki pages on 14
  * September 2026 (Cleopatra had none). The first file in `images` is the
@@ -59,6 +61,53 @@ export function abilityCount(hero: Hero): number {
 
 export type HeroData = { heroes: Hero[] };
 
+/** Optional translated ability text; a missing or blank entry keeps the English one. */
+export type HeroAbilityText = { name?: string; levels?: string[] };
+
+/**
+ * Translated hero text, keyed by hero id. Names, rarities, and portraits are
+ * the same in every language and stay in `lib/data/heroes.json`; the wording
+ * the game shows lives here so it can be translated.
+ */
+export type HeroTexts = Record<
+  string,
+  {
+    obtain?: string;
+    skill?: HeroAbilityText;
+    buff?: HeroAbilityText;
+    production?: HeroAbilityText;
+    artifact?: { name?: string; text?: string };
+  }
+>;
+
+function localizedAbility(ability: HeroAbility, text: HeroAbilityText | undefined): HeroAbility {
+  if (!text) return ability;
+  return {
+    name: text.name?.trim() || ability.name,
+    // A level nobody has translated yet keeps the English text rather than going blank.
+    levels: ability.levels.map((level, index) => text.levels?.[index]?.trim() || level),
+  };
+}
+
+/** The hero with every filled-in translation applied. */
+export function localizedHero(hero: Hero, texts: HeroTexts): Hero {
+  const local = texts[hero.id];
+  if (!local) return hero;
+  const next: Hero = { ...hero };
+  if (local.obtain?.trim()) next.obtain = local.obtain.trim();
+  for (const kind of HERO_ABILITY_KINDS) {
+    const ability = hero[kind];
+    if (ability) next[kind] = localizedAbility(ability, local[kind]);
+  }
+  if (hero.artifact) {
+    next.artifact = {
+      name: local.artifact?.name?.trim() || hero.artifact.name,
+      text: local.artifact?.text?.trim() || hero.artifact.text,
+    };
+  }
+  return next;
+}
+
 export const HERO_FRAGMENT_KEYS = [
   "green",
   "blue",
@@ -89,15 +138,20 @@ export function heroesByRarity(rarity: HeroRarity | "all"): Hero[] {
   return HEROES.filter((hero) => hero.rarity === rarity);
 }
 
-export function searchHeroes(query: string, rarity: HeroRarity | "all"): Hero[] {
+/** Every searchable string of one translation of a hero. */
+function textOf(hero: Hero): string[] {
+  const abilities = HERO_ABILITY_KINDS.flatMap((kind) => [hero[kind]?.name ?? "", ...(hero[kind]?.levels ?? [])]);
+  return [hero.obtain, ...abilities, hero.artifact?.name ?? "", hero.artifact?.text ?? ""];
+}
+
+/** `catalogs` lets a search also match the wording a reader sees in their language. */
+export function searchHeroes(query: string, rarity: HeroRarity | "all", catalogs: readonly HeroTexts[] = []): Hero[] {
   const needle = query.trim().toLowerCase();
   const pool = heroesByRarity(rarity);
   if (!needle) return pool;
   return pool.filter((hero) => {
-    const abilities = HERO_ABILITY_KINDS.flatMap((kind) => [hero[kind]?.name ?? "", ...(hero[kind]?.levels ?? [])]);
-    const hay = [hero.name, hero.obtain, ...abilities, hero.artifact?.name ?? "", hero.artifact?.text ?? ""]
-      .join(" ")
-      .toLowerCase();
+    const translated = catalogs.flatMap((texts) => (texts[hero.id] ? textOf(localizedHero(hero, texts)) : []));
+    const hay = [hero.name, ...textOf(hero), ...translated].join(" ").toLowerCase();
     return hay.includes(needle);
   });
 }

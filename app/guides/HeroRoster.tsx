@@ -13,6 +13,7 @@ import {
   abilityCount,
   heroImageUrl,
   heroesByRarity,
+  localizedHero,
   searchHeroes,
   type Hero,
   type HeroRarity,
@@ -102,7 +103,7 @@ export function HeroRoster({ guide }: { guide: Guide }) {
   const { allows } = useAuth();
   const [rarity, setRarity] = useState<HeroRarity | "all">("all");
   const [query, setQuery] = useState("");
-  const rows = useMemo(() => searchHeroes(query, rarity), [query, rarity]);
+  const rows = useMemo(() => searchHeroes(query, rarity, [guide.heroTexts]), [query, rarity, guide]);
   const grouped = rarity === "all" && !query.trim();
   const fragmentLabels = guide.fragments;
 
@@ -295,9 +296,11 @@ function HeroDialog({
   );
 }
 
-function HeroDetail({ hero, guide, nameId }: { hero: Hero; guide: Guide; nameId: string }) {
+function HeroDetail({ hero: row, guide, nameId }: { hero: Hero; guide: Guide; nameId: string }) {
   const { t, tf } = useLocale();
   const [shown, setShown] = useState(0);
+  // Name, rarity, and pictures are shared; the game text comes from the dictionary.
+  const hero = localizedHero(row, guide.heroTexts);
   const file = hero.images[shown] ?? hero.images[0];
   const found = heroAppearances(hero.name);
   const layouts = layoutTexts(t.guideEntries.heroLayouts);

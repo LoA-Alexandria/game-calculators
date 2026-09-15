@@ -7,11 +7,13 @@ import {
   addHero,
   addImage,
   clearAbility,
-  countHeroChanges,
+  countHeroDraftChanges,
   exportHeroes,
+  exportedHeroTexts,
   findHeroProblems,
-  fromHeroData,
   heroByUid,
+  heroTextBlocks,
+  heroTextOf,
   makePortrait,
   moveHero,
   parseHeroDraft,
@@ -22,7 +24,10 @@ import {
   setAbilityLevel,
   setAbilityName,
   setArtifact,
+  setArtifactText,
+  setObtain,
   updateHero,
+  PUBLISHED_HEROES,
   type EditorHero,
   type EditorImage,
   type HeroEditorState,
@@ -30,7 +35,7 @@ import {
   type HeroProblem,
 } from "../../lib/content/hero-editor";
 import { HERO_ABILITY_KINDS, HERO_DATA, HERO_RARITIES, heroImageUrl, type HeroAbilityKind, type HeroRarity } from "../../lib/content/heroes";
-import { fill, type Dictionary } from "../../lib/i18n";
+import { DEFAULT_LOCALE, LOCALES, fill, localeMeta, type Dictionary, type Locale } from "../../lib/i18n";
 import { HERO_DRAFT_STORAGE_KEY } from "../../lib/site";
 import { CheckIcon, ChevronIcon, CloseIcon, CopyIcon, DownloadIcon, PlusIcon, TrashIcon, UploadIcon } from "../components/Icons";
 import { useLocale } from "../components/LocaleProvider";
@@ -42,8 +47,10 @@ import { counted } from "./HeroRoster";
 type EditorText = Dictionary["heroEditor"];
 type Tf = (template: string, values: Record<string, string | number>) => string;
 
-const PUBLISHED = fromHeroData(HERO_DATA);
+const PUBLISHED = PUBLISHED_HEROES;
 const PUBLISHED_BY_ID = new Map(HERO_DATA.heroes.map((hero) => [hero.id, JSON.stringify(hero)]));
+const PUBLISHED_TEXTS = exportedHeroTexts(PUBLISHED_HEROES);
+const TRANSLATIONS = LOCALES.map((entry) => entry.code).filter((code) => code !== DEFAULT_LOCALE);
 const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
 
 const draftStore = createPersistentStore<HeroEditorState | null>({
@@ -99,26 +106,35 @@ type Ctx = {
   t: Dictionary;
   e: EditorText;
   tf: Tf;
+  /** The languages the fields are shown in; the first one is always English. */
+  languages: Locale[];
 };
 
 export function HeroEditor() {
-  const { t, tf } = useLocale();
+  const { t, tf, locale } = useLocale();
   const e = t.heroEditor;
   const guide = t.guideEntries.heroes;
+  const language = LOCALES.some((entry) => entry.code === locale) ? locale : DEFAULT_LOCALE;
 
   const draft = useSyncExternalStore(draftStore.subscribe, draftStore.getSnapshot, draftStore.getServerSnapshot);
   const state = draft ?? PUBLISHED;
   const commit = (next: HeroEditorState) => draftStore.set(next);
-  const ctx: Ctx = { state, commit, t, e, tf };
 
   const [rarity, setRarity] = useState<HeroRarity | "all">("all");
   const [query, setQuery] = useState("");
   const [selected, setSelected] = useState<string | null>(null);
   const [exportOpen, setExportOpen] = useState(false);
+  const [allLanguages, setAllLanguages] = useState(false);
+
+  const languages = allLanguages
+    ? LOCALES.map((entry) => entry.code)
+    : [...new Set<Locale>([DEFAULT_LOCALE, language])];
+  const ctx: Ctx = { state, commit, t, e, tf, languages };
 
   const exported = useMemo(() => exportHeroes(state, HERO_DATA), [state]);
-  const changes = useMemo(() => countHeroChanges(HERO_DATA, exported.data), [exported]);
+  const changes = useMemo(() => countHeroDraftChanges(PUBLISHED, state), [state]);
   const problems = useMemo(() => findHeroProblems(state, HERO_DATA), [state]);
+  const texts = useMemo(() => exportedHeroTexts(state), [state]);
   const needle = query.trim().toLowerCase();
   const visible = state.heroes.filter(
     (hero) => (rarity === "all" || hero.rarity === rarity) && (!needle || hero.name.toLowerCase().includes(needle)),
@@ -130,7 +146,11 @@ export function HeroEditor() {
     const row = exported.data.heroes[index];
     const before = PUBLISHED_BY_ID.get(row.id);
     if (!hero.id || before === undefined) return "new";
-    return before === JSON.stringify(row) ? null : "changed";
+    if (before !== JSON.stringify(row)) return "changed";
+    const translated = TRANSLATIONS.some(
+      (code) => JSON.stringify(PUBLISHED_TEXTS[code][row.id]) !== JSON.stringify(texts[code][row.id]),
+    );
+    return translated ? "changed" : null;
   };
 
   const select = (uid: string) => {
@@ -170,6 +190,10 @@ export function HeroEditor() {
             </button>
           ))}
         </div>
+        <label className="tier-edit-check">
+          <input type="checkbox" checked={allLanguages} onChange={(event) => setAllLanguages(event.target.checked)} />
+          {e.allLanguages}
+        </label>
         <div className="tier-edit-actions">
           <span className="tier-edit-status" aria-live="polite">
             {changes > 0 ? `${changes === 1 ? e.changeOne : tf(e.changes, { count: changes })} · ${e.savedNote}` : e.unchanged}
@@ -242,6 +266,56 @@ export function HeroEditor() {
   );
 }
 
+/**
+ * One field per shown language. English is the wording that goes into the
+ * roster JSON; a blank translation shows the English text as its placeholder
+ * because that is what a reader in that language gets.
+ */
+function LanguageFields({
+  ctx,
+  id,
+  label,
+  note,
+  rows,
+  english,
+  get,
+  set,
+}: {
+  ctx: Ctx;
+  id: string;
+  label: string;
+  note?: string;
+  rows?: number;
+  english: string;
+  get: (language: Locale) => string;
+  set: (language: Locale, value: string) => void;
+}) {
+  const many = ctx.languages.length > 1;
+  return (
+    <div className="field layout-text-field">
+      <label htmlFor={`${id}-${ctx.languages[0]}`}>
+        {label}
+        {note ? <span className="label-note">{note}</span> : null}
+      </label>
+      {ctx.languages.map((language) => {
+        const shared = {
+          id: `${id}-${language}`,
+          value: get(language),
+          placeholder: language === DEFAULT_LOCALE ? undefined : english,
+          "aria-label": many ? `${label} (${localeMeta(language).label})` : undefined,
+          onChange: (event: { target: { value: string } }) => set(language, event.target.value),
+        };
+        return (
+          <div className="layout-lang-input" key={language}>
+            {many ? <span className="layout-lang" title={localeMeta(language).label}>{language.toUpperCase()}</span> : null}
+            {rows ? <textarea {...shared} rows={rows} /> : <input {...shared} />}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 function HeroForm({
   ctx,
   hero,
@@ -289,7 +363,9 @@ function HeroForm({
 
       <div className="hero-edit-fields">
         <div className="field">
-          <label htmlFor={`${id}-name`}>{e.fieldName}</label>
+          <label htmlFor={`${id}-name`}>
+            {e.fieldName} <span className="label-note">{e.fieldNameNote}</span>
+          </label>
           <input id={`${id}-name`} value={hero.name} onChange={(event) => commit(updateHero(state, hero.uid, { name: event.target.value }))} />
           <p className="tier-small">
             {e.fieldId}: <code>{exportedId || "—"}</code>
@@ -310,11 +386,16 @@ function HeroForm({
             {HERO_RARITIES.map((tier) => <option key={tier} value={tier}>{tier}</option>)}
           </select>
         </div>
-        <div className="field hero-edit-wide">
-          <label htmlFor={`${id}-obtain`}>
-            {e.fieldObtain} <span className="label-note">{e.fieldObtainNote}</span>
-          </label>
-          <input id={`${id}-obtain`} value={hero.obtain} onChange={(event) => commit(updateHero(state, hero.uid, { obtain: event.target.value }))} />
+        <div className="hero-edit-wide">
+          <LanguageFields
+            ctx={ctx}
+            id={`${id}-obtain`}
+            label={e.fieldObtain}
+            note={e.fieldObtainNote}
+            english={hero.obtain}
+            get={(language) => heroTextOf(state, language, hero.uid).obtain}
+            set={(language, value) => commit(setObtain(state, hero.uid, language, value))}
+          />
         </div>
       </div>
 
@@ -327,14 +408,23 @@ function HeroForm({
         <legend>{e.artifactHeading}</legend>
         {hero.artifact ? (
           <div className="hero-edit-skill">
-            <div className="field">
-              <label htmlFor={`${id}-artifact-name`}>{e.artifactName}</label>
-              <input id={`${id}-artifact-name`} value={hero.artifact.name} onChange={(event) => commit(setArtifact(state, hero.uid, { name: event.target.value, text: hero.artifact?.text ?? "" }))} />
-            </div>
-            <div className="field">
-              <label htmlFor={`${id}-artifact-text`}>{e.artifactText}</label>
-              <textarea id={`${id}-artifact-text`} rows={2} value={hero.artifact.text} onChange={(event) => commit(setArtifact(state, hero.uid, { name: hero.artifact?.name ?? "", text: event.target.value }))} />
-            </div>
+            <LanguageFields
+              ctx={ctx}
+              id={`${id}-artifact-name`}
+              label={e.artifactName}
+              english={hero.artifact.name}
+              get={(language) => heroTextOf(state, language, hero.uid).artifact.name}
+              set={(language, value) => commit(setArtifactText(state, hero.uid, language, { name: value }))}
+            />
+            <LanguageFields
+              ctx={ctx}
+              id={`${id}-artifact-text`}
+              label={e.artifactText}
+              rows={2}
+              english={hero.artifact.text}
+              get={(language) => heroTextOf(state, language, hero.uid).artifact.text}
+              set={(language, value) => commit(setArtifactText(state, hero.uid, language, { text: value }))}
+            />
             <div className="tier-edit-row-actions">
               <button type="button" className="small-button" onClick={() => commit(setArtifact(state, hero.uid, null))}>
                 <TrashIcon className="icon icon-sm" />
@@ -365,22 +455,26 @@ function AbilityField({ ctx, hero, kind }: { ctx: Ctx; hero: EditorHero; kind: H
       <legend>
         <span className="ability-kind">{label}</span>
       </legend>
-      <div className="field">
-        <label htmlFor={`${id}-name`}>{e.abilityName}</label>
-        <input id={`${id}-name`} value={ability.name} onChange={(event) => commit(setAbilityName(state, hero.uid, kind, event.target.value))} />
-      </div>
+      <LanguageFields
+        ctx={ctx}
+        id={`${id}-name`}
+        label={e.abilityName}
+        english={ability.name}
+        get={(language) => heroTextOf(state, language, hero.uid).abilities[kind].name}
+        set={(language, value) => commit(setAbilityName(state, hero.uid, kind, value, language))}
+      />
       <ol className="hero-edit-levels">
         {ability.levels.map((text, index) => (
           <li key={index} className="hero-edit-skill">
-            <div className="field">
-              <label htmlFor={`${id}-level-${index}`}>{tf(e.levelText, { level: index + 1 })}</label>
-              <textarea
-                id={`${id}-level-${index}`}
-                rows={3}
-                value={text}
-                onChange={(event) => commit(setAbilityLevel(state, hero.uid, kind, index, event.target.value))}
-              />
-            </div>
+            <LanguageFields
+              ctx={ctx}
+              id={`${id}-level-${index}`}
+              label={tf(e.levelText, { level: index + 1 })}
+              rows={3}
+              english={text}
+              get={(language) => heroTextOf(state, language, hero.uid).abilities[kind].levels[index] ?? ""}
+              set={(language, value) => commit(setAbilityLevel(state, hero.uid, kind, index, value, language))}
+            />
             {ability.levels.length > 1 ? (
               <div className="tier-edit-row-actions">
                 <button
@@ -522,12 +616,13 @@ function problemText(e: EditorText, tf: Tf, kinds: Record<HeroAbilityKind, strin
 function ExportDialog({ ctx, result, problems, onClose }: { ctx: Ctx; result: HeroExport; problems: HeroProblem[]; onClose: () => void }) {
   const id = useId();
   const dialog = useRef<HTMLDialogElement>(null);
-  const [copied, setCopied] = useState(false);
+  const [copied, setCopied] = useState("");
   const { e, tf } = ctx;
   const json = useMemo(() => serializeHeroData(result.data), [result]);
+  const blocks = useMemo(() => heroTextBlocks(ctx.state), [ctx.state]);
 
-  const copy = () =>
-    navigator.clipboard?.writeText(json).then(() => setCopied(true), () => { /* clipboard blocked */ });
+  const copy = (key: string, value: string) =>
+    navigator.clipboard?.writeText(value).then(() => setCopied(key), () => { /* clipboard blocked */ });
   const downloadJson = () => {
     const url = URL.createObjectURL(new Blob([json], { type: "application/json" }));
     download(url, "heroes.json");
@@ -611,9 +706,9 @@ function ExportDialog({ ctx, result, problems, onClose }: { ctx: Ctx; result: He
         <div className="tier-export-head">
           <code>lib/data/heroes.json</code>
           <div className="tier-edit-row-actions">
-            <button className="small-button" type="button" onClick={() => void copy()}>
-              {copied ? <CheckIcon className="icon icon-sm" /> : <CopyIcon className="icon icon-sm" />}
-              {copied ? e.copied : e.copy}
+            <button className="small-button" type="button" onClick={() => void copy("json", json)}>
+              {copied === "json" ? <CheckIcon className="icon icon-sm" /> : <CopyIcon className="icon icon-sm" />}
+              {copied === "json" ? e.copied : e.copy}
             </button>
             <button className="small-button" type="button" onClick={downloadJson}>
               <DownloadIcon className="icon icon-sm" />
@@ -622,6 +717,22 @@ function ExportDialog({ ctx, result, problems, onClose }: { ctx: Ctx; result: He
           </div>
         </div>
         <textarea readOnly value={json} rows={12} spellCheck={false} aria-label="lib/data/heroes.json" />
+      </div>
+
+      <div className="tier-export-block">
+        <h3>{e.exportTexts}</h3>
+        {LOCALES.map((locale) => (
+          <div key={locale.code} className="tier-export-snippet">
+            <div className="tier-export-head">
+              <code>{`lib/i18n/dictionaries/${locale.code}.ts`}</code>
+              <button className="small-button" type="button" onClick={() => void copy(locale.code, blocks[locale.code])}>
+                {copied === locale.code ? <CheckIcon className="icon icon-sm" /> : <CopyIcon className="icon icon-sm" />}
+                {copied === locale.code ? e.copied : e.copy}
+              </button>
+            </div>
+            <textarea readOnly value={blocks[locale.code]} rows={6} spellCheck={false} aria-label={`lib/i18n/dictionaries/${locale.code}.ts`} />
+          </div>
+        ))}
       </div>
     </dialog>
   );
