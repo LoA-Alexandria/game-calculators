@@ -111,18 +111,18 @@ filter. There is no second list to keep in step.
    the Hero tier list, Goddess Theater, Hero linking, and Anecdotes skip those buttons:
    they have their own editors instead.
 2. Write or replace the text under `guideEntries.<id>` in all three dictionaries,
-   following the shape of `waterSupply`: `title`, `summary`, `intro`,
+   following the shape of `support`: `title`, `summary`, `intro`,
    `sections[]`, `note`.
 3. Add or replace the item in the `guides` section in `lib/navigation.ts`,
    including a `badge` and `categoryId` from `guideCategories`. Reuse an existing
    category when the guide belongs next to one already there. Core systems
    (heroes, artwork, technology, collection, manor, support, goddesses, cryptides)
-   use `coreElements`; placement guides (water supply, hero layouts, artwork
+   use `coreElements`; placement guides (hero layouts, artwork
    layouts) use `layouts`; ranking guides (hero tier list) use `tierLists`;
    building guides (Goddess Theater) use `buildings`; advice that is not tied to
    one system (hero linking, anecdotes) uses `tips`. The top-level Events section is the
    calendar; keep `event` for a future event-related guide.
-4. For a new slug, copy `app/guides/water-supply/page.tsx` and pass the new id
+4. For a new slug, copy `app/guides/support/page.tsx` and pass the new id
    to `GuideArticle`.
 
 A guide that needs more than headings and paragraphs gets its own renderer next

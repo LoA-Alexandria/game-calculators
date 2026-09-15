@@ -112,7 +112,9 @@ const en = {
     other: "Other",
     allCategories: "All categories",
     pickGuide: "Choose a guide in this category.",
-    categoryCount: "{count} in this category",
+    featureTitle: "Start with the systems you use every day",
+    featureBody:
+      "Open a category in the sidebar — heroes, goddesses, layouts, and the rest. Each guide is written from shared Pop Epoch data so the tools and the write-ups stay in step.",
     edit: "Edit",
     remove: "Remove",
   },
@@ -868,44 +870,6 @@ const en = {
         },
       ],
       note: "",
-    },
-    waterSupply: {
-      title: "Water supply and production bonuses",
-      summary: "How a building’s water total is counted, and what each bonus tier is worth.",
-      intro:
-        "Water decides how much a production building actually produces. The rules below are the ones the Irrigation Planner calculates with; you can change every number in its settings tab if your game differs.",
-      sections: [
-        {
-          heading: "What counts as water",
-          body: [
-            "A production building adds up every water source whose range touches its footprint anywhere. A single overlapping tile is enough — the source does not have to cover the whole building.",
-            "Each source counts once. Two sources whose ranges overlap on the same building still contribute their full value each, so overlapping ranges are not wasted, but the same source is never counted twice.",
-          ],
-        },
-        {
-          heading: "The four bonus tiers",
-          body: [
-            "Up to 120 water the building gets no bonus at all. Up to 310 it produces +10 %, up to 630 it produces +25 %, and above 630 it reaches the top tier at +50 %.",
-            "That is why 640 water is the number worth aiming for: it clears the last threshold with a small margin, so a minor layout change does not drop the building back to +25 %.",
-          ],
-        },
-        {
-          heading: "The slot budget",
-          body: [
-            "Four fields of 12×12 give 576 slots in total. Production buildings and water sources share that budget, so every extra source is a slot not spent on production.",
-            "The planner shows the split live and warns as soon as a layout needs more slots than the fields have.",
-          ],
-        },
-        {
-          heading: "Worker caps",
-          body: [
-            "A worker cap is the highest number of worker slots a building family can reach, whatever its level. A cap of 0 means there is no ceiling and the level table alone decides.",
-            "The families are: Sandstone, Fish Pond, Flax Field, Papyrus, Mortar, and Mudbrick in one group; Gold, Natron, Drying Area, and Hieroglyph Press in the other. A single building can override its family in the planner’s type editor.",
-          ],
-        },
-      ],
-      note:
-        "The thresholds above are the planner’s defaults. If your game shows different numbers, change them in the planner’s settings tab and tell us on Discord so the defaults can be corrected.",
     },
     heroLayouts: {
       title: "Hero layouts",
@@ -2093,7 +2057,7 @@ const en = {
     outputLede:
       "Paste each dictionary block, then the navigation row, and add the page file as noted.",
     outputNote:
-      "Paste each block under guideEntries in its dictionary and the row into guides.items in lib/navigation.ts. Copy the water-supply page for a new slug.",
+      "Paste each block under guideEntries in its dictionary and the row into guides.items in lib/navigation.ts. Copy the support page for a new slug.",
     editTitle: "Edit guide",
     editLede: "Change the text and export the replacement. Committing it is what updates the live page.",
     replaceNote:

@@ -5,14 +5,23 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { guideHasSnippetEditor, guideIdFromHref, isGuideEntryId } from "../../lib/content/guides";
 import { groupByBadge, sectionById, type NavGroup, type NavItem } from "../../lib/navigation";
+import { asset } from "../../lib/site";
 import { useAuth } from "../components/AuthProvider";
 import { useDocumentTitle, useLocale } from "../components/LocaleProvider";
 import { PageHead, SectionBanner } from "../components/Ui";
 import { PenIcon, TrashIcon } from "../components/Icons";
 import { GuideEditor, type GuideEditorTarget } from "./GuideEditor";
 
+/** Atmosphere portraits for the guides index — existing roster art, not a new asset. */
+const GUIDE_FEATURE_ART = [
+  "/heroes/king-arthur.webp",
+  "/goddesses/athena.webp",
+  "/heroes/joan-of-arc-3.webp",
+  "/goddesses/fortuna.webp",
+] as const;
+
 export default function GuidesPage() {
-  const { t, tf } = useLocale();
+  const { t } = useLocale();
   const { allows } = useAuth();
   const pathname = usePathname();
   const section = sectionById("guides");
@@ -57,19 +66,20 @@ export default function GuidesPage() {
           {section.items.length === 0 ? (
             <div className="empty-state">{t.guides.empty}</div>
           ) : (
-            <div className="entry-list">
-              {groups.map((group) => (
-                <Link
-                  className="entry-card"
-                  href={`/guides/#${group.id}`}
-                  key={group.id}
-                  onClick={() => setSelectedId(group.id)}
-                >
-                  <h2>{group.category}</h2>
-                  <p>{tf(t.guides.categoryCount, { count: group.items.length })}</p>
-                </Link>
-              ))}
-            </div>
+            <aside className="guides-feature" aria-label={t.guides.featureTitle}>
+              <div className="guides-feature-copy">
+                <h2>{t.guides.featureTitle}</h2>
+                <p>{t.guides.featureBody}</p>
+              </div>
+              <ul className="guides-feature-art" aria-hidden="true">
+                {GUIDE_FEATURE_ART.map((src) => (
+                  <li key={src}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={asset(src)} alt="" width={96} height={96} />
+                  </li>
+                ))}
+              </ul>
+            </aside>
           )}
         </>
       )}

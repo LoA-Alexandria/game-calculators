@@ -111,7 +111,9 @@ const fr: Dictionary = {
     other: "Autres",
     allCategories: "Toutes les catégories",
     pickGuide: "Choisissez un guide dans cette catégorie.",
-    categoryCount: "{count} dans cette catégorie",
+    featureTitle: "Commencez par les systèmes du quotidien",
+    featureBody:
+      "Ouvrez une catégorie dans la barre latérale — héros, déesses, formations et le reste. Chaque guide s’appuie sur les données Pop Epoch partagées, pour que les outils et les textes restent alignés.",
     edit: "Modifier",
     remove: "Retirer",
   },
@@ -866,44 +868,6 @@ const fr: Dictionary = {
         },
       ],
       note: "",
-    },
-    waterSupply: {
-      title: "Alimentation en eau et bonus de production",
-      summary: "Comment l’eau d’un bâtiment est comptée et ce que vaut chaque palier de bonus.",
-      intro:
-        "L’eau détermine ce qu’un bâtiment de production fabrique réellement. Les règles ci-dessous sont celles qu’applique le planificateur d’irrigation ; chaque valeur est modifiable dans son onglet Réglages si votre jeu diffère.",
-      sections: [
-        {
-          heading: "Ce qui compte comme eau",
-          body: [
-            "Un bâtiment de production additionne chaque source d’eau dont la portée touche son emprise, où que ce soit. Une seule case de chevauchement suffit : la source n’a pas besoin de couvrir tout le bâtiment.",
-            "Chaque source compte une fois. Deux sources qui se chevauchent sur le même bâtiment apportent malgré tout chacune leur valeur complète : les portées superposées ne sont donc pas perdues, mais une même source n’est jamais comptée deux fois.",
-          ],
-        },
-        {
-          heading: "Les quatre paliers de bonus",
-          body: [
-            "Jusqu’à 120 d’eau, aucun bonus. Jusqu’à 310, le bâtiment produit +10 % ; jusqu’à 630, +25 % ; et au-delà de 630, il atteint le palier supérieur à +50 %.",
-            "D’où l’intérêt de viser 640 : on franchit le dernier seuil avec une petite marge, si bien qu’une modification mineure de la disposition ne fait pas retomber le bâtiment à +25 %.",
-          ],
-        },
-        {
-          heading: "Le budget de cases",
-          body: [
-            "Quatre champs de 12×12 donnent 576 cases au total. Bâtiments de production et sources d’eau se partagent ce budget : chaque source supplémentaire est une case en moins pour la production.",
-            "Le planificateur affiche la répartition en direct et avertit dès qu’une disposition demande plus de cases que les champs n’en offrent.",
-          ],
-        },
-        {
-          heading: "Plafonds d’ouvriers",
-          body: [
-            "Un plafond d’ouvriers est le nombre maximal d’emplacements qu’une famille de bâtiments peut atteindre, quel que soit son niveau. Un plafond de 0 signifie qu’il n’y a pas de limite : seule la table des niveaux décide.",
-            "Les familles sont : grès, bassin à poissons, champ de lin, papyrus, mortier et brique de terre d’un côté ; or, natron, aire de séchage et presse à hiéroglyphes de l’autre. Un bâtiment peut déroger à sa famille dans l’éditeur de types du planificateur.",
-          ],
-        },
-      ],
-      note:
-        "Les seuils ci-dessus sont les valeurs par défaut du planificateur. Si votre jeu affiche d’autres chiffres, modifiez-les dans l’onglet Réglages et signalez-le sur Discord afin que les valeurs par défaut soient corrigées.",
     },
     heroLayouts: {
       title: "Formations des héros",
@@ -2092,7 +2056,7 @@ const fr: Dictionary = {
     outputLede:
       "Collez chaque bloc de dictionnaire, puis la ligne de navigation, et créez le fichier de page comme indiqué.",
     outputNote:
-      "Collez chaque bloc sous guideEntries dans son dictionnaire et la ligne dans guides.items dans lib/navigation.ts. Pour un nouveau slug, copiez la page water-supply.",
+      "Collez chaque bloc sous guideEntries dans son dictionnaire et la ligne dans guides.items dans lib/navigation.ts. Pour un nouveau slug, copiez la page support.",
     editTitle: "Modifier le guide",
     editLede: "Modifiez le texte et exportez le remplacement. C’est le commit qui met à jour la page en ligne.",
     replaceNote:

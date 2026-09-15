@@ -111,7 +111,9 @@ const de: Dictionary = {
     other: "Sonstiges",
     allCategories: "Alle Kategorien",
     pickGuide: "Wähle einen Guide in dieser Kategorie.",
-    categoryCount: "{count} in dieser Kategorie",
+    featureTitle: "Fang bei den Systemen an, die du jeden Tag brauchst",
+    featureBody:
+      "Öffne links in der Navigation eine Kategorie — Helden, Göttinnen, Layouts und mehr. Jeder Guide basiert auf gemeinsamen Pop-Epoch-Daten, damit Werkzeuge und Texte zusammenpassen.",
     edit: "Bearbeiten",
     remove: "Entfernen",
   },
@@ -866,44 +868,6 @@ const de: Dictionary = {
         },
       ],
       note: "",
-    },
-    waterSupply: {
-      title: "Wasserversorgung und Produktionsboni",
-      summary: "Wie das Wasser eines Gebäudes gezählt wird und was jede Bonusstufe bringt.",
-      intro:
-        "Wasser entscheidet darüber, wie viel ein Produktionsgebäude tatsächlich herstellt. Die folgenden Regeln sind die, mit denen der Bewässerungsplaner rechnet; im Einstellungs-Tab lässt sich jeder Wert ändern, falls dein Spiel abweicht.",
-      sections: [
-        {
-          heading: "Was als Wasser zählt",
-          body: [
-            "Ein Produktionsgebäude addiert jede Wasserquelle, deren Reichweite seine Grundfläche irgendwo berührt. Ein einziges überlappendes Feld genügt — die Quelle muss das Gebäude nicht vollständig abdecken.",
-            "Jede Quelle zählt einmal. Zwei Quellen, deren Reichweiten sich über demselben Gebäude überschneiden, steuern trotzdem jeweils ihren vollen Wert bei; überlappende Reichweiten sind also kein Verlust, aber dieselbe Quelle wird nie doppelt gezählt.",
-          ],
-        },
-        {
-          heading: "Die vier Bonusstufen",
-          body: [
-            "Bis 120 Wasser gibt es gar keinen Bonus. Bis 310 sind es +10 %, bis 630 sind es +25 %, und über 630 erreicht das Gebäude die oberste Stufe mit +50 %.",
-            "Deshalb lohnt sich die Zahl 640: Sie überschreitet die letzte Schwelle mit etwas Puffer, sodass eine kleine Änderung am Layout das Gebäude nicht gleich wieder auf +25 % zurückwirft.",
-          ],
-        },
-        {
-          heading: "Das Platzbudget",
-          body: [
-            "Vier Felder zu 12×12 ergeben zusammen 576 Plätze. Produktionsgebäude und Wasserquellen teilen sich dieses Budget — jede zusätzliche Quelle ist ein Platz, der nicht in Produktion fließt.",
-            "Der Planer zeigt die Aufteilung live an und warnt, sobald ein Layout mehr Plätze braucht, als die Felder hergeben.",
-          ],
-        },
-        {
-          heading: "Arbeiterobergrenzen",
-          body: [
-            "Eine Arbeiterobergrenze ist die höchste Zahl an Arbeiterplätzen, die eine Gebäudefamilie erreichen kann — unabhängig von ihrer Stufe. Eine 0 bedeutet: keine Obergrenze, dann entscheidet allein die Stufentabelle.",
-            "Die Familien sind: Sandstein, Fischteich, Flachsfeld, Papyrus, Mörtel und Lehmziegel in der einen Gruppe; Gold, Natron, Trockenplatz und Hieroglyphenpresse in der anderen. Einzelne Gebäude können ihre Familie im Typ-Editor des Planers überschreiben.",
-          ],
-        },
-      ],
-      note:
-        "Die genannten Schwellen sind die Standardwerte des Planers. Zeigt dein Spiel andere Zahlen, ändere sie im Einstellungs-Tab und sag uns auf Discord Bescheid, damit wir die Standardwerte korrigieren.",
     },
     heroLayouts: {
       title: "Helden-Layouts",
@@ -2091,7 +2055,7 @@ const de: Dictionary = {
     outputLede:
       "Füge jeden Wörterbuch-Block und die Navigationszeile ein und lege die Seite an, wie unten beschrieben.",
     outputNote:
-      "Jeden Block unter guideEntries in sein Wörterbuch einfügen und die Zeile in guides.items in lib/navigation.ts. Für einen neuen Slug die water-supply-Seite kopieren.",
+      "Jeden Block unter guideEntries in sein Wörterbuch einfügen und die Zeile in guides.items in lib/navigation.ts. Für einen neuen Slug die support-Seite kopieren.",
     editTitle: "Guide bearbeiten",
     editLede: "Ändere den Text und exportiere den Ersatz. Erst der Commit aktualisiert die live Seite.",
     replaceNote:

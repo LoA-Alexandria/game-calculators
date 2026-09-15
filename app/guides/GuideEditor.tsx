@@ -133,7 +133,7 @@ function navigationSnippet(id: string, slug: string, categoryId: string): string
     `      },`,
     ``,
     `// app/guides/${slug}/page.tsx`,
-    `// Copy app/guides/water-supply/page.tsx and pass id ${JSON.stringify(id)} to GuideArticle.`,
+    `// Copy app/guides/support/page.tsx and pass id ${JSON.stringify(id)} to GuideArticle.`,
   ].join("\n");
 }
 
