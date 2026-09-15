@@ -1,20 +1,27 @@
 "use client";
 
 import Link from "next/link";
-import { sectionBannerUrl } from "../../lib/content/banners";
+import { sectionBannerLogoUrl, sectionBannerUrl } from "../../lib/content/banners";
 import type { NavItem, NavSection } from "../../lib/navigation";
 import { SECTION_ICONS } from "./Icons";
 import { useLocale } from "./LocaleProvider";
 
 export function SectionBanner({ id }: { id: NavSection["id"] }) {
   const src = sectionBannerUrl(id);
+  const logoSrc = sectionBannerLogoUrl(id);
   const Icon = SECTION_ICONS[id];
   return (
     <div className={`section-banner section-banner-${id}`} aria-hidden="true">
       {src ? (
-        // Decorative until a section supplies a real image with its own alt.
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={src} alt="" />
+        <>
+          {/* Decorative until a section supplies a real image with its own alt. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img className="section-banner-background" src={src} alt="" />
+          {logoSrc && (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img className="section-banner-logo" src={logoSrc} alt="" />
+          )}
+        </>
       ) : (
         <div className="section-banner-art" aria-hidden="true">
           <Icon className="icon" />
