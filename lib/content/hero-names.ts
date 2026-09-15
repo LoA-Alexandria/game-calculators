@@ -12,7 +12,6 @@ export const ROSTER_SPELLING: Readonly<Record<string, string>> = {
   "Alfred I": "Alfred the Great",
   Bjorn: "Bjorn Ironside",
   "Catherine de Medici": "Catherine de'Medici",
-  Gawain: "Garwain",
   Livia: "Livia Drusilla",
   Napoleon: "Napoleon Bonaparte",
   Newton: "Isaac Newton",

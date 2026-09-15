@@ -119,6 +119,16 @@ function closeGoddessHash() {
   notifyHash();
 }
 
+/**
+ * Marks a goddess nobody can reach right now, or one whose source is only
+ * suspected. The word carries the meaning; the colour only repeats it.
+ */
+function ObtainMark({ goddess, guide }: { goddess: Goddess; guide: Guide }) {
+  if (goddess.missable) return <span className="obtain-mark is-missable">{guide.missableLabel}</span>;
+  if (goddess.unconfirmed) return <span className="obtain-mark">{guide.unconfirmedLabel}</span>;
+  return null;
+}
+
 function GoddessTile({ goddess, guide, onOpen }: { goddess: Goddess; guide: Guide; onOpen: (goddess: Goddess) => void }) {
   const skins = goddess.images.length - 1;
   return (
@@ -128,6 +138,7 @@ function GoddessTile({ goddess, guide, onOpen }: { goddess: Goddess; guide: Guid
         <span className="hero-tile-name">{goddess.name}</span>
         <span className="hero-tile-meta">
           <span className="rarity" data-rarity={goddess.rarity}>{goddess.rarity}</span>
+          <ObtainMark goddess={goddess} guide={guide} />
         </span>
         {skins > 0 ? (
           <span className="hero-tile-skins">
@@ -227,6 +238,19 @@ export function GoddessesGuide({ guide }: { guide: Guide }) {
       )}
       <p className="hero-credit">{guide.portraitCredit}</p>
 
+      <h2>{guide.sourcesHeading}</h2>
+      <div className="rule-grid">
+        {guide.sources.map((source) => (
+          <article className="rule-card source-card" key={source.title}>
+            <div>
+              <h3>{source.title}</h3>
+              <p>{source.body}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+      <p className="hero-credit">{guide.obtainCredit}</p>
+
       <h2>{guide.orderHeading}</h2>
       <div className="phase-grid">
         {guide.phases.map((phase) => (
@@ -325,6 +349,7 @@ function GoddessDialog({
           <h2 id={`${id}-name`}>{goddess.name}</h2>
           <p>
             <span className="rarity" data-rarity={goddess.rarity}>{goddess.rarity}</span>
+            <ObtainMark goddess={goddess} guide={guide} />
             {row?.obtain ? <span className="hero-obtain">{guide.colObtain}: {row.obtain}</span> : null}
           </p>
           {goddess.images.length > 1 ? (

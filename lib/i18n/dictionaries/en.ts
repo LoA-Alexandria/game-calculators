@@ -337,6 +337,35 @@ const en = {
       skinCount: "{count} skins",
       skinCountOne: "1 skin",
       portraitCredit: "Hero portraits from the Pop Epoch Wiki (Fandom). The artwork belongs to the game’s publisher and is shown here for free, non-commercial community guides.",
+      sourcesHeading: "Where they come from",
+      sources: [
+        {
+          title: "R and SR",
+          body: "Genesis Soulcraft, Industrial Parts after the Exploration Age, campaign chest drops, civilisation ages up to the Renaissance, the Hero Destiny rebate, and selection chests.",
+        },
+        {
+          title: "SSR",
+          body: "Genesis Soulcraft, Industrial Parts after the Exploration Age, external expeditions, SSR fragment and hero chests, the UR/SSR random chest, the Hero Destiny rebate, and selection chests.",
+        },
+        {
+          title: "UR",
+          body: "Genesis Soulcraft, the UR fragment chest, the UR hero chest, and the UR universal chest, which only drops after the Exploration Age.",
+        },
+        {
+          title: "UR+",
+          body: "Their own event, and nothing else. Which run of that event first offered them is in the Obtain line on each hero.",
+        },
+        {
+          title: "Crown Vault",
+          body: "500 crown coins per 50 shards for Guan Yu, Lu Bu, Musashi, and Sun-Sin, none of whom are in the roster here yet. Coins come from placing in Mushroom Adventure, Incubator Lab, Supply Reform, and the Great Flood, from the final point rankings, and from the first seven merge levels in Mushroom and Incubator.",
+        },
+        {
+          title: "Monument of Eternity",
+          body: "Charles the Great only. The guild shop gives 210 fragments a month, and guild chests taken to their cap by gifts or rallies give guild level × 2 + 1 fragments.",
+        },
+      ],
+      obtainCredit:
+        "Where each hero comes from is Autumn’s obtain guide, shared on Discord on 9 August 2026, with screenshots from several players. A hero without an Obtain line comes from the pools above rather than from one place.",
       previousHero: "Previous hero",
       nextHero: "Next hero",
       close: "Close",
@@ -582,6 +611,29 @@ const en = {
       colHint: "Without SSR",
       colAffinity: "Affinity",
       colObtain: "Obtain",
+      missableLabel: "Not obtainable now",
+      unconfirmedLabel: "Source unconfirmed",
+      sourcesHeading: "Where they come from",
+      sources: [
+        {
+          title: "SR and R",
+          body: "Every one of them comes from something you do once: unlock an age, reach a building level, or finish a number of battles. Nothing here is on a timer except Freya.",
+        },
+        {
+          title: "Unlock events",
+          body: "Four SSR goddesses arrive with a feature — Museion, Egypt, Goddess Theater, Grand Voyage. Each needs a city level, and Muse needs Sapientium 3 as well.",
+        },
+        {
+          title: "Ring Toss",
+          body: "Medusa, Hela, and Bastet came from the first three. Later ones bring earlier goddesses back: the fourth returned Medusa, Hela, Muse, and Moirai, the fifth Bastet and Ixchel. A missed SSR is usually not gone for good.",
+        },
+        {
+          title: "Bought only",
+          body: "Venus comes with the first top-up and Athena with VIP 4. Neither has a route that costs nothing.",
+        },
+      ],
+      obtainCredit:
+        "Where each goddess comes from is Autumn’s obtain guide, shared on Discord on 9 August 2026, with screenshots from several players. “Not obtainable now” means no source is running, and there may not be one again for a long time. “Source unconfirmed” means nobody has verified it. Isis and Calypso are not on the wiki page, so they have no portrait here yet.",
       phases: [
         {
           tone: "1",
@@ -634,25 +686,27 @@ const en = {
         },
       ],
       roster: [
-        { name: "Demeter", affinity: "Production building upgrade cost −5%. Shieldman ATK/HP +6%.", obtain: "" },
-        { name: "Venus", affinity: "All building productivity +20%. Pikeman ATK/HP +6%.", obtain: "First purchase bundle" },
+        { name: "Demeter", affinity: "Production building upgrade cost −5%. Shieldman ATK/HP +6%.", obtain: "Unlock the Classical Age" },
+        { name: "Venus", affinity: "All building productivity +20%. Pikeman ATK/HP +6%.", obtain: "First top-up, $2.50" },
         { name: "Lady Liberty", affinity: "All-hero battle damage +5%. All-hero ATK/HP +3%.", obtain: "Tap Football" },
-        { name: "Medusa", affinity: "All-hero battle damage +5%. All-hero ATK/HP +3%.", obtain: "1st Ringtoss" },
-        { name: "Hela", affinity: "All-hero damage reduction +5%. All-hero ATK/HP +3%.", obtain: "2nd Ringtoss" },
-        { name: "Bastet", affinity: "", obtain: "3rd Ringtoss" },
-        { name: "Moirai", affinity: "Goddess Theater income +2%. All-hero ATK/HP +3%.", obtain: "4th Ringtoss" },
-        { name: "Muse", affinity: "Muse Coin +2% in Museion. All-hero ATK/HP +3%.", obtain: "4th Ringtoss" },
+        { name: "Medusa", affinity: "All-hero battle damage +5%. All-hero ATK/HP +3%.", obtain: "Ring Toss #1; back in Ring Toss #4" },
+        { name: "Hela", affinity: "All-hero damage reduction +5%. All-hero ATK/HP +3%.", obtain: "Ring Toss #2; back in Ring Toss #4" },
+        { name: "Bastet", affinity: "", obtain: "Ring Toss #3; back in Ring Toss #5" },
+        { name: "Moirai", affinity: "Goddess Theater income +2%. All-hero ATK/HP +3%.", obtain: "Goddess Theater unlock event, at city level 18; back in Ring Toss #4" },
+        { name: "Muse", affinity: "Muse Coin +2% in Museion. All-hero ATK/HP +3%.", obtain: "Museion unlock event, at city level 18 with Sapientium 3; back in Ring Toss #4" },
         { name: "Athena", affinity: "All-hero command +3%. All-hero ATK/HP +3%.", obtain: "VIP 4" },
-        { name: "Ixchel", affinity: "Grand Voyage city dividends +2%. All-hero ATK/HP +3%.", obtain: "Grand Voyage" },
-        { name: "Fortuna", affinity: "Wonder population +5%. Shieldman ATK/HP +6%.", obtain: "" },
-        { name: "Brunhild", affinity: "Campaign damage taken −5%. Cavalry ATK/HP +11%.", obtain: "" },
-        { name: "Vivian", affinity: "Mystic Tower sweep rewards +6%. Shieldman ATK/HP +6%.", obtain: "" },
-        { name: "Artemis", affinity: "Crown Glory Honor Fortune +2%. Archer ATK/HP +6%.", obtain: "" },
-        { name: "Freya", affinity: "Glory Arena damage dealt +5%. Pikeman ATK/HP +6%.", obtain: "" },
-        { name: "Hera", affinity: "Northern Enemy ally damage reduction +5%. Cavalry ATK/HP +6%.", obtain: "" },
-        { name: "Eve", affinity: "Population recruitment +5/sec. Archer ATK/HP +6%.", obtain: "" },
-        { name: "Hestia", affinity: "Campaign gold +5%. Pikeman ATK/HP +11%.", obtain: "" },
-        { name: "Nike", affinity: "4% chance for +1 Norman Oak in Glory Arena. Pikeman ATK/HP +6%.", obtain: "" },
+        { name: "Ixchel", affinity: "Grand Voyage city dividends +2%. All-hero ATK/HP +3%.", obtain: "Grand Voyage unlock event, at city level 20; back in Ring Toss #5" },
+        { name: "Isis", affinity: "", obtain: "Egypt unlock event, at city level 26" },
+        { name: "Calypso", affinity: "", obtain: "Ring Toss, reported as the sixth" },
+        { name: "Fortuna", affinity: "Wonder population +5%. Shieldman ATK/HP +6%.", obtain: "Unlock the Medieval Age" },
+        { name: "Brunhild", affinity: "Campaign damage taken −5%. Cavalry ATK/HP +11%.", obtain: "Finish Campaign 60-6" },
+        { name: "Vivian", affinity: "Mystic Tower sweep rewards +6%. Shieldman ATK/HP +6%.", obtain: "Reach level 40 in the Mystic Tower" },
+        { name: "Artemis", affinity: "Crown Glory Honor Fortune +2%. Archer ATK/HP +6%.", obtain: "Fight 50 battles in Knights’ Ascent" },
+        { name: "Freya", affinity: "Glory Arena damage dealt +5%. Pikeman ATK/HP +6%.", obtain: "9,000 points in Grand Launch Fest, during the seven-day server launch" },
+        { name: "Hera", affinity: "Northern Enemy ally damage reduction +5%. Cavalry ATK/HP +6%.", obtain: "Thought to come with a civilisation age" },
+        { name: "Eve", affinity: "Population recruitment +5/sec. Archer ATK/HP +6%.", obtain: "Complete five patrols in total" },
+        { name: "Hestia", affinity: "Campaign gold +5%. Pikeman ATK/HP +11%.", obtain: "Knowledge (Advisors) level 3" },
+        { name: "Nike", affinity: "4% chance for +1 Norman Oak in Glory Arena. Pikeman ATK/HP +6%.", obtain: "Fight 40 times in Glory Arena" },
       ],
       sections: [
         {

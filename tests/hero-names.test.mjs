@@ -20,6 +20,9 @@ test("every site spelling in the map is used by the layouts or the tier list", (
 
 test("roster names resolve to the spelling the guides use", () => {
   assert.equal(siteName("Isaac Newton"), "Newton");
-  assert.equal(siteName("Garwain"), "Gawain");
   assert.equal(siteName("Cu Chulainn"), "Cu Chulainn");
+  // The roster spelled him Garwain until the obtain guide confirmed Gawain, so
+  // he needs no entry in the map any more.
+  assert.equal(siteName("Gawain"), "Gawain");
+  assert.equal(Object.hasOwn(ROSTER_SPELLING, "Gawain"), false);
 });

@@ -192,6 +192,19 @@ export function HeroRoster({ guide }: { guide: Guide }) {
       )}
       <p className="hero-credit">{guide.portraitCredit}</p>
 
+      <h2>{guide.sourcesHeading}</h2>
+      <div className="rule-grid">
+        {guide.sources.map((source) => (
+          <article className="rule-card source-card" key={source.title}>
+            <div>
+              <h3>{source.title}</h3>
+              <p>{source.body}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+      <p className="hero-credit">{guide.obtainCredit}</p>
+
       <h2>{guide.basicsHeading}</h2>
       <div className="rule-grid">
         {guide.basics.map((step, index) => (

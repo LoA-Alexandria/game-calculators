@@ -338,6 +338,35 @@ const de: Dictionary = {
       skinCount: "{count} Skins",
       skinCountOne: "1 Skin",
       portraitCredit: "Heldenporträts aus dem Pop Epoch Wiki (Fandom). Die Grafiken gehören dem Publisher des Spiels und werden hier für kostenlose, nicht-kommerzielle Community-Guides gezeigt.",
+      sourcesHeading: "Woher sie kommen",
+      sources: [
+        {
+          title: "R und SR",
+          body: "Genesis Soulcraft, Industrieteile nach dem Zeitalter der Erkundung, Kampagnen-Truhen, Zeitalter bis zur Renaissance, die Hero-Destiny-Rückvergütung und Auswahltruhen.",
+        },
+        {
+          title: "SSR",
+          body: "Genesis Soulcraft, Industrieteile nach dem Zeitalter der Erkundung, externe Expeditionen, SSR-Fragment- und Heldentruhen, die UR/SSR-Zufallstruhe, die Hero-Destiny-Rückvergütung und Auswahltruhen.",
+        },
+        {
+          title: "UR",
+          body: "Genesis Soulcraft, die UR-Fragmenttruhe, die UR-Heldentruhe und die UR-Universaltruhe, die erst nach dem Zeitalter der Erkundung fällt.",
+        },
+        {
+          title: "UR+",
+          body: "Nur aus dem eigenen Event. Aus welchem Durchlauf dieses Events sie zuerst kamen, steht in der Bezugszeile des Helden.",
+        },
+        {
+          title: "Crown Vault",
+          body: "500 Kronenmünzen je 50 Splitter für Guan Yu, Lu Bu, Musashi und Sun-Sin, die hier noch nicht im Roster stehen. Münzen kommen aus Platzierungen in Mushroom Adventure, Incubator Lab, Supply Reform und The Great Flood, aus den Endpunkte-Rängen und aus den ersten sieben Merge-Stufen bei Mushroom und Incubator.",
+        },
+        {
+          title: "Monument of Eternity",
+          body: "Nur Charles the Great. Der Gildenshop gibt 210 Fragmente pro Monat, und Gildentruhen, die per Geschenk oder Rally ans Maximum kommen, geben Gildenstufe × 2 + 1 Fragmente.",
+        },
+      ],
+      obtainCredit:
+        "Woher jeder Held kommt, stammt aus Autumns Bezugs-Guide, geteilt am 9. August 2026 auf Discord, mit Screenshots mehrerer Spieler. Ein Held ohne Bezugszeile kommt aus den Pools oben und nicht aus einer einzelnen Quelle.",
       previousHero: "Vorheriger Held",
       nextHero: "Nächster Held",
       close: "Schließen",
@@ -580,6 +609,29 @@ const de: Dictionary = {
       colHint: "Ohne SSR",
       colAffinity: "Affinität",
       colObtain: "Bezug",
+      missableLabel: "Derzeit nicht erhältlich",
+      unconfirmedLabel: "Quelle unbestätigt",
+      sourcesHeading: "Woher sie kommen",
+      sources: [
+        {
+          title: "SR und R",
+          body: "Jede von ihnen kommt aus etwas, das man einmal tut: ein Zeitalter freischalten, eine Gebäudestufe erreichen oder eine Anzahl Kämpfe abschließen. Nur Freya hängt an einem Zeitfenster.",
+        },
+        {
+          title: "Freischalt-Events",
+          body: "Vier SSR-Göttinnen kommen mit einer Funktion — Museion, Ägypten, Göttinnen-Theater, Große Reise. Jede braucht eine Stadtstufe, Muse zusätzlich Sapientium 3.",
+        },
+        {
+          title: "Ring Toss",
+          body: "Medusa, Hela und Bastet kamen aus den ersten drei. Spätere holen frühere Göttinnen zurück: der vierte brachte Medusa, Hela, Muse und Moirai, der fünfte Bastet und Ixchel. Eine verpasste SSR ist also meist nicht endgültig weg.",
+        },
+        {
+          title: "Nur gegen Geld",
+          body: "Venus kommt mit der ersten Aufladung, Athena mit VIP 4. Für beide gibt es keinen kostenlosen Weg.",
+        },
+      ],
+      obtainCredit:
+        "Woher jede Göttin kommt, stammt aus Autumns Bezugs-Guide, geteilt am 9. August 2026 auf Discord, mit Screenshots mehrerer Spieler. „Derzeit nicht erhältlich“ heißt: es läuft keine Quelle, und es kann lange dauern, bis wieder eine läuft. „Quelle unbestätigt“ heißt: niemand hat es überprüft. Isis und Calypso stehen nicht auf der Wiki-Seite und haben hier deshalb noch kein Porträt.",
       phases: [
         {
           tone: "1",
@@ -632,25 +684,27 @@ const de: Dictionary = {
         },
       ],
       roster: [
-        { name: "Demeter", affinity: "Ausbaukosten von Produktionsgebäuden −5 %. Schildhelden ATK/HP +6 %.", obtain: "" },
-        { name: "Venus", affinity: "Produktivität aller Gebäude +20 %. Pikenhelden ATK/HP +6 %.", obtain: "Erstkauf-Bundle" },
+        { name: "Demeter", affinity: "Ausbaukosten von Produktionsgebäuden −5 %. Schildhelden ATK/HP +6 %.", obtain: "Klassisches Zeitalter freischalten" },
+        { name: "Venus", affinity: "Produktivität aller Gebäude +20 %. Pikenhelden ATK/HP +6 %.", obtain: "Erste Aufladung, 2,50 $" },
         { name: "Lady Liberty", affinity: "Kampfschaden aller Helden +5 %. ATK/HP aller Helden +3 %.", obtain: "Tap Football" },
-        { name: "Medusa", affinity: "Kampfschaden aller Helden +5 %. ATK/HP aller Helden +3 %.", obtain: "1. Ringtoss" },
-        { name: "Hela", affinity: "Schadensreduktion aller Helden +5 %. ATK/HP aller Helden +3 %.", obtain: "2. Ringtoss" },
-        { name: "Bastet", affinity: "", obtain: "3. Ringtoss" },
-        { name: "Moirai", affinity: "Einkommen im Göttinnen-Theater +2 %. ATK/HP aller Helden +3 %.", obtain: "4. Ringtoss" },
-        { name: "Muse", affinity: "Muse-Münzen im Museion +2 %. ATK/HP aller Helden +3 %.", obtain: "4. Ringtoss" },
+        { name: "Medusa", affinity: "Kampfschaden aller Helden +5 %. ATK/HP aller Helden +3 %.", obtain: "Ring Toss #1; wieder in Ring Toss #4" },
+        { name: "Hela", affinity: "Schadensreduktion aller Helden +5 %. ATK/HP aller Helden +3 %.", obtain: "Ring Toss #2; wieder in Ring Toss #4" },
+        { name: "Bastet", affinity: "", obtain: "Ring Toss #3; wieder in Ring Toss #5" },
+        { name: "Moirai", affinity: "Einkommen im Göttinnen-Theater +2 %. ATK/HP aller Helden +3 %.", obtain: "Freischalt-Event des Göttinnen-Theaters, ab Stadtstufe 18; wieder in Ring Toss #4" },
+        { name: "Muse", affinity: "Muse-Münzen im Museion +2 %. ATK/HP aller Helden +3 %.", obtain: "Freischalt-Event des Museions, ab Stadtstufe 18 mit Sapientium 3; wieder in Ring Toss #4" },
         { name: "Athena", affinity: "Befehlswert aller Helden +3 %. ATK/HP aller Helden +3 %.", obtain: "VIP 4" },
-        { name: "Ixchel", affinity: "Dividenden der Großen Reise +2 %. ATK/HP aller Helden +3 %.", obtain: "Große Reise" },
-        { name: "Fortuna", affinity: "Bevölkerung im Wunder +5 %. Schildhelden ATK/HP +6 %.", obtain: "" },
-        { name: "Brunhild", affinity: "Kampagnen-Schaden erlitten −5 %. Kavallerie ATK/HP +11 %.", obtain: "" },
-        { name: "Vivian", affinity: "Mystic-Tower-Sweep-Belohnungen +6 %. Schildhelden ATK/HP +6 %.", obtain: "" },
-        { name: "Artemis", affinity: "Honor Fortune in Crown Glory +2 %. Bogenschützen ATK/HP +6 %.", obtain: "" },
-        { name: "Freya", affinity: "Glory-Arena-Schaden +5 %. Pikenhelden ATK/HP +6 %.", obtain: "" },
-        { name: "Hera", affinity: "Schadensreduktion Verbündeter bei Northern Enemy +5 %. Kavallerie ATK/HP +6 %.", obtain: "" },
-        { name: "Eve", affinity: "Bevölkerungsrekrutierung +5/Sek. Bogenschützen ATK/HP +6 %.", obtain: "" },
-        { name: "Hestia", affinity: "Kampagnen-Gold +5 %. Pikenhelden ATK/HP +11 %.", obtain: "" },
-        { name: "Nike", affinity: "4 % Chance auf +1 Norman Oak in der Glory Arena. Pikenhelden ATK/HP +6 %.", obtain: "" },
+        { name: "Ixchel", affinity: "Dividenden der Großen Reise +2 %. ATK/HP aller Helden +3 %.", obtain: "Freischalt-Event der Großen Reise, ab Stadtstufe 20; wieder in Ring Toss #5" },
+        { name: "Isis", affinity: "", obtain: "Freischalt-Event Ägypten, ab Stadtstufe 26" },
+        { name: "Calypso", affinity: "", obtain: "Ring Toss, berichtet als der sechste" },
+        { name: "Fortuna", affinity: "Bevölkerung im Wunder +5 %. Schildhelden ATK/HP +6 %.", obtain: "Mittelalter freischalten" },
+        { name: "Brunhild", affinity: "Kampagnen-Schaden erlitten −5 %. Kavallerie ATK/HP +11 %.", obtain: "Kampagne 60-6 abschließen" },
+        { name: "Vivian", affinity: "Mystic-Tower-Sweep-Belohnungen +6 %. Schildhelden ATK/HP +6 %.", obtain: "Stufe 40 im Mystic Tower erreichen" },
+        { name: "Artemis", affinity: "Honor Fortune in Crown Glory +2 %. Bogenschützen ATK/HP +6 %.", obtain: "50 Kämpfe in Knights’ Ascent" },
+        { name: "Freya", affinity: "Glory-Arena-Schaden +5 %. Pikenhelden ATK/HP +6 %.", obtain: "9.000 Punkte im Grand Launch Fest, im siebentägigen Serverstart" },
+        { name: "Hera", affinity: "Schadensreduktion Verbündeter bei Northern Enemy +5 %. Kavallerie ATK/HP +6 %.", obtain: "Vermutlich an ein Zeitalter gebunden" },
+        { name: "Eve", affinity: "Bevölkerungsrekrutierung +5/Sek. Bogenschützen ATK/HP +6 %.", obtain: "Insgesamt fünf Patrouillen abschließen" },
+        { name: "Hestia", affinity: "Kampagnen-Gold +5 %. Pikenhelden ATK/HP +11 %.", obtain: "Wissen (Berater) Stufe 3" },
+        { name: "Nike", affinity: "4 % Chance auf +1 Norman Oak in der Glory Arena. Pikenhelden ATK/HP +6 %.", obtain: "40 Kämpfe in der Glory Arena" },
       ],
       sections: [
         {
