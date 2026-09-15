@@ -931,13 +931,54 @@ a.lang-option { color: inherit; text-decoration: none; }
   background: var(--inverse);
   border-bottom: 1px solid var(--line);
 }
-.section-banner img {
+.section-banner-background {
   display: block;
   width: 100%;
   height: 100%;
   max-width: none;
   object-fit: cover;
   object-position: center 58%;
+}
+.section-banner-guides .section-banner-background,
+.section-banner-news .section-banner-background,
+.section-banner-events .section-banner-background,
+.section-banner-calculators .section-banner-background,
+.section-banner-simulations .section-banner-background { object-position: center 50%; }
+.section-banner-logo {
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: 50%;
+  width: auto;
+  height: 92%;
+  max-width: 58%;
+  object-fit: contain;
+  filter: drop-shadow(0 5px 5px rgba(62, 35, 13, .3));
+  transform: translate(-50%, -50%);
+}
+:root[data-theme="dark"] :is(.section-banner-guides, .section-banner-news, .section-banner-events, .section-banner-calculators, .section-banner-simulations) .section-banner-background {
+  filter: brightness(.58) saturate(.72) contrast(1.08);
+}
+:root[data-theme="dark"] :is(.section-banner-guides, .section-banner-news, .section-banner-events, .section-banner-calculators, .section-banner-simulations)::after {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(11, 9, 7, .12), transparent 34%, transparent 66%, rgba(11, 9, 7, .28));
+  pointer-events: none;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) :is(.section-banner-guides, .section-banner-news, .section-banner-events, .section-banner-calculators, .section-banner-simulations) .section-banner-background {
+    filter: brightness(.58) saturate(.72) contrast(1.08);
+  }
+  :root:not([data-theme="light"]) :is(.section-banner-guides, .section-banner-news, .section-banner-events, .section-banner-calculators, .section-banner-simulations)::after {
+    content: "";
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(11, 9, 7, .12), transparent 34%, transparent 66%, rgba(11, 9, 7, .28));
+    pointer-events: none;
+  }
 }
 .section-banner-art {
   position: absolute;
@@ -4064,6 +4105,20 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
 }
 
 /* the newest entries fill the overview hero */
+.hero-news {
+  background:
+    linear-gradient(90deg, rgba(12, 10, 7, .98) 0%, rgba(12, 10, 7, .95) 42%, rgba(12, 10, 7, .64) 64%, rgba(12, 10, 7, .26) 84%, transparent 100%),
+    linear-gradient(135deg, rgba(29, 161, 190, .04), rgba(255, 190, 68, .08)),
+    url("/banners/guides-scene.png") center 50% / cover no-repeat;
+  box-shadow: inset 0 0 0 1px rgba(247, 200, 92, .12);
+}
+.hero-news::before {
+  inset: 0;
+  width: auto;
+  height: auto;
+  background: radial-gradient(circle at 84% 48%, rgba(255, 227, 139, .4), transparent 42%);
+  mix-blend-mode: screen;
+}
 .news-slide {
   margin: 0;
   padding: 0;
@@ -4072,7 +4127,17 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
 }
 .news-slide-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .news-slide-head .eyebrow { color: var(--gold-hi); }
-.news-slide-controls { display: flex; align-items: center; gap: 6px; font-size: .72rem; color: var(--on-inverse-soft); }
+.news-slide-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px;
+  border-radius: var(--r-sm);
+  background: rgba(12, 10, 7, .42);
+  color: rgba(255, 255, 255, .92);
+  font-size: .72rem;
+  backdrop-filter: blur(4px);
+}
 .news-slide-controls button {
   display: grid;
   place-items: center;
@@ -4082,7 +4147,7 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
   border: 1px solid rgba(152, 163, 186, .28);
   border-radius: var(--r-xs);
   background: transparent;
-  color: var(--on-inverse);
+  color: #fff;
 }
 .news-slide-controls button:hover { border-color: var(--accent); color: var(--accent-hi); }
 .news-slide time { display: block; margin-top: 14px; font-size: .78rem; color: var(--on-inverse-soft); }

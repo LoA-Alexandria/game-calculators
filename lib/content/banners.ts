@@ -12,13 +12,27 @@ import { asset } from "../site.ts";
  * fan site, not artwork from the game.
  */
 export const SECTION_BANNER_SRC: Partial<Record<NavSection["id"], string>> = {
-  news: "/banners/news.jpg",
-  events: "/banners/events.jpg",
-  calculators: "/banners/calculators.jpg",
-  simulations: "/banners/simulations.jpg",
+  news: "/banners/guides-scene.png",
+  events: "/banners/guides-scene.png",
+  guides: "/banners/guides-scene.png",
+  calculators: "/banners/guides-scene.png",
+  simulations: "/banners/guides-scene.png",
+};
+
+export const SECTION_BANNER_LOGO_SRC: Partial<Record<NavSection["id"], string>> = {
+  news: "/banners/news-logo.png",
+  events: "/banners/events-logo.png",
+  guides: "/banners/guides-logo.png",
+  calculators: "/banners/calculators-logo.png",
+  simulations: "/banners/simulations-logo.png",
 };
 
 export function sectionBannerUrl(id: NavSection["id"]): string | null {
   const path = SECTION_BANNER_SRC[id];
+  return path ? asset(path) : null;
+}
+
+export function sectionBannerLogoUrl(id: NavSection["id"]): string | null {
+  const path = SECTION_BANNER_LOGO_SRC[id];
   return path ? asset(path) : null;
 }
