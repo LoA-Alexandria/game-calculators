@@ -10,6 +10,7 @@ import {
   heroNamed,
   heroPortrait,
   heroesByRarity,
+  localizedHero,
   searchHeroes,
 } from "../lib/content/heroes.ts";
 
@@ -68,4 +69,39 @@ test("hero search matches skill text across rarities", () => {
   const hits = searchHeroes("shield break", "all");
   assert.equal(hits.some((hero) => hero.id === "merlin"), true);
   assert.equal(searchHeroes("zzzz", "all").length, 0);
+});
+
+test("game text falls back to English until a language overrides it", () => {
+  const merlin = HEROES.find((hero) => hero.id === "merlin");
+  assert.deepEqual(localizedHero(merlin, {}), merlin, "no catalog leaves the hero alone");
+
+  const de = {
+    merlin: {
+      obtain: "Wunschbrunnen",
+      skill: { name: "Atem des Eisdrachen", levels: ["Lv. 1 auf Deutsch", "  "] },
+    },
+  };
+  const translated = localizedHero(merlin, de);
+  assert.equal(translated.obtain, "Wunschbrunnen");
+  assert.equal(translated.name, merlin.name, "the name is the same in every language");
+  assert.equal(translated.skill.name, "Atem des Eisdrachen");
+  assert.equal(translated.skill.levels[0], "Lv. 1 auf Deutsch");
+  assert.equal(translated.skill.levels[1], merlin.skill.levels[1], "a blank level keeps the English text");
+  assert.equal(translated.skill.levels.length, merlin.skill.levels.length);
+  assert.deepEqual(translated.buff, merlin.buff, "an untranslated ability is unchanged");
+
+  // A reader searching in their own language finds the hero by the translated text.
+  assert.equal(searchHeroes("Eisdrachen", "all", [de]).map((hero) => hero.id).includes("merlin"), true);
+  assert.equal(searchHeroes("Eisdrachen", "all").length, 0);
+  assert.equal(searchHeroes("Ice Dragon", "all", [de]).map((hero) => hero.id).includes("merlin"), true);
+});
+
+test("every published dictionary keys its hero texts to a hero in the roster", async () => {
+  const { LOCALES, getDictionary } = await import("../lib/i18n/index.ts");
+  const ids = new Set(HEROES.map((hero) => hero.id));
+  for (const { code } of LOCALES) {
+    const texts = getDictionary(code).guideEntries.heroes.heroTexts;
+    for (const id of Object.keys(texts)) assert.ok(ids.has(id), `${code}: ${id} is a hero id`);
+  }
+  assert.deepEqual(getDictionary("en").guideEntries.heroes.heroTexts, {}, "English is the roster JSON itself");
 });

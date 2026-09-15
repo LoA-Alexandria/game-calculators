@@ -330,7 +330,6 @@ const en = {
       colObtain: "Obtain",
       artifactLabel: "Artifact",
       empty: "No hero matches that filter.",
-      heroTexts: {},
       rosterLede: "Tap a hero for skills, skins, and where the tier list, Hero layouts, and Artwork use them.",
       groupCount: "{count} heroes",
       groupCountOne: "1 hero",
@@ -355,6 +354,8 @@ const en = {
       inTierList: "Hero tier list",
       inLayouts: "Hero layouts",
       inArtwork: "Artwork",
+      // English is the wording in lib/data/heroes.json, so this catalog stays empty.
+      heroTexts: {},
       sections: [
         {
           heading: "Roster",
@@ -1515,7 +1516,7 @@ const en = {
   heroEditor: {
     title: "Edit heroes",
     eyebrow: "Heroes",
-    lede: "Add new heroes, fix names, rarities, and skills, and upload a portrait or skins. Your draft, pictures included, is saved in this browser only; export it when you are done.",
+    lede: "Add new heroes, fix names, rarities, and skills, and upload a portrait or skins. Skill and artifact text can be written in every language the site has; names, rarities, and pictures are shared. Your draft, pictures included, is saved in this browser only; export it when you are done.",
     back: "Back to Heroes",
     openEditor: "Edit heroes",
     savedNote: "Draft saved in this browser",
@@ -1540,6 +1541,7 @@ const en = {
     moveHeroUp: "Earlier among {rarity}",
     moveHeroDown: "Later among {rarity}",
     fieldName: "Name",
+    fieldNameNote: "the same in every language",
     fieldId: "Id",
     idFromName: "set from the name",
     fieldRarity: "Rarity",
@@ -1572,7 +1574,8 @@ const en = {
     removeArtifact: "Remove artifact",
     close: "Close",
     exportTitle: "Export the hero roster",
-    exportLede: "Replace lib/data/heroes.json with this file, put new pictures into public/heroes/, delete the removed ones, and commit. The site updates once the change is merged.",
+    exportLede: "Replace lib/data/heroes.json with this file, put new pictures into public/heroes/, delete the removed ones, and in each dictionary replace heroTexts inside guideEntries.heroes. The site updates once the change is merged.",
+    exportTexts: "Text blocks for the dictionaries",
     uploadsHeading: "New pictures for public/heroes/ ({count})",
     removedHeading: "Delete from public/heroes/ ({count})",
     downloadAll: "Download all",

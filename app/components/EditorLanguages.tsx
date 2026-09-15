@@ -62,6 +62,7 @@ export function AllLanguagesToggle() {
  */
 export function TranslatedField({
   label,
+  note,
   hint,
   multiline,
   rows = 2,
@@ -71,6 +72,8 @@ export function TranslatedField({
   fallback,
 }: {
   label: string;
+  /** A short aside shown next to the label. */
+  note?: string;
   hint?: string;
   multiline?: boolean;
   rows?: number;
@@ -86,7 +89,10 @@ export function TranslatedField({
   const several = languages.length > 1;
   return (
     <div className="field layout-text-field translated-field">
-      <label htmlFor={`${id}-${languages[0]}`}>{label}</label>
+      <label htmlFor={`${id}-${languages[0]}`}>
+        {label}
+        {note ? <span className="label-note"> {note}</span> : null}
+      </label>
       {languages.map((code) => {
         const value = get(code);
         const missing = code !== DEFAULT_LOCALE && !value.trim() && Boolean(english.trim());

@@ -18,7 +18,6 @@ import {
   searchHeroes,
   type Hero,
   type HeroRarity,
-  type HeroTexts,
 } from "../../lib/content/heroes";
 import { LOCALE_CODES, fill, getDictionary, type Dictionary } from "../../lib/i18n";
 import { useAuth } from "../components/AuthProvider";
@@ -107,7 +106,7 @@ export function HeroRoster({ guide }: { guide: Guide }) {
   const [query, setQuery] = useState("");
   // Search every language's wording, so a reader finds a skill by the name they know.
   const rows = useMemo(
-    () => searchHeroes(query, rarity, LOCALE_CODES.map((code) => getDictionary(code).guideEntries.heroes.heroTexts as HeroTexts)),
+    () => searchHeroes(query, rarity, LOCALE_CODES.map((code) => getDictionary(code).guideEntries.heroes.heroTexts)),
     [query, rarity],
   );
   const grouped = rarity === "all" && !query.trim();
@@ -302,11 +301,12 @@ function HeroDialog({
   );
 }
 
-function HeroDetail({ hero: published, guide, nameId }: { hero: Hero; guide: Guide; nameId: string }) {
+function HeroDetail({ hero: row, guide, nameId }: { hero: Hero; guide: Guide; nameId: string }) {
   const { t, tf } = useLocale();
-  const hero = localizedHero(published, guide.heroTexts as HeroTexts);
   const artworkTexts = t.guideEntries.artwork.catalogTexts as PaintingTexts;
   const [shown, setShown] = useState(0);
+  // Name, rarity, and pictures are shared; the game text comes from the dictionary.
+  const hero = localizedHero(row, guide.heroTexts);
   const file = hero.images[shown] ?? hero.images[0];
   const found = heroAppearances(hero.name);
   const layouts = layoutTexts(t.guideEntries.heroLayouts);

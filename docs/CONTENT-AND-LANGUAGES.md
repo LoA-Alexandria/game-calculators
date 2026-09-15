@@ -290,6 +290,14 @@ Heroes as well.
 - The list on the left filters by rarity and name, and marks heroes that are
   **new** or **changed** in the draft. Select one to edit their name, rarity,
   obtain text, abilities, and artifact, or to move them within their rarity.
+- **Languages**: name, rarity, and pictures are the same everywhere and stay in
+  `lib/data/heroes.json`. The wording the game shows — obtain note, ability
+  names, level texts, artifact — is translated, so those fields appear once per
+  language: English plus the language the page is in, or every language with
+  **Edit all languages**. English is what goes into the JSON; a blank
+  translation shows the English text as its placeholder, because that is what a
+  reader in that language gets. A hero counts as **changed** when only a
+  translation moved.
 - **Abilities**: every hero has exactly three, a **Skill**, a **Buff**, and a
   **Production** bonus. Each holds a name and one text per level (Lv. 1, Lv. 2,
   …). **Add Lv. N** copies the level before it, so only the numbers need
@@ -316,16 +324,19 @@ which is enough for dozens of pictures. The editor tells you when it is full.
 
 1. the complete `lib/data/heroes.json`, one line per hero and per ability,
 2. each new picture as a download, with the path it belongs at
-   (`public/heroes/<id>.webp`, or `<id>-2.webp` and so on for skins), and
+   (`public/heroes/<id>.webp`, or `<id>-2.webp` and so on for skins),
 3. the pictures to delete from `public/heroes/` because the draft no longer
    uses them, and
-4. for each dictionary whose translations changed, a `heroTexts` block to
-   replace inside `guideEntries.heroes`. Translated levels line up with the
-   English ones, and removing an English level removes it in every language.
+4. a `heroTexts` block for each dictionary whose translations changed, to
+   replace inside `guideEntries.heroes`. It is keyed by hero id and holds only
+   the translations that are filled in; English stays empty because the JSON
+   is English. Translated levels line up with the English ones, and removing
+   an English level removes it in every language.
 
-An untouched draft exports the published file byte for byte
-(`tests/hero-editor.test.mjs`). `tests/heroes.test.mjs` checks the roster
-against the folder: every listed file exists, and no file is left over.
+An untouched draft exports the published file and every dictionary block byte
+for byte (`tests/hero-editor.test.mjs`). `tests/heroes.test.mjs` checks the
+roster against the folder — every listed file exists and no file is left over —
+and that each `heroTexts` key is a hero in the roster.
 
 The portraits in `public/heroes/` were saved from the Pop Epoch Wiki rarity
 pages on 14 September 2026. The artwork belongs to the game's publisher. The

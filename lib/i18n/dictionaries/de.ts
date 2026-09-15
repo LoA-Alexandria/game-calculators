@@ -331,7 +331,6 @@ const de: Dictionary = {
       colObtain: "Bezug",
       artifactLabel: "Artefakt",
       empty: "Kein Held passt zu diesem Filter.",
-      heroTexts: {},
       rosterLede: "Tippe auf einen Helden für Skills, Skins und wo Tier-Liste, Helden-Layouts und Artwork ihn einsetzen.",
       groupCount: "{count} Helden",
       groupCountOne: "1 Held",
@@ -356,6 +355,8 @@ const de: Dictionary = {
       inTierList: "Helden-Tier-Liste",
       inLayouts: "Helden-Layouts",
       inArtwork: "Artwork",
+      // Übersetzte Spieltexte je Held, Schlüssel ist die Helden-Id aus lib/data/heroes.json.
+      heroTexts: {},
       sections: [
         {
           heading: "Roster",
@@ -1513,7 +1514,7 @@ const de: Dictionary = {
   heroEditor: {
     title: "Helden bearbeiten",
     eyebrow: "Helden",
-    lede: "Neue Helden anlegen, Namen, Seltenheit und Skills korrigieren und Porträt oder Skins hochladen. Der Entwurf bleibt samt Bildern in diesem Browser; exportiere ihn, wenn du fertig bist.",
+    lede: "Neue Helden anlegen, Namen, Seltenheit und Skills korrigieren und Porträt oder Skins hochladen. Skill- und Artefakttexte kannst du in jeder Sprache der Seite schreiben; Name, Seltenheit und Bilder gelten für alle. Der Entwurf bleibt samt Bildern in diesem Browser; exportiere ihn, wenn du fertig bist.",
     back: "Zurück zu Helden",
     openEditor: "Helden bearbeiten",
     savedNote: "Entwurf in diesem Browser gespeichert",
@@ -1538,6 +1539,7 @@ const de: Dictionary = {
     moveHeroUp: "Weiter nach vorn unter {rarity}",
     moveHeroDown: "Weiter nach hinten unter {rarity}",
     fieldName: "Name",
+    fieldNameNote: "in jeder Sprache gleich",
     fieldId: "Id",
     idFromName: "wird aus dem Namen gebildet",
     fieldRarity: "Seltenheit",
@@ -1570,7 +1572,8 @@ const de: Dictionary = {
     removeArtifact: "Artefakt entfernen",
     close: "Schließen",
     exportTitle: "Helden-Roster exportieren",
-    exportLede: "Ersetze lib/data/heroes.json durch diese Datei, lege neue Bilder in public/heroes/ ab, lösche die entfernten und committe. Die Seite aktualisiert sich nach dem Merge.",
+    exportLede: "Ersetze lib/data/heroes.json durch diese Datei, lege neue Bilder in public/heroes/ ab, lösche die entfernten und ersetze in jedem Wörterbuch heroTexts innerhalb von guideEntries.heroes. Die Seite aktualisiert sich nach dem Merge.",
+    exportTexts: "Textblöcke für die Wörterbücher",
     uploadsHeading: "Neue Bilder für public/heroes/ ({count})",
     removedHeading: "Aus public/heroes/ löschen ({count})",
     downloadAll: "Alle herunterladen",

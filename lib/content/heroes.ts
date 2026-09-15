@@ -8,7 +8,9 @@
  * for that file. A missing `skill`, `buff`, or `production` means the wiki card
  * had no text for it yet. Do not invent it. The "Lv. N" skill cards became the
  * levels of one ability. The fragment table is copied as printed on every
- * rarity page (identical).
+ * rarity page (identical). The wording in this file is the English wiki text;
+ * `guideEntries.heroes.heroTexts` can override the obtain note, ability names,
+ * level texts, and artifact per language.
  *
  * Portraits are in `public/heroes/`, saved from the same wiki pages on 14
  * September 2026 (Cleopatra had none). The first file in `images` is the
@@ -59,38 +61,40 @@ export function abilityCount(hero: Hero): number {
 
 export type HeroData = { heroes: Hero[] };
 
-/** One ability in another language; a missing or blank part keeps the English text. */
+/** Optional translated ability text; a missing or blank entry keeps the English one. */
 export type HeroAbilityText = { name?: string; levels?: string[] };
 
 /**
- * A hero's wording in one language. Names, rarities, and pictures are shared;
- * the wording is English in `lib/data/heroes.json`, and
- * `guideEntries.heroes.heroTexts` in each dictionary holds translations keyed
- * by hero id. A language added later starts with `{}` and shows English.
+ * Translated hero text, keyed by hero id. Names, rarities, and portraits are
+ * the same in every language and stay in `lib/data/heroes.json`; the wording
+ * the game shows lives here so it can be translated.
  */
-export type HeroText = {
-  obtain?: string;
-  skill?: HeroAbilityText;
-  buff?: HeroAbilityText;
-  production?: HeroAbilityText;
-  artifact?: { name?: string; text?: string };
-};
-export type HeroTexts = Record<string, HeroText>;
+export type HeroTexts = Record<
+  string,
+  {
+    obtain?: string;
+    skill?: HeroAbilityText;
+    buff?: HeroAbilityText;
+    production?: HeroAbilityText;
+    artifact?: { name?: string; text?: string };
+  }
+>;
 
 function localizedAbility(ability: HeroAbility, text: HeroAbilityText | undefined): HeroAbility {
   if (!text) return ability;
   return {
     name: text.name?.trim() || ability.name,
-    // A level nobody has translated yet keeps the English text instead of going blank.
+    // A level nobody has translated yet keeps the English text rather than going blank.
     levels: ability.levels.map((level, index) => text.levels?.[index]?.trim() || level),
   };
 }
 
-/** The hero with every filled-in translation from `texts` applied. */
+/** The hero with every filled-in translation applied. */
 export function localizedHero(hero: Hero, texts: HeroTexts): Hero {
   const local = texts[hero.id];
   if (!local) return hero;
-  const next: Hero = { ...hero, obtain: local.obtain?.trim() || hero.obtain };
+  const next: Hero = { ...hero };
+  if (local.obtain?.trim()) next.obtain = local.obtain.trim();
   for (const kind of HERO_ABILITY_KINDS) {
     const ability = hero[kind];
     if (ability) next[kind] = localizedAbility(ability, local[kind]);
@@ -134,7 +138,13 @@ export function heroesByRarity(rarity: HeroRarity | "all"): Hero[] {
   return HEROES.filter((hero) => hero.rarity === rarity);
 }
 
-/** `catalogs` lets a search also match the wording readers see in other languages. */
+/** Every searchable string of one translation of a hero. */
+function textOf(hero: Hero): string[] {
+  const abilities = HERO_ABILITY_KINDS.flatMap((kind) => [hero[kind]?.name ?? "", ...(hero[kind]?.levels ?? [])]);
+  return [hero.obtain, ...abilities, hero.artifact?.name ?? "", hero.artifact?.text ?? ""];
+}
+
+/** `catalogs` lets a search also match the wording a reader sees in their language. */
 export function searchHeroes(query: string, rarity: HeroRarity | "all", catalogs: readonly HeroTexts[] = []): Hero[] {
   const needle = query.trim().toLowerCase();
   const pool = heroesByRarity(rarity);
@@ -144,12 +154,6 @@ export function searchHeroes(query: string, rarity: HeroRarity | "all", catalogs
     const hay = [hero.name, ...textOf(hero), ...translated].join(" ").toLowerCase();
     return hay.includes(needle);
   });
-}
-
-/** Every searchable string of one wording of a hero. */
-function textOf(hero: Hero): string[] {
-  const abilities = HERO_ABILITY_KINDS.flatMap((kind) => [hero[kind]?.name ?? "", ...(hero[kind]?.levels ?? [])]);
-  return [hero.obtain, ...abilities, hero.artifact?.name ?? "", hero.artifact?.text ?? ""];
 }
 
 /** URL of a file in `public/heroes/`, under the GitHub Pages base path. */

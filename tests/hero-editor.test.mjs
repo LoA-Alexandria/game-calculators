@@ -8,11 +8,15 @@ import {
   addImage,
   clearAbility,
   countHeroChanges,
+  countHeroDraftChanges,
   exportHeroes,
+  exportedHeroTexts,
   findHeroProblems,
   fromHeroData,
   heroByUid,
   heroIdFrom,
+  heroTextBlocks,
+  heroTextOf,
   makePortrait,
   moveHero,
   parseHeroDraft,
@@ -23,7 +27,10 @@ import {
   setAbilityLevel,
   setAbilityName,
   setArtifact,
+  setArtifactText,
+  setObtain,
   updateHero,
+  PUBLISHED_HEROES,
 } from "../lib/content/hero-editor.ts";
 import { heroAppearances, heroReferences } from "../lib/content/hero-links.ts";
 import { HERO_DATA } from "../lib/content/heroes.ts";
@@ -33,14 +40,22 @@ const PNG = "data:image/png;base64,iVBORw0KGgo=";
 
 const uidOf = (state, name) => state.heroes.find((hero) => hero.name === name).uid;
 
-test("an untouched draft exports lib/data/heroes.json byte for byte", () => {
+const read = (path) => readFileSync(new URL(path, import.meta.url), "utf8");
+
+test("an untouched draft exports the published JSON and dictionary blocks byte for byte", () => {
   const state = fromHeroData(HERO_DATA);
   const result = exportHeroes(state, HERO_DATA);
-  assert.equal(serializeHeroData(result.data), readFileSync(new URL("../lib/data/heroes.json", import.meta.url), "utf8"));
+  assert.equal(serializeHeroData(result.data), read("../lib/data/heroes.json"));
   assert.deepEqual(result.uploads, []);
   assert.deepEqual(result.removedFiles, []);
   assert.equal(countHeroChanges(HERO_DATA, result.data), 0);
   assert.deepEqual(findHeroProblems(state, HERO_DATA), []);
+
+  const blocks = heroTextBlocks(PUBLISHED_HEROES);
+  for (const language of ["en", "de", "fr"]) {
+    assert.ok(read(`../lib/i18n/dictionaries/${language}.ts`).includes(blocks[language]), `${language} block matches the dictionary`);
+  }
+  assert.equal(countHeroDraftChanges(PUBLISHED_HEROES, PUBLISHED_HEROES), 0);
 });
 
 test("a new hero joins the end of its rarity and gets an id from its name", () => {
@@ -142,6 +157,74 @@ test("abilities keep their three slots and their levels", () => {
   assert.equal(row.skill.levels.length, 2);
 });
 
+test("English stays in the JSON; other languages export heroTexts", () => {
+  const published = fromHeroData(HERO_DATA);
+  let state = published;
+  const merlin = uidOf(state, "Merlin");
+  const englishSkill = HERO_DATA.heroes.find((hero) => hero.id === "merlin").skill;
+
+  // English is the roster row itself, read back through the same field.
+  state = setObtain(state, merlin, "en", "Wish Pool");
+  assert.equal(heroByUid(state, merlin).obtain, "Wish Pool");
+  assert.equal(heroTextOf(state, "en", merlin).obtain, "Wish Pool");
+  assert.equal(heroTextOf(state, "en", merlin).abilities.skill.name, englishSkill.name);
+
+  state = setObtain(state, merlin, "de", "Wunschbrunnen");
+  state = setAbilityName(state, merlin, "skill", "Atem des Eisdrachen", "de");
+  state = setAbilityLevel(state, merlin, "skill", 0, "  Stufe 1 auf Deutsch ", "de");
+  state = setArtifact(state, merlin, { name: "Staff", text: "Longer curses." });
+  state = setArtifactText(state, merlin, "de", { name: "Stab" });
+
+  const row = exportHeroes(state, HERO_DATA).data.heroes.find((hero) => hero.id === "merlin");
+  assert.equal(row.obtain, "Wish Pool", "a translation never reaches lib/data/heroes.json");
+  assert.deepEqual(row.skill, englishSkill);
+  assert.deepEqual(row.artifact, { name: "Staff", text: "Longer curses." });
+
+  const texts = exportedHeroTexts(state);
+  assert.deepEqual(texts.en, {}, "English lives in the JSON");
+  assert.deepEqual(texts.de.merlin, {
+    obtain: "Wunschbrunnen",
+    // Only Lv. 1 was translated, so the later levels are left to fall back.
+    skill: { name: "Atem des Eisdrachen", levels: ["Stufe 1 auf Deutsch"] },
+    artifact: { name: "Stab" },
+  });
+  assert.equal(texts.fr.merlin, undefined, "an untouched language exports nothing");
+  assert.equal(countHeroDraftChanges(published, state), 2, "one roster change and one language");
+
+  const blocks = heroTextBlocks(state);
+  assert.equal(blocks.en, "      heroTexts: {},");
+  assert.ok(blocks.de.includes('        merlin: {'), "keyed by hero id");
+  assert.ok(blocks.de.includes('          obtain: "Wunschbrunnen",'));
+  assert.ok(blocks.de.includes('            levels: [\n              "Stufe 1 auf Deutsch",\n            ],'));
+  assert.ok(blocks.de.includes('          artifact: { name: "Stab" },'));
+
+  // Dropping the artifact drops what every language said about it.
+  state = setArtifact(state, merlin, null);
+  assert.deepEqual(exportedHeroTexts(state).de.merlin.artifact, undefined);
+  state = removeHero(state, merlin);
+  assert.equal(state.texts.de[merlin], undefined);
+});
+
+test("a level a language translated keeps its place when English loses one", () => {
+  let state = fromHeroData(HERO_DATA);
+  const heracles = uidOf(state, "Heracles");
+  assert.equal(heroByUid(state, heracles).abilities.skill.levels.length, 3);
+  for (const [index, text] of ["eins", "zwei", "drei"].entries()) {
+    state = setAbilityLevel(state, heracles, "skill", index, text, "de");
+  }
+
+  state = removeAbilityLevel(state, heracles, "skill", 1);
+  assert.equal(heroByUid(state, heracles).abilities.skill.levels.length, 2);
+  assert.deepEqual(heroTextOf(state, "de", heracles).abilities.skill.levels, ["eins", "drei"]);
+
+  // A translation cannot invent a level the roster does not have.
+  assert.equal(setAbilityLevel(state, heracles, "skill", 5, "fünf", "de"), state);
+
+  state = clearAbility(state, heracles, "skill");
+  assert.deepEqual(heroTextOf(state, "de", heracles).abilities.skill, { name: "", levels: [] });
+  assert.equal(exportedHeroTexts(state).de.heracles, undefined);
+});
+
 test("problems flag blanks, duplicates, and heroes other guides still name", () => {
   let state = fromHeroData(HERO_DATA);
   const blank = addHero(state, "SSR");
@@ -182,7 +265,10 @@ test("drafts are validated before they are used", () => {
   assert.deepEqual(parseHeroDraft(JSON.stringify(state)), state);
   assert.equal(parseHeroDraft(null), null);
   assert.equal(parseHeroDraft("{"), null);
-  assert.equal(parseHeroDraft(JSON.stringify({ ...state, version: 1 })), null, "drafts from before abilities are dropped");
+  assert.equal(parseHeroDraft(JSON.stringify({ ...state, version: 2 })), null, "drafts from before translations are dropped");
+  const badText = structuredClone(state);
+  badText.texts.de = { h1: { obtain: 7, abilities: {}, artifact: { name: "", text: "" } } };
+  assert.equal(parseHeroDraft(JSON.stringify(badText)), null);
 
   const bad = structuredClone(state);
   bad.heroes[0].rarity = "SSS";
@@ -196,53 +282,4 @@ test("drafts are validated before they are used", () => {
   const levels = structuredClone(state);
   levels.heroes[1].abilities.skill.levels = [];
   assert.equal(parseHeroDraft(JSON.stringify(levels)), null);
-});
-
-test("hero wording is translated per language and stays aligned with the English levels", async () => {
-  const {
-    countHeroTextChanges,
-    exportHeroTexts,
-    heroTextBlocks,
-    publishedHeroTexts,
-    setAbilityLevelText,
-    setAbilityNameText,
-    setArtifactText,
-    setObtainText,
-  } = await import("../lib/content/hero-editor.ts");
-  const { localizedHero, searchHeroes } = await import("../lib/content/heroes.ts");
-  const texts = publishedHeroTexts();
-  let state = fromHeroData(HERO_DATA, texts);
-  const exportTexts = (draft) => exportHeroTexts(draft, exportHeroes(draft, HERO_DATA).data);
-  assert.deepEqual(heroTextBlocks(exportTexts(state), texts), {}, "an untouched draft has nothing to paste");
-
-  const heracles = uidOf(state, "Heracles");
-  state = setAbilityNameText(state, heracles, "de", "skill", "Atlas-Stärke");
-  state = setAbilityLevelText(state, heracles, "de", "skill", 2, "Stufe drei");
-  state = setObtainText(state, heracles, "fr", "  Événement ");
-  state = setArtifactText(state, heracles, "de", "name", "Keule");
-  state = setObtainText(state, heracles, "en", "ignored");
-
-  let exported = exportTexts(state);
-  assert.deepEqual(exported.de.heracles, { skill: { name: "Atlas-Stärke", levels: ["", "", "Stufe drei"] } }, "no artifact on Heracles, so that text is dropped");
-  assert.deepEqual(exported.fr.heracles, { obtain: "Événement" });
-  assert.equal(heroByUid(state, heracles).obtain, "", "English obtain is edited with updateHero");
-  assert.equal(countHeroTextChanges(exported, texts), 1);
-  assert.match(heroTextBlocks(exported, texts).de, /heroTexts: \{\n        heracles: \{\n          skill: \{\n            name: "Atlas-Stärke",/);
-
-  const german = localizedHero(HERO_DATA.heroes.find((hero) => hero.id === "heracles"), exported.de);
-  assert.equal(german.skill.name, "Atlas-Stärke");
-  assert.equal(german.skill.levels[2], "Stufe drei");
-  assert.match(german.skill.levels[0], /^40% chance/, "untranslated levels keep English");
-  assert.ok(searchHeroes("atlas-stärke", "all", [exported.de]).some((hero) => hero.id === "heracles"));
-
-  // Removing an English level removes the same level in every language.
-  state = removeAbilityLevel(state, heracles, "skill", 0);
-  exported = exportTexts(state);
-  assert.deepEqual(exported.de.heracles.skill.levels, ["", "Stufe drei"]);
-  state = clearAbility(state, heracles, "skill");
-  assert.equal(exportTexts(state).de.heracles, undefined);
-
-  const older = JSON.parse(JSON.stringify(state));
-  delete older.heroes[0].texts;
-  assert.deepEqual(parseHeroDraft(JSON.stringify(older)).heroes[0].texts, {}, "drafts from before translations still load");
 });
