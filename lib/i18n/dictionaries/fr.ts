@@ -327,9 +327,10 @@ const fr: Dictionary = {
       filterLabel: "Rareté",
       filterAll: "Tous",
       searchLabel: "Rechercher un héros",
-      searchPlaceholder: "Nom, compétence ou événement…",
+      searchPlaceholder: "Nom, compétence, événement ou skin…",
       countLabel: "{count} affichés",
       colObtain: "Obtention",
+      colName: "Héros",
       artifactLabel: "Artéfact",
       empty: "Aucun héros ne correspond à ce filtre.",
       rosterLede: "Touchez un héros pour ses compétences, ses skins, et son usage dans le classement, les formations et Artwork.",
@@ -367,6 +368,40 @@ const fr: Dictionary = {
       ],
       obtainCredit:
         "L’origine de chaque héros vient du guide d’obtention d’Autumn, partagé sur Discord le 9 août 2026, avec des captures d’écran de plusieurs joueurs. Un héros sans ligne Obtention vient des pools ci-dessus plutôt que d’une source unique.",
+      missableLabel: "Indisponible actuellement",
+      unconfirmedLabel: "Source non confirmée",
+      skinsHeading: "Skins",
+      skinsLede:
+        "Skins nommés, pas les images supplémentaires d’une carte du roster. Ces fichiers n’ont pas de nom et ne peuvent pas être reliés à cette liste. Dawn of Rome n’en a pas encore. Les emplacements Epoch Pass des jours 112, 126 et 140 sont encore vides.",
+      colSkin: "Skin",
+      skinSources: [
+        {
+          title: "D’où ils viennent",
+          body: "Les skins SSR sont en général dans l’Epoch Pass ou le Ring Toss. Les skins UR sont en général dans le Genie et y reviennent plus tard. Les skins UR+ sont toujours dans l’événement de ce héros. Chaque héros UR et UR+ arrive avec un skin de sortie.",
+        },
+        {
+          title: "Ce qu’ils font",
+          body: "Les skins SSR demandent 50 éclats pour débloquer ou améliorer : +20 % ATQ et PV du niveau 0 au 1, puis +10 % par niveau. Les skins UR demandent 100 éclats : +40 % de 0 à 1, puis +20 % par niveau.",
+        },
+        {
+          title: "Epoch Pass",
+          body: "Une rotation de 14 jours dans l’ordre ci-dessous. Les nouveaux serveurs partagent cet ordre ; les plus anciens en sautent quelques-uns. Certains skins du début se retrouvent plus tard dans la boutique Epoch Pass pour 100 pièces.",
+        },
+      ],
+      skinGroups: {
+        epochPass: { title: "Epoch Pass", lede: "Un skin tous les 14 jours, dans cet ordre." },
+        ringToss: { title: "Ring Toss", lede: "Les deux premiers étaient exclusifs à cette édition." },
+        roadToTheCup: { title: "Road to the Cup", lede: "Trois skins de ce pool à chaque édition de l’événement." },
+        genie: { title: "Genie", lede: "Les skins UR précédents restent disponibles dans les éditions suivantes du Genie." },
+        holyGrail: { title: "Holy Grail", lede: "Le skin arrive à l’édition suivant le héros." },
+        nile: { title: "Crown of the Nile", lede: "" },
+        odin: { title: "Odin", lede: "Le skin arrive à l’édition suivant le héros." },
+        atlantis: { title: "Atlantis", lede: "Le skin arrive à l’édition suivant le héros." },
+        unknown: { title: "Inconnu", lede: "Personne n’a confirmé l’événement. La meilleure estimation d’Autumn est dans la ligne Obtention." },
+      },
+      skinsCredit:
+        "Noms et sources des skins : guide des skins d’Autumn, partagé sur Discord le 7 août 2026. Les skins des héros absents de ce roster — Billy the Kid, Alexander the Great, Augustus, Charlie Chaplin — attendent que ces héros soient ajoutés. « Indisponible actuellement » signifie qu’aucune source n’est active et qu’il peut s’écouler longtemps avant qu’il y en ait une.",
+      skinTexts: {},
       previousHero: "Héros précédent",
       nextHero: "Héros suivant",
       close: "Fermer",
@@ -587,7 +622,7 @@ const fr: Dictionary = {
       filterLabel: "Rareté",
       filterAll: "Toutes",
       searchLabel: "Rechercher des déesses",
-      searchPlaceholder: "Nom, affinité ou événement…",
+      searchPlaceholder: "Nom, affinité, événement ou skin…",
       countLabel: "{count} affichées",
       empty: "Aucune déesse ne correspond à ce filtre.",
       groupCount: "{count} déesses",
@@ -632,6 +667,33 @@ const fr: Dictionary = {
       ],
       obtainCredit:
         "L’origine de chaque déesse vient du guide d’obtention d’Autumn, partagé sur Discord le 9 août 2026, avec des captures d’écran de plusieurs joueurs. « Indisponible actuellement » signifie qu’aucune source n’est active et qu’il peut s’écouler longtemps avant qu’il y en ait une. « Source non confirmée » signifie que personne ne l’a vérifiée. Isis et Calypso ne figurent pas sur la page du wiki et n’ont donc pas encore de portrait ici.",
+      skinsHeading: "Skins",
+      skinsLede:
+        "Skins nommés, pas les images supplémentaires d’une carte du roster. Ces fichiers n’ont pas de nom et ne peuvent pas être reliés à cette liste. Les déesses SSR n’ont pas encore de skins. Un skin de déesse relève son plafond de niveau.",
+      colSkin: "Skin",
+      skinSources: [
+        {
+          title: "R et SR",
+          body: "Les skins des déesses R et SR viennent du Consecutive Top-Up, qui revient tous les 30 jours de serveur dans l’ordre ci-dessous. Venus est l’exception : elle s’achète, donc ses skins viennent d’événements bannières et se manquent facilement.",
+        },
+        {
+          title: "Consecutive Top-Up",
+          body: "Il faut sept jours de rechargement. Le total compte : deux packs le même jour compensent un jour manqué. L’exigence de 14 jours est obsolète.",
+        },
+        {
+          title: "SSR",
+          body: "Les déesses SSR n’ont actuellement pas de skins. Les déesses payantes comme Venus les obtiennent en général dans des événements bannières.",
+        },
+      ],
+      skinGroups: {
+        consecutiveTopUp: { title: "Consecutive Top-Up", lede: "Toujours cet ordre, tous les 30 jours de serveur." },
+        firstTopUp: { title: "Premier rechargement", lede: "" },
+        roadToTheCup: { title: "Road to the Cup", lede: "La bannière originale de la Coupe du monde 2026, pas l’événement récurrent." },
+        unknown: { title: "Inconnu", lede: "Personne n’a confirmé l’événement. La meilleure estimation d’Autumn est Consecutive Top-Up." },
+      },
+      skinsCredit:
+        "Noms et sources des skins : guide des skins d’Autumn, partagé sur Discord le 7 août 2026. « Indisponible actuellement » signifie qu’aucune source n’est active et qu’il peut s’écouler longtemps avant qu’il y en ait une.",
+      skinTexts: {},
       phases: [
         {
           tone: "1",

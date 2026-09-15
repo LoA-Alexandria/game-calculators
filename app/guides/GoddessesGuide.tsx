@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useCallback, useId, useMemo, useRef, useState, useSyncExternalStore, type KeyboardEvent } from "react";
-import { guideLayout } from "../../lib/content/guides";
+import { guideHref, guideLayout } from "../../lib/content/guides";
 import {
   GODDESS_RARITIES,
   GODDESSES,
@@ -14,12 +14,15 @@ import {
   type Goddess,
   type GoddessRarity,
 } from "../../lib/content/goddesses";
+import { GODDESS_SKIN_GROUPS, GODDESS_SKINS, skinSearchText, skinsFor } from "../../lib/content/skins";
 import { fill, type Dictionary } from "../../lib/i18n";
 import { sectionById } from "../../lib/navigation";
 import { ChevronIcon, CloseIcon } from "../components/Icons";
 import { HeroPortrait } from "../components/HeroPortrait";
 import { ToolCard } from "../components/Ui";
 import { counted } from "./HeroRoster";
+import { ObtainMark } from "./ObtainMark";
+import { SkinCatalog, SkinLines } from "./SkinCatalog";
 
 type Guide = Dictionary["guideEntries"]["goddesses"];
 type Phase = NonNullable<Guide["phases"]>[number];
@@ -119,14 +122,15 @@ function closeGoddessHash() {
   notifyHash();
 }
 
-/**
- * Marks a goddess nobody can reach right now, or one whose source is only
- * suspected. The word carries the meaning; the colour only repeats it.
- */
-function ObtainMark({ goddess, guide }: { goddess: Goddess; guide: Guide }) {
-  if (goddess.missable) return <span className="obtain-mark is-missable">{guide.missableLabel}</span>;
-  if (goddess.unconfirmed) return <span className="obtain-mark">{guide.unconfirmedLabel}</span>;
-  return null;
+function ObtainBadge({ goddess, guide }: { goddess: Goddess; guide: Guide }) {
+  return (
+    <ObtainMark
+      missable={goddess.missable}
+      unconfirmed={goddess.unconfirmed}
+      missableLabel={guide.missableLabel}
+      unconfirmedLabel={guide.unconfirmedLabel}
+    />
+  );
 }
 
 function GoddessTile({ goddess, guide, onOpen }: { goddess: Goddess; guide: Guide; onOpen: (goddess: Goddess) => void }) {
@@ -138,7 +142,7 @@ function GoddessTile({ goddess, guide, onOpen }: { goddess: Goddess; guide: Guid
         <span className="hero-tile-name">{goddess.name}</span>
         <span className="hero-tile-meta">
           <span className="rarity" data-rarity={goddess.rarity}>{goddess.rarity}</span>
-          <ObtainMark goddess={goddess} guide={guide} />
+          <ObtainBadge goddess={goddess} guide={guide} />
         </span>
         {skins > 0 ? (
           <span className="hero-tile-skins">
@@ -159,7 +163,7 @@ export function GoddessesGuide({ guide }: { guide: Guide }) {
     () =>
       searchGoddesses(query, rarity, (goddess) => {
         const row = rosterRow(guide, goddess.name);
-        return `${row?.affinity ?? ""} ${row?.obtain ?? ""}`;
+        return `${row?.affinity ?? ""} ${row?.obtain ?? ""} ${skinSearchText(goddess.name, GODDESS_SKINS, [guide.skinTexts])}`;
       }),
     [query, rarity, guide],
   );
@@ -250,6 +254,40 @@ export function GoddessesGuide({ guide }: { guide: Guide }) {
         ))}
       </div>
       <p className="hero-credit">{guide.obtainCredit}</p>
+
+      <h2>{guide.skinsHeading}</h2>
+      <p className="guide-lede">{guide.skinsLede}</p>
+      <div className="rule-grid">
+        {guide.skinSources.map((source) => (
+          <article className="rule-card source-card" key={source.title}>
+            <div>
+              <h3>{source.title}</h3>
+              <p>{source.body}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+      <SkinCatalog
+        skins={GODDESS_SKINS}
+        groups={guide.skinGroups}
+        groupOrder={GODDESS_SKIN_GROUPS}
+        texts={guide.skinTexts}
+        colName={guide.colName}
+        colSkin={guide.colSkin}
+        colObtain={guide.colObtain}
+        missableLabel={guide.missableLabel}
+        unconfirmedLabel={guide.unconfirmedLabel}
+        ownerOf={(name) => {
+          const goddess = goddessNamed(name);
+          return {
+            name,
+            href: goddess ? `${guideHref("goddesses")}#${encodeURIComponent(goddess.id)}` : null,
+            rarity: goddess?.rarity,
+            src: goddess?.images[0] ? goddessImageUrl(goddess.images[0]) : null,
+          };
+        }}
+      />
+      <p className="hero-credit">{guide.skinsCredit}</p>
 
       <h2>{guide.orderHeading}</h2>
       <div className="phase-grid">
@@ -349,8 +387,7 @@ function GoddessDialog({
           <h2 id={`${id}-name`}>{goddess.name}</h2>
           <p>
             <span className="rarity" data-rarity={goddess.rarity}>{goddess.rarity}</span>
-            <ObtainMark goddess={goddess} guide={guide} />
-            {row?.obtain ? <span className="hero-obtain">{guide.colObtain}: {row.obtain}</span> : null}
+            <ObtainBadge goddess={goddess} guide={guide} />
           </p>
           {goddess.images.length > 1 ? (
             <div className="hero-skins" role="group" aria-label={guide.imagesLabel}>
@@ -377,6 +414,17 @@ function GoddessDialog({
         <p>{row?.affinity.trim() ? row.affinity : "—"}</p>
         <h3>{guide.colObtain}</h3>
         <p>{row?.obtain.trim() ? row.obtain : "—"}</p>
+        {skinsFor(GODDESS_SKINS, goddess.name).length > 0 ? (
+          <>
+            <h3>{guide.skinsHeading}</h3>
+            <SkinLines
+              skins={skinsFor(GODDESS_SKINS, goddess.name)}
+              texts={guide.skinTexts}
+              missableLabel={guide.missableLabel}
+              unconfirmedLabel={guide.unconfirmedLabel}
+            />
+          </>
+        ) : null}
       </div>
     </dialog>
   );

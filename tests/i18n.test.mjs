@@ -24,7 +24,7 @@ import { dictionaryFromEnglish, identifierFor, registerLocale, validateLocale } 
 const read = (path) => readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
 
 /** Catalog maps hold translations by id and are sparse on purpose. */
-const SPARSE = new Set(["heroTexts", "playTexts", "catalogTexts", "anecdoteTexts"]);
+const SPARSE = new Set(["heroTexts", "playTexts", "catalogTexts", "anecdoteTexts", "skinTexts"]);
 
 function shapeDifferences(reference, other, path = "") {
   if (Array.isArray(reference)) {

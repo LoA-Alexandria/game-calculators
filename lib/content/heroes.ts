@@ -145,13 +145,18 @@ function textOf(hero: Hero): string[] {
 }
 
 /** `catalogs` lets a search also match the wording a reader sees in their language. */
-export function searchHeroes(query: string, rarity: HeroRarity | "all", catalogs: readonly HeroTexts[] = []): Hero[] {
+export function searchHeroes(
+  query: string,
+  rarity: HeroRarity | "all",
+  catalogs: readonly HeroTexts[] = [],
+  extra: (hero: Hero) => string = () => "",
+): Hero[] {
   const needle = query.trim().toLowerCase();
   const pool = heroesByRarity(rarity);
   if (!needle) return pool;
   return pool.filter((hero) => {
     const translated = catalogs.flatMap((texts) => (texts[hero.id] ? textOf(localizedHero(hero, texts)) : []));
-    const hay = [hero.name, ...textOf(hero), ...translated].join(" ").toLowerCase();
+    const hay = [hero.name, ...textOf(hero), ...translated, extra(hero)].join(" ").toLowerCase();
     return hay.includes(needle);
   });
 }

@@ -327,9 +327,10 @@ const de: Dictionary = {
       filterLabel: "Seltenheit",
       filterAll: "Alle",
       searchLabel: "Helden suchen",
-      searchPlaceholder: "Name, Skill oder Event…",
+      searchPlaceholder: "Name, Skill, Event oder Skin…",
       countLabel: "{count} angezeigt",
       colObtain: "Bezug",
+      colName: "Held",
       artifactLabel: "Artefakt",
       empty: "Kein Held passt zu diesem Filter.",
       rosterLede: "Tippe auf einen Helden für Skills, Skins und wo Tier-Liste, Helden-Layouts und Artwork ihn einsetzen.",
@@ -367,6 +368,40 @@ const de: Dictionary = {
       ],
       obtainCredit:
         "Woher jeder Held kommt, stammt aus Autumns Bezugs-Guide, geteilt am 9. August 2026 auf Discord, mit Screenshots mehrerer Spieler. Ein Held ohne Bezugszeile kommt aus den Pools oben und nicht aus einer einzelnen Quelle.",
+      missableLabel: "Derzeit nicht erhältlich",
+      unconfirmedLabel: "Quelle unbestätigt",
+      skinsHeading: "Skins",
+      skinsLede:
+        "Benannte Skins, nicht die Extra-Bilder auf einer Roster-Karte. Jene Dateien haben keine Namen und lassen sich dieser Liste nicht zuordnen. Dawn of Rome hat noch keine. Die Epoch-Pass-Plätze für Tag 112, 126 und 140 sind noch leer.",
+      colSkin: "Skin",
+      skinSources: [
+        {
+          title: "Woher sie kommen",
+          body: "SSR-Skins liegen meist im Epoch Pass oder im Ring Toss. UR-Skins liegen meist im Genie und kommen dort später wieder. UR+-Skins gehören immer zum Event des Helden. Jeder UR- und UR+-Held kommt mit einem Release-Skin.",
+        },
+        {
+          title: "Was sie bringen",
+          body: "SSR-Skins brauchen 50 Splitter zum Freischalten oder Aufwerten: +20 % ATK und HP von Stufe 0 auf 1, danach +10 % je Stufe. UR-Skins brauchen 100 Splitter: +40 % von 0 auf 1, danach +20 % je Stufe.",
+        },
+        {
+          title: "Epoch Pass",
+          body: "Ein 14-Tage-Rhythmus in der Reihenfolge unten. Neue Server teilen sich diese Reihenfolge; ältere lassen ein paar aus. Einige der frühen Skins stehen später im Epoch-Pass-Shop für 100 Münzen.",
+        },
+      ],
+      skinGroups: {
+        epochPass: { title: "Epoch Pass", lede: "Alle 14 Tage ein Skin, in dieser Reihenfolge." },
+        ringToss: { title: "Ring Toss", lede: "Die ersten zwei gab es nur in diesem Durchlauf." },
+        roadToTheCup: { title: "Road to the Cup", lede: "Drei Skins aus diesem Pool, jedes Mal wenn das Event läuft." },
+        genie: { title: "Genie", lede: "Frühere UR-Skins bleiben in späteren Genie-Durchläufen verfügbar." },
+        holyGrail: { title: "Holy Grail", lede: "Der Skin kommt im Durchlauf nach dem Helden." },
+        nile: { title: "Crown of the Nile", lede: "" },
+        odin: { title: "Odin", lede: "Der Skin kommt im Durchlauf nach dem Helden." },
+        atlantis: { title: "Atlantis", lede: "Der Skin kommt im Durchlauf nach dem Helden." },
+        unknown: { title: "Unbekannt", lede: "Niemand hat das Event bestätigt. Autumns beste Schätzung steht in der Bezugszeile." },
+      },
+      skinsCredit:
+        "Skin-Namen und Quellen stammen aus Autumns Skin-Guide, geteilt am 7. August 2026 auf Discord. Skins von Helden, die hier noch nicht im Roster stehen — Billy the Kid, Alexander the Great, Augustus, Charlie Chaplin — fehlen, bis diese Helden dazukommen. „Derzeit nicht erhältlich“ heißt: es läuft keine Quelle, und es kann lange dauern, bis wieder eine läuft.",
+      skinTexts: {},
       previousHero: "Vorheriger Held",
       nextHero: "Nächster Held",
       close: "Schließen",
@@ -587,7 +622,7 @@ const de: Dictionary = {
       filterLabel: "Seltenheit",
       filterAll: "Alle",
       searchLabel: "Göttinnen suchen",
-      searchPlaceholder: "Name, Affinität oder Event…",
+      searchPlaceholder: "Name, Affinität, Event oder Skin…",
       countLabel: "{count} angezeigt",
       empty: "Keine Göttin passt zu diesem Filter.",
       groupCount: "{count} Göttinnen",
@@ -632,6 +667,33 @@ const de: Dictionary = {
       ],
       obtainCredit:
         "Woher jede Göttin kommt, stammt aus Autumns Bezugs-Guide, geteilt am 9. August 2026 auf Discord, mit Screenshots mehrerer Spieler. „Derzeit nicht erhältlich“ heißt: es läuft keine Quelle, und es kann lange dauern, bis wieder eine läuft. „Quelle unbestätigt“ heißt: niemand hat es überprüft. Isis und Calypso stehen nicht auf der Wiki-Seite und haben hier deshalb noch kein Porträt.",
+      skinsHeading: "Skins",
+      skinsLede:
+        "Benannte Skins, nicht die Extra-Bilder auf einer Roster-Karte. Jene Dateien haben keine Namen und lassen sich dieser Liste nicht zuordnen. SSR-Göttinnen haben noch keine Skins. Ein Göttinnen-Skin hebt ihre Stufengrenze.",
+      colSkin: "Skin",
+      skinSources: [
+        {
+          title: "R und SR",
+          body: "Skins für R- und SR-Göttinnen kommen aus Consecutive Top-Up, das alle 30 Servertage in der Reihenfolge unten wiederholt. Venus ist die Ausnahme: sie wird gekauft, deshalb kommen ihre Skins aus Banner-Events und sind leicht zu verpassen.",
+        },
+        {
+          title: "Consecutive Top-Up",
+          body: "Braucht sieben Tage Aufladung. Die Summe zählt, zwei Packs an einem Tag gleichen einen verpassten Tag aus. Die 14-Tage-Anforderung gilt nicht mehr.",
+        },
+        {
+          title: "SSR",
+          body: "SSR-Göttinnen haben derzeit keine Skins. Gekaufte Göttinnen wie Venus bekommen ihre meist aus Banner-Events.",
+        },
+      ],
+      skinGroups: {
+        consecutiveTopUp: { title: "Consecutive Top-Up", lede: "Immer diese Reihenfolge, alle 30 Servertage." },
+        firstTopUp: { title: "Erste Aufladung", lede: "" },
+        roadToTheCup: { title: "Road to the Cup", lede: "Das ursprüngliche World-Cup-2026-Banner, nicht das wiederkehrende Event." },
+        unknown: { title: "Unbekannt", lede: "Niemand hat das Event bestätigt. Autumns beste Schätzung ist Consecutive Top-Up." },
+      },
+      skinsCredit:
+        "Skin-Namen und Quellen stammen aus Autumns Skin-Guide, geteilt am 7. August 2026 auf Discord. „Derzeit nicht erhältlich“ heißt: es läuft keine Quelle, und es kann lange dauern, bis wieder eine läuft.",
+      skinTexts: {},
       phases: [
         {
           tone: "1",

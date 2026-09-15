@@ -385,6 +385,20 @@ colour alone, and a flagged goddess still has an `obtain` line saying what is
 known. Heroes need neither flag yet, since every hero source in that guide is
 still reachable.
 
+Named skins are a separate list, not the extra pictures on a roster card.
+Those files have no names, so they cannot be matched. Rows live in
+`lib/data/hero-skins.json` and `lib/data/goddess-skins.json` (English name and
+obtain, plus the same missable and unconfirmed flags). `skinTexts` in each
+dictionary can translate them. Avatar skins, mount skins, and frames from the
+same Discord post are not heroes or goddesses, so they are not on these pages.
+`tests/skins.test.mjs` checks every owner against the matching roster, that
+ids are unique, and that a group in the JSON has a heading in the dictionary.
+
+The skin guides are Autumn's list from 7 August 2026. Both pages credit her in
+`skinsCredit`. Keep that line if you edit the text. Skins for heroes not in
+the roster yet (Billy the Kid, Alexander the Great, Augustus, Charlie Chaplin)
+are left out until those heroes are added.
+
 Goddess Theater covers in `public/goddess-theater/` are the first image on each
 card on https://pop-epochmobile.fandom.com/wiki/Goddess_Theater as of
 14 September 2026 (`scripts/fetch-theater-covers.py`). That first picture is

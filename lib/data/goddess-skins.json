@@ -1,0 +1,14 @@
+{
+  "skins": [
+    { "id": "eve-gourmet-thief", "owner": "Eve", "name": "Gourmet Thief", "group": "consecutiveTopUp", "obtain": "Consecutive Top-Up, ends day 29.", "missable": true },
+    { "id": "hestia-teppanyaki-chef", "owner": "Hestia", "name": "Teppanyaki Chef", "group": "consecutiveTopUp", "obtain": "Consecutive Top-Up, ends day 59.", "missable": true },
+    { "id": "demeter-breeder-zero", "owner": "Demeter", "name": "Breeder Zero", "group": "consecutiveTopUp", "obtain": "Consecutive Top-Up, ends day 89. Some servers get Artemis instead at this slot, and Demeter at day 119.", "missable": true },
+    { "id": "artemis-good-dog-bad-timing", "owner": "Artemis", "name": "Good Dog, Bad Timing", "group": "consecutiveTopUp", "obtain": "Consecutive Top-Up, ends day 119. Some servers get Demeter instead at this slot, and Artemis at day 89.", "missable": true },
+    { "id": "fortuna-queen-of-wall-street", "owner": "Fortuna", "name": "Queen of Wall Street", "group": "consecutiveTopUp", "obtain": "Consecutive Top-Up, ends day 149.", "missable": true },
+    { "id": "vivian-pool-party", "owner": "Vivian", "name": "Pool Party", "group": "consecutiveTopUp", "obtain": "Consecutive Top-Up, ends day 179.", "missable": true },
+    { "id": "brunhild-chosen-valkyrie", "owner": "Brunhild", "name": "Chosen Valkyrie", "group": "firstTopUp", "obtain": "First top-up, $10." },
+    { "id": "venus-goal", "owner": "Venus", "name": "GOAL", "group": "roadToTheCup", "obtain": "The original Road to the Cup banner (World Cup 2026).", "missable": true },
+    { "id": "freya-wake-up-coffee", "owner": "Freya", "name": "\"Wake Up\" Coffee", "group": "unknown", "obtain": "Unknown. Most likely Consecutive Top-Up.", "unconfirmed": true },
+    { "id": "nike-easter-egg-time", "owner": "Nike", "name": "Easter Egg Time!", "group": "unknown", "obtain": "Unknown. Most likely Consecutive Top-Up.", "unconfirmed": true }
+  ]
+}
