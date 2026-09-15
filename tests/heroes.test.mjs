@@ -32,7 +32,7 @@ test("every portrait in the roster is a file in public/heroes and none is orphan
 test("portraits resolve the tier list and layouts spelling of a hero", () => {
   assert.equal(heroPortrait("Newton"), heroImageUrl("isaac-newton.webp"));
   assert.equal(heroPortrait("Isaac Newton"), heroImageUrl("isaac-newton.webp"));
-  assert.equal(heroNamed("Gawain")?.name, "Garwain");
+  assert.equal(heroNamed("Gawain")?.name, "Gawain");
   assert.equal(heroNamed("  merlin ")?.id, "merlin");
   assert.equal(heroPortrait("Cleopatra"), null);
   assert.equal(heroPortrait("Augustus"), null);
@@ -58,6 +58,28 @@ test("roster covers every wiki rarity and names the screenshot fills", () => {
   assert.equal(cleopatra?.rarity, "UR+");
   const hermes = HEROES.find((hero) => hero.id === "hermes");
   assert.equal(hermes?.obtain, "Tap Football");
+});
+
+test("event heroes name the run of their event, and only heroes with one source name it", () => {
+  const source = (id) => HEROES.find((hero) => hero.id === id)?.obtain;
+  // Autumn's obtain guide, 9 August 2026. Arthur and Lancelot were filed under
+  // Atlantis here until it confirmed the Grail, which is also what the Hero
+  // linking guide says.
+  assert.equal(source("king-arthur"), "Holy Grail #1");
+  assert.equal(source("garwain"), "Holy Grail #1");
+  assert.equal(source("lancelot"), "Holy Grail #3");
+  assert.equal(source("morgana"), "Holy Grail #5");
+  assert.equal(source("odysseus"), "Deep into Atlantis #1");
+  assert.equal(source("circe"), "Deep into Atlantis #5");
+  assert.equal(source("lagertha"), "The eve of Ragnarok #3");
+  assert.equal(source("cleopatra"), "Crown of the Nile");
+  assert.equal(source("achilles"), "Campaign red chest");
+  assert.equal(source("charles-the-great"), "Monument of Eternity and the guild shop");
+
+  // Every UR+ comes from one event, so none of them may be left blank.
+  for (const hero of heroesByRarity("UR+")) assert.ok(hero.obtain.trim(), `${hero.name} names a source`);
+  // The rest come from the shared pools, which the guide lists once.
+  assert.equal(source("confucius"), "");
 });
 
 test("star fragment row 1 starts at 25 green shards", () => {

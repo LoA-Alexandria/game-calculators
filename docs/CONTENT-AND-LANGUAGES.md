@@ -199,9 +199,11 @@ the block from `buildTexts` to `groupLabels` to replace inside
 (`tests/hero-layout-editor.test.mjs`).
 
 The Heroes roster spells some heroes differently from the layouts and the tier
-list ("Isaac Newton" for Newton, "Garwain" for Gawain). `lib/content/hero-names.ts`
-maps them, so the pool does not offer a hero that is already placed under the
-other spelling. Remove an entry there once the roster and the guides agree.
+list ("Isaac Newton" for Newton, "Livia Drusilla" for Livia).
+`lib/content/hero-names.ts` maps them, so the pool does not offer a hero that is
+already placed under the other spelling. Remove an entry there once the roster
+and the guides agree — Gawain lost his entry that way, after the obtain guide
+confirmed the spelling the other guides already used.
 
 ## Editing the hero tier list
 
@@ -354,11 +356,48 @@ Rarity follows the wiki card colours on
 https://pop-epochmobile.fandom.com/wiki/Goddess as of 14 September 2026: gold
 SSR, purple SR, blue R. Portraits in `public/goddesses/` come from that page
 (`scripts/fetch-goddess-portraits.py`). Bastet's wiki card is a placeholder, so
-she has no picture. Calypso appears only in the upgrade-order phases; she has
-no wiki card and no roster row. The upgrade-order numbers are the published
+she has no picture. Isis and Calypso are named by the obtain guide but not by
+the wiki, so they have a roster row and no picture. The upgrade-order numbers are the published
 community sequence on this site (phase 2 Fortuna and Bastet stop at 60), not
 the wiki's level list. To take the pictures down, delete the folder and empty
 the `images` lists.
+
+### Where a hero or goddess comes from
+
+Both rosters say where each entry comes from, taken from Autumn's obtain guide
+shared on Discord on 9 August 2026, with screenshots from several players. Both
+guides credit her in `obtainCredit` under the source cards; keep that line if
+you edit the text.
+
+A hero's source is the `obtain` field in `lib/data/heroes.json`, which
+`heroTexts` can translate. For a goddess it is `obtain` in
+`guideEntries.goddesses.roster`, translated per dictionary, and
+`tests/goddesses.test.mjs` requires a line for every goddess in every language.
+For an event hero the number is which run of that event first offered him, so
+`Holy Grail #3` means the third Grail. A hero with an empty `obtain` comes from
+the shared pools instead, which `sources` lists once per rarity.
+
+Two flags live in `lib/data/goddesses.json`, next to rarity rather than in the
+dictionaries, because they do not change per language: `missable` for a source
+that has been and gone, and `unconfirmed` for one nobody has verified. The
+guide renders them as words (`missableLabel`, `unconfirmedLabel`), not as a
+colour alone, and a flagged goddess still has an `obtain` line saying what is
+known. Heroes need neither flag yet, since every hero source in that guide is
+still reachable.
+
+Named skins are a separate list, not the extra pictures on a roster card.
+Those files have no names, so they cannot be matched. Rows live in
+`lib/data/hero-skins.json` and `lib/data/goddess-skins.json` (English name and
+obtain, plus the same missable and unconfirmed flags). `skinTexts` in each
+dictionary can translate them. Avatar skins, mount skins, and frames from the
+same Discord post are not heroes or goddesses, so they are not on these pages.
+`tests/skins.test.mjs` checks every owner against the matching roster, that
+ids are unique, and that a group in the JSON has a heading in the dictionary.
+
+The skin guides are Autumn's list from 7 August 2026. Both pages credit her in
+`skinsCredit`. Keep that line if you edit the text. Skins for heroes not in
+the roster yet (Billy the Kid, Alexander the Great, Augustus, Charlie Chaplin)
+are left out until those heroes are added.
 
 Goddess Theater covers in `public/goddess-theater/` are the first image on each
 card on https://pop-epochmobile.fandom.com/wiki/Goddess_Theater as of

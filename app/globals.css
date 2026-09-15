@@ -2082,6 +2082,40 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
 .hero-detail-title h2 { margin: 0 0 6px; font-size: 1.45rem; }
 .hero-detail-title p { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0; }
 .hero-obtain { color: var(--ink-soft); font-size: .82rem; }
+/* Reads as words rather than a colour, so it survives a greyscale screenshot. */
+.obtain-mark {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink-soft);
+  font-size: .72rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.obtain-mark.is-missable {
+  border-color: color-mix(in srgb, var(--bad) 40%, var(--line));
+  background: var(--bad-soft);
+  color: var(--bad);
+}
+/* No step number on these, so the text starts at the edge like the card above. */
+.source-card { gap: 0; }
+.skin-catalog { display: grid; gap: 22px; margin: 0 0 18px; }
+.skin-group h3 { margin: 0 0 6px; font-size: 1.05rem; }
+.skin-group .guide-lede { margin-bottom: 10px; }
+.skin-name-cell { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.skin-lines { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+.skin-lines li {
+  display: grid;
+  gap: 2px;
+  padding: 8px 0;
+  border-top: 1px solid var(--line);
+  font-size: .9rem;
+}
+.skin-lines li:first-child { border-top: 0; padding-top: 0; }
+.skin-lines li > span:last-child { color: var(--ink-soft); }
 .hero-skins { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
 .hero-skin {
   width: 44px;

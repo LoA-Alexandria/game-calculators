@@ -327,9 +327,10 @@ const fr: Dictionary = {
       filterLabel: "Rareté",
       filterAll: "Tous",
       searchLabel: "Rechercher un héros",
-      searchPlaceholder: "Nom, compétence ou événement…",
+      searchPlaceholder: "Nom, compétence, événement ou skin…",
       countLabel: "{count} affichés",
       colObtain: "Obtention",
+      colName: "Héros",
       artifactLabel: "Artéfact",
       empty: "Aucun héros ne correspond à ce filtre.",
       rosterLede: "Touchez un héros pour ses compétences, ses skins, et son usage dans le classement, les formations et Artwork.",
@@ -338,6 +339,69 @@ const fr: Dictionary = {
       skinCount: "{count} skins",
       skinCountOne: "1 skin",
       portraitCredit: "Portraits des héros issus du Pop Epoch Wiki (Fandom). Les illustrations appartiennent à l’éditeur du jeu et sont montrées ici pour des guides communautaires gratuits et non commerciaux.",
+      sourcesHeading: "D’où ils viennent",
+      sources: [
+        {
+          title: "R et SR",
+          body: "Genesis Soulcraft, pièces industrielles après l’Âge de l’exploration, coffres de campagne, âges de civilisation jusqu’à la Renaissance, remise Hero Destiny et coffres de sélection.",
+        },
+        {
+          title: "SSR",
+          body: "Genesis Soulcraft, pièces industrielles après l’Âge de l’exploration, expéditions externes, coffres de fragments et de héros SSR, coffre aléatoire UR/SSR, remise Hero Destiny et coffres de sélection.",
+        },
+        {
+          title: "UR",
+          body: "Genesis Soulcraft, le coffre de fragments UR, le coffre de héros UR et le coffre universel UR, qui ne tombe qu’après l’Âge de l’exploration.",
+        },
+        {
+          title: "UR+",
+          body: "Uniquement leur propre événement. La ligne Obtention de chaque héros indique lors de quelle édition de cet événement il est apparu.",
+        },
+        {
+          title: "Crown Vault",
+          body: "500 pièces de couronne pour 50 éclats, pour Guan Yu, Lu Bu, Musashi et Sun-Sin, qui ne figurent pas encore dans le roster ici. Les pièces viennent des classements de Mushroom Adventure, Incubator Lab, Supply Reform et The Great Flood, des classements de points finaux, et des sept premiers niveaux de fusion de Mushroom et Incubator.",
+        },
+        {
+          title: "Monument of Eternity",
+          body: "Charles the Great uniquement. La boutique de guilde donne 210 fragments par mois, et les coffres de guilde poussés au maximum par cadeaux ou ralliements donnent niveau de guilde × 2 + 1 fragments.",
+        },
+      ],
+      obtainCredit:
+        "L’origine de chaque héros vient du guide d’obtention d’Autumn, partagé sur Discord le 9 août 2026, avec des captures d’écran de plusieurs joueurs. Un héros sans ligne Obtention vient des pools ci-dessus plutôt que d’une source unique.",
+      missableLabel: "Indisponible actuellement",
+      unconfirmedLabel: "Source non confirmée",
+      skinsHeading: "Skins",
+      skinsLede:
+        "Skins nommés, pas les images supplémentaires d’une carte du roster. Ces fichiers n’ont pas de nom et ne peuvent pas être reliés à cette liste. Dawn of Rome n’en a pas encore. Les emplacements Epoch Pass des jours 112, 126 et 140 sont encore vides.",
+      colSkin: "Skin",
+      skinSources: [
+        {
+          title: "D’où ils viennent",
+          body: "Les skins SSR sont en général dans l’Epoch Pass ou le Ring Toss. Les skins UR sont en général dans le Genie et y reviennent plus tard. Les skins UR+ sont toujours dans l’événement de ce héros. Chaque héros UR et UR+ arrive avec un skin de sortie.",
+        },
+        {
+          title: "Ce qu’ils font",
+          body: "Les skins SSR demandent 50 éclats pour débloquer ou améliorer : +20 % ATQ et PV du niveau 0 au 1, puis +10 % par niveau. Les skins UR demandent 100 éclats : +40 % de 0 à 1, puis +20 % par niveau.",
+        },
+        {
+          title: "Epoch Pass",
+          body: "Une rotation de 14 jours dans l’ordre ci-dessous. Les nouveaux serveurs partagent cet ordre ; les plus anciens en sautent quelques-uns. Certains skins du début se retrouvent plus tard dans la boutique Epoch Pass pour 100 pièces.",
+        },
+      ],
+      skinGroups: {
+        epochPass: { title: "Epoch Pass", lede: "Un skin tous les 14 jours, dans cet ordre." },
+        ringToss: { title: "Ring Toss", lede: "Les deux premiers étaient exclusifs à cette édition." },
+        roadToTheCup: { title: "Road to the Cup", lede: "Trois skins de ce pool à chaque édition de l’événement." },
+        genie: { title: "Genie", lede: "Les skins UR précédents restent disponibles dans les éditions suivantes du Genie." },
+        holyGrail: { title: "Holy Grail", lede: "Le skin arrive à l’édition suivant le héros." },
+        nile: { title: "Crown of the Nile", lede: "" },
+        odin: { title: "Odin", lede: "Le skin arrive à l’édition suivant le héros." },
+        atlantis: { title: "Atlantis", lede: "Le skin arrive à l’édition suivant le héros." },
+        unknown: { title: "Inconnu", lede: "Personne n’a confirmé l’événement. La meilleure estimation d’Autumn est dans la ligne Obtention." },
+      },
+      skinsCredit:
+        "Noms et sources des skins : guide des skins d’Autumn, partagé sur Discord le 7 août 2026. Les skins des héros absents de ce roster — Billy the Kid, Alexander the Great, Augustus, Charlie Chaplin — attendent que ces héros soient ajoutés. « Indisponible actuellement » signifie qu’aucune source n’est active et qu’il peut s’écouler longtemps avant qu’il y en ait une.",
+      skinTexts: {},
       previousHero: "Héros précédent",
       nextHero: "Héros suivant",
       close: "Fermer",
@@ -558,7 +622,7 @@ const fr: Dictionary = {
       filterLabel: "Rareté",
       filterAll: "Toutes",
       searchLabel: "Rechercher des déesses",
-      searchPlaceholder: "Nom, affinité ou événement…",
+      searchPlaceholder: "Nom, affinité, événement ou skin…",
       countLabel: "{count} affichées",
       empty: "Aucune déesse ne correspond à ce filtre.",
       groupCount: "{count} déesses",
@@ -580,6 +644,56 @@ const fr: Dictionary = {
       colHint: "Sans SSR",
       colAffinity: "Affinité",
       colObtain: "Obtention",
+      missableLabel: "Indisponible actuellement",
+      unconfirmedLabel: "Source non confirmée",
+      sourcesHeading: "D’où elles viennent",
+      sources: [
+        {
+          title: "SR et R",
+          body: "Chacune vient d’une action ponctuelle : débloquer un âge, atteindre un niveau de bâtiment ou livrer un nombre de combats. Seule Freya dépend d’une fenêtre de temps.",
+        },
+        {
+          title: "Événements de déblocage",
+          body: "Quatre déesses SSR arrivent avec une fonctionnalité — Museion, Égypte, Théâtre des Déesses, Grand Voyage. Chacune exige un niveau de ville, et Muse aussi Sapientium 3.",
+        },
+        {
+          title: "Ring Toss",
+          body: "Medusa, Hela et Bastet venaient des trois premiers. Les suivants ramènent les déesses antérieures : le quatrième a ramené Medusa, Hela, Muse et Moirai, le cinquième Bastet et Ixchel. Une SSR manquée n’est donc en général pas perdue.",
+        },
+        {
+          title: "Uniquement payantes",
+          body: "Venus vient avec le premier rechargement et Athena avec le VIP 4. Aucune des deux n’a de voie gratuite.",
+        },
+      ],
+      obtainCredit:
+        "L’origine de chaque déesse vient du guide d’obtention d’Autumn, partagé sur Discord le 9 août 2026, avec des captures d’écran de plusieurs joueurs. « Indisponible actuellement » signifie qu’aucune source n’est active et qu’il peut s’écouler longtemps avant qu’il y en ait une. « Source non confirmée » signifie que personne ne l’a vérifiée. Isis et Calypso ne figurent pas sur la page du wiki et n’ont donc pas encore de portrait ici.",
+      skinsHeading: "Skins",
+      skinsLede:
+        "Skins nommés, pas les images supplémentaires d’une carte du roster. Ces fichiers n’ont pas de nom et ne peuvent pas être reliés à cette liste. Les déesses SSR n’ont pas encore de skins. Un skin de déesse relève son plafond de niveau.",
+      colSkin: "Skin",
+      skinSources: [
+        {
+          title: "R et SR",
+          body: "Les skins des déesses R et SR viennent du Consecutive Top-Up, qui revient tous les 30 jours de serveur dans l’ordre ci-dessous. Venus est l’exception : elle s’achète, donc ses skins viennent d’événements bannières et se manquent facilement.",
+        },
+        {
+          title: "Consecutive Top-Up",
+          body: "Il faut sept jours de rechargement. Le total compte : deux packs le même jour compensent un jour manqué. L’exigence de 14 jours est obsolète.",
+        },
+        {
+          title: "SSR",
+          body: "Les déesses SSR n’ont actuellement pas de skins. Les déesses payantes comme Venus les obtiennent en général dans des événements bannières.",
+        },
+      ],
+      skinGroups: {
+        consecutiveTopUp: { title: "Consecutive Top-Up", lede: "Toujours cet ordre, tous les 30 jours de serveur." },
+        firstTopUp: { title: "Premier rechargement", lede: "" },
+        roadToTheCup: { title: "Road to the Cup", lede: "La bannière originale de la Coupe du monde 2026, pas l’événement récurrent." },
+        unknown: { title: "Inconnu", lede: "Personne n’a confirmé l’événement. La meilleure estimation d’Autumn est Consecutive Top-Up." },
+      },
+      skinsCredit:
+        "Noms et sources des skins : guide des skins d’Autumn, partagé sur Discord le 7 août 2026. « Indisponible actuellement » signifie qu’aucune source n’est active et qu’il peut s’écouler longtemps avant qu’il y en ait une.",
+      skinTexts: {},
       phases: [
         {
           tone: "1",
@@ -632,25 +746,27 @@ const fr: Dictionary = {
         },
       ],
       roster: [
-        { name: "Demeter", affinity: "Coût d’amélioration des bâtiments de production −5 %. Héros boucliers ATQ/PV +6 %.", obtain: "" },
-        { name: "Venus", affinity: "Productivité de tous les bâtiments +20 %. Héros piquiers ATQ/PV +6 %.", obtain: "Pack de premier achat" },
+        { name: "Demeter", affinity: "Coût d’amélioration des bâtiments de production −5 %. Héros boucliers ATQ/PV +6 %.", obtain: "Débloquer l’Âge classique" },
+        { name: "Venus", affinity: "Productivité de tous les bâtiments +20 %. Héros piquiers ATQ/PV +6 %.", obtain: "Premier rechargement, 2,50 $" },
         { name: "Lady Liberty", affinity: "Dégâts de tous les héros +5 %. ATQ/PV de tous les héros +3 %.", obtain: "Tap Football" },
-        { name: "Medusa", affinity: "Dégâts de tous les héros +5 %. ATQ/PV de tous les héros +3 %.", obtain: "1er Ringtoss" },
-        { name: "Hela", affinity: "Réduction de dégâts de tous les héros +5 %. ATQ/PV de tous les héros +3 %.", obtain: "2e Ringtoss" },
-        { name: "Bastet", affinity: "", obtain: "3e Ringtoss" },
-        { name: "Moirai", affinity: "Revenu du Théâtre des Déesses +2 %. ATQ/PV de tous les héros +3 %.", obtain: "4e Ringtoss" },
-        { name: "Muse", affinity: "Pièces de Muse au Museion +2 %. ATQ/PV de tous les héros +3 %.", obtain: "4e Ringtoss" },
+        { name: "Medusa", affinity: "Dégâts de tous les héros +5 %. ATQ/PV de tous les héros +3 %.", obtain: "Ring Toss n° 1 ; de retour au Ring Toss n° 4" },
+        { name: "Hela", affinity: "Réduction de dégâts de tous les héros +5 %. ATQ/PV de tous les héros +3 %.", obtain: "Ring Toss n° 2 ; de retour au Ring Toss n° 4" },
+        { name: "Bastet", affinity: "", obtain: "Ring Toss n° 3 ; de retour au Ring Toss n° 5" },
+        { name: "Moirai", affinity: "Revenu du Théâtre des Déesses +2 %. ATQ/PV de tous les héros +3 %.", obtain: "Événement de déblocage du Théâtre des Déesses, au niveau de ville 18 ; de retour au Ring Toss n° 4" },
+        { name: "Muse", affinity: "Pièces de Muse au Museion +2 %. ATQ/PV de tous les héros +3 %.", obtain: "Événement de déblocage du Museion, au niveau de ville 18 avec Sapientium 3 ; de retour au Ring Toss n° 4" },
         { name: "Athena", affinity: "Commandement de tous les héros +3 %. ATQ/PV de tous les héros +3 %.", obtain: "VIP 4" },
-        { name: "Ixchel", affinity: "Dividendes du Grand Voyage +2 %. ATQ/PV de tous les héros +3 %.", obtain: "Grand Voyage" },
-        { name: "Fortuna", affinity: "Population de la Merveille +5 %. Héros boucliers ATQ/PV +6 %.", obtain: "" },
-        { name: "Brunhild", affinity: "Dégâts subis en Campagne −5 %. Cavalerie ATQ/PV +11 %.", obtain: "" },
-        { name: "Vivian", affinity: "Récompenses de sweep de la Tour mystique +6 %. Héros boucliers ATQ/PV +6 %.", obtain: "" },
-        { name: "Artemis", affinity: "Honor Fortune de Crown Glory +2 %. Archers ATQ/PV +6 %.", obtain: "" },
-        { name: "Freya", affinity: "Dégâts infligés en Glory Arena +5 %. Héros piquiers ATQ/PV +6 %.", obtain: "" },
-        { name: "Hera", affinity: "Réduction de dégâts alliés contre Northern Enemy +5 %. Cavalerie ATQ/PV +6 %.", obtain: "" },
-        { name: "Eve", affinity: "Recrutement de population +5/s. Archers ATQ/PV +6 %.", obtain: "" },
-        { name: "Hestia", affinity: "Or de Campagne +5 %. Héros piquiers ATQ/PV +11 %.", obtain: "" },
-        { name: "Nike", affinity: "4 % de chance d’+1 Norman Oak en Glory Arena. Héros piquiers ATQ/PV +6 %.", obtain: "" },
+        { name: "Ixchel", affinity: "Dividendes du Grand Voyage +2 %. ATQ/PV de tous les héros +3 %.", obtain: "Événement de déblocage du Grand Voyage, au niveau de ville 20 ; de retour au Ring Toss n° 5" },
+        { name: "Isis", affinity: "", obtain: "Événement de déblocage de l’Égypte, au niveau de ville 26" },
+        { name: "Calypso", affinity: "", obtain: "Ring Toss, rapporté comme le sixième" },
+        { name: "Fortuna", affinity: "Population de la Merveille +5 %. Héros boucliers ATQ/PV +6 %.", obtain: "Débloquer l’Âge médiéval" },
+        { name: "Brunhild", affinity: "Dégâts subis en Campagne −5 %. Cavalerie ATQ/PV +11 %.", obtain: "Terminer la Campagne 60-6" },
+        { name: "Vivian", affinity: "Récompenses de sweep de la Tour mystique +6 %. Héros boucliers ATQ/PV +6 %.", obtain: "Atteindre le niveau 40 de la Tour mystique" },
+        { name: "Artemis", affinity: "Honor Fortune de Crown Glory +2 %. Archers ATQ/PV +6 %.", obtain: "Livrer 50 combats dans Knights’ Ascent" },
+        { name: "Freya", affinity: "Dégâts infligés en Glory Arena +5 %. Héros piquiers ATQ/PV +6 %.", obtain: "9 000 points au Grand Launch Fest, pendant les sept jours du lancement du serveur" },
+        { name: "Hera", affinity: "Réduction de dégâts alliés contre Northern Enemy +5 %. Cavalerie ATQ/PV +6 %.", obtain: "Vraisemblablement liée à un âge de civilisation" },
+        { name: "Eve", affinity: "Recrutement de population +5/s. Archers ATQ/PV +6 %.", obtain: "Effectuer cinq patrouilles au total" },
+        { name: "Hestia", affinity: "Or de Campagne +5 %. Héros piquiers ATQ/PV +11 %.", obtain: "Connaissance (Conseillers) niveau 3" },
+        { name: "Nike", affinity: "4 % de chance d’+1 Norman Oak en Glory Arena. Héros piquiers ATQ/PV +6 %.", obtain: "Livrer 40 combats en Glory Arena" },
       ],
       sections: [
         {

@@ -326,9 +326,10 @@ const en = {
       filterLabel: "Rarity",
       filterAll: "All",
       searchLabel: "Search heroes",
-      searchPlaceholder: "Name, skill, or event…",
+      searchPlaceholder: "Name, skill, event, or skin…",
       countLabel: "{count} shown",
       colObtain: "Obtain",
+      colName: "Hero",
       artifactLabel: "Artifact",
       empty: "No hero matches that filter.",
       rosterLede: "Tap a hero for skills, skins, and where the tier list, Hero layouts, and Artwork use them.",
@@ -337,6 +338,69 @@ const en = {
       skinCount: "{count} skins",
       skinCountOne: "1 skin",
       portraitCredit: "Hero portraits from the Pop Epoch Wiki (Fandom). The artwork belongs to the game’s publisher and is shown here for free, non-commercial community guides.",
+      sourcesHeading: "Where they come from",
+      sources: [
+        {
+          title: "R and SR",
+          body: "Genesis Soulcraft, Industrial Parts after the Exploration Age, campaign chest drops, civilisation ages up to the Renaissance, the Hero Destiny rebate, and selection chests.",
+        },
+        {
+          title: "SSR",
+          body: "Genesis Soulcraft, Industrial Parts after the Exploration Age, external expeditions, SSR fragment and hero chests, the UR/SSR random chest, the Hero Destiny rebate, and selection chests.",
+        },
+        {
+          title: "UR",
+          body: "Genesis Soulcraft, the UR fragment chest, the UR hero chest, and the UR universal chest, which only drops after the Exploration Age.",
+        },
+        {
+          title: "UR+",
+          body: "Their own event, and nothing else. Which run of that event first offered them is in the Obtain line on each hero.",
+        },
+        {
+          title: "Crown Vault",
+          body: "500 crown coins per 50 shards for Guan Yu, Lu Bu, Musashi, and Sun-Sin, none of whom are in the roster here yet. Coins come from placing in Mushroom Adventure, Incubator Lab, Supply Reform, and the Great Flood, from the final point rankings, and from the first seven merge levels in Mushroom and Incubator.",
+        },
+        {
+          title: "Monument of Eternity",
+          body: "Charles the Great only. The guild shop gives 210 fragments a month, and guild chests taken to their cap by gifts or rallies give guild level × 2 + 1 fragments.",
+        },
+      ],
+      obtainCredit:
+        "Where each hero comes from is Autumn’s obtain guide, shared on Discord on 9 August 2026, with screenshots from several players. A hero without an Obtain line comes from the pools above rather than from one place.",
+      missableLabel: "Not obtainable now",
+      unconfirmedLabel: "Source unconfirmed",
+      skinsHeading: "Skins",
+      skinsLede:
+        "Named skins, not the extra pictures on a roster card. Those files have no names, so they cannot be matched to this list. Dawn of Rome has none yet. Epoch Pass slots for days 112, 126, and 140 are still empty.",
+      colSkin: "Skin",
+      skinSources: [
+        {
+          title: "Where they come from",
+          body: "SSR skins are usually in the Epoch Pass or Ring Toss. UR skins are usually in Genie and come back there later. UR+ skins are always in that hero’s event. Every UR and UR+ hero arrives with a release skin.",
+        },
+        {
+          title: "What they do",
+          body: "SSR skins take 50 shards to unlock or upgrade: +20 % ATK and HP from level 0 to 1, then +10 % each level after. UR skins take 100 shards: +40 % from 0 to 1, then +20 % each level after.",
+        },
+        {
+          title: "Epoch Pass",
+          body: "A 14-day rotation in the order below. New servers share that order; older ones skip a few. Some of the early skins later sit in the Epoch Pass Shop for 100 coins.",
+        },
+      ],
+      skinGroups: {
+        epochPass: { title: "Epoch Pass", lede: "One skin every 14 days, in this order." },
+        ringToss: { title: "Ring Toss", lede: "The first two were exclusive to that run." },
+        roadToTheCup: { title: "Road to the Cup", lede: "Three skins from this pool each time the event runs." },
+        genie: { title: "Genie", lede: "Earlier UR skins stay available in later Genie runs." },
+        holyGrail: { title: "Holy Grail", lede: "The skin arrives on the run after the hero." },
+        nile: { title: "Crown of the Nile", lede: "" },
+        odin: { title: "Odin", lede: "The skin arrives on the run after the hero." },
+        atlantis: { title: "Atlantis", lede: "The skin arrives on the run after the hero." },
+        unknown: { title: "Unknown", lede: "Nobody has confirmed the event. Autumn’s best guess is in the Obtain line." },
+      },
+      skinsCredit:
+        "Skin names and sources are Autumn’s skin guide, shared on Discord on 7 August 2026. Skins for heroes not in this roster yet — Billy the Kid, Alexander the Great, Augustus, Charlie Chaplin — are left out until those heroes are added. “Not obtainable now” means no source is running, and there may not be one again for a long time.",
+      skinTexts: {},
       previousHero: "Previous hero",
       nextHero: "Next hero",
       close: "Close",
@@ -560,7 +624,7 @@ const en = {
       filterLabel: "Rarity",
       filterAll: "All",
       searchLabel: "Search goddesses",
-      searchPlaceholder: "Name, affinity, or event…",
+      searchPlaceholder: "Name, affinity, event, or skin…",
       countLabel: "{count} shown",
       empty: "No goddess matches that filter.",
       groupCount: "{count} goddesses",
@@ -582,6 +646,56 @@ const en = {
       colHint: "Without SSR",
       colAffinity: "Affinity",
       colObtain: "Obtain",
+      missableLabel: "Not obtainable now",
+      unconfirmedLabel: "Source unconfirmed",
+      sourcesHeading: "Where they come from",
+      sources: [
+        {
+          title: "SR and R",
+          body: "Every one of them comes from something you do once: unlock an age, reach a building level, or finish a number of battles. Nothing here is on a timer except Freya.",
+        },
+        {
+          title: "Unlock events",
+          body: "Four SSR goddesses arrive with a feature — Museion, Egypt, Goddess Theater, Grand Voyage. Each needs a city level, and Muse needs Sapientium 3 as well.",
+        },
+        {
+          title: "Ring Toss",
+          body: "Medusa, Hela, and Bastet came from the first three. Later ones bring earlier goddesses back: the fourth returned Medusa, Hela, Muse, and Moirai, the fifth Bastet and Ixchel. A missed SSR is usually not gone for good.",
+        },
+        {
+          title: "Bought only",
+          body: "Venus comes with the first top-up and Athena with VIP 4. Neither has a route that costs nothing.",
+        },
+      ],
+      obtainCredit:
+        "Where each goddess comes from is Autumn’s obtain guide, shared on Discord on 9 August 2026, with screenshots from several players. “Not obtainable now” means no source is running, and there may not be one again for a long time. “Source unconfirmed” means nobody has verified it. Isis and Calypso are not on the wiki page, so they have no portrait here yet.",
+      skinsHeading: "Skins",
+      skinsLede:
+        "Named skins, not the extra pictures on a roster card. Those files have no names, so they cannot be matched to this list. SSR goddesses have no skins yet. A goddess skin raises her level cap.",
+      colSkin: "Skin",
+      skinSources: [
+        {
+          title: "R and SR",
+          body: "Skins for R and SR goddesses come from Consecutive Top-Up, which repeats every 30 server days in the order below. Venus is the exception: she is bought, so her skins come from banner events and are easy to miss.",
+        },
+        {
+          title: "Consecutive Top-Up",
+          body: "Needs seven days of top-up. The total counts, so two packs on one day cover a missed day. The 14-day requirement is out of date.",
+        },
+        {
+          title: "SSR",
+          body: "SSR goddesses currently have no skins. Paid goddesses such as Venus usually get theirs from banner events.",
+        },
+      ],
+      skinGroups: {
+        consecutiveTopUp: { title: "Consecutive Top-Up", lede: "Always this order, every 30 server days." },
+        firstTopUp: { title: "First top-up", lede: "" },
+        roadToTheCup: { title: "Road to the Cup", lede: "The original World Cup 2026 banner, not the recurring event." },
+        unknown: { title: "Unknown", lede: "Nobody has confirmed the event. Autumn’s best guess is Consecutive Top-Up." },
+      },
+      skinsCredit:
+        "Skin names and sources are Autumn’s skin guide, shared on Discord on 7 August 2026. “Not obtainable now” means no source is running, and there may not be one again for a long time.",
+      skinTexts: {},
       phases: [
         {
           tone: "1",
@@ -634,25 +748,27 @@ const en = {
         },
       ],
       roster: [
-        { name: "Demeter", affinity: "Production building upgrade cost −5%. Shieldman ATK/HP +6%.", obtain: "" },
-        { name: "Venus", affinity: "All building productivity +20%. Pikeman ATK/HP +6%.", obtain: "First purchase bundle" },
+        { name: "Demeter", affinity: "Production building upgrade cost −5%. Shieldman ATK/HP +6%.", obtain: "Unlock the Classical Age" },
+        { name: "Venus", affinity: "All building productivity +20%. Pikeman ATK/HP +6%.", obtain: "First top-up, $2.50" },
         { name: "Lady Liberty", affinity: "All-hero battle damage +5%. All-hero ATK/HP +3%.", obtain: "Tap Football" },
-        { name: "Medusa", affinity: "All-hero battle damage +5%. All-hero ATK/HP +3%.", obtain: "1st Ringtoss" },
-        { name: "Hela", affinity: "All-hero damage reduction +5%. All-hero ATK/HP +3%.", obtain: "2nd Ringtoss" },
-        { name: "Bastet", affinity: "", obtain: "3rd Ringtoss" },
-        { name: "Moirai", affinity: "Goddess Theater income +2%. All-hero ATK/HP +3%.", obtain: "4th Ringtoss" },
-        { name: "Muse", affinity: "Muse Coin +2% in Museion. All-hero ATK/HP +3%.", obtain: "4th Ringtoss" },
+        { name: "Medusa", affinity: "All-hero battle damage +5%. All-hero ATK/HP +3%.", obtain: "Ring Toss #1; back in Ring Toss #4" },
+        { name: "Hela", affinity: "All-hero damage reduction +5%. All-hero ATK/HP +3%.", obtain: "Ring Toss #2; back in Ring Toss #4" },
+        { name: "Bastet", affinity: "", obtain: "Ring Toss #3; back in Ring Toss #5" },
+        { name: "Moirai", affinity: "Goddess Theater income +2%. All-hero ATK/HP +3%.", obtain: "Goddess Theater unlock event, at city level 18; back in Ring Toss #4" },
+        { name: "Muse", affinity: "Muse Coin +2% in Museion. All-hero ATK/HP +3%.", obtain: "Museion unlock event, at city level 18 with Sapientium 3; back in Ring Toss #4" },
         { name: "Athena", affinity: "All-hero command +3%. All-hero ATK/HP +3%.", obtain: "VIP 4" },
-        { name: "Ixchel", affinity: "Grand Voyage city dividends +2%. All-hero ATK/HP +3%.", obtain: "Grand Voyage" },
-        { name: "Fortuna", affinity: "Wonder population +5%. Shieldman ATK/HP +6%.", obtain: "" },
-        { name: "Brunhild", affinity: "Campaign damage taken −5%. Cavalry ATK/HP +11%.", obtain: "" },
-        { name: "Vivian", affinity: "Mystic Tower sweep rewards +6%. Shieldman ATK/HP +6%.", obtain: "" },
-        { name: "Artemis", affinity: "Crown Glory Honor Fortune +2%. Archer ATK/HP +6%.", obtain: "" },
-        { name: "Freya", affinity: "Glory Arena damage dealt +5%. Pikeman ATK/HP +6%.", obtain: "" },
-        { name: "Hera", affinity: "Northern Enemy ally damage reduction +5%. Cavalry ATK/HP +6%.", obtain: "" },
-        { name: "Eve", affinity: "Population recruitment +5/sec. Archer ATK/HP +6%.", obtain: "" },
-        { name: "Hestia", affinity: "Campaign gold +5%. Pikeman ATK/HP +11%.", obtain: "" },
-        { name: "Nike", affinity: "4% chance for +1 Norman Oak in Glory Arena. Pikeman ATK/HP +6%.", obtain: "" },
+        { name: "Ixchel", affinity: "Grand Voyage city dividends +2%. All-hero ATK/HP +3%.", obtain: "Grand Voyage unlock event, at city level 20; back in Ring Toss #5" },
+        { name: "Isis", affinity: "", obtain: "Egypt unlock event, at city level 26" },
+        { name: "Calypso", affinity: "", obtain: "Ring Toss, reported as the sixth" },
+        { name: "Fortuna", affinity: "Wonder population +5%. Shieldman ATK/HP +6%.", obtain: "Unlock the Medieval Age" },
+        { name: "Brunhild", affinity: "Campaign damage taken −5%. Cavalry ATK/HP +11%.", obtain: "Finish Campaign 60-6" },
+        { name: "Vivian", affinity: "Mystic Tower sweep rewards +6%. Shieldman ATK/HP +6%.", obtain: "Reach level 40 in the Mystic Tower" },
+        { name: "Artemis", affinity: "Crown Glory Honor Fortune +2%. Archer ATK/HP +6%.", obtain: "Fight 50 battles in Knights’ Ascent" },
+        { name: "Freya", affinity: "Glory Arena damage dealt +5%. Pikeman ATK/HP +6%.", obtain: "9,000 points in Grand Launch Fest, during the seven-day server launch" },
+        { name: "Hera", affinity: "Northern Enemy ally damage reduction +5%. Cavalry ATK/HP +6%.", obtain: "Thought to come with a civilisation age" },
+        { name: "Eve", affinity: "Population recruitment +5/sec. Archer ATK/HP +6%.", obtain: "Complete five patrols in total" },
+        { name: "Hestia", affinity: "Campaign gold +5%. Pikeman ATK/HP +11%.", obtain: "Knowledge (Advisors) level 3" },
+        { name: "Nike", affinity: "4% chance for +1 Norman Oak in Glory Arena. Pikeman ATK/HP +6%.", obtain: "Fight 40 times in Glory Arena" },
       ],
       sections: [
         {

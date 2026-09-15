@@ -327,9 +327,10 @@ const de: Dictionary = {
       filterLabel: "Seltenheit",
       filterAll: "Alle",
       searchLabel: "Helden suchen",
-      searchPlaceholder: "Name, Skill oder Event…",
+      searchPlaceholder: "Name, Skill, Event oder Skin…",
       countLabel: "{count} angezeigt",
       colObtain: "Bezug",
+      colName: "Held",
       artifactLabel: "Artefakt",
       empty: "Kein Held passt zu diesem Filter.",
       rosterLede: "Tippe auf einen Helden für Skills, Skins und wo Tier-Liste, Helden-Layouts und Artwork ihn einsetzen.",
@@ -338,6 +339,69 @@ const de: Dictionary = {
       skinCount: "{count} Skins",
       skinCountOne: "1 Skin",
       portraitCredit: "Heldenporträts aus dem Pop Epoch Wiki (Fandom). Die Grafiken gehören dem Publisher des Spiels und werden hier für kostenlose, nicht-kommerzielle Community-Guides gezeigt.",
+      sourcesHeading: "Woher sie kommen",
+      sources: [
+        {
+          title: "R und SR",
+          body: "Genesis Soulcraft, Industrieteile nach dem Zeitalter der Erkundung, Kampagnen-Truhen, Zeitalter bis zur Renaissance, die Hero-Destiny-Rückvergütung und Auswahltruhen.",
+        },
+        {
+          title: "SSR",
+          body: "Genesis Soulcraft, Industrieteile nach dem Zeitalter der Erkundung, externe Expeditionen, SSR-Fragment- und Heldentruhen, die UR/SSR-Zufallstruhe, die Hero-Destiny-Rückvergütung und Auswahltruhen.",
+        },
+        {
+          title: "UR",
+          body: "Genesis Soulcraft, die UR-Fragmenttruhe, die UR-Heldentruhe und die UR-Universaltruhe, die erst nach dem Zeitalter der Erkundung fällt.",
+        },
+        {
+          title: "UR+",
+          body: "Nur aus dem eigenen Event. Aus welchem Durchlauf dieses Events sie zuerst kamen, steht in der Bezugszeile des Helden.",
+        },
+        {
+          title: "Crown Vault",
+          body: "500 Kronenmünzen je 50 Splitter für Guan Yu, Lu Bu, Musashi und Sun-Sin, die hier noch nicht im Roster stehen. Münzen kommen aus Platzierungen in Mushroom Adventure, Incubator Lab, Supply Reform und The Great Flood, aus den Endpunkte-Rängen und aus den ersten sieben Merge-Stufen bei Mushroom und Incubator.",
+        },
+        {
+          title: "Monument of Eternity",
+          body: "Nur Charles the Great. Der Gildenshop gibt 210 Fragmente pro Monat, und Gildentruhen, die per Geschenk oder Rally ans Maximum kommen, geben Gildenstufe × 2 + 1 Fragmente.",
+        },
+      ],
+      obtainCredit:
+        "Woher jeder Held kommt, stammt aus Autumns Bezugs-Guide, geteilt am 9. August 2026 auf Discord, mit Screenshots mehrerer Spieler. Ein Held ohne Bezugszeile kommt aus den Pools oben und nicht aus einer einzelnen Quelle.",
+      missableLabel: "Derzeit nicht erhältlich",
+      unconfirmedLabel: "Quelle unbestätigt",
+      skinsHeading: "Skins",
+      skinsLede:
+        "Benannte Skins, nicht die Extra-Bilder auf einer Roster-Karte. Jene Dateien haben keine Namen und lassen sich dieser Liste nicht zuordnen. Dawn of Rome hat noch keine. Die Epoch-Pass-Plätze für Tag 112, 126 und 140 sind noch leer.",
+      colSkin: "Skin",
+      skinSources: [
+        {
+          title: "Woher sie kommen",
+          body: "SSR-Skins liegen meist im Epoch Pass oder im Ring Toss. UR-Skins liegen meist im Genie und kommen dort später wieder. UR+-Skins gehören immer zum Event des Helden. Jeder UR- und UR+-Held kommt mit einem Release-Skin.",
+        },
+        {
+          title: "Was sie bringen",
+          body: "SSR-Skins brauchen 50 Splitter zum Freischalten oder Aufwerten: +20 % ATK und HP von Stufe 0 auf 1, danach +10 % je Stufe. UR-Skins brauchen 100 Splitter: +40 % von 0 auf 1, danach +20 % je Stufe.",
+        },
+        {
+          title: "Epoch Pass",
+          body: "Ein 14-Tage-Rhythmus in der Reihenfolge unten. Neue Server teilen sich diese Reihenfolge; ältere lassen ein paar aus. Einige der frühen Skins stehen später im Epoch-Pass-Shop für 100 Münzen.",
+        },
+      ],
+      skinGroups: {
+        epochPass: { title: "Epoch Pass", lede: "Alle 14 Tage ein Skin, in dieser Reihenfolge." },
+        ringToss: { title: "Ring Toss", lede: "Die ersten zwei gab es nur in diesem Durchlauf." },
+        roadToTheCup: { title: "Road to the Cup", lede: "Drei Skins aus diesem Pool, jedes Mal wenn das Event läuft." },
+        genie: { title: "Genie", lede: "Frühere UR-Skins bleiben in späteren Genie-Durchläufen verfügbar." },
+        holyGrail: { title: "Holy Grail", lede: "Der Skin kommt im Durchlauf nach dem Helden." },
+        nile: { title: "Crown of the Nile", lede: "" },
+        odin: { title: "Odin", lede: "Der Skin kommt im Durchlauf nach dem Helden." },
+        atlantis: { title: "Atlantis", lede: "Der Skin kommt im Durchlauf nach dem Helden." },
+        unknown: { title: "Unbekannt", lede: "Niemand hat das Event bestätigt. Autumns beste Schätzung steht in der Bezugszeile." },
+      },
+      skinsCredit:
+        "Skin-Namen und Quellen stammen aus Autumns Skin-Guide, geteilt am 7. August 2026 auf Discord. Skins von Helden, die hier noch nicht im Roster stehen — Billy the Kid, Alexander the Great, Augustus, Charlie Chaplin — fehlen, bis diese Helden dazukommen. „Derzeit nicht erhältlich“ heißt: es läuft keine Quelle, und es kann lange dauern, bis wieder eine läuft.",
+      skinTexts: {},
       previousHero: "Vorheriger Held",
       nextHero: "Nächster Held",
       close: "Schließen",
@@ -558,7 +622,7 @@ const de: Dictionary = {
       filterLabel: "Seltenheit",
       filterAll: "Alle",
       searchLabel: "Göttinnen suchen",
-      searchPlaceholder: "Name, Affinität oder Event…",
+      searchPlaceholder: "Name, Affinität, Event oder Skin…",
       countLabel: "{count} angezeigt",
       empty: "Keine Göttin passt zu diesem Filter.",
       groupCount: "{count} Göttinnen",
@@ -580,6 +644,56 @@ const de: Dictionary = {
       colHint: "Ohne SSR",
       colAffinity: "Affinität",
       colObtain: "Bezug",
+      missableLabel: "Derzeit nicht erhältlich",
+      unconfirmedLabel: "Quelle unbestätigt",
+      sourcesHeading: "Woher sie kommen",
+      sources: [
+        {
+          title: "SR und R",
+          body: "Jede von ihnen kommt aus etwas, das man einmal tut: ein Zeitalter freischalten, eine Gebäudestufe erreichen oder eine Anzahl Kämpfe abschließen. Nur Freya hängt an einem Zeitfenster.",
+        },
+        {
+          title: "Freischalt-Events",
+          body: "Vier SSR-Göttinnen kommen mit einer Funktion — Museion, Ägypten, Göttinnen-Theater, Große Reise. Jede braucht eine Stadtstufe, Muse zusätzlich Sapientium 3.",
+        },
+        {
+          title: "Ring Toss",
+          body: "Medusa, Hela und Bastet kamen aus den ersten drei. Spätere holen frühere Göttinnen zurück: der vierte brachte Medusa, Hela, Muse und Moirai, der fünfte Bastet und Ixchel. Eine verpasste SSR ist also meist nicht endgültig weg.",
+        },
+        {
+          title: "Nur gegen Geld",
+          body: "Venus kommt mit der ersten Aufladung, Athena mit VIP 4. Für beide gibt es keinen kostenlosen Weg.",
+        },
+      ],
+      obtainCredit:
+        "Woher jede Göttin kommt, stammt aus Autumns Bezugs-Guide, geteilt am 9. August 2026 auf Discord, mit Screenshots mehrerer Spieler. „Derzeit nicht erhältlich“ heißt: es läuft keine Quelle, und es kann lange dauern, bis wieder eine läuft. „Quelle unbestätigt“ heißt: niemand hat es überprüft. Isis und Calypso stehen nicht auf der Wiki-Seite und haben hier deshalb noch kein Porträt.",
+      skinsHeading: "Skins",
+      skinsLede:
+        "Benannte Skins, nicht die Extra-Bilder auf einer Roster-Karte. Jene Dateien haben keine Namen und lassen sich dieser Liste nicht zuordnen. SSR-Göttinnen haben noch keine Skins. Ein Göttinnen-Skin hebt ihre Stufengrenze.",
+      colSkin: "Skin",
+      skinSources: [
+        {
+          title: "R und SR",
+          body: "Skins für R- und SR-Göttinnen kommen aus Consecutive Top-Up, das alle 30 Servertage in der Reihenfolge unten wiederholt. Venus ist die Ausnahme: sie wird gekauft, deshalb kommen ihre Skins aus Banner-Events und sind leicht zu verpassen.",
+        },
+        {
+          title: "Consecutive Top-Up",
+          body: "Braucht sieben Tage Aufladung. Die Summe zählt, zwei Packs an einem Tag gleichen einen verpassten Tag aus. Die 14-Tage-Anforderung gilt nicht mehr.",
+        },
+        {
+          title: "SSR",
+          body: "SSR-Göttinnen haben derzeit keine Skins. Gekaufte Göttinnen wie Venus bekommen ihre meist aus Banner-Events.",
+        },
+      ],
+      skinGroups: {
+        consecutiveTopUp: { title: "Consecutive Top-Up", lede: "Immer diese Reihenfolge, alle 30 Servertage." },
+        firstTopUp: { title: "Erste Aufladung", lede: "" },
+        roadToTheCup: { title: "Road to the Cup", lede: "Das ursprüngliche World-Cup-2026-Banner, nicht das wiederkehrende Event." },
+        unknown: { title: "Unbekannt", lede: "Niemand hat das Event bestätigt. Autumns beste Schätzung ist Consecutive Top-Up." },
+      },
+      skinsCredit:
+        "Skin-Namen und Quellen stammen aus Autumns Skin-Guide, geteilt am 7. August 2026 auf Discord. „Derzeit nicht erhältlich“ heißt: es läuft keine Quelle, und es kann lange dauern, bis wieder eine läuft.",
+      skinTexts: {},
       phases: [
         {
           tone: "1",
@@ -632,25 +746,27 @@ const de: Dictionary = {
         },
       ],
       roster: [
-        { name: "Demeter", affinity: "Ausbaukosten von Produktionsgebäuden −5 %. Schildhelden ATK/HP +6 %.", obtain: "" },
-        { name: "Venus", affinity: "Produktivität aller Gebäude +20 %. Pikenhelden ATK/HP +6 %.", obtain: "Erstkauf-Bundle" },
+        { name: "Demeter", affinity: "Ausbaukosten von Produktionsgebäuden −5 %. Schildhelden ATK/HP +6 %.", obtain: "Klassisches Zeitalter freischalten" },
+        { name: "Venus", affinity: "Produktivität aller Gebäude +20 %. Pikenhelden ATK/HP +6 %.", obtain: "Erste Aufladung, 2,50 $" },
         { name: "Lady Liberty", affinity: "Kampfschaden aller Helden +5 %. ATK/HP aller Helden +3 %.", obtain: "Tap Football" },
-        { name: "Medusa", affinity: "Kampfschaden aller Helden +5 %. ATK/HP aller Helden +3 %.", obtain: "1. Ringtoss" },
-        { name: "Hela", affinity: "Schadensreduktion aller Helden +5 %. ATK/HP aller Helden +3 %.", obtain: "2. Ringtoss" },
-        { name: "Bastet", affinity: "", obtain: "3. Ringtoss" },
-        { name: "Moirai", affinity: "Einkommen im Göttinnen-Theater +2 %. ATK/HP aller Helden +3 %.", obtain: "4. Ringtoss" },
-        { name: "Muse", affinity: "Muse-Münzen im Museion +2 %. ATK/HP aller Helden +3 %.", obtain: "4. Ringtoss" },
+        { name: "Medusa", affinity: "Kampfschaden aller Helden +5 %. ATK/HP aller Helden +3 %.", obtain: "Ring Toss #1; wieder in Ring Toss #4" },
+        { name: "Hela", affinity: "Schadensreduktion aller Helden +5 %. ATK/HP aller Helden +3 %.", obtain: "Ring Toss #2; wieder in Ring Toss #4" },
+        { name: "Bastet", affinity: "", obtain: "Ring Toss #3; wieder in Ring Toss #5" },
+        { name: "Moirai", affinity: "Einkommen im Göttinnen-Theater +2 %. ATK/HP aller Helden +3 %.", obtain: "Freischalt-Event des Göttinnen-Theaters, ab Stadtstufe 18; wieder in Ring Toss #4" },
+        { name: "Muse", affinity: "Muse-Münzen im Museion +2 %. ATK/HP aller Helden +3 %.", obtain: "Freischalt-Event des Museions, ab Stadtstufe 18 mit Sapientium 3; wieder in Ring Toss #4" },
         { name: "Athena", affinity: "Befehlswert aller Helden +3 %. ATK/HP aller Helden +3 %.", obtain: "VIP 4" },
-        { name: "Ixchel", affinity: "Dividenden der Großen Reise +2 %. ATK/HP aller Helden +3 %.", obtain: "Große Reise" },
-        { name: "Fortuna", affinity: "Bevölkerung im Wunder +5 %. Schildhelden ATK/HP +6 %.", obtain: "" },
-        { name: "Brunhild", affinity: "Kampagnen-Schaden erlitten −5 %. Kavallerie ATK/HP +11 %.", obtain: "" },
-        { name: "Vivian", affinity: "Mystic-Tower-Sweep-Belohnungen +6 %. Schildhelden ATK/HP +6 %.", obtain: "" },
-        { name: "Artemis", affinity: "Honor Fortune in Crown Glory +2 %. Bogenschützen ATK/HP +6 %.", obtain: "" },
-        { name: "Freya", affinity: "Glory-Arena-Schaden +5 %. Pikenhelden ATK/HP +6 %.", obtain: "" },
-        { name: "Hera", affinity: "Schadensreduktion Verbündeter bei Northern Enemy +5 %. Kavallerie ATK/HP +6 %.", obtain: "" },
-        { name: "Eve", affinity: "Bevölkerungsrekrutierung +5/Sek. Bogenschützen ATK/HP +6 %.", obtain: "" },
-        { name: "Hestia", affinity: "Kampagnen-Gold +5 %. Pikenhelden ATK/HP +11 %.", obtain: "" },
-        { name: "Nike", affinity: "4 % Chance auf +1 Norman Oak in der Glory Arena. Pikenhelden ATK/HP +6 %.", obtain: "" },
+        { name: "Ixchel", affinity: "Dividenden der Großen Reise +2 %. ATK/HP aller Helden +3 %.", obtain: "Freischalt-Event der Großen Reise, ab Stadtstufe 20; wieder in Ring Toss #5" },
+        { name: "Isis", affinity: "", obtain: "Freischalt-Event Ägypten, ab Stadtstufe 26" },
+        { name: "Calypso", affinity: "", obtain: "Ring Toss, berichtet als der sechste" },
+        { name: "Fortuna", affinity: "Bevölkerung im Wunder +5 %. Schildhelden ATK/HP +6 %.", obtain: "Mittelalter freischalten" },
+        { name: "Brunhild", affinity: "Kampagnen-Schaden erlitten −5 %. Kavallerie ATK/HP +11 %.", obtain: "Kampagne 60-6 abschließen" },
+        { name: "Vivian", affinity: "Mystic-Tower-Sweep-Belohnungen +6 %. Schildhelden ATK/HP +6 %.", obtain: "Stufe 40 im Mystic Tower erreichen" },
+        { name: "Artemis", affinity: "Honor Fortune in Crown Glory +2 %. Bogenschützen ATK/HP +6 %.", obtain: "50 Kämpfe in Knights’ Ascent" },
+        { name: "Freya", affinity: "Glory-Arena-Schaden +5 %. Pikenhelden ATK/HP +6 %.", obtain: "9.000 Punkte im Grand Launch Fest, im siebentägigen Serverstart" },
+        { name: "Hera", affinity: "Schadensreduktion Verbündeter bei Northern Enemy +5 %. Kavallerie ATK/HP +6 %.", obtain: "Vermutlich an ein Zeitalter gebunden" },
+        { name: "Eve", affinity: "Bevölkerungsrekrutierung +5/Sek. Bogenschützen ATK/HP +6 %.", obtain: "Insgesamt fünf Patrouillen abschließen" },
+        { name: "Hestia", affinity: "Kampagnen-Gold +5 %. Pikenhelden ATK/HP +11 %.", obtain: "Wissen (Berater) Stufe 3" },
+        { name: "Nike", affinity: "4 % Chance auf +1 Norman Oak in der Glory Arena. Pikenhelden ATK/HP +6 %.", obtain: "40 Kämpfe in der Glory Arena" },
       ],
       sections: [
         {

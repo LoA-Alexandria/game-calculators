@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useCallback, useId, useMemo, useRef, useState, useSyncExternalStore, type KeyboardEvent } from "react";
-import { guideLayout } from "../../lib/content/guides";
+import { guideHref, guideLayout } from "../../lib/content/guides";
 import { heroAppearances } from "../../lib/content/hero-links";
 import { layoutTexts, type BuildZone } from "../../lib/content/hero-layouts";
 import type { PaintingTexts } from "../../lib/content/artwork";
@@ -20,11 +20,13 @@ import {
   type HeroRarity,
 } from "../../lib/content/heroes";
 import { LOCALE_CODES, fill, getDictionary, type Dictionary } from "../../lib/i18n";
+import { HERO_SKIN_GROUPS, HERO_SKINS, skinSearchText, skinsFor } from "../../lib/content/skins";
 import { useAuth } from "../components/AuthProvider";
 import { ChevronIcon, CloseIcon, PenIcon } from "../components/Icons";
 import { HeroPortrait } from "../components/HeroPortrait";
 import { useLocale } from "../components/LocaleProvider";
 import { HeroAbilities } from "./HeroAbilities";
+import { SkinCatalog, SkinLines } from "./SkinCatalog";
 
 type Guide = Dictionary["guideEntries"]["heroes"];
 
@@ -104,10 +106,20 @@ export function HeroRoster({ guide }: { guide: Guide }) {
   const { allows } = useAuth();
   const [rarity, setRarity] = useState<HeroRarity | "all">("all");
   const [query, setQuery] = useState("");
-  // Search every language's wording, so a reader finds a skill by the name they know.
+  // Search every language's wording, so a reader finds a skill or skin by the name they know.
+  const skinCatalogs = useMemo(
+    () => LOCALE_CODES.map((code) => getDictionary(code).guideEntries.heroes.skinTexts),
+    [],
+  );
   const rows = useMemo(
-    () => searchHeroes(query, rarity, LOCALE_CODES.map((code) => getDictionary(code).guideEntries.heroes.heroTexts)),
-    [query, rarity],
+    () =>
+      searchHeroes(
+        query,
+        rarity,
+        LOCALE_CODES.map((code) => getDictionary(code).guideEntries.heroes.heroTexts),
+        (hero) => skinSearchText(hero.name, HERO_SKINS, skinCatalogs),
+      ),
+    [query, rarity, skinCatalogs],
   );
   const grouped = rarity === "all" && !query.trim();
   const fragmentLabels = guide.fragments;
@@ -191,6 +203,53 @@ export function HeroRoster({ guide }: { guide: Guide }) {
         </ul>
       )}
       <p className="hero-credit">{guide.portraitCredit}</p>
+
+      <h2>{guide.sourcesHeading}</h2>
+      <div className="rule-grid">
+        {guide.sources.map((source) => (
+          <article className="rule-card source-card" key={source.title}>
+            <div>
+              <h3>{source.title}</h3>
+              <p>{source.body}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+      <p className="hero-credit">{guide.obtainCredit}</p>
+
+      <h2>{guide.skinsHeading}</h2>
+      <p className="guide-lede">{guide.skinsLede}</p>
+      <div className="rule-grid">
+        {guide.skinSources.map((source) => (
+          <article className="rule-card source-card" key={source.title}>
+            <div>
+              <h3>{source.title}</h3>
+              <p>{source.body}</p>
+            </div>
+          </article>
+        ))}
+      </div>
+      <SkinCatalog
+        skins={HERO_SKINS}
+        groups={guide.skinGroups}
+        groupOrder={HERO_SKIN_GROUPS}
+        texts={guide.skinTexts}
+        colName={guide.colName}
+        colSkin={guide.colSkin}
+        colObtain={guide.colObtain}
+        missableLabel={guide.missableLabel}
+        unconfirmedLabel={guide.unconfirmedLabel}
+        ownerOf={(name) => {
+          const hero = HEROES.find((entry) => entry.name === name);
+          return {
+            name,
+            href: hero ? `${guideHref("heroes")}#${encodeURIComponent(hero.id)}` : null,
+            rarity: hero?.rarity,
+            src: hero?.images[0] ? heroImageUrl(hero.images[0]) : null,
+          };
+        }}
+      />
+      <p className="hero-credit">{guide.skinsCredit}</p>
 
       <h2>{guide.basicsHeading}</h2>
       <div className="rule-grid">
@@ -320,6 +379,7 @@ function HeroDetail({ hero: row, guide, nameId }: { hero: Hero; guide: Guide; na
     counter: layoutGuide.labelCounters,
   };
   const nothing = !found.tiers.length && !found.builds.length && !found.roles.length && !found.paintings.length;
+  const listedSkins = skinsFor(HERO_SKINS, hero.name);
 
   return (
     <>
@@ -329,7 +389,6 @@ function HeroDetail({ hero: row, guide, nameId }: { hero: Hero; guide: Guide; na
           <h2 id={nameId}>{hero.name}</h2>
           <p>
             <span className="rarity" data-rarity={hero.rarity}>{hero.rarity}</span>
-            {hero.obtain ? <span className="hero-obtain">{guide.colObtain}: {hero.obtain}</span> : null}
           </p>
           {hero.images.length > 1 ? (
             <div className="hero-skins" role="group" aria-label={guide.imagesLabel}>
@@ -352,6 +411,24 @@ function HeroDetail({ hero: row, guide, nameId }: { hero: Hero; guide: Guide; na
       </header>
 
       <div className="hero-detail-body">
+        {hero.obtain ? (
+          <>
+            <h3>{guide.colObtain}</h3>
+            <p>{hero.obtain}</p>
+          </>
+        ) : null}
+        {listedSkins.length > 0 ? (
+          <>
+            <h3>{guide.skinsHeading}</h3>
+            <SkinLines
+              skins={listedSkins}
+              texts={guide.skinTexts}
+              missableLabel={guide.missableLabel}
+              unconfirmedLabel={guide.unconfirmedLabel}
+            />
+          </>
+        ) : null}
+
         <h3>{guide.skillsHeading}</h3>
         <HeroAbilities hero={hero} guide={guide} />
 

@@ -10,6 +10,10 @@
  *
  * Upgrade order on the guide is the community table already published here,
  * not the wiki's level list (wiki phase 2 takes Fortuna and Bastet to 90).
+ *
+ * Where each goddess comes from is Autumn's obtain guide, shared on Discord on
+ * 9 August 2026. It also named Isis and Calypso, who are not on the wiki page;
+ * they are listed here without a portrait until someone sends one.
  */
 
 import roster from "../data/goddesses.json" with { type: "json" };
@@ -26,6 +30,13 @@ export type Goddess = {
   images: string[];
   /** Wiki sidenote: this skin raises her to SSR. */
   skinRaisesTo?: "SSR";
+  /**
+   * Her source has been and gone, so a new account cannot reach her. Language
+   * independent, which is why it is here and not in the `obtain` text.
+   */
+  missable?: boolean;
+  /** Nobody has confirmed where she comes from; the `obtain` text says what is suspected. */
+  unconfirmed?: boolean;
 };
 
 export type GoddessData = { goddesses: Goddess[] };
