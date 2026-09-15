@@ -127,3 +127,13 @@ test("every published dictionary keys its hero texts to a hero in the roster", a
   }
   assert.deepEqual(getDictionary("en").guideEntries.heroes.heroTexts, {}, "English is the roster JSON itself");
 });
+
+test("the heroes banner collage uses primary portraits that exist on disk", async () => {
+  const { access } = await import("node:fs/promises");
+  const { HERO_BANNER_IMAGES } = await import("../lib/content/hero-banner.ts");
+  const primary = new Set(HEROES.flatMap((hero) => (hero.images[0] ? [hero.images[0]] : [])));
+  for (const file of HERO_BANNER_IMAGES) {
+    assert.ok(primary.has(file), `${file} should be a primary roster portrait`);
+    await access(new URL(`../public/heroes/${file}`, import.meta.url));
+  }
+});
