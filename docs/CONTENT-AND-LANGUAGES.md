@@ -410,11 +410,13 @@ Members with `guides.draft` see **Edit linking** on the guide, which opens
   the same step of one track would both claim to be “#1”, so the export warns.
 - **Position** in the link order is what the advice is: the first hero is the
   one to spend a single link on, the second is next, and so on.
-- **Note** is optional prose beside a hero, not game data, so every language —
-  English included — keeps its own copy and none is the source. One or every
-  language is shown, the same as the other editors. A note written in one
-  language but not the others would render blank there, so the export warns
-  about that too.
+- **Note** is optional prose beside a hero, not game data, so it lives in the
+  dictionaries rather than the JSON. English is the text the other languages
+  fall back to, so it is shown beside the reader's language, or every language
+  with **Edit all languages** — the shared controls in
+  `app/components/EditorLanguages.tsx`. A language without its own note shows
+  the English one as its placeholder, because that is what a reader there gets,
+  and the export lists what is still untranslated.
 
 The draft is saved in that browser only
 (`localStorage['popepoch-linking-draft']`). **Export** produces the complete

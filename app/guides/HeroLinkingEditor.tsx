@@ -27,10 +27,11 @@ import {
   type LinkingProblem,
 } from "../../lib/content/hero-linking-editor";
 import { HERO_RARITIES, heroNamed, heroPortrait } from "../../lib/content/heroes";
-import { DEFAULT_LOCALE, LOCALES, localeMeta, type Dictionary, type Locale } from "../../lib/i18n";
+import type { Dictionary, Locale } from "../../lib/i18n";
 import { LINKING_DRAFT_STORAGE_KEY } from "../../lib/site";
 import { CheckIcon, CloseIcon, CopyIcon, DownloadIcon } from "../components/Icons";
 import { HeroPortrait } from "../components/HeroPortrait";
+import { AllLanguagesToggle, DictionaryBlocks, TranslatedField, useEditorLanguages } from "../components/EditorLanguages";
 import { useLocale } from "../components/LocaleProvider";
 import { createPersistentStore } from "../components/persistentStore";
 import { BackLink, PageHead } from "../components/Ui";
@@ -64,25 +65,16 @@ type Ctx = {
   sources: Record<LinkSource, string>;
 };
 
-/** One note field per shown language. A note is prose, so no language is the source. */
-function NoteFields({ ctx, id, list, uid }: { ctx: Ctx; id: string; list: LinkList; uid: string }) {
+/** The note in each shown language. English is the reference the others fall back to. */
+function NoteField({ ctx, list, uid }: { ctx: Ctx; list: LinkList; uid: string }) {
   const { state, commit, e } = ctx;
-  const many = ctx.languages.length > 1;
   return (
-    <div className="field layout-text-field">
-      <label htmlFor={`${id}-${ctx.languages[0]}`}>{e.fieldNote}</label>
-      {ctx.languages.map((language) => (
-        <div className="layout-lang-input" key={language}>
-          {many ? <span className="layout-lang" title={localeMeta(language).label}>{language.toUpperCase()}</span> : null}
-          <input
-            id={`${id}-${language}`}
-            value={noteOf(state, language, list, uid)}
-            aria-label={many ? `${e.fieldNote} (${localeMeta(language).label})` : undefined}
-            onChange={(event) => commit(setNote(state, language, list, uid, event.target.value))}
-          />
-        </div>
-      ))}
-    </div>
+    <TranslatedField
+      label={e.fieldNote}
+      languages={ctx.languages}
+      get={(locale) => noteOf(state, locale, list, uid)}
+      set={(locale, value) => commit(setNote(state, locale, list, uid, value))}
+    />
   );
 }
 
@@ -137,20 +129,18 @@ function HeroName({ hero }: { hero: string }) {
 }
 
 export function HeroLinkingEditor() {
-  const { t, tf, locale } = useLocale();
+  const { t, tf } = useLocale();
   const e = t.linkingEditor;
   const id = useId();
-  const language = LOCALES.some((entry) => entry.code === locale) ? locale : DEFAULT_LOCALE;
+  // A note is prose in the dictionaries, but English is the text the others fall
+  // back to, so it is always shown beside the reader's language.
+  const { languages } = useEditorLanguages({ withDefault: true });
 
   const draft = useSyncExternalStore(draftStore.subscribe, draftStore.getSnapshot, draftStore.getServerSnapshot);
   const state = draft ?? PUBLISHED_LINKING;
   const commit = (next: LinkingEditorState) => draftStore.set(next);
 
-  const [allLanguages, setAllLanguages] = useState(false);
   const [exportOpen, setExportOpen] = useState(false);
-  const languages = allLanguages
-    ? LOCALES.map((entry) => entry.code)
-    : [...new Set<Locale>([DEFAULT_LOCALE, language])];
   const ctx: Ctx = { state, commit, e, tf, languages, sources: t.guideEntries.heroLinking.sources };
 
   const changes = useMemo(() => countLinkingChanges(PUBLISHED_LINKING, state), [state]);
@@ -167,10 +157,7 @@ export function HeroLinkingEditor() {
       <PageHead eyebrow={e.eyebrow} title={e.title} lede={e.lede} />
 
       <div className="tier-toolbar tier-edit-toolbar">
-        <label className="tier-edit-check">
-          <input type="checkbox" checked={allLanguages} onChange={(event) => setAllLanguages(event.target.checked)} />
-          {e.allLanguages}
-        </label>
+        <AllLanguagesToggle />
         <div className="tier-edit-actions">
           <span className="tier-edit-status" aria-live="polite">
             {changes > 0 ? `${changes === 1 ? e.changeOne : tf(e.changes, { count: changes })} · ${e.savedNote}` : e.unchanged}
@@ -223,7 +210,7 @@ export function HeroLinkingEditor() {
                       onChange={(event) => commit(updateLink(state, link.uid, { step: Math.max(1, Number(event.target.value) || 1) }))}
                     />
                   </div>
-                  <NoteFields ctx={ctx} id={`${id}-link-note-${link.uid}`} list="links" uid={link.uid} />
+                  <NoteField ctx={ctx} list="links" uid={link.uid} />
                 </div>
               </li>
             ))}
@@ -260,7 +247,7 @@ export function HeroLinkingEditor() {
                       {state.priority.map((_, rank) => <option key={rank} value={rank}>{rank + 1}</option>)}
                     </select>
                   </div>
-                  <NoteFields ctx={ctx} id={`${id}-target-note-${target.uid}`} list="priority" uid={target.uid} />
+                  <NoteField ctx={ctx} list="priority" uid={target.uid} />
                 </div>
               </li>
             ))}
@@ -346,21 +333,7 @@ function ExportDialog({ ctx, problems, onClose }: { ctx: Ctx; problems: LinkingP
         <textarea readOnly value={json} rows={12} spellCheck={false} aria-label="lib/data/hero-linking.json" />
       </div>
 
-      <div className="tier-export-block">
-        <h3>{e.exportTexts}</h3>
-        {LOCALES.map((locale) => (
-          <div key={locale.code} className="tier-export-snippet">
-            <div className="tier-export-head">
-              <code>{`lib/i18n/dictionaries/${locale.code}.ts`}</code>
-              <button className="small-button" type="button" onClick={() => void copy(locale.code, blocks[locale.code])}>
-                {copied === locale.code ? <CheckIcon className="icon icon-sm" /> : <CopyIcon className="icon icon-sm" />}
-                {copied === locale.code ? e.copied : e.copy}
-              </button>
-            </div>
-            <textarea readOnly value={blocks[locale.code]} rows={6} spellCheck={false} aria-label={`lib/i18n/dictionaries/${locale.code}.ts`} />
-          </div>
-        ))}
-      </div>
+      <DictionaryBlocks blocks={blocks} title={e.exportTexts} rows={6} />
     </dialog>
   );
 }

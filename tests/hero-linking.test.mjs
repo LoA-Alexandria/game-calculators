@@ -58,11 +58,15 @@ test("the published list is the one the community shared", () => {
   assert.deepEqual(LINK_PRIORITY.map((target) => target.hero), ["Joan of Arc", "Achilles"]);
 });
 
-test("a note falls back to nothing rather than to another language", () => {
-  assert.equal(linkNote("King Arthur", {}), "");
-  assert.equal(linkNote("King Arthur", { links: { "King Arthur": "  Grail #1 " } }), "Grail #1");
-  assert.equal(priorityNote("Joan of Arc", { links: { "Joan of Arc": "wrong list" } }), "");
-  assert.equal(priorityNote("Joan of Arc", { priority: { "Joan of Arc": "first" } }), "first");
+test("a note a language has not translated yet shows the English one", () => {
+  const english = { links: { "King Arthur": "Needs 1 star." }, priority: { "Joan of Arc": "first" } };
+  assert.equal(linkNote("King Arthur", {}, {}), "");
+  assert.equal(linkNote("King Arthur", { links: { "King Arthur": "  Braucht 1 Stern. " } }, english), "Braucht 1 Stern.");
+  assert.equal(linkNote("King Arthur", {}, english), "Needs 1 star.", "an untranslated note falls back");
+  assert.equal(linkNote("Merlin", {}, english), "", "a hero with no note anywhere stays blank");
+  // The two lists are separate, so a note cannot leak from one into the other.
+  assert.equal(priorityNote("Joan of Arc", { links: { "Joan of Arc": "wrong list" } }, {}), "");
+  assert.equal(priorityNote("Joan of Arc", {}, english), "first");
 });
 
 test("every published dictionary keys its notes to a hero that is in the guide", () => {
@@ -145,13 +149,16 @@ test("notes are kept per language and exported as one block each", () => {
   assert.ok(blocks.de.includes("        links: {"));
   assert.equal(blocks.de.includes("priority"), false, "an empty list is left out");
 
-  // A note in one language but not the others would render blank there.
+  // An English note lists the languages that still fall back to it.
   const problems = findLinkingProblems(state);
   assert.deepEqual(problems.filter((problem) => problem.code === "missingNote").map((problem) => problem.language), [
     "Français",
     "Deutsch",
     "Français",
   ]);
+  // A note only in German is not flagged: there is no English text to fall back from.
+  const germanOnly = setNote(published, "de", "links", uidOf(published, "links", "Merlin"), "Nur Deutsch");
+  assert.equal(findLinkingProblems(germanOnly).some((problem) => problem.code === "missingNote"), false);
 
   // Removing a row takes its note in every language with it.
   state = removeLink(state, arthur);

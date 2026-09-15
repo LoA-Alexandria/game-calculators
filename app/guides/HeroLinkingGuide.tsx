@@ -10,7 +10,7 @@ import {
   priorityNote,
 } from "../../lib/content/hero-linking";
 import { heroNamed, heroPortrait } from "../../lib/content/heroes";
-import { fill, type Dictionary } from "../../lib/i18n";
+import { DEFAULT_LOCALE, fill, getDictionary, type Dictionary } from "../../lib/i18n";
 import { useAuth } from "../components/AuthProvider";
 import { PenIcon } from "../components/Icons";
 import { HeroPortrait } from "../components/HeroPortrait";
@@ -40,6 +40,8 @@ function HeroName({ hero }: { hero: string }) {
 export function HeroLinkingGuide({ guide }: { guide: Guide }) {
   const { t } = useLocale();
   const { allows } = useAuth();
+  // A note nobody has translated yet shows its English text rather than nothing.
+  const english = getDictionary(DEFAULT_LOCALE).guideEntries.heroLinking.linkTexts;
 
   return (
     <div className="guide-wide linking-guide">
@@ -72,7 +74,7 @@ export function HeroLinkingGuide({ guide }: { guide: Guide }) {
               <h3>{guide.sources[source]}</h3>
               <ul className="linking-list">
                 {links.map((link) => {
-                  const note = linkNote(link.hero, guide.linkTexts);
+                  const note = linkNote(link.hero, guide.linkTexts, english);
                   return (
                     <li className="linking-row" key={link.hero}>
                       <span className="linking-step">{fill(guide.stepLabel, { step: link.step })}</span>
@@ -91,7 +93,7 @@ export function HeroLinkingGuide({ guide }: { guide: Guide }) {
       <p className="guide-lede">{guide.priorityLede}</p>
       <ol className="linking-list linking-priority">
         {LINK_PRIORITY.map((target, index) => {
-          const note = priorityNote(target.hero, guide.linkTexts);
+          const note = priorityNote(target.hero, guide.linkTexts, english);
           return (
             <li className="linking-row" key={target.hero}>
               <span className="linking-rank">{fill(guide.rankLabel, { rank: index + 1 })}</span>
