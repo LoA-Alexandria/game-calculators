@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
+import { LOCALE_CODES, getDictionary } from "../lib/i18n/index.ts";
 import { HEROES } from "../lib/content/heroes.ts";
 import {
   PAINTING_SETS,
@@ -8,9 +9,6 @@ import {
   setsByRarity,
 } from "../lib/content/artwork.ts";
 import { SET_SKILL_BUILDS, setSkillRank } from "../lib/content/artwork-layouts.ts";
-import en from "../lib/i18n/dictionaries/en.ts";
-import de from "../lib/i18n/dictionaries/de.ts";
-import fr from "../lib/i18n/dictionaries/fr.ts";
 import { sectionById } from "../lib/navigation.ts";
 
 test("catalogue covers Autumn's rarities and does not invent Buzz Aldrin's fourth hero", () => {
@@ -47,7 +45,7 @@ test("artwork sits in Core elements and artwork layouts stays under Layouts", ()
   const layouts = sectionById("guides").items.find((entry) => entry.href === "/guides/artwork-layouts/");
   assert.equal(artwork?.categoryId, "coreElements");
   assert.equal(layouts?.categoryId, "layouts");
-  for (const dictionary of [en, de, fr]) {
+  for (const dictionary of LOCALE_CODES.map(getDictionary)) {
     assert.equal(dictionary.guideEntries.artwork.status.length > 0, true);
     assert.equal(dictionary.guideEntries.artworkLayouts.levels[0]?.stat, "ATK");
     assert.equal(dictionary.guideEntries.artworkLayouts.buildNames.crit.length > 0, true);

@@ -3239,6 +3239,32 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
   font-weight: 700;
 }
 
+/* Shared editor language controls (app/components/EditorLanguages.tsx). */
+.translated-field { margin-bottom: 12px; }
+.translated-field .layout-lang-input input,
+.translated-field .layout-lang-input textarea { width: 100%; }
+.layout-lang-input.is-missing input,
+.layout-lang-input.is-missing textarea { border-style: dashed; background: var(--surface-2); }
+.layout-lang-input.is-missing .layout-lang { color: var(--warn); }
+.editor-languages-bar { justify-content: flex-end; margin: 0 0 10px; }
+.text-button {
+  justify-self: start;
+  margin: 4px 0 0;
+  padding: 2px 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  font-size: .8rem;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.text-button:hover { color: var(--accent-hi); }
+.text-button:focus-visible { outline: none; box-shadow: var(--ring); border-radius: 4px; }
+.wording-editor { display: grid; gap: 4px; margin-top: 8px; padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface-2); }
+
 .layout-zones { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
 .layout-zone {
   display: grid;

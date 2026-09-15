@@ -2,9 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 
-import en from "../lib/i18n/dictionaries/en.ts";
-import de from "../lib/i18n/dictionaries/de.ts";
-import fr from "../lib/i18n/dictionaries/fr.ts";
+import { getDictionary, mapLocales } from "../lib/i18n/index.ts";
 import { LAYOUT_DATA, layoutTexts } from "../lib/content/hero-layouts.ts";
 import {
   addBuild,
@@ -36,11 +34,8 @@ import {
   toLayout,
 } from "../lib/content/hero-layout-editor.ts";
 
-const TEXTS = {
-  en: layoutTexts(en.guideEntries.heroLayouts),
-  de: layoutTexts(de.guideEntries.heroLayouts),
-  fr: layoutTexts(fr.guideEntries.heroLayouts),
-};
+// Every registered language, so the test still runs after one is added.
+const TEXTS = mapLocales((locale) => layoutTexts(getDictionary(locale).guideEntries.heroLayouts));
 const published = () => fromLayout(LAYOUT_DATA, TEXTS);
 const read = (path) => readFileSync(new URL(path, import.meta.url), "utf8").replace(/\r\n/g, "\n");
 
@@ -153,7 +148,11 @@ test("stored drafts are validated before use", () => {
   assert.equal(parseLayoutDraft(null), null);
   assert.equal(parseLayoutDraft("nope"), null);
   assert.equal(parseLayoutDraft(JSON.stringify({ ...state, version: 3 })), null);
+  // A draft saved before a language existed takes that language from its dictionary.
+  const older = structuredClone(state);
+  delete older.texts.de;
+  assert.deepEqual(parseLayoutDraft(JSON.stringify(older)).texts.de, state.texts.de);
   const broken = structuredClone(state);
-  delete broken.texts.de;
+  delete broken.texts.en;
   assert.equal(parseLayoutDraft(JSON.stringify(broken)), null);
 });

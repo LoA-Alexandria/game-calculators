@@ -55,3 +55,6 @@ export const THEATER_DRAFT_STORAGE_KEY = "popepoch-theater-draft";
 
 /** Whether the desktop sidebar is collapsed to an icon rail. */
 export const NAV_COLLAPSED_STORAGE_KEY = "popepoch-nav-collapsed";
+
+/** Whether editors show every language's text field, shared by all editors. */
+export const EDITOR_ALL_LANGUAGES_STORAGE_KEY = "popepoch-editor-all-languages";

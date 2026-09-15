@@ -5,6 +5,7 @@ import { useCallback, useId, useMemo, useRef, useState, useSyncExternalStore, ty
 import { guideLayout } from "../../lib/content/guides";
 import { heroAppearances } from "../../lib/content/hero-links";
 import { layoutTexts, type BuildZone } from "../../lib/content/hero-layouts";
+import type { PaintingTexts } from "../../lib/content/artwork";
 import {
   HERO_FRAGMENT_KEYS,
   HERO_RARITIES,
@@ -18,7 +19,7 @@ import {
   type Hero,
   type HeroRarity,
 } from "../../lib/content/heroes";
-import { fill, type Dictionary } from "../../lib/i18n";
+import { LOCALE_CODES, fill, getDictionary, type Dictionary } from "../../lib/i18n";
 import { useAuth } from "../components/AuthProvider";
 import { ChevronIcon, CloseIcon, PenIcon } from "../components/Icons";
 import { HeroPortrait } from "../components/HeroPortrait";
@@ -103,7 +104,11 @@ export function HeroRoster({ guide }: { guide: Guide }) {
   const { allows } = useAuth();
   const [rarity, setRarity] = useState<HeroRarity | "all">("all");
   const [query, setQuery] = useState("");
-  const rows = useMemo(() => searchHeroes(query, rarity, [guide.heroTexts]), [query, rarity, guide]);
+  // Search every language's wording, so a reader finds a skill by the name they know.
+  const rows = useMemo(
+    () => searchHeroes(query, rarity, LOCALE_CODES.map((code) => getDictionary(code).guideEntries.heroes.heroTexts)),
+    [query, rarity],
+  );
   const grouped = rarity === "all" && !query.trim();
   const fragmentLabels = guide.fragments;
 
@@ -298,6 +303,7 @@ function HeroDialog({
 
 function HeroDetail({ hero: row, guide, nameId }: { hero: Hero; guide: Guide; nameId: string }) {
   const { t, tf } = useLocale();
+  const artworkTexts = t.guideEntries.artwork.catalogTexts as PaintingTexts;
   const [shown, setShown] = useState(0);
   // Name, rarity, and pictures are shared; the game text comes from the dictionary.
   const hero = localizedHero(row, guide.heroTexts);
@@ -395,9 +401,9 @@ function HeroDetail({ hero: row, guide, nameId }: { hero: Hero; guide: Guide; na
                 <Link href="/guides/artwork/">{guide.inArtwork}</Link>
                 <span className="hero-link-values">
                   {found.paintings.map((entry) => (
-                    <span className="hero-link-chip" key={`${entry.set}-${entry.painting}`}>
-                      {entry.painting}
-                      <small>{entry.set}</small>
+                    <span className="hero-link-chip" key={`${entry.setId}-${entry.paintingId}`}>
+                      {artworkTexts.paintings?.[entry.paintingId]?.name?.trim() || entry.painting}
+                      <small>{artworkTexts.sets?.[entry.setId]?.name?.trim() || entry.set}</small>
                     </span>
                   ))}
                 </span>

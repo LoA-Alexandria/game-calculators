@@ -31,9 +31,10 @@ import {
   PUBLISHED_THEATER,
 } from "../../lib/content/goddess-theater-editor";
 import { THEATER_DATA } from "../../lib/content/goddess-theater";
-import { DEFAULT_LOCALE, LOCALES, localeMeta, type Dictionary, type Locale } from "../../lib/i18n";
+import { DEFAULT_LOCALE, LOCALES, type Dictionary, type Locale } from "../../lib/i18n";
 import { THEATER_DRAFT_STORAGE_KEY } from "../../lib/site";
 import { HeroPortrait } from "../components/HeroPortrait";
+import { AllLanguagesToggle, DictionaryBlocks, TranslatedField, useEditorLanguages } from "../components/EditorLanguages";
 import { useLocale } from "../components/LocaleProvider";
 import { createPersistentStore } from "../components/persistentStore";
 import { BackLink, PageHead } from "../components/Ui";
@@ -94,19 +95,18 @@ type Ctx = {
   e: EditorText;
   tf: (template: string, values: Record<string, string | number>) => string;
   language: Locale;
-  languages: Locale[];
+  languages: readonly Locale[];
 };
 
 export function GoddessTheaterEditor() {
-  const { t, tf, locale } = useLocale();
+  const { t, tf } = useLocale();
   const e = t.theaterEditor;
-  const language = (LOCALES.some((entry) => entry.code === locale) ? locale : DEFAULT_LOCALE) as Locale;
+  // Play and role names in the JSON are English, so English is always shown next to the reader's language.
+  const { language, languages } = useEditorLanguages({ withDefault: true });
 
   const draft = useSyncExternalStore(draftStore.subscribe, draftStore.getSnapshot, draftStore.getServerSnapshot);
   const state = draft ?? PUBLISHED_THEATER;
   const commit = (next: TheaterEditorState) => draftStore.set(next);
-  const [allLanguages, setAllLanguages] = useState(false);
-  const languages = allLanguages ? LOCALES.map((entry) => entry.code) : [...new Set<Locale>([DEFAULT_LOCALE, language])];
   const ctx: Ctx = { state, commit, e, tf, language, languages };
 
   const [playUid, setPlayUid] = useState<string | null>(null);
@@ -149,10 +149,7 @@ export function GoddessTheaterEditor() {
           <span className="visually-hidden">{e.searchLabel}</span>
           <input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder={e.searchPlaceholder} />
         </label>
-        <label className="tier-edit-check">
-          <input type="checkbox" checked={allLanguages} onChange={(event) => setAllLanguages(event.target.checked)} />
-          {e.allLanguages}
-        </label>
+        <AllLanguagesToggle />
         <div className="tier-edit-actions">
           <span className="tier-edit-status" aria-live="polite">
             {changes > 0 ? `${changes === 1 ? e.changeOne : tf(e.changes, { count: changes })} · ${e.savedNote}` : e.unchanged}
@@ -199,36 +196,18 @@ export function GoddessTheaterEditor() {
 
 function LanguageFields({
   ctx,
-  id,
   label,
   get,
   set,
   english,
 }: {
   ctx: Ctx;
-  id: string;
   label: string;
   get: (language: Locale) => string;
   set: (language: Locale, value: string) => void;
   english: string;
 }) {
-  return (
-    <div className="field layout-text-field">
-      <label htmlFor={`${id}-${ctx.languages[0]}`}>{label}</label>
-      {ctx.languages.map((language) => (
-        <div className="layout-lang-input" key={language}>
-          {ctx.languages.length > 1 ? <span className="layout-lang" title={localeMeta(language).label}>{language.toUpperCase()}</span> : null}
-          <input
-            id={`${id}-${language}`}
-            value={get(language)}
-            placeholder={language === DEFAULT_LOCALE ? undefined : english}
-            aria-label={ctx.languages.length > 1 ? `${label} (${localeMeta(language).label})` : undefined}
-            onChange={(event) => set(language, event.target.value)}
-          />
-        </div>
-      ))}
-    </div>
-  );
+  return <TranslatedField label={label} languages={ctx.languages} get={get} set={set} fallback={english} />;
 }
 
 function PlayForm({ ctx, play, onRemoved }: { ctx: Ctx; play: EditorPlay; onRemoved: () => void }) {
@@ -256,7 +235,6 @@ function PlayForm({ ctx, play, onRemoved }: { ctx: Ctx; play: EditorPlay; onRemo
       </div>
       <LanguageFields
         ctx={ctx}
-        id={`${id}-name`}
         label={e.fieldName}
         english={englishName}
         get={(language) => playTextOf(state, language, play.uid).name}
@@ -300,7 +278,6 @@ function PlayForm({ ctx, play, onRemoved }: { ctx: Ctx; play: EditorPlay; onRemo
                   </div>
                   <LanguageFields
                     ctx={ctx}
-                    id={`${id}-role-${row.uid}`}
                     label={e.fieldRole}
                     english={playTextOf(state, DEFAULT_LOCALE, play.uid).roles[row.goddess] || row.role}
                     get={(language) => playTextOf(state, language, play.uid).roles[row.goddess] ?? ""}
@@ -553,21 +530,7 @@ function ExportDialog({ ctx, onClose }: { ctx: Ctx; onClose: () => void }) {
         <textarea readOnly value={json} rows={12} spellCheck={false} aria-label="lib/data/goddess-theater.json" />
       </div>
 
-      <div className="tier-export-block">
-        <h3>{e.exportTexts}</h3>
-        {LOCALES.map((locale) => (
-          <div key={locale.code} className="tier-export-snippet">
-            <div className="tier-export-head">
-              <code>{`lib/i18n/dictionaries/${locale.code}.ts`}</code>
-              <button className="small-button" type="button" onClick={() => void copy(locale.code, blocks[locale.code])}>
-                {copied === locale.code ? <CheckIcon className="icon icon-sm" /> : <CopyIcon className="icon icon-sm" />}
-                {copied === locale.code ? e.copied : e.copy}
-              </button>
-            </div>
-            <textarea readOnly value={blocks[locale.code]} rows={6} spellCheck={false} aria-label={`lib/i18n/dictionaries/${locale.code}.ts`} />
-          </div>
-        ))}
-      </div>
+      <DictionaryBlocks blocks={blocks} title={e.exportTexts} rows={6} />
     </dialog>
   );
 }

@@ -15,14 +15,18 @@ import type {
   LayoutBuildData,
   LayoutRowData,
 } from "./artwork-layouts.ts";
+import { DEFAULT_LOCALE, LOCALE_CODES, dictionaryFile, getDictionary, type Locale } from "../i18n/index.ts";
+import { parseTranslations, textIn, translationsFrom, type Translations } from "../i18n/translations.ts";
 
-export const LANGUAGES = ["en", "de", "fr"] as const;
-export type Language = (typeof LANGUAGES)[number];
-export type Translations = Record<Language, string>;
+export type { Translations };
 
 export const TEXT_GROUPS = ["names", "notes", "reasons"] as const;
 export type TextGroup = (typeof TEXT_GROUPS)[number];
+/** New keys and new wording for existing keys, each in every registered language. */
 export type CustomTexts = Record<TextGroup, Record<string, Translations>>;
+
+/** The dictionary group under `guideEntries.artworkLayouts` for each editor group. */
+const DICTIONARY_GROUP = { names: "buildNames", notes: "notes", reasons: "reasons" } as const;
 
 export type EditorRow = {
   uid: string;
@@ -193,12 +197,24 @@ export function addText(state: EditorState, group: TextGroup, key: string, text:
   return { ...state, texts: { ...state.texts, [group]: { ...state.texts[group], [key]: text } } };
 }
 
+/** The wording a key has in every dictionary right now. */
+export function publishedText(group: TextGroup, key: string): Translations {
+  return translationsFrom((locale) => (getDictionary(locale).guideEntries.artworkLayouts[DICTIONARY_GROUP[group]] as Record<string, string>)[key]);
+}
+
+/** The text for a key in one language: the editor's wording first, then the dictionary, then English. */
+export function textFor(texts: CustomTexts, group: TextGroup, key: string, locale: Locale): string {
+  const custom = texts[group][key];
+  if (custom) return textIn(custom, locale);
+  return textIn(publishedText(group, key), locale);
+}
+
 export function addBuild(
   state: EditorState,
   names: Translations,
   fromBuildId?: string,
 ): { state: EditorState; id: string } {
-  const id = layoutIdFrom(names.en, state.builds.map((build) => build.id));
+  const id = layoutIdFrom(names[DEFAULT_LOCALE], state.builds.map((build) => build.id));
   const source = fromBuildId ? findBuild(state, fromBuildId) : undefined;
   let nextId = state.nextId;
   const rows: EditorRow[] = (source?.rows ?? []).map((row) => ({
@@ -244,21 +260,20 @@ export function serializeLayoutData(data: ArtworkLayoutData): string {
   return ["{", `  "builds": [`, ...builds, `  ]`, "}", ""].join("\n");
 }
 
-export function dictionarySnippet(texts: CustomTexts): Record<Language, string> {
-  const result = {} as Record<Language, string>;
-  const labels: Record<TextGroup, string> = {
-    names: "buildNames",
-    notes: "notes",
-    reasons: "reasons",
-  };
-  for (const language of LANGUAGES) {
+/**
+ * Lines to add to or replace in each dictionary for text typed in the editor.
+ * A language left empty gets the English text. Empty when there is none.
+ */
+export function dictionarySnippet(texts: CustomTexts): Record<Locale, string> {
+  const result = {} as Record<Locale, string>;
+  for (const locale of LOCALE_CODES) {
     const blocks = TEXT_GROUPS.flatMap((group) => {
       const entries = Object.entries(texts[group]);
       if (entries.length === 0) return [];
-      const lines = entries.map(([key, value]) => `        ${key}: ${JSON.stringify(value[language].trim() || value.en.trim())},`);
-      return [`      // guideEntries.artworkLayouts.${labels[group]}`, ...lines];
+      const lines = entries.map(([key, value]) => `        ${key}: ${JSON.stringify(textIn(value, locale))},`);
+      return [`      // guideEntries.artworkLayouts.${DICTIONARY_GROUP[group]}`, ...lines];
     });
-    result[language] = blocks.length ? [`// lib/i18n/dictionaries/${language}.ts`, ...blocks].join("\n") : "";
+    result[locale] = blocks.length ? [`// ${dictionaryFile(locale)}`, ...blocks].join("\n") : "";
   }
   return result;
 }
@@ -330,6 +345,12 @@ export function parseDraft(raw: string | null): EditorState | null {
     }
     for (const group of TEXT_GROUPS) {
       if (typeof value.texts[group] !== "object" || value.texts[group] === null) return null;
+      // A draft saved before a language was added loads with that language empty.
+      for (const [key, text] of Object.entries(value.texts[group])) {
+        const parsed = parseTranslations(text);
+        if (!parsed) return null;
+        value.texts[group][key] = parsed;
+      }
     }
     for (const build of value.builds) {
       if (typeof build.id !== "string" || !Array.isArray(build.rows)) return null;

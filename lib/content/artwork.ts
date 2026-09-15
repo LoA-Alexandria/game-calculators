@@ -66,6 +66,42 @@ export const PAINTING_SETS: PaintingSet[] = (catalogue.sets as RawSet[]).map((se
   paintings: set.paintings.map(asPainting),
 }));
 
+/** A set's wording in another language; a missing or blank part keeps the English text. */
+export type PaintingSetText = { name?: string; effect?: string };
+export type PaintingText = { name?: string; productivity?: string };
+
+/**
+ * The catalogue's wording in one language, keyed by set id and painting id.
+ * `lib/data/paintings.json` holds English; `guideEntries.artwork.catalogTexts`
+ * in each dictionary holds the translations. A language added later starts
+ * with `{}` and shows English.
+ */
+export type PaintingTexts = {
+  sets?: Record<string, PaintingSetText>;
+  paintings?: Record<string, PaintingText>;
+};
+
+export function localizedPainting(canvas: Painting, texts: PaintingTexts): Painting {
+  const local = texts.paintings?.[canvas.id];
+  if (!local) return canvas;
+  return {
+    ...canvas,
+    name: local.name?.trim() || canvas.name,
+    productivity: local.productivity?.trim() || canvas.productivity,
+  };
+}
+
+/** The set, and its paintings, with every filled-in translation applied. */
+export function localizedSet(set: PaintingSet, texts: PaintingTexts): PaintingSet {
+  const local = texts.sets?.[set.id];
+  return {
+    ...set,
+    name: local?.name?.trim() || set.name,
+    effect: local?.effect?.trim() || set.effect,
+    paintings: set.paintings.map((canvas) => localizedPainting(canvas, texts)),
+  };
+}
+
 /** Short Discord forms that should still match a roster name in the hero filter. */
 const HERO_ALIASES: Record<string, string[]> = {
   "Alexander the Great": ["alexander"],

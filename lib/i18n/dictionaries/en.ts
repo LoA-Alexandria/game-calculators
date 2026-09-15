@@ -3,8 +3,9 @@
  * that every other language must satisfy, so a missing key is a build error
  * rather than a silently untranslated string.
  *
- * Adding a language: copy this file, translate the values, then register it in
- * `lib/i18n/locales.ts`. Nothing else needs to change.
+ * Adding a language: run `pnpm i18n:add <code> "<Name>"`, which copies this
+ * file and registers the copy in `lib/i18n/index.ts`, then translate the copy.
+ * Nothing else needs to change.
  */
 const en = {
   shell: {
@@ -436,6 +437,7 @@ const en = {
       filterLede: "Type a hero to list every painting that names them.",
       countLabel: "{count} shown",
       empty: "No painting names that hero.",
+      catalogTexts: {},
       layoutsLink: "Unlock, star, and level order",
       sections: [
         {
@@ -1307,12 +1309,6 @@ const en = {
     fieldNote: "Note",
     fieldReason: "Reason",
     newText: "New text…",
-    newTextTitle: "New text",
-    newTextEn: "English",
-    newTextDe: "German",
-    newTextFr: "French",
-    newTextHint: "German and French fall back to English when left empty.",
-    newTextAdd: "Add text",
     cancel: "Cancel",
     remove: "Remove hero",
     removeConfirm: "Remove {hero} from this list?",
@@ -1368,16 +1364,11 @@ const en = {
     rankOf: "Rank of {name}",
     fieldReason: "Why this set",
     fieldNote: "Note under the ranking",
+    fieldBuildName: "Build name",
     fieldInsert: "Show the insert hint after this set",
     none: "—",
     unnamed: "New build",
     newText: "New text…",
-    newTextTitle: "New text",
-    newTextEn: "English",
-    newTextDe: "German",
-    newTextFr: "French",
-    newTextHint: "German and French fall back to English when left empty.",
-    newTextAdd: "Add text",
     cancel: "Cancel",
     removeSet: "Remove",
     close: "Close",
@@ -1470,7 +1461,6 @@ const en = {
     reset: "Discard draft",
     resetConfirm: "Discard every change in this draft, uploaded covers included?",
     export: "Export",
-    allLanguages: "Edit all languages",
     addPlay: "Add play",
     searchLabel: "Search plays",
     searchPlaceholder: "Play, goddess, or role…",
@@ -1537,7 +1527,6 @@ const en = {
     resetConfirm: "Discard every change in this draft, uploaded pictures included?",
     export: "Export",
     problemCount: "{count} things to check",
-    allLanguages: "Edit all languages",
     addHero: "Add hero",
     searchPlaceholder: "Search by name…",
     emptyList: "No hero matches.",
@@ -1613,10 +1602,6 @@ const en = {
     reset: "Discard draft",
     resetConfirm: "Discard every change in this draft?",
     export: "Export",
-    allLanguages: "Edit all languages",
-    langEn: "English",
-    langDe: "German",
-    langFr: "French",
     newBuild: "New build",
     newBuildName: "Name of the new build",
     create: "Create",
@@ -1646,7 +1631,6 @@ const en = {
     chipNote: "Qualifier",
     chipNoteNone: "No qualifier",
     newNote: "New qualifier…",
-    newNoteAdd: "Add qualifier",
     moveTo: "Move to",
     removeHero: "Remove",
     editChip: "Edit {hero}",
@@ -1682,6 +1666,23 @@ const en = {
     announceEnd: "{hero} dropped in {zone}.",
     announceCancel: "Moving {hero} was cancelled.",
     dragInstructions: "To move a hero with the keyboard, focus its handle and press space. Move with the arrow keys, press space to drop, or escape to cancel.",
+  },
+  editorLanguages: {
+    allLanguages: "Edit all languages",
+    missing: "Not translated yet; readers see the English text.",
+    required: "required",
+    newTextTitle: "New text",
+    newTextHint: "Only English is required. Other languages show the English text until someone translates them.",
+    newTextAdd: "Add text",
+    cancel: "Cancel",
+    copy: "Copy",
+    copied: "Copied",
+    editWording: "Edit wording",
+    doneWording: "Done",
+    wordingLabel: "Wording",
+    wordingHint: "Changes this text everywhere it is used. The export lists the new wording for each dictionary.",
+    exportBlocks: "Text for the dictionaries",
+    exportBlocksLede: "Paste each block into its dictionary file.",
   },
   auth: {
     signIn: "Sign in",
@@ -1776,20 +1777,20 @@ const en = {
     noServerBody:
       "There is no server behind this form. Images live in this tab only. Copy the snippet and commit it so everyone can see the guide.",
     translationNote:
-      "A published guide needs its text in every language the site offers. The snippet here is the language you are viewing; add the other two by hand.",
+      "Every language gets its own block. A field left empty in a language falls back to English, so the key exists everywhere; translate it later with the editor or in the dictionary.",
     output: "Entry to commit",
     outputLede:
-      "Paste the dictionary block and the navigation row, then add the page file as noted.",
+      "Paste each dictionary block, then the navigation row, and add the page file as noted.",
     outputNote:
-      "Paste into guideEntries in every dictionary and into guides.items in lib/navigation.ts. Copy the water-supply page for a new slug.",
+      "Paste each block under guideEntries in its dictionary and the row into guides.items in lib/navigation.ts. Copy the water-supply page for a new slug.",
     editTitle: "Edit guide",
     editLede: "Change the text and export the replacement. Committing it is what updates the live page.",
     replaceNote:
-      "Replace the existing guideEntries block with this id. Do not add a second copy. Update every dictionary; the text here is the language you are viewing.",
+      "Replace the existing guideEntries block with this id in each dictionary. Do not add a second copy.",
     removeTitle: "Remove this guide",
     removeLede: "Nothing is deleted until you commit the notes below.",
     removeNote:
-      "Delete the guideEntries block, the navigation row, and the page folder for this slug from English, German, and French.",
+      "Delete the guideEntries block from every dictionary, then the navigation row and the page folder for this slug.",
     removeOutput: "Removal notes",
     cancel: "Back",
   },
@@ -1836,7 +1837,7 @@ const en = {
     editorPreview: "Next five occurrences",
     editorOutput: "Entry for lib/content/events.ts",
     editorOutputNote:
-      "Paste this into EVENTS, add the two texts to every dictionary, and commit. That is what makes the event visible to everyone.",
+      "Paste this into EVENTS, add each dictionary block under eventEntries, and commit. That is what makes the event visible to everyone.",
     editEvent: "Edit",
     removeEvent: "Remove",
     editorEditTitle: "Edit event",
@@ -1873,15 +1874,15 @@ const en = {
     fieldLinkNote: "For example /simulations/irrigation-planner/",
     output: "Entry for lib/content/news.ts",
     outputNote:
-      "Paste the row into NEWS and add the texts under newsEntries in every dictionary.",
+      "Paste the row into NEWS and each dictionary block under newsEntries in its dictionary.",
     editTitle: "Edit news entry",
     editLede: "Change the text and export the replacement. Committing it is what updates the live page.",
     replaceNote:
-      "Replace the existing row with this id. Do not add a second copy. Update newsEntries in every dictionary; the text here is the language you are viewing.",
+      "Replace the existing row with this id. Do not add a second copy. Replace newsEntries with the block for each dictionary.",
     removeTitle: "Remove this news entry",
     removeLede: "Nothing is deleted until you commit the notes below.",
     removeNote:
-      "Delete the NEWS row and the newsEntries block with this id from English, German, and French.",
+      "Delete the NEWS row and the newsEntries block with this id from every dictionary.",
     removeOutput: "Removal notes",
     cancel: "Back to a new entry",
   },

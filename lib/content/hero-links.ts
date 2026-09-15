@@ -19,7 +19,8 @@ export type HeroAppearances = {
   tiers: { tier: TierId; variant?: VariantKey }[];
   builds: { build: string; zone: BuildZone | "counter" }[];
   roles: string[];
-  paintings: { set: string; painting: string }[];
+  /** English names; `setId` and `paintingId` look up translations in `catalogTexts`. */
+  paintings: { setId: string; paintingId: string; set: string; painting: string }[];
 };
 
 /** The roster spelling for a name used by the tier list, layouts, or artwork. */
@@ -66,7 +67,9 @@ function index(): Map<string, HeroAppearances> {
 
   for (const set of PAINTING_SETS) {
     for (const painting of set.paintings) {
-      for (const hero of painting.heroes) entry(hero).paintings.push({ set: set.name, painting: painting.name });
+      for (const hero of painting.heroes) {
+        entry(hero).paintings.push({ setId: set.id, paintingId: painting.id, set: set.name, painting: painting.name });
+      }
     }
   }
 

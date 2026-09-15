@@ -2,13 +2,12 @@ import assert from "node:assert/strict";
 import { readdirSync, readFileSync } from "node:fs";
 import test from "node:test";
 
+import { LOCALE_CODES, getDictionary } from "../lib/i18n/index.ts";
 import { GODDESSES } from "../lib/content/goddesses.ts";
 import { THEATER_PLAYS, localizedPlayName, localizedRoleName, searchTheaterPlays, theaterCoverUrl } from "../lib/content/goddess-theater.ts";
 import { guideLayout } from "../lib/content/guides.ts";
 import { sectionById } from "../lib/navigation.ts";
-import de from "../lib/i18n/dictionaries/de.ts";
 import en from "../lib/i18n/dictionaries/en.ts";
-import fr from "../lib/i18n/dictionaries/fr.ts";
 
 test("every theater cast names a roster goddess and no Brunhilde spelling remains", () => {
   const names = new Set(GODDESSES.map((goddess) => goddess.name));
@@ -88,7 +87,7 @@ test("play and role names fall back to English until a language overrides them",
   assert.equal(localizedRoleName(play, fortuna, {}), fortuna.role);
   assert.equal(localizedPlayName(play, { "count-of-monte-cristo": { name: "Der Graf von Monte Christo" } }), "Der Graf von Monte Christo");
   assert.equal(localizedRoleName(play, fortuna, { "count-of-monte-cristo": { roles: { Fortuna: "Edmond" } } }), "Edmond");
-  for (const dictionary of [en, de, fr]) {
+  for (const dictionary of LOCALE_CODES.map(getDictionary)) {
     assert.deepEqual(dictionary.guideEntries.goddessTheater.playTexts, {});
   }
 });

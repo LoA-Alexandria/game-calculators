@@ -33,9 +33,11 @@ import {
   moveItem,
   moveToGroup,
   parseDraft,
+  publishedText,
   removeItem,
   serializeTierData,
   setOrdered,
+  textFor,
   textKeyFrom,
   toTierData,
   updateItem,
@@ -43,15 +45,15 @@ import {
   type Container,
   type EditorItem,
   type EditorState,
-  type Language,
   type ListId,
   type LooseEntry,
   type Problem,
   type TextGroup,
   type Translations,
 } from "../../lib/content/hero-tier-editor";
-import type { Dictionary } from "../../lib/i18n";
+import { DEFAULT_LOCALE, type Dictionary, type Locale } from "../../lib/i18n";
 import { TIER_DRAFT_STORAGE_KEY } from "../../lib/site";
+import { AllLanguagesToggle, DictionaryBlocks, NewTextForm, WordingEditor, useEditorLanguages } from "../components/EditorLanguages";
 import { HeroAvatar } from "../components/HeroAvatar";
 import { useLocale } from "../components/LocaleProvider";
 import { createPersistentStore } from "../components/persistentStore";
@@ -86,6 +88,7 @@ type Ctx = {
   tf: (template: string, values: Record<string, string | number>) => string;
   labelFor: (group: TextGroup, key?: string) => string;
   keysFor: (group: TextGroup) => string[];
+  languages: readonly Locale[];
 };
 
 function listLabel(text: Text, list: ListId): string {
@@ -100,10 +103,10 @@ function summaryOf(ctx: Ctx, entry: LooseEntry): string {
 }
 
 export function HeroTierEditor() {
-  const { t, tf, locale } = useLocale();
+  const { t, tf } = useLocale();
   const text = t.guideEntries.heroTierList;
   const e = t.tierEditor;
-  const language = (["en", "de", "fr"].includes(locale) ? locale : "en") as Language;
+  const { language, languages } = useEditorLanguages();
 
   const draft = useSyncExternalStore(draftStore.subscribe, draftStore.getSnapshot, draftStore.getServerSnapshot);
   const state = draft ?? PUBLISHED;
@@ -121,17 +124,12 @@ export function HeroTierEditor() {
 
   const view = dragState ?? state;
 
-  const labelFor = (group: TextGroup, key?: string) => {
-    if (!key) return "";
-    const custom = state.texts[group][key];
-    if (custom) return custom[language].trim() || custom.en;
-    return (text[group] as Record<string, string>)[key] ?? key;
-  };
+  const labelFor = (group: TextGroup, key?: string) => (key ? textFor(state.texts, group, key, language) : "");
   const keysFor = (group: TextGroup) => {
     const known = Object.keys(text[group]);
     return [...known, ...Object.keys(state.texts[group]).filter((key) => !known.includes(key))];
   };
-  const ctx: Ctx = { state, commit, list, text, e, tf, labelFor, keysFor };
+  const ctx: Ctx = { state, commit, list, text, e, tf, labelFor, keysFor, languages };
 
   const draftData = useMemo(() => toTierData(state), [state]);
   const changes = useMemo(() => countChanges(PUBLISHED_DATA, draftData), [draftData]);
@@ -248,6 +246,7 @@ export function HeroTierEditor() {
           ))}
         </div>
         <div className="tier-edit-actions">
+          <AllLanguagesToggle />
           <span className="tier-edit-status" aria-live="polite">
             {totalChanges > 0 ? `${totalChanges === 1 ? e.changeOne : tf(e.changes, { count: totalChanges })} · ${e.savedNote}` : e.unchanged}
           </span>
@@ -417,32 +416,21 @@ function AddGroup({ ctx, tier, existing }: { ctx: Ctx; tier: TierId; existing: s
   );
 }
 
-function NewTextForm({ ctx, onAdd, onCancel }: { ctx: Ctx; onAdd: (text: Translations) => void; onCancel: () => void }) {
-  const id = useId();
-  const [value, setValue] = useState<Translations>({ en: "", de: "", fr: "" });
-  const fields: [keyof Translations, string][] = [["en", ctx.e.newTextEn], ["de", ctx.e.newTextDe], ["fr", ctx.e.newTextFr]];
+/**
+ * The wording of a text that is already picked, in the editor's languages. It
+ * changes the text everywhere the key is used, and the export lists the new
+ * wording for each dictionary.
+ */
+function TextWording({ ctx, group, textKey }: { ctx: Ctx; group: TextGroup; textKey: string }) {
+  const current = ctx.state.texts[group][textKey] ?? publishedText(group, textKey);
   return (
-    <div className="tier-edit-newtext">
-      <p className="tier-edit-newtext-title">{ctx.e.newTextTitle}</p>
-      {fields.map(([language, label]) => (
-        <div className="field" key={language}>
-          <label htmlFor={`${id}-${language}`}>{label}</label>
-          <input
-            id={`${id}-${language}`}
-            value={value[language]}
-            onChange={(event) => setValue((current) => ({ ...current, [language]: event.target.value }))}
-          />
-        </div>
-      ))}
-      <p className="tier-small">{ctx.e.newTextHint}</p>
-      <div className="tier-edit-row-actions">
-        <button className="small-button" type="button" disabled={!value.en.trim()} onClick={() => onAdd(value)}>
-          <CheckIcon className="icon icon-sm" />
-          {ctx.e.newTextAdd}
-        </button>
-        <button className="small-button" type="button" onClick={onCancel}>{ctx.e.cancel}</button>
-      </div>
-    </div>
+    <WordingEditor
+      languages={ctx.languages}
+      current={current}
+      multiline={group === "reasons" || group === "notes"}
+      rows={group === "reasons" ? 4 : 2}
+      onChange={(locale, value) => ctx.commit(addText(ctx.state, group, textKey, { ...current, [locale]: value }))}
+    />
   );
 }
 
@@ -485,13 +473,14 @@ function TextSelect({
       </select>
       {creating ? (
         <NewTextForm
-          ctx={ctx}
           onCancel={() => setCreating(false)}
           onAdd={(created) => {
             setCreating(false);
-            onPick(textKeyFrom(created.en, [...keys, ...Object.keys(ctx.state.texts[group])]), created);
+            onPick(textKeyFrom(created[DEFAULT_LOCALE], [...keys, ...Object.keys(ctx.state.texts[group])]), created);
           }}
         />
+      ) : value ? (
+        <TextWording key={`${group}-${value}`} ctx={ctx} group={group} textKey={value} />
       ) : null}
     </div>
   );
@@ -685,11 +674,10 @@ function RolesField({ ctx, item }: { ctx: Ctx; item: EditorItem }) {
       </div>
       {creating ? (
         <NewTextForm
-          ctx={ctx}
           onCancel={() => setCreating(false)}
           onAdd={(created) => {
             setCreating(false);
-            const key = textKeyFrom(created.en, ctx.keysFor("roles"));
+            const key = textKeyFrom(created[DEFAULT_LOCALE], ctx.keysFor("roles"));
             ctx.commit(updateItem(addText(ctx.state, "roles", key, created), ctx.list, item.uid, { roles: [...roles, key] }));
           }}
         />
@@ -788,24 +776,7 @@ function ExportDialog({ ctx, data, onClose }: { ctx: Ctx; data: ReturnType<typeo
         <textarea readOnly value={json} rows={12} spellCheck={false} aria-label="lib/data/hero-tiers.json" />
       </div>
 
-      {snippets.en ? (
-        <div className="tier-export-block">
-          <h3>{ctx.e.exportTexts}</h3>
-          <p className="tier-small">{ctx.e.exportTextsLede}</p>
-          {(["en", "de", "fr"] as const).map((language) => (
-            <div key={language} className="tier-export-snippet">
-              <div className="tier-export-head">
-                <code>{`lib/i18n/dictionaries/${language}.ts`}</code>
-                <button className="small-button" type="button" onClick={() => void copy(language, snippets[language])}>
-                  {copied === language ? <CheckIcon className="icon icon-sm" /> : <CopyIcon className="icon icon-sm" />}
-                  {copied === language ? ctx.e.copied : ctx.e.copy}
-                </button>
-              </div>
-              <textarea readOnly value={snippets[language]} rows={4} spellCheck={false} aria-label={`lib/i18n/dictionaries/${language}.ts`} />
-            </div>
-          ))}
-        </div>
-      ) : null}
+      <DictionaryBlocks blocks={snippets} title={ctx.e.exportTexts} lede={ctx.e.exportTextsLede} />
     </dialog>
   );
 }

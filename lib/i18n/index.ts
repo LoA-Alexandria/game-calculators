@@ -5,11 +5,14 @@ import fr from "./dictionaries/fr.ts";
 export type { Dictionary };
 
 /**
- * The language registry. To add a language:
- *   1. copy `dictionaries/en.ts`, translate the values, keep every key;
- *   2. add one entry here.
+ * The language registry, and the only place that lists the languages. To add
+ * one, run `pnpm i18n:add <code> "<Name>"` (for example `pnpm i18n:add es
+ * "Español"`): it copies `dictionaries/en.ts` and adds the import, the entry
+ * below, and the dictionary. Then translate the new file.
+ *
  * `Dictionary` is derived from the English file, so TypeScript reports any key
- * the new language forgot.
+ * a language forgot. Every editor, export, and test reads the languages from
+ * here, so nothing else needs to change.
  */
 export const LOCALES = [
   { code: "en", label: "English", short: "EN", htmlLang: "en" },
@@ -19,12 +22,39 @@ export const LOCALES = [
 
 export type Locale = (typeof LOCALES)[number]["code"];
 
+/** English is the reference language: data files hold English, and missing text falls back to it. */
 export const DEFAULT_LOCALE: Locale = "en";
 
-const DICTIONARIES: Record<Locale, Dictionary> = { en, de, fr };
+export const LOCALE_CODES: readonly Locale[] = LOCALES.map((entry) => entry.code);
+
+const DICTIONARIES: Record<Locale, Dictionary> = {
+  en,
+  de,
+  fr,
+};
 
 export function getDictionary(locale: Locale): Dictionary {
   return DICTIONARIES[locale] ?? DICTIONARIES[DEFAULT_LOCALE];
+}
+
+/** One value per registered language, in registry order. */
+export function mapLocales<T>(make: (locale: Locale) => T): Record<Locale, T> {
+  return Object.fromEntries(LOCALE_CODES.map((code) => [code, make(code)])) as Record<Locale, T>;
+}
+
+/** The dictionary file an editor tells people to paste into. */
+export function dictionaryFile(locale: Locale): string {
+  return `lib/i18n/dictionaries/${locale}.ts`;
+}
+
+/** Every dictionary file, for instructions like "delete it from …". */
+export function dictionaryFiles(): string {
+  return LOCALE_CODES.map(dictionaryFile).join(", ");
+}
+
+/** The registered language for a value, or English. */
+export function toLocale(value: unknown): Locale {
+  return isLocale(value) ? value : DEFAULT_LOCALE;
 }
 
 export function isLocale(value: unknown): value is Locale {

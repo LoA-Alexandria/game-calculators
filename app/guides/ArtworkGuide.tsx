@@ -5,6 +5,8 @@ import Link from "next/link";
 import { guideLayout } from "../../lib/content/guides";
 import {
   PAINTING_RARITIES,
+  localizedPainting,
+  localizedSet,
   paintingsForHero,
   setsByRarity,
   type Painting,
@@ -12,6 +14,7 @@ import {
   type PaintingRarity,
   type PaintingSet,
   type PaintingStat,
+  type PaintingTexts,
 } from "../../lib/content/artwork";
 import { CheckIcon, PenIcon } from "../components/Icons";
 import { fill, type Dictionary } from "../../lib/i18n";
@@ -114,7 +117,7 @@ function SetCard({ entry, guide }: { entry: PaintingSet; guide: Guide }) {
 function RarityTabs({ guide }: { guide: Guide }) {
   const base = useId();
   const [rarity, setRarity] = useState<PaintingRarity>("SSR");
-  const sets = setsByRarity(rarity);
+  const sets = setsByRarity(rarity).map((set) => localizedSet(set, guide.catalogTexts as PaintingTexts));
 
   const tabId = (id: PaintingRarity) => `${base}-tab-${id}`;
 
@@ -192,7 +195,10 @@ function groupHits(hits: PaintingHit[]): { set: PaintingSet; paintings: Painting
 export function ArtworkGuide({ guide }: { guide: Guide }) {
   const [query, setQuery] = useState("");
   const hits = useMemo(() => paintingsForHero(query), [query]);
-  const grouped = useMemo(() => groupHits(hits), [hits]);
+  const grouped = useMemo(() => {
+    const texts = guide.catalogTexts as PaintingTexts;
+    return groupHits(hits).map((row) => ({ set: localizedSet(row.set, texts), paintings: row.paintings.map((canvas) => localizedPainting(canvas, texts)) }));
+  }, [hits, guide.catalogTexts]);
   const { t } = useLocale();
   const { allows } = useAuth();
 

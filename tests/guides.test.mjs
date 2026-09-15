@@ -1,9 +1,8 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
+import { getDictionary, mapLocales } from "../lib/i18n/index.ts";
 import en from "../lib/i18n/dictionaries/en.ts";
-import de from "../lib/i18n/dictionaries/de.ts";
-import fr from "../lib/i18n/dictionaries/fr.ts";
 import { sectionById } from "../lib/navigation.ts";
 import {
   camelToKebab,
@@ -78,7 +77,7 @@ test("each guide entry is claimed by exactly the renderer it was written for", (
     heroTierList: "heroTierList",
     goddessTheater: "goddessTheater",
   };
-  for (const [code, dictionary] of Object.entries({ en, de, fr })) {
+  for (const [code, dictionary] of Object.entries(mapLocales(getDictionary))) {
     for (const [id, guide] of Object.entries(dictionary.guideEntries)) {
       assert.equal(guideLayout(guide), custom[id] ?? "article", `${code}.${id}`);
     }
