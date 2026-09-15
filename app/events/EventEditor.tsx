@@ -3,7 +3,9 @@
 import { useId, useMemo, useState } from "react";
 import type { EventEntry } from "../../lib/content/events";
 import { EVENT_KINDS, isEventKind, occurrencesInRange, type EventKind, type GameEvent } from "../../lib/events";
-import type { Dictionary } from "../../lib/i18n/index";
+import { DEFAULT_LOCALE, dictionaryFiles, getDictionary, mapLocales, type Dictionary } from "../../lib/i18n/index";
+import { blankTranslations, textIn, type Translations } from "../../lib/i18n/translations";
+import { AllLanguagesToggle, DictionaryBlocks, TranslatedField, useEditorLanguages } from "../components/EditorLanguages";
 import { useLocale } from "../components/LocaleProvider";
 import { CheckIcon, CopyIcon, InfoIcon } from "../components/Icons";
 
@@ -54,12 +56,13 @@ export function EventEditor({
   onClose?: () => void;
 }) {
   const { t, locale } = useLocale();
+  const { languages } = useEditorLanguages({ withDefault: true });
   const ids = useId();
   const editing = target?.action === "edit" ? target.event : null;
   const removing = target?.action === "remove" ? target.event : null;
 
-  const [name, setName] = useState(editing ? editing.name(t) : "");
-  const [summary, setSummary] = useState(editing ? editing.summary(t) : "");
+  const [name, setName] = useState<Translations>(() => (editing ? mapLocales((code) => editing.name(getDictionary(code))) : blankTranslations()));
+  const [summary, setSummary] = useState<Translations>(() => (editing ? mapLocales((code) => editing.summary(getDictionary(code))) : blankTranslations()));
   const [kind, setKind] = useState<EventKind>(editing?.kind ?? "routine");
   const [start, setStart] = useState(editing ? isoToLocal(editing.start) : "");
   const [duration, setDuration] = useState(editing ? String(editing.durationHours) : "6");
@@ -87,7 +90,7 @@ export function EventEditor({
           ? { type: "weekly" as const, interval: Math.max(1, Number(interval) || 1), weekdays: weekdays.length ? weekdays : [1] }
           : { type: "monthly" as const, interval: Math.max(1, Number(interval) || 1), dayOfMonth: Math.min(31, Math.max(1, Number(dayOfMonth) || 1)) };
     return {
-      id: editing?.id ?? slug(name),
+      id: editing?.id ?? slug(name[DEFAULT_LOCALE]),
       kind,
       start: `${start}:00Z`,
       durationHours: hours,
@@ -111,7 +114,7 @@ export function EventEditor({
     ? dictKeyFor(removing, t)
     : editing
       ? dictKeyFor(editing, t)
-      : toDictKey(draft?.id ?? slug(name));
+      : toDictKey(draft?.id ?? slug(name[DEFAULT_LOCALE]));
 
   const entry = useMemo(() => {
     if (removing) {
@@ -119,7 +122,7 @@ export function EventEditor({
         `Remove event ${JSON.stringify(removing.id)} (${removing.name(t)})`,
         ``,
         `- Delete the object with that id from EVENTS in lib/content/events.ts`,
-        `- Delete eventEntries.${dictKey} from lib/i18n/dictionaries/en.ts, de.ts, and fr.ts`,
+        `- Delete eventEntries.${dictKey} from ${dictionaryFiles()}`,
       ].join("\n");
     }
     if (!draft) return "";
@@ -140,11 +143,19 @@ export function EventEditor({
       `    name: (t) => t.eventEntries.${dictKey}.name,`,
       `    summary: (t) => t.eventEntries.${dictKey}.summary,`,
       `  },`,
-      ``,
-      `// and in every dictionary, under eventEntries:`,
-      `// ${dictKey}: { name: ${JSON.stringify(name || "…")}, summary: ${JSON.stringify(summary || "…")} },`,
     ].join("\n");
-  }, [removing, draft, dictKey, name, summary, t]);
+  }, [removing, draft, dictKey, t]);
+
+  const blocks = useMemo(
+    () =>
+      removing || !draft
+        ? {}
+        : mapLocales((code) => [
+            `// under eventEntries`,
+            `    ${dictKey}: { name: ${JSON.stringify(textIn(name, code) || "…")}, summary: ${JSON.stringify(textIn(summary, code) || "…")} },`,
+          ].join("\n")),
+    [removing, draft, dictKey, name, summary],
+  );
 
   const weekdayNames = useMemo(() => {
     const format = new Intl.DateTimeFormat(locale, { weekday: "short", timeZone: "UTC" });
@@ -191,14 +202,21 @@ export function EventEditor({
       ) : (
         <div className="editor-layout">
           <div>
-            <div className="field">
-              <label htmlFor={`${ids}-name`}>{t.events.editorName}</label>
-              <input id={`${ids}-name`} value={name} onChange={(e) => setName(e.target.value)} />
+            <div className="form-actions editor-languages-bar">
+              <AllLanguagesToggle />
             </div>
-            <div className="field">
-              <label htmlFor={`${ids}-summary`}>{t.events.editorSummary}</label>
-              <input id={`${ids}-summary`} value={summary} onChange={(e) => setSummary(e.target.value)} />
-            </div>
+            <TranslatedField
+              label={t.events.editorName}
+              languages={languages}
+              get={(code) => name[code]}
+              set={(code, value) => setName((current) => ({ ...current, [code]: value }))}
+            />
+            <TranslatedField
+              label={t.events.editorSummary}
+              languages={languages}
+              get={(code) => summary[code]}
+              set={(code, value) => setSummary((current) => ({ ...current, [code]: value }))}
+            />
             <div className="input-row">
               <div className="field">
                 <label htmlFor={`${ids}-kind`}>{t.events.editorKind}</label>
@@ -313,6 +331,7 @@ export function EventEditor({
                 <button className="button" type="button" onClick={onClose}>{t.events.editorCancel}</button>
               )}
             </div>
+            <DictionaryBlocks blocks={blocks} title={t.editorLanguages.exportBlocks} lede={t.editorLanguages.exportBlocksLede} rows={3} />
           </div>
         </div>
       )}

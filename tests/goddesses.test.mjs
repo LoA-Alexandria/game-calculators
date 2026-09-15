@@ -2,9 +2,8 @@ import assert from "node:assert/strict";
 import { readdirSync, readFileSync } from "node:fs";
 import test from "node:test";
 
+import { getDictionary, mapLocales } from "../lib/i18n/index.ts";
 import en from "../lib/i18n/dictionaries/en.ts";
-import de from "../lib/i18n/dictionaries/de.ts";
-import fr from "../lib/i18n/dictionaries/fr.ts";
 import {
   GODDESS_RARITIES,
   GODDESSES,
@@ -16,7 +15,8 @@ import {
 } from "../lib/content/goddesses.ts";
 import { guideLayout } from "../lib/content/guides.ts";
 
-const LANGUAGES = { en, de, fr };
+// Every registered language, so a new dictionary is checked without editing this test.
+const LANGUAGES = mapLocales(getDictionary);
 
 test("every portrait in the goddess roster is a file in public/goddesses and none is orphaned", () => {
   const folder = new URL("../public/goddesses/", import.meta.url);

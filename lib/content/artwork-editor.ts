@@ -3,9 +3,11 @@
  * state and calls these functions, so adding paintings, heroes, and exporting
  * can be tested without a browser.
  *
- * The editor works on a copy of `lib/data/paintings.json`. A static site cannot
- * save for everyone, so the result leaves the browser as that JSON file for
- * someone to commit — the same way the other guide editors work.
+ * The editor works on a copy of `lib/data/paintings.json` (English) and each
+ * dictionary's `guideEntries.artwork.catalogTexts` (the other languages). A
+ * static site cannot save for everyone, so the result leaves the browser as
+ * that JSON file and one text block per dictionary for someone to commit — the
+ * same way the other guide editors work.
  */
 
 import { HEROES } from "./heroes.ts";
@@ -15,8 +17,13 @@ import {
   type Painting,
   type PaintingRarity,
   type PaintingSet,
+  type PaintingSetText,
   type PaintingStat,
+  type PaintingText,
+  type PaintingTexts,
 } from "./artwork.ts";
+import { DEFAULT_LOCALE, LOCALE_CODES, getDictionary, mapLocales, type Locale } from "../i18n/index.ts";
+import { dictionaryLiteral } from "../i18n/translations.ts";
 
 export type PaintingCatalogueData = { sets: PaintingSet[] };
 
@@ -28,6 +35,8 @@ export type EditorPainting = {
   stats: PaintingStat[];
   starStats: PaintingStat[];
   productivity: string;
+  /** Name and productivity in the other languages; the fields above are English. */
+  texts: Partial<Record<Locale, PaintingText>>;
 };
 
 export type EditorSet = {
@@ -37,7 +46,23 @@ export type EditorSet = {
   rarity: PaintingRarity;
   effect: string;
   paintings: EditorPainting[];
+  /** Name and set skill in the other languages; the fields above are English. */
+  texts: Partial<Record<Locale, PaintingSetText>>;
 };
+
+/** Each dictionary's `guideEntries.artwork.catalogTexts`. */
+export function publishedCatalogTexts(): Record<Locale, PaintingTexts> {
+  return mapLocales((locale) => getDictionary(locale).guideEntries.artwork.catalogTexts as PaintingTexts);
+}
+
+function textsFor<T extends object>(catalogs: Partial<Record<Locale, Record<string, T> | undefined>>, id: string): Partial<Record<Locale, T>> {
+  const texts: Partial<Record<Locale, T>> = {};
+  for (const locale of LOCALE_CODES) {
+    const text = catalogs[locale]?.[id];
+    if (locale !== DEFAULT_LOCALE && text) texts[locale] = { ...text };
+  }
+  return texts;
+}
 
 export type EditorState = {
   version: 1;
@@ -77,7 +102,7 @@ function cleanStats(stats: readonly string[]): PaintingStat[] {
   return result;
 }
 
-function copyPainting(canvas: Painting, uid: string): EditorPainting {
+function copyPainting(canvas: Painting, uid: string, catalogs: Partial<Record<Locale, PaintingTexts>>): EditorPainting {
   return {
     uid,
     id: canvas.id,
@@ -86,10 +111,11 @@ function copyPainting(canvas: Painting, uid: string): EditorPainting {
     stats: cleanStats(canvas.stats),
     starStats: cleanStats(canvas.starStats ?? []),
     productivity: canvas.productivity ?? "",
+    texts: textsFor(mapLocales((locale) => catalogs[locale]?.paintings), canvas.id),
   };
 }
 
-export function fromCatalogue(data: PaintingCatalogueData): EditorState {
+export function fromCatalogue(data: PaintingCatalogueData, catalogs: Partial<Record<Locale, PaintingTexts>> = {}): EditorState {
   let nextId = 1;
   return {
     version: 1,
@@ -99,7 +125,8 @@ export function fromCatalogue(data: PaintingCatalogueData): EditorState {
       name: set.name,
       rarity: set.rarity,
       effect: set.effect,
-      paintings: set.paintings.map((canvas) => copyPainting(canvas, `p${nextId++}`)),
+      paintings: set.paintings.map((canvas) => copyPainting(canvas, `p${nextId++}`, catalogs)),
+      texts: textsFor(mapLocales((locale) => catalogs[locale]?.sets), set.id),
     })),
     nextId,
   };
@@ -168,7 +195,7 @@ export function addSet(state: EditorState, rarity: PaintingRarity, name = ""): {
     state: {
       ...state,
       nextId: state.nextId + 1,
-      sets: [...state.sets, { uid, id, name, rarity, effect: "", paintings: [] }],
+      sets: [...state.sets, { uid, id, name, rarity, effect: "", paintings: [], texts: {} }],
     },
   };
 }
@@ -190,7 +217,7 @@ export function addPainting(state: EditorState, setUid: string, name = ""): { st
       ...withSet(state, setUid, {
         paintings: [
           ...set.paintings,
-          { uid, id, name, heroes: [], stats: [], starStats: [], productivity: "" },
+          { uid, id, name, heroes: [], stats: [], starStats: [], productivity: "", texts: {} },
         ],
       }),
       nextId: state.nextId + 1,
@@ -301,6 +328,85 @@ export function serializePaintingData(data: PaintingCatalogueData): string {
   return ["{", `  "sets": [`, ...sets, `  ]`, "}", ""].join("\n");
 }
 
+/** One language's set name or set skill; English is edited with `updateSet`. */
+export function setSetText(state: EditorState, setUid: string, locale: Locale, field: keyof PaintingSetText, value: string): EditorState {
+  if (locale === DEFAULT_LOCALE) return state;
+  const set = findSet(state, setUid);
+  if (!set) return state;
+  return withSet(state, setUid, { texts: { ...set.texts, [locale]: { ...set.texts[locale], [field]: value } } });
+}
+
+/** One language's painting name or productivity; English is edited with `updatePainting`. */
+export function setPaintingText(state: EditorState, paintingUid: string, locale: Locale, field: keyof PaintingText, value: string): EditorState {
+  if (locale === DEFAULT_LOCALE) return state;
+  return withSets(
+    state,
+    state.sets.map((set) => ({
+      ...set,
+      paintings: set.paintings.map((canvas) =>
+        canvas.uid === paintingUid ? { ...canvas, texts: { ...canvas.texts, [locale]: { ...canvas.texts[locale], [field]: value } } } : canvas,
+      ),
+    })),
+  );
+}
+
+function trimmed<T extends Record<string, string | undefined>>(text: T | undefined): T | null {
+  if (!text) return null;
+  const clean = Object.fromEntries(
+    Object.entries(text).flatMap(([key, value]) => (value?.trim() ? [[key, value.trim()]] : [])),
+  ) as T;
+  return Object.keys(clean).length ? clean : null;
+}
+
+/** Every language's `catalogTexts` as the export would publish them. */
+export function exportCatalogTexts(state: EditorState): Record<Locale, PaintingTexts> {
+  return mapLocales((locale) => {
+    const catalog: PaintingTexts = {};
+    if (locale === DEFAULT_LOCALE) return catalog;
+    const sets: Record<string, PaintingSetText> = {};
+    const paintings: Record<string, PaintingText> = {};
+    for (const set of state.sets) {
+      const setText = trimmed(set.texts[locale]);
+      if (setText) sets[set.id] = setText;
+      for (const canvas of set.paintings) {
+        const paintingText = trimmed(canvas.texts[locale]);
+        if (paintingText) paintings[canvas.id] = paintingText;
+      }
+    }
+    if (Object.keys(sets).length) catalog.sets = sets;
+    if (Object.keys(paintings).length) catalog.paintings = paintings;
+    return catalog;
+  });
+}
+
+/**
+ * The `catalogTexts` block for each dictionary whose translations differ from
+ * the published ones. It replaces `catalogTexts` inside `guideEntries.artwork`.
+ */
+export function catalogTextBlocks(texts: Record<Locale, PaintingTexts>, published: Record<Locale, PaintingTexts>): Partial<Record<Locale, string>> {
+  const blocks: Partial<Record<Locale, string>> = {};
+  for (const locale of LOCALE_CODES) {
+    if (JSON.stringify(texts[locale]) === JSON.stringify(published[locale] ?? {})) continue;
+    blocks[locale] = `// replace catalogTexts inside guideEntries.artwork\n      catalogTexts: ${dictionaryLiteral(texts[locale], "      ")},`;
+  }
+  return blocks;
+}
+
+/** Sets and paintings whose translation in any language differs from the published one. */
+export function countCatalogTextChanges(texts: Record<Locale, PaintingTexts>, published: Record<Locale, PaintingTexts>): number {
+  const changed = new Set<string>();
+  for (const locale of LOCALE_CODES) {
+    for (const group of ["sets", "paintings"] as const) {
+      const after = texts[locale][group] ?? {};
+      const before = published[locale]?.[group] ?? {};
+      for (const id of new Set([...Object.keys(after), ...Object.keys(before)])) {
+        if (JSON.stringify(after[id]) !== JSON.stringify(before[id])) changed.add(`${group}:${id}`);
+      }
+    }
+  }
+  return changed.size;
+}
+
 export function countChanges(published: PaintingCatalogueData, draft: PaintingCatalogueData): number {
   const before = new Map(published.sets.map((set) => [set.id, JSON.stringify(set)]));
   const after = new Map(draft.sets.map((set) => [set.id, JSON.stringify(set)]));
@@ -362,7 +468,10 @@ export function parseDraft(raw: string | null): EditorState | null {
     for (const set of value.sets) {
       if (typeof set.uid !== "string" || typeof set.id !== "string" || typeof set.name !== "string") return null;
       if (!RARITY_SET.has(set.rarity) || typeof set.effect !== "string" || !Array.isArray(set.paintings)) return null;
+      // Drafts from before translations were editable have no texts yet.
+      set.texts = typeof set.texts === "object" && set.texts !== null ? set.texts : {};
       for (const canvas of set.paintings) {
+        canvas.texts = typeof canvas.texts === "object" && canvas.texts !== null ? canvas.texts : {};
         if (typeof canvas.uid !== "string" || typeof canvas.id !== "string" || typeof canvas.name !== "string") return null;
         if (!Array.isArray(canvas.heroes) || !Array.isArray(canvas.stats) || !Array.isArray(canvas.starStats)) return null;
         if (typeof canvas.productivity !== "string") return null;

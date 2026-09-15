@@ -4,6 +4,7 @@ import { useId, useState, type KeyboardEvent } from "react";
 import Link from "next/link";
 import { guideLayout } from "../../lib/content/guides";
 import { ARTWORK_LAYOUT_DATA, setSkillRank } from "../../lib/content/artwork-layouts";
+import { localizedSet, type PaintingTexts } from "../../lib/content/artwork";
 import type { Dictionary } from "../../lib/i18n";
 import { useAuth } from "../components/AuthProvider";
 import { useLocale } from "../components/LocaleProvider";
@@ -22,6 +23,8 @@ function labelOf(map: Record<string, string>, key: string): string {
 }
 
 function SetSkillTabs({ guide }: { guide: Guide }) {
+  const { t } = useLocale();
+  const artworkTexts = t.guideEntries.artwork.catalogTexts as PaintingTexts;
   const base = useId();
   const builds = ARTWORK_LAYOUT_DATA.builds;
   const [buildId, setBuildId] = useState(builds[0]?.id ?? "");
@@ -85,7 +88,7 @@ function SetSkillTabs({ guide }: { guide: Guide }) {
             <li key={`${row.set.id}-${index}`}>
               <article className="formation-rule">
                 <span className="formation-rule-index" aria-hidden="true">{index + 1}</span>
-                <h3>{row.set.name}</h3>
+                <h3>{localizedSet(row.set, artworkTexts).name}</h3>
                 <p>{labelOf(reasons, row.reason)}</p>
               </article>
               {row.insert ? (

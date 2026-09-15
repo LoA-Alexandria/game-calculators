@@ -11,17 +11,23 @@ import {
   addHero,
   addPainting,
   addSet,
+  catalogTextBlocks,
+  countCatalogTextChanges,
   countChanges,
+  exportCatalogTexts,
   findPainting,
   findProblems,
   findSet,
   fromCatalogue,
   movePainting,
   parseDraft,
+  publishedCatalogTexts,
   removeHero,
   removePainting,
   removeSet,
   serializePaintingData,
+  setPaintingText,
+  setSetText,
   toCatalogue,
   toggleStat,
   unusedHeroes,
@@ -33,7 +39,8 @@ import {
   type Problem,
 } from "../../lib/content/artwork-editor";
 import { HERO_RARITIES } from "../../lib/content/heroes";
-import type { Dictionary } from "../../lib/i18n";
+import { DEFAULT_LOCALE, type Dictionary, type Locale } from "../../lib/i18n";
+import { AllLanguagesToggle, DictionaryBlocks, TranslatedField, useEditorLanguages } from "../components/EditorLanguages";
 import { ARTWORK_CATALOGUE_DRAFT_STORAGE_KEY } from "../../lib/site";
 import { HeroAvatar } from "../components/HeroAvatar";
 import { useLocale } from "../components/LocaleProvider";
@@ -44,7 +51,8 @@ import { CheckIcon, CloseIcon, CopyIcon, DownloadIcon, TrashIcon } from "../comp
 type Guide = Dictionary["guideEntries"]["artwork"];
 type EditorText = Dictionary["artworkEditor"];
 
-const PUBLISHED = fromCatalogue({ sets: PAINTING_SETS });
+const PUBLISHED_TEXTS = publishedCatalogTexts();
+const PUBLISHED = fromCatalogue({ sets: PAINTING_SETS }, PUBLISHED_TEXTS);
 const PUBLISHED_DATA = toCatalogue(PUBLISHED);
 
 const draftStore = createPersistentStore<EditorState | null>({
@@ -61,6 +69,7 @@ type Ctx = {
   guide: Guide;
   e: EditorText;
   tf: (template: string, values: Record<string, string | number>) => string;
+  languages: readonly Locale[];
 };
 
 export function ArtworkEditor() {
@@ -71,7 +80,9 @@ export function ArtworkEditor() {
   const draft = useSyncExternalStore(draftStore.subscribe, draftStore.getSnapshot, draftStore.getServerSnapshot);
   const state = draft ?? PUBLISHED;
   const commit = (next: EditorState) => draftStore.set(next);
-  const ctx: Ctx = { state, commit, guide, e, tf };
+  // paintings.json holds English, so English stays next to the reader's language.
+  const { languages } = useEditorLanguages({ withDefault: true });
+  const ctx: Ctx = { state, commit, guide, e, tf, languages };
 
   const [rarity, setRarity] = useState<PaintingRarity>("SSR");
   const [setUid, setSetUid] = useState<string | null>(null);
@@ -80,7 +91,11 @@ export function ArtworkEditor() {
   const base = useId();
 
   const draftData = useMemo(() => toCatalogue(state), [state]);
-  const changes = useMemo(() => countChanges(PUBLISHED_DATA, draftData), [draftData]);
+  const texts = useMemo(() => exportCatalogTexts(state), [state]);
+  const changes = useMemo(
+    () => countChanges(PUBLISHED_DATA, draftData) + countCatalogTextChanges(texts, PUBLISHED_TEXTS),
+    [draftData, texts],
+  );
   const visible = state.sets.filter((set) => set.rarity === rarity);
   const activeSet = setUid ? findSet(state, setUid) : undefined;
   const activePainting = paintingUid ? findPainting(state, paintingUid) : null;
@@ -142,6 +157,7 @@ export function ArtworkEditor() {
           })}
         </div>
         <div className="tier-edit-actions">
+          <AllLanguagesToggle />
           <span className="tier-edit-status" aria-live="polite">
             {changes > 0 ? `${changes === 1 ? e.changeOne : tf(e.changes, { count: changes })} · ${e.savedNote}` : e.unchanged}
           </span>
@@ -183,7 +199,7 @@ export function ArtworkEditor() {
         )}
       </div>
 
-      {exportOpen ? <ExportDialog ctx={ctx} data={draftData} onClose={() => setExportOpen(false)} /> : null}
+      {exportOpen ? <ExportDialog ctx={ctx} data={draftData} texts={texts} onClose={() => setExportOpen(false)} /> : null}
     </div>
   );
 }
@@ -229,10 +245,14 @@ function SetForm({
           {e.removeSet}
         </button>
       </div>
-      <div className="field">
-        <label htmlFor={`${id}-name`}>{e.fieldSetName}</label>
-        <input id={`${id}-name`} value={set.name} onChange={(event) => commit(updateSet(state, set.uid, { name: event.target.value }))} />
-      </div>
+      <TranslatedField
+        label={e.fieldSetName}
+        languages={ctx.languages}
+        get={(locale) => (locale === DEFAULT_LOCALE ? set.name : set.texts[locale]?.name ?? "")}
+        set={(locale, value) =>
+          commit(locale === DEFAULT_LOCALE ? updateSet(state, set.uid, { name: value }) : setSetText(state, set.uid, locale, "name", value))
+        }
+      />
       <div className="field">
         <label htmlFor={`${id}-rarity`}>{e.fieldRarity}</label>
         <select
@@ -247,10 +267,16 @@ function SetForm({
           {PAINTING_RARITIES.map((tier) => <option key={tier} value={tier}>{tier}</option>)}
         </select>
       </div>
-      <div className="field">
-        <label htmlFor={`${id}-effect`}>{e.fieldEffect}</label>
-        <textarea id={`${id}-effect`} rows={3} value={set.effect} onChange={(event) => commit(updateSet(state, set.uid, { effect: event.target.value }))} />
-      </div>
+      <TranslatedField
+        label={e.fieldEffect}
+        multiline
+        rows={3}
+        languages={ctx.languages}
+        get={(locale) => (locale === DEFAULT_LOCALE ? set.effect : set.texts[locale]?.effect ?? "")}
+        set={(locale, value) =>
+          commit(locale === DEFAULT_LOCALE ? updateSet(state, set.uid, { effect: value }) : setSetText(state, set.uid, locale, "effect", value))
+        }
+      />
 
       <h3>{e.paintingsHeading}</h3>
       <ol className="layout-edit-list">
@@ -304,14 +330,24 @@ function PaintingForm({ ctx, canvas, onClose }: { ctx: Ctx; canvas: EditorPainti
           <CloseIcon className="icon icon-sm" />
         </button>
       </div>
-      <div className="field">
-        <label htmlFor={`${id}-name`}>{e.fieldPaintingName}</label>
-        <input id={`${id}-name`} value={canvas.name} onChange={(event) => commit(updatePainting(state, canvas.uid, { name: event.target.value }))} />
-      </div>
-      <div className="field">
-        <label htmlFor={`${id}-prod`}>{e.fieldProductivity}</label>
-        <input id={`${id}-prod`} value={canvas.productivity} onChange={(event) => commit(updatePainting(state, canvas.uid, { productivity: event.target.value }))} />
-      </div>
+      <TranslatedField
+        label={e.fieldPaintingName}
+        languages={ctx.languages}
+        get={(locale) => (locale === DEFAULT_LOCALE ? canvas.name : canvas.texts[locale]?.name ?? "")}
+        set={(locale, value) =>
+          commit(locale === DEFAULT_LOCALE ? updatePainting(state, canvas.uid, { name: value }) : setPaintingText(state, canvas.uid, locale, "name", value))
+        }
+      />
+      <TranslatedField
+        label={e.fieldProductivity}
+        languages={ctx.languages}
+        get={(locale) => (locale === DEFAULT_LOCALE ? canvas.productivity : canvas.texts[locale]?.productivity ?? "")}
+        set={(locale, value) =>
+          commit(locale === DEFAULT_LOCALE
+            ? updatePainting(state, canvas.uid, { productivity: value })
+            : setPaintingText(state, canvas.uid, locale, "productivity", value))
+        }
+      />
       <StatField ctx={ctx} canvas={canvas} field="stats" label={e.fieldStats} />
       <StatField ctx={ctx} canvas={canvas} field="starStats" label={e.fieldStarStats} />
 
@@ -413,7 +449,19 @@ function problemText(ctx: Ctx, problem: Problem): string {
   }
 }
 
-function ExportDialog({ ctx, data, onClose }: { ctx: Ctx; data: ReturnType<typeof toCatalogue>; onClose: () => void }) {
+function ExportDialog({
+  ctx,
+  data,
+  texts,
+  onClose,
+}: {
+  ctx: Ctx;
+  data: ReturnType<typeof toCatalogue>;
+  texts: ReturnType<typeof exportCatalogTexts>;
+  onClose: () => void;
+}) {
+  const { t } = useLocale();
+  const textBlocks = useMemo(() => catalogTextBlocks(texts, PUBLISHED_TEXTS), [texts]);
   const id = useId();
   const dialog = useRef<HTMLDialogElement>(null);
   const [copied, setCopied] = useState("");
@@ -473,6 +521,7 @@ function ExportDialog({ ctx, data, onClose }: { ctx: Ctx; data: ReturnType<typeo
         </div>
         <textarea readOnly value={json} rows={12} spellCheck={false} aria-label="lib/data/paintings.json" />
       </div>
+      <DictionaryBlocks blocks={textBlocks} title={t.editorLanguages.exportBlocks} lede={t.editorLanguages.exportBlocksLede} rows={6} />
     </dialog>
   );
 }

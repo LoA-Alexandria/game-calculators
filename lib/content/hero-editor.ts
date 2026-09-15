@@ -19,7 +19,11 @@ import {
   type HeroData,
   type HeroRarity,
   type HeroSkill,
+  type HeroText,
+  type HeroTexts,
 } from "./heroes.ts";
+import { DEFAULT_LOCALE, LOCALE_CODES, getDictionary, mapLocales, type Locale } from "../i18n/index.ts";
+import { dictionaryLiteral } from "../i18n/translations.ts";
 
 /** A published portrait has `file`; one uploaded in the editor has `data`. */
 export type EditorImage = { uid: string; file?: string; data?: string };
@@ -30,12 +34,20 @@ export type EditorHero = {
   id: string;
   name: string;
   rarity: HeroRarity;
+  /** English, like every text field here; `texts` holds the other languages. */
   obtain: string;
   images: EditorImage[];
   /** Every slot is always present in the editor; export leaves out the empty ones. */
   abilities: Record<HeroAbilityKind, HeroAbility>;
   artifact: HeroSkill | null;
+  /** Translations by language, as sparse as the dictionaries' `heroTexts`. */
+  texts: Partial<Record<Locale, HeroText>>;
 };
+
+/** Each dictionary's `guideEntries.heroes.heroTexts`. */
+export function publishedHeroTexts(): Record<Locale, HeroTexts> {
+  return mapLocales((locale) => getDictionary(locale).guideEntries.heroes.heroTexts as HeroTexts);
+}
 
 export type HeroEditorState = {
   version: 2;
@@ -70,7 +82,7 @@ function emptyAbilities(): Record<HeroAbilityKind, HeroAbility> {
   return { skill: emptyAbility(), buff: emptyAbility(), production: emptyAbility() };
 }
 
-export function fromHeroData(data: HeroData): HeroEditorState {
+export function fromHeroData(data: HeroData, catalogs: Partial<Record<Locale, HeroTexts>> = {}): HeroEditorState {
   let nextId = 1;
   return {
     version: 2,
@@ -79,6 +91,11 @@ export function fromHeroData(data: HeroData): HeroEditorState {
       for (const kind of HERO_ABILITY_KINDS) {
         const ability = hero[kind];
         if (ability) abilities[kind] = { name: ability.name, levels: ability.levels.length ? [...ability.levels] : [""] };
+      }
+      const texts: Partial<Record<Locale, HeroText>> = {};
+      for (const locale of LOCALE_CODES) {
+        const text = catalogs[locale]?.[hero.id];
+        if (locale !== DEFAULT_LOCALE && text) texts[locale] = structuredClone(text);
       }
       return {
         uid: `h${nextId++}`,
@@ -89,10 +106,114 @@ export function fromHeroData(data: HeroData): HeroEditorState {
         images: hero.images.map((file) => ({ uid: `i${nextId++}`, file })),
         abilities,
         artifact: hero.artifact ? { name: hero.artifact.name, text: hero.artifact.text } : null,
+        texts,
       };
     }),
     nextId,
   };
+}
+
+/** Changes one language's wording of a hero; English lives in the hero's own fields. */
+export function updateHeroText(
+  state: HeroEditorState,
+  heroUid: string,
+  locale: Locale,
+  change: (text: HeroText) => HeroText,
+): HeroEditorState {
+  if (locale === DEFAULT_LOCALE) return state;
+  return mapHero(state, heroUid, (hero) => ({ ...hero, texts: { ...hero.texts, [locale]: change(structuredClone(hero.texts[locale] ?? {})) } }));
+}
+
+export function setObtainText(state: HeroEditorState, heroUid: string, locale: Locale, value: string): HeroEditorState {
+  return updateHeroText(state, heroUid, locale, (text) => ({ ...text, obtain: value }));
+}
+
+export function setAbilityNameText(state: HeroEditorState, heroUid: string, locale: Locale, kind: HeroAbilityKind, value: string): HeroEditorState {
+  return updateHeroText(state, heroUid, locale, (text) => ({ ...text, [kind]: { ...text[kind], name: value } }));
+}
+
+export function setAbilityLevelText(
+  state: HeroEditorState,
+  heroUid: string,
+  locale: Locale,
+  kind: HeroAbilityKind,
+  index: number,
+  value: string,
+): HeroEditorState {
+  return updateHeroText(state, heroUid, locale, (text) => {
+    const levels = [...(text[kind]?.levels ?? [])];
+    while (levels.length <= index) levels.push("");
+    levels[index] = value;
+    return { ...text, [kind]: { ...text[kind], levels } };
+  });
+}
+
+export function setArtifactText(state: HeroEditorState, heroUid: string, locale: Locale, field: "name" | "text", value: string): HeroEditorState {
+  return updateHeroText(state, heroUid, locale, (text) => ({ ...text, artifact: { ...text.artifact, [field]: value } }));
+}
+
+/** A translation trimmed down to what readers would see; null when nothing is left. */
+function cleanHeroText(text: HeroText | undefined, hero: Hero): HeroText | null {
+  if (!text) return null;
+  const clean: HeroText = {};
+  if (text.obtain?.trim()) clean.obtain = text.obtain.trim();
+  for (const kind of HERO_ABILITY_KINDS) {
+    const ability = text[kind];
+    if (!ability || !hero[kind]) continue;
+    const name = ability.name?.trim() ?? "";
+    // Levels line up with the English ones, so gaps stay and trailing blanks go.
+    const levels = (ability.levels ?? []).slice(0, hero[kind]?.levels.length).map((level) => level.trim());
+    while (levels.length > 0 && levels[levels.length - 1] === "") levels.pop();
+    if (!name && levels.length === 0) continue;
+    clean[kind] = { ...(name ? { name } : {}), ...(levels.length ? { levels } : {}) };
+  }
+  if (hero.artifact && (text.artifact?.name?.trim() || text.artifact?.text?.trim())) {
+    clean.artifact = {
+      ...(text.artifact?.name?.trim() ? { name: text.artifact.name.trim() } : {}),
+      ...(text.artifact?.text?.trim() ? { text: text.artifact.text.trim() } : {}),
+    };
+  }
+  return Object.keys(clean).length ? clean : null;
+}
+
+/** Every language's `heroTexts` as the export would publish them, keyed by hero id. */
+export function exportHeroTexts(state: HeroEditorState, data: HeroData): Record<Locale, HeroTexts> {
+  return mapLocales((locale) => {
+    const catalog: HeroTexts = {};
+    if (locale === DEFAULT_LOCALE) return catalog;
+    state.heroes.forEach((hero, index) => {
+      const row = data.heroes[index];
+      const text = row ? cleanHeroText(hero.texts[locale], row) : null;
+      if (text) catalog[row.id] = text;
+    });
+    return catalog;
+  });
+}
+
+/**
+ * The `heroTexts` block for each dictionary whose translations differ from the
+ * published ones. It replaces `heroTexts` inside `guideEntries.heroes`.
+ */
+export function heroTextBlocks(texts: Record<Locale, HeroTexts>, published: Record<Locale, HeroTexts>): Partial<Record<Locale, string>> {
+  const blocks: Partial<Record<Locale, string>> = {};
+  for (const locale of LOCALE_CODES) {
+    if (JSON.stringify(texts[locale]) === JSON.stringify(published[locale] ?? {})) continue;
+    blocks[locale] = `// replace heroTexts inside guideEntries.heroes\n      heroTexts: ${dictionaryLiteral(texts[locale], "      ")},`;
+  }
+  return blocks;
+}
+
+/** Heroes whose translation in any language differs from the published one. */
+export function countHeroTextChanges(texts: Record<Locale, HeroTexts>, published: Record<Locale, HeroTexts>): number {
+  const changed = new Set<string>();
+  for (const locale of LOCALE_CODES) {
+    const after = texts[locale];
+    const before = published[locale] ?? {};
+    for (const id of new Set([...Object.keys(after), ...Object.keys(before)])) {
+      if (JSON.stringify(after[id]) !== JSON.stringify(before[id])) changed.add(id);
+    }
+  }
+  return changed.size;
 }
 
 export type HeroUpload = { file: string; data: string; hero: string };
@@ -180,7 +301,7 @@ function groupEnd(heroes: readonly EditorHero[], rarity: HeroRarity, skipUid?: s
 
 export function addHero(state: HeroEditorState, rarity: HeroRarity, name = ""): { state: HeroEditorState; uid: string } {
   const uid = `h${state.nextId}`;
-  const hero: EditorHero = { uid, id: "", name, rarity, obtain: "", images: [], abilities: emptyAbilities(), artifact: null };
+  const hero: EditorHero = { uid, id: "", name, rarity, obtain: "", images: [], abilities: emptyAbilities(), artifact: null, texts: {} };
   const heroes = [...state.heroes];
   heroes.splice(groupEnd(heroes, rarity), 0, hero);
   return { state: { ...state, heroes, nextId: state.nextId + 1 }, uid };
@@ -252,15 +373,37 @@ export function addAbilityLevel(state: HeroEditorState, heroUid: string, kind: H
 
 /** Removes a level; the last remaining level is emptied instead. */
 export function removeAbilityLevel(state: HeroEditorState, heroUid: string, kind: HeroAbilityKind, index: number): HeroEditorState {
-  return mapAbility(state, heroUid, kind, (ability) => {
+  const withoutLevel = mapAbility(state, heroUid, kind, (ability) => {
     if (index < 0 || index >= ability.levels.length) return ability;
     const levels = ability.levels.filter((_, position) => position !== index);
     return { ...ability, levels: levels.length ? levels : [""] };
   });
+  // Translated levels line up with the English ones, so the same level goes in every language.
+  return mapHero(withoutLevel, heroUid, (hero) => ({
+    ...hero,
+    texts: Object.fromEntries(
+      Object.entries(hero.texts).map(([locale, text]) => {
+        const levels = text?.[kind]?.levels;
+        if (!text || !levels) return [locale, text];
+        return [locale, { ...text, [kind]: { ...text[kind], levels: levels.filter((_, position) => position !== index) } }];
+      }),
+    ),
+  }));
 }
 
 export function clearAbility(state: HeroEditorState, heroUid: string, kind: HeroAbilityKind): HeroEditorState {
-  return mapAbility(state, heroUid, kind, () => emptyAbility());
+  const cleared = mapAbility(state, heroUid, kind, () => emptyAbility());
+  return mapHero(cleared, heroUid, (hero) => ({
+    ...hero,
+    texts: Object.fromEntries(
+      Object.entries(hero.texts).map(([locale, text]) => {
+        if (!text) return [locale, text];
+        const rest = { ...text };
+        delete rest[kind];
+        return [locale, rest];
+      }),
+    ),
+  }));
 }
 
 export function setArtifact(state: HeroEditorState, heroUid: string, artifact: HeroSkill | null): HeroEditorState {
@@ -391,6 +534,9 @@ export function parseHeroDraft(raw: string | null): HeroEditorState | null {
       }
       for (const kind of HERO_ABILITY_KINDS) if (!isAbility(hero.abilities[kind])) return null;
       if (hero.artifact !== null && !isSkill(hero.artifact)) return null;
+      // Drafts from before translations were editable have no texts yet.
+      if (hero.texts === undefined) hero.texts = {};
+      if (typeof hero.texts !== "object" || hero.texts === null || Array.isArray(hero.texts)) return null;
     }
     return value;
   } catch {

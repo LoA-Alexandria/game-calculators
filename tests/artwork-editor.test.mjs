@@ -87,3 +87,44 @@ test("stored drafts are validated before use", () => {
   assert.equal(parseDraft("{"), null);
   assert.equal(parseDraft(JSON.stringify({ ...published, version: 2 })), null);
 });
+
+test("set and painting wording is edited per language and exported per dictionary", async () => {
+  const { catalogTextBlocks, countCatalogTextChanges, exportCatalogTexts, publishedCatalogTexts, setPaintingText, setSetText } =
+    await import("../lib/content/artwork-editor.ts");
+  const { localizedSet } = await import("../lib/content/artwork.ts");
+  const texts = publishedCatalogTexts();
+  let state = fromCatalogue({ sets: PAINTING_SETS }, texts);
+  const set = state.sets[0];
+  const canvas = set.paintings[0];
+
+  assert.deepEqual(catalogTextBlocks(exportCatalogTexts(state), texts), {}, "an untouched draft has nothing to paste");
+  state = setSetText(state, set.uid, "de", "name", "  Ruhm und Schatten ");
+  state = setSetText(state, set.uid, "de", "effect", "");
+  state = setPaintingText(state, canvas.uid, "de", "productivity", "Glashütte");
+  state = setSetText(state, set.uid, "en", "name", "ignored");
+  assert.equal(findSet(state, set.uid).name, set.name, "English is edited with updateSet, not as a translation");
+
+  const exported = exportCatalogTexts(state);
+  assert.deepEqual(exported.de, {
+    sets: { [set.id]: { name: "Ruhm und Schatten" } },
+    paintings: { [canvas.id]: { productivity: "Glashütte" } },
+  });
+  assert.deepEqual(exported.en, {});
+  assert.equal(countCatalogTextChanges(exported, texts), 2);
+  const blocks = catalogTextBlocks(exported, texts);
+  assert.deepEqual(Object.keys(blocks), ["de"]);
+  assert.match(blocks.de, /catalogTexts: \{\n        sets: \{\n          "glory-and-shadow": \{\n            name: "Ruhm und Schatten",/);
+
+  const german = localizedSet(PAINTING_SETS[0], exported.de);
+  assert.equal(german.name, "Ruhm und Schatten");
+  assert.equal(german.effect, PAINTING_SETS[0].effect, "an empty translation keeps the English set skill");
+  assert.equal(german.paintings[0].productivity, "Glashütte");
+  assert.equal(german.paintings[0].name, PAINTING_SETS[0].paintings[0].name);
+
+  const restored = parseDraft(JSON.stringify(state));
+  assert.deepEqual(exportCatalogTexts(restored), exported);
+  const older = JSON.parse(JSON.stringify(state));
+  delete older.sets[0].texts;
+  delete older.sets[0].paintings[0].texts;
+  assert.deepEqual(parseDraft(JSON.stringify(older)).sets[0].texts, {}, "drafts from before translations still load");
+});

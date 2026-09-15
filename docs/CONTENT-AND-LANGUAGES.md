@@ -12,6 +12,10 @@ lib/i18n/dictionaries/en.ts   reference language; its shape defines the type
 lib/i18n/dictionaries/de.ts   German
 lib/i18n/dictionaries/fr.ts   French
 lib/i18n/index.ts             language registry, negotiation, {placeholder} filling
+lib/i18n/translations.ts      text kept in every language at once (editors)
+app/components/EditorLanguages.tsx  language fields, toggle, and export blocks for all editors
+scripts/add-language.mjs      pnpm i18n:add — adds a language
+scripts/i18n-report.mjs       pnpm i18n:report — lists what is still untranslated
 lib/navigation.ts             the section tree: sidebar and indexes
 lib/content/news.ts           news entries (dates and links only; text is in the dictionaries)
 lib/content/banners.ts        optional images for the section banners
@@ -33,17 +37,58 @@ already in a dictionary, so the pages themselves would barely change.
 
 ## Adding a language
 
-1. Copy `lib/i18n/dictionaries/en.ts` to `<code>.ts`, translate the values, and
-   keep every key. The file is typed as `Dictionary`, so a missing key is a build
-   error rather than a silently English string.
-2. Add one row to `LOCALES` in `lib/i18n/index.ts`:
-   ```ts
-   { code: "es", label: "Español", short: "ES", htmlLang: "es" },
-   ```
-3. Register the import in the `DICTIONARIES` map in the same file.
+```sh
+pnpm i18n:add es "Español"
+pnpm i18n:add pt-BR "Português (Brasil)" --short PT --html-lang pt-BR
+```
 
-Nothing else changes: the menu, the `<html lang>` attribute, number formatting,
-and date formatting all read the registry.
+The command copies `lib/i18n/dictionaries/en.ts` to `<code>.ts`, typed as
+`Dictionary`, and adds the import, the `LOCALES` entry, and the `DICTIONARIES`
+entry in `lib/i18n/index.ts`. Then:
+
+1. Translate the new file and keep every key. A missing key is a build error,
+   not a silently English string.
+2. Run `pnpm test` and `pnpm build`.
+3. Run `pnpm i18n:report` (or `pnpm i18n:report es --all`) to list the strings
+   that are still identical to English. It also shows how many heroes, painting
+   sets, paintings, and plays have wording in that language.
+
+Nothing else changes. Everything below reads the registry:
+
+- the language menu, the `<html lang>` attribute, and number and date formatting
+- every editor: fields, the **Edit all languages** switch, and one export block
+  per dictionary
+- the tests, including one that fails if code outside the registry lists the
+  languages by hand
+
+### Text that lives in data files
+
+Hero wording, the Artwork catalogue, and Goddess Theater names are English in
+`lib/data/*.json`. Each dictionary holds only the translations, keyed by id:
+`guideEntries.heroes.heroTexts`, `guideEntries.artwork.catalogTexts`, and
+`guideEntries.goddessTheater.playTexts`. A new language starts with `{}` there.
+Readers see the English text until someone translates it, and an empty field
+in an editor shows English as a placeholder.
+
+## Editing in several languages
+
+Every editor handles languages the same way:
+
+- **Which fields show.** By default an editor shows the language you are
+  reading in. Editors whose data file holds English also show English next to
+  it: Heroes, Artwork, Goddess Theater, guides, news, and events.
+- **Edit all languages.** This switch shows every registered language. It is
+  one setting for all editors, saved in `popepoch-editor-all-languages`.
+- **Untranslated fields.** A field that has no text in its language has a dashed
+  border and shows the English text as a placeholder. Readers see that English
+  text too.
+- **New text.** A **New text** form asks for every language; only English is
+  required. Selecting an existing text in the tier list or Artwork layouts
+  editor offers **Edit wording**, which changes that text in every language
+  wherever it is used.
+- **Export.** The export gives one block per dictionary, and only for
+  dictionaries that change. The guide, news, and event editors print a separate
+  block for each language instead of one block to copy into all three.
 
 ## Adding a calculator or simulation
 
@@ -230,8 +275,11 @@ page is hidden here.
 
 The draft is saved in that browser only
 (`localStorage['popepoch-artwork-catalogue-draft']`). **Export** produces the
-complete `lib/data/paintings.json`. An untouched draft exports the published
-file byte for byte (`tests/artwork-editor.test.mjs`).
+complete `lib/data/paintings.json` in English. For each dictionary whose
+translations changed, it also gives a `catalogTexts` block to replace inside
+`guideEntries.artwork`. That block holds set names, set skills, painting names,
+and productivity. An untouched draft exports the published file byte for byte
+(`tests/artwork-editor.test.mjs`).
 
 ## Editing heroes
 
@@ -270,7 +318,10 @@ which is enough for dozens of pictures. The editor tells you when it is full.
 2. each new picture as a download, with the path it belongs at
    (`public/heroes/<id>.webp`, or `<id>-2.webp` and so on for skins), and
 3. the pictures to delete from `public/heroes/` because the draft no longer
-   uses them.
+   uses them, and
+4. for each dictionary whose translations changed, a `heroTexts` block to
+   replace inside `guideEntries.heroes`. Translated levels line up with the
+   English ones, and removing an English level removes it in every language.
 
 An untouched draft exports the published file byte for byte
 (`tests/hero-editor.test.mjs`). `tests/heroes.test.mjs` checks the roster

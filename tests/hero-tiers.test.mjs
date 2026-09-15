@@ -1,9 +1,8 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
+import { LOCALE_CODES, getDictionary, mapLocales } from "../lib/i18n/index.ts";
 import en from "../lib/i18n/dictionaries/en.ts";
-import de from "../lib/i18n/dictionaries/de.ts";
-import fr from "../lib/i18n/dictionaries/fr.ts";
 import { LAYOUT_DATA, placedHeroes } from "../lib/content/hero-layouts.ts";
 import {
   BATTLE_TIERS,
@@ -15,7 +14,8 @@ import {
   parseGrade,
 } from "../lib/content/hero-tiers.ts";
 
-const LANGUAGES = { en, de, fr };
+// Every registered language, so a new dictionary is checked without editing this test.
+const LANGUAGES = mapLocales(getDictionary);
 const productivityEntries = PRODUCTIVITY_TIERS.flatMap((row) =>
   row.groups.flatMap((group) => group.entries.map((entry) => ({ ...entry, tier: row.tier, resource: group.resource }))),
 );
@@ -133,7 +133,7 @@ test("every battle entry lands in a role column", async () => {
   }
   for (const group of ROLE_GROUPS) {
     assert.ok(counts[group] > 0, `${group} has heroes`);
-    for (const dictionary of [en, de, fr]) assert.ok(dictionary.guideEntries.heroTierList.roleGroups[group], `${group} has a label`);
+    for (const dictionary of LOCALE_CODES.map(getDictionary)) assert.ok(dictionary.guideEntries.heroTierList.roleGroups[group], `${group} has a label`);
   }
   assert.equal(roleGroup(["heal", "crit"]), "sustain");
   assert.equal(roleGroup(["crit", "healIfCrit"]), "damage");

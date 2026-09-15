@@ -1,10 +1,9 @@
 "use client";
 
 import { useId, useMemo, useRef, useState, useSyncExternalStore, type KeyboardEvent } from "react";
-import { PAINTING_RARITIES, paintingSetById } from "../../lib/content/artwork";
+import { PAINTING_RARITIES, paintingSetById, type PaintingTexts } from "../../lib/content/artwork";
 import { ARTWORK_LAYOUT_DATA } from "../../lib/content/artwork-layouts";
 import {
-  LANGUAGES,
   addBuild,
   addRow,
   addText,
@@ -15,21 +14,24 @@ import {
   fromLayoutData,
   moveRow,
   parseDraft,
+  publishedText,
   removeBuild,
   removeRow,
   serializeLayoutData,
   setBuildNote,
+  textFor,
   textKeyFrom,
   toLayoutData,
   unusedSets,
   updateRow,
   type EditorState,
-  type Language,
   type Problem,
   type TextGroup,
   type Translations,
 } from "../../lib/content/artwork-layout-editor";
-import type { Dictionary } from "../../lib/i18n";
+import { DEFAULT_LOCALE, LOCALES, type Dictionary, type Locale } from "../../lib/i18n";
+import { blankTranslations } from "../../lib/i18n/translations";
+import { AllLanguagesToggle, DictionaryBlocks, NewTextForm, TranslatedField, WordingEditor, useEditorLanguages } from "../components/EditorLanguages";
 import { ARTWORK_LAYOUT_DRAFT_STORAGE_KEY } from "../../lib/site";
 import { useLocale } from "../components/LocaleProvider";
 import { createPersistentStore } from "../components/persistentStore";
@@ -57,21 +59,28 @@ type Ctx = {
   commit: (next: EditorState) => void;
   guide: Guide;
   e: EditorText;
-  language: Language;
+  languages: readonly Locale[];
+  catalog: PaintingTexts;
   tf: (template: string, values: Record<string, string | number>) => string;
   labelFor: (group: TextGroup, key?: string) => string;
   keysFor: (group: TextGroup) => string[];
 };
+
+/** A painting set name in the reader's language, or English. */
+function setNameOf(ctx: Ctx, setId: string): string {
+  const set = paintingSetById(setId);
+  return ctx.catalog.sets?.[setId]?.name?.trim() || set?.name || setId;
+}
 
 function nameOf(ctx: Ctx, id: string): string {
   return ctx.labelFor("names", id) || id;
 }
 
 export function ArtworkLayoutEditor() {
-  const { t, tf, locale } = useLocale();
+  const { t, tf } = useLocale();
   const guide = t.guideEntries.artworkLayouts;
   const e = t.artworkLayoutEditor;
-  const language = (["en", "de", "fr"].includes(locale) ? locale : "en") as Language;
+  const { language, languages } = useEditorLanguages();
 
   const draft = useSyncExternalStore(draftStore.subscribe, draftStore.getSnapshot, draftStore.getServerSnapshot);
   const state = draft ?? PUBLISHED;
@@ -82,14 +91,7 @@ export function ArtworkLayoutEditor() {
   const [exportOpen, setExportOpen] = useState(false);
   const base = useId();
 
-  const labelFor = (group: TextGroup, key?: string) => {
-    if (!key) return "";
-    const custom = state.texts[group][key];
-    if (custom) return custom[language].trim() || custom.en;
-    if (group === "names") return (guide.buildNames as Record<string, string>)[key] ?? key;
-    if (group === "notes") return (guide.notes as Record<string, string>)[key] ?? key;
-    return (guide.reasons as Record<string, string>)[key] ?? key;
-  };
+  const labelFor = (group: TextGroup, key?: string) => (key ? textFor(state.texts, group, key, language) || key : "");
   const keysFor = (group: TextGroup) => {
     const published =
       group === "names" ? Object.keys(guide.buildNames)
@@ -98,7 +100,7 @@ export function ArtworkLayoutEditor() {
     return [...published, ...Object.keys(state.texts[group]).filter((key) => !published.includes(key))];
   };
 
-  const ctx: Ctx = { state, commit, guide, e, language, tf, labelFor, keysFor };
+  const ctx: Ctx = { state, commit, guide, e, languages, catalog: t.guideEntries.artwork.catalogTexts as PaintingTexts, tf, labelFor, keysFor };
   const draftData = useMemo(() => toLayoutData(state), [state]);
   const changes = useMemo(() => countChanges(PUBLISHED_DATA, draftData), [draftData]);
   const active = findBuild(state, buildId) ?? state.builds[0];
@@ -161,6 +163,7 @@ export function ArtworkLayoutEditor() {
           })}
         </div>
         <div className="tier-edit-actions">
+          <AllLanguagesToggle />
           <span className="tier-edit-status" aria-live="polite">
             {changes > 0 ? `${changes === 1 ? e.changeOne : tf(e.changes, { count: changes })} · ${e.savedNote}` : e.unchanged}
           </span>
@@ -175,6 +178,7 @@ export function ArtworkLayoutEditor() {
 
       {active ? (
         <div className="layout-edit-board" id={`${base}-panel`} role="tabpanel" aria-labelledby={tabId(active.id)} data-build={active.id}>
+          <BuildName ctx={ctx} buildId={active.id} />
           <TextSelect
             ctx={ctx}
             group="notes"
@@ -196,7 +200,7 @@ export function ArtworkLayoutEditor() {
                     <span className="visually-hidden">{e.fieldRank}</span>
                     <select
                       value={index}
-                      aria-label={tf(e.rankOf, { name: set?.name ?? row.setId })}
+                      aria-label={tf(e.rankOf, { name: setNameOf(ctx, row.setId) })}
                       onChange={(event) => commit(moveRow(state, active.id, row.uid, Number(event.target.value)))}
                     >
                       {active.rows.map((_, rank) => (
@@ -205,7 +209,7 @@ export function ArtworkLayoutEditor() {
                     </select>
                   </label>
                   <div className="layout-edit-set">
-                    <strong>{set?.name ?? row.setId}</strong>
+                    <strong>{setNameOf(ctx, row.setId)}</strong>
                     {set ? <span className="rarity" data-rarity={set.rarity}>{set.rarity}</span> : null}
                   </div>
                   <TextSelect
@@ -274,7 +278,7 @@ function AddSetSelect({ ctx, buildId }: { ctx: Ctx; buildId: string }) {
           return (
             <optgroup key={rarity} label={rarity}>
               {sets.map((set) => (
-                <option key={set.id} value={set.id}>{set.name}</option>
+                <option key={set.id} value={set.id}>{setNameOf(ctx, set.id)}</option>
               ))}
             </optgroup>
           );
@@ -284,21 +288,37 @@ function AddSetSelect({ ctx, buildId }: { ctx: Ctx; buildId: string }) {
   );
 }
 
+/** The active build's name in the editor's languages. */
+function BuildName({ ctx, buildId }: { ctx: Ctx; buildId: string }) {
+  const current = ctx.state.texts.names[buildId] ?? publishedText("names", buildId);
+  return (
+    <TranslatedField
+      label={ctx.e.fieldBuildName}
+      languages={ctx.languages}
+      get={(locale) => current[locale] ?? ""}
+      set={(locale, value) => ctx.commit(addText(ctx.state, "names", buildId, { ...current, [locale]: value }))}
+    />
+  );
+}
+
 function AddBuildForm({ ctx, onDone }: { ctx: Ctx; onDone: (id?: string) => void }) {
+  const { t } = useLocale();
   const id = useId();
-  const [value, setValue] = useState<Translations>({ en: "", de: "", fr: "" });
+  const [value, setValue] = useState(blankTranslations);
   const [from, setFrom] = useState("");
-  const fields: [keyof Translations, string][] = [["en", ctx.e.newTextEn], ["de", ctx.e.newTextDe], ["fr", ctx.e.newTextFr]];
   return (
     <div className="layout-edit-newbuild">
       <p className="tier-edit-newtext-title">{ctx.e.addBuildTitle}</p>
-      {fields.map(([language, label]) => (
-        <div className="field" key={language}>
-          <label htmlFor={`${id}-${language}`}>{label}</label>
+      {LOCALES.map((entry) => (
+        <div className="field" key={entry.code}>
+          <label htmlFor={`${id}-${entry.code}`}>
+            {entry.label}
+            {entry.code === DEFAULT_LOCALE ? <span className="label-note"> · {t.editorLanguages.required}</span> : null}
+          </label>
           <input
-            id={`${id}-${language}`}
-            value={value[language]}
-            onChange={(event) => setValue((current) => ({ ...current, [language]: event.target.value }))}
+            id={`${id}-${entry.code}`}
+            value={value[entry.code]}
+            onChange={(event) => setValue((current) => ({ ...current, [entry.code]: event.target.value }))}
           />
         </div>
       ))}
@@ -311,12 +331,12 @@ function AddBuildForm({ ctx, onDone }: { ctx: Ctx; onDone: (id?: string) => void
           ))}
         </select>
       </div>
-      <p className="tier-small">{ctx.e.newTextHint}</p>
+      <p className="tier-small">{t.editorLanguages.newTextHint}</p>
       <div className="tier-edit-row-actions">
         <button
           className="small-button"
           type="button"
-          disabled={!value.en.trim()}
+          disabled={!value[DEFAULT_LOCALE].trim()}
           onClick={() => {
             const result = addBuild(ctx.state, value, from || undefined);
             ctx.commit(result.state);
@@ -369,43 +389,24 @@ function TextSelect({
       </select>
       {creating ? (
         <NewTextForm
-          ctx={ctx}
           onCancel={() => setCreating(false)}
           onAdd={(created) => {
             setCreating(false);
-            onPick(textKeyFrom(created.en, [...keys, ...Object.keys(ctx.state.texts[group])]), created);
+            onPick(textKeyFrom(created[DEFAULT_LOCALE], [...keys, ...Object.keys(ctx.state.texts[group])]), created);
+          }}
+        />
+      ) : value ? (
+        <WordingEditor
+          key={`${group}-${value}`}
+          languages={ctx.languages}
+          current={ctx.state.texts[group][value] ?? publishedText(group, value)}
+          multiline={group !== "names"}
+          onChange={(locale, text) => {
+            const current = ctx.state.texts[group][value] ?? publishedText(group, value);
+            ctx.commit(addText(ctx.state, group, value, { ...current, [locale]: text }));
           }}
         />
       ) : null}
-    </div>
-  );
-}
-
-function NewTextForm({ ctx, onAdd, onCancel }: { ctx: Ctx; onAdd: (text: Translations) => void; onCancel: () => void }) {
-  const id = useId();
-  const [value, setValue] = useState<Translations>({ en: "", de: "", fr: "" });
-  const fields: [keyof Translations, string][] = [["en", ctx.e.newTextEn], ["de", ctx.e.newTextDe], ["fr", ctx.e.newTextFr]];
-  return (
-    <div className="tier-edit-newtext">
-      <p className="tier-edit-newtext-title">{ctx.e.newTextTitle}</p>
-      {fields.map(([language, label]) => (
-        <div className="field" key={language}>
-          <label htmlFor={`${id}-${language}`}>{label}</label>
-          <input
-            id={`${id}-${language}`}
-            value={value[language]}
-            onChange={(event) => setValue((current) => ({ ...current, [language]: event.target.value }))}
-          />
-        </div>
-      ))}
-      <p className="tier-small">{ctx.e.newTextHint}</p>
-      <div className="tier-edit-row-actions">
-        <button className="small-button" type="button" disabled={!value.en.trim()} onClick={() => onAdd(value)}>
-          <CheckIcon className="icon icon-sm" />
-          {ctx.e.newTextAdd}
-        </button>
-        <button className="small-button" type="button" onClick={onCancel}>{ctx.e.cancel}</button>
-      </div>
     </div>
   );
 }
@@ -415,8 +416,8 @@ function problemText(ctx: Ctx, problem: Problem): string {
     case "emptyBuild": return ctx.tf(ctx.e.problemEmptyBuild, { build: nameOf(ctx, problem.id) });
     case "emptyName": return ctx.tf(ctx.e.problemEmptyName, { build: problem.id || ctx.e.unnamed });
     case "unknownSet": return ctx.tf(ctx.e.problemUnknownSet, { build: nameOf(ctx, problem.id), set: problem.setId });
-    case "duplicateSet": return ctx.tf(ctx.e.problemDuplicateSet, { build: nameOf(ctx, problem.id), set: paintingSetById(problem.setId)?.name ?? problem.setId });
-    case "emptyReason": return ctx.tf(ctx.e.problemEmptyReason, { build: nameOf(ctx, problem.id), set: paintingSetById(problem.setId)?.name ?? problem.setId });
+    case "duplicateSet": return ctx.tf(ctx.e.problemDuplicateSet, { build: nameOf(ctx, problem.id), set: setNameOf(ctx, problem.setId) });
+    case "emptyReason": return ctx.tf(ctx.e.problemEmptyReason, { build: nameOf(ctx, problem.id), set: setNameOf(ctx, problem.setId) });
     case "missingText": {
       const group = { names: ctx.e.groupNames, notes: ctx.e.groupNotes, reasons: ctx.e.groupReasons }[problem.group];
       return ctx.tf(ctx.e.problemMissingText, { group, key: problem.key });
@@ -496,24 +497,7 @@ function ExportDialog({ ctx, data, onClose }: { ctx: Ctx; data: ReturnType<typeo
         <textarea readOnly value={json} rows={12} spellCheck={false} aria-label="lib/data/artwork-layouts.json" />
       </div>
 
-      {snippets.en ? (
-        <div className="tier-export-block">
-          <h3>{ctx.e.exportTexts}</h3>
-          <p className="tier-small">{ctx.e.exportTextsLede}</p>
-          {LANGUAGES.map((language) => (
-            <div key={language} className="tier-export-snippet">
-              <div className="tier-export-head">
-                <code>{`lib/i18n/dictionaries/${language}.ts`}</code>
-                <button className="small-button" type="button" onClick={() => void copy(language, snippets[language])}>
-                  {copied === language ? <CheckIcon className="icon icon-sm" /> : <CopyIcon className="icon icon-sm" />}
-                  {copied === language ? ctx.e.copied : ctx.e.copy}
-                </button>
-              </div>
-              <textarea readOnly value={snippets[language]} rows={4} spellCheck={false} aria-label={`lib/i18n/dictionaries/${language}.ts`} />
-            </div>
-          ))}
-        </div>
-      ) : null}
+      <DictionaryBlocks blocks={snippets} title={ctx.e.exportTexts} lede={ctx.e.exportTextsLede} />
     </dialog>
   );
 }

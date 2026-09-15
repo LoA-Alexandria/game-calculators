@@ -8,9 +8,17 @@ import {
   addImage,
   clearAbility,
   countHeroChanges,
+  countHeroTextChanges,
+  exportHeroTexts,
   exportHeroes,
   findHeroProblems,
   fromHeroData,
+  heroTextBlocks,
+  publishedHeroTexts,
+  setAbilityLevelText,
+  setAbilityNameText,
+  setArtifactText,
+  setObtainText,
   heroByUid,
   makePortrait,
   moveHero,
@@ -30,7 +38,8 @@ import {
   type HeroProblem,
 } from "../../lib/content/hero-editor";
 import { HERO_ABILITY_KINDS, HERO_DATA, HERO_RARITIES, heroImageUrl, type HeroAbilityKind, type HeroRarity } from "../../lib/content/heroes";
-import { fill, type Dictionary } from "../../lib/i18n";
+import { DEFAULT_LOCALE, fill, type Dictionary, type Locale } from "../../lib/i18n";
+import { AllLanguagesToggle, DictionaryBlocks, TranslatedField, useEditorLanguages } from "../components/EditorLanguages";
 import { HERO_DRAFT_STORAGE_KEY } from "../../lib/site";
 import { CheckIcon, ChevronIcon, CloseIcon, CopyIcon, DownloadIcon, PlusIcon, TrashIcon, UploadIcon } from "../components/Icons";
 import { useLocale } from "../components/LocaleProvider";
@@ -42,7 +51,8 @@ import { counted } from "./HeroRoster";
 type EditorText = Dictionary["heroEditor"];
 type Tf = (template: string, values: Record<string, string | number>) => string;
 
-const PUBLISHED = fromHeroData(HERO_DATA);
+const PUBLISHED_TEXTS = publishedHeroTexts();
+const PUBLISHED = fromHeroData(HERO_DATA, PUBLISHED_TEXTS);
 const PUBLISHED_BY_ID = new Map(HERO_DATA.heroes.map((hero) => [hero.id, JSON.stringify(hero)]));
 const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
 
@@ -99,6 +109,7 @@ type Ctx = {
   t: Dictionary;
   e: EditorText;
   tf: Tf;
+  languages: readonly Locale[];
 };
 
 export function HeroEditor() {
@@ -109,7 +120,9 @@ export function HeroEditor() {
   const draft = useSyncExternalStore(draftStore.subscribe, draftStore.getSnapshot, draftStore.getServerSnapshot);
   const state = draft ?? PUBLISHED;
   const commit = (next: HeroEditorState) => draftStore.set(next);
-  const ctx: Ctx = { state, commit, t, e, tf };
+  // The data file holds English, so English stays next to the reader's language.
+  const { languages } = useEditorLanguages({ withDefault: true });
+  const ctx: Ctx = { state, commit, t, e, tf, languages };
 
   const [rarity, setRarity] = useState<HeroRarity | "all">("all");
   const [query, setQuery] = useState("");
@@ -117,7 +130,11 @@ export function HeroEditor() {
   const [exportOpen, setExportOpen] = useState(false);
 
   const exported = useMemo(() => exportHeroes(state, HERO_DATA), [state]);
-  const changes = useMemo(() => countHeroChanges(HERO_DATA, exported.data), [exported]);
+  const texts = useMemo(() => exportHeroTexts(state, exported.data), [state, exported]);
+  const changes = useMemo(
+    () => countHeroChanges(HERO_DATA, exported.data) + countHeroTextChanges(texts, PUBLISHED_TEXTS),
+    [exported, texts],
+  );
   const problems = useMemo(() => findHeroProblems(state, HERO_DATA), [state]);
   const needle = query.trim().toLowerCase();
   const visible = state.heroes.filter(
@@ -130,7 +147,8 @@ export function HeroEditor() {
     const row = exported.data.heroes[index];
     const before = PUBLISHED_BY_ID.get(row.id);
     if (!hero.id || before === undefined) return "new";
-    return before === JSON.stringify(row) ? null : "changed";
+    const translated = Object.keys(texts).some((locale) => JSON.stringify(texts[locale as Locale][row.id]) !== JSON.stringify(PUBLISHED_TEXTS[locale as Locale][row.id]));
+    return before === JSON.stringify(row) && !translated ? null : "changed";
   };
 
   const select = (uid: string) => {
@@ -171,6 +189,7 @@ export function HeroEditor() {
           ))}
         </div>
         <div className="tier-edit-actions">
+          <AllLanguagesToggle />
           <span className="tier-edit-status" aria-live="polite">
             {changes > 0 ? `${changes === 1 ? e.changeOne : tf(e.changes, { count: changes })} · ${e.savedNote}` : e.unchanged}
           </span>
@@ -237,7 +256,7 @@ export function HeroEditor() {
         )}
       </div>
 
-      {exportOpen ? <ExportDialog ctx={ctx} result={exported} problems={problems} onClose={() => setExportOpen(false)} /> : null}
+      {exportOpen ? <ExportDialog ctx={ctx} result={exported} texts={texts} problems={problems} onClose={() => setExportOpen(false)} /> : null}
     </div>
   );
 }
@@ -310,11 +329,15 @@ function HeroForm({
             {HERO_RARITIES.map((tier) => <option key={tier} value={tier}>{tier}</option>)}
           </select>
         </div>
-        <div className="field hero-edit-wide">
-          <label htmlFor={`${id}-obtain`}>
-            {e.fieldObtain} <span className="label-note">{e.fieldObtainNote}</span>
-          </label>
-          <input id={`${id}-obtain`} value={hero.obtain} onChange={(event) => commit(updateHero(state, hero.uid, { obtain: event.target.value }))} />
+        <div className="hero-edit-wide">
+          <TranslatedField
+            label={`${e.fieldObtain} · ${e.fieldObtainNote}`}
+            languages={ctx.languages}
+            get={(locale) => (locale === DEFAULT_LOCALE ? hero.obtain : hero.texts[locale]?.obtain ?? "")}
+            set={(locale, value) =>
+              commit(locale === DEFAULT_LOCALE ? updateHero(state, hero.uid, { obtain: value }) : setObtainText(state, hero.uid, locale, value))
+            }
+          />
         </div>
       </div>
 
@@ -327,14 +350,27 @@ function HeroForm({
         <legend>{e.artifactHeading}</legend>
         {hero.artifact ? (
           <div className="hero-edit-skill">
-            <div className="field">
-              <label htmlFor={`${id}-artifact-name`}>{e.artifactName}</label>
-              <input id={`${id}-artifact-name`} value={hero.artifact.name} onChange={(event) => commit(setArtifact(state, hero.uid, { name: event.target.value, text: hero.artifact?.text ?? "" }))} />
-            </div>
-            <div className="field">
-              <label htmlFor={`${id}-artifact-text`}>{e.artifactText}</label>
-              <textarea id={`${id}-artifact-text`} rows={2} value={hero.artifact.text} onChange={(event) => commit(setArtifact(state, hero.uid, { name: hero.artifact?.name ?? "", text: event.target.value }))} />
-            </div>
+            <TranslatedField
+              label={e.artifactName}
+              languages={ctx.languages}
+              get={(locale) => (locale === DEFAULT_LOCALE ? hero.artifact?.name ?? "" : hero.texts[locale]?.artifact?.name ?? "")}
+              set={(locale, value) =>
+                commit(locale === DEFAULT_LOCALE
+                  ? setArtifact(state, hero.uid, { name: value, text: hero.artifact?.text ?? "" })
+                  : setArtifactText(state, hero.uid, locale, "name", value))
+              }
+            />
+            <TranslatedField
+              label={e.artifactText}
+              multiline
+              languages={ctx.languages}
+              get={(locale) => (locale === DEFAULT_LOCALE ? hero.artifact?.text ?? "" : hero.texts[locale]?.artifact?.text ?? "")}
+              set={(locale, value) =>
+                commit(locale === DEFAULT_LOCALE
+                  ? setArtifact(state, hero.uid, { name: hero.artifact?.name ?? "", text: value })
+                  : setArtifactText(state, hero.uid, locale, "text", value))
+              }
+            />
             <div className="tier-edit-row-actions">
               <button type="button" className="small-button" onClick={() => commit(setArtifact(state, hero.uid, null))}>
                 <TrashIcon className="icon icon-sm" />
@@ -354,7 +390,6 @@ function HeroForm({
 }
 
 function AbilityField({ ctx, hero, kind }: { ctx: Ctx; hero: EditorHero; kind: HeroAbilityKind }) {
-  const id = useId();
   const { state, commit, e, tf, t } = ctx;
   const ability = hero.abilities[kind];
   const label = t.guideEntries.heroes.abilityKinds[kind];
@@ -365,22 +400,29 @@ function AbilityField({ ctx, hero, kind }: { ctx: Ctx; hero: EditorHero; kind: H
       <legend>
         <span className="ability-kind">{label}</span>
       </legend>
-      <div className="field">
-        <label htmlFor={`${id}-name`}>{e.abilityName}</label>
-        <input id={`${id}-name`} value={ability.name} onChange={(event) => commit(setAbilityName(state, hero.uid, kind, event.target.value))} />
-      </div>
+      <TranslatedField
+        label={e.abilityName}
+        languages={ctx.languages}
+        get={(locale) => (locale === DEFAULT_LOCALE ? ability.name : hero.texts[locale]?.[kind]?.name ?? "")}
+        set={(locale, value) =>
+          commit(locale === DEFAULT_LOCALE ? setAbilityName(state, hero.uid, kind, value) : setAbilityNameText(state, hero.uid, locale, kind, value))
+        }
+      />
       <ol className="hero-edit-levels">
         {ability.levels.map((text, index) => (
           <li key={index} className="hero-edit-skill">
-            <div className="field">
-              <label htmlFor={`${id}-level-${index}`}>{tf(e.levelText, { level: index + 1 })}</label>
-              <textarea
-                id={`${id}-level-${index}`}
-                rows={3}
-                value={text}
-                onChange={(event) => commit(setAbilityLevel(state, hero.uid, kind, index, event.target.value))}
-              />
-            </div>
+            <TranslatedField
+              label={tf(e.levelText, { level: index + 1 })}
+              multiline
+              rows={3}
+              languages={ctx.languages}
+              get={(locale) => (locale === DEFAULT_LOCALE ? text : hero.texts[locale]?.[kind]?.levels?.[index] ?? "")}
+              set={(locale, value) =>
+                commit(locale === DEFAULT_LOCALE
+                  ? setAbilityLevel(state, hero.uid, kind, index, value)
+                  : setAbilityLevelText(state, hero.uid, locale, kind, index, value))
+              }
+            />
             {ability.levels.length > 1 ? (
               <div className="tier-edit-row-actions">
                 <button
@@ -519,7 +561,20 @@ function problemText(e: EditorText, tf: Tf, kinds: Record<HeroAbilityKind, strin
   }
 }
 
-function ExportDialog({ ctx, result, problems, onClose }: { ctx: Ctx; result: HeroExport; problems: HeroProblem[]; onClose: () => void }) {
+function ExportDialog({
+  ctx,
+  result,
+  texts,
+  problems,
+  onClose,
+}: {
+  ctx: Ctx;
+  result: HeroExport;
+  texts: ReturnType<typeof exportHeroTexts>;
+  problems: HeroProblem[];
+  onClose: () => void;
+}) {
+  const textBlocks = useMemo(() => heroTextBlocks(texts, PUBLISHED_TEXTS), [texts]);
   const id = useId();
   const dialog = useRef<HTMLDialogElement>(null);
   const [copied, setCopied] = useState(false);
@@ -623,6 +678,7 @@ function ExportDialog({ ctx, result, problems, onClose }: { ctx: Ctx; result: He
         </div>
         <textarea readOnly value={json} rows={12} spellCheck={false} aria-label="lib/data/heroes.json" />
       </div>
+      <DictionaryBlocks blocks={textBlocks} title={ctx.t.editorLanguages.exportBlocks} lede={ctx.t.editorLanguages.exportBlocksLede} rows={6} />
     </dialog>
   );
 }

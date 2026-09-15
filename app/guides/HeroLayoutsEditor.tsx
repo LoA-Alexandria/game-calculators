@@ -61,11 +61,11 @@ import {
   type LayoutProblem,
   type TextMap,
 } from "../../lib/content/hero-layout-editor";
-import { LANGUAGES, type Language } from "../../lib/content/hero-tier-editor";
 import { searchable } from "../../lib/content/hero-tiers";
 import { HERO_RARITIES, HEROES, type HeroRarity } from "../../lib/content/heroes";
 import { siteName } from "../../lib/content/hero-names";
-import { getDictionary, type Dictionary } from "../../lib/i18n";
+import { getDictionary, mapLocales, type Dictionary, type Locale } from "../../lib/i18n";
+import { NewTextForm, AllLanguagesToggle, DictionaryBlocks, TranslatedField, useEditorLanguages } from "../components/EditorLanguages";
 import { LAYOUT_DRAFT_STORAGE_KEY } from "../../lib/site";
 import { HeroAvatar } from "../components/HeroAvatar";
 import { useLocale } from "../components/LocaleProvider";
@@ -76,11 +76,7 @@ import { CheckIcon, CloseIcon, CopyIcon, DownloadIcon, GripIcon, PlusIcon, Trash
 type GuideText = Dictionary["guideEntries"]["heroLayouts"];
 type EditorText = Dictionary["layoutEditor"];
 
-const PUBLISHED = fromLayout(LAYOUT_DATA, {
-  en: layoutTexts(getDictionary("en").guideEntries.heroLayouts),
-  de: layoutTexts(getDictionary("de").guideEntries.heroLayouts),
-  fr: layoutTexts(getDictionary("fr").guideEntries.heroLayouts),
-});
+const PUBLISHED = fromLayout(LAYOUT_DATA, mapLocales((locale) => layoutTexts(getDictionary(locale).guideEntries.heroLayouts)));
 
 const draftStore = createPersistentStore<LayoutEditorState | null>({
   key: LAYOUT_DRAFT_STORAGE_KEY,
@@ -100,8 +96,8 @@ const ITEM_NAMES_ID = "layout-editor-items";
 type Ctx = {
   state: LayoutEditorState;
   commit: (next: LayoutEditorState) => void;
-  language: Language;
-  languages: readonly Language[];
+  language: Locale;
+  languages: readonly Locale[];
   g: GuideText;
   e: EditorText;
   tf: (template: string, values: Record<string, string | number>) => string;
@@ -122,22 +118,17 @@ const collisions: CollisionDetection = (args) => {
   return underPointer.length > 0 ? underPointer : closestCorners(args);
 };
 
-function languageLabel(e: EditorText, language: Language): string {
-  return { en: e.langEn, de: e.langDe, fr: e.langFr }[language];
-}
-
 export function HeroLayoutsEditor() {
-  const { t, tf, locale } = useLocale();
+  const { t, tf } = useLocale();
   const g = t.guideEntries.heroLayouts;
   const e = t.layoutEditor;
-  const language = ((LANGUAGES as readonly string[]).includes(locale) ? locale : "en") as Language;
+  const { language, languages } = useEditorLanguages();
 
   const draft = useSyncExternalStore(draftStore.subscribe, draftStore.getSnapshot, draftStore.getServerSnapshot);
   const state = draft ?? PUBLISHED;
   const commit = (next: LayoutEditorState) => draftStore.set(next);
 
   const [chosenBuild, setChosenBuild] = useState<string | null>(null);
-  const [allLanguages, setAllLanguages] = useState(false);
   const [dragState, setDragState] = useState<LayoutEditorState | null>(null);
   const [dragLabel, setDragLabel] = useState<string | null>(null);
   const [selectedChip, setSelectedChip] = useState<string | null>(null);
@@ -166,7 +157,7 @@ export function HeroLayoutsEditor() {
     state,
     commit,
     language,
-    languages: allLanguages ? LANGUAGES : [language],
+    languages,
     g,
     e,
     tf,
@@ -266,10 +257,7 @@ export function HeroLayoutsEditor() {
       <PageHead eyebrow={e.eyebrow} title={e.title} lede={e.lede} />
 
       <div className="tier-edit-toolbar layout-edit-toolbar">
-        <label className="tier-edit-check">
-          <input type="checkbox" checked={allLanguages} onChange={(event) => setAllLanguages(event.target.checked)} />
-          {e.allLanguages}
-        </label>
+        <AllLanguagesToggle />
         <div className="tier-edit-actions">
           <span className="tier-edit-status" aria-live="polite">
             {changes > 0 ? `${changes === 1 ? e.changeOne : tf(e.changes, { count: changes })} · ${e.savedNote}` : e.unchanged}
@@ -411,37 +399,10 @@ function TextInputs({
   label: string;
   hint?: string;
   multiline?: boolean;
-  get: (language: Language) => string;
-  set: (language: Language, value: string) => void;
+  get: (language: Locale) => string;
+  set: (language: Locale, value: string) => void;
 }) {
-  const id = useId();
-  return (
-    <div className="field layout-text-field">
-      <label htmlFor={`${id}-${ctx.languages[0]}`}>{label}</label>
-      {ctx.languages.map((language) => (
-        <div className="layout-lang-input" key={language}>
-          {ctx.languages.length > 1 ? <span className="layout-lang" title={languageLabel(ctx.e, language)}>{language.toUpperCase()}</span> : null}
-          {multiline ? (
-            <textarea
-              id={`${id}-${language}`}
-              rows={2}
-              value={get(language)}
-              aria-label={ctx.languages.length > 1 ? `${label} (${languageLabel(ctx.e, language)})` : undefined}
-              onChange={(event) => set(language, event.target.value)}
-            />
-          ) : (
-            <input
-              id={`${id}-${language}`}
-              value={get(language)}
-              aria-label={ctx.languages.length > 1 ? `${label} (${languageLabel(ctx.e, language)})` : undefined}
-              onChange={(event) => set(language, event.target.value)}
-            />
-          )}
-        </div>
-      ))}
-      {hint ? <p className="tier-small">{hint}</p> : null}
-    </div>
-  );
+  return <TranslatedField label={label} hint={hint} multiline={multiline} languages={ctx.languages} get={get} set={set} />;
 }
 
 function Zone({
@@ -530,7 +491,6 @@ function SortableChip({ ctx, chip }: { ctx: Ctx; chip: Chip }) {
 function ChipEditor({ ctx, chip, zoneId }: { ctx: Ctx; chip: Chip; zoneId: string }) {
   const id = useId();
   const [creating, setCreating] = useState(false);
-  const [text, setText] = useState<Record<Language, string>>({ en: "", de: "", fr: "" });
   const notes = ctx.state.texts[ctx.language].pickNotes;
   return (
     <div className="layout-chip-editor">
@@ -551,31 +511,14 @@ function ChipEditor({ ctx, chip, zoneId }: { ctx: Ctx; chip: Chip; zoneId: strin
         </select>
       </div>
       {creating ? (
-        <div className="tier-edit-newtext">
-          {LANGUAGES.map((language) => (
-            <div className="field" key={language}>
-              <label htmlFor={`${id}-${language}`}>{languageLabel(ctx.e, language)}</label>
-              <input id={`${id}-${language}`} value={text[language]} onChange={(event) => setText((current) => ({ ...current, [language]: event.target.value }))} />
-            </div>
-          ))}
-          <div className="tier-edit-row-actions">
-            <button
-              className="small-button"
-              type="button"
-              disabled={!text.en.trim() && !text[ctx.language].trim()}
-              onClick={() => {
-                const english = text.en.trim() || text[ctx.language].trim();
-                const created = addNote(ctx.state, { ...text, en: english });
-                ctx.commit(setChipNote(created.state, chip.uid, created.key));
-                setCreating(false);
-              }}
-            >
-              <CheckIcon className="icon icon-sm" />
-              {ctx.e.newNoteAdd}
-            </button>
-            <button className="small-button" type="button" onClick={() => setCreating(false)}>{ctx.e.cancel}</button>
-          </div>
-        </div>
+        <NewTextForm
+          onCancel={() => setCreating(false)}
+          onAdd={(text) => {
+            const created = addNote(ctx.state, text);
+            ctx.commit(setChipNote(created.state, chip.uid, created.key));
+            setCreating(false);
+          }}
+        />
       ) : null}
       <div className="field">
         <label htmlFor={`${id}-move`}>{ctx.e.moveTo}</label>
@@ -593,7 +536,7 @@ function ChipEditor({ ctx, chip, zoneId }: { ctx: Ctx; chip: Chip; zoneId: strin
 
 function BuildEditor({ ctx, build, index, count, onRemoved }: { ctx: Ctx; build: BuildState; index: number; count: number; onRemoved: () => void }) {
   const { state, commit, e, g } = ctx;
-  const text = (language: Language) => state.texts[language].buildTexts[build.id];
+  const text = (language: Locale) => state.texts[language].buildTexts[build.id];
   const zoneLabels: Record<BuildZone, string> = { key: g.labelKey, important: g.labelImportant, other: g.labelOther, collection: g.labelCollection };
   const lists: [BuildListField, string][] = [["pros", g.labelPros], ["cons", g.labelCons], ["notes", e.notesLabel]];
 
@@ -870,18 +813,7 @@ function LayoutExport({ ctx, onClose }: { ctx: Ctx; onClose: () => void }) {
         <textarea readOnly value={json} rows={10} spellCheck={false} aria-label="lib/data/hero-layouts.json" />
       </div>
 
-      <div className="tier-export-block">
-        <h3>{ctx.e.exportTexts}</h3>
-        {LANGUAGES.map((language) => (
-          <div key={language} className="tier-export-snippet">
-            <div className="tier-export-head">
-              <code>{`lib/i18n/dictionaries/${language}.ts`}</code>
-              {copyButton(language, blocks[language])}
-            </div>
-            <textarea readOnly value={blocks[language]} rows={6} spellCheck={false} aria-label={`lib/i18n/dictionaries/${language}.ts`} />
-          </div>
-        ))}
-      </div>
+      <DictionaryBlocks blocks={blocks} title={ctx.e.exportTexts} rows={6} />
     </dialog>
   );
 }

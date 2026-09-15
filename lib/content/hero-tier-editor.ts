@@ -15,6 +15,8 @@ import {
   type TierId,
   type TierListData,
 } from "./hero-tiers.ts";
+import { LOCALE_CODES, dictionaryFile, getDictionary, type Locale } from "../i18n/index.ts";
+import { parseTranslations, textIn, translationsFrom, type Translations } from "../i18n/translations.ts";
 
 export const LIST_IDS = ["overall", "battle", "utility", "productivity"] as const;
 export type ListId = (typeof LIST_IDS)[number];
@@ -22,11 +24,12 @@ export type ListId = (typeof LIST_IDS)[number];
 export const TEXT_GROUPS = ["variants", "roles", "effects", "resources", "notes", "reasons"] as const;
 export type TextGroup = (typeof TEXT_GROUPS)[number];
 
-export const LANGUAGES = ["en", "de", "fr"] as const;
-export type Language = (typeof LANGUAGES)[number];
-export type Translations = Record<Language, string>;
+export type { Translations };
 
-/** Text a user typed in the editor that the dictionaries do not have yet. */
+/**
+ * Text typed in the editor: new keys the dictionaries do not have yet, and new
+ * wording for keys they do have. Each holds every registered language.
+ */
 export type CustomTexts = Record<TextGroup, Record<string, Translations>>;
 
 /** Every field any list uses; each list reads only its own. */
@@ -271,17 +274,32 @@ export function addText(state: EditorState, group: TextGroup, key: string, text:
   return { ...state, texts: { ...state.texts, [group]: { ...state.texts[group], [key]: text } } };
 }
 
-/** Lines to paste into each dictionary for text typed in the editor. Empty when there is none. */
-export function dictionarySnippet(texts: CustomTexts): Record<Language, string> {
-  const result = {} as Record<Language, string>;
-  for (const language of LANGUAGES) {
+/** The wording a key has in every dictionary right now. */
+export function publishedText(group: TextGroup, key: string): Translations {
+  return translationsFrom((locale) => (getDictionary(locale).guideEntries.heroTierList[group] as Record<string, string>)[key]);
+}
+
+/** The text for a key in one language: the editor's wording first, then the dictionary, then English. */
+export function textFor(texts: CustomTexts, group: TextGroup, key: string, locale: Locale): string {
+  const custom = texts[group][key];
+  if (custom) return textIn(custom, locale);
+  return textIn(publishedText(group, key), locale) || key;
+}
+
+/**
+ * Lines to add to or replace in each dictionary for text typed in the editor.
+ * A language left empty gets the English text. Empty when there is none.
+ */
+export function dictionarySnippet(texts: CustomTexts): Record<Locale, string> {
+  const result = {} as Record<Locale, string>;
+  for (const locale of LOCALE_CODES) {
     const blocks = TEXT_GROUPS.flatMap((group) => {
       const entries = Object.entries(texts[group]);
       if (entries.length === 0) return [];
-      const lines = entries.map(([key, value]) => `        ${key}: ${JSON.stringify(value[language].trim() || value.en.trim())},`);
+      const lines = entries.map(([key, value]) => `        ${key}: ${JSON.stringify(textIn(value, locale))},`);
       return [`      // guideEntries.heroTierList.${group}`, ...lines];
     });
-    result[language] = blocks.length ? [`// lib/i18n/dictionaries/${language}.ts`, ...blocks].join("\n") : "";
+    result[locale] = blocks.length ? [`// ${dictionaryFile(locale)}`, ...blocks].join("\n") : "";
   }
   return result;
 }
@@ -454,7 +472,15 @@ export function parseDraft(raw: string | null): EditorState | null {
         }
       }
     }
-    for (const group of TEXT_GROUPS) if (typeof value.texts[group] !== "object" || value.texts[group] === null) return null;
+    for (const group of TEXT_GROUPS) {
+      if (typeof value.texts[group] !== "object" || value.texts[group] === null) return null;
+      // A draft saved before a language was added loads with that language empty.
+      for (const [key, text] of Object.entries(value.texts[group])) {
+        const parsed = parseTranslations(text);
+        if (!parsed) return null;
+        value.texts[group][key] = parsed;
+      }
+    }
     return value;
   } catch {
     return null;

@@ -2,6 +2,9 @@
 
 import { useId, useMemo, useState } from "react";
 import type { NewsEntry } from "../../lib/content/news";
+import { DEFAULT_LOCALE, dictionaryFiles, getDictionary, mapLocales, type Locale } from "../../lib/i18n";
+import { blankTranslations, textIn, type Translations } from "../../lib/i18n/translations";
+import { AllLanguagesToggle, DictionaryBlocks, TranslatedField, useEditorLanguages } from "../components/EditorLanguages";
 import { useLocale } from "../components/LocaleProvider";
 import { BackLink, PageHead } from "../components/Ui";
 import { CheckIcon, CopyIcon, InfoIcon } from "../components/Icons";
@@ -19,15 +22,7 @@ function paragraphs(body: string): string[] {
   return body.split(/\n\s*\n/).map((part) => part.trim()).filter(Boolean);
 }
 
-function snippetFor(
-  id: string,
-  date: string,
-  href: string,
-  title: string,
-  summary: string,
-  body: string,
-): string {
-  const lines = paragraphs(body);
+function rowSnippet(id: string, date: string, href: string): string {
   return [
     `  {`,
     `    id: ${JSON.stringify(id)},`,
@@ -37,13 +32,18 @@ function snippetFor(
     `    summary: (t) => t.newsEntries.${id}.summary,`,
     `    body: (t) => t.newsEntries.${id}.body,`,
     `  },`,
-    ``,
-    `// every dictionary — under newsEntries`,
+  ].join("\n");
+}
+
+/** The `newsEntries` block for one dictionary; empty fields take the English text. */
+function entryBlock(id: string, locale: Locale, title: Translations, summary: Translations, body: Translations): string {
+  return [
+    `// under newsEntries`,
     `    ${id}: {`,
-    `      title: ${JSON.stringify(title)},`,
-    `      summary: ${JSON.stringify(summary)},`,
+    `      title: ${JSON.stringify(textIn(title, locale))},`,
+    `      summary: ${JSON.stringify(textIn(summary, locale))},`,
     `      body: [`,
-    ...lines.map((line) => `        ${JSON.stringify(line)},`),
+    ...paragraphs(textIn(body, locale)).map((line) => `        ${JSON.stringify(line)},`),
     `      ],`,
     `    },`,
   ].join("\n");
@@ -63,32 +63,37 @@ export function NewsEditor({
   showHead?: boolean;
 }) {
   const { t, d } = useLocale();
+  const { language, languages } = useEditorLanguages({ withDefault: true });
   const ids = useId();
   const editing = target?.action === "edit" ? target.entry : null;
   const removing = target?.action === "remove" ? target.entry : null;
-  const [title, setTitle] = useState(editing ? editing.title(t) : "");
-  const [summary, setSummary] = useState(editing ? editing.summary(t) : "");
-  const [body, setBody] = useState(editing ? editing.body(t).join("\n\n") : "");
+  const [title, setTitle] = useState<Translations>(() => (editing ? mapLocales((locale) => editing.title(getDictionary(locale))) : blankTranslations()));
+  const [summary, setSummary] = useState<Translations>(() => (editing ? mapLocales((locale) => editing.summary(getDictionary(locale))) : blankTranslations()));
+  const [body, setBody] = useState<Translations>(() => (editing ? mapLocales((locale) => editing.body(getDictionary(locale)).join("\n\n")) : blankTranslations()));
   const [date, setDate] = useState(editing ? editing.date : new Date().toISOString().slice(0, 10));
   const [href, setHref] = useState(editing ? editing.href ?? "" : "");
   const [copied, setCopied] = useState(false);
 
-  const id = editing?.id ?? removing?.id ?? camel(title);
+  const id = editing?.id ?? removing?.id ?? camel(title[DEFAULT_LOCALE]);
   const output = useMemo(() => {
     if (removing) {
       return [
         `Remove news ${JSON.stringify(removing.id)} (${removing.title(t)})`,
         ``,
         `- Delete the object with that id from NEWS in lib/content/news.ts`,
-        `- Delete newsEntries.${removing.id} from lib/i18n/dictionaries/en.ts, de.ts, and fr.ts`,
+        `- Delete newsEntries.${removing.id} from ${dictionaryFiles()}`,
       ].join("\n");
     }
-    const row = snippetFor(id, date, href, title, summary, body);
+    const row = rowSnippet(id, date, href);
     if (editing) {
       return [`// lib/content/news.ts — replace the existing row with this id`, row].join("\n");
     }
     return [`// lib/content/news.ts — add at the top of NEWS`, row].join("\n");
-  }, [removing, editing, id, date, href, title, summary, body, t]);
+  }, [removing, editing, id, date, href, t]);
+  const blocks = useMemo(
+    () => (removing ? {} : mapLocales((locale) => entryBlock(id, locale, title, summary, body))),
+    [removing, id, title, summary, body],
+  );
 
   const heading = removing ? t.newsEditor.removeTitle : editing ? t.newsEditor.editTitle : t.newsEditor.title;
   const lede = removing ? t.newsEditor.removeLede : editing ? t.newsEditor.editLede : t.newsEditor.lede;
@@ -115,6 +120,9 @@ export function NewsEditor({
     </div>
   );
 
+  const previewTitle = textIn(title, language);
+  const previewBody = textIn(body, language);
+
   const form = removing ? (
     <>
       <h3 style={{ fontSize: "1rem", marginBottom: 8 }}>{t.newsEditor.removeOutput}</h3>
@@ -129,22 +137,29 @@ export function NewsEditor({
   ) : (
     <div className="editor-layout">
       <div>
-        <div className="field">
-          <label htmlFor={`${ids}-title`}>{t.newsEditor.fieldTitle}</label>
-          <input id={`${ids}-title`} value={title} onChange={(e) => setTitle(e.target.value)} />
+        <div className="form-actions editor-languages-bar">
+          <AllLanguagesToggle />
         </div>
-        <div className="field">
-          <label htmlFor={`${ids}-summary`}>
-            {t.newsEditor.fieldSummary} <span className="label-note">{t.newsEditor.fieldSummaryNote}</span>
-          </label>
-          <input id={`${ids}-summary`} value={summary} onChange={(e) => setSummary(e.target.value)} />
-        </div>
-        <div className="field">
-          <label htmlFor={`${ids}-body`}>
-            {t.newsEditor.fieldBody} <span className="label-note">{t.newsEditor.fieldBodyNote}</span>
-          </label>
-          <textarea id={`${ids}-body`} rows={10} value={body} onChange={(e) => setBody(e.target.value)} />
-        </div>
+        <TranslatedField
+          label={t.newsEditor.fieldTitle}
+          languages={languages}
+          get={(locale) => title[locale]}
+          set={(locale, value) => setTitle((current) => ({ ...current, [locale]: value }))}
+        />
+        <TranslatedField
+          label={`${t.newsEditor.fieldSummary} · ${t.newsEditor.fieldSummaryNote}`}
+          languages={languages}
+          get={(locale) => summary[locale]}
+          set={(locale, value) => setSummary((current) => ({ ...current, [locale]: value }))}
+        />
+        <TranslatedField
+          label={`${t.newsEditor.fieldBody} · ${t.newsEditor.fieldBodyNote}`}
+          multiline
+          rows={8}
+          languages={languages}
+          get={(locale) => body[locale]}
+          set={(locale, value) => setBody((current) => ({ ...current, [locale]: value }))}
+        />
         <div className="input-row">
           <div className="field">
             <label htmlFor={`${ids}-date`}>{t.newsEditor.fieldDate}</label>
@@ -161,11 +176,11 @@ export function NewsEditor({
 
       <div className="editor-sticky">
         <h3 style={{ fontSize: "1rem", marginBottom: 8 }}>{t.editor.preview}</h3>
-        {title || body ? (
+        {previewTitle || previewBody ? (
           <article className="entry-card" style={{ boxShadow: "none" }}>
             <div className="entry-meta"><time dateTime={date}>{d(date)}</time></div>
-            {title && <h3>{title}</h3>}
-            {paragraphs(body).map((line, index) => <p key={index}>{line}</p>)}
+            {previewTitle && <h3>{previewTitle}</h3>}
+            {paragraphs(previewBody).map((line, index) => <p key={index}>{line}</p>)}
           </article>
         ) : (
           <p className="assumption" style={{ margin: 0 }}>{t.editor.previewEmpty}</p>
@@ -179,6 +194,7 @@ export function NewsEditor({
             <button className="button" type="button" onClick={onClose}>{t.newsEditor.cancel}</button>
           )}
         </div>
+        <DictionaryBlocks blocks={blocks} title={t.editorLanguages.exportBlocks} lede={t.editorLanguages.exportBlocksLede} rows={6} />
       </div>
     </div>
   );

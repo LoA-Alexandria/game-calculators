@@ -59,6 +59,51 @@ export function abilityCount(hero: Hero): number {
 
 export type HeroData = { heroes: Hero[] };
 
+/** One ability in another language; a missing or blank part keeps the English text. */
+export type HeroAbilityText = { name?: string; levels?: string[] };
+
+/**
+ * A hero's wording in one language. Names, rarities, and pictures are shared;
+ * the wording is English in `lib/data/heroes.json`, and
+ * `guideEntries.heroes.heroTexts` in each dictionary holds translations keyed
+ * by hero id. A language added later starts with `{}` and shows English.
+ */
+export type HeroText = {
+  obtain?: string;
+  skill?: HeroAbilityText;
+  buff?: HeroAbilityText;
+  production?: HeroAbilityText;
+  artifact?: { name?: string; text?: string };
+};
+export type HeroTexts = Record<string, HeroText>;
+
+function localizedAbility(ability: HeroAbility, text: HeroAbilityText | undefined): HeroAbility {
+  if (!text) return ability;
+  return {
+    name: text.name?.trim() || ability.name,
+    // A level nobody has translated yet keeps the English text instead of going blank.
+    levels: ability.levels.map((level, index) => text.levels?.[index]?.trim() || level),
+  };
+}
+
+/** The hero with every filled-in translation from `texts` applied. */
+export function localizedHero(hero: Hero, texts: HeroTexts): Hero {
+  const local = texts[hero.id];
+  if (!local) return hero;
+  const next: Hero = { ...hero, obtain: local.obtain?.trim() || hero.obtain };
+  for (const kind of HERO_ABILITY_KINDS) {
+    const ability = hero[kind];
+    if (ability) next[kind] = localizedAbility(ability, local[kind]);
+  }
+  if (hero.artifact) {
+    next.artifact = {
+      name: local.artifact?.name?.trim() || hero.artifact.name,
+      text: local.artifact?.text?.trim() || hero.artifact.text,
+    };
+  }
+  return next;
+}
+
 export const HERO_FRAGMENT_KEYS = [
   "green",
   "blue",
@@ -89,17 +134,22 @@ export function heroesByRarity(rarity: HeroRarity | "all"): Hero[] {
   return HEROES.filter((hero) => hero.rarity === rarity);
 }
 
-export function searchHeroes(query: string, rarity: HeroRarity | "all"): Hero[] {
+/** `catalogs` lets a search also match the wording readers see in other languages. */
+export function searchHeroes(query: string, rarity: HeroRarity | "all", catalogs: readonly HeroTexts[] = []): Hero[] {
   const needle = query.trim().toLowerCase();
   const pool = heroesByRarity(rarity);
   if (!needle) return pool;
   return pool.filter((hero) => {
-    const abilities = HERO_ABILITY_KINDS.flatMap((kind) => [hero[kind]?.name ?? "", ...(hero[kind]?.levels ?? [])]);
-    const hay = [hero.name, hero.obtain, ...abilities, hero.artifact?.name ?? "", hero.artifact?.text ?? ""]
-      .join(" ")
-      .toLowerCase();
+    const translated = catalogs.flatMap((texts) => (texts[hero.id] ? textOf(localizedHero(hero, texts)) : []));
+    const hay = [hero.name, ...textOf(hero), ...translated].join(" ").toLowerCase();
     return hay.includes(needle);
   });
+}
+
+/** Every searchable string of one wording of a hero. */
+function textOf(hero: Hero): string[] {
+  const abilities = HERO_ABILITY_KINDS.flatMap((kind) => [hero[kind]?.name ?? "", ...(hero[kind]?.levels ?? [])]);
+  return [hero.obtain, ...abilities, hero.artifact?.name ?? "", hero.artifact?.text ?? ""];
 }
 
 /** URL of a file in `public/heroes/`, under the GitHub Pages base path. */

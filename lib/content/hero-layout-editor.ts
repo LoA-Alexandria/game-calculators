@@ -1,7 +1,7 @@
 /**
  * Pure state logic for the Hero layouts editor: builds with their hero zones
- * and counters, the battle utility groups, and the text for all three
- * languages. The page renders this state and calls these functions.
+ * and counters, the battle utility groups, and the text for every registered
+ * language. The page renders this state and calls these functions.
  *
  * Like the tier list editor, the result leaves the browser as files to commit:
  * `lib/data/hero-layouts.json` and the five keyed text blocks of
@@ -12,14 +12,17 @@
 import {
   BUILD_ZONES,
   COLLECTION_ITEMS,
+  LAYOUT_DATA,
   LAYOUT_TEXT_MAPS,
+  layoutTexts,
   type BuildText,
   type BuildZone,
   type LayoutData,
   type LayoutPick,
   type LayoutTexts,
 } from "./hero-layouts.ts";
-import { LANGUAGES, longestIncreasing, textKeyFrom, type Language } from "./hero-tier-editor.ts";
+import { longestIncreasing, textKeyFrom } from "./hero-tier-editor.ts";
+import { DEFAULT_LOCALE, LOCALE_CODES, getDictionary, mapLocales, type Locale } from "../i18n/index.ts";
 
 export type Chip = { uid: string; hero: string; note?: string };
 export type ChipList = { id: string; chips: Chip[] };
@@ -38,7 +41,7 @@ export type LayoutEditorState = {
   version: 1;
   builds: BuildState[];
   utility: RoleState[];
-  texts: Record<Language, EditableTexts>;
+  texts: Record<Locale, EditableTexts>;
   nextId: number;
 };
 
@@ -65,7 +68,7 @@ function copyText(text: BuildText): EditableBuildText {
   return { name: text.name, status: text.status, tagline: text.tagline, pros: [...text.pros], cons: [...text.cons], notes: [...text.notes] };
 }
 
-export function fromLayout(data: LayoutData, texts: Record<Language, LayoutTexts>): LayoutEditorState {
+export function fromLayout(data: LayoutData, texts: Record<Locale, LayoutTexts>): LayoutEditorState {
   let nextId = 1;
   const chips = (picks: readonly LayoutPick[]): Chip[] =>
     picks.map((pick) => (pick.note ? { uid: `c${nextId++}`, hero: pick.hero, note: pick.note } : { uid: `c${nextId++}`, hero: pick.hero }));
@@ -78,8 +81,8 @@ export function fromLayout(data: LayoutData, texts: Record<Language, LayoutTexts
     id: role.id,
     groups: role.groups.map((group) => ({ id: group.id, chips: chips(group.picks) })),
   }));
-  const copied = {} as Record<Language, EditableTexts>;
-  for (const language of LANGUAGES) {
+  const copied = {} as Record<Locale, EditableTexts>;
+  for (const language of LOCALE_CODES) {
     const source = texts[language];
     copied[language] = {
       buildTexts: Object.fromEntries(Object.entries(source.buildTexts).map(([id, text]) => [id, copyText(text)])),
@@ -212,24 +215,24 @@ export function setChipNote(state: LayoutEditorState, uid: string, note: string 
 }
 
 function allTextKeys(state: LayoutEditorState, map: TextMap | "buildTexts"): string[] {
-  return LANGUAGES.flatMap((language) => Object.keys(state.texts[language][map]));
+  return LOCALE_CODES.flatMap((language) => Object.keys(state.texts[language][map]));
 }
 
-function forEachLanguage(state: LayoutEditorState, edit: (texts: EditableTexts, language: Language) => EditableTexts): LayoutEditorState {
-  const texts = {} as Record<Language, EditableTexts>;
-  for (const language of LANGUAGES) texts[language] = edit(state.texts[language], language);
+function forEachLanguage(state: LayoutEditorState, edit: (texts: EditableTexts, language: Locale) => EditableTexts): LayoutEditorState {
+  const texts = {} as Record<Locale, EditableTexts>;
+  for (const language of LOCALE_CODES) texts[language] = edit(state.texts[language], language);
   return { ...state, texts };
 }
 
 /** Sets one text in one language. New keys are created in every language with the same value, so no dictionary is ever missing one. */
-export function setText(state: LayoutEditorState, language: Language, map: TextMap, key: string, value: string): LayoutEditorState {
+export function setText(state: LayoutEditorState, language: Locale, map: TextMap, key: string, value: string): LayoutEditorState {
   return forEachLanguage(state, (texts, each) => {
     if (each !== language && key in texts[map]) return texts;
     return { ...texts, [map]: { ...texts[map], [key]: value } };
   });
 }
 
-export function setBuildLine(state: LayoutEditorState, language: Language, buildId: string, field: BuildLineField, value: string): LayoutEditorState {
+export function setBuildLine(state: LayoutEditorState, language: Locale, buildId: string, field: BuildLineField, value: string): LayoutEditorState {
   return forEachLanguage(state, (texts, each) =>
     each !== language ? texts : { ...texts, buildTexts: { ...texts.buildTexts, [buildId]: { ...texts.buildTexts[buildId], [field]: value } } },
   );
@@ -240,7 +243,7 @@ export function setBuildLine(state: LayoutEditorState, language: Language, build
  * adding or removing a line does it everywhere; editing a line only changes
  * the language being edited.
  */
-export function setBuildListItem(state: LayoutEditorState, language: Language, buildId: string, field: BuildListField, index: number, value: string): LayoutEditorState {
+export function setBuildListItem(state: LayoutEditorState, language: Locale, buildId: string, field: BuildListField, index: number, value: string): LayoutEditorState {
   return forEachLanguage(state, (texts, each) => {
     if (each !== language) return texts;
     const text = texts.buildTexts[buildId];
@@ -249,7 +252,7 @@ export function setBuildListItem(state: LayoutEditorState, language: Language, b
   });
 }
 
-export function addBuildListItem(state: LayoutEditorState, language: Language, buildId: string, field: BuildListField, value = ""): LayoutEditorState {
+export function addBuildListItem(state: LayoutEditorState, language: Locale, buildId: string, field: BuildListField, value = ""): LayoutEditorState {
   return forEachLanguage(state, (texts) => {
     const text = texts.buildTexts[buildId];
     return { ...texts, buildTexts: { ...texts.buildTexts, [buildId]: { ...text, [field]: [...text[field], value] } } };
@@ -333,11 +336,11 @@ export function removeGroup(state: LayoutEditorState, roleId: string, groupId: s
 }
 
 /** Adds a note such as "with item" in every language and returns its key. */
-export function addNote(state: LayoutEditorState, text: Record<Language, string>): { state: LayoutEditorState; key: string } {
-  const key = textKeyFrom(text.en.trim() || "note", allTextKeys(state, "pickNotes"));
+export function addNote(state: LayoutEditorState, text: Record<Locale, string>): { state: LayoutEditorState; key: string } {
+  const key = textKeyFrom(text[DEFAULT_LOCALE].trim() || "note", allTextKeys(state, "pickNotes"));
   const next = forEachLanguage(state, (texts, language) => ({
     ...texts,
-    pickNotes: { ...texts.pickNotes, [key]: text[language].trim() || text.en.trim() },
+    pickNotes: { ...texts.pickNotes, [key]: text[language]?.trim() || text[DEFAULT_LOCALE].trim() },
   }));
   return { state: next, key };
 }
@@ -422,15 +425,15 @@ export function textBlock(texts: EditableTexts, buildOrder: readonly string[], u
   return lines.join("\n");
 }
 
-export function textBlocks(state: LayoutEditorState): Record<Language, string> {
+export function textBlocks(state: LayoutEditorState): Record<Locale, string> {
   const order = {
     roles: state.utility.map((role) => role.id),
     groups: state.utility.flatMap((role) => role.groups.map((group) => group.id)),
     counters: state.builds.flatMap((build) => build.counters.map((counter) => counter.id)),
   };
   const builds = state.builds.map((build) => build.id);
-  const result = {} as Record<Language, string>;
-  for (const language of LANGUAGES) result[language] = textBlock(state.texts[language], builds, order);
+  const result = {} as Record<Locale, string>;
+  for (const language of LOCALE_CODES) result[language] = textBlock(state.texts[language], builds, order);
   return result;
 }
 
@@ -481,7 +484,7 @@ export function countLayoutChanges(published: LayoutEditorState, draft: LayoutEd
   for (const id of idsBefore) if (!idsAfter.has(id)) changes += 1;
   const buildOrder = (state: LayoutEditorState) => state.builds.map((build) => build.id).join(",");
   if (buildOrder(published) !== buildOrder(draft) && idsBefore.size === idsAfter.size) changes += 1;
-  for (const language of LANGUAGES) {
+  for (const language of LOCALE_CODES) {
     for (const map of LAYOUT_TEXT_MAPS) {
       const a = published.texts[language][map] as Record<string, unknown>;
       const b = draft.texts[language][map] as Record<string, unknown>;
@@ -500,7 +503,7 @@ export type LayoutProblem =
 export function findLayoutProblems(state: LayoutEditorState): LayoutProblem[] {
   const problems: LayoutProblem[] = [];
   for (const build of state.builds) {
-    if (LANGUAGES.some((language) => !state.texts[language].buildTexts[build.id]?.name.trim())) problems.push({ code: "buildName", build: build.id });
+    if (LOCALE_CODES.some((language) => !state.texts[language].buildTexts[build.id]?.name.trim())) problems.push({ code: "buildName", build: build.id });
   }
   for (const zoneId of zoneIds(state)) {
     const seen = new Set<string>();
@@ -509,12 +512,17 @@ export function findLayoutProblems(state: LayoutEditorState): LayoutProblem[] {
       if (!hero) { problems.push({ code: "emptyHero", zone: zoneId }); continue; }
       if (seen.has(hero)) problems.push({ code: "duplicate", zone: zoneId, hero });
       seen.add(hero);
-      if (chip.note && LANGUAGES.some((language) => !(chip.note as string in state.texts[language].pickNotes))) {
+      if (chip.note && LOCALE_CODES.some((language) => !(chip.note as string in state.texts[language].pickNotes))) {
         problems.push({ code: "noteText", hero, note: chip.note });
       }
     }
   }
   return problems;
+}
+
+/** The editable texts one dictionary publishes now. */
+function publishedTexts(language: Locale): EditableTexts {
+  return fromLayout(LAYOUT_DATA, mapLocales((code) => layoutTexts(getDictionary(code).guideEntries.heroLayouts))).texts[language];
 }
 
 export function parseLayoutDraft(raw: string | null): LayoutEditorState | null {
@@ -527,9 +535,11 @@ export function parseLayoutDraft(raw: string | null): LayoutEditorState | null {
       for (const zone of BUILD_ZONES) if (!Array.isArray(build.zones[zone])) return null;
     }
     for (const role of value.utility) if (typeof role.id !== "string" || !Array.isArray(role.groups)) return null;
-    for (const language of LANGUAGES) {
-      const texts = value.texts?.[language];
-      if (!texts) return null;
+    if (!value.texts?.[DEFAULT_LOCALE]) return null;
+    for (const language of LOCALE_CODES) {
+      // A draft saved before a language was added takes that language from its dictionary.
+      if (!value.texts[language]) value.texts[language] = publishedTexts(language);
+      const texts = value.texts[language];
       for (const map of LAYOUT_TEXT_MAPS) if (typeof texts[map] !== "object" || texts[map] === null) return null;
     }
     return value;
