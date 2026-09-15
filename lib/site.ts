@@ -53,6 +53,9 @@ export const HERO_DRAFT_STORAGE_KEY = "popepoch-hero-draft";
 /** Local draft of the Goddess Theater editor, uploaded covers included. */
 export const THEATER_DRAFT_STORAGE_KEY = "popepoch-theater-draft";
 
+/** Local draft of the Hero linking editor. */
+export const LINKING_DRAFT_STORAGE_KEY = "popepoch-linking-draft";
+
 /** Whether the desktop sidebar is collapsed to an icon rail. */
 export const NAV_COLLAPSED_STORAGE_KEY = "popepoch-nav-collapsed";
 

@@ -146,6 +146,13 @@ export const SECTIONS: NavSection[] = [
         badge: (t) => t.guideCategories.tierLists,
         categoryId: "tierLists",
       },
+      {
+        href: "/guides/hero-linking/",
+        label: (t) => t.guideEntries.heroLinking.title,
+        description: (t) => t.guideEntries.heroLinking.summary,
+        badge: (t) => t.guideCategories.tips,
+        categoryId: "tips",
+      },
     ],
   },
   {
