@@ -63,10 +63,11 @@ Nothing else changes. Everything below reads the registry:
 
 ### Text that lives in data files
 
-Hero wording, the Artwork catalogue, and Goddess Theater names are English in
-`lib/data/*.json`. Each dictionary holds only the translations, keyed by id:
-`guideEntries.heroes.heroTexts`, `guideEntries.artwork.catalogTexts`, and
-`guideEntries.goddessTheater.playTexts`. A new language starts with `{}` there.
+Hero wording, the Artwork catalogue, Goddess Theater names, and Anecdotes are
+English in `lib/data/*.json`. Each dictionary holds only the translations, keyed
+by id: `guideEntries.heroes.heroTexts`, `guideEntries.artwork.catalogTexts`,
+`guideEntries.goddessTheater.playTexts`, and
+`guideEntries.anecdotes.anecdoteTexts`. A new language starts with `{}` there.
 Readers see the English text until someone translates it, and an empty field
 in an editor shows English as a placeholder.
 
@@ -107,7 +108,7 @@ filter. There is no second list to keep in step.
    row, and (for a new slug) a note to copy the page file. Existing guides on
    `/guides/` and on the guide page have Edit and Remove — the same commit-snippet
    pattern as news and events. Artwork, Artwork layouts, Heroes, Hero layouts,
-   the Hero tier list, Goddess Theater, and Hero linking skip those buttons:
+   the Hero tier list, Goddess Theater, Hero linking, and Anecdotes skip those buttons:
    they have their own editors instead.
 2. Write or replace the text under `guideEntries.<id>` in all three dictionaries,
    following the shape of `waterSupply`: `title`, `summary`, `intro`,
@@ -119,18 +120,19 @@ filter. There is no second list to keep in step.
    use `coreElements`; placement guides (water supply, hero layouts, artwork
    layouts) use `layouts`; ranking guides (hero tier list) use `tierLists`;
    building guides (Goddess Theater) use `buildings`; advice that is not tied to
-   one system (hero linking) uses `tips`. The top-level Events section is the
+   one system (hero linking, anecdotes) uses `tips`. The top-level Events section is the
    calendar; keep `event` for a future event-related guide.
 4. For a new slug, copy `app/guides/water-supply/page.tsx` and pass the new id
    to `GuideArticle`.
 
 A guide that needs more than headings and paragraphs gets its own renderer next
 to `GuideArticle`: `GoddessesGuide`, `ArtworkGuide`, `ArtworkLayoutsGuide`,
-`HeroLayoutsGuide`, `HeroRoster`, `HeroTierListGuide`, `GoddessTheaterGuide`, and
-`HeroLinkingGuide`.
+`HeroLayoutsGuide`, `HeroRoster`, `HeroTierListGuide`, `GoddessTheaterGuide`,
+`HeroLinkingGuide`, and `AnecdotesGuide`.
 `guideLayout()` in `lib/content/guides.ts` picks the renderer from a field only
 that guide has (`phases` for Goddesses, `playsHeading` for Goddess Theater,
-`linksHeading` for Hero linking, before `filterAll` for Heroes), and
+`linksHeading` for Hero linking, `anecdoteTexts` for Anecdotes, before
+`filterAll` for Heroes), and
 `tests/guides.test.mjs` pins every entry, so two guides cannot claim the same
 renderer by sharing a field name. Keep `sections` and `note` in those entries
 too, since the editor reads them. Goddess names, rarity, and portraits live in
@@ -427,6 +429,46 @@ The linkable heroes and the link order come from a community list shared on
 Discord on 15 September 2026. The mechanic is read off an in-game screenshot
 from the same day; the per-Legend values are deliberately not recorded, because
 one screenshot is a single data point. The guide's `credit` says so.
+
+## Editing anecdotes
+
+Anecdotes sit under **Tips and tricks**. Each one has a group (General or
+Egyptian Tales), a name, what unlocks it, the steps, and an optional picture.
+Rows live in `lib/data/anecdotes.json`, English only:
+
+- `after` is the id of an anecdote to finish first. The page links both ways
+  ("Finish first" and "Unlocks next") and shows the position in the chain,
+  such as the eleven Osiris anecdotes that start with Jackals vs Dog.
+- `prerequisite` is any other condition, `reward` only when the guide names
+  one, and `note` a warning or a known gap. Where the source guide leaves
+  something out (the egg order in Philosophical Thesis, the colour order in The
+  Dome Confinement), the note says so instead of guessing.
+- `steps[]` is one action each; `substeps` are the options, places, or answers
+  a step lists (Black Widow's spiders, the Osiris answers).
+- `thanks` names community helpers and is the same in every language.
+- `image` is a file in `public/anecdotes/`. Without one, the card shows an
+  empty picture slot.
+
+Members with `guides.draft` see **Edit anecdotes** on the guide, which opens
+`/guides/anecdotes/edit/`. The list filters by group and text and marks
+anecdotes that are **new** or **changed**. The form edits every field above in
+English plus the page's language, or every language with **Edit all
+languages**, and shows a preview of the card. Steps and sub-items can be added,
+moved, and removed; their translations move with them. **Finish first** only
+offers anecdotes that would not create a loop, and removing an anecdote clears
+the links to it. A picture is uploaded or dropped, shrunk to 960 px WebP in the
+browser, and kept in the draft (`localStorage['popepoch-anecdote-draft']`).
+
+**Export** produces the complete `lib/data/anecdotes.json`, the new pictures
+to put into `public/anecdotes/` (named after the anecdote id), the files to
+delete, and an `anecdoteTexts` block for each dictionary whose translations
+changed. An untouched draft reproduces the published file byte for byte
+(`tests/anecdotes.test.mjs`), and the test also checks ids, groups, chains, and
+that every listed picture exists with none left over.
+
+The list is Autumn's guide (Ice, S12), shared on Discord and last added to on
+10 September 2026, with help from Kraes, Zee, Spitzell, and Popo. The wording
+was tidied without changing what to do.
 
 Community-written guides name their author in the entry (`credit`). Ask the
 author before publishing their text, and keep the credit when you edit it.
