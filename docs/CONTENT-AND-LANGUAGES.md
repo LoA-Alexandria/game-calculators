@@ -557,6 +557,12 @@ change or add one, put the file in `public/banners/` and set the path in
 `lib/content/banners.ts`. The illustrations are original splash art for this
 unofficial fan site, not artwork from the game.
 
+The Heroes and Goddesses guides use a shared collage banner built from primary
+roster portraits (`lib/content/hero-banner.ts` + `HeroBanner`,
+`lib/content/goddess-banner.ts` + `GoddessBanner`). Those images are the same
+wiki portraits already credited on each page. The mark text is the localized
+guide title.
+
 ## Translating validation messages
 
 Calculation errors carry a `code` and its parameters (`lib/calculators/errors.ts`).

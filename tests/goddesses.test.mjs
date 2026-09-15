@@ -114,3 +114,13 @@ test("goddesses still use the phases layout after gaining the heroes filter keys
   assert.equal("filterAll" in en.guideEntries.goddesses, true);
   assert.equal("phases" in en.guideEntries.heroes, false);
 });
+
+test("the goddesses banner collage uses primary portraits that exist on disk", async () => {
+  const { access } = await import("node:fs/promises");
+  const { GODDESS_BANNER_IMAGES } = await import("../lib/content/goddess-banner.ts");
+  const primary = new Set(GODDESSES.flatMap((goddess) => (goddess.images[0] ? [goddess.images[0]] : [])));
+  for (const file of GODDESS_BANNER_IMAGES) {
+    assert.ok(primary.has(file), `${file} should be a primary roster portrait`);
+    await access(new URL(`../public/goddesses/${file}`, import.meta.url));
+  }
+});

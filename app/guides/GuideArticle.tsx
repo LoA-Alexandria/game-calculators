@@ -16,6 +16,8 @@ import { HeroTierListGuide, isHeroTierListGuide } from "./HeroTierListGuide";
 import { GoddessTheaterGuide, isGoddessTheaterGuide } from "./GoddessTheaterGuide";
 import { HeroLinkingGuide, isHeroLinkingGuide } from "./HeroLinkingGuide";
 import { AnecdotesGuide, isAnecdotesGuide } from "./AnecdotesGuide";
+import { HeroBanner } from "./HeroBanner";
+import { GoddessBanner } from "./GoddessBanner";
 
 export function GuideArticle({ id }: { id: GuideEntryId }) {
   const { t } = useLocale();
@@ -23,6 +25,8 @@ export function GuideArticle({ id }: { id: GuideEntryId }) {
   const guide = t.guideEntries[id];
   const canWrite = allows("guides.draft") && guideHasSnippetEditor(id);
   const [target, setTarget] = useState<GuideEditorTarget | null>(null);
+  const heroesGuide = isHeroesGuide(guide);
+  const goddessesGuide = isGoddessesGuide(guide);
   useDocumentTitle(guide.title);
 
   const openEditor = (action: GuideEditorTarget["action"]) => {
@@ -32,6 +36,8 @@ export function GuideArticle({ id }: { id: GuideEntryId }) {
 
   return (
     <>
+      {heroesGuide ? <HeroBanner title={guide.title} /> : null}
+      {goddessesGuide ? <GoddessBanner title={guide.title} /> : null}
       <BackLink href="/guides/" label={t.nav.guides} />
       <PageHead eyebrow={t.nav.guides} title={guide.title} />
       {canWrite && (
@@ -47,7 +53,7 @@ export function GuideArticle({ id }: { id: GuideEntryId }) {
         </div>
       )}
       <article className="article">
-        {isGoddessesGuide(guide) ? (
+        {goddessesGuide ? (
           <GoddessesGuide guide={guide} />
         ) : isGoddessTheaterGuide(guide) ? (
           <GoddessTheaterGuide guide={guide} />
@@ -61,7 +67,7 @@ export function GuideArticle({ id }: { id: GuideEntryId }) {
           <ArtworkGuide guide={guide} />
         ) : isHeroLayoutsGuide(guide) ? (
           <HeroLayoutsGuide guide={guide} />
-        ) : isHeroesGuide(guide) ? (
+        ) : heroesGuide ? (
           <HeroRoster guide={guide} />
         ) : isHeroTierListGuide(guide) ? (
           <HeroTierListGuide guide={guide} />
