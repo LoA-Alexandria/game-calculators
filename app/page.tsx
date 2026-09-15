@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import Link from "next/link";
 import { NEWS } from "../lib/content/news";
 import { guideCount, toolCount } from "../lib/navigation";
+import { asset } from "../lib/site";
 import { OverviewAgenda } from "./components/EventCalendar";
 import { useDocumentTitle, useLocale } from "./components/LocaleProvider";
 import { useNow } from "./components/useNow";
@@ -61,7 +62,12 @@ function NewsHero() {
     setIndex((current) => (current + step + entries.length) % entries.length);
 
   return (
-    <section className="hero hero-news" aria-roledescription="carousel" aria-label={t.home.latestNews}>
+    <section
+      className="hero hero-news"
+      aria-roledescription="carousel"
+      aria-label={t.home.latestNews}
+      style={{ "--hero-news-image": `url("${asset("/banners/guides-scene.webp")}")` } as CSSProperties}
+    >
       <div className="news-slide" aria-live="polite">
         <div className="news-slide-head">
           <span className="eyebrow">{t.home.latestNews}</span>
