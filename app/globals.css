@@ -4109,7 +4109,7 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
   background:
     linear-gradient(90deg, rgba(12, 10, 7, .98) 0%, rgba(12, 10, 7, .95) 42%, rgba(12, 10, 7, .64) 64%, rgba(12, 10, 7, .26) 84%, transparent 100%),
     linear-gradient(135deg, rgba(29, 161, 190, .04), rgba(255, 190, 68, .08)),
-    url("/banners/guides-scene.png") center 50% / cover no-repeat;
+    var(--hero-news-image) center 50% / cover no-repeat;
   box-shadow: inset 0 0 0 1px rgba(247, 200, 92, .12);
 }
 .hero-news::before {
