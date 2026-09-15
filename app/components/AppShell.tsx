@@ -14,7 +14,6 @@ import { SchemeMenu } from "./SchemeMenu";
 import { ThemeToggle } from "./ThemeToggle";
 import {
   BrandMark,
-  ChevronIcon,
   CloseIcon,
   DiscordIcon,
   HomeIcon,
@@ -26,8 +25,7 @@ import {
 
 /**
  * How many entries a section shows before it offers its index page instead.
- * Collapsing alone is not enough: one open section with forty guides would
- * still be an endless list. Guides skip this because they are grouped.
+ * Guides skip this because they are grouped by category.
  */
 const VISIBLE_ITEMS = 8;
 const DRAWER_QUERY = "(max-width: 1024px)";
@@ -45,6 +43,10 @@ function isTypingTarget(target: EventTarget | null): boolean {
 function focusableIn(root: HTMLElement): HTMLElement[] {
   return [...root.querySelectorAll<HTMLElement>("a[href], button:not([disabled]), input, select, textarea")]
     .filter((element) => !element.closest("[inert]") && element.tabIndex !== -1);
+}
+
+function sectionForPath(pathname: string): NavSection | null {
+  return SECTIONS.find((section) => pathIsCurrentOrNested(pathname, section.href)) ?? null;
 }
 
 const NAV_COLLAPSED_EVENT = "popepoch-nav-collapsed";
@@ -89,21 +91,28 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [filter, setFilter] = useState("");
-  /**
-   * Which sections the reader opened or closed by hand. Anything absent falls
-   * back to "open if it contains the current page", so arriving on a guide
-   * shows its neighbours without every other section unfolding too.
-   */
-  const [toggled, setToggled] = useState<Record<string, boolean>>({});
   const [hash, setHash] = useState("");
   const collapsed = useSyncExternalStore(subscribeCollapsed, readCollapsed, () => false);
   const narrow = useSyncExternalStore(subscribeDrawer, readDrawer, () => false);
   const wantFilterFocus = useRef(false);
-  const sidebarRef = useRef<HTMLElement>(null);
+  const shellRef = useRef<HTMLElement>(null);
   const filterRef = useRef<HTMLInputElement>(null);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
 
-  const railCollapsed = collapsed && !narrow;
+  const pathSection = sectionForPath(pathname);
+  const onOverview = pathIsExact(pathname, "/");
+  const pathHasPanel = Boolean(pathSection?.items.length);
+  const query = filter.trim().toLocaleLowerCase();
+  const searching = query.length > 0;
+  /**
+   * Overview is rail-only. The browse panel opens for sections that have a
+   * list (Guides, Calculators, Simulations), or while a search is running.
+   */
+  const panelClosed = !narrow && !searching && (onOverview || !pathHasPanel || collapsed);
+  const panelVisible = narrow ? open : !panelClosed;
+  const browseSection = pathSection
+    ?? SECTIONS.find((section) => section.items.length > 0)
+    ?? SECTIONS[0];
 
   /**
    * On a phone the overlay covers the page, so following any link inside it
@@ -134,7 +143,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!open || !narrow) return;
-    const root = sidebarRef.current;
+    const root = shellRef.current;
     if (!root) return;
     const menuButton = menuButtonRef.current;
     const start = focusableIn(root)[0];
@@ -202,20 +211,14 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   }, [narrow, open, collapsed]);
 
   useEffect(() => {
-    if (railCollapsed) return;
-    const active = sidebarRef.current?.querySelector<HTMLElement>(
-      ".nav-sublink.is-active, .nav-link.is-active",
-    );
+    if (!panelVisible) return;
+    const active = shellRef.current?.querySelector<HTMLElement>(".panel-link.is-active");
     active?.scrollIntoView({ block: "nearest" });
-  }, [pathname, hash, railCollapsed]);
+  }, [pathname, hash, panelVisible, browseSection.id]);
 
-  const query = filter.trim().toLocaleLowerCase();
-
-  /** Sections keep their heading while filtering; only the items narrow. */
-  const sections = useMemo<{ section: NavSection; items: NavItem[] }[]>(() => {
+  const filteredSections = useMemo<{ section: NavSection; items: NavItem[] }[]>(() => {
     if (!query) return SECTIONS.map((section) => ({ section, items: section.items }));
     return SECTIONS.map((section) => {
-      // A section whose own name matches keeps all of its entries.
       const sectionHit = matches(section.label(t), query);
       const items = section.items.filter(
         (item) =>
@@ -230,24 +233,90 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       .map(({ section, items }) => ({ section, items }));
   }, [query, t]);
 
-  const nothingFound = query.length > 0 && sections.length === 0;
+  const browseEntry = filteredSections.find((entry) => entry.section.id === browseSection.id)
+    ?? { section: browseSection, items: browseSection.items };
 
-  /** While filtering, every section with a match is revealed. */
-  const isOpen = (section: NavSection) => {
-    if (query) return true;
-    return toggled[section.id] ?? (pathIsCurrentOrNested(pathname, section.href));
-  };
+  const nothingFound = searching && filteredSections.length === 0;
 
   const crumbs = useMemo(() => navCrumbs(pathname, t), [pathname, t]);
-  const linkClass = (active: boolean, current = false) => {
-    const names = ["nav-link"];
-    if (active) names.push("is-active");
-    else if (current) names.push("is-current");
-    return names.join(" ");
+
+  const renderItemList = (section: NavSection, items: NavItem[]) => {
+    const groups = section.id === "guides" ? groupByBadge(items, t, t.guides.other) : null;
+    const shown = searching || groups ? items : items.slice(0, VISIBLE_ITEMS);
+    const hidden = groups ? 0 : items.length - shown.length;
+    const sectionExact = pathIsExact(pathname, section.href);
+
+    if (groups) {
+      return (
+        <ul className="panel-list">
+          {groups.map((group) => {
+            const groupCurrent = group.items.some((item) => pathIsCurrentOrNested(pathname, item.href))
+              || (sectionExact && hash === group.id);
+            return (
+              <li key={group.id} className="panel-group">
+                <Link
+                  className={groupCurrent ? "panel-category is-current" : "panel-category"}
+                  href={`${section.href}#${group.id}`}
+                >
+                  {group.category}
+                </Link>
+                <ul className="panel-list panel-list-nested">
+                  {group.items.map((item) => {
+                    const active = pathIsCurrentOrNested(pathname, item.href);
+                    const exact = pathIsExact(pathname, item.href);
+                    return (
+                      <li key={item.href}>
+                        <Link
+                          className={active ? "panel-link is-active" : "panel-link"}
+                          href={item.href}
+                          aria-current={exact ? "page" : undefined}
+                        >
+                          {item.label(t)}
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </li>
+            );
+          })}
+        </ul>
+      );
+    }
+
+    return (
+      <ul className="panel-list">
+        {shown.map((item) => {
+          const active = pathIsCurrentOrNested(pathname, item.href);
+          const exact = pathIsExact(pathname, item.href);
+          return (
+            <li key={item.href}>
+              <Link
+                className={active ? "panel-link is-active" : "panel-link"}
+                href={item.href}
+                aria-current={exact ? "page" : undefined}
+              >
+                <span className="panel-link-title">{item.label(t)}</span>
+                {item.description ? (
+                  <span className="panel-link-desc">{item.description(t)}</span>
+                ) : null}
+              </Link>
+            </li>
+          );
+        })}
+        {hidden > 0 && (
+          <li>
+            <Link className="panel-link panel-more" href={section.href}>
+              {tf(t.shell.showAll, { count: items.length })}
+            </Link>
+          </li>
+        )}
+      </ul>
+    );
   };
 
   return (
-    <div className={railCollapsed ? "layout-root is-nav-collapsed" : "layout-root"}>
+    <div className={panelClosed ? "layout-root is-nav-collapsed" : "layout-root"}>
       <a className="skip-link" href="#content">{t.shell.skipToContent}</a>
 
       <button
@@ -259,239 +328,204 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       />
 
       <aside
-        ref={(node) => { sidebarRef.current = node; }}
-        className={open ? "sidebar is-open" : "sidebar"}
+        ref={(node) => { shellRef.current = node; }}
+        className={open ? "nav-shell is-open" : "nav-shell"}
         aria-label={t.shell.sectionLabel}
         onClick={closeIfNavigating}
       >
-        <div className="sidebar-head">
-          <Link className="brand" href="/" title={t.shell.brand}>
+        <div className="nav-rail">
+          <Link
+            className="rail-brand"
+            href="/"
+            title={t.shell.brand}
+            aria-label={t.shell.brand}
+            onClick={() => writeCollapsed(false)}
+          >
             <span className="brand-mark"><BrandMark className="icon" /></span>
-            <span className="brand-text">
-              <strong>{t.shell.brand}</strong>
-              <span>{t.shell.tagline}</span>
-            </span>
           </Link>
-          <button
-            type="button"
-            className="icon-button sidebar-collapse"
-            aria-label={railCollapsed ? t.shell.expandNav : t.shell.collapseNav}
-            title={railCollapsed ? t.shell.expandNav : t.shell.collapseNav}
-            aria-pressed={railCollapsed}
-            onClick={() => writeCollapsed(!collapsed)}
-          >
-            <SidebarIcon className="icon" />
-          </button>
-          <button
-            type="button"
-            className="icon-button sidebar-close"
-            aria-label={t.shell.closeMenu}
-            onClick={() => setOpen(false)}
-          >
-            <CloseIcon className="icon" />
-          </button>
-        </div>
 
-        <div className="nav-filter">
-          <SearchIcon className="icon" />
-          <input
-            ref={filterRef}
-            type="search"
-            value={filter}
-            autoComplete="off"
-            spellCheck={false}
-            aria-label={t.shell.filterLabel}
-            title={`${t.shell.filterLabel} (${t.shell.filterShortcut})`}
-            aria-keyshortcuts="/ Control+k Meta+k"
-            placeholder={t.shell.filterPlaceholder}
-            onChange={(event) => setFilter(event.target.value)}
-          />
-          {filter ? (
+          <nav className="rail-nav" aria-label={t.shell.sectionLabel}>
+            <Link
+              className={onOverview ? "rail-link is-active" : "rail-link"}
+              href="/"
+              title={t.nav.home}
+              aria-label={t.nav.home}
+              aria-current={onOverview ? "page" : undefined}
+              onClick={() => writeCollapsed(false)}
+            >
+              <HomeIcon className="icon" />
+            </Link>
+
+            {SECTIONS.map((section) => {
+              const Icon = SECTION_ICONS[section.icon];
+              const current = pathIsCurrentOrNested(pathname, section.href);
+              const label = section.label(t);
+              return (
+                <Link
+                  key={section.id}
+                  className={current ? "rail-link is-active" : "rail-link"}
+                  href={section.href}
+                  title={label}
+                  aria-label={label}
+                  aria-current={pathIsExact(pathname, section.href) ? "page" : undefined}
+                  onClick={() => {
+                    if (!narrow) writeCollapsed(section.items.length === 0);
+                  }}
+                >
+                  <Icon className="icon" />
+                  {section.items.length > 0 && (
+                    <span className="rail-count" aria-hidden="true">{section.items.length}</span>
+                  )}
+                </Link>
+              );
+            })}
+          </nav>
+
+          <div className="rail-foot">
+            <a
+              className="rail-link"
+              href={DISCORD_URL}
+              title={t.shell.discordTitle}
+              aria-label={t.shell.discordTitle}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <DiscordIcon className="icon" />
+            </a>
+            <SchemeMenu />
+            <ThemeToggle />
             <button
               type="button"
-              className="nav-filter-clear"
-              aria-label={t.shell.clearFilter}
-              onClick={() => {
-                setFilter("");
-                filterRef.current?.focus();
-              }}
+              className="rail-link rail-collapse"
+              aria-label={panelClosed ? t.shell.expandNav : t.shell.collapseNav}
+              title={panelClosed ? t.shell.expandNav : t.shell.collapseNav}
+              aria-pressed={panelClosed}
+              hidden={onOverview || (!pathHasPanel && !searching)}
+              onClick={() => writeCollapsed(!collapsed)}
             >
-              <CloseIcon className="icon icon-sm" />
+              <SidebarIcon className="icon" />
             </button>
-          ) : null}
+            <button
+              type="button"
+              className="rail-link rail-close"
+              aria-label={t.shell.closeMenu}
+              onClick={() => setOpen(false)}
+            >
+              <CloseIcon className="icon" />
+            </button>
+          </div>
         </div>
 
-        <nav className="sidebar-nav" aria-label={t.shell.sectionLabel}>
-          <Link
-            className={linkClass(pathIsExact(pathname, "/"))}
-            href="/"
-            title={t.nav.home}
-            aria-label={railCollapsed ? t.nav.home : undefined}
-            aria-current={pathIsExact(pathname, "/") ? "page" : undefined}
-          >
-            <HomeIcon className="icon" />
-            <span>{t.nav.home}</span>
-          </Link>
+        <div className="nav-panel" {...(panelVisible ? {} : { inert: true, "aria-hidden": true })}>
+          <div className="panel-head">
+            <div className="panel-brand-text">
+              <strong>{t.shell.brand}</strong>
+              <span>{t.shell.tagline}</span>
+            </div>
+          </div>
 
-          {sections.map(({ section, items }) => {
-            const Icon = SECTION_ICONS[section.icon];
-            const sectionExact = pathIsExact(pathname, section.href);
-            const sectionCurrent = pathIsCurrentOrNested(pathname, section.href);
-            const sectionOpen = isOpen(section);
-            const label = section.label(t);
-            const groups = section.id === "guides"
-              ? groupByBadge(items, t, t.guides.other)
-              : null;
-            // A filtered list is already narrow, so show every match.
-            const shown = query || groups ? items : items.slice(0, VISIBLE_ITEMS);
-            const hidden = groups ? 0 : items.length - shown.length;
-            return (
-              <div className="nav-group" key={section.id}>
-                <div className="nav-row">
-                  <Link
-                    className={linkClass(sectionExact, sectionCurrent)}
-                    href={section.href}
-                    title={label}
-                    aria-label={railCollapsed ? label : undefined}
-                    aria-current={sectionExact ? "page" : undefined}
-                  >
-                    <Icon className="icon" />
-                    <span>{label}</span>
-                    {section.items.length > 0 && (
-                      <span className="nav-count">{section.items.length}</span>
-                    )}
+          <div className="nav-filter">
+            <SearchIcon className="icon" />
+            <input
+              ref={filterRef}
+              type="search"
+              value={filter}
+              autoComplete="off"
+              spellCheck={false}
+              aria-label={t.shell.filterLabel}
+              title={`${t.shell.filterLabel} (${t.shell.filterShortcut})`}
+              aria-keyshortcuts="/ Control+k Meta+k"
+              placeholder={t.shell.filterPlaceholder}
+              onChange={(event) => setFilter(event.target.value)}
+            />
+            {filter ? (
+              <button
+                type="button"
+                className="nav-filter-clear"
+                aria-label={t.shell.clearFilter}
+                onClick={() => {
+                  setFilter("");
+                  filterRef.current?.focus();
+                }}
+              >
+                <CloseIcon className="icon icon-sm" />
+              </button>
+            ) : null}
+          </div>
+
+          <div className="panel-body">
+            {nothingFound ? (
+              <p className="nav-empty">{t.shell.filterEmpty}</p>
+            ) : searching ? (
+              filteredSections.map(({ section, items }) => (
+                <section className="panel-section" key={section.id}>
+                  <Link className="panel-section-title" href={section.href}>
+                    {section.label(t)}
                   </Link>
-                  {section.items.length > 0 && (
-                    <button
-                      type="button"
-                      className={sectionOpen ? "nav-toggle is-open" : "nav-toggle"}
-                      aria-expanded={sectionOpen}
-                      aria-controls={`nav-section-${section.id}`}
-                      aria-label={tf(
-                        sectionOpen ? t.shell.collapseSection : t.shell.expandSection,
-                        { section: label },
-                      )}
-                      onClick={() => setToggled((current) => ({ ...current, [section.id]: !sectionOpen }))}
-                    >
-                      <ChevronIcon className="icon icon-sm" />
-                    </button>
+                  {items.length > 0 ? (
+                    renderItemList(section, items)
+                  ) : (
+                    <p className="panel-section-hint">{section.description(t)}</p>
                   )}
-                </div>
-                {section.items.length > 0 && (
-                  <div
-                    className={sectionOpen ? "nav-collapse is-open" : "nav-collapse"}
-                    id={`nav-section-${section.id}`}
-                  >
-                    <div
-                      className="nav-collapse-inner"
-                      inert={!sectionOpen}
-                      aria-hidden={!sectionOpen}
-                    >
-                      {groups ? (
-                        <ul className="nav-sublist">
-                          {groups.map((group) => {
-                            const groupCurrent = group.items.some((item) => pathIsCurrentOrNested(pathname, item.href))
-                              || (sectionExact && hash === group.id);
-                            return (
-                              <li key={group.id}>
-                                <Link
-                                  className={groupCurrent ? "nav-sublink nav-category is-current" : "nav-sublink nav-category"}
-                                  href={`${section.href}#${group.id}`}
-                                >
-                                  {group.category}
-                                </Link>
-                                <ul className="nav-sublist">
-                                  {group.items.map((item) => {
-                                    const active = pathIsCurrentOrNested(pathname, item.href);
-                                    const exact = pathIsExact(pathname, item.href);
-                                    return (
-                                      <li key={item.href}>
-                                        <Link
-                                          className={active ? "nav-sublink is-active" : "nav-sublink"}
-                                          href={item.href}
-                                          aria-current={exact ? "page" : undefined}
-                                        >
-                                          {item.label(t)}
-                                        </Link>
-                                      </li>
-                                    );
-                                  })}
-                                </ul>
-                              </li>
-                            );
-                          })}
-                        </ul>
-                      ) : (
-                        <ul className="nav-sublist">
-                          {shown.map((item) => {
-                            const active = pathIsCurrentOrNested(pathname, item.href);
-                            const exact = pathIsExact(pathname, item.href);
-                            return (
-                              <li key={item.href}>
-                                <Link
-                                  className={active ? "nav-sublink is-active" : "nav-sublink"}
-                                  href={item.href}
-                                  aria-current={exact ? "page" : undefined}
-                                >
-                                  {item.label(t)}
-                                </Link>
-                              </li>
-                            );
-                          })}
-                          {hidden > 0 && (
-                            <li>
-                              <Link className="nav-sublink nav-more" href={section.href}>
-                                {tf(t.shell.showAll, { count: items.length })}
-                              </Link>
-                            </li>
-                          )}
-                        </ul>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
-            );
-          })}
+                </section>
+              ))
+            ) : pathHasPanel ? (
+              <section className="panel-section">
+                <Link className="panel-section-title" href={browseEntry.section.href}>
+                  {browseEntry.section.label(t)}
+                </Link>
+                <p className="panel-section-hint">{browseEntry.section.description(t)}</p>
+                {renderItemList(browseEntry.section, browseEntry.items)}
+              </section>
+            ) : (
+              <section className="panel-section">
+                <p className="panel-section-hint">{t.shell.tagline}</p>
+                <ul className="panel-list">
+                  {SECTIONS.map((section) => {
+                    const active = pathIsCurrentOrNested(pathname, section.href);
+                    return (
+                      <li key={section.id}>
+                        <Link
+                          className={active ? "panel-link is-active" : "panel-link"}
+                          href={section.href}
+                          onClick={() => {
+                            if (!narrow) writeCollapsed(section.items.length === 0);
+                          }}
+                        >
+                          <span className="panel-link-title">{section.label(t)}</span>
+                          <span className="panel-link-desc">{section.description(t)}</span>
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </section>
+            )}
+          </div>
 
-          {nothingFound && <p className="nav-empty">{t.shell.filterEmpty}</p>}
-        </nav>
-
-        <div className="sidebar-foot">
-          <a
-            className="discord-link"
-            href={DISCORD_URL}
-            title={t.shell.discordTitle}
-            target="_blank"
-            rel="noreferrer"
-          >
-            <DiscordIcon className="icon" />
-            <span>{t.shell.discord}</span>
-            {!DISCORD_CONFIGURED && <span className="pill pill-warn">TODO</span>}
-          </a>
-          <div className="sidebar-meta-row">
-            <a className="sidebar-meta" href={REPOSITORY_URL} target="_blank" rel="noreferrer">
+          <div className="panel-foot">
+            <a className="panel-meta" href={REPOSITORY_URL} target="_blank" rel="noreferrer">
               {t.shell.github}
             </a>
+            {!DISCORD_CONFIGURED && <span className="pill pill-warn">TODO</span>}
           </div>
         </div>
       </aside>
 
       <div className="layout-main" {...(open && narrow ? { inert: true } : {})}>
         <header className="topbar">
-          <button
-            ref={menuButtonRef}
-            type="button"
-            className="icon-button topbar-menu"
-            aria-label={narrow ? t.shell.openMenu : t.shell.expandNav}
-            aria-expanded={narrow ? open : !collapsed}
-            onClick={() => {
-              if (narrow) setOpen(true);
-              else writeCollapsed(false);
-            }}
-          >
-            <MenuIcon className="icon" />
-          </button>
+          {narrow ? (
+            <button
+              ref={menuButtonRef}
+              type="button"
+              className="icon-button topbar-menu"
+              aria-label={t.shell.openMenu}
+              aria-expanded={open}
+              onClick={() => setOpen(true)}
+            >
+              <MenuIcon className="icon" />
+            </button>
+          ) : null}
           <nav className="topbar-crumbs" aria-label={t.shell.breadcrumb}>
             <ol>
               {crumbs.map((crumb, index) => (
@@ -508,19 +542,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </nav>
           <span className="topbar-spacer" />
           <AccountMenu />
-          <a
-            className="icon-button topbar-discord"
-            href={DISCORD_URL}
-            title={t.shell.discordTitle}
-            aria-label={t.shell.discordTitle}
-            target="_blank"
-            rel="noreferrer"
-          >
-            <DiscordIcon className="icon" />
-          </a>
           <LanguageMenu />
-          <SchemeMenu />
-          <ThemeToggle />
         </header>
 
         {authError && (

@@ -119,13 +119,6 @@ export const SECTIONS: NavSection[] = [
         categoryId: "buildings",
       },
       {
-        href: "/guides/water-supply/",
-        label: (t) => t.guideEntries.waterSupply.title,
-        description: (t) => t.guideEntries.waterSupply.summary,
-        badge: (t) => t.guideCategories.layouts,
-        categoryId: "layouts",
-      },
-      {
         href: "/guides/hero-layouts/",
         label: (t) => t.guideEntries.heroLayouts.title,
         description: (t) => t.guideEntries.heroLayouts.summary,
