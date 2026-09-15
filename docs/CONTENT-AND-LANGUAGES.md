@@ -62,8 +62,8 @@ filter. There is no second list to keep in step.
    row, and (for a new slug) a note to copy the page file. Existing guides on
    `/guides/` and on the guide page have Edit and Remove — the same commit-snippet
    pattern as news and events. Artwork, Artwork layouts, Heroes, Hero layouts,
-   the Hero tier list, and Goddess Theater skip those buttons: they have their
-   own editors instead.
+   the Hero tier list, Goddess Theater, and Hero linking skip those buttons:
+   they have their own editors instead.
 2. Write or replace the text under `guideEntries.<id>` in all three dictionaries,
    following the shape of `waterSupply`: `title`, `summary`, `intro`,
    `sections[]`, `note`.
@@ -73,17 +73,19 @@ filter. There is no second list to keep in step.
    (heroes, artwork, technology, collection, manor, support, goddesses, cryptides)
    use `coreElements`; placement guides (water supply, hero layouts, artwork
    layouts) use `layouts`; ranking guides (hero tier list) use `tierLists`;
-   building guides (Goddess Theater) use `buildings`. The top-level Events
-   section is the calendar; keep `event` for a future event-related guide.
+   building guides (Goddess Theater) use `buildings`; advice that is not tied to
+   one system (hero linking) uses `tips`. The top-level Events section is the
+   calendar; keep `event` for a future event-related guide.
 4. For a new slug, copy `app/guides/water-supply/page.tsx` and pass the new id
    to `GuideArticle`.
 
 A guide that needs more than headings and paragraphs gets its own renderer next
 to `GuideArticle`: `GoddessesGuide`, `ArtworkGuide`, `ArtworkLayoutsGuide`,
-`HeroLayoutsGuide`, `HeroRoster`, `HeroTierListGuide`, and `GoddessTheaterGuide`.
+`HeroLayoutsGuide`, `HeroRoster`, `HeroTierListGuide`, `GoddessTheaterGuide`, and
+`HeroLinkingGuide`.
 `guideLayout()` in `lib/content/guides.ts` picks the renderer from a field only
 that guide has (`phases` for Goddesses, `playsHeading` for Goddess Theater,
-before `filterAll` for Heroes), and
+`linksHeading` for Hero linking, before `filterAll` for Heroes), and
 `tests/guides.test.mjs` pins every entry, so two guides cannot claim the same
 renderer by sharing a field name. Keep `sections` and `note` in those entries
 too, since the editor reads them. Goddess names, rarity, and portraits live in
@@ -327,6 +329,42 @@ The draft, pictures included, is saved in that browser only
 
 An untouched draft exports the published file byte for byte
 (`tests/goddess-theater-editor.test.mjs`). Play and role names stay in English.
+
+## Editing hero linking
+
+Hero linking sits under the **Tips and tricks** category and keeps two lists:
+the heroes that unlock a link, grouped by the Grail and Odin tracks, and the
+order links are worth spending in. Both name heroes by their Heroes roster
+spelling, so a portrait and a link into the roster always resolve;
+`tests/hero-linking.test.mjs` checks every name against that roster.
+
+Members with `guides.draft` see **Edit linking** on the guide, which opens
+`/guides/hero-linking/edit/`.
+
+- **Add a hero** in either list is the Core elements Heroes roster, grouped by
+  rarity and without the heroes that list already has, so the same hero cannot
+  be added twice. A new link takes the next free step of its track.
+- **Track** and **Step** are what the guide groups and numbers by. Two heroes on
+  the same step of one track would both claim to be “#1”, so the export warns.
+- **Position** in the link order is what the advice is: the first hero is the
+  one to spend a single link on, the second is next, and so on.
+- **Note** is optional prose beside a hero, not game data, so every language —
+  English included — keeps its own copy and none is the source. One or every
+  language is shown, the same as the other editors. A note written in one
+  language but not the others would render blank there, so the export warns
+  about that too.
+
+The draft is saved in that browser only
+(`localStorage['popepoch-linking-draft']`). **Export** produces the complete
+`lib/data/hero-linking.json` — links sorted by track, then step — and one
+`linkTexts` block per dictionary to paste under `guideEntries.heroLinking`. An
+untouched draft reproduces the published file and all three blocks byte for
+byte.
+
+The linkable heroes and the link order come from a community list shared on
+Discord on 15 September 2026. The mechanic is read off an in-game screenshot
+from the same day; the per-Legend values are deliberately not recorded, because
+one screenshot is a single data point. The guide's `credit` says so.
 
 Community-written guides name their author in the entry (`credit`). Ask the
 author before publishing their text, and keep the credit when you edit it.

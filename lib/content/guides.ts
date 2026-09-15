@@ -30,9 +30,10 @@ export function isGuideEntryId(
 }
 
 /**
- * Artwork, Artwork layouts, Heroes, Hero layouts, the Hero tier list, and
- * Goddess Theater have their own editors. The dictionary-snippet Edit / Remove
- * on the guide page would only rewrite surrounding copy, so those skip it.
+ * Artwork, Artwork layouts, Heroes, Hero layouts, the Hero tier list, Goddess
+ * Theater, and Hero linking have their own editors. The dictionary-snippet
+ * Edit / Remove on the guide page would only rewrite surrounding copy, so
+ * those skip it.
  */
 const SNIPPET_EDITOR_SKIP = new Set<string>([
   "artwork",
@@ -41,6 +42,7 @@ const SNIPPET_EDITOR_SKIP = new Set<string>([
   "heroLayouts",
   "heroTierList",
   "goddessTheater",
+  "heroLinking",
 ]);
 
 export function guideHasSnippetEditor(id: string): boolean {
@@ -57,14 +59,23 @@ export function guideCategoryId(
   return "layouts";
 }
 
-export type GuideLayout = "goddesses" | "artwork" | "artworkLayouts" | "heroLayouts" | "heroes" | "heroTierList" | "goddessTheater" | "article";
+export type GuideLayout =
+  | "goddesses"
+  | "artwork"
+  | "artworkLayouts"
+  | "heroLayouts"
+  | "heroes"
+  | "heroTierList"
+  | "goddessTheater"
+  | "heroLinking"
+  | "article";
 
 /**
  * Which renderer a guide entry needs. Each custom layout is recognised by a
  * field no other entry has — `builds` alone is not enough, because Artwork and
  * Hero layouts both have one. Goddesses also has `filterAll` like Heroes, so
- * `phases` is checked first. Goddess Theater is recognised by `playsHeading`.
- * `tests/guides.test.mjs` pins every entry.
+ * `phases` is checked first. Goddess Theater is recognised by `playsHeading`
+ * and Hero linking by `linksHeading`. `tests/guides.test.mjs` pins every entry.
  */
 export function guideLayout(guide: object): GuideLayout {
   if ("phases" in guide) return "goddesses";
@@ -73,6 +84,7 @@ export function guideLayout(guide: object): GuideLayout {
   if ("levels" in guide) return "artworkLayouts";
   if ("setsHeading" in guide) return "artwork";
   if ("playsHeading" in guide) return "goddessTheater";
+  if ("linksHeading" in guide) return "heroLinking";
   if ("filterAll" in guide) return "heroes";
   return "article";
 }

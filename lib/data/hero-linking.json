@@ -1,0 +1,14 @@
+{
+  "links": [
+    { "hero": "King Arthur", "source": "grail", "step": 1 },
+    { "hero": "Lancelot", "source": "grail", "step": 3 },
+    { "hero": "Merlin", "source": "grail", "step": 5 },
+    { "hero": "Ragnar Lodbrok", "source": "odin", "step": 1 },
+    { "hero": "Lagertha", "source": "odin", "step": 3 },
+    { "hero": "Bjorn Ironside", "source": "odin", "step": 5 }
+  ],
+  "priority": [
+    { "hero": "Joan of Arc" },
+    { "hero": "Achilles" }
+  ]
+}
