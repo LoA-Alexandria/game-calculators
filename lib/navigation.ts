@@ -153,6 +153,13 @@ export const SECTIONS: NavSection[] = [
         badge: (t) => t.guideCategories.tips,
         categoryId: "tips",
       },
+      {
+        href: "/guides/anecdotes/",
+        label: (t) => t.guideEntries.anecdotes.title,
+        description: (t) => t.guideEntries.anecdotes.summary,
+        badge: (t) => t.guideCategories.tips,
+        categoryId: "tips",
+      },
     ],
   },
   {

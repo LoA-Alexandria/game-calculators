@@ -31,7 +31,7 @@ export function isGuideEntryId(
 
 /**
  * Artwork, Artwork layouts, Heroes, Hero layouts, the Hero tier list, Goddess
- * Theater, and Hero linking have their own editors. The dictionary-snippet
+ * Theater, Hero linking, and Anecdotes have their own editors. The dictionary-snippet
  * Edit / Remove on the guide page would only rewrite surrounding copy, so
  * those skip it.
  */
@@ -43,6 +43,7 @@ const SNIPPET_EDITOR_SKIP = new Set<string>([
   "heroTierList",
   "goddessTheater",
   "heroLinking",
+  "anecdotes",
 ]);
 
 export function guideHasSnippetEditor(id: string): boolean {
@@ -68,6 +69,7 @@ export type GuideLayout =
   | "heroTierList"
   | "goddessTheater"
   | "heroLinking"
+  | "anecdotes"
   | "article";
 
 /**
@@ -75,7 +77,7 @@ export type GuideLayout =
  * field no other entry has — `builds` alone is not enough, because Artwork and
  * Hero layouts both have one. Goddesses also has `filterAll` like Heroes, so
  * `phases` is checked first. Goddess Theater is recognised by `playsHeading`
- * and Hero linking by `linksHeading`. `tests/guides.test.mjs` pins every entry.
+ * Hero linking by `linksHeading`, and Anecdotes by `anecdoteTexts`. `tests/guides.test.mjs` pins every entry.
  */
 export function guideLayout(guide: object): GuideLayout {
   if ("phases" in guide) return "goddesses";
@@ -85,6 +87,7 @@ export function guideLayout(guide: object): GuideLayout {
   if ("setsHeading" in guide) return "artwork";
   if ("playsHeading" in guide) return "goddessTheater";
   if ("linksHeading" in guide) return "heroLinking";
+  if ("anecdoteTexts" in guide) return "anecdotes";
   if ("filterAll" in guide) return "heroes";
   return "article";
 }

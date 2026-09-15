@@ -56,6 +56,9 @@ export const THEATER_DRAFT_STORAGE_KEY = "popepoch-theater-draft";
 /** Local draft of the Hero linking editor. */
 export const LINKING_DRAFT_STORAGE_KEY = "popepoch-linking-draft";
 
+/** Local draft of the Anecdotes editor. */
+export const ANECDOTE_DRAFT_STORAGE_KEY = "popepoch-anecdote-draft";
+
 /** Whether the desktop sidebar is collapsed to an icon rail. */
 export const NAV_COLLAPSED_STORAGE_KEY = "popepoch-nav-collapsed";
 
