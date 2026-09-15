@@ -355,6 +355,8 @@ const fr: Dictionary = {
       inTierList: "Classement des héros",
       inLayouts: "Formations des héros",
       inArtwork: "Artwork",
+      // Textes de jeu traduits par héros, indexés par l'id de lib/data/heroes.json.
+      heroTexts: {},
       sections: [
         {
           heading: "Roster",
@@ -1523,7 +1525,7 @@ const fr: Dictionary = {
   heroEditor: {
     title: "Modifier les héros",
     eyebrow: "Héros",
-    lede: "Ajoutez de nouveaux héros, corrigez noms, raretés et compétences, et téléversez un portrait ou des skins. Le brouillon, images comprises, reste dans ce navigateur ; exportez-le une fois terminé.",
+    lede: "Ajoutez de nouveaux héros, corrigez noms, raretés et compétences, et téléversez un portrait ou des skins. Les textes de compétence et d’artéfact s’écrivent dans chaque langue du site ; nom, rareté et images sont communs. Le brouillon, images comprises, reste dans ce navigateur ; exportez-le une fois terminé.",
     back: "Retour aux héros",
     openEditor: "Modifier les héros",
     savedNote: "Brouillon enregistré dans ce navigateur",
@@ -1534,6 +1536,7 @@ const fr: Dictionary = {
     resetConfirm: "Jeter tous les changements de ce brouillon, images téléversées comprises ?",
     export: "Exporter",
     problemCount: "{count} points à vérifier",
+    allLanguages: "Modifier toutes les langues",
     addHero: "Ajouter un héros",
     searchPlaceholder: "Rechercher par nom…",
     emptyList: "Aucun héros ne correspond.",
@@ -1548,6 +1551,7 @@ const fr: Dictionary = {
     moveHeroUp: "Plus tôt parmi les {rarity}",
     moveHeroDown: "Plus tard parmi les {rarity}",
     fieldName: "Nom",
+    fieldNameNote: "identique dans toutes les langues",
     fieldId: "Id",
     idFromName: "tiré du nom",
     fieldRarity: "Rareté",
@@ -1580,7 +1584,8 @@ const fr: Dictionary = {
     removeArtifact: "Retirer l’artéfact",
     close: "Fermer",
     exportTitle: "Exporter le roster des héros",
-    exportLede: "Remplacez lib/data/heroes.json par ce fichier, placez les nouvelles images dans public/heroes/, supprimez celles qui ont été retirées, puis committez. Le site se met à jour après la fusion.",
+    exportLede: "Remplacez lib/data/heroes.json par ce fichier, placez les nouvelles images dans public/heroes/, supprimez celles qui ont été retirées, et dans chaque dictionnaire remplacez heroTexts dans guideEntries.heroes. Le site se met à jour après la fusion.",
+    exportTexts: "Blocs de texte pour les dictionnaires",
     uploadsHeading: "Nouvelles images pour public/heroes/ ({count})",
     removedHeading: "À supprimer de public/heroes/ ({count})",
     downloadAll: "Tout télécharger",
