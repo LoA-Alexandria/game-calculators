@@ -47,6 +47,7 @@ test("structured ranking guides skip the snippet Edit / Remove", () => {
   assert.equal(guideHasSnippetEditor("artwork"), false);
   assert.equal(guideHasSnippetEditor("heroes"), false);
   assert.equal(guideHasSnippetEditor("goddessTheater"), false);
+  assert.equal(guideHasSnippetEditor("serverAgeUnlocks"), false);
   assert.equal(guideHasSnippetEditor("support"), true);
 });
 

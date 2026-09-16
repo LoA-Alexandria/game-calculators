@@ -108,7 +108,8 @@ filter. There is no second list to keep in step.
    row, and (for a new slug) a note to copy the page file. Existing guides on
    `/guides/` and on the guide page have Edit and Remove — the same commit-snippet
    pattern as news and events. Artwork, Artwork layouts, Heroes, Hero layouts,
-   the Hero tier list, Goddess Theater, Hero linking, and Anecdotes skip those buttons:
+   the Hero tier list, Goddess Theater, Hero linking, Anecdotes, and Server age
+   unlocks skip those buttons:
    they have their own editors instead.
 2. Write or replace the text under `guideEntries.<id>` in all three dictionaries,
    following the shape of `support`: `title`, `summary`, `intro`,
@@ -500,13 +501,20 @@ one screenshot is a single data point. The guide's `credit` says so.
 ## Server age unlocks
 
 Server age unlocks sits under **Tips and tricks**. Milestones and unconfirmed
-rows live in `lib/data/server-age-unlocks.json` (English event names). The
-timeline renderer is `ServerAgeUnlocksGuide`; optional name/detail/label
-overrides go in `guideEntries.serverAgeUnlocks.eventTexts`. Related site guides
-are linked when `relatedGuide` names a published `guideEntries` id.
-`tests/server-age-unlocks.test.mjs` checks ids, the tips category, and related
-guide links. Source: Autumn (Ice, S12), Discord, 14 September 2026, marked in
-progress.
+rows live in `lib/data/server-age-unlocks.json` (English event names, optional
+`description` and `image`). The timeline renderer is `ServerAgeUnlocksGuide`;
+optional name/detail/label/description overrides go in
+`guideEntries.serverAgeUnlocks.eventTexts`. Related site guides are linked when
+`relatedGuide` names a published `guideEntries` id. Pictures live in
+`public/server-age-unlocks/`.
+
+Members with `guides.draft` see **Edit timeline**, which opens
+`/guides/server-age-unlocks/edit/`. The draft is saved in that browser only
+(`localStorage['popepoch-age-unlocks-draft']`). **Export** produces the
+complete JSON, new pictures to put into `public/server-age-unlocks/`, files to
+delete, and one `eventTexts` block per dictionary. An untouched draft
+reproduces the published file byte for byte (`tests/server-age-unlocks.test.mjs`).
+Source: Autumn (Ice, S12), Discord, 14 September 2026, marked in progress.
 
 ## Editing anecdotes
 
