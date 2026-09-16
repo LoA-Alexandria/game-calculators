@@ -19,11 +19,9 @@ import {
   type PaintingStat,
   type PaintingTexts,
 } from "../../lib/content/artwork";
-import { CheckIcon, CloseIcon, PenIcon } from "../components/Icons";
+import { CheckIcon, CloseIcon } from "../components/Icons";
 import { LOCALE_CODES, fill, getDictionary, localeMeta, type Dictionary } from "../../lib/i18n";
-import { useAuth } from "../components/AuthProvider";
 import { HeroAvatar } from "../components/HeroAvatar";
-import { useLocale } from "../components/LocaleProvider";
 
 type Guide = Dictionary["guideEntries"]["artwork"];
 
@@ -346,17 +344,10 @@ export function ArtworkGuide({ guide }: { guide: Guide }) {
     const texts = guide.catalogTexts as PaintingTexts;
     return groupHits(hits).map((row) => ({ set: localizedSet(row.set, texts), paintings: row.paintings.map((canvas) => localizedPainting(canvas, texts)) }));
   }, [hits, guide.catalogTexts]);
-  const { t } = useLocale();
-  const { allows } = useAuth();
 
   return (
     <div className="guide-wide hero-layouts artwork-layouts">
       <p className="intro">{guide.intro}</p>
-      <p className="guide-credit">
-        <span>{guide.credit}</span>
-        <span>{guide.creditDate}</span>
-        {guide.status ? <span className="build-status">{guide.status}</span> : null}
-      </p>
 
       <h2>{guide.notesHeading}</h2>
       <div className="formation-rules">
@@ -382,12 +373,6 @@ export function ArtworkGuide({ guide }: { guide: Guide }) {
 
       <div className="tier-lists-head">
         <h2>{query.trim() ? guide.filterHeading : guide.setsHeading}</h2>
-        {allows("guides.draft") ? (
-          <Link className="small-button" href="/guides/artwork/edit/">
-            <PenIcon className="icon icon-sm" />
-            {t.artworkEditor.openEditor}
-          </Link>
-        ) : null}
       </div>
       {query.trim() ? null : guide.setsLede ? <p className="utility-lede">{guide.setsLede}</p> : null}
       <label className="hero-search artwork-filter">

@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { guideLayout } from "../../lib/content/guides";
 import {
   PRODUCTION_BUILDINGS_DATA,
@@ -13,9 +12,6 @@ import {
   type ProductionTag,
 } from "../../lib/content/production-buildings";
 import { type Dictionary } from "../../lib/i18n";
-import { useAuth } from "../components/AuthProvider";
-import { PenIcon } from "../components/Icons";
-import { useLocale } from "../components/LocaleProvider";
 
 type Guide = Dictionary["guideEntries"]["productionBuildings"];
 
@@ -58,6 +54,7 @@ function BuildingCard({ building, guide }: { building: ProductionBuilding; guide
     <article className="production-building" id={building.id}>
       {image ? (
         <div className="production-building-art">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={image} alt="" loading="lazy" decoding="async" />
         </div>
       ) : null}
@@ -94,9 +91,6 @@ function BuildingCard({ building, guide }: { building: ProductionBuilding; guide
 }
 
 export function ProductionBuildingsGuide({ guide }: { guide: Guide }) {
-  const { t } = useLocale();
-  const { allows } = useAuth();
-
   return (
     <div className="guide-wide production-guide">
       <p className="intro">{guide.intro}</p>
@@ -109,15 +103,7 @@ export function ProductionBuildingsGuide({ guide }: { guide: Guide }) {
         </section>
       ))}
 
-      <div className="tier-lists-head">
-        <h2>{guide.requirementsHeading}</h2>
-        {allows("guides.draft") ? (
-          <Link className="small-button" href="/guides/production-buildings/edit/">
-            <PenIcon className="icon icon-sm" />
-            {t.productionBuildingsEditor.openEditor}
-          </Link>
-        ) : null}
-      </div>
+      <h2>{guide.requirementsHeading}</h2>
       <p className="guide-lede">{guide.requirementsLede}</p>
 
       {PRODUCTION_BUILDINGS_DATA.groups.map((group) => (

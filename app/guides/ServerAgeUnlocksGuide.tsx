@@ -1,8 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useAuth } from "../components/AuthProvider";
-import { PenIcon } from "../components/Icons";
 import { guideHref, guideLayout, isGuideEntryId } from "../../lib/content/guides";
 import {
   AGE_MILESTONES,
@@ -77,9 +75,6 @@ function EventRow({ event, guide }: { event: AgeEvent; guide: Guide }) {
 }
 
 export function ServerAgeUnlocksGuide({ guide }: { guide: Guide }) {
-  const { t } = useLocale();
-  const { allows } = useAuth();
-
   return (
     <div className="guide-wide age-unlocks-guide">
       <p className="intro">{guide.intro}</p>
@@ -94,12 +89,6 @@ export function ServerAgeUnlocksGuide({ guide }: { guide: Guide }) {
 
       <div className="tier-lists-head">
         <h2>{guide.timelineHeading}</h2>
-        {allows("guides.draft") ? (
-          <Link className="small-button" href="/guides/server-age-unlocks/edit/">
-            <PenIcon className="icon icon-sm" />
-            {t.ageUnlocksEditor.openEditor}
-          </Link>
-        ) : null}
       </div>
       <p className="guide-lede">{guide.timelineLede}</p>
       <ol className="age-timeline">

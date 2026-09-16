@@ -17,8 +17,6 @@ import {
 } from "../../lib/content/hero-leveling";
 import { heroNamed, heroPortrait } from "../../lib/content/heroes";
 import { fill, type Dictionary } from "../../lib/i18n";
-import { useAuth } from "../components/AuthProvider";
-import { PenIcon } from "../components/Icons";
 import { HeroPortrait } from "../components/HeroPortrait";
 import { useLocale } from "../components/LocaleProvider";
 
@@ -195,7 +193,6 @@ function PriorityBoard({
 
 export function HeroLevelingGuide({ guide }: { guide: Guide }) {
   const { t } = useLocale();
-  const { allows } = useAuth();
   const buildIds = levelingBuildIds();
   const [selected, setSelected] = useState<LevelingBuildId>(LEVELING_DATA.defaultBuild);
   const buildNames = useMemo(() => {
@@ -214,12 +211,6 @@ export function HeroLevelingGuide({ guide }: { guide: Guide }) {
         <div>
           <div className="tier-lists-head">
             <h2>{guide.buildsHeading}</h2>
-            {allows("guides.draft") ? (
-              <Link className="small-button" href="/guides/hero-leveling/edit/">
-                <PenIcon className="icon icon-sm" />
-                {t.levelingEditor.openEditor}
-              </Link>
-            ) : null}
           </div>
           <p className="guide-lede">{guide.buildsLede}</p>
         </div>

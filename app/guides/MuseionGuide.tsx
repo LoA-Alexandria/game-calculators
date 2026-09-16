@@ -12,10 +12,7 @@ import {
 } from "../../lib/content/museion";
 import { heroNamed, heroPortrait } from "../../lib/content/heroes";
 import { fill, LOCALES, getDictionary, type Dictionary } from "../../lib/i18n";
-import { useAuth } from "../components/AuthProvider";
-import { PenIcon } from "../components/Icons";
 import { HeroPortrait } from "../components/HeroPortrait";
-import { useLocale } from "../components/LocaleProvider";
 
 type Guide = Dictionary["guideEntries"]["museion"];
 
@@ -72,8 +69,6 @@ function BuildingCard({ building, guide }: { building: MuseionBuilding; guide: G
 }
 
 export function MuseionGuide({ guide }: { guide: Guide }) {
-  const { t } = useLocale();
-  const { allows } = useAuth();
   const [query, setQuery] = useState("");
   const buildings = useMemo(
     () =>
@@ -98,12 +93,6 @@ export function MuseionGuide({ guide }: { guide: Guide }) {
 
       <div className="tier-lists-head">
         <h2>{guide.buildingsHeading}</h2>
-        {allows("guides.draft") ? (
-          <Link className="small-button" href="/guides/museion/edit/">
-            <PenIcon className="icon icon-sm" />
-            {t.museionEditor.openEditor}
-          </Link>
-        ) : null}
       </div>
       <p className="guide-lede">{guide.buildingsLede}</p>
       <div className="hero-filters museion-filters">

@@ -27,9 +27,8 @@ import {
 } from "../../lib/content/hero-tiers";
 import { HERO_RARITIES, heroNamed, heroPortrait, type HeroRarity } from "../../lib/content/heroes";
 import type { Dictionary } from "../../lib/i18n";
-import { useAuth } from "../components/AuthProvider";
 import { HeroPortrait } from "../components/HeroPortrait";
-import { CloseIcon, PenIcon, SearchIcon } from "../components/Icons";
+import { CloseIcon, SearchIcon } from "../components/Icons";
 import { useLocale } from "../components/LocaleProvider";
 
 type Guide = Dictionary["guideEntries"]["heroTierList"];
@@ -493,24 +492,12 @@ function TierDetail({
 }
 
 export function HeroTierListGuide({ guide }: { guide: Guide }) {
-  const { t } = useLocale();
-  const { allows } = useAuth();
   return (
     <div className="guide-wide hero-tiers">
       <p className="intro">{guide.intro}</p>
-      <p className="guide-credit">
-        <span>{guide.credit}</span>
-        <span>{guide.creditDate}</span>
-      </p>
 
       <div className="tier-lists-head">
         <h2>{guide.listsLabel}</h2>
-        {allows("guides.draft") ? (
-          <Link className="small-button" href="/guides/hero-tier-list/edit/">
-            <PenIcon className="icon icon-sm" />
-            {t.tierEditor.openEditor}
-          </Link>
-        ) : null}
       </div>
       <TierBoard guide={guide} />
 

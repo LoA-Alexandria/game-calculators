@@ -19,6 +19,7 @@ scripts/i18n-report.mjs       pnpm i18n:report — lists what is still untransla
 lib/navigation.ts             the section tree: sidebar and indexes
 lib/content/news.ts           news entries (dates and links only; text is in the dictionaries)
 lib/content/banners.ts        optional images for the section banners
+lib/content/guide-meta.ts     Guides index cards: pictures and editor button per guide
 app/components/LocaleProvider.tsx  the active language and its formatters
 ```
 
@@ -107,10 +108,8 @@ filter. There is no second list to keep in step.
    an existing guide. The editor prints the dictionary block, the navigation
    row, and (for a new slug) a note to copy the page file. Existing guides on
    `/guides/` and on the guide page have Edit and Remove — the same commit-snippet
-   pattern as news and events. Artwork, Artwork layouts, Heroes, Hero layouts,
-   the Hero tier list, Goddess Theater, Hero linking, Anecdotes, Server age
-   unlocks, Museion, Hero leveling, and production buildings skip those buttons:
-   they have their own editors instead.
+   pattern as news and events. Every guide listed with an `editor` in
+   `lib/content/guide-meta.ts` skips those buttons: it has its own editor instead.
 2. Write or replace the text under `guideEntries.<id>` in all three dictionaries,
    following the shape of `support`: `title`, `summary`, `intro`,
    `sections[]`, `note`.
@@ -126,6 +125,33 @@ filter. There is no second list to keep in step.
    calendar; keep `event` for a future event-related guide.
 4. For a new slug, copy `app/guides/support/page.tsx` and pass the new id
    to `GuideArticle`.
+5. Add the guide to `GUIDE_PRESENTATION` in `lib/content/guide-meta.ts`: up to
+   four pictures already under `public/` for its card on `/guides/` (an empty
+   list shows the category icon; `cutout: true` for pictures on a transparent
+   background), and `editor` with the route and button label when it has its
+   own editor. `tests/guide-meta.test.mjs` fails until the entry exists, and
+   checks that every picture exists and that `editor` routes match the
+   `app/guides/*/edit/page.tsx` pages.
+
+### How every guide looks
+
+All guides share one frame, so a new guide only brings its own content:
+
+- **`/guides/`** shows a card per guide (pictures, title, summary, category, and
+  an Editor badge), a search that ignores accents, and a filter per category.
+  `/guides/#<categoryId>` opens with that category picked; the sidebar links
+  use this. Each category has a one-line `guides.categoryLedes.<categoryId>`
+  in every dictionary.
+- **The guide head** (`GuideHeader` in `app/guides/GuideArticle.tsx`) shows
+  Guides / category, the title or its title banner from
+  `lib/content/banners.ts`, the `summary`, and — when the entry has
+  `creditDate` — `credit`, `creditDate`, and `status` as chips. The button to
+  the guide's own editor sits there too, for members with `guides.draft`, so a
+  renderer does not add its own edit link or top credit line.
+- **Colours** come from the category: `data-category` on the head and the
+  article sets `--cat`, which colours the crumb, the card, and the bar in front
+  of every section heading.
+- **Text-only guides** (headings and paragraphs) show their sections as cards.
 
 A guide that needs more than headings and paragraphs gets its own renderer next
 to `GuideArticle`: `GoddessesGuide`, `ArtworkGuide`, `ArtworkLayoutsGuide`,
@@ -179,7 +205,7 @@ only in the JSON, so they are the same in every language.
 `tests/hero-layouts.test.mjs` checks that every key has text in every language
 and that pros, cons, and notes have the same number of lines in each.
 
-Members with `guides.draft` see **Edit builds** on the guide, which opens
+Members with `guides.draft` see **Edit builds** in the guide head, which opens
 `/guides/hero-layouts/edit/`:
 
 - **Hero pool** (beside the builds, above them on a phone): heroes from Core
@@ -213,7 +239,7 @@ confirmed the spelling the other guides already used.
 
 ## Editing the hero tier list
 
-Members with `guides.draft` see **Edit tier list** on the tier list page, which
+Members with `guides.draft` see **Edit tier list** in the guide head, which
 opens `/guides/hero-tier-list/edit/`. The dictionary-snippet Edit / Remove at
 the top of the page is hidden here.
 
@@ -255,7 +281,7 @@ real changes.
 
 ## Editing artwork layouts
 
-Members with `guides.draft` see **Edit set skills** on Artwork layouts, which
+Members with `guides.draft` see **Edit set skills** in the Artwork layouts head, which
 opens `/guides/artwork-layouts/edit/`. The dictionary-snippet Edit / Remove at
 the top of the page is hidden here.
 
@@ -282,7 +308,7 @@ An untouched draft exports the published file byte for byte
 
 ## Editing the artwork catalogue
 
-Members with `guides.draft` see **Edit catalogue** on Artwork, which opens
+Members with `guides.draft` see **Edit catalogue** in the Artwork head, which opens
 `/guides/artwork/edit/`. The dictionary-snippet Edit / Remove at the top of the
 page is hidden here.
 
@@ -322,7 +348,7 @@ the published file byte for byte (`tests/artwork-editor.test.mjs`).
 
 ## Editing heroes
 
-Members with `guides.draft` see **Edit heroes** above the Heroes roster, which
+Members with `guides.draft` see **Edit heroes** in the Heroes head, which
 opens `/guides/heroes/edit/`. The dictionary-snippet Edit / Remove is hidden on
 Heroes as well.
 
@@ -441,7 +467,7 @@ the site. To take the pictures down, delete the folder and empty each play's
 
 ## Editing Goddess Theater
 
-Members with `guides.draft` see **Edit plays** on Goddess Theater, which opens
+Members with `guides.draft` see **Edit plays** in the Goddess Theater head, which opens
 `/guides/goddess-theater/edit/`. The dictionary-snippet Edit / Remove is hidden
 here as well.
 
@@ -474,7 +500,7 @@ order links are worth spending in. Both name heroes by their Heroes roster
 spelling, so a portrait and a link into the roster always resolve;
 `tests/hero-linking.test.mjs` checks every name against that roster.
 
-Members with `guides.draft` see **Edit linking** on the guide, which opens
+Members with `guides.draft` see **Edit linking** in the guide head, which opens
 `/guides/hero-linking/edit/`.
 
 - **Add a hero** in either list is the Core elements Heroes roster, grouped by
@@ -484,11 +510,13 @@ Members with `guides.draft` see **Edit linking** on the guide, which opens
   the same step of one track would both claim to be “#1”, so the export warns.
 - **Position** in the link order is what the advice is: the first hero is the
   one to spend a single link on, the second is next, and so on.
-- **Note** is optional prose beside a hero, not game data, so every language —
-  English included — keeps its own copy and none is the source. One or every
-  language is shown, the same as the other editors. A note written in one
-  language but not the others would render blank there, so the export warns
-  about that too.
+- **Note** is optional prose beside a hero, not game data, so it lives in the
+  dictionaries rather than the JSON. English is the text the other languages
+  fall back to, so it is shown beside the reader's language, or every language
+  with **Edit all languages** — the shared controls in
+  `app/components/EditorLanguages.tsx`. A language without its own note shows
+  the English one as its placeholder, because that is what a reader there gets,
+  and the export lists what is still untranslated.
 
 The draft is saved in that browser only
 (`localStorage['popepoch-linking-draft']`). **Export** produces the complete
@@ -512,7 +540,7 @@ optional name/detail/label/description overrides go in
 `relatedGuide` names a published `guideEntries` id. Pictures live in
 `public/server-age-unlocks/`.
 
-Members with `guides.draft` see **Edit timeline**, which opens
+Members with `guides.draft` see **Edit timeline** in the guide head, which opens
 `/guides/server-age-unlocks/edit/`. The draft is saved in that browser only
 (`localStorage['popepoch-age-unlocks-draft']`). **Export** produces the
 complete JSON, new pictures to put into `public/server-age-unlocks/`, files to
@@ -530,7 +558,7 @@ building display names and competition-stat labels live in
 when they exist; a short off-roster allow-list covers names Autumn listed that
 are not in `heroes.json` yet.
 
-Members with `guides.draft` see **Edit Museion**, which opens
+Members with `guides.draft` see **Edit Museion** in the guide head, which opens
 `/guides/museion/edit/`. The draft is saved in that browser only
 (`localStorage['popepoch-museion-draft']`). **Export** produces the complete
 JSON and one `buildingTexts` block per dictionary (including English). An
@@ -548,7 +576,7 @@ Hero layouts build (Crit, DoT, Pursuit, Execute), and shared level caps live in
 labels, and optional hero notes live in `guideEntries.heroLeveling`
 (`heroNotes` is sparse per language).
 
-Members with `guides.draft` see **Edit priorities**, which opens
+Members with `guides.draft` see **Edit priorities** in the guide head, which opens
 `/guides/hero-leveling/edit/`. The draft is saved in that browser only
 (`localStorage['popepoch-leveling-draft']`). **Export** produces the complete
 JSON and one `heroNotes` block per dictionary. An untouched draft reproduces
@@ -564,7 +592,7 @@ resources, priority asterisks, and barracks/research tags live in
 resource names, tag prose, and building name/note overrides live in
 `guideEntries.productionBuildings` (`buildingTexts` is sparse per language).
 
-Members with `guides.draft` see **Edit buildings**, which opens
+Members with `guides.draft` see **Edit buildings** in the guide head, which opens
 `/guides/production-buildings/edit/`. The draft is saved in that browser only
 (`localStorage['popepoch-production-buildings-draft']`). **Export** produces the
 complete JSON and one `buildingTexts` block per dictionary. An untouched draft
@@ -593,7 +621,7 @@ Rows live in `lib/data/anecdotes.json`, English only:
 - `image` is a file in `public/anecdotes/`. Without one, the card shows an
   empty picture slot.
 
-Members with `guides.draft` see **Edit anecdotes** on the guide, which opens
+Members with `guides.draft` see **Edit anecdotes** in the guide head, which opens
 `/guides/anecdotes/edit/`. The list filters by group and text and marks
 anecdotes that are **new** or **changed**. The form edits every field above in
 English plus the page's language, or every language with **Edit all

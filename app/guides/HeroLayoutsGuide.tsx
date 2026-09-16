@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useId, useState, type CSSProperties, type KeyboardEvent } from "react";
 import { guideLayout } from "../../lib/content/guides";
 import type { Dictionary } from "../../lib/i18n";
@@ -14,10 +13,9 @@ import {
   type LayoutPick,
   type LayoutTexts,
 } from "../../lib/content/hero-layouts";
-import { useAuth } from "../components/AuthProvider";
 import { HeroAvatar } from "../components/HeroAvatar";
 import { useLocale } from "../components/LocaleProvider";
-import { CheckIcon, CloseIcon, PenIcon } from "../components/Icons";
+import { CheckIcon, CloseIcon } from "../components/Icons";
 
 type Guide = Dictionary["guideEntries"]["heroLayouts"];
 
@@ -217,16 +215,10 @@ function BuildTabs({ guide, texts }: { guide: Guide; texts: LayoutTexts }) {
 }
 
 export function HeroLayoutsGuide({ guide }: { guide: Guide }) {
-  const { t } = useLocale();
-  const { allows } = useAuth();
   const texts = layoutTexts(guide);
   return (
     <div className="guide-wide hero-layouts">
       <p className="intro">{guide.intro}</p>
-      <p className="guide-credit">
-        <span>{guide.credit}</span>
-        <span>{guide.creditDate}</span>
-      </p>
 
       <div className="formation-intro">
         <div>
@@ -260,12 +252,6 @@ export function HeroLayoutsGuide({ guide }: { guide: Guide }) {
 
       <div className="tier-lists-head">
         <h2>{guide.buildsHeading}</h2>
-        {allows("guides.draft") ? (
-          <Link className="small-button" href="/guides/hero-layouts/edit/">
-            <PenIcon className="icon icon-sm" />
-            {t.layoutEditor.openEditor}
-          </Link>
-        ) : null}
       </div>
       <div className="build-lede">
         <p>{guide.buildsLede}</p>

@@ -6,9 +6,7 @@ import { guideLayout } from "../../lib/content/guides";
 import { ARTWORK_LAYOUT_DATA, setSkillRank } from "../../lib/content/artwork-layouts";
 import { localizedSet, type PaintingTexts } from "../../lib/content/artwork";
 import type { Dictionary } from "../../lib/i18n";
-import { useAuth } from "../components/AuthProvider";
 import { useLocale } from "../components/LocaleProvider";
-import { PenIcon } from "../components/Icons";
 
 type Guide = Dictionary["guideEntries"]["artworkLayouts"];
 
@@ -104,17 +102,9 @@ function SetSkillTabs({ guide }: { guide: Guide }) {
 }
 
 export function ArtworkLayoutsGuide({ guide }: { guide: Guide }) {
-  const { t } = useLocale();
-  const { allows } = useAuth();
-
   return (
     <div className="guide-wide hero-layouts artwork-layouts">
       <p className="intro">{guide.intro}</p>
-      <p className="guide-credit">
-        <span>{guide.credit}</span>
-        <span>{guide.creditDate}</span>
-        {guide.status ? <span className="build-status">{guide.status}</span> : null}
-      </p>
       <p className="callout">
         {guide.catalogueLede}{" "}
         <Link href="/guides/artwork/">{guide.catalogueLink}</Link>
@@ -163,12 +153,6 @@ export function ArtworkLayoutsGuide({ guide }: { guide: Guide }) {
 
       <div className="tier-lists-head">
         <h2>{guide.setSkillsHeading}</h2>
-        {allows("guides.draft") ? (
-          <Link className="small-button" href="/guides/artwork-layouts/edit/">
-            <PenIcon className="icon icon-sm" />
-            {t.artworkLayoutEditor.openEditor}
-          </Link>
-        ) : null}
       </div>
       <p className="utility-lede">{guide.setSkillsLede}</p>
       <SetSkillTabs guide={guide} />

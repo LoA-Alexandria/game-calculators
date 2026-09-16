@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useMemo, useState } from "react";
 import {
   ANECDOTE_GROUPS,
@@ -16,9 +15,7 @@ import {
 } from "../../lib/content/anecdotes";
 import { guideLayout } from "../../lib/content/guides";
 import { LOCALE_CODES, fill, getDictionary, type Dictionary } from "../../lib/i18n";
-import { useAuth } from "../components/AuthProvider";
-import { InfoIcon, PenIcon } from "../components/Icons";
-import { useLocale } from "../components/LocaleProvider";
+import { InfoIcon } from "../components/Icons";
 
 type Guide = Dictionary["guideEntries"]["anecdotes"];
 
@@ -197,8 +194,6 @@ export function AnecdoteCard({
 const CATALOGS: AnecdoteTexts[] = LOCALE_CODES.map((code) => getDictionary(code).guideEntries.anecdotes.anecdoteTexts);
 
 export function AnecdotesGuide({ guide }: { guide: Guide }) {
-  const { t } = useLocale();
-  const { allows } = useAuth();
   const [group, setGroup] = useState<AnecdoteGroup | "all">("all");
   const [query, setQuery] = useState("");
 
@@ -234,12 +229,6 @@ export function AnecdotesGuide({ guide }: { guide: Guide }) {
 
       <div className="tier-lists-head">
         <h2>{guide.listHeading}</h2>
-        {allows("guides.draft") ? (
-          <Link className="small-button" href="/guides/anecdotes/edit/">
-            <PenIcon className="icon icon-sm" />
-            {t.anecdoteEditor.openEditor}
-          </Link>
-        ) : null}
       </div>
       <p className="guide-lede">{guide.listLede}</p>
 
