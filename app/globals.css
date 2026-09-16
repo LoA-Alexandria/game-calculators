@@ -2412,10 +2412,10 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
 .hero-link-chip small,
 .hero-link-tier small { color: var(--ink-faint); font-size: .72rem; }
 .hero-link-tier strong { color: var(--tier, var(--ink)); font-family: var(--font-display); }
-.hero-link-tier[data-tier="SS"] { --tier: #c2362c; }
-.hero-link-tier[data-tier="S"] { --tier: #c56a16; }
-.hero-link-tier[data-tier="A"] { --tier: #a88410; }
-.hero-link-tier[data-tier="B"] { --tier: #3b8a4c; }
+.hero-link-tier[data-tier="SS"] { --tier: #d8412f; }
+.hero-link-tier[data-tier="S"] { --tier: #c2362c; }
+.hero-link-tier[data-tier="A"] { --tier: #c56a16; }
+.hero-link-tier[data-tier="B"] { --tier: #8a5cc7; }
 .hero-link-tier[data-tier="C"] { --tier: #2d6fa9; }
 .hero-link-tier[data-tier="D"] { --tier: #6c6760; }
 
@@ -3199,13 +3199,45 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
 }
 
 /* --- hero tier list guide ------------------------------------------------ */
+/*
+ * Tier colours follow the hero rarities: SS is UR+ (red with a shine), S is UR
+ * red, A is SSR orange, B is SR purple, C is R blue, and D stays grey.
+ */
 .hero-tiers { --tier: var(--ink-faint); }
-.hero-tiers [data-tier="SS"] { --tier: #c2362c; --tier-hi: #e8604f; }
-.hero-tiers [data-tier="S"] { --tier: #c56a16; --tier-hi: #ec9a45; }
-.hero-tiers [data-tier="A"] { --tier: #a88410; --tier-hi: #d9b640; }
-.hero-tiers [data-tier="B"] { --tier: #3b8a4c; --tier-hi: #66b777; }
+.hero-tiers [data-tier="SS"] { --tier: #b8281f; --tier-hi: #ff6a4d; }
+.hero-tiers [data-tier="S"] { --tier: #c2362c; --tier-hi: #e8604f; }
+.hero-tiers [data-tier="A"] { --tier: #c56a16; --tier-hi: #ec9a45; }
+.hero-tiers [data-tier="B"] { --tier: #7a4bb8; --tier-hi: #a57de0; }
 .hero-tiers [data-tier="C"] { --tier: #2d6fa9; --tier-hi: #5a9ad3; }
 .hero-tiers [data-tier="D"] { --tier: #6c6760; --tier-hi: #96908a; }
+
+/* SS gets the UR+ treatment: a glowing border and a glint across its label. */
+.hero-tiers :is(.tl-row, .tier-row)[data-tier="SS"] {
+  border-color: color-mix(in srgb, #ff5a45 60%, var(--line));
+  animation: ur-plus-glow 2.8s ease-in-out infinite alternate;
+}
+.hero-tiers :is(.tl-row, .tier-row)[data-tier="SS"] :is(.tl-label, .tier-badge),
+.hero-tiers .tl-detail-tier[data-tier="SS"] {
+  position: relative;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px rgba(255, 214, 190, .45), inset 0 0 18px rgba(255, 170, 120, .35);
+}
+.hero-tiers :is(.tl-row, .tier-row)[data-tier="SS"] :is(.tl-label, .tier-badge)::after,
+.hero-tiers .tl-detail-tier[data-tier="SS"]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 40%, rgba(255, 236, 214, .35) 47%, rgba(255, 255, 255, .75) 50%, rgba(255, 236, 214, .35) 53%, transparent 60%) 100% 0 / 300% 100% no-repeat;
+  animation: ur-plus-glint 5s ease-in-out infinite;
+  pointer-events: none;
+}
+.hero-tiers .tl-detail-tier[data-tier="SS"] { animation: ur-plus-glow 2.8s ease-in-out infinite alternate; }
+@media (prefers-reduced-motion: reduce) {
+  .hero-tiers :is(.tl-row, .tier-row, .tl-detail-tier)[data-tier="SS"],
+  .hero-tiers :is(.tl-row, .tier-row)[data-tier="SS"] :is(.tl-label, .tier-badge)::after,
+  .hero-tiers .tl-detail-tier[data-tier="SS"]::after { animation: none; }
+  .hero-tiers :is(.tl-row, .tier-row)[data-tier="SS"] { box-shadow: 0 0 0 1px color-mix(in srgb, #ff5a45 55%, transparent), 0 0 14px color-mix(in srgb, #ff5a45 40%, transparent); }
+}
 .hero-tiers [data-tier="none"] { --tier: var(--ink-faint); --tier-hi: var(--ink-faint); }
 
 .tier-purposes {
