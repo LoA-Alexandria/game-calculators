@@ -4093,9 +4093,11 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
 .tl-board[data-list="battle"] .tl-desc { margin: 4px 8px 8px; }
 
 .tl-cards { display: flex; flex-wrap: wrap; gap: 12px 10px; margin: 0; padding: 0; list-style: none; }
-.tl-card { width: 104px; }
+.tl-card { display: flex; width: 104px; }
+/* Cards in one line share its height, so the grades can sit on one baseline whatever the name and caption take up. */
 .tl-card-button {
   display: flex;
+  flex: 1;
   flex-direction: column;
   align-items: center;
   gap: 4px;
@@ -4161,8 +4163,8 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
 }
-.tl-tags-bonus { color: var(--good); font-family: var(--font-mono); font-size: .68rem; letter-spacing: 0; text-transform: none; }
-.tl-grades { display: flex; gap: 3px; }
+.tl-tags-bonus { margin-top: auto; color: var(--good); font-family: var(--font-mono); font-size: .68rem; letter-spacing: 0; text-transform: none; }
+.tl-grades { display: flex; gap: 3px; margin-top: auto; }
 .tl-grade {
   display: inline-flex;
   flex-direction: column;
