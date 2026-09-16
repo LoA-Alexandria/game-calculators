@@ -47,11 +47,13 @@ export type TitleBanner = { src: string; width: number; height: number };
  * The Hero tier list banner was supplied by the site team on 16 September
  * 2026 (`public/banners/hero-tier-list.webp`, 1024 × 144). The Artwork
  * gallery banner was supplied the same day (`public/banners/artwork.webp`,
- * 1024 × 144).
+ * 1024 × 144). The Goddesses banner followed later that day
+ * (`public/banners/goddesses.webp`, 1024 × 144).
  */
 export const GUIDE_TITLE_BANNERS: Partial<Record<GuideEntryId, TitleBanner>> = {
   heroTierList: { src: "/banners/hero-tier-list.webp", width: 1024, height: 144 },
   artwork: { src: "/banners/artwork.webp", width: 1024, height: 144 },
+  goddesses: { src: "/banners/goddesses.webp", width: 1024, height: 144 },
 };
 
 export function guideTitleBanner(id: GuideEntryId): TitleBanner | null {
