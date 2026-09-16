@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Pop Epoch Tools — design system
+   Pop Epoch Tools â€” design system
 
    Default palette (stone): warm stone neutrals with a teal primary taken from
    the section banner HUDs, and copper-gold from the plaques. Additional
@@ -16,7 +16,7 @@
 :root {
   color-scheme: light dark;
 
-  /* surfaces — warm stone, not cool grey */
+  /* surfaces â€” warm stone, not cool grey */
   --bg: #f3eee6;
   --surface: #fffbf4;
   --surface-2: #efe8dc;
@@ -54,7 +54,7 @@
   --bad: #c4382f;
   --bad-soft: rgba(196, 56, 47, .11);
 
-  /* elevation — soft and low, never a hard offset */
+  /* elevation â€” soft and low, never a hard offset */
   --shadow-1: 0 1px 2px rgba(26, 21, 16, .06), 0 1px 3px rgba(26, 21, 16, .04);
   --shadow-2: 0 4px 12px rgba(26, 21, 16, .08), 0 1px 3px rgba(26, 21, 16, .05);
   --shadow-3: 0 18px 44px rgba(26, 21, 16, .14), 0 4px 12px rgba(26, 21, 16, .07);
@@ -67,7 +67,7 @@
   --r-lg: 18px;
   --r-xl: 24px;
 
-  /* type — the --font-* variables come from next/font in app/layout.tsx */
+  /* type â€” the --font-* variables come from next/font in app/layout.tsx */
   --font-display: var(--font-sora), "Segoe UI", system-ui, sans-serif;
   --font-ui: var(--font-inter), system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: var(--font-jetbrains-mono), ui-monospace, "SF Mono", Consolas, monospace;
@@ -998,7 +998,7 @@ a.lang-option { color: inherit; text-decoration: none; }
 .content > * { max-width: var(--measure); margin-inline: auto; }
 .content > .section-banner,
 .content > .roster-banner {
-  /* Slim strip, edge to edge of the main column — not the 1200px measure. */
+  /* Slim strip, edge to edge of the main column â€” not the 1200px measure. */
   max-width: none;
   width: calc(100% + 2 * var(--content-pad-x));
   margin-inline: calc(-1 * var(--content-pad-x));
@@ -1282,7 +1282,7 @@ a.lang-option { color: inherit; text-decoration: none; }
   background: var(--inverse);
   color: var(--on-inverse);
 }
-/* one soft teal bloom and a thin gradient rule — no ornament */
+/* one soft teal bloom and a thin gradient rule â€” no ornament */
 .hero::before {
   content: "";
   position: absolute;
@@ -2178,6 +2178,7 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
   font-weight: 800;
 }
 .hero-portrait-large { --size: 120px; }
+.hero-portrait-medium { --size: 64px; border-radius: 16px; }
 .hero-portrait-small { --size: 40px; border-radius: 12px; }
 
 /*
@@ -2623,81 +2624,350 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
   min-width: 0;
 }
 
+.leveling-guide {
+  --leveling-line: color-mix(in srgb, var(--accent) 28%, var(--line));
+}
+.leveling-toolbar {
+  display: grid;
+  gap: 12px;
+  margin: 0 0 20px;
+}
 .leveling-filters {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin: 0 0 14px;
 }
-.leveling-filters button {
-  appearance: none;
-  border: 1px solid var(--line);
-  border-radius: var(--r-md);
-  background: var(--surface);
-  color: var(--ink);
-  padding: 8px 12px;
-  font: inherit;
-  font-weight: 600;
-  cursor: pointer;
-}
-.leveling-filters button.is-active {
-  border-color: var(--accent);
-  background: color-mix(in srgb, var(--accent) 12%, var(--surface));
-  color: var(--accent);
-}
-.leveling-band { margin: 0 0 14px; }
-.leveling-band h4 {
-  margin: 0 0 8px;
-  font-size: .92rem;
-  color: var(--ink-soft);
-}
-.leveling-list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
+.leveling-board {
   display: grid;
-  gap: 8px;
+  grid-template-columns: minmax(0, 1.4fr) minmax(220px, .9fr);
+  gap: 28px 32px;
+  align-items: start;
+  margin: 0 0 28px;
 }
-.leveling-list li {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px 12px;
-}
-.leveling-rank {
-  min-width: 2.4rem;
-  color: var(--ink-faint);
-  font-size: .78rem;
-  font-weight: 700;
-}
-.leveling-note {
-  color: var(--ink-soft);
-  font-size: .84rem;
-}
-.leveling-fragment-body {
-  display: grid;
-  gap: 6px;
+.leveling-board-main,
+.leveling-shards {
   min-width: 0;
 }
-.leveling-fragment-heroes {
+.leveling-board-head {
+  display: grid;
+  gap: 4px;
+  margin: 0 0 16px;
+}
+.leveling-board-head h3 {
+  margin: 0;
+  font-size: 1.08rem;
+}
+.leveling-board-head p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: .9rem;
+}
+.leveling-podium {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0 0 22px;
+  padding: 0;
+  list-style: none;
+}
+.leveling-podium-item {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  padding: 18px 12px 16px;
+  text-align: center;
+  border-bottom: 3px solid var(--leveling-line);
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--accent) 10%, transparent), transparent 70%);
+  animation: leveling-rise .45s ease both;
+}
+.leveling-podium-item[data-rank="1"] {
+  border-bottom-color: var(--accent);
+  order: 2;
+  padding-top: 8px;
+  transform: translateY(-6px);
+}
+.leveling-podium-item[data-rank="2"] { order: 1; }
+.leveling-podium-item[data-rank="3"] { order: 3; }
+.leveling-podium-rank {
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: .78rem;
+  font-weight: 800;
+  letter-spacing: .04em;
+}
+.leveling-podium-item[data-rank="1"] .leveling-podium-rank {
+  font-size: .92rem;
+}
+.leveling-podium-note,
+.leveling-ladder-note {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: .78rem;
+  line-height: 1.35;
+}
+.leveling-chip {
+  display: inline-grid;
+  justify-items: center;
+  gap: 8px;
+  color: inherit;
+  text-decoration: none;
+  min-width: 0;
+}
+.leveling-ladder-row .leveling-chip,
+.leveling-shard-heroes .leveling-chip,
+.leveling-shard-body .leveling-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  justify-items: start;
+  text-align: left;
+}
+.leveling-chip:hover .leveling-chip-name {
+  color: var(--accent);
+}
+.leveling-chip-meta {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+.leveling-ladder-row .leveling-chip-meta,
+.leveling-shard-body .leveling-chip-meta {
   display: inline-flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 6px 8px;
 }
-.leveling-levels {
-  margin: 0 0 12px;
+.leveling-chip-name {
+  font-weight: 700;
+  line-height: 1.2;
+}
+.leveling-chip-rarity {
+  display: inline-flex;
+  align-items: center;
+  min-height: 18px;
+  padding: 0 6px;
+  border-radius: var(--r-sm);
+  background: color-mix(in srgb, var(--rarity, var(--accent)) 14%, var(--surface));
+  color: var(--rarity, var(--accent));
+  font-size: .66rem;
+  font-weight: 700;
+}
+.leveling-chip-rarity[data-rarity="UR+"],
+.leveling-chip-rarity[data-rarity="UR"] { --rarity: #d45b52; }
+.leveling-chip-rarity[data-rarity="SSR"] { --rarity: var(--gold); }
+.leveling-chip-rarity[data-rarity="SR"] { --rarity: #9b6bd6; }
+.leveling-chip-rarity[data-rarity="R"] { --rarity: #4a89dc; }
+
+.leveling-ladder {
+  margin: 0;
+  padding: 0 0 0 18px;
+  list-style: none;
+  border-left: 2px solid var(--leveling-line);
+  display: grid;
+  gap: 4px;
+}
+.leveling-ladder-item {
+  position: relative;
+  padding: 0 0 10px 16px;
+}
+.leveling-ladder-item::before {
+  content: "";
+  position: absolute;
+  left: -23px;
+  top: 1.15rem;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 2px solid var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 12%, transparent);
+}
+.leveling-ladder-band {
+  margin: 0 0 8px;
+  color: var(--ink-faint);
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.leveling-ladder-row {
+  display: grid;
+  grid-template-columns: 2.6rem minmax(0, 1fr);
+  gap: 4px 10px;
+  align-items: center;
+}
+.leveling-ladder-rank,
+.leveling-shard-index {
+  color: var(--ink-faint);
+  font-family: var(--font-mono);
+  font-size: .78rem;
+  font-weight: 700;
+}
+.leveling-ladder-note {
+  grid-column: 2;
+}
+
+.leveling-shards {
+  padding: 4px 0 0;
+}
+.leveling-shard-list {
+  margin: 0;
   padding: 0;
   list-style: none;
   display: grid;
+  gap: 12px;
+  counter-reset: none;
+}
+.leveling-shard-list > li {
+  display: grid;
+  grid-template-columns: 2.4rem minmax(0, 1fr);
+  gap: 8px 10px;
+  padding: 0 0 12px;
+  border-bottom: 1px dashed var(--line);
+}
+.leveling-shard-list > li:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+.leveling-shard-body {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+.leveling-shard-body p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: .88rem;
+  line-height: 1.4;
+}
+.leveling-shard-heroes {
+  display: grid;
   gap: 8px;
 }
-.leveling-levels li {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 6px 12px;
+
+.leveling-caps-block {
+  margin: 0 0 24px;
 }
+.leveling-caps-rail {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  margin: 0 0 12px;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--line);
+}
+.leveling-caps-rail > li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  padding: 14px 16px 14px 0;
+  border-right: 1px solid var(--line);
+}
+.leveling-caps-rail > li:last-child {
+  border-right: 0;
+  padding-right: 0;
+}
+.leveling-caps-index {
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: .84rem;
+  font-weight: 800;
+}
+.leveling-caps-rail strong {
+  display: block;
+  margin-bottom: 4px;
+  font-size: .92rem;
+}
+.leveling-caps-value {
+  display: block;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: .9rem;
+}
+.leveling-caps-note {
+  display: block;
+  margin-top: 4px;
+  color: var(--ink-soft);
+  font-size: .78rem;
+  line-height: 1.35;
+}
+.leveling-caps-after {
+  margin: 0;
+  color: var(--ink-soft);
+}
+
+.leveling-details {
+  margin: 0 0 14px;
+  padding: 0;
+  border-top: 1px solid var(--line);
+}
+.leveling-details summary {
+  cursor: pointer;
+  padding: 12px 0;
+  font-weight: 700;
+  list-style: none;
+}
+.leveling-details summary::-webkit-details-marker { display: none; }
+.leveling-details summary::after {
+  content: "+";
+  float: right;
+  color: var(--ink-faint);
+  font-weight: 600;
+}
+.leveling-details[open] summary::after { content: "ÔÇô"; }
+.leveling-details p {
+  margin: 0 0 12px;
+  color: var(--ink-soft);
+}
+
+@keyframes leveling-rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+.leveling-podium-item[data-rank="1"] {
+  animation-name: leveling-rise-lead;
+}
+@keyframes leveling-rise-lead {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(-6px); }
+}
+
+@media (max-width: 900px) {
+  .leveling-board { grid-template-columns: 1fr; }
+  .leveling-shards {
+    padding-top: 8px;
+    border-top: 1px solid var(--line);
+  }
+}
+@media (max-width: 720px) {
+  .leveling-podium { grid-template-columns: 1fr; }
+  .leveling-podium-item[data-rank="1"],
+  .leveling-podium-item[data-rank="2"],
+  .leveling-podium-item[data-rank="3"] {
+    order: initial;
+    transform: none;
+    padding-top: 16px;
+  }
+  .leveling-caps-rail { grid-template-columns: 1fr; }
+  .leveling-caps-rail > li {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+    padding: 12px 0;
+  }
+  .leveling-caps-rail > li:last-child { border-bottom: 0; }
+  .hero-portrait-large { --size: 96px; }
+  .hero-portrait-medium { --size: 52px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .leveling-podium-item,
+  .leveling-podium-item[data-rank="1"] {
+    animation: none;
+  }
+}
+
 .leveling-edit-rows {
   margin: 0 0 12px;
   padding: 0;
