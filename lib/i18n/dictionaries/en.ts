@@ -1414,6 +1414,34 @@ const en = {
       ],
       note: "The per-level values of the other Legends are not recorded yet. Bring a screenshot to Discord and they can be added.",
     },
+    serverAgeUnlocks: {
+      title: "Server age unlocks",
+      summary: "When one-time events and age-locked features first appear on a new server.",
+      intro:
+        "A combined list of one-time events that unlock with server age, other age-locked features, and the first time recurring events show up on a new server. Days are the same on every server; new features added to the game later join at the soonest compatible point and may fall outside this guide.",
+      timelineHeading: "Unlock timeline",
+      timelineLede: "Follow the days from top to bottom. One-time-only events are marked.",
+      dayLabel: "Day {day}",
+      oneTimeMark: "One-time",
+      oneTimeHint: "Runs once on a server; it does not return on a schedule.",
+      relatedLabel: "See {guide}",
+      unconfirmedHeading: "Timing still unconfirmed",
+      unconfirmedLede:
+        "These show up with server age somehow, but nobody has pinned a reliable day yet.",
+      eventTexts: {},
+      credit:
+        "Server age unlocks by Autumn (Ice, S12), shared on Discord on 14 September 2026. Marked as in progress — timings may still move.",
+      sections: [
+        {
+          heading: "How to read this",
+          body: [
+            "One-time events fire once as the server ages. Everything else is the first appearance of a recurring event or feature unlock.",
+            "Where this site already has a guide for the feature, a link sits under the entry. Discord channel names from the original post are left out.",
+          ],
+        },
+      ],
+      note: "This list is still being checked. Bring a confirmed day or a correction to Discord and it can be updated.",
+    },
   },
   tierEditor: {
     title: "Edit the hero tier list",

@@ -78,6 +78,7 @@ test("each guide entry is claimed by exactly the renderer it was written for", (
     goddessTheater: "goddessTheater",
     heroLinking: "heroLinking",
     anecdotes: "anecdotes",
+    serverAgeUnlocks: "serverAgeUnlocks",
   };
   for (const [code, dictionary] of Object.entries(mapLocales(getDictionary))) {
     for (const [id, guide] of Object.entries(dictionary.guideEntries)) {

@@ -1412,6 +1412,34 @@ const de: Dictionary = {
       ],
       note: "Die Werte der anderen Legenden pro Stufe sind noch nicht erfasst. Bring einen Screenshot auf Discord mit, dann kommen sie dazu.",
     },
+    serverAgeUnlocks: {
+      title: "Freischaltungen nach Serveralter",
+      summary: "Wann einmalige Events und altersgesperrte Features auf einem neuen Server zuerst erscheinen.",
+      intro:
+        "Eine kombinierte Liste aus einmaligen Events, die mit dem Serveralter freischalten, weiteren altersgesperrten Features und dem ersten Auftauchen wiederkehrender Events auf einem neuen Server. Die Tage gelten für alle Server gleich; neue Features, die später ins Spiel kommen, landen am frühest passenden Punkt und können außerhalb dieses Guides liegen.",
+      timelineHeading: "Freischaltungs-Timeline",
+      timelineLede: "Die Tage laufen von oben nach unten. Einmalige Events sind markiert.",
+      dayLabel: "Tag {day}",
+      oneTimeMark: "Einmalig",
+      oneTimeHint: "Läuft einmal pro Server und kehrt nicht im Rhythmus zurück.",
+      relatedLabel: "Siehe {guide}",
+      unconfirmedHeading: "Zeitpunkt noch unbestätigt",
+      unconfirmedLede:
+        "Diese hängen irgendwie am Serveralter, aber ein verlässlicher Tag steht noch nicht fest.",
+      eventTexts: {},
+      credit:
+        "Server-Age-Unlocks von Autumn (Ice, S12), geteilt auf Discord am 14. September 2026. Als in Arbeit markiert — Zeitpunkte können sich noch verschieben.",
+      sections: [
+        {
+          heading: "So liest du die Liste",
+          body: [
+            "Einmalige Events feuern einmal, während der Server altert. Alles andere ist das erste Auftauchen eines wiederkehrenden Events oder einer Feature-Freischaltung.",
+            "Wo diese Seite schon einen Guide zum Feature hat, steht ein Link unter dem Eintrag. Discord-Kanalnamen aus dem Originalpost sind weggelassen.",
+          ],
+        },
+      ],
+      note: "Die Liste wird noch geprüft. Bring einen bestätigten Tag oder eine Korrektur auf Discord mit, dann wird sie aktualisiert.",
+    },
   },
   tierEditor: {
     title: "Helden-Tier-Liste bearbeiten",

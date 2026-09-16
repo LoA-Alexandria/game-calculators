@@ -153,6 +153,13 @@ export const SECTIONS: NavSection[] = [
         badge: (t) => t.guideCategories.tips,
         categoryId: "tips",
       },
+      {
+        href: "/guides/server-age-unlocks/",
+        label: (t) => t.guideEntries.serverAgeUnlocks.title,
+        description: (t) => t.guideEntries.serverAgeUnlocks.summary,
+        badge: (t) => t.guideCategories.tips,
+        categoryId: "tips",
+      },
     ],
   },
   {
