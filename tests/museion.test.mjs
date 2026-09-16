@@ -16,7 +16,6 @@ import {
 import {
   PUBLISHED_MUSEION,
   addHero,
-  buildingTextBlocks,
   exportMuseion,
   findMuseionProblems,
   removeHero,
@@ -58,7 +57,21 @@ test("an untouched draft exports the published Museion file byte for byte", () =
   const file = readFileSync(new URL("../lib/data/museion.json", import.meta.url), "utf8");
   assert.equal(serializeMuseionData(result), file);
   assert.deepEqual(findMuseionProblems(PUBLISHED_MUSEION), []);
-  assert.equal(buildingTextBlocks(PUBLISHED_MUSEION).en, "      buildingTexts: {},");
+});
+
+test("every Museion building has a display name and translated stats in every language", () => {
+  for (const [code, dictionary] of Object.entries(mapLocales(getDictionary))) {
+    const guide = dictionary.guideEntries.museion;
+    assert.ok(guide.primaryStatLabel, code);
+    assert.ok(guide.secondaryStatLabel, code);
+    for (const stat of MUSEION_STATS) {
+      assert.ok(guide.stats[stat], `${code}: ${stat}`);
+    }
+    for (const building of MUSEION_BUILDINGS) {
+      const name = guide.buildingTexts[building.id]?.name?.trim() || (code === "en" ? building.name : "");
+      assert.ok(name, `${code}: missing name for ${building.id}`);
+    }
+  }
 });
 
 test("adding and removing a roster hero round-trips through export", () => {

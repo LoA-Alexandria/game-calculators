@@ -1471,9 +1471,24 @@ const en = {
         intellect: "Intellect",
       },
       statsUnknown: "Competition stats not recorded yet",
-      buildingTexts: {},
+      primaryStatLabel: "Primary stat",
+      secondaryStatLabel: "Secondary stat",
+      buildingTexts: {
+        "anaximander-planetarium": { name: "Anaximander Planetarium" },
+        "apelles-studio": { name: "Apelles Studio" },
+        "delphi-oracle-hall": { name: "Delphi Oracle Hall" },
+        "euclid-library": { name: "Euclid Library" },
+        "heraclitus-thought-pavilion": { name: "Heraclitus Thought Pavilion" },
+        "hippocrates-medical-college": { name: "Hippocrates Medical College" },
+        "muse-conservatory": { name: "Muse Conservatory" },
+        "pheidias-workshop": { name: "Pheidias Workshop" },
+        "plato-academy": { name: "Plato Academy" },
+        "pythagoras-sanctum": { name: "Pythagoras Sanctum" },
+        "socrates-rostrum": { name: "Socrates Rostrum" },
+        "theater-of-sophocles": { name: "Theater of Sophocles" },
+      },
       credit:
-        "Best-in-building markers by Autumn (Ice, S12), shared on Discord on 20 August 2026, with later placements from Spitzell (24 August 2026) and Zee (8 September 2026). Building names follow Autumn’s English list.",
+        "Best-in-building markers by Autumn (Ice, S12), shared on Discord on 20 August 2026, with later placements from Spitzell (24 August 2026) and Zee (8 September 2026).",
       sections: [
         {
           heading: "How to place heroes",

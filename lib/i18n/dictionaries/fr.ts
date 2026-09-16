@@ -1617,12 +1617,14 @@ const fr: Dictionary = {
       statsLede:
         "Chaque salle utilise deux stats de compétition du Muséion. Améliorez toutes les idéologies : elles boostent les stats dans l’ensemble, pas seulement le héros ; les gains propres au héros aident dans les compétitions du Muséion.",
       stats: {
-        insight: "Insight",
-        creativity: "Creativity",
+        insight: "Perspicacité",
+        creativity: "Créativité",
         initiative: "Initiative",
         intellect: "Intellect",
       },
       statsUnknown: "Stats de compétition pas encore relevées",
+      primaryStatLabel: "Stat principale",
+      secondaryStatLabel: "Stat secondaire",
       buildingTexts: {
         "anaximander-planetarium": { name: "Planétarium d’Anaximandre" },
         "apelles-studio": { name: "Atelier d’Apelle" },
@@ -1638,7 +1640,7 @@ const fr: Dictionary = {
         "theater-of-sophocles": { name: "Théâtre de Sophocle" },
       },
       credit:
-        "Marqueurs best-par-bâtiment par Autumn (Ice, S12), partagés sur Discord le 20 août 2026, avec des placements ultérieurs de Spitzell (24 août 2026) et Zee (8 septembre 2026). Les noms de bâtiments suivent la liste anglaise d’Autumn.",
+        "Marqueurs best-par-bâtiment par Autumn (Ice, S12), partagés sur Discord le 20 août 2026, avec des placements ultérieurs de Spitzell (24 août 2026) et Zee (8 septembre 2026).",
       sections: [
         {
           heading: "Comment placer les héros",

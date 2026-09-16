@@ -520,15 +520,18 @@ Source: Autumn (Ice, S12), Discord, 14 September 2026, marked in progress.
 
 Museion sits under **Buildings**. Halls, competition stats, and hero markers
 live in `lib/data/museion.json` (English). The guide renderer is `MuseionGuide`;
-building name overrides go in `guideEntries.museion.buildingTexts`. Heroes use
-Core roster spellings when they exist; a short off-roster allow-list covers
-names Autumn listed that are not in `heroes.json` yet.
+building display names and competition-stat labels live in
+`guideEntries.museion` for every language (`buildingTexts`, `stats`,
+`primaryStatLabel`, `secondaryStatLabel`). Heroes use Core roster spellings
+when they exist; a short off-roster allow-list covers names Autumn listed that
+are not in `heroes.json` yet.
 
 Members with `guides.draft` see **Edit Museion**, which opens
 `/guides/museion/edit/`. The draft is saved in that browser only
 (`localStorage['popepoch-museion-draft']`). **Export** produces the complete
-JSON and one `buildingTexts` block per dictionary. An untouched draft
-reproduces the published file byte for byte (`tests/museion.test.mjs`).
+JSON and one `buildingTexts` block per dictionary (including English). An
+untouched draft reproduces the published file byte for byte
+(`tests/museion.test.mjs`).
 Source: Autumn (Ice, S12), Discord, 20 August 2026, with later placements from
 Spitzell and Zee.
 

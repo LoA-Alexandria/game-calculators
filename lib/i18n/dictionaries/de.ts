@@ -1675,12 +1675,14 @@ const de: Dictionary = {
       statsLede:
         "Jede Halle nutzt zwei Museion-Wettkampf-Stats. Upgrade alle Ideologien: sie heben Stats insgesamt, nicht nur den Helden selbst; die heldenspezifischen Werte helfen in den Museion-Wettkämpfen.",
       stats: {
-        insight: "Insight",
-        creativity: "Creativity",
+        insight: "Einsicht",
+        creativity: "Kreativität",
         initiative: "Initiative",
-        intellect: "Intellect",
+        intellect: "Intellekt",
       },
       statsUnknown: "Wettkampf-Stats noch nicht erfasst",
+      primaryStatLabel: "Primärer Stat",
+      secondaryStatLabel: "Sekundärer Stat",
       buildingTexts: {
         "anaximander-planetarium": { name: "Anaximander-Planetarium" },
         "apelles-studio": { name: "Apelles-Atelier" },
@@ -1696,7 +1698,7 @@ const de: Dictionary = {
         "theater-of-sophocles": { name: "Theater des Sophokles" },
       },
       credit:
-        "Best-Marker pro Gebäude von Autumn (Ice, S12), geteilt auf Discord am 20. August 2026, mit späteren Platzierungen von Spitzell (24. August 2026) und Zee (8. September 2026). Gebäudenamen folgen Autumns englischer Liste.",
+        "Best-Marker pro Gebäude von Autumn (Ice, S12), geteilt auf Discord am 20. August 2026, mit späteren Platzierungen von Spitzell (24. August 2026) und Zee (8. September 2026).",
       sections: [
         {
           heading: "So setzt du Helden",
