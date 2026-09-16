@@ -1,11 +1,15 @@
 "use client";
 
 import Link from "next/link";
+import { useAuth } from "../components/AuthProvider";
+import { PenIcon } from "../components/Icons";
 import { guideHref, guideLayout, isGuideEntryId } from "../../lib/content/guides";
 import {
   AGE_MILESTONES,
   AGE_UNCONFIRMED,
+  eventDescription,
   eventDetail,
+  eventImageUrl,
   eventName,
   milestoneLabel,
   type AgeEvent,
@@ -25,32 +29,57 @@ function EventRow({ event, guide }: { event: AgeEvent; guide: Guide }) {
   const { t } = useLocale();
   const name = eventName(event, guide.eventTexts);
   const detail = eventDetail(event, guide.eventTexts);
+  const description = eventDescription(event, guide.eventTexts);
+  const image = event.image ? eventImageUrl(event.image) : null;
   const related =
     event.relatedGuide && isGuideEntryId(event.relatedGuide, t.guideEntries)
       ? t.guideEntries[event.relatedGuide]
       : null;
+  const hasCard = Boolean(description || image);
 
   return (
-    <li className="age-event">
-      <div className="age-event-main">
-        <span className="age-event-name">{name}</span>
-        {event.oneTime ? (
-          <span className="age-event-once" title={guide.oneTimeHint}>
-            {guide.oneTimeMark}
-          </span>
-        ) : null}
-      </div>
-      {detail ? <span className="age-event-detail">{detail}</span> : null}
+    <li className={`age-event${hasCard ? " age-event-has-card" : ""}`}>
+      <button type="button" className="age-event-trigger" aria-describedby={hasCard ? `age-card-${event.id}` : undefined}>
+        <span className="age-event-main">
+          {image ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img className="age-event-thumb" src={image} alt="" width={40} height={40} />
+          ) : null}
+          <span className="age-event-name">{name}</span>
+          {event.oneTime ? (
+            <span className="age-event-once" title={guide.oneTimeHint}>
+              {guide.oneTimeMark}
+            </span>
+          ) : null}
+        </span>
+        {detail ? <span className="age-event-detail">{detail}</span> : null}
+      </button>
       {related ? (
         <Link className="age-event-link" href={guideHref(event.relatedGuide!)}>
           {fill(guide.relatedLabel, { guide: related.title })}
         </Link>
+      ) : null}
+      {hasCard ? (
+        <div className="age-event-card" id={`age-card-${event.id}`} role="tooltip">
+          {image ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img className="age-event-card-image" src={image} alt="" width={220} height={140} />
+          ) : null}
+          <div className="age-event-card-body">
+            <strong className="age-event-card-name">{name}</strong>
+            {detail ? <span className="age-event-card-detail">{detail}</span> : null}
+            {description ? <p className="age-event-card-description">{description}</p> : null}
+          </div>
+        </div>
       ) : null}
     </li>
   );
 }
 
 export function ServerAgeUnlocksGuide({ guide }: { guide: Guide }) {
+  const { t } = useLocale();
+  const { allows } = useAuth();
+
   return (
     <div className="guide-wide age-unlocks-guide">
       <p className="intro">{guide.intro}</p>
@@ -63,7 +92,15 @@ export function ServerAgeUnlocksGuide({ guide }: { guide: Guide }) {
         </section>
       ))}
 
-      <h2>{guide.timelineHeading}</h2>
+      <div className="tier-lists-head">
+        <h2>{guide.timelineHeading}</h2>
+        {allows("guides.draft") ? (
+          <Link className="small-button" href="/guides/server-age-unlocks/edit/">
+            <PenIcon className="icon icon-sm" />
+            {t.ageUnlocksEditor.openEditor}
+          </Link>
+        ) : null}
+      </div>
       <p className="guide-lede">{guide.timelineLede}</p>
       <ol className="age-timeline">
         {AGE_MILESTONES.map((milestone, index) => {

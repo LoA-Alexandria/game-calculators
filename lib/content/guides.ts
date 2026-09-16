@@ -44,6 +44,7 @@ const SNIPPET_EDITOR_SKIP = new Set<string>([
   "goddessTheater",
   "heroLinking",
   "anecdotes",
+  "serverAgeUnlocks",
 ]);
 
 export function guideHasSnippetEditor(id: string): boolean {

@@ -4,9 +4,21 @@
       "id": "day-1",
       "day": 1,
       "events": [
-        { "id": "glorious-civilization", "name": "Glorious Civilization", "oneTime": true },
-        { "id": "battlefield-campaign", "name": "Battlefield Campaign", "oneTime": true },
-        { "id": "server-day-launch-fest", "name": "Server Day Launch Fest", "oneTime": true }
+        {
+          "id": "glorious-civilization",
+          "name": "Glorious Civilization",
+          "oneTime": true
+        },
+        {
+          "id": "battlefield-campaign",
+          "name": "Battlefield Campaign",
+          "oneTime": true
+        },
+        {
+          "id": "server-day-launch-fest",
+          "name": "Server Day Launch Fest",
+          "oneTime": true
+        }
       ]
     },
     {
@@ -19,14 +31,20 @@
           "detail": "Genesis Relic",
           "oneTime": true
         },
-        { "id": "imperial-invasion", "name": "Imperial Invasion" }
+        {
+          "id": "imperial-invasion",
+          "name": "Imperial Invasion"
+        }
       ]
     },
     {
       "id": "day-3",
       "day": 3,
       "events": [
-        { "id": "mushroom-adventure", "name": "Mushroom Adventure" },
+        {
+          "id": "mushroom-adventure",
+          "name": "Mushroom Adventure"
+        },
         {
           "id": "goddess-of-time",
           "name": "Goddess of Time",
@@ -37,16 +55,28 @@
           "name": "Guild Boss",
           "detail": "Northern Enemy"
         },
-        { "id": "holy-grail", "name": "Holy Grail" },
-        { "id": "merchant-sea", "name": "Merchant Sea" }
+        {
+          "id": "holy-grail",
+          "name": "Holy Grail"
+        },
+        {
+          "id": "merchant-sea",
+          "name": "Merchant Sea"
+        }
       ]
     },
     {
       "id": "day-5",
       "day": 5,
       "events": [
-        { "id": "sovereigns-spire", "name": "Sovereign's Spire" },
-        { "id": "crown-glory", "name": "Crown Glory" }
+        {
+          "id": "sovereigns-spire",
+          "name": "Sovereign's Spire"
+        },
+        {
+          "id": "crown-glory",
+          "name": "Crown Glory"
+        }
       ]
     },
     {
@@ -80,7 +110,10 @@
           "detail": "Humanities Shovel Unlock",
           "oneTime": true
         },
-        { "id": "knights-ascent", "name": "Knights' Ascent" }
+        {
+          "id": "knights-ascent",
+          "name": "Knights' Ascent"
+        }
       ]
     },
     {
@@ -92,7 +125,10 @@
           "name": "Legend of Serenissima",
           "detail": "Civilization Evolution"
         },
-        { "id": "supply-reform", "name": "Supply Reform" },
+        {
+          "id": "supply-reform",
+          "name": "Supply Reform"
+        },
         {
           "id": "dawn-of-rome",
           "name": "Dawn of Rome",
@@ -116,7 +152,10 @@
       "id": "day-12",
       "day": 12,
       "events": [
-        { "id": "monument-of-eternity", "name": "Monument of Eternity" }
+        {
+          "id": "monument-of-eternity",
+          "name": "Monument of Eternity"
+        }
       ]
     },
     {
@@ -205,7 +244,12 @@
     {
       "id": "day-38",
       "day": 38,
-      "events": [{ "id": "spring-returns", "name": "Spring Returns" }]
+      "events": [
+        {
+          "id": "spring-returns",
+          "name": "Spring Returns"
+        }
+      ]
     },
     {
       "id": "day-40",
@@ -223,8 +267,14 @@
       "id": "around-day-40",
       "label": "Somewhere in this patch…",
       "events": [
-        { "id": "astral-wonderland", "name": "Astral Wonderland" },
-        { "id": "duel-festival", "name": "Duel Festival" }
+        {
+          "id": "astral-wonderland",
+          "name": "Astral Wonderland"
+        },
+        {
+          "id": "duel-festival",
+          "name": "Duel Festival"
+        }
       ]
     },
     {
@@ -242,7 +292,10 @@
       "id": "day-60-70",
       "label": "Day 60–70ish",
       "events": [
-        { "id": "cross-server-merging", "name": "Cross-Server Merging" }
+        {
+          "id": "cross-server-merging",
+          "name": "Cross-Server Merging"
+        }
       ]
     },
     {
@@ -258,7 +311,10 @@
     }
   ],
   "unconfirmed": [
-    { "id": "road-to-the-cup", "name": "Road to the Cup" },
+    {
+      "id": "road-to-the-cup",
+      "name": "Road to the Cup"
+    },
     {
       "id": "heart-of-gold",
       "name": "Heart of Gold",
@@ -289,8 +345,17 @@
       "name": "Race to Civilization / Great Flood",
       "detail": "Between day 12 and 35"
     },
-    { "id": "genie", "name": "Genie" },
-    { "id": "ring-toss", "name": "Ring Toss" },
-    { "id": "shopping-cart", "name": "Shopping Cart" }
+    {
+      "id": "genie",
+      "name": "Genie"
+    },
+    {
+      "id": "ring-toss",
+      "name": "Ring Toss"
+    },
+    {
+      "id": "shopping-cart",
+      "name": "Shopping Cart"
+    }
   ]
 }
