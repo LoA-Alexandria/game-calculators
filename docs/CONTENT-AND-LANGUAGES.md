@@ -1,7 +1,7 @@
 # Content and languages
 
-The site is organised into five sections — News, Events, Guides, Calculators,
-and Simulations — and speaks English, German, and French. Both the navigation
+The site is organised into five sections â€” News, Events, Guides, Calculators,
+and Simulations â€” and speaks English, German, and French. Both the navigation
 and the translations are driven by data, so adding an entry or a language does
 not mean touching the layout.
 
@@ -14,8 +14,8 @@ lib/i18n/dictionaries/fr.ts   French
 lib/i18n/index.ts             language registry, negotiation, {placeholder} filling
 lib/i18n/translations.ts      text kept in every language at once (editors)
 app/components/EditorLanguages.tsx  language fields, toggle, and export blocks for all editors
-scripts/add-language.mjs      pnpm i18n:add — adds a language
-scripts/i18n-report.mjs       pnpm i18n:report — lists what is still untranslated
+scripts/add-language.mjs      pnpm i18n:add â€” adds a language
+scripts/i18n-report.mjs       pnpm i18n:report â€” lists what is still untranslated
 lib/navigation.ts             the section tree: sidebar and indexes
 lib/content/news.ts           news entries (dates and links only; text is in the dictionaries)
 lib/content/banners.ts        optional images for the section banners
@@ -33,14 +33,14 @@ There is one set of URLs for all languages.
 always carries English. A reader with German stored sees one frame of English
 before the page settles, a German page cannot be shared as a German link, and
 search engines index the English text only. If that becomes a problem, move the
-pages under `app/[locale]/` and generate one copy per language — every string is
+pages under `app/[locale]/` and generate one copy per language â€” every string is
 already in a dictionary, so the pages themselves would barely change.
 
 ## Adding a language
 
 ```sh
-pnpm i18n:add es "Español"
-pnpm i18n:add pt-BR "Português (Brasil)" --short PT --html-lang pt-BR
+pnpm i18n:add es "EspaÃ±ol"
+pnpm i18n:add pt-BR "PortuguÃªs (Brasil)" --short PT --html-lang pt-BR
 ```
 
 The command copies `lib/i18n/dictionaries/en.ts` to `<code>.ts`, typed as
@@ -157,13 +157,12 @@ A guide that needs more than headings and paragraphs gets its own renderer next
 to `GuideArticle`: `GoddessesGuide`, `ArtworkGuide`, `ArtworkLayoutsGuide`,
 `HeroLayoutsGuide`, `HeroRoster`, `HeroTierListGuide`, `GoddessTheaterGuide`,
 `HeroLinkingGuide`, `AnecdotesGuide`, `ServerAgeUnlocksGuide`, `MuseionGuide`,
-`HeroLevelingGuide`, and `ProductionBuildingsGuide`.
+`HeroLevelingGuide`, `ProductionBuildingsGuide`, and `CryptidesGuide`.
 `guideLayout()` in `lib/content/guides.ts` picks the renderer from a field only
 that guide has (`phases` for Goddesses, `playsHeading` for Goddess Theater,
 `linksHeading` for Hero linking, `anecdoteTexts` for Anecdotes,
 `timelineHeading` for Server age unlocks, `buildingsHeading` for Museion,
-`focusHeading` for Hero leveling, `requirementsHeading` for production
-buildings, before
+`focusHeading` for Hero leveling, `requirementsHeading` for production`nbuildings, `cryptidesHeading` for Cryptides, before
 `filterAll` for Heroes), and
 `tests/guides.test.mjs` pins every entry, so two guides cannot claim the same
 renderer by sharing a field name. Keep `sections` and `note` in those entries
@@ -209,7 +208,7 @@ Members with `guides.draft` see **Edit builds** in the guide head, which opens
 `/guides/hero-layouts/edit/`:
 
 - **Hero pool** (beside the builds, above them on a phone): heroes from Core
-  elements › Heroes. By default it shows only heroes that are not in the layout
+  elements â€º Heroes. By default it shows only heroes that are not in the layout
   yet; it can also show heroes missing from the selected build, or all heroes,
   filtered by rarity or name. Drag a hero into any zone, or tap **Key**,
   **Important**, or **Other** to add it to the selected build.
@@ -234,7 +233,7 @@ The Heroes roster spells some heroes differently from the layouts and the tier
 list ("Isaac Newton" for Newton, "Livia Drusilla" for Livia).
 `lib/content/hero-names.ts` maps them, so the pool does not offer a hero that is
 already placed under the other spelling. Remove an entry there once the roster
-and the guides agree — Gawain lost his entry that way, after the obtain guide
+and the guides agree â€” Gawain lost his entry that way, after the obtain guide
 confirmed the spelling the other guides already used.
 
 ## Editing the hero tier list
@@ -250,7 +249,7 @@ the top of the page is hidden here.
   bonus, note, or reason, or to remove it. **Add hero** sits at the end of every
   tier.
 - A text the dictionaries do not have yet (a new effect, note, or reason) can be
-  typed in English, German, and French from the **New text…** option.
+  typed in English, German, and French from the **New textâ€¦** option.
 - **Quality** is the rarity a placement is rated at, for heroes whose rarity
   changes in the game. Joan of Arc is SS at UR+ and S at UR, so each entry sets
   its own `rarity` and gets that frame (UR+ with the glow, UR red, SSR gold) and
@@ -293,7 +292,7 @@ the top of the page is hidden here.
   start empty or copy an existing one. The last remaining build cannot be
   deleted.
 - A text the dictionaries do not have yet (a new build name, note, or reason)
-  can be typed in English, German, and French from the **New text…** option.
+  can be typed in English, German, and French from the **New textâ€¦** option.
 
 The draft is saved in that browser only
 (`localStorage['popepoch-artwork-layout-draft']`). **Export** produces:
@@ -316,13 +315,13 @@ page is hidden here.
   or paintings.
 - **Add set** / **Add painting** create empty rows. **Add a hero** lists the
   Heroes roster that is not already on that canvas, grouped by rarity.
-- Autumn’s catalogue has no UR+ heroes except Joan of Arc; the export dialog
+- Autumnâ€™s catalogue has no UR+ heroes except Joan of Arc; the export dialog
   warns if a UR+ name is attached.
 - **Picture** takes the painting from the game without its frame. It is shrunk
   to 480 px WebP in the browser and exported as `public/artwork/<id>.webp`.
 - **Original title**, **Artist**, and **Year** (with **approximate**) name the
   real artwork the painting is based on. The English original only goes into
-  the JSON when the game renames the work (Nightshade is Hopper’s
+  the JSON when the game renames the work (Nightshade is Hopperâ€™s
   *Nighthawks*); every language can have its own original title. Leave them
   empty when the picture or the title does not settle which work it is.
 
@@ -356,8 +355,8 @@ Heroes as well.
   **new** or **changed** in the draft. Select one to edit their name, rarity,
   obtain text, abilities, and artifact, or to move them within their rarity.
 - **Languages**: name, rarity, and pictures are the same everywhere and stay in
-  `lib/data/heroes.json`. The wording the game shows — obtain note, ability
-  names, level texts, artifact — is translated, so those fields appear once per
+  `lib/data/heroes.json`. The wording the game shows â€” obtain note, ability
+  names, level texts, artifact â€” is translated, so those fields appear once per
   language: English plus the language the page is in, or every language with
   **Edit all languages**. English is what goes into the JSON; a blank
   translation shows the English text as its placeholder, because that is what a
@@ -365,7 +364,7 @@ Heroes as well.
   translation moved.
 - **Abilities**: every hero has exactly three, a **Skill**, a **Buff**, and a
   **Production** bonus. Each holds a name and one text per level (Lv. 1, Lv. 2,
-  …). **Add Lv. N** copies the level before it, so only the numbers need
+  â€¦). **Add Lv. N** copies the level before it, so only the numbers need
   changing. A level may stay empty when its text is not known yet (Cleopatra's
   Lv. 1). Empty slots are left out of the export. On the Heroes page, each
   ability is a card with a level slider, and the numbers that changed since
@@ -400,7 +399,7 @@ which is enough for dozens of pictures. The editor tells you when it is full.
 
 An untouched draft exports the published file and every dictionary block byte
 for byte (`tests/hero-editor.test.mjs`). `tests/heroes.test.mjs` checks the
-roster against the folder — every listed file exists and no file is left over —
+roster against the folder â€” every listed file exists and no file is left over â€”
 and that each `heroTexts` key is a hero in the roster.
 
 The portraits in `public/heroes/` were saved from the Pop Epoch Wiki rarity
@@ -507,7 +506,7 @@ Members with `guides.draft` see **Edit linking** in the guide head, which opens
   rarity and without the heroes that list already has, so the same hero cannot
   be added twice. A new link takes the next free step of its track.
 - **Track** and **Step** are what the guide groups and numbers by. Two heroes on
-  the same step of one track would both claim to be “#1”, so the export warns.
+  the same step of one track would both claim to be â€œ#1â€, so the export warns.
 - **Position** in the link order is what the advice is: the first hero is the
   one to spend a single link on, the second is next, and so on.
 - **Note** is optional prose beside a hero, not game data, so it lives in the
@@ -520,7 +519,7 @@ Members with `guides.draft` see **Edit linking** in the guide head, which opens
 
 The draft is saved in that browser only
 (`localStorage['popepoch-linking-draft']`). **Export** produces the complete
-`lib/data/hero-linking.json` — links sorted by track, then step — and one
+`lib/data/hero-linking.json` â€” links sorted by track, then step â€” and one
 `linkTexts` block per dictionary to paste under `guideEntries.heroLinking`. An
 untouched draft reproduces the published file and all three blocks byte for
 byte.
@@ -581,7 +580,7 @@ Members with `guides.draft` see **Edit priorities** in the guide head, which ope
 (`localStorage['popepoch-leveling-draft']`). **Export** produces the complete
 JSON and one `heroNotes` block per dictionary. An untouched draft reproduces
 the published file byte for byte (`tests/hero-leveling.test.mjs`).
-Source: Boah’s Discord list, with Autumn’s addendum (Ice, S12), 6 August 2026.
+Source: Boahâ€™s Discord list, with Autumnâ€™s addendum (Ice, S12), 6 August 2026.
 
 ## Production building resource requirements
 
@@ -601,6 +600,23 @@ Building pictures in `public/production-buildings/` were cut from German client
 screenshots on 16 September 2026, with speech bubbles and other UI overlays
 removed (`image` on each JSON row). Coal has no picture yet.
 Source: community Discord list; Enlightenment entries thanks to Spitzell.
+
+## Cryptides
+
+Cryptides sits under **Core elements**. Structured rows (tower, talent material,
+skills, foods, image paths) live in `lib/data/cryptides.json`. Readable names,
+skill bodies, feed names, Tower labels, and talent copy live in
+`guideEntries.cryptides` (`cryptideTexts` is sparse per language). The guide
+renderer is `CryptidesGuide` (detector `cryptidesHeading`). Portraits and icons
+are WebP crops under `public/cryptides/`.
+
+Talent rules encoded in the JSON: unlock costs `unlockCost` of that Cryptide's
+summon material; the Tower drops `dropAmount` every `dropEveryLevels` levels.
+Mapping: Cerberus → Pike / Bell, Nidhogg → Bow / Branch, Caladrius → Shield /
+Potion, Sleipnir → Horse / Grass.
+Source: in-game screenshots (16 September 2026); talent material map from the
+same pass.
+
 
 ## Editing anecdotes
 
@@ -651,7 +667,7 @@ same change as the tool that relies on them.
 
 ## Adding an event
 
-Events are versioned data, not database rows — the same reason news is. An entry
+Events are versioned data, not database rows â€” the same reason news is. An entry
 typed into a browser on a static site would exist only in that browser, so
 committing it is what makes it visible.
 
@@ -673,7 +689,7 @@ deriving it from each reader's clock would show different answers.
 
 1. Open `/news/new/` signed in with `news.write`. The editor prints both the row
    and the dictionary block. Existing entries on `/news/` have Edit and Remove,
-   which load that row or print the deletion notes — the same pattern as events.
+   which load that row or print the deletion notes â€” the same pattern as events.
 2. Add or replace the row in `NEWS` in `lib/content/news.ts` with an ISO date and,
    optionally, an `href` to the thing the entry is about.
 3. Write or update the text under `newsEntries.<id>` in all three dictionaries
@@ -700,13 +716,13 @@ guide title.
 
 Calculation errors carry a `code` and its parameters (`lib/calculators/errors.ts`).
 The interface turns that into a sentence with `useCalculatorError()`. The English
-`message` on the error stays exactly as it was — the calculation tests assert on
-it — so never reword one without updating `tests/` in the same change.
+`message` on the error stays exactly as it was â€” the calculation tests assert on
+it â€” so never reword one without updating `tests/` in the same change.
 
 Adding a new validation:
 
 1. Add the code to `CalculatorErrorCode`.
-2. Throw `new CalculatorError("<code>", "<English message>", { …params })`.
+2. Throw `new CalculatorError("<code>", "<English message>", { â€¦params })`.
 3. Add `errors.<code>` to all three dictionaries, using the same `{placeholders}`.
 
 ## Names that need a second pair of eyes

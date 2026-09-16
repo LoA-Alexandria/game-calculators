@@ -45,3 +45,6 @@ next-env.d.ts
 
 # Supabase CLI local project metadata
 /supabase/.temp/
+
+# local crop scratch
+.tmp-cryptid/

@@ -1017,19 +1017,139 @@ const de: Dictionary = {
     },
     cryptides: {
       title: "Cryptides",
-      summary: "Cryptides fangen und aufziehen — die Tabellen werden noch geschrieben.",
+      summary: "SSR-Cryptides, ihre Skills und Futter sowie welche Tower-Materialien Talente freischalten.",
       intro:
-        "Cryptides sind die Kryptiden, die du sammelst und aufziehst. Diese Seite hält den Kernelemente-Platz, bis Fangorte und Wachstumstabellen hier versioniert sind.",
+        "Cryptides sind die Kreaturen, die du für Cryptid-Kämpfe aufziehst. Jede hat drei Skills, drei Futterarten für Wachstum und einen Cryptid-Tower, der das Material für Freischaltung und Talent-Upgrades droppt.",
+      cryptidesHeading: "Cryptides",
+      cryptidesLede: "Suche nach Name, Skill, Futter oder Tower. Porträts und Icons stammen aus Spiel-Screenshots.",
+      searchLabel: "Cryptides suchen",
+      searchPlaceholder: "Cryptide, Skill oder Futter…",
+      countLabel: "{count} angezeigt",
+      empty: "Kein Cryptide passt zu dieser Suche.",
+      skillsHeading: "Skills",
+      skillRankLabel: "#{rank}",
+      foodsHeading: "Futter",
+      foodGrowth: "+{growth} Wachstum",
+      talentHeading: "Cryptid-Talente",
+      talentLede:
+        "Talent-Upgrades brauchen ein Beschwörungsmaterial vom Tower des Cryptides. Dasselbe Material schaltet den Cryptide auch frei.",
+      talentUnlock: "Du brauchst {count} Stück des Beschwörungsmaterials, um den Cryptide freizuschalten.",
+      talentDrop: "Alle {levels} Tower-Stufen droppen {count} Materialien.",
+      towerLine: "{tower}-Tower — {material}",
+      towers: {
+        pike: "Speer",
+        bow: "Bogen",
+        shield: "Schild",
+        horse: "Pferd",
+      },
+      talentMaterials: {
+        bell: "Glocke",
+        branch: "Zweig",
+        potion: "Trank",
+        grass: "Gras",
+      },
+      cryptideTexts: {
+        nidhogg: {
+          name: "Nidhöggr",
+          skills: {
+            "fireball-hail": {
+              name: "Feuerballhagel",
+              body: "Nidhöggr verursacht Kryptid-Schaden in Höhe von 200% des ANG der Verbündeten und verleiht allen Verbündeten [Strategische Kalkulation] (Auslösechance von Fähigkeiten der Vorderreihe +100% für 3 Runden).",
+            },
+            "charged-dragon-breath": {
+              name: "Geladener Drachenhauch",
+              body: "Nachdem Nidhöggr Schaden verursacht hat, steigt der Fähigkeitskoeffizient der Verbündeten für 2 Runden um 25%.",
+            },
+            "ash-breath": {
+              name: "Ascheatem",
+              body: "Nachdem Nidhöggr Schaden verursacht hat, sinkt die endgültige Gesamtschadensreduktion des Gegners für 2 Runden um 15%.",
+            },
+          },
+          foods: {
+            "meat-with-bones": { name: "Fleisch mit Knochen" },
+            ribs: { name: "Rippchen" },
+            "asgard-tribute-meat": { name: "Asgardisches Tributfleisch" },
+          },
+        },
+        caladrius: {
+          name: "Caladrius",
+          skills: {
+            "bubble-shield": {
+              name: "Blasenschild",
+              body: "Caladrius verleiht Verbündeten einen Schild in Höhe von 30% ihrer max. LP und erhöht ihre Fähigkeitsschadensreduktion für 3 Runden um 20%.",
+            },
+            "feather-dance": {
+              name: "Federtanz",
+              body: "Wenn Caladrius Verbündeten einen Schild gibt, sinkt der ANG-Bonus des Gegners für 2 Runden um 10%.",
+            },
+            "holy-protection": {
+              name: "Heiliger Schutz",
+              body: "Caladrius verleiht für 3 Runden einen Schild; wenn Verbündete Schaden erleiden, heilen sie 8% ihrer max. LP.",
+            },
+          },
+          foods: {
+            "healing-tomato": { name: "Heilende Tomate" },
+            "flying-eggplant": { name: "Fliegende Aubergine" },
+            "mandrake-tomato": { name: "Alraunen-Tomate" },
+          },
+        },
+        cerberus: {
+          name: "Kerberos",
+          skills: {
+            "nether-barrage": {
+              name: "Netherbeschuss",
+              body: "Kerberos verursacht Kryptid-Schaden in Höhe von 200% des ANG der Verbündeten und erhöht den Fähigkeitsschadensbonus für 3 Runden um 20%.",
+            },
+            "hell-fork": {
+              name: "Höllengabel",
+              body: "Nachdem Kerberos Schaden verursacht hat, sinkt die Fähigkeitsschadensreduktion des Gegners für 2 Runden um 20%.",
+            },
+            "purgatory-tear": {
+              name: "Fegefeuer-Träne",
+              body: "Verursacht Kryptid-Schaden in Höhe von 10% der max. LP der Feinde (begrenzt auf 100% des ANG der Verbündeten).",
+            },
+          },
+          foods: {
+            "juicy-bbq": { name: "Saftiges BBQ" },
+            "deluxe-bbq": { name: "Deluxe BBQ" },
+            "underworld-bbq": { name: "Unterwelt-BBQ" },
+          },
+        },
+        sleipnir: {
+          name: "Sleipnir",
+          skills: {
+            "healing-pulse": {
+              name: "Heilpuls",
+              body: "Heilt Verbündete um 30% ihrer max. LP und verleiht [Reflexion] (20% des Fähigkeits-/Extraschadens für 3 Runden reflektieren).",
+            },
+            "electromagnetic-interference": {
+              name: "Elektromagnetische Störung",
+              body: "Nachdem Sleipnir heilt, werden 2 Buff(s) von Feinden entfernt.",
+            },
+            "thunder-field": {
+              name: "Donnerfeld",
+              body: "Nachdem Sleipnir heilt, werden 2 Debuff(s) von Verbündeten entfernt.",
+            },
+          },
+          foods: {
+            "fresh-grass": { name: "Frisches Gras" },
+            "morning-dew-grass": { name: "Morgentau-Gras" },
+            "thunder-grass": { name: "Donnergras" },
+          },
+        },
+      },
+      credit:
+        "Porträts, Skills und Futter-Icons aus Spiel-Screenshots (16. September 2026). Talent-Materialien: Kerberos / Speer / Glocke, Nidhöggr / Bogen / Zweig, Caladrius / Schild / Trank, Sleipnir / Pferd / Gras.",
       sections: [
         {
-          heading: "Was dieser Guide abdecken wird",
+          heading: "So funktioniert Füttern",
           body: [
-            "Wo jeder Cryptide auftaucht, wie er wächst und welche Boni den Fang lohnen.",
-            "Bis diese Zeilen geprüft sind, ist diese Seite der Kategorie-Eintrag, kein vollständiges Bestiarium.",
+            "Jeder Cryptide frisst nur sein eigenes Futter. Füttern erhöht das Wachstum; die drei Futtersorten geben +10, +30 und +100 Wachstum pro Einsatz.",
+            "Skills schalten sich frei und verbessern sich mit dem Wachstum. Die genauen Werte je Skillstufe stehen im Spiel — hier stehen die Basisbeschreibungen der Skillkarten.",
           ],
         },
       ],
-      note: "Cryptide-Orte und Wachstumstabellen kommen in einer späteren Änderung.",
+      note: "Skillwerte stammen aus Screenshots des deutschen Clients. Korrekturen gern im Discord melden, falls auf deinem Server etwas abweicht.",
     },
     goddessTheater: {
       title: "Göttinnen-Theater",

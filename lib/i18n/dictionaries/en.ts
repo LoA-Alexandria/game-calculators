@@ -808,19 +808,139 @@ const en = {
     },
     cryptides: {
       title: "Cryptides",
-      summary: "Catching and raising Cryptides — the tables are still being written.",
+      summary: "SSR Cryptides, their skills and feed foods, and which Tower materials unlock talents.",
       intro:
-        "Cryptides are the cryptid creatures you collect and raise. This page holds the Core elements slot until catch locations and growth tables are versioned here.",
+        "Cryptides are the creatures you raise for Cryptid battles. Each one has three skills, three feed foods that raise growth, and a Cryptid Tower that drops the material used to unlock and upgrade its talents.",
+      cryptidesHeading: "Cryptides",
+      cryptidesLede: "Search by name, skill, food, or Tower. Portraits and icons are cropped from in-game screenshots.",
+      searchLabel: "Search Cryptides",
+      searchPlaceholder: "Cryptide, skill, or food…",
+      countLabel: "{count} shown",
+      empty: "No Cryptide matches that search.",
+      skillsHeading: "Skills",
+      skillRankLabel: "#{rank}",
+      foodsHeading: "Feed",
+      foodGrowth: "+{growth} growth",
+      talentHeading: "Cryptid talents",
+      talentLede:
+        "Talent upgrades use a summon material tied to each Cryptide’s Tower. The material also unlocks the Cryptide itself.",
+      talentUnlock: "Need {count} of the Cryptide’s summon material to unlock it.",
+      talentDrop: "{count} materials drop every {levels} levels of that Cryptide’s Tower.",
+      towerLine: "{tower} Tower — {material}",
+      towers: {
+        pike: "Pike",
+        bow: "Bow",
+        shield: "Shield",
+        horse: "Horse",
+      },
+      talentMaterials: {
+        bell: "Bell",
+        branch: "Branch",
+        potion: "Potion",
+        grass: "Grass",
+      },
+      cryptideTexts: {
+        nidhogg: {
+          name: "Nidhogg",
+          skills: {
+            "fireball-hail": {
+              name: "Fireball Hail",
+              body: "Nidhogg deals Cryptid damage equal to 200% of allies’ ATK and grants all allies [Strategic Calculation] (front-row heroes’ skill trigger chance +100% for 3 rounds).",
+            },
+            "charged-dragon-breath": {
+              name: "Charged Dragon Breath",
+              body: "After Nidhogg deals damage, allies’ skill coefficient increases by 25% for 2 rounds.",
+            },
+            "ash-breath": {
+              name: "Ash Breath",
+              body: "After Nidhogg deals damage, the enemy’s final total damage reduction falls by 15% for 2 rounds.",
+            },
+          },
+          foods: {
+            "meat-with-bones": { name: "Meat with Bones" },
+            ribs: { name: "Ribs" },
+            "asgard-tribute-meat": { name: "Asgard Tribute Meat" },
+          },
+        },
+        caladrius: {
+          name: "Caladrius",
+          skills: {
+            "bubble-shield": {
+              name: "Bubble Shield",
+              body: "Caladrius grants allies a shield equal to 30% of their max HP and raises their skill damage reduction by 20% for 3 rounds.",
+            },
+            "feather-dance": {
+              name: "Feather Dance",
+              body: "When Caladrius grants a shield to allies, the enemy’s ATK bonus falls by 10% for 2 rounds.",
+            },
+            "holy-protection": {
+              name: "Holy Protection",
+              body: "Caladrius grants a shield for 3 rounds; when allies take damage, they heal for 8% of max HP.",
+            },
+          },
+          foods: {
+            "healing-tomato": { name: "Healing Tomato" },
+            "flying-eggplant": { name: "Flying Eggplant" },
+            "mandrake-tomato": { name: "Mandrake Tomato" },
+          },
+        },
+        cerberus: {
+          name: "Cerberus",
+          skills: {
+            "nether-barrage": {
+              name: "Nether Barrage",
+              body: "Cerberus deals Cryptid damage equal to 200% of allies’ ATK and raises skill damage bonus by 20% for 3 rounds.",
+            },
+            "hell-fork": {
+              name: "Hell Fork",
+              body: "After Cerberus deals damage, the enemy’s skill damage reduction falls by 20% for 2 rounds.",
+            },
+            "purgatory-tear": {
+              name: "Purgatory Tear",
+              body: "Deals Cryptid damage equal to 10% of enemies’ max HP (capped at 100% of allies’ ATK).",
+            },
+          },
+          foods: {
+            "juicy-bbq": { name: "Juicy BBQ" },
+            "deluxe-bbq": { name: "Deluxe BBQ" },
+            "underworld-bbq": { name: "Underworld BBQ" },
+          },
+        },
+        sleipnir: {
+          name: "Sleipnir",
+          skills: {
+            "healing-pulse": {
+              name: "Healing Pulse",
+              body: "Heals allies for 30% of max HP and grants [Reflection] (reflect 20% of skill / extra damage for 3 rounds).",
+            },
+            "electromagnetic-interference": {
+              name: "Electromagnetic Interference",
+              body: "After Sleipnir heals, remove 2 buff(s) from enemies.",
+            },
+            "thunder-field": {
+              name: "Thunder Field",
+              body: "After Sleipnir heals, remove 2 debuff(s) from allies.",
+            },
+          },
+          foods: {
+            "fresh-grass": { name: "Fresh Grass" },
+            "morning-dew-grass": { name: "Morning Dew Grass" },
+            "thunder-grass": { name: "Thunder Grass" },
+          },
+        },
+      },
+      credit:
+        "Portraits, skills, and feed icons cropped from in-game screenshots (16 September 2026). Talent material map: Cerberus / Pike / Bell, Nidhogg / Bow / Branch, Caladrius / Shield / Potion, Sleipnir / Horse / Grass.",
       sections: [
         {
-          heading: "What this guide will cover",
+          heading: "How feeding works",
           body: [
-            "Where each Cryptide appears, how it grows, and which bonuses are worth the catch.",
-            "Until those rows are checked, this page is the category entry rather than a complete bestiary.",
+            "Each Cryptide eats only its own foods. Feeding raises growth; the three foods give +10, +30, and +100 growth per use.",
+            "Skills unlock and improve as the Cryptide grows. Check the in-game preview for the exact values at each skill level — the texts here are the base descriptions from the skill cards.",
           ],
         },
       ],
-      note: "Cryptide locations and growth tables will be added in a later change.",
+      note: "Skill values are read from the German client screenshots and translated. Bring a correction to Discord if a number differs on your server.",
     },
     goddessTheater: {
       title: "Goddess Theater",

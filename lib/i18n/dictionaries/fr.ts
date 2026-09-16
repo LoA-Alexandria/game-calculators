@@ -959,19 +959,139 @@ const fr: Dictionary = {
     },
     cryptides: {
       title: "Cryptides",
-      summary: "Attraper et élever les Cryptides — les tableaux sont encore en rédaction.",
+      summary: "Cryptides SSR, leurs compétences et nourritures, et quels matériaux de Tour débloquent les talents.",
       intro:
-        "Les Cryptides sont les créatures cryptides que vous collectionnez et élevez. Cette page tient l’emplacement Éléments fondamentaux jusqu’à ce que lieux de capture et tables de croissance soient versionnés ici.",
+        "Les Cryptides sont les créatures que vous élevez pour les combats Cryptid. Chacune a trois compétences, trois nourritures qui augmentent la croissance, et une Tour Cryptid qui drop le matériau pour débloquer et améliorer ses talents.",
+      cryptidesHeading: "Cryptides",
+      cryptidesLede: "Cherchez par nom, compétence, nourriture ou Tour. Portraits et icônes sont découpés de captures d’écran.",
+      searchLabel: "Rechercher les Cryptides",
+      searchPlaceholder: "Cryptide, compétence ou nourriture…",
+      countLabel: "{count} affichés",
+      empty: "Aucun Cryptide ne correspond à cette recherche.",
+      skillsHeading: "Compétences",
+      skillRankLabel: "#{rank}",
+      foodsHeading: "Nourriture",
+      foodGrowth: "+{growth} de croissance",
+      talentHeading: "Talents Cryptid",
+      talentLede:
+        "Les améliorations de talent utilisent un matériau d’invocation lié à la Tour de chaque Cryptide. Le même matériau débloque aussi le Cryptide.",
+      talentUnlock: "Il faut {count} du matériau d’invocation du Cryptide pour le débloquer.",
+      talentDrop: "{count} matériaux droppent tous les {levels} niveaux de sa Tour.",
+      towerLine: "Tour {tower} — {material}",
+      towers: {
+        pike: "Pique",
+        bow: "Arc",
+        shield: "Bouclier",
+        horse: "Cheval",
+      },
+      talentMaterials: {
+        bell: "Cloche",
+        branch: "Branche",
+        potion: "Potion",
+        grass: "Herbe",
+      },
+      cryptideTexts: {
+        nidhogg: {
+          name: "Nidhogg",
+          skills: {
+            "fireball-hail": {
+              name: "Grêle de boules de feu",
+              body: "Nidhogg inflige des dégâts Cryptid égaux à 200 % de l’ATQ des alliés et confère à tous les alliés [Calcul stratégique] (chance de déclenchement des compétences de la ligne de front +100 % pendant 3 tours).",
+            },
+            "charged-dragon-breath": {
+              name: "Souffle de dragon chargé",
+              body: "Après que Nidhogg inflige des dégâts, le coefficient de compétence des alliés augmente de 25 % pendant 2 tours.",
+            },
+            "ash-breath": {
+              name: "Souffle de cendre",
+              body: "Après que Nidhogg inflige des dégâts, la réduction de dégâts totale finale de l’ennemi baisse de 15 % pendant 2 tours.",
+            },
+          },
+          foods: {
+            "meat-with-bones": { name: "Viande avec os" },
+            ribs: { name: "Côtes" },
+            "asgard-tribute-meat": { name: "Viande tribut d’Asgard" },
+          },
+        },
+        caladrius: {
+          name: "Caladrius",
+          skills: {
+            "bubble-shield": {
+              name: "Bouclier de bulles",
+              body: "Caladrius confère aux alliés un bouclier égal à 30 % de leurs PV max et augmente leur réduction de dégâts de compétence de 20 % pendant 3 tours.",
+            },
+            "feather-dance": {
+              name: "Danse des plumes",
+              body: "Quand Caladrius confère un bouclier aux alliés, le bonus d’ATQ de l’ennemi baisse de 10 % pendant 2 tours.",
+            },
+            "holy-protection": {
+              name: "Protection sacrée",
+              body: "Caladrius confère un bouclier pendant 3 tours ; quand les alliés subissent des dégâts, ils soignent 8 % de leurs PV max.",
+            },
+          },
+          foods: {
+            "healing-tomato": { name: "Tomate curative" },
+            "flying-eggplant": { name: "Aubergine volante" },
+            "mandrake-tomato": { name: "Tomate mandragore" },
+          },
+        },
+        cerberus: {
+          name: "Cerbère",
+          skills: {
+            "nether-barrage": {
+              name: "Barrage du Néant",
+              body: "Cerbère inflige des dégâts Cryptid égaux à 200 % de l’ATQ des alliés et augmente le bonus de dégâts de compétence de 20 % pendant 3 tours.",
+            },
+            "hell-fork": {
+              name: "Fourche infernale",
+              body: "Après que Cerbère inflige des dégâts, la réduction de dégâts de compétence de l’ennemi baisse de 20 % pendant 2 tours.",
+            },
+            "purgatory-tear": {
+              name: "Larme du purgatoire",
+              body: "Inflige des dégâts Cryptid égaux à 10 % des PV max des ennemis (plafonnés à 100 % de l’ATQ des alliés).",
+            },
+          },
+          foods: {
+            "juicy-bbq": { name: "BBQ juteux" },
+            "deluxe-bbq": { name: "BBQ deluxe" },
+            "underworld-bbq": { name: "BBQ des Enfers" },
+          },
+        },
+        sleipnir: {
+          name: "Sleipnir",
+          skills: {
+            "healing-pulse": {
+              name: "Impulsion curative",
+              body: "Soigne les alliés de 30 % des PV max et confère [Réflexion] (renvoie 20 % des dégâts de compétence / supplémentaires pendant 3 tours).",
+            },
+            "electromagnetic-interference": {
+              name: "Interférence électromagnétique",
+              body: "Après que Sleipnir soigne, retire 2 buff(s) des ennemis.",
+            },
+            "thunder-field": {
+              name: "Champ de tonnerre",
+              body: "Après que Sleipnir soigne, retire 2 debuff(s) des alliés.",
+            },
+          },
+          foods: {
+            "fresh-grass": { name: "Herbe fraîche" },
+            "morning-dew-grass": { name: "Herbe de rosée" },
+            "thunder-grass": { name: "Herbe de tonnerre" },
+          },
+        },
+      },
+      credit:
+        "Portraits, compétences et icônes de nourriture découpés de captures d’écran (16 septembre 2026). Matériaux de talent : Cerbère / Pique / Cloche, Nidhogg / Arc / Branche, Caladrius / Bouclier / Potion, Sleipnir / Cheval / Herbe.",
       sections: [
         {
-          heading: "Ce que ce guide couvrira",
+          heading: "Comment fonctionne la nourriture",
           body: [
-            "Où chaque Cryptide apparaît, comment il grandit, et quels bonus valent la capture.",
-            "Tant que ces lignes ne sont pas vérifiées, cette page est l’entrée de catégorie, pas un bestiaire complet.",
+            "Chaque Cryptide ne mange que ses propres nourritures. Nourrir augmente la croissance ; les trois nourritures donnent +10, +30 et +100 de croissance par usage.",
+            "Les compétences se débloquent et s’améliorent avec la croissance. Les valeurs exactes par niveau sont dans le jeu — ici figurent les descriptions de base des cartes de compétence.",
           ],
         },
       ],
-      note: "Les lieux et tables de croissance des Cryptides viendront dans un changement ultérieur.",
+      note: "Les valeurs de compétence viennent des captures du client allemand, puis traduites. Signalez une correction sur Discord si un chiffre diffère sur votre serveur.",
     },
     goddessTheater: {
       title: "Théâtre des déesses",
