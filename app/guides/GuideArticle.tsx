@@ -41,7 +41,7 @@ export function GuideArticle({ id }: { id: GuideEntryId }) {
   return (
     <>
       {heroesGuide ? <HeroBanner title={guide.title} /> : null}
-      {goddessesGuide ? <GoddessBanner title={guide.title} /> : null}
+      {goddessesGuide && !guideTitleBanner(id) ? <GoddessBanner title={guide.title} /> : null}
       <BackLink href="/guides/" label={t.nav.guides} />
       <PageHead eyebrow={t.nav.guides} title={guide.title} art={guideTitleBanner(id) ?? undefined} />
       {canWrite && (
