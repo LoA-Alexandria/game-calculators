@@ -5,9 +5,10 @@
  *
  * The editor works on a copy of `lib/data/museion.json`. A static site cannot
  * save for everyone, so the result leaves the browser as that JSON file plus
- * one `buildingTexts` block per dictionary. English building names stay in the
- * JSON; other languages export as `buildingTexts`. Heroes come from the Core
- * roster (plus a few off-roster names already published in the guide).
+ * one `buildingTexts` block per dictionary (every language, including English).
+ * English building names also stay in the JSON as the data-file source of truth.
+ * Heroes come from the Core roster (plus a few off-roster names already
+ * published in the guide).
  */
 
 import { HEROES } from "./heroes.ts";
@@ -214,12 +215,11 @@ export function exportedBuildingTexts(state: MuseionEditorState): Record<Locale,
   const ids = exportIds(state);
   return mapLocales((locale) => {
     const catalog: MuseionBuildingTexts = {};
-    if (locale === DEFAULT_LOCALE) return catalog;
     for (const building of state.buildings) {
       const name = building.name[locale].trim();
-      if (name && building.name[DEFAULT_LOCALE].trim()) {
-        catalog[ids.get(building.uid) ?? building.id] = { name };
-      }
+      if (!name) continue;
+      if (locale !== DEFAULT_LOCALE && !building.name[DEFAULT_LOCALE].trim()) continue;
+      catalog[ids.get(building.uid) ?? building.id] = { name };
     }
     return catalog;
   });

@@ -23,7 +23,7 @@ import {
   type MuseionProblem,
 } from "../../lib/content/museion-editor";
 import { HERO_RARITIES, heroNamed, heroPortrait } from "../../lib/content/heroes";
-import { DEFAULT_LOCALE, fill, type Dictionary, type Locale } from "../../lib/i18n";
+import { DEFAULT_LOCALE, fill, toLocale, type Dictionary, type Locale } from "../../lib/i18n";
 import { MUSEION_DRAFT_STORAGE_KEY } from "../../lib/site";
 import { AllLanguagesToggle, DictionaryBlocks, TranslatedField, useEditorLanguages } from "../components/EditorLanguages";
 import { CheckIcon, CloseIcon, CopyIcon, DownloadIcon, PlusIcon, TrashIcon } from "../components/Icons";
@@ -84,10 +84,14 @@ type Ctx = {
 };
 
 function BuildingEditor({ ctx, uid }: { ctx: Ctx; uid: string }) {
+  const { locale } = useLocale();
   const building = buildingByUid(ctx.state, uid);
   if (!building) return null;
   const { state, commit, e, languages, statLabels } = ctx;
-  const name = building.name[DEFAULT_LOCALE].trim() || e.unnamedBuilding;
+  const name =
+    building.name[toLocale(locale)].trim() ||
+    building.name[DEFAULT_LOCALE].trim() ||
+    e.unnamedBuilding;
   const available = unusedHeroes(state, uid);
   const primary = building.stats[0] ?? "";
   const secondary = building.stats[1] ?? "";
@@ -315,10 +319,11 @@ function ExportDialog({
 }
 
 export function MuseionEditor() {
-  const { t, tf } = useLocale();
+  const { t, tf, locale } = useLocale();
   const e = t.museionEditor;
   const guide = t.guideEntries.museion;
   const { languages } = useEditorLanguages({ withDefault: true });
+  const uiLocale = toLocale(locale);
 
   const draft = useSyncExternalStore(draftStore.subscribe, draftStore.getSnapshot, draftStore.getServerSnapshot);
   const state = draft ?? PUBLISHED_MUSEION;
@@ -383,7 +388,8 @@ export function MuseionEditor() {
       <div className="museion-edit-layout">
         <ul className="museion-edit-list" aria-label={e.buildingsList}>
           {state.buildings.map((building) => {
-            const label = building.name[DEFAULT_LOCALE].trim() || e.unnamedBuilding;
+            const label =
+              building.name[uiLocale].trim() || building.name[DEFAULT_LOCALE].trim() || e.unnamedBuilding;
             return (
               <li key={building.uid}>
                 <button

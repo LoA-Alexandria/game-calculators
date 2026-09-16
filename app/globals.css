@@ -2537,9 +2537,12 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
   gap: 14px;
   margin-top: 12px;
+  align-items: start;
 }
 .museion-building {
-  display: grid;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
   gap: 10px;
   padding: 14px 16px;
   border: 1px solid var(--line);
@@ -2552,17 +2555,34 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
   line-height: 1.25;
 }
 .museion-stats {
+  display: grid;
+  gap: 2px;
   margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
   color: var(--ink-soft);
   font-size: .82rem;
 }
-.museion-stats-unknown { font-style: italic; }
+.museion-stats li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px;
+}
+.museion-stats-role { color: var(--ink-faint); }
+.museion-stats-unknown {
+  margin: 4px 0 0;
+  font-style: italic;
+  font-size: .82rem;
+  color: var(--ink-soft);
+}
 .museion-stat { color: var(--accent); font-weight: 650; }
 .museion-heroes {
   margin: 0;
   padding: 0;
   list-style: none;
   display: grid;
+  align-content: start;
   gap: 8px;
 }
 .museion-rarity {

@@ -2,7 +2,7 @@
  * Museion building placements: which heroes the game marks as “best” for each
  * hall, plus later placements from Spitzell and Zee. Rows live in
  * `lib/data/museion.json` (English names); `guideEntries.museion.buildingTexts`
- * can override building names per language. Hero names follow the Heroes roster
+ * holds the display name in every language. Hero names follow the Heroes roster
  * spelling when the hero exists there.
  */
 

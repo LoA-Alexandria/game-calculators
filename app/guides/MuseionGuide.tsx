@@ -40,15 +40,16 @@ function HeroName({ hero }: { hero: string }) {
 
 function StatsLine({ stats, guide }: { stats: MuseionStat[]; guide: Guide }) {
   if (stats.length === 0) return <p className="museion-stats museion-stats-unknown">{guide.statsUnknown}</p>;
+  const labels = [guide.primaryStatLabel, guide.secondaryStatLabel];
   return (
-    <p className="museion-stats">
+    <ul className="museion-stats">
       {stats.map((stat, index) => (
-        <span key={stat}>
-          {index > 0 ? <span className="museion-stats-sep"> / </span> : null}
+        <li key={stat}>
+          <span className="museion-stats-role">{labels[index] ?? labels[labels.length - 1]}</span>
           <span className="museion-stat">{guide.stats[stat]}</span>
-        </span>
+        </li>
       ))}
-    </p>
+    </ul>
   );
 }
 
