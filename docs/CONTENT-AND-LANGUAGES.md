@@ -109,7 +109,7 @@ filter. There is no second list to keep in step.
    `/guides/` and on the guide page have Edit and Remove — the same commit-snippet
    pattern as news and events. Artwork, Artwork layouts, Heroes, Hero layouts,
    the Hero tier list, Goddess Theater, Hero linking, Anecdotes, Server age
-   unlocks, and Museion skip those buttons:
+   unlocks, Museion, and Hero leveling skip those buttons:
    they have their own editors instead.
 2. Write or replace the text under `guideEntries.<id>` in all three dictionaries,
    following the shape of `support`: `title`, `summary`, `intro`,
@@ -129,11 +129,13 @@ filter. There is no second list to keep in step.
 A guide that needs more than headings and paragraphs gets its own renderer next
 to `GuideArticle`: `GoddessesGuide`, `ArtworkGuide`, `ArtworkLayoutsGuide`,
 `HeroLayoutsGuide`, `HeroRoster`, `HeroTierListGuide`, `GoddessTheaterGuide`,
-`HeroLinkingGuide`, `AnecdotesGuide`, `ServerAgeUnlocksGuide`, and `MuseionGuide`.
+`HeroLinkingGuide`, `AnecdotesGuide`, `ServerAgeUnlocksGuide`, `MuseionGuide`,
+and `HeroLevelingGuide`.
 `guideLayout()` in `lib/content/guides.ts` picks the renderer from a field only
 that guide has (`phases` for Goddesses, `playsHeading` for Goddess Theater,
 `linksHeading` for Hero linking, `anecdoteTexts` for Anecdotes,
-`timelineHeading` for Server age unlocks, `buildingsHeading` for Museion, before
+`timelineHeading` for Server age unlocks, `buildingsHeading` for Museion,
+`focusHeading` for Hero leveling, before
 `filterAll` for Heroes), and
 `tests/guides.test.mjs` pins every entry, so two guides cannot claim the same
 renderer by sharing a field name. Keep `sections` and `note` in those entries
@@ -534,6 +536,23 @@ untouched draft reproduces the published file byte for byte
 (`tests/museion.test.mjs`).
 Source: Autumn (Ice, S12), Discord, 20 August 2026, with later placements from
 Spitzell and Zee.
+
+## Hero leveling / fragment priorities
+
+Hero leveling sits under **Tips and tricks**. Focus bands, fragment rules per
+Hero layouts build (Crit, DoT, Pursuit, Execute), and shared level caps live in
+`lib/data/hero-leveling.json`. The guide renderer is `HeroLevelingGuide`
+(detector `focusHeading`). Band labels, fragment kind labels, level-target
+labels, and optional hero notes live in `guideEntries.heroLeveling`
+(`heroNotes` is sparse per language).
+
+Members with `guides.draft` see **Edit priorities**, which opens
+`/guides/hero-leveling/edit/`. The draft is saved in that browser only
+(`localStorage['popepoch-leveling-draft']`). **Export** produces the complete
+JSON and one `heroNotes` block per dictionary. An untouched draft reproduces
+the published file byte for byte (`tests/hero-leveling.test.mjs`).
+Source: Boah’s Discord list, with Autumn’s addendum (Ice, S12), 6 August 2026.
+
 
 ## Editing anecdotes
 
