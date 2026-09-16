@@ -2507,6 +2507,9 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
 .hero-tile-name { font-size: .86rem; font-weight: 650; line-height: 1.2; overflow-wrap: anywhere; }
 .hero-tile-meta { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 4px 6px; margin-top: auto; }
 .hero-tile-meta .rarity { min-height: 20px; padding: 0 7px; font-size: .66rem; }
+/* Longer translations ("Derzeit nicht erhältlich") wrap inside a narrow tile instead of widening the page. */
+.hero-tile-meta { max-width: 100%; }
+.hero-tile-meta .obtain-mark { max-width: 100%; padding-block: 2px; line-height: 1.25; white-space: normal; }
 .hero-tile-skills { color: var(--ink-faint); font-size: .7rem; }
 .hero-tile-skins {
   position: absolute;
@@ -3478,7 +3481,8 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
 }
 /* No step number on these, so the text starts at the edge like the card above. */
 .source-card { gap: 0; }
-.skin-catalog { display: grid; gap: 22px; margin: 0 0 18px; }
+/* minmax(0, 1fr): a wide skins table scrolls inside its panel instead of widening the page. */
+.skin-catalog { display: grid; grid-template-columns: minmax(0, 1fr); gap: 22px; margin: 0 0 18px; }
 .skin-group h3 { margin: 0 0 6px; font-size: 1.05rem; }
 .skin-group .guide-lede { margin-bottom: 10px; }
 .skin-name-cell { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
