@@ -109,13 +109,26 @@ const de: Dictionary = {
     empty:
       "Die ersten Guides entstehen gerade. Bis dahin erklärt jedes Werkzeug seine Annahmen direkt neben dem Ergebnis.",
     other: "Sonstiges",
-    allCategories: "Alle Kategorien",
-    pickGuide: "Wähle einen Guide in dieser Kategorie.",
-    featureTitle: "Fang bei den Systemen an, die du jeden Tag brauchst",
-    featureBody:
-      "Öffne links in der Navigation eine Kategorie — Helden, Göttinnen, Layouts und mehr. Jeder Guide basiert auf gemeinsamen Pop-Epoch-Daten, damit Werkzeuge und Texte zusammenpassen.",
     edit: "Bearbeiten",
     remove: "Entfernen",
+    searchLabel: "Guides durchsuchen",
+    searchPlaceholder: "Helden, Gemälde, Tier-Liste…",
+    filterLabel: "Nach Kategorie filtern",
+    filterAll: "Alle",
+    statGuides: "Guides",
+    statCategories: "Kategorien",
+    statEditors: "mit eigenem Editor",
+    countGuidesOne: "1 Guide",
+    countGuides: "{count} Guides",
+    noMatch: "Kein Guide passt zu dieser Suche.",
+    editorBadge: "Editor",
+    categoryLedes: {
+      coreElements: "Helden, Gemälde, Göttinnen und die Systeme dahinter.",
+      buildings: "Gebäude mit eigenen Regeln und Belegungen.",
+      layouts: "Aufstellungen und Reihenfolgen, die sich lohnen.",
+      tierLists: "Wer stark ist, im Kampf, bei Utility und Produktivität.",
+      tips: "Kniffe, Prioritäten und versteckte Inhalte.",
+    },
   },
   guideCategories: {
     coreElements: "Kernelemente",
@@ -1054,7 +1067,7 @@ const de: Dictionary = {
       listLede: "Filtere nach dem Ort der Geschichte oder suche nach einem Namen, einem Ort oder einer Figur.",
       filterLabel: "Anekdoten filtern",
       groupAll: "Alle",
-      groups: { general: "Allgemein", egypt: "Egyptian Tales" },
+      groups: { general: "Allgemein", egypt: "Ägyptische Geschichten" },
       groupLedes: {
         general: "In deiner Stadt, im Museion, bei der Expedition und im Göttinnen-Theater.",
         egypt: "Auf der Ägypten-Karte und in Duat. Viele davon bilden eine Kette: Schließ eine ab, um die nächste freizuschalten.",
@@ -1795,7 +1808,7 @@ const de: Dictionary = {
         "Diese hängen irgendwie am Serveralter, aber ein verlässlicher Tag steht noch nicht fest.",
       eventTexts: {},
       credit:
-        "Server-Age-Unlocks von Autumn (Ice, S12), geteilt auf Discord am 14. September 2026. Als in Arbeit markiert — Zeitpunkte können sich noch verschieben.",
+        "Freischaltungen nach Serveralter von Autumn (Ice, S12), geteilt auf Discord am 14. September 2026. Als in Arbeit markiert — Zeitpunkte können sich noch verschieben.",
       sections: [
         {
           heading: "So liest du die Liste",
@@ -1859,11 +1872,11 @@ const de: Dictionary = {
     },
   },
   ageUnlocksEditor: {
-    title: "Server-Age-Unlocks bearbeiten",
+    title: "Freischaltungen nach Serveralter bearbeiten",
     eyebrow: "Tipps und Tricks",
     lede:
       "Tage auf der Timeline hinzufügen oder umsortieren, Events in jeder Sprache bearbeiten, einmalige Freischaltungen markieren, verwandte Guides verlinken und ein Bild für die Hover-Karte hochladen. Der Entwurf inklusive Bilder wird nur in diesem Browser gespeichert; exportiere ihn, wenn du fertig bist.",
-    back: "Zurück zu Server-Age-Unlocks",
+    back: "Zurück zu Freischaltungen nach Serveralter",
     openEditor: "Timeline bearbeiten",
     savedNote: "Entwurf in diesem Browser gespeichert",
     unchanged: "Noch keine Änderungen",
@@ -1910,7 +1923,7 @@ const de: Dictionary = {
     storageFull:
       "Der Entwurf passt nicht mehr in den Speicher dieses Browsers. Exportiere und committe, was du hast, bevor du weitere Bilder hinzufügst.",
     close: "Schließen",
-    exportTitle: "Server-Age-Unlocks exportieren",
+    exportTitle: "Freischaltungen nach Serveralter exportieren",
     exportLede:
       "Ersetze lib/data/server-age-unlocks.json durch diese Datei, lege neue Bilder in public/server-age-unlocks/, lösche entfernte und ersetze in jedem unten gelisteten Dictionary eventTexts unter guideEntries.serverAgeUnlocks. Die Seite aktualisiert sich nach dem Merge.",
     exportTexts: "Textblöcke für die Dictionaries",
@@ -2470,7 +2483,6 @@ const de: Dictionary = {
     resetConfirm: "Alle Änderungen in diesem Entwurf verwerfen?",
     export: "Exportieren",
     problemCount: "{count} Punkte zu prüfen",
-    allLanguages: "Alle Sprachen bearbeiten",
     linksHeading: "Helden mit Verknüpfung",
     priorityHeading: "Reihenfolge",
     addHero: "Held hinzufügen",
@@ -2480,7 +2492,7 @@ const de: Dictionary = {
     fieldStep: "Stufe",
     fieldRank: "Position",
     fieldNote: "Notiz",
-    noteHint: "Optional. Eine Notiz, die nur in einer Sprache steht, bleibt in den anderen leer — der Export weist darauf hin.",
+    noteHint: "Optional. Eine Sprache ohne eigene Notiz zeigt die englische, und der Export listet auf, was noch nicht übersetzt ist.",
     remove: "{hero} entfernen",
     emptyLinks: "Noch schaltet kein Held eine Verknüpfung frei.",
     emptyPriority: "Die Reihenfolge ist leer.",
@@ -2497,7 +2509,7 @@ const de: Dictionary = {
     problemDuplicateStep: "{source} #{step} wird von zwei Helden belegt.",
     problemNoLinks: "Kein Held schaltet eine Verknüpfung frei.",
     problemNoPriority: "Die Reihenfolge ist leer.",
-    problemMissingNote: "{hero}: Die Notiz fehlt auf {language}.",
+    problemMissingNote: "{hero}: Noch keine Notiz auf {language} — dort steht die englische.",
   },
   levelingEditor: {
     title: "Helden-Leveln bearbeiten",

@@ -22,8 +22,7 @@ import {
 } from "../../lib/content/heroes";
 import { LOCALE_CODES, fill, getDictionary, type Dictionary } from "../../lib/i18n";
 import { HERO_SKIN_GROUPS, HERO_SKINS, skinSearchText, skinsFor } from "../../lib/content/skins";
-import { useAuth } from "../components/AuthProvider";
-import { ChevronIcon, CloseIcon, PenIcon } from "../components/Icons";
+import { ChevronIcon, CloseIcon } from "../components/Icons";
 import { HeroPortrait } from "../components/HeroPortrait";
 import { useLocale } from "../components/LocaleProvider";
 import { HeroAbilities } from "./HeroAbilities";
@@ -103,8 +102,6 @@ function closeHeroHash() {
 }
 
 export function HeroRoster({ guide }: { guide: Guide }) {
-  const { t } = useLocale();
-  const { allows } = useAuth();
   const [rarity, setRarity] = useState<HeroRarity | "all">("all");
   const [query, setQuery] = useState("");
   // Search every language's wording, so a reader finds a skill or skin by the name they know.
@@ -139,12 +136,6 @@ export function HeroRoster({ guide }: { guide: Guide }) {
 
       <div className="tier-lists-head">
         <h2>{guide.rosterHeading}</h2>
-        {allows("guides.draft") ? (
-          <Link className="small-button" href="/guides/heroes/edit/">
-            <PenIcon className="icon icon-sm" />
-            {t.heroEditor.openEditor}
-          </Link>
-        ) : null}
       </div>
       <p className="guide-lede">{guide.rosterLede}</p>
 

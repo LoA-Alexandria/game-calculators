@@ -24,7 +24,8 @@ import {
   type LinkSource,
   type LinkTarget,
 } from "./hero-linking.ts";
-import { LOCALES, getDictionary, type Locale } from "../i18n/index.ts";
+import { DEFAULT_LOCALE, LOCALES, LOCALE_CODES, getDictionary, mapLocales, type Locale } from "../i18n/index.ts";
+import { dictionaryLiteral } from "../i18n/translations.ts";
 
 /** The two lists the editor keeps; a note is filed under one of them. */
 export const LINK_LISTS = ["links", "priority"] as const;
@@ -46,18 +47,14 @@ export type LinkingEditorState = {
 
 const HERO_NAMES = new Set(HEROES.map((hero) => hero.name));
 const SOURCE_SET = new Set<string>(LINK_SOURCES);
-const IDENTIFIER = /^[A-Za-z_$][A-Za-z0-9_$]*$/;
-const property = (key: string) => (IDENTIFIER.test(key) ? key : JSON.stringify(key));
 
 function emptyTexts(): LinkingTexts {
-  return Object.fromEntries(LOCALES.map((locale) => [locale.code, { links: {}, priority: {} }])) as LinkingTexts;
+  return mapLocales(() => ({ links: {}, priority: {} }));
 }
 
 /** The published notes, so the editor starts from what the site shows. */
 export function catalogsFromDictionaries(): Record<Locale, HeroLinkingTexts> {
-  const catalogs = {} as Record<Locale, HeroLinkingTexts>;
-  for (const { code } of LOCALES) catalogs[code] = getDictionary(code).guideEntries.heroLinking.linkTexts;
-  return catalogs;
+  return mapLocales((locale) => getDictionary(locale).guideEntries.heroLinking.linkTexts);
 }
 
 export function fromLinkingData(
@@ -68,17 +65,17 @@ export function fromLinkingData(
   const texts = emptyTexts();
   const links = data.links.map((link) => {
     const uid = `l${nextId++}`;
-    for (const { code } of LOCALES) {
-      const note = catalogs[code]?.links?.[link.hero];
-      if (note) texts[code].links[uid] = note;
+    for (const locale of LOCALE_CODES) {
+      const note = catalogs[locale]?.links?.[link.hero];
+      if (note) texts[locale].links[uid] = note;
     }
     return { uid, hero: link.hero, source: link.source, step: link.step };
   });
   const priority = data.priority.map((target) => {
     const uid = `p${nextId++}`;
-    for (const { code } of LOCALES) {
-      const note = catalogs[code]?.priority?.[target.hero];
-      if (note) texts[code].priority[uid] = note;
+    for (const locale of LOCALE_CODES) {
+      const note = catalogs[locale]?.priority?.[target.hero];
+      if (note) texts[locale].priority[uid] = note;
     }
     return { uid, hero: target.hero };
   });
@@ -98,13 +95,11 @@ export function unusedHeroes(state: LinkingEditorState, list: LinkList): typeof 
 }
 
 function forget(texts: LinkingTexts, list: LinkList, uid: string): LinkingTexts {
-  const next = emptyTexts();
-  for (const { code } of LOCALES) {
-    const notes = { ...texts[code][list] };
+  return mapLocales((locale) => {
+    const notes = { ...texts[locale][list] };
     delete notes[uid];
-    next[code] = { ...texts[code], [list]: notes };
-  }
-  return next;
+    return { ...texts[locale], [list]: notes };
+  });
 }
 
 export function addLink(state: LinkingEditorState, hero: string, source: LinkSource = "grail"): LinkingEditorState {
@@ -194,54 +189,28 @@ export function exportLinking(state: LinkingEditorState): HeroLinkingData {
 
 /** Notes keyed by hero name, without the blanks. */
 export function exportedLinkTexts(state: LinkingEditorState): Record<Locale, HeroLinkingTexts> {
-  const result = {} as Record<Locale, HeroLinkingTexts>;
-  for (const { code } of LOCALES) {
+  return mapLocales((locale) => {
     const links: Record<string, string> = {};
     for (const link of state.links) {
-      const note = noteOf(state, code, "links", link.uid).trim();
+      const note = noteOf(state, locale, "links", link.uid).trim();
       if (note) links[link.hero] = note;
     }
     const priority: Record<string, string> = {};
     for (const target of state.priority) {
-      const note = noteOf(state, code, "priority", target.uid).trim();
+      const note = noteOf(state, locale, "priority", target.uid).trim();
       if (note) priority[target.hero] = note;
     }
-    result[code] = {
+    return {
       ...(Object.keys(links).length > 0 ? { links } : {}),
       ...(Object.keys(priority).length > 0 ? { priority } : {}),
     };
-  }
-  return result;
-}
-
-function formatNotes(name: string, notes: Record<string, string> | undefined, indent: string): string[] {
-  if (!notes || Object.keys(notes).length === 0) return [];
-  const lines = [`${indent}${name}: {`];
-  for (const [hero, note] of Object.entries(notes)) {
-    lines.push(`${indent}  ${property(hero)}: ${JSON.stringify(note)},`);
-  }
-  lines.push(`${indent}},`);
-  return lines;
+  });
 }
 
 /** The `linkTexts` block to paste into each dictionary. */
 export function textBlocks(state: LinkingEditorState): Record<Locale, string> {
   const catalogs = exportedLinkTexts(state);
-  const result = {} as Record<Locale, string>;
-  for (const { code } of LOCALES) {
-    const catalog = catalogs[code];
-    if (!catalog.links && !catalog.priority) {
-      result[code] = "      linkTexts: {},";
-      continue;
-    }
-    result[code] = [
-      "      linkTexts: {",
-      ...formatNotes("links", catalog.links, "        "),
-      ...formatNotes("priority", catalog.priority, "        "),
-      "      },",
-    ].join("\n");
-  }
-  return result;
+  return mapLocales((locale) => `      linkTexts: ${dictionaryLiteral(catalogs[locale], "      ")},`);
 }
 
 function formatLink(link: HeroLink): string {
@@ -270,8 +239,8 @@ export function countLinkingChanges(published: LinkingEditorState, draft: Linkin
 
   const beforeTexts = exportedLinkTexts(published);
   const afterTexts = exportedLinkTexts(draft);
-  for (const { code } of LOCALES) {
-    if (JSON.stringify(beforeTexts[code]) !== JSON.stringify(afterTexts[code])) changes += 1;
+  for (const locale of LOCALE_CODES) {
+    if (JSON.stringify(beforeTexts[locale]) !== JSON.stringify(afterTexts[locale])) changes += 1;
   }
   return changes;
 }
@@ -303,14 +272,15 @@ export function findLinkingProblems(state: LinkingEditorState): LinkingProblem[]
     if (!HERO_NAMES.has(target.hero)) problems.push({ code: "unknownHero", hero: target.hero });
   }
 
-  // A note written in one language but not the others would show up blank there.
+  // English is what the other languages fall back to, so a row with an English
+  // note lists the languages that still show it instead of their own.
   for (const list of LINK_LISTS) {
     const rows = list === "links" ? state.links : state.priority;
     for (const row of rows) {
-      const written = LOCALES.filter(({ code }) => noteOf(state, code, list, row.uid).trim());
-      if (written.length === 0 || written.length === LOCALES.length) continue;
+      const note = (locale: Locale) => noteOf(state, locale, list, row.uid).trim();
+      if (!note(DEFAULT_LOCALE)) continue;
       for (const { code, label } of LOCALES) {
-        if (!noteOf(state, code, list, row.uid).trim()) problems.push({ code: "missingNote", hero: row.hero, language: label });
+        if (code !== DEFAULT_LOCALE && !note(code)) problems.push({ code: "missingNote", hero: row.hero, language: label });
       }
     }
   }
@@ -331,15 +301,16 @@ export function parseLinkingDraft(raw: string | null): LinkingEditorState | null
       if (typeof target?.uid !== "string" || typeof target.hero !== "string") return null;
     }
     if (!value.texts || typeof value.texts !== "object") return null;
+    // A draft saved before a language was added still loads; that language starts empty.
     const texts = emptyTexts();
-    for (const { code } of LOCALES) {
-      const catalog = value.texts[code];
+    for (const locale of LOCALE_CODES) {
+      const catalog = value.texts[locale];
       if (!catalog || typeof catalog !== "object") continue;
       for (const list of LINK_LISTS) {
         const notes = catalog[list];
         if (!notes || typeof notes !== "object") continue;
         if (Object.values(notes).some((note) => typeof note !== "string")) return null;
-        texts[code][list] = notes;
+        texts[locale][list] = notes;
       }
     }
     return { ...value, texts };

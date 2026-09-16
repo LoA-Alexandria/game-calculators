@@ -6,10 +6,8 @@ import { guideHref, guideLayout } from "../../lib/content/guides";
 import { searchTheaterPlays, theaterCoverUrl, localizedPlayName, localizedRoleName, type TheaterPlay, type TheaterRole } from "../../lib/content/goddess-theater";
 import { goddessNamed, goddessPortrait } from "../../lib/content/goddesses";
 import { fill, LOCALES, getDictionary, type Dictionary } from "../../lib/i18n";
-import { useAuth } from "../components/AuthProvider";
-import { PenIcon, StarIcon } from "../components/Icons";
+import { StarIcon } from "../components/Icons";
 import { HeroPortrait } from "../components/HeroPortrait";
-import { useLocale } from "../components/LocaleProvider";
 
 type Guide = Dictionary["guideEntries"]["goddessTheater"];
 
@@ -76,8 +74,6 @@ function PlayCard({ play, guide }: { play: TheaterPlay; guide: Guide }) {
 }
 
 export function GoddessTheaterGuide({ guide }: { guide: Guide }) {
-  const { t } = useLocale();
-  const { allows } = useAuth();
   const [query, setQuery] = useState("");
   const plays = useMemo(
     () => searchTheaterPlays(query, LOCALES.map((locale) => getDictionary(locale.code).guideEntries.goddessTheater.playTexts)),
@@ -98,12 +94,6 @@ export function GoddessTheaterGuide({ guide }: { guide: Guide }) {
 
       <div className="tier-lists-head">
         <h2>{guide.playsHeading}</h2>
-        {allows("guides.draft") ? (
-          <Link className="small-button" href="/guides/goddess-theater/edit/">
-            <PenIcon className="icon icon-sm" />
-            {t.theaterEditor.openEditor}
-          </Link>
-        ) : null}
       </div>
       <p className="guide-lede">{guide.playsLede}</p>
       <label className="hero-search theater-search">
