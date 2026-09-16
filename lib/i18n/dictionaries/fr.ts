@@ -498,13 +498,174 @@ const fr: Dictionary = {
       },
       setsHeading: "Sets",
       setsLede: "Skills de set tels qu’Autumn les a notés. Une productivité vide ou un héros manquant restent —.",
-      filterHeading: "Filtrer par héros",
-      filterLabel: "Nom du héros",
-      filterPlaceholder: "Achilles, Joan, Augustus…",
-      filterLede: "Tapez un héros pour lister chaque tableau qui le nomme.",
+      filterHeading: "Recherche",
+      filterLabel: "Héros, tableau ou artiste",
+      filterPlaceholder: "Achille, Van Gogh, L’Escarpolette…",
+      filterLede: "Saisissez un héros, un tableau dans n’importe quelle langue ou un artiste.",
       countLabel: "{count} affichés",
-      empty: "Aucun tableau ne nomme ce héros.",
-      catalogTexts: {},
+      empty: "Rien dans le catalogue ne correspond à cette recherche.",
+      originalLabel: "D’après",
+      circa: "vers {year}",
+      imagePending: "Pas encore d’image",
+      openPicture: "Agrandir {painting}",
+      detailOriginal: "L’original",
+      detailHeroes: "Héros",
+      detailClose: "Fermer",
+      pictureCredit: "Images du jeu découpées le 16 septembre 2026 dans des captures du client allemand, sans le cadre. Ce sont les versions redessinées du jeu ; elles appartiennent à son éditeur. Titres originaux, artistes et dates viennent de Wikipédia et des musées qui conservent les œuvres, et ne sont indiqués que lorsque l’image ne laisse aucun doute.",
+      catalogTexts: {
+        paintings: {
+          "the-coronation-of-napoleon": {
+            original: "Le Sacre de Napoléon",
+          },
+          "napoleon-crossing-the-alps": {
+            original: "Bonaparte franchissant le Grand-Saint-Bernard",
+          },
+          "the-third-of-may-1808": {
+            original: "Tres de mayo",
+          },
+          "self-portrait-with-damaged-ear": {
+            original: "Autoportrait à l’oreille bandée",
+          },
+          irises: {
+            original: "Iris",
+          },
+          "water-lilies": {
+            original: "Nymphéas",
+          },
+          "the-gleaners": {
+            original: "Des glaneuses",
+          },
+          "the-floor-scrapers": {
+            original: "Les Raboteurs de parquet",
+          },
+          "the-stone-breakers": {
+            original: "Les Casseurs de pierres",
+          },
+          "the-swing": {
+            original: "Les Hasards heureux de l’escarpolette",
+          },
+          "the-embarkation-for-cythera": {
+            original: "Le Pèlerinage à l’île de Cythère",
+          },
+          "dwelling-in-the-fuchun-mountains": {
+            original: "Séjour dans les monts Fuchun",
+          },
+          "the-great-wave-of-kanagawa": {
+            original: "La Grande Vague de Kanagawa",
+          },
+          "three-beauties-of-the-present-day": {
+            original: "Trois beautés de notre temps",
+          },
+          "romeo-and-juliet": {
+            original: "Roméo et Juliette",
+          },
+          dance: {
+            original: "La Danse",
+          },
+          earthrise: {
+            original: "Lever de Terre",
+          },
+          "pale-blue-dot": {
+            original: "Un point bleu pâle",
+          },
+          "cafe-terrace-at-night": {
+            original: "Terrasse du café le soir",
+          },
+          "evening-on-karl-johan-st": {
+            original: "Soirée sur l’avenue Karl Johan",
+          },
+          "the-umbrellas": {
+            original: "La Femme à l’ombrelle – Madame Monet et son fils",
+          },
+          "luncheon-of-the-boating-party": {
+            original: "Le Déjeuner des canotiers",
+          },
+          "rain-steam-and-speed": {
+            original: "Pluie, Vapeur et Vitesse",
+          },
+          "the-gare-saint-lazare": {
+            original: "La Gare Saint-Lazare",
+          },
+          "the-fighting-temeraire": {
+            original: "Le Dernier Voyage du Téméraire",
+          },
+          "the-death-of-socrates": {
+            original: "La Mort de Socrate",
+          },
+          "the-death-of-marat": {
+            original: "La Mort de Marat",
+          },
+          "the-anatomy-lesson": {
+            original: "La Leçon d’anatomie du docteur Tulp",
+          },
+          "young-hare": {
+            original: "Le Lièvre",
+          },
+          "hall-of-the-bulls-lascaux": {
+            original: "Salle des Taureaux",
+          },
+          "wanderer-above-the-sea-of-fog": {
+            original: "Le Voyageur contemplant une mer de nuages",
+          },
+          "the-hay-wain": {
+            original: "La Charrette de foin",
+          },
+          "alexander-mosaic": {
+            original: "Mosaïque d’Alexandre",
+          },
+          "madaba-mosaic-map": {
+            original: "Carte de Madaba",
+          },
+          "portrait-of-isabella-d-este": {
+            original: "Portrait d’Isabelle d’Este",
+          },
+          "the-monkey-painter": {
+            original: "Le Singe peintre",
+          },
+          "the-monkey-antiquarian": {
+            original: "Le Singe antiquaire",
+          },
+          "the-ricotta-eaters": {
+            original: "Les Mangeurs de ricotta",
+          },
+          "the-beaneater": {
+            original: "Le Mangeur de haricots",
+          },
+          "the-fat-kitchen": {
+            original: "La Cuisine grasse",
+          },
+          "the-thin-kitchen": {
+            original: "La Cuisine maigre",
+          },
+          "the-cook": {
+            original: "Le Cuisinier",
+          },
+          "the-four-seasons-ii-spring": {
+            original: "Les Quatre Saisons : Le Printemps",
+          },
+          "the-four-seasons-ii-summer": {
+            original: "Les Quatre Saisons : L’Été",
+          },
+          "the-four-seasons-ii-autumn": {
+            original: "Les Quatre Saisons : L’Automne",
+          },
+          "the-four-seasons-ii-winter": {
+            original: "Les Quatre Saisons : L’Hiver",
+          },
+          "the-four-seasons-i-spring": {
+            original: "Les Saisons : Le Printemps",
+          },
+          "the-four-seasons-i-summer": {
+            original: "Les Saisons : L’Été",
+          },
+          "the-four-seasons-i-autumn": {
+            original: "Les Saisons : L’Automne",
+          },
+          "the-four-seasons-i-winter": {
+            original: "Les Saisons : L’Hiver",
+          },
+        },
+      },
       layoutsLink: "Déblocages, étoiles et ordre des niveaux",
       sections: [
         {
@@ -1545,7 +1706,7 @@ const fr: Dictionary = {
   artworkEditor: {
     title: "Modifier le catalogue Artwork",
     eyebrow: "Artwork",
-    lede: "Ajoutez des sets et des tableaux, modifiez ceux qui existent, et rattachez des héros depuis le roster Heroes. Le brouillon reste dans ce navigateur ; exportez-le une fois terminé.",
+    lede: "Ajoutez des séries et des tableaux, modifiez ceux déjà là, associez des héros de la liste et téléversez l’image de chaque tableau. Le brouillon, images comprises, reste dans ce navigateur ; exportez-le quand vous avez fini.",
     back: "Retour à Artwork",
     openEditor: "Modifier le catalogue",
     savedNote: "Brouillon enregistré dans ce navigateur",
@@ -1585,9 +1746,26 @@ const fr: Dictionary = {
     removePainting: "Supprimer le tableau",
     removePaintingConfirm: "Supprimer le tableau {painting} ?",
     removeHeroNamed: "Retirer {hero}",
+    fieldOriginal: "Titre original",
+    fieldOriginalHint: "Le titre de l’œuvre réelle, dans chaque langue. Laissez vide si le jeu garde ce titre ou si l’œuvre n’est pas certaine.",
+    fieldArtist: "Artiste",
+    fieldYear: "Année",
+    fieldCirca: "approximative",
+    imageHeading: "Image",
+    imageHint: "Le tableau du jeu sans son cadre. Les images sont réduites à 480 px en WebP dans votre navigateur.",
+    uploadImage: "Téléverser une image",
+    replaceImage: "Remplacer l’image",
+    removeImage: "Retirer l’image",
+    dropHint: "ou déposez une image ici",
+    uploadNotImage: "Ce fichier n’est pas une image lisible par ce navigateur.",
+    uploadTooBig: "Les images peuvent faire jusqu’à 10 Mo.",
+    storageFull: "Le brouillon ne tient plus dans le stockage de ce navigateur. Exportez et commitez ce que vous avez avant d’ajouter d’autres images.",
+    uploadsHeading: "Nouvelles images pour public/artwork/ ({count})",
+    removedHeading: "À supprimer de public/artwork/ ({count})",
+    downloadAll: "Tout télécharger",
     close: "Fermer",
     exportTitle: "Exporter le catalogue Artwork",
-    exportLede: "Remplacez lib/data/paintings.json par ce fichier et commitez-le, ou envoyez-le à quelqu’un qui peut le faire. Le site se met à jour une fois le changement fusionné.",
+    exportLede: "Remplacez lib/data/paintings.json par ce fichier, placez les nouvelles images dans public/artwork/, supprimez celles retirées et collez les blocs de texte dans les dictionnaires indiqués. Le site se met à jour après la fusion.",
     copy: "Copier",
     copied: "Copié",
     download: "Télécharger",

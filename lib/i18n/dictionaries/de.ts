@@ -498,13 +498,232 @@ const de: Dictionary = {
       },
       setsHeading: "Sets",
       setsLede: "Set-Skills, wie Autumn sie notiert hat. Leere Produktivität oder ein fehlender Held bleiben —.",
-      filterHeading: "Nach Held filtern",
-      filterLabel: "Heldenname",
-      filterPlaceholder: "Achilles, Joan, Augustus…",
-      filterLede: "Tippe einen Helden, um jede Leinwand zu sehen, die ihn nennt.",
+      filterHeading: "Suche",
+      filterLabel: "Held, Gemälde oder Künstler",
+      filterPlaceholder: "Achilles, Van Gogh, Die Schaukel…",
+      filterLede: "Tippe einen Helden, ein Gemälde in einer beliebigen Sprache oder einen Künstler.",
       countLabel: "{count} angezeigt",
-      empty: "Kein Gemälde nennt diesen Helden.",
-      catalogTexts: {},
+      empty: "Nichts im Katalog passt zu dieser Suche.",
+      originalLabel: "Vorlage",
+      circa: "um {year}",
+      imagePending: "Noch kein Bild",
+      openPicture: "{painting} groß anzeigen",
+      detailOriginal: "Das Original",
+      detailHeroes: "Helden",
+      detailClose: "Schließen",
+      pictureCredit: "Bilder aus dem Spiel, am 16. September 2026 aus Screenshots des deutschen Clients ausgeschnitten, ohne Rahmen. Es sind die neu gezeichneten Fassungen des Spiels; sie gehören dem Publisher. Originaltitel, Künstler und Jahr stammen aus Wikipedia und von den Museen, die die Werke besitzen, und stehen nur dort, wo das Bild eindeutig ist.",
+      catalogTexts: {
+        paintings: {
+          "the-coronation-of-napoleon": {
+            original: "Le Sacre de Napoléon",
+          },
+          "napoleon-crossing-the-alps": {
+            original: "Bonaparte beim Überschreiten der Alpen am Großen Sankt Bernhard",
+          },
+          "the-third-of-may-1808": {
+            name: "Der 3. Mai 1808",
+            original: "Die Erschießung der Aufständischen",
+          },
+          "self-portrait-with-fur-trimmed-robe": {
+            original: "Selbstbildnis im Pelzrock",
+          },
+          "self-portrait-with-damaged-ear": {
+            name: "Selbstporträt mit verbundenem Ohr",
+            original: "Selbstporträt mit verbundenem Ohr",
+          },
+          irises: {
+            original: "Schwertlilien",
+          },
+          "water-lilies": {
+            original: "Seerosen",
+          },
+          "the-gleaners": {
+            original: "Die Ährenleserinnen",
+          },
+          "the-floor-scrapers": {
+            name: "Die Parketthobler",
+            original: "Die Parkettschleifer",
+          },
+          "the-stone-breakers": {
+            original: "Die Steinklopfer",
+          },
+          "the-swing": {
+            name: "Die Schaukel",
+            original: "Die Schaukel",
+          },
+          "the-embarkation-for-cythera": {
+            original: "Einschiffung nach Kythera",
+          },
+          "a-thousand-li-of-rivers-and-mountains": {
+            name: "Tausend Li von Flüssen und Bergen",
+          },
+          "travelers-among-mountains-and-streams": {
+            name: "Reisende zwischen Bergen und Bächen",
+          },
+          "the-great-wave-of-kanagawa": {
+            original: "Die große Welle vor Kanagawa",
+          },
+          "romeo-and-juliet": {
+            name: "Romeo und Julia",
+            original: "Romeo und Julia",
+          },
+          dance: {
+            original: "Der Tanz",
+          },
+          "composition-viii": {
+            name: "Komposition VIII",
+            original: "Komposition VIII",
+          },
+          nightshade: {
+            name: "Nachtschwärmer",
+          },
+          "cafe-terrace-at-night": {
+            name: "Caféterrasse bei Nacht",
+            original: "Caféterrasse am Abend",
+          },
+          "evening-on-karl-johan-st": {
+            name: "Abend auf der Karl-Johans-Straße",
+            original: "Abend auf der Karl Johans gate",
+          },
+          "the-umbrellas": {
+            name: "Die Regenschirme",
+            original: "Frau mit Sonnenschirm – Camille Monet und Sohn Jean auf dem Hügel",
+          },
+          "luncheon-of-the-boating-party": {
+            original: "Das Frühstück der Ruderer",
+          },
+          "the-gare-saint-lazare": {
+            name: "Der Bahnhof Saint-Lazare",
+            original: "Der Bahnhof Saint-Lazare",
+          },
+          "the-fighting-temeraire": {
+            name: "Die kämpfende Temeraire",
+          },
+          "the-death-of-socrates": {
+            name: "Der Tod des Sokrates",
+            original: "Der Tod des Sokrates",
+          },
+          "the-death-of-marat": {
+            name: "Der Tod des Marat",
+            original: "Der Tod des Marat",
+          },
+          "the-anatomy-lesson": {
+            original: "Die Anatomie des Dr. Tulp",
+          },
+          "young-hare": {
+            name: "Feldhase",
+            original: "Feldhase",
+          },
+          "hall-of-the-bulls-lascaux": {
+            original: "Saal der Stiere",
+          },
+          "wanderer-above-the-sea-of-fog": {
+            name: "Der Wanderer über dem Nebelmeer",
+            original: "Der Wanderer über dem Nebelmeer",
+          },
+          "the-hay-wain": {
+            name: "Der Heuwagen",
+          },
+          "portrait-of-charles-darwin": {
+            name: "Porträt von Charles Darwin",
+          },
+          "portrait-of-abraham-lincoln": {
+            name: "Porträt von Abraham Lincoln",
+          },
+          "empress-theodora-and-her-attendants": {
+            name: "Kaiserin Theodora und ihr Gefolge",
+          },
+          "alexander-mosaic": {
+            original: "Alexandermosaik",
+          },
+          "madaba-mosaic-map": {
+            original: "Mosaikkarte von Madaba",
+          },
+          "king-s-college-chapel": {
+            name: "Buntglasfenster der Kapelle des King’s College",
+          },
+          "portrait-of-isabella-d-este": {
+            name: "Porträt der Isabella d’Este",
+            original: "Bildnis der Isabella d’Este",
+          },
+          lion: {
+            name: "Löwe",
+          },
+          "the-resurrection": {
+            name: "Die Auferstehung",
+          },
+          "the-monkey-painter": {
+            name: "Der Affenmaler",
+          },
+          "the-monkey-dentist": {
+            name: "Der Affenzahnarzt",
+          },
+          "the-monkey-antiquarian": {
+            name: "Der Affenantiquar",
+          },
+          "the-monkey-sculptor": {
+            name: "Der Affenbildhauer",
+          },
+          "the-ricotta-eaters": {
+            name: "Die Ricottaesser",
+            original: "Die Ricottaesser",
+          },
+          "the-beaneater": {
+            name: "Der Bohnenesser",
+            original: "Der Bohnenesser",
+          },
+          "the-fat-kitchen": {
+            name: "Die fette Küche",
+            original: "Die fette Küche",
+          },
+          "the-thin-kitchen": {
+            name: "Die magere Küche",
+            original: "Die magere Küche",
+          },
+          "the-gardener": {
+            name: "Der Gärtner",
+          },
+          "the-cook": {
+            name: "Der Koch",
+            original: "Der Koch",
+          },
+          "landscape-shaped-like-a-face": {
+            name: "Landschaft in Form eines Gesichts",
+          },
+          "the-four-seasons-ii-spring": {
+            name: "Die Jahreszeiten II: Frühling",
+            original: "Vier Jahreszeiten: Frühling",
+          },
+          "the-four-seasons-ii-summer": {
+            name: "Die Jahreszeiten II: Sommer",
+            original: "Vier Jahreszeiten: Sommer",
+          },
+          "the-four-seasons-ii-autumn": {
+            name: "Die Jahreszeiten II: Herbst",
+            original: "Vier Jahreszeiten: Herbst",
+          },
+          "the-four-seasons-ii-winter": {
+            name: "Die Jahreszeiten II: Winter",
+            original: "Vier Jahreszeiten: Winter",
+          },
+          "the-four-seasons-i-spring": {
+            name: "Die Jahreszeiten I: Frühling",
+            original: "Die Jahreszeiten: Frühling",
+          },
+          "the-four-seasons-i-summer": {
+            name: "Die Jahreszeiten I: Sommer",
+            original: "Die Jahreszeiten: Sommer",
+          },
+          "the-four-seasons-i-autumn": {
+            name: "Die Jahreszeiten I: Herbst",
+            original: "Die Jahreszeiten: Herbst",
+          },
+          "the-four-seasons-i-winter": {
+            name: "Die Jahreszeiten I: Winter",
+            original: "Die Jahreszeiten: Winter",
+          },
+        },
+      },
       layoutsLink: "Freischalten, Sterne und Stufenreihenfolge",
       sections: [
         {
@@ -1545,7 +1764,7 @@ const de: Dictionary = {
   artworkEditor: {
     title: "Artwork-Katalog bearbeiten",
     eyebrow: "Artwork",
-    lede: "Sets und Gemälde anlegen, vorhandene bearbeiten und Helden aus dem Helden-Katalog zuordnen. Der Entwurf bleibt in diesem Browser; exportiere ihn, wenn du fertig bist.",
+    lede: "Gemäldesets und Gemälde hinzufügen, vorhandene bearbeiten, Helden aus der Heldenliste zuordnen und zu jedem Gemälde das Bild hochladen. Der Entwurf, Bilder inklusive, bleibt nur in diesem Browser; exportiere ihn, wenn du fertig bist.",
     back: "Zurück zu Artwork",
     openEditor: "Katalog bearbeiten",
     savedNote: "Entwurf in diesem Browser gespeichert",
@@ -1585,9 +1804,26 @@ const de: Dictionary = {
     removePainting: "Gemälde löschen",
     removePaintingConfirm: "Das Gemälde {painting} löschen?",
     removeHeroNamed: "{hero} entfernen",
+    fieldOriginal: "Originaltitel",
+    fieldOriginalHint: "Der Titel des echten Kunstwerks, in jeder Sprache. Leer lassen, wenn das Spiel den Titel übernimmt oder das Werk nicht sicher ist.",
+    fieldArtist: "Künstler",
+    fieldYear: "Jahr",
+    fieldCirca: "ungefähr",
+    imageHeading: "Bild",
+    imageHint: "Das Gemälde aus dem Spiel ohne Rahmen. Uploads werden im Browser auf 480 px WebP verkleinert.",
+    uploadImage: "Bild hochladen",
+    replaceImage: "Bild ersetzen",
+    removeImage: "Bild entfernen",
+    dropHint: "oder Bild hier ablegen",
+    uploadNotImage: "Diese Datei ist kein Bild, das dieser Browser lesen kann.",
+    uploadTooBig: "Bilder dürfen bis zu 10 MB groß sein.",
+    storageFull: "Der Entwurf passt nicht mehr in den Speicher dieses Browsers. Exportiere und committe den bisherigen Stand, bevor du weitere Bilder hinzufügst.",
+    uploadsHeading: "Neue Bilder für public/artwork/ ({count})",
+    removedHeading: "Aus public/artwork/ löschen ({count})",
+    downloadAll: "Alle herunterladen",
     close: "Schließen",
     exportTitle: "Artwork-Katalog exportieren",
-    exportLede: "Ersetze lib/data/paintings.json durch diese Datei und committe sie, oder schicke sie an jemanden, der das kann. Die Seite aktualisiert sich nach dem Merge.",
+    exportLede: "Ersetze lib/data/paintings.json durch diese Datei, lege neue Bilder in public/artwork/ ab, lösche die entfernten und füge die Textblöcke in die genannten Wörterbücher ein. Die Seite aktualisiert sich, sobald die Änderung gemerged ist.",
     copy: "Kopieren",
     copied: "Kopiert",
     download: "Herunterladen",

@@ -63,3 +63,39 @@ test("set-skill ranking swaps the first slot and keeps Autumn's eight named sets
     assert.equal(setSkillRank(build).length, 8, build);
   }
 });
+
+test("every painting picture exists, none is left over, and the translations name real paintings", async () => {
+  const { readdirSync } = await import("node:fs");
+  const listed = PAINTING_SETS.flatMap((entry) => entry.paintings.map((canvas) => canvas.image)).filter(Boolean);
+  const files = readdirSync(new URL("../public/artwork/", import.meta.url));
+  assert.deepEqual([...files].sort(), [...listed].sort());
+  const ids = new Set(PAINTING_SETS.flatMap((entry) => entry.paintings.map((canvas) => canvas.id)));
+  const setIds = new Set(PAINTING_SETS.map((entry) => entry.id));
+  for (const code of LOCALE_CODES) {
+    const texts = getDictionary(code).guideEntries.artwork.catalogTexts;
+    for (const id of Object.keys(texts.paintings ?? {})) assert.ok(ids.has(id), `${code}: ${id} is not a painting`);
+    for (const id of Object.keys(texts.sets ?? {})) assert.ok(setIds.has(id), `${code}: ${id} is not a set`);
+  }
+  for (const canvas of PAINTING_SETS.flatMap((entry) => entry.paintings)) {
+    if (canvas.circa) assert.ok(canvas.year, `${canvas.id}: circa without a year`);
+    if (canvas.year) assert.match(canvas.year, /^\d{3,4}(–\d{3,4})?$/, `${canvas.id}: year ${canvas.year}`);
+  }
+});
+
+test("the catalogue search finds heroes, painting names and originals in every language, and artists", async () => {
+  const { searchCatalogue, originalTitle } = await import("../lib/content/artwork.ts");
+  const catalogs = LOCALE_CODES.map((code) => getDictionary(code).guideEntries.artwork.catalogTexts);
+  const ids = (query) => searchCatalogue(query, catalogs).map((hit) => hit.painting.id);
+  assert.ok(ids("Achilles").includes("young-hare"));
+  assert.deepEqual(ids("Die Schaukel"), ["the-swing"]);
+  assert.deepEqual(ids("escarpolette"), ["the-swing"]);
+  assert.deepEqual(ids("nighthawks"), ["nightshade"]);
+  assert.ok(ids("van gogh").includes("cafe-terrace-at-night"));
+  assert.ok(ids("durer").includes("young-hare"), "accents do not matter");
+  assert.deepEqual(searchCatalogue("", catalogs), []);
+
+  const swing = PAINTING_SETS.flatMap((entry) => entry.paintings).find((canvas) => canvas.id === "the-swing");
+  const french = getDictionary("fr").guideEntries.artwork.catalogTexts;
+  assert.equal(originalTitle(swing, french), "Les Hasards heureux de l’escarpolette");
+  assert.equal(originalTitle(swing, {}), "The Swing");
+});

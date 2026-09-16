@@ -286,14 +286,33 @@ page is hidden here.
   Heroes roster that is not already on that canvas, grouped by rarity.
 - Autumn’s catalogue has no UR+ heroes except Joan of Arc; the export dialog
   warns if a UR+ name is attached.
+- **Picture** takes the painting from the game without its frame. It is shrunk
+  to 480 px WebP in the browser and exported as `public/artwork/<id>.webp`.
+- **Original title**, **Artist**, and **Year** (with **approximate**) name the
+  real artwork the painting is based on. The English original only goes into
+  the JSON when the game renames the work (Nightshade is Hopper’s
+  *Nighthawks*); every language can have its own original title. Leave them
+  empty when the picture or the title does not settle which work it is.
+
+On the page, each painting shows its picture in the frame colour of its rarity,
+or an empty slot. Clicking a picture opens it larger with the original title in
+every language. The search matches heroes, painting names and original titles
+in every language, and artists, without caring about accents.
+
+The pictures in `public/artwork/` were cut out of German client screenshots on
+16 September 2026; the German in-game names on those screenshots are the German
+`name` entries in `catalogTexts`. Original titles, artists, and years were
+checked against Wikipedia, Wikidata, and the holding museums. `tests/artwork.test.mjs`
+checks that every listed picture exists and none is left over.
 
 The draft is saved in that browser only
-(`localStorage['popepoch-artwork-catalogue-draft']`). **Export** produces the
-complete `lib/data/paintings.json` in English. For each dictionary whose
-translations changed, it also gives a `catalogTexts` block to replace inside
-`guideEntries.artwork`. That block holds set names, set skills, painting names,
-and productivity. An untouched draft exports the published file byte for byte
-(`tests/artwork-editor.test.mjs`).
+(`localStorage['popepoch-artwork-catalogue-draft']`), pictures included.
+**Export** produces the complete `lib/data/paintings.json` in English, the new
+pictures to put into `public/artwork/`, and the ones to delete. For each
+dictionary whose translations changed, it also gives a `catalogTexts` block to
+replace inside `guideEntries.artwork`. That block holds set names, set skills,
+painting names, productivity, and original titles. An untouched draft exports
+the published file byte for byte (`tests/artwork-editor.test.mjs`).
 
 ## Editing heroes
 

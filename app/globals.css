@@ -3038,6 +3038,117 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
 }
 .painting-facts dd { margin: 0; color: var(--ink-soft); font-size: .84rem; }
 .pick-stat { padding: 4px 10px; }
+.artwork-year-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; }
+.artwork-year-row input[inputmode] { max-width: 10rem; }
+
+/* Painting pictures sit in the game's frame colours: silver for SSR, copper for SR, walnut for R. */
+.painting-block { display: flex; flex-direction: column; }
+.painting-art {
+  --frame: #a3abc0;
+  display: grid;
+  place-items: center;
+  height: 196px;
+  margin: 0 0 12px;
+  padding: 14px;
+  border: 0;
+  border-radius: var(--r-md);
+  background:
+    radial-gradient(ellipse at 50% 30%, color-mix(in srgb, var(--frame) 26%, transparent), transparent 70%),
+    color-mix(in srgb, var(--inverse) 88%, var(--frame));
+  font: inherit;
+  cursor: zoom-in;
+}
+.painting-art[data-rarity="SR"] { --frame: #c07a45; }
+.painting-art[data-rarity="R"] { --frame: #8a6649; }
+.painting-art img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  /* The box is 196 px tall with 14 px of padding. */
+  max-height: 168px;
+  border: 4px solid var(--frame);
+  border-radius: 3px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, .35), 0 10px 22px rgba(0, 0, 0, .4);
+  transition: transform .2s ease;
+}
+.painting-art:hover img { transform: translateY(-2px) scale(1.03); }
+.painting-art:focus-visible { outline: none; box-shadow: var(--ring); }
+.painting-art.is-empty {
+  align-content: center;
+  gap: 6px;
+  border: 1.5px dashed color-mix(in srgb, var(--frame) 45%, var(--line));
+  background: repeating-linear-gradient(-45deg, color-mix(in srgb, var(--frame) 7%, transparent) 0 8px, transparent 8px 16px), var(--surface-2);
+  color: color-mix(in srgb, var(--frame) 60%, var(--ink-faint));
+  cursor: default;
+}
+.painting-art-icon { width: 34px; height: 34px; opacity: .75; }
+.painting-art.is-empty span { color: var(--ink-faint); font-size: .72rem; font-weight: 600; }
+.article .painting-original { margin: -4px 0 10px; color: var(--ink-soft); font-size: .8rem; line-height: 1.45; }
+.painting-original cite { color: var(--ink); font-style: italic; }
+.painting-original-label { color: var(--ink-faint); font-size: .64rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+
+.painting-detail {
+  --frame: #a3abc0;
+  width: min(880px, calc(100vw - 24px));
+  max-height: calc(100dvh - 32px);
+  padding: 0;
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--r-xl);
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: var(--shadow-3);
+}
+.painting-detail[data-rarity="SR"] { --frame: #c07a45; }
+.painting-detail[data-rarity="R"] { --frame: #8a6649; }
+.painting-detail[open] { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); }
+.painting-detail::backdrop { background: rgba(10, 8, 6, .6); }
+.painting-detail-close { position: absolute; top: 12px; right: 12px; z-index: 1; }
+.painting-detail-art {
+  display: grid;
+  place-items: center;
+  min-height: 300px;
+  padding: 28px;
+  background:
+    radial-gradient(ellipse at 50% 35%, color-mix(in srgb, var(--frame) 30%, transparent), transparent 70%),
+    #16120e;
+}
+.painting-detail-art img {
+  display: block;
+  width: 100%;
+  height: min(62dvh, 460px);
+  object-fit: contain;
+  filter: drop-shadow(0 14px 28px rgba(0, 0, 0, .55));
+}
+.painting-detail-body { padding: 26px 26px 24px; }
+.painting-detail-body h2 { margin: 6px 44px 4px 0; font-size: 1.45rem; line-height: 1.2; }
+.painting-detail-body h3 { margin: 18px 0 8px; color: var(--ink-faint); font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; }
+.painting-detail-set { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0; color: var(--ink-soft); font-size: .84rem; }
+.painting-detail-credit { margin: 0 0 8px; font-size: .95rem; font-weight: 650; }
+.painting-detail-titles { display: grid; gap: 6px; margin: 0; }
+.painting-detail-titles > div {
+  display: grid;
+  grid-template-columns: 6.5rem minmax(0, 1fr);
+  gap: 10px;
+  align-items: baseline;
+  padding: 6px 10px;
+  border-radius: var(--r-sm);
+  background: var(--surface-2);
+}
+.painting-detail-titles dt { color: var(--ink-faint); font-size: .72rem; font-weight: 650; }
+.painting-detail-titles dd { margin: 0; font-size: .9rem; }
+.painting-detail-titles cite { font-style: italic; }
+@media (max-width: 720px) {
+  .painting-detail[open] { grid-template-columns: minmax(0, 1fr); }
+  .painting-detail-art { min-height: 0; padding: 20px; }
+  .painting-detail-art img { height: min(46dvh, 360px); }
+  .painting-detail-body { padding: 18px 18px 20px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .painting-art img { transition: none; }
+  .painting-art:hover img { transform: none; }
+}
 
 /* Four short tabs wrap instead of scrolling, so none hides off-screen on a phone. */
 .build-tabs {

@@ -13,6 +13,7 @@
 import { HEROES } from "./heroes.ts";
 import {
   PAINTING_RARITIES,
+  PAINTING_SETS,
   PAINTING_STATS,
   type Painting,
   type PaintingRarity,
@@ -27,6 +28,9 @@ import { dictionaryLiteral } from "../i18n/translations.ts";
 
 export type PaintingCatalogueData = { sets: PaintingSet[] };
 
+/** A published picture has `file`; one uploaded in the editor has `data`. */
+export type EditorImage = { uid: string; file?: string; data?: string };
+
 export type EditorPainting = {
   uid: string;
   id: string;
@@ -35,9 +39,18 @@ export type EditorPainting = {
   stats: PaintingStat[];
   starStats: PaintingStat[];
   productivity: string;
-  /** Name and productivity in the other languages; the fields above are English. */
+  /** The real artwork this painting is based on: English title, artist, year. */
+  original: string;
+  artist: string;
+  year: string;
+  circa: boolean;
+  image: EditorImage | null;
+  /** Name, productivity, and original title in the other languages; the fields above are English. */
   texts: Partial<Record<Locale, PaintingText>>;
 };
+
+/** Pictures are shrunk to this edge length in the browser before they are stored. */
+export const PAINTING_IMAGE_MAX_EDGE = 480;
 
 export type EditorSet = {
   uid: string;
@@ -111,6 +124,11 @@ function copyPainting(canvas: Painting, uid: string, catalogs: Partial<Record<Lo
     stats: cleanStats(canvas.stats),
     starStats: cleanStats(canvas.starStats ?? []),
     productivity: canvas.productivity ?? "",
+    original: canvas.original ?? "",
+    artist: canvas.artist ?? "",
+    year: canvas.year ?? "",
+    circa: Boolean(canvas.circa),
+    image: canvas.image ? { uid: `${uid}-image`, file: canvas.image } : null,
     texts: textsFor(mapLocales((locale) => catalogs[locale]?.paintings), canvas.id),
   };
 }
@@ -132,7 +150,7 @@ export function fromCatalogue(data: PaintingCatalogueData, catalogs: Partial<Rec
   };
 }
 
-function cleanPainting(canvas: EditorPainting): Painting {
+function cleanPainting(canvas: EditorPainting, image: string): Painting {
   const painting: Painting = {
     id: canvas.id,
     name: canvas.name.trim(),
@@ -142,19 +160,66 @@ function cleanPainting(canvas: EditorPainting): Painting {
   };
   const starStats = cleanStats(canvas.starStats);
   if (starStats.length) painting.starStats = starStats;
+  if (canvas.original.trim()) painting.original = canvas.original.trim();
+  if (canvas.artist.trim()) painting.artist = canvas.artist.trim();
+  if (canvas.year.trim()) {
+    painting.year = canvas.year.trim();
+    if (canvas.circa) painting.circa = true;
+  }
+  if (image) painting.image = image;
   return painting;
 }
 
-export function toCatalogue(state: EditorState): PaintingCatalogueData {
-  return {
+/** Uploads are re-encoded in the browser, so only these raster types are kept. */
+const IMAGE_DATA = /^data:image\/(webp|png|jpeg);base64,[A-Za-z0-9+/]+=*$/;
+
+export function isImageData(value: unknown): value is string {
+  return typeof value === "string" && IMAGE_DATA.test(value);
+}
+
+export type ArtworkUpload = { file: string; data: string; painting: string };
+export type ArtworkExport = { data: PaintingCatalogueData; uploads: ArtworkUpload[]; removedFiles: string[] };
+
+/**
+ * The catalogue as it would be committed. Each uploaded picture gets a file
+ * name from its painting's id, and pictures the draft no longer uses are listed
+ * for deletion.
+ */
+export function exportArtwork(state: EditorState, published: PaintingCatalogueData = { sets: PAINTING_SETS }): ArtworkExport {
+  const publishedFiles = published.sets.flatMap((set) => set.paintings.map((canvas) => canvas.image ?? "")).filter(Boolean);
+  const taken = new Set([
+    ...publishedFiles,
+    ...state.sets.flatMap((set) => set.paintings.map((canvas) => canvas.image?.file ?? "")).filter(Boolean),
+  ]);
+  const uploads: ArtworkUpload[] = [];
+  const data: PaintingCatalogueData = {
     sets: state.sets.map((set) => ({
       id: set.id,
       name: set.name.trim(),
       rarity: set.rarity,
       effect: set.effect.trim(),
-      paintings: set.paintings.map(cleanPainting),
+      paintings: set.paintings.map((canvas) => {
+        let file = canvas.image?.file ?? "";
+        if (!file && canvas.image?.data) {
+          const mime = IMAGE_DATA.exec(canvas.image.data)?.[1] ?? "webp";
+          const ext = mime === "jpeg" ? "jpg" : mime;
+          file = `${canvas.id}.${ext}`;
+          let counter = 2;
+          while (taken.has(file)) file = `${canvas.id}-${counter++}.${ext}`;
+          taken.add(file);
+          uploads.push({ file, data: canvas.image.data, painting: canvas.name.trim() || canvas.id });
+        }
+        return cleanPainting(canvas, file);
+      }),
     })),
   };
+  const kept = new Set(data.sets.flatMap((set) => set.paintings.map((canvas) => canvas.image ?? "")).filter(Boolean));
+  const removedFiles = [...new Set(publishedFiles)].filter((file) => !kept.has(file));
+  return { data, uploads, removedFiles };
+}
+
+export function toCatalogue(state: EditorState): PaintingCatalogueData {
+  return exportArtwork(state).data;
 }
 
 export function findSet(state: EditorState, uid: string): EditorSet | undefined {
@@ -217,7 +282,7 @@ export function addPainting(state: EditorState, setUid: string, name = ""): { st
       ...withSet(state, setUid, {
         paintings: [
           ...set.paintings,
-          { uid, id, name, heroes: [], stats: [], starStats: [], productivity: "", texts: {} },
+          { uid, id, name, heroes: [], stats: [], starStats: [], productivity: "", original: "", artist: "", year: "", circa: false, image: null, texts: {} },
         ],
       }),
       nextId: state.nextId + 1,
@@ -238,13 +303,38 @@ export function removePainting(state: EditorState, paintingUid: string): EditorS
 export function updatePainting(
   state: EditorState,
   paintingUid: string,
-  patch: Partial<Pick<EditorPainting, "name" | "productivity" | "stats" | "starStats">>,
+  patch: Partial<Pick<EditorPainting, "name" | "productivity" | "stats" | "starStats" | "original" | "artist" | "year" | "circa">>,
 ): EditorState {
   return withSets(
     state,
     state.sets.map((set) => ({
       ...set,
       paintings: set.paintings.map((canvas) => (canvas.uid === paintingUid ? { ...canvas, ...patch } : canvas)),
+    })),
+  );
+}
+
+export function setPaintingImage(state: EditorState, paintingUid: string, data: string): EditorState {
+  if (!isImageData(data)) return state;
+  const image: EditorImage = { uid: `i${state.nextId}`, data };
+  return {
+    ...withSets(
+      state,
+      state.sets.map((set) => ({
+        ...set,
+        paintings: set.paintings.map((canvas) => (canvas.uid === paintingUid ? { ...canvas, image } : canvas)),
+      })),
+    ),
+    nextId: state.nextId + 1,
+  };
+}
+
+export function removePaintingImage(state: EditorState, paintingUid: string): EditorState {
+  return withSets(
+    state,
+    state.sets.map((set) => ({
+      ...set,
+      paintings: set.paintings.map((canvas) => (canvas.uid === paintingUid ? { ...canvas, image: null } : canvas)),
     })),
   );
 }
@@ -321,6 +411,11 @@ export function serializePaintingData(data: PaintingCatalogueData): string {
       };
       if (canvas.productivity) row.productivity = canvas.productivity;
       if (canvas.starStats?.length) row.starStats = [...canvas.starStats];
+      if (canvas.original) row.original = canvas.original;
+      if (canvas.artist) row.artist = canvas.artist;
+      if (canvas.year) row.year = canvas.year;
+      if (canvas.circa) row.circa = true;
+      if (canvas.image) row.image = canvas.image;
       return `      ${JSON.stringify(row)}${paintingIndex < set.paintings.length - 1 ? "," : ""}`;
     });
     return [head, ...body, `    ] }${index < all.length - 1 ? "," : ""}`].join("\n");
@@ -475,6 +570,14 @@ export function parseDraft(raw: string | null): EditorState | null {
         if (typeof canvas.uid !== "string" || typeof canvas.id !== "string" || typeof canvas.name !== "string") return null;
         if (!Array.isArray(canvas.heroes) || !Array.isArray(canvas.stats) || !Array.isArray(canvas.starStats)) return null;
         if (typeof canvas.productivity !== "string") return null;
+        // Drafts from before pictures and original titles start without them.
+        for (const field of ["original", "artist", "year"] as const) {
+          if (typeof canvas[field] !== "string") canvas[field] = "";
+        }
+        canvas.circa = canvas.circa === true;
+        const image = canvas.image as EditorImage | null | undefined;
+        if (!image) canvas.image = null;
+        else if (typeof image.uid !== "string" || (image.data !== undefined && !isImageData(image.data)) || (!image.file && !image.data)) return null;
       }
     }
     return value;
