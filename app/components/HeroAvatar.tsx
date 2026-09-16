@@ -1,4 +1,4 @@
-import { heroNamed, heroPortrait } from "../../lib/content/heroes";
+import { heroNamed, heroPortrait, type HeroRarity } from "../../lib/content/heroes";
 
 function lastInitial(name: string): string {
   const parts = name.trim().split(/\s+/);
@@ -14,15 +14,18 @@ export function HeroAvatar({
   name,
   className = "pick-avatar",
   fallback,
+  rarity,
 }: {
   name: string;
   className?: string;
+  /** The frame's rarity when it differs from the roster's, like a tier list placement. */
+  rarity?: HeroRarity;
   /** Text shown without a portrait; defaults to the initial of the last word. */
   fallback?: string;
 }) {
   const src = heroPortrait(name);
   return (
-    <span className={src ? `${className} has-portrait` : className} data-rarity={heroNamed(name)?.rarity} aria-hidden="true">
+    <span className={src ? `${className} has-portrait` : className} data-rarity={rarity ?? heroNamed(name)?.rarity} aria-hidden="true">
       {src ? (
         // A static export cannot run next/image optimisation; the files are already small WebP.
         // eslint-disable-next-line @next/next/no-img-element
