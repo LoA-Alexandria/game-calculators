@@ -219,6 +219,14 @@ the top of the page is hidden here.
   tier.
 - A text the dictionaries do not have yet (a new effect, note, or reason) can be
   typed in English, German, and French from the **New text…** option.
+- **Quality** is the rarity a placement is rated at, for heroes whose rarity
+  changes in the game. Joan of Arc is SS at UR+ and S at UR, so each entry sets
+  its own `rarity` and gets that frame (UR+ with the glow, UR red, SSR gold) and
+  an "at UR+" caption. Left at **As in the Heroes roster**, the entry has no
+  `rarity` and follows `lib/data/heroes.json`. The same hero may appear twice in
+  one list when the rarity or the variant differs; the rarity filter on the page
+  uses the placement's rarity. Drafts that still use the old `atUr` / `atUrPlus`
+  variants load with the rarity instead.
 
 The draft is saved in that browser only (`localStorage['popepoch-tier-draft']`).
 **Export** produces:

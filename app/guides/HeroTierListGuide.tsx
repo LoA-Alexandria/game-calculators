@@ -10,8 +10,10 @@ import {
   ROLE_GROUPS,
   TIER_IDS,
   UTILITY_TIERS,
+  entryRarity,
   matchesHero,
   parseGrade,
+  placementCaption,
   roleGroup,
   tierPlacements,
   type BattleEntry,
@@ -53,14 +55,15 @@ type Card =
 
 type Filter = { query: string; rarity: HeroRarity | "all" };
 
-function visible(hero: string, filter: Filter): boolean {
-  if (!matchesHero(hero, filter.query)) return false;
-  return filter.rarity === "all" || heroNamed(hero)?.rarity === filter.rarity;
+/** A placement's rarity counts for the filter, so Joan of Arc at UR+ shows under UR+. */
+function visible(entry: { hero: string; rarity?: HeroRarity }, filter: Filter): boolean {
+  if (!matchesHero(entry.hero, filter.query)) return false;
+  return filter.rarity === "all" || entryRarity(entry) === filter.rarity;
 }
 
 function cardKey(card: Card): string {
   const extra = card.list === "utility" ? card.entry.effect : card.list === "productivity" ? card.resource : "";
-  return `${card.list}-${card.tier}-${card.entry.hero}-${card.entry.variant ?? ""}-${extra}-${card.entry.note ?? ""}`;
+  return `${card.list}-${card.tier}-${card.entry.hero}-${card.entry.rarity ?? ""}-${card.entry.variant ?? ""}-${extra}-${card.entry.note ?? ""}`;
 }
 
 function GradeCell({ grade, label, short, empty }: { grade?: Grade; label: string; short: string; empty: string }) {
@@ -118,22 +121,23 @@ function CardTags({ card, guide }: { card: Card; guide: Guide }) {
 function TierCard({ card, guide, onOpen }: { card: Card; guide: Guide; onOpen: (card: Card) => void }) {
   const { tf } = useLocale();
   const { entry } = card;
-  const hero = heroNamed(entry.hero);
+  const rarity = entryRarity(entry);
+  const caption = placementCaption(guide, entry);
   const linker = (card.list === "overall" || card.list === "battle") && card.entry.linker;
   const situational = card.list === "utility" && card.entry.situational;
   const hasMore = Boolean(entry.note || (card.list === "overall" && card.entry.reason));
   return (
-    <li className="tl-card" data-rarity={hero?.rarity}>
+    <li className="tl-card" data-rarity={rarity}>
       <button type="button" className="tl-card-button" aria-haspopup="dialog" onClick={() => onOpen(card)}>
         <span className="tl-card-art">
-          <HeroPortrait name={entry.hero} rarity={hero?.rarity} src={heroPortrait(entry.hero)} className="tl-portrait" />
+          <HeroPortrait name={entry.hero} rarity={rarity} src={heroPortrait(entry.hero)} className="tl-portrait" />
           {card.list === "overall" && card.rank ? <span className="tl-rank">{tf(guide.rank, { rank: card.rank })}</span> : null}
           {linker ? <span className="tl-flag" title={guide.linker}>L</span> : null}
           {situational ? <span className="tl-flag" title={guide.situational}>~</span> : null}
           {hasMore ? <span className="tl-more" aria-hidden="true">i</span> : null}
         </span>
         <span className="tl-card-name">{entry.hero}</span>
-        {entry.variant ? <span className="tl-card-variant">{guide.variants[entry.variant]}</span> : null}
+        {caption ? <span className="tl-card-variant">{caption}</span> : null}
         <CardTags card={card} guide={guide} />
         {linker ? <span className="visually-hidden">{guide.linker}</span> : null}
         {situational ? <span className="visually-hidden">{guide.situational}</span> : null}
@@ -159,21 +163,21 @@ function rowsFor(list: TierListId, guide: Guide, filter: Filter): Row[] {
       meta: row.ordered ? guide.ordered : undefined,
       cards: row.entries
         .map((entry, index): Card => ({ list: "overall", tier: row.tier, entry, ...(row.ordered ? { rank: index + 1 } : {}) }))
-        .filter((card) => visible(card.entry.hero, filter)),
+        .filter((card) => visible(card.entry, filter)),
     }));
   }
   if (list === "battle") {
     return BATTLE_TIERS.map((row) => ({
       tier: row.tier,
       description: guide.battleTiers[row.tier],
-      cards: row.entries.map((entry): Card => ({ list: "battle", tier: row.tier, entry })).filter((card) => visible(card.entry.hero, filter)),
+      cards: row.entries.map((entry): Card => ({ list: "battle", tier: row.tier, entry })).filter((card) => visible(card.entry, filter)),
     }));
   }
   if (list === "utility") {
     return UTILITY_TIERS.map((row) => ({
       tier: row.tier,
       description: guide.utilityTiers[row.tier],
-      cards: row.entries.map((entry): Card => ({ list: "utility", tier: row.tier, entry })).filter((card) => visible(card.entry.hero, filter)),
+      cards: row.entries.map((entry): Card => ({ list: "utility", tier: row.tier, entry })).filter((card) => visible(card.entry, filter)),
     }));
   }
   return TIER_IDS.map((tier) => ({
@@ -182,7 +186,7 @@ function rowsFor(list: TierListId, guide: Guide, filter: Filter): Row[] {
     cards: (PRODUCTIVITY_TIERS.find((row) => row.tier === tier)?.groups ?? []).flatMap((group) =>
       group.entries
         .map((entry): Card => ({ list: "productivity", tier, entry, resource: group.resource }))
-        .filter((card) => visible(card.entry.hero, filter)),
+        .filter((card) => visible(card.entry, filter)),
     ),
   }));
 }
@@ -396,23 +400,25 @@ function TierDetail({
   }, []);
   const { entry } = card;
   const hero = heroNamed(entry.hero);
+  const rarity = entryRarity(entry);
+  const caption = placementCaption(guide, entry);
   const placements = tierPlacements(entry.hero);
   const reason = card.list === "overall" ? card.entry.reason : undefined;
 
   return (
-    <dialog ref={attach} className="hero-detail tl-detail" data-rarity={hero?.rarity} aria-labelledby={`${id}-name`} onClose={onClose}>
+    <dialog ref={attach} className="hero-detail tl-detail" data-rarity={rarity} aria-labelledby={`${id}-name`} onClose={onClose}>
       <div className="hero-detail-nav">
         <button type="button" className="icon-button hero-detail-close" aria-label={guide.detailClose} onClick={() => dialog.current?.close()}>
           <CloseIcon className="icon icon-sm" />
         </button>
       </div>
       <header className="hero-detail-head">
-        <HeroPortrait name={entry.hero} rarity={hero?.rarity} src={heroPortrait(entry.hero)} className="hero-portrait-large" />
+        <HeroPortrait name={entry.hero} rarity={rarity} src={heroPortrait(entry.hero)} className="hero-portrait-large" />
         <div className="hero-detail-title">
           <h2 id={`${id}-name`}>{entry.hero}</h2>
           <p>
-            {hero ? <span className="rarity" data-rarity={hero.rarity}>{hero.rarity}</span> : null}
-            {entry.variant ? <span className="hero-obtain">{guide.variants[entry.variant]}</span> : null}
+            {rarity ? <span className="rarity" data-rarity={rarity}>{rarity}</span> : null}
+            {caption ? <span className="hero-obtain">{caption}</span> : null}
           </p>
           {hero ? (
             <p className="tl-detail-link">
@@ -471,7 +477,7 @@ function TierDetail({
                       .map((placement, index) => (
                         <span className="hero-link-tier" data-tier={placement.tier} key={`${placement.tier}-${index}`}>
                           <strong>{placement.tier}</strong>
-                          {placement.variant ? <small>{guide.variants[placement.variant]}</small> : null}
+                          {placement.rarity || placement.variant ? <small>{placementCaption(guide, placement)}</small> : null}
                           {placement.resource ? <small>{guide.resources[placement.resource]}</small> : null}
                         </span>
                       ))}

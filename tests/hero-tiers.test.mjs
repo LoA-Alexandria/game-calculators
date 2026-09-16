@@ -10,9 +10,12 @@ import {
   PRODUCTIVITY_TIERS,
   TIER_IDS,
   UTILITY_TIERS,
+  entryRarity,
   matchesHero,
   parseGrade,
+  placementCaption,
 } from "../lib/content/hero-tiers.ts";
+import { HERO_RARITIES } from "../lib/content/heroes.ts";
 
 // Every registered language, so a new dictionary is checked without editing this test.
 const LANGUAGES = mapLocales(getDictionary);
@@ -50,8 +53,8 @@ test("no hero is listed twice in the same form within one list", () => {
       seen.add(key);
     }
   };
-  check("overall", OVERALL_TIERS.flatMap((row) => row.entries.map((entry) => `${entry.hero}|${entry.variant ?? ""}`)));
-  check("battle", BATTLE_TIERS.flatMap((row) => row.entries.map((entry) => `${entry.hero}|${entry.variant ?? ""}`)));
+  check("overall", OVERALL_TIERS.flatMap((row) => row.entries.map((entry) => `${entry.hero}|${entry.rarity ?? ""}|${entry.variant ?? ""}`)));
+  check("battle", BATTLE_TIERS.flatMap((row) => row.entries.map((entry) => `${entry.hero}|${entry.rarity ?? ""}|${entry.variant ?? ""}`)));
   check("utility", UTILITY_TIERS.flatMap((row) => row.entries.map((entry) => `${entry.hero}|${entry.note ?? ""}`)));
   check("productivity", productivityEntries.map((entry) => `${entry.hero}|${entry.resource}`));
 });
@@ -140,7 +143,33 @@ test("every battle entry lands in a role column", async () => {
   assert.equal(roleGroup([]), "damage");
 
   const joan = tierPlacements("Joan of Arc");
-  assert.deepEqual(joan[0], { list: "overall", tier: "SS", variant: "atUrPlus" });
+  assert.deepEqual(joan[0], { list: "overall", tier: "SS", rarity: "UR+" });
   assert.ok(joan.some((placement) => placement.list === "battle"));
   assert.deepEqual(tierPlacements("Nobody"), []);
+});
+
+test("a placement can set the rarity it is rated at, and the frame follows it", () => {
+  const all = [
+    ...OVERALL_TIERS.flatMap((row) => row.entries),
+    ...BATTLE_TIERS.flatMap((row) => row.entries),
+    ...UTILITY_TIERS.flatMap((row) => row.entries),
+    ...productivityEntries,
+  ];
+  for (const entry of all) {
+    if (entry.rarity !== undefined) assert.ok(HERO_RARITIES.includes(entry.rarity), `${entry.hero}: ${entry.rarity}`);
+  }
+  const joan = OVERALL_TIERS.flatMap((row) => row.entries.filter((entry) => entry.hero === "Joan of Arc").map((entry) => [row.tier, entry.rarity]));
+  assert.deepEqual(joan, [["SS", "UR+"], ["S", "UR"]]);
+  assert.equal(entryRarity({ hero: "Joan of Arc", rarity: "UR+" }), "UR+");
+  assert.equal(entryRarity({ hero: "Joan of Arc" }), "SSR", "without its own rarity a placement follows the roster");
+  assert.equal(entryRarity({ hero: "Nobody" }), undefined);
+
+  for (const [code, dictionary] of Object.entries(LANGUAGES)) {
+    const text = dictionary.guideEntries.heroTierList;
+    assert.match(text.atRarity, /\{rarity\}/, `${code}.atRarity`);
+    assert.equal(placementCaption(text, {}), "");
+    assert.ok(placementCaption(text, { rarity: "UR+" }).includes("UR+"), code);
+  }
+  const english = en.guideEntries.heroTierList;
+  assert.equal(placementCaption(english, { rarity: "UR", variant: "withItem" }), `at UR · ${english.variants.withItem}`);
 });

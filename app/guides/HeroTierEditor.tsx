@@ -19,6 +19,7 @@ import {
 import { SortableContext, rectSortingStrategy, sortableKeyboardCoordinates, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { TIER_DATA, TIER_IDS, parseGrade, type TierId } from "../../lib/content/hero-tiers";
+import { HERO_RARITIES, heroNamed, type HeroRarity } from "../../lib/content/heroes";
 import {
   LIST_IDS,
   addGroup,
@@ -90,6 +91,19 @@ type Ctx = {
   keysFor: (group: TextGroup) => string[];
   languages: readonly Locale[];
 };
+
+/** A rarity the editor offers, or undefined for anything else a draft might hold. */
+function asRarity(value: string | undefined): HeroRarity | undefined {
+  return (HERO_RARITIES as readonly string[]).includes(value ?? "") ? (value as HeroRarity) : undefined;
+}
+
+/** The caption under a hero in the editor, the same as on the page: rarity, then variant. */
+function captionOf(ctx: Ctx, entry: LooseEntry): string {
+  const rarity = asRarity(entry.rarity);
+  return [rarity ? ctx.tf(ctx.text.atRarity, { rarity }) : "", entry.variant ? ctx.labelFor("variants", entry.variant) : ""]
+    .filter(Boolean)
+    .join(" · ");
+}
 
 function listLabel(text: Text, list: ListId): string {
   return { overall: text.tabOverall, battle: text.tabBattle, utility: text.tabUtility, productivity: text.tabProductivity }[list];
@@ -388,9 +402,9 @@ function SortableHero({ ctx, item, selected, onSelect }: { ctx: Ctx; item: Edito
         <GripIcon className="icon icon-sm" />
       </button>
       <button type="button" className="tier-edit-card" aria-pressed={selected} onClick={onSelect}>
-        <HeroAvatar name={item.entry.hero} className="pick-avatar tier-avatar" />
+        <HeroAvatar name={item.entry.hero} rarity={asRarity(item.entry.rarity)} className="pick-avatar tier-avatar" />
         <span className="tier-hero-name">{name}</span>
-        {item.entry.variant ? <small>{ctx.labelFor("variants", item.entry.variant)}</small> : null}
+        {captionOf(ctx, item.entry) ? <small>{captionOf(ctx, item.entry)}</small> : null}
         <span className="tier-edit-summary">{summaryOf(ctx, item.entry)}</span>
       </button>
     </li>
@@ -528,6 +542,7 @@ function Inspector({ ctx, item, container, onClose }: { ctx: Ctx; item: EditorIt
   const id = useId();
   const { state, commit, list, e } = ctx;
   const entry = item.entry;
+  const rosterRarity = heroNamed(entry.hero)?.rarity;
   const [bonusText, setBonusText] = useState((entry.bonus ?? []).join(" / "));
   const names = useMemo(() => {
     const all = new Set<string>();
@@ -594,6 +609,22 @@ function Inspector({ ctx, item, container, onClose }: { ctx: Ctx; item: EditorIt
             }}
           />
         ) : null}
+      </div>
+
+      <div className="field">
+        <label htmlFor={`${id}-rarity`}>{e.fieldRarity}</label>
+        <select
+          id={`${id}-rarity`}
+          value={asRarity(entry.rarity) ?? ""}
+          aria-describedby={`${id}-rarity-hint`}
+          onChange={(event) => patch({ rarity: event.target.value || undefined })}
+        >
+          <option value="">
+            {rosterRarity ? ctx.tf(e.rarityRoster, { rarity: rosterRarity }) : e.rarityRosterUnknown}
+          </option>
+          {HERO_RARITIES.map((rarity) => <option key={rarity} value={rarity}>{rarity}</option>)}
+        </select>
+        <p className="tier-small" id={`${id}-rarity-hint`}>{e.fieldRarityHint}</p>
       </div>
 
       <TextSelect ctx={ctx} group="variants" label={e.fieldVariant} value={entry.variant} optional onPick={pickText("variants", "variant")} />

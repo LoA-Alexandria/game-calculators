@@ -1,7 +1,7 @@
 {
   "overall": [
     { "tier": "SS", "ordered": true, "entries": [
-      {"hero":"Joan of Arc","variant":"atUrPlus","battle":"SS(SS+)","utility":"C","productivity":"A","reason":"joanUrPlus"},
+      {"hero":"Joan of Arc","rarity":"UR+","battle":"SS(SS+)","utility":"C","productivity":"A","reason":"joanUrPlus"},
       {"hero":"Odysseus","variant":"withItem","battle":"SS(S+)","utility":"A","productivity":"B","reason":"odysseusItem"},
       {"hero":"Achilles","variant":"withItem","battle":"SS","utility":"S","productivity":"B","reason":"achillesItem"}
     ] },
@@ -12,7 +12,7 @@
       {"hero":"Caesar","battle":"A>S","utility":"S","productivity":"A","reason":"caesar"},
       {"hero":"Achilles","variant":"withoutItem","battle":"S","utility":"S","productivity":"B","reason":"achilles"},
       {"hero":"Hammurabi","battle":"A","utility":"SS(S+)","productivity":"B","reason":"hammurabi"},
-      {"hero":"Joan of Arc","variant":"atUr","battle":"S","utility":"C","productivity":"A","reason":"joanUr"},
+      {"hero":"Joan of Arc","rarity":"UR","battle":"S","utility":"C","productivity":"A","reason":"joanUr"},
       {"hero":"Circe","battle":"S","utility":"A","productivity":"S"},
       {"hero":"Lu Bu","battle":"S","utility":"A","productivity":"S","reason":"luBu"},
       {"hero":"Lagertha","battle":"S","utility":"S","productivity":"B"},
@@ -95,14 +95,14 @@
   ],
   "battle": [
     { "tier": "SS", "entries": [
-      {"hero":"Joan of Arc","variant":"atUrPlus","roles":["crit","scalingAtk","execute"],"note":"joanScaling"},
+      {"hero":"Joan of Arc","rarity":"UR+","roles":["crit","scalingAtk","execute"],"note":"joanScaling"},
       {"hero":"Odysseus","roles":["dot","dotHeal","dotBuff"]},
       {"hero":"Lancelot","roles":["dot","debuffToDot"],"linker":true},
       {"hero":"King Arthur","roles":["dot","dotBuff","dmgReductionBuff"],"linker":true}
     ] },
     { "tier": "S", "entries": [
       {"hero":"Achilles","roles":["crit"]},
-      {"hero":"Joan of Arc","variant":"atUr","roles":["crit"]},
+      {"hero":"Joan of Arc","rarity":"UR","roles":["crit"]},
       {"hero":"Caesar","variant":"withNidhogg","roles":["pursuit"]},
       {"hero":"Pompey","roles":["heal","invincibilityBarrier"]},
       {"hero":"Queen Victoria","roles":["dotHeal","overflowShield"]},

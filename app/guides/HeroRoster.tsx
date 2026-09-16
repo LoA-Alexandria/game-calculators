@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCallback, useId, useMemo, useRef, useState, useSyncExternalStore, type KeyboardEvent } from "react";
 import { guideHref, guideLayout } from "../../lib/content/guides";
 import { heroAppearances } from "../../lib/content/hero-links";
+import { placementCaption } from "../../lib/content/hero-tiers";
 import { layoutTexts, type BuildZone } from "../../lib/content/hero-layouts";
 import type { PaintingTexts } from "../../lib/content/artwork";
 import {
@@ -442,9 +443,9 @@ function HeroDetail({ hero: row, guide, nameId }: { hero: Hero; guide: Guide; na
                 <Link href="/guides/hero-tier-list/">{guide.inTierList}</Link>
                 <span className="hero-link-values">
                   {found.tiers.map((entry, position) => (
-                    <span className="hero-link-tier" data-tier={entry.tier} key={`${entry.tier}-${entry.variant ?? position}`}>
+                    <span className="hero-link-tier" data-tier={entry.tier} key={`${entry.tier}-${position}`}>
                       <strong>{entry.tier}</strong>
-                      {entry.variant ? <small>{tierGuide.variants[entry.variant]}</small> : null}
+                      {entry.rarity || entry.variant ? <small>{placementCaption(tierGuide, entry)}</small> : null}
                     </span>
                   ))}
                 </span>

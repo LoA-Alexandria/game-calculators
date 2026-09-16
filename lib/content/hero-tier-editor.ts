@@ -15,6 +15,7 @@ import {
   type TierId,
   type TierListData,
 } from "./hero-tiers.ts";
+import { HERO_RARITIES } from "./heroes.ts";
 import { LOCALE_CODES, dictionaryFile, getDictionary, type Locale } from "../i18n/index.ts";
 import { parseTranslations, textIn, translationsFrom, type Translations } from "../i18n/translations.ts";
 
@@ -35,6 +36,8 @@ export type CustomTexts = Record<TextGroup, Record<string, Translations>>;
 /** Every field any list uses; each list reads only its own. */
 export type LooseEntry = {
   hero: string;
+  /** The rarity this placement is rated at; empty means the roster's. */
+  rarity?: string;
   variant?: string;
   note?: string;
   battle?: string;
@@ -113,16 +116,16 @@ export function fromTierData(data: TierListData): EditorState {
 }
 
 const KEY_ORDER: (keyof LooseEntry)[] = [
-  "hero", "variant", "battle", "utility", "productivity", "roles", "effect", "bonus", "situational", "linker", "note", "reason",
+  "hero", "rarity", "variant", "battle", "utility", "productivity", "roles", "effect", "bonus", "situational", "linker", "note", "reason",
 ];
 
 /** Drops empty optional fields and fixes the key order, so exports diff cleanly. */
 export function cleanEntry(list: ListId, entry: LooseEntry): LooseEntry {
   const allowed: Record<ListId, (keyof LooseEntry)[]> = {
-    overall: ["hero", "variant", "battle", "utility", "productivity", "linker", "note", "reason"],
-    battle: ["hero", "variant", "roles", "linker", "note"],
-    utility: ["hero", "variant", "effect", "situational", "note"],
-    productivity: ["hero", "variant", "bonus", "note"],
+    overall: ["hero", "rarity", "variant", "battle", "utility", "productivity", "linker", "note", "reason"],
+    battle: ["hero", "rarity", "variant", "roles", "linker", "note"],
+    utility: ["hero", "rarity", "variant", "effect", "situational", "note"],
+    productivity: ["hero", "rarity", "variant", "bonus", "note"],
   };
   const clean: Record<string, unknown> = {};
   for (const key of KEY_ORDER) {
@@ -356,16 +359,18 @@ export function longestIncreasing(values: number[]): number {
   return tails.length;
 }
 
-type Placed = { container: string; index: number; content: string };
+type Placed = { container: string; index: number; content: string; hero: string };
 
 function placements(data: TierListData, list: ListId): Map<string, Placed> {
   const map = new Map<string, Placed>();
   const seen = new Map<string, number>();
   const add = (entry: LooseEntry, container: string, index: number) => {
-    const base = `${entry.hero}|${entry.variant ?? ""}`;
+    // The rarity tells Joan of Arc at UR and at UR+ apart; `hero` pairs up a placement whose rarity changed.
+    const hero = `${entry.hero}|${entry.variant ?? ""}`;
+    const base = `${hero}|${entry.rarity ?? ""}`;
     const count = (seen.get(base) ?? 0) + 1;
     seen.set(base, count);
-    map.set(`${base}#${count}`, { container, index, content: JSON.stringify(cleanEntry(list, entry)) });
+    map.set(`${base}#${count}`, { container, index, content: JSON.stringify(cleanEntry(list, entry)), hero });
   };
   if (list === "productivity") {
     for (const row of data.productivity) for (const group of row.groups) {
@@ -389,16 +394,23 @@ export function countChanges(published: TierListData, draft: TierListData): Reco
     const after = placements(draft, list);
     let changes = 0;
     const stayed = new Map<string, { key: string; before: number; after: number }[]>();
+    const added = new Map<string, number>();
+    const removed = new Map<string, number>();
+    const bump = (counts: Map<string, number>, hero: string) => counts.set(hero, (counts.get(hero) ?? 0) + 1);
     for (const [key, placed] of after) {
       const old = before.get(key);
-      if (!old) { changes += 1; continue; }
+      if (!old) { bump(added, placed.hero); continue; }
       if (old.container !== placed.container) { changes += 1; continue; }
       if (old.content !== placed.content) changes += 1;
       const bucket = stayed.get(placed.container) ?? [];
       bucket.push({ key, before: old.index, after: placed.index });
       stayed.set(placed.container, bucket);
     }
-    for (const key of before.keys()) if (!after.has(key)) changes += 1;
+    for (const [key, placed] of before) if (!after.has(key)) bump(removed, placed.hero);
+    // A placement that only changed its rarity shows up as one removed and one added: count it once.
+    for (const hero of new Set([...added.keys(), ...removed.keys()])) {
+      changes += Math.max(added.get(hero) ?? 0, removed.get(hero) ?? 0);
+    }
     for (const bucket of stayed.values()) {
       const order = [...bucket].sort((a, b) => a.after - b.after).map((item) => item.before);
       changes += order.length - longestIncreasing(order);
@@ -428,7 +440,8 @@ export function findProblems(state: EditorState, known: Record<TextGroup, Readon
       for (const { entry } of container.items) {
         const hero = entry.hero.trim();
         if (!hero) { problems.push({ code: "emptyName", list, tier: container.tier }); continue; }
-        const identity = `${hero}|${entry.variant ?? ""}|${list === "productivity" ? container.resource : list === "utility" ? `${entry.effect}|${entry.note ?? ""}` : ""}`;
+        // The same hero may sit in one list twice when the rarity or variant differs (Joan of Arc at UR and UR+).
+        const identity = `${hero}|${entry.rarity ?? ""}|${entry.variant ?? ""}|${list === "productivity" ? container.resource : list === "utility" ? `${entry.effect}|${entry.note ?? ""}` : ""}`;
         if (seen.has(identity)) problems.push({ code: "duplicate", list, hero });
         seen.add(identity);
         if (list === "overall") {
@@ -457,6 +470,18 @@ export function findProblems(state: EditorState, known: Record<TextGroup, Readon
   return problems;
 }
 
+/** Variants that became the `rarity` field; drafts saved before then still name them. */
+const RARITY_VARIANTS: Record<string, string> = { atUr: "UR", atUrPlus: "UR+" };
+
+function upgradeRarity(entry: LooseEntry) {
+  const rarity = entry.variant ? RARITY_VARIANTS[entry.variant] : undefined;
+  if (rarity && !entry.rarity) {
+    entry.rarity = rarity;
+    delete entry.variant;
+  }
+  if (entry.rarity !== undefined && !(HERO_RARITIES as readonly string[]).includes(entry.rarity)) delete entry.rarity;
+}
+
 /** Validates a stored draft; anything unexpected is dropped rather than half-loaded. */
 export function parseDraft(raw: string | null): EditorState | null {
   if (!raw) return null;
@@ -469,6 +494,7 @@ export function parseDraft(raw: string | null): EditorState | null {
         if (typeof container.id !== "string" || !TIER_IDS.includes(container.tier) || !Array.isArray(container.items)) return null;
         for (const item of container.items) {
           if (typeof item.uid !== "string" || typeof item.entry?.hero !== "string") return null;
+          upgradeRarity(item.entry);
         }
       }
     }

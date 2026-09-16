@@ -12,11 +12,12 @@ import { PAINTING_SETS } from "./artwork.ts";
 import { ROSTER_SPELLING } from "./hero-names.ts";
 import { BUILD_ZONES, COLLECTION_ITEMS, LAYOUT_DATA, type BuildZone } from "./hero-layouts.ts";
 import { TIER_DATA, type TierId, type VariantKey } from "./hero-tiers.ts";
+import type { HeroRarity } from "./heroes.ts";
 
 export type HeroReference = "tierList" | "layouts" | "artwork";
 
 export type HeroAppearances = {
-  tiers: { tier: TierId; variant?: VariantKey }[];
+  tiers: { tier: TierId; rarity?: HeroRarity; variant?: VariantKey }[];
   builds: { build: string; zone: BuildZone | "counter" }[];
   roles: string[];
   /** English names; `setId` and `paintingId` look up translations in `catalogTexts`. */
@@ -44,7 +45,13 @@ function index(): Map<string, HeroAppearances> {
   };
 
   for (const row of TIER_DATA.overall) {
-    for (const hero of row.entries) entry(hero.hero).tiers.push({ tier: row.tier, ...(hero.variant ? { variant: hero.variant } : {}) });
+    for (const hero of row.entries) {
+      entry(hero.hero).tiers.push({
+        tier: row.tier,
+        ...(hero.rarity ? { rarity: hero.rarity } : {}),
+        ...(hero.variant ? { variant: hero.variant } : {}),
+      });
+    }
   }
 
   for (const build of LAYOUT_DATA.builds) {

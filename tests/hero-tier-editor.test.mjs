@@ -124,3 +124,41 @@ test("stored drafts are validated before use", () => {
   broken.lists.overall[0].tier = "Z";
   assert.equal(parseDraft(JSON.stringify(broken)), null);
 });
+
+test("a placement's rarity is edited, exported in key order, and tells two entries apart", () => {
+  let state = fromTierData(TIER_DATA);
+  const joanUr = state.lists.overall[1].items.find((item) => item.entry.hero === "Joan of Arc");
+  assert.equal(joanUr.entry.rarity, "UR");
+
+  // Rated at SSR in A: its own frame and caption, and no longer a duplicate of the UR+ entry.
+  state = moveItem(state, "overall", joanUr.uid, containerId("overall", "A"), 0);
+  state = updateItem(state, "overall", joanUr.uid, { rarity: "SSR" });
+  const row = toTierData(state).overall.find((entry) => entry.tier === "A").entries[0];
+  assert.deepEqual(Object.keys(row).slice(0, 3), ["hero", "rarity", "battle"]);
+  assert.equal(row.rarity, "SSR");
+  assert.deepEqual(findProblems(state, known), []);
+  assert.deepEqual(countChanges(TIER_DATA, toTierData(state)), { ...noChanges, overall: 1 }, "moving and re-rating one hero is one change");
+
+  // Clearing it falls back to the roster and drops the field from the export.
+  state = updateItem(state, "overall", joanUr.uid, { rarity: undefined });
+  assert.equal("rarity" in toTierData(state).overall.find((entry) => entry.tier === "A").entries[0], false);
+
+  // Two entries with the same rarity are the same form twice.
+  const joanPlus = state.lists.overall[0].items.find((item) => item.entry.hero === "Joan of Arc");
+  const twice = updateItem(state, "overall", joanUr.uid, { rarity: joanPlus.entry.rarity });
+  assert.deepEqual(findProblems(twice, known), [{ code: "duplicate", list: "overall", hero: "Joan of Arc" }]);
+});
+
+test("drafts saved with the old at-UR variants load with the rarity field instead", () => {
+  const state = fromTierData(TIER_DATA);
+  const old = JSON.parse(JSON.stringify(state));
+  const joan = old.lists.overall[0].items[0];
+  delete joan.entry.rarity;
+  joan.entry.variant = "atUrPlus";
+  old.lists.battle[0].items[0].entry.rarity = "Legendary";
+  const parsed = parseDraft(JSON.stringify(old));
+  assert.equal(parsed.lists.overall[0].items[0].entry.rarity, "UR+");
+  assert.equal(parsed.lists.overall[0].items[0].entry.variant, undefined);
+  assert.equal(parsed.lists.battle[0].items[0].entry.rarity, undefined, "an unknown rarity is dropped");
+  assert.deepEqual(findProblems(parsed, known), []);
+});

@@ -1,5 +1,6 @@
 import type { Dictionary } from "../i18n/index.ts";
 import tierData from "../data/hero-tiers.json" with { type: "json" };
+import { heroNamed, type HeroRarity } from "./heroes.ts";
 
 /**
  * Types and helpers for the Hero tier list guide. The rows themselves (hero
@@ -12,6 +13,11 @@ import tierData from "../data/hero-tiers.json" with { type: "json" };
  * are spelled as in the Hero layouts guide, so both guides point at the same
  * hero. All ratings are for a hero at 0 stars without items or skins unless an
  * entry says otherwise.
+ *
+ * An entry's `rarity` is the quality the hero is rated at, for heroes whose
+ * rarity changes in the game: Joan of Arc is SS at UR+ and S at UR. It sets the
+ * portrait frame and a caption for that placement only. Without it, the frame
+ * follows the Heroes roster.
  */
 
 type TierListText = Dictionary["guideEntries"]["heroTierList"];
@@ -46,7 +52,25 @@ export function parseGrade(grade: Grade): ParsedGrade | null {
   };
 }
 
-type Tagged = { hero: string; variant?: VariantKey; note?: NoteKey };
+type Tagged = { hero: string; rarity?: HeroRarity; variant?: VariantKey; note?: NoteKey };
+
+/**
+ * The caption under a placed hero: the rarity it is rated at when the entry
+ * sets one ("at UR+"), then the variant ("with item").
+ */
+export function placementCaption(
+  text: Pick<TierListText, "atRarity" | "variants">,
+  entry: { rarity?: HeroRarity; variant?: VariantKey },
+): string {
+  return [entry.rarity ? text.atRarity.replace("{rarity}", entry.rarity) : "", entry.variant ? text.variants[entry.variant] : ""]
+    .filter(Boolean)
+    .join(" · ");
+}
+
+/** The rarity a placement is rated at: its own, or the roster's. */
+export function entryRarity(entry: { hero: string; rarity?: HeroRarity }): HeroRarity | undefined {
+  return entry.rarity ?? heroNamed(entry.hero)?.rarity;
+}
 
 export type OverallEntry = Tagged & {
   battle?: Grade;
@@ -148,14 +172,20 @@ export function roleGroup(roles: readonly RoleKey[]): RoleGroup {
 
 export type TierListId = "overall" | "battle" | "utility" | "productivity";
 
-export type TierPlacement = { list: TierListId; tier: TierId; variant?: VariantKey; resource?: ResourceKey };
+export type TierPlacement = { list: TierListId; tier: TierId; rarity?: HeroRarity; variant?: VariantKey; resource?: ResourceKey };
 
 /** Every row a hero appears in across the four lists, in list order. */
 export function tierPlacements(hero: string): TierPlacement[] {
   const found: TierPlacement[] = [];
   const add = (list: TierListId, tier: TierId, entry: Tagged, resource?: ResourceKey) => {
     if (entry.hero !== hero) return;
-    found.push({ list, tier, ...(entry.variant ? { variant: entry.variant } : {}), ...(resource ? { resource } : {}) });
+    found.push({
+      list,
+      tier,
+      ...(entry.rarity ? { rarity: entry.rarity } : {}),
+      ...(entry.variant ? { variant: entry.variant } : {}),
+      ...(resource ? { resource } : {}),
+    });
   };
   for (const row of OVERALL_TIERS) for (const entry of row.entries) add("overall", row.tier, entry);
   for (const row of BATTLE_TIERS) for (const entry of row.entries) add("battle", row.tier, entry);
