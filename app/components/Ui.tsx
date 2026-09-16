@@ -35,15 +35,26 @@ export function PageHead({
   eyebrow,
   title,
   lede,
+  art,
 }: {
   eyebrow?: string;
   title: string;
   lede?: string;
+  /** A banner that shows the title instead of the text; the title stays as its alt text. */
+  art?: { src: string; width: number; height: number };
 }) {
   return (
     <header className="page-head">
       {eyebrow && <div className="eyebrow">{eyebrow}</div>}
-      <h1>{title}</h1>
+      {art ? (
+        <h1 className="page-head-art">
+          {/* A static export cannot optimise images; the banner is already a small WebP. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={art.src} alt={title} width={art.width} height={art.height} decoding="async" fetchPriority="high" />
+        </h1>
+      ) : (
+        <h1>{title}</h1>
+      )}
       {lede && <p>{lede}</p>}
     </header>
   );

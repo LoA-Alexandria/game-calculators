@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { guideTitleBanner } from "../../lib/content/banners";
 import { guideHasSnippetEditor, isGuideEntryId, type GuideEntryId } from "../../lib/content/guides";
 import { useAuth } from "../components/AuthProvider";
 import { useDocumentTitle, useLocale } from "../components/LocaleProvider";
@@ -39,7 +40,7 @@ export function GuideArticle({ id }: { id: GuideEntryId }) {
       {heroesGuide ? <HeroBanner title={guide.title} /> : null}
       {goddessesGuide ? <GoddessBanner title={guide.title} /> : null}
       <BackLink href="/guides/" label={t.nav.guides} />
-      <PageHead eyebrow={t.nav.guides} title={guide.title} />
+      <PageHead eyebrow={t.nav.guides} title={guide.title} art={guideTitleBanner(id) ?? undefined} />
       {canWrite && (
         <div className="entry-actions" style={{ marginTop: -8, marginBottom: 18 }}>
           <button className="small-button" type="button" onClick={() => openEditor("edit")}>

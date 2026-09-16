@@ -1,5 +1,6 @@
 import type { NavSection } from "../navigation.ts";
 import { asset } from "../site.ts";
+import type { GuideEntryId } from "./guides.ts";
 
 /**
  * Optional images for the banner slot on each section index.
@@ -35,4 +36,22 @@ export function sectionBannerUrl(id: NavSection["id"]): string | null {
 export function sectionBannerLogoUrl(id: NavSection["id"]): string | null {
   const path = SECTION_BANNER_LOGO_SRC[id];
   return path ? asset(path) : null;
+}
+
+export type TitleBanner = { src: string; width: number; height: number };
+
+/**
+ * Artwork that takes the place of a guide's title text. The picture already
+ * says the title, so the heading keeps the translated title as its alt text.
+ *
+ * The Hero tier list banner was supplied by the site team on 16 September
+ * 2026 (`public/banners/hero-tier-list.webp`, 1024 × 144).
+ */
+export const GUIDE_TITLE_BANNERS: Partial<Record<GuideEntryId, TitleBanner>> = {
+  heroTierList: { src: "/banners/hero-tier-list.webp", width: 1024, height: 144 },
+};
+
+export function guideTitleBanner(id: GuideEntryId): TitleBanner | null {
+  const banner = GUIDE_TITLE_BANNERS[id];
+  return banner ? { ...banner, src: asset(banner.src) } : null;
 }

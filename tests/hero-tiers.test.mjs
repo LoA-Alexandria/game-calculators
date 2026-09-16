@@ -173,3 +173,17 @@ test("a placement can set the rarity it is rated at, and the frame follows it", 
   const english = en.guideEntries.heroTierList;
   assert.equal(placementCaption(english, { rarity: "UR", variant: "withItem" }), `at UR · ${english.variants.withItem}`);
 });
+
+test("title banners point at a file of the size they declare", async () => {
+  const { readFileSync } = await import("node:fs");
+  const { GUIDE_TITLE_BANNERS } = await import("../lib/content/banners.ts");
+  assert.ok(GUIDE_TITLE_BANNERS.heroTierList, "the Hero tier list has its banner");
+  for (const [id, banner] of Object.entries(GUIDE_TITLE_BANNERS)) {
+    assert.ok(Object.hasOwn(en.guideEntries, id), `${id} is a guide`);
+    const file = readFileSync(new URL(`../public${banner.src}`, import.meta.url));
+    // A lossy WebP stores its size in the VP8 frame header: 14-bit width and height at bytes 26–29.
+    assert.equal(file.toString("ascii", 12, 16), "VP8 ", `${banner.src} is a lossy WebP`);
+    assert.equal(file.readUInt16LE(26) & 0x3fff, banner.width, `${banner.src} width`);
+    assert.equal(file.readUInt16LE(28) & 0x3fff, banner.height, `${banner.src} height`);
+  }
+});
