@@ -68,6 +68,9 @@ export const MUSEION_DRAFT_STORAGE_KEY = "popepoch-museion-draft";
 /** Local draft of the Hero leveling / fragment priorities editor. */
 export const LEVELING_DRAFT_STORAGE_KEY = "popepoch-leveling-draft";
 
+/** Local draft of the production buildings editor. */
+export const PRODUCTION_BUILDINGS_DRAFT_STORAGE_KEY = "popepoch-production-buildings-draft";
+
 /** Whether the desktop sidebar is collapsed to an icon rail. */
 export const NAV_COLLAPSED_STORAGE_KEY = "popepoch-nav-collapsed";
 
