@@ -1,133 +1,134 @@
 {
   "sets": [
     { "id": "glory-and-shadow", "name": "Glory and Shadow", "rarity": "SSR", "effect": "At battle start, gains 10% of max HP as a shield.", "paintings": [
-      {"id":"the-coronation-of-napoleon","name":"The Coronation of Napoleon","heroes":["Napoleon Bonaparte","Augustus","Livia Drusilla","Louis XIV"],"stats":["heroAtk","allAtk","res"],"productivity":"Glass"},
-      {"id":"napoleon-crossing-the-alps","name":"Napoleon Crossing The Alps","heroes":["Napoleon Bonaparte","Alexander the Great","Dante","Louis XIV"],"stats":["heroHp","allHp","fs"],"productivity":"Paper Mill"},
-      {"id":"the-third-of-may-1808","name":"The Third of May 1808","heroes":["Napoleon Bonaparte","Joan of Arc","Gawain","Galileo Galilei"],"stats":["heroAtk","allAtk","res"],"productivity":"Art Workshop"}
+      {"id":"the-coronation-of-napoleon","name":"The Coronation of Napoleon","heroes":["Napoleon Bonaparte","Augustus","Livia Drusilla","Louis XIV"],"stats":["heroAtk","allAtk","res"],"productivity":"Glass","artist":"Jacques-Louis David","year":"1805–1807"},
+      {"id":"napoleon-crossing-the-alps","name":"Napoleon Crossing The Alps","heroes":["Napoleon Bonaparte","Alexander the Great","Dante","Louis XIV"],"stats":["heroHp","allHp","fs"],"productivity":"Paper Mill","original":"Napoleon Crossing the Alps","artist":"Jacques-Louis David","year":"1801–1805"},
+      {"id":"the-third-of-may-1808","name":"The Third of May 1808","heroes":["Napoleon Bonaparte","Joan of Arc","Gawain","Galileo Galilei"],"stats":["heroAtk","allAtk","res"],"productivity":"Art Workshop","artist":"Francisco Goya","year":"1814","image":"the-third-of-may-1808.webp"}
     ] },
     { "id": "self-portrait", "name": "Self-Portrait", "rarity": "SSR", "effect": "Each time an ally deals skill or extra damage, Extra damage bonus +10% for 1 turn.", "paintings": [
       {"id":"self-portrait","name":"Self-Portrait","heroes":["Da Vinci","Michelangelo","Galileo Galilei","Richard I"],"stats":["heroHp","allHp","fs"],"productivity":"Horses"},
-      {"id":"self-portrait-with-fur-trimmed-robe","name":"Self-Portrait with Fur-Trimmed Robe","heroes":["Michelangelo","Da Vinci","Queen Victoria","Hammurabi"],"stats":["heroAtk","res","allAtk"],"productivity":"Alcohol"},
-      {"id":"self-portrait-with-damaged-ear","name":"Self-Portrait with Damaged Ear","heroes":["Beethoven","Tutankhamun","Charles the Great","Alfred the Great"],"stats":["heroHp","allHp","fs"],"productivity":"Leather"}
+      {"id":"self-portrait-with-fur-trimmed-robe","name":"Self-Portrait with Fur-Trimmed Robe","heroes":["Michelangelo","Da Vinci","Queen Victoria","Hammurabi"],"stats":["heroAtk","res","allAtk"],"productivity":"Alcohol","artist":"Albrecht Dürer","year":"1500"},
+      {"id":"self-portrait-with-damaged-ear","name":"Self-Portrait with Damaged Ear","heroes":["Beethoven","Tutankhamun","Charles the Great","Alfred the Great"],"stats":["heroHp","allHp","fs"],"productivity":"Leather","original":"Self-Portrait with Bandaged Ear","artist":"Vincent van Gogh","year":"1889","image":"self-portrait-with-damaged-ear.webp"}
     ] },
     { "id": "nature-in-bloom", "name": "Nature in Bloom", "rarity": "SSR", "effect": "On crit hit, allies' crit damage increases by extra 5–50%.", "paintings": [
-      {"id":"almond-bloom","name":"Almond Bloom","heroes":["Charles Darwin","Achilles","Alexander the Great","Hammurabi"],"stats":["allAtk","heroAtk","res"],"productivity":"Copper"},
-      {"id":"irises","name":"Irises","heroes":["Charles Darwin","Blackbeard","Achilles","Gilgamesh"],"stats":["allHp","heroHp","fs"],"productivity":"Cloth"},
-      {"id":"water-lilies","name":"Water Lilies","heroes":["Charles Darwin","Confucius","Napoleon Bonaparte","Achilles"],"stats":["allAtk","heroAtk","res"],"productivity":"Iron"}
+      {"id":"almond-bloom","name":"Almond Bloom","heroes":["Charles Darwin","Achilles","Alexander the Great","Hammurabi"],"stats":["allAtk","heroAtk","res"],"productivity":"Copper","original":"Almond Blossoms","artist":"Vincent van Gogh","year":"1890"},
+      {"id":"irises","name":"Irises","heroes":["Charles Darwin","Blackbeard","Achilles","Gilgamesh"],"stats":["allHp","heroHp","fs"],"productivity":"Cloth","artist":"Vincent van Gogh","year":"1889"},
+      {"id":"water-lilies","name":"Water Lilies","heroes":["Charles Darwin","Confucius","Napoleon Bonaparte","Achilles"],"stats":["allAtk","heroAtk","res"],"productivity":"Iron","artist":"Claude Monet"}
     ] },
     { "id": "urban-proletariat", "name": "Urban Proletariat", "rarity": "SSR", "effect": "For the first 3 turns of battle, DoT damage +12% until battle ends.", "paintings": [
-      {"id":"the-gleaners","name":"The Gleaners","heroes":["Confucius","Richard I","Isaac Newton","Hector"],"stats":["allHp","heroHp","fs"],"productivity":"Wood"},
-      {"id":"the-floor-scrapers","name":"The Floor Scrapers","heroes":["Da Vinci","Franklin","Alexander the Great","Joan of Arc"],"stats":["allAtk","heroAtk","res"],"productivity":"Food"},
-      {"id":"the-stone-breakers","name":"The Stone Breakers","heroes":["Queen Victoria","Richard I","Franklin","Alfred the Great"],"stats":["allHp","heroHp","fs"],"productivity":"Stone"}
+      {"id":"the-gleaners","name":"The Gleaners","heroes":["Confucius","Richard I","Isaac Newton","Hector"],"stats":["allHp","heroHp","fs"],"productivity":"Wood","artist":"Jean-François Millet","year":"1857"},
+      {"id":"the-floor-scrapers","name":"The Floor Scrapers","heroes":["Da Vinci","Franklin","Alexander the Great","Joan of Arc"],"stats":["allAtk","heroAtk","res"],"productivity":"Food","artist":"Gustave Caillebotte","year":"1875","image":"the-floor-scrapers.webp"},
+      {"id":"the-stone-breakers","name":"The Stone Breakers","heroes":["Queen Victoria","Richard I","Franklin","Alfred the Great"],"stats":["allHp","heroHp","fs"],"productivity":"Stone","artist":"Gustave Courbet","year":"1849"}
     ] },
     { "id": "rococo-curtain", "name": "Rococo Curtain", "rarity": "SSR", "effect": "First skill damage an ally takes each turn is reduced by 20%.", "paintings": [
       {"id":"madame-de-pompadour","name":"Madame de Pompadour","heroes":["Louis XIV","Achilles","Augustus","Gilgamesh"],"stats":["heroAtk","allAtk","res"],"productivity":"Coffee Beans"},
-      {"id":"the-swing","name":"The Swing","heroes":["Louis XIV","Eleanor of Aquitaine","Tutankhamun","Augustus"],"stats":["allHp","heroHp","fs"],"productivity":"Coal"},
-      {"id":"the-embarkation-for-cythera","name":"The Embarkation for Cythera","heroes":["Blackbeard","Da Vinci","Michelangelo","Dante"],"stats":["heroAtk","allAtk","res"],"productivity":"Precision Parts"}
+      {"id":"the-swing","name":"The Swing","heroes":["Louis XIV","Eleanor of Aquitaine","Tutankhamun","Augustus"],"stats":["allHp","heroHp","fs"],"productivity":"Coal","artist":"Jean-Honoré Fragonard","year":"1767","image":"the-swing.webp"},
+      {"id":"the-embarkation-for-cythera","name":"The Embarkation for Cythera","heroes":["Blackbeard","Da Vinci","Michelangelo","Dante"],"stats":["heroAtk","allAtk","res"],"productivity":"Precision Parts","artist":"Jean-Antoine Watteau","year":"1717"}
     ] },
     { "id": "chinese-landscape", "name": "Chinese Landscape", "rarity": "SSR", "effect": "Every 2 turns (if not Sealed), 15% chance to dispel 1 debuff from an ally.", "paintings": [
-      {"id":"a-thousand-li-of-rivers-and-mountains","name":"A Thousand Li of Rivers and Mountains","heroes":["Confucius","Tutankhamun","Achilles","Joan of Arc"],"stats":["allHp","heroHp","fs"],"productivity":"Steel"},
-      {"id":"dwelling-in-the-fuchun-mountains","name":"Dwelling in the Fuchun Mountains","heroes":["Confucius","Gawain","Alexander the Great","Galileo Galilei"],"stats":["allAtk","heroAtk","res"],"productivity":"Gunpowder"},
-      {"id":"travelers-among-mountains-and-streams","name":"Travelers Among Mountains and Streams","heroes":["Morgana","Augustus","Franklin","Alfred the Great"],"stats":["allHp","heroHp","fs"],"productivity":"Lemons"}
+      {"id":"a-thousand-li-of-rivers-and-mountains","name":"A Thousand Li of Rivers and Mountains","heroes":["Confucius","Tutankhamun","Achilles","Joan of Arc"],"stats":["allHp","heroHp","fs"],"productivity":"Steel","artist":"Wang Ximeng","year":"1113","image":"a-thousand-li-of-rivers-and-mountains.webp"},
+      {"id":"dwelling-in-the-fuchun-mountains","name":"Dwelling in the Fuchun Mountains","heroes":["Confucius","Gawain","Alexander the Great","Galileo Galilei"],"stats":["allAtk","heroAtk","res"],"productivity":"Gunpowder","artist":"Huang Gongwang","year":"1348–1350"},
+      {"id":"travelers-among-mountains-and-streams","name":"Travelers Among Mountains and Streams","heroes":["Morgana","Augustus","Franklin","Alfred the Great"],"stats":["allHp","heroHp","fs"],"productivity":"Lemons","artist":"Fan Kuan","year":"1000","circa":true,"image":"travelers-among-mountains-and-streams.webp"}
     ] },
     { "id": "ukiya-e-masterpieces", "name": "Ukiya-e Masterpieces", "rarity": "SSR", "effect": "Allies' Final Damage Reduction +12% until battle ends.", "paintings": [
-      {"id":"the-great-wave-of-kanagawa","name":"The Great Wave of Kanagawa","heroes":["Charles the Great","Augustus","Columbus","Hector"],"stats":["allAtk","heroAtk","res"],"productivity":"Glass"},
+      {"id":"the-great-wave-of-kanagawa","name":"The Great Wave of Kanagawa","heroes":["Charles the Great","Augustus","Columbus","Hector"],"stats":["allAtk","heroAtk","res"],"productivity":"Glass","original":"The Great Wave off Kanagawa","artist":"Katsushika Hokusai","year":"1831","circa":true},
       {"id":"kabuki-actor","name":"Kabuki Actor","heroes":["Charles the Great","Napoleon Bonaparte","Hector","Dante"],"stats":["allHp","heroHp","fs"],"productivity":"Paper"},
-      {"id":"three-beauties-of-the-present-day","name":"Three Beauties of the Present Day","heroes":["Blackbeard","Richard I","Eleanor of Aquitaine","Gilgamesh"],"stats":["allAtk","heroAtk","res"],"productivity":"Art Workshop"}
+      {"id":"three-beauties-of-the-present-day","name":"Three Beauties of the Present Day","heroes":["Blackbeard","Richard I","Eleanor of Aquitaine","Gilgamesh"],"stats":["allAtk","heroAtk","res"],"productivity":"Art Workshop","artist":"Kitagawa Utamaro","year":"1793","circa":true}
     ] },
     { "id": "tragic-maiden", "name": "Tragic Maiden", "rarity": "SSR", "effect": "Allies' Final Damage Bonus +12% until battle ends.", "paintings": [
       {"id":"ophelia","name":"Ophelia","heroes":["William Shakespeare","Guinevere","Columbus","Socrates"],"stats":["allHp","heroHp","fs"],"productivity":"Horses"},
-      {"id":"the-lady-of-shalott","name":"The Lady of Shalott","heroes":["Gawain","Morgana","Socrates","Nikola Tesla"],"stats":["allAtk","heroAtk","res"],"productivity":"Alcohol"},
-      {"id":"romeo-and-juliet","name":"Romeo and Juliet","heroes":["William Shakespeare","Eleanor of Aquitaine","Guinevere","Livia Drusilla"],"stats":["allHp","heroHp","fs"],"productivity":"Leather"}
+      {"id":"the-lady-of-shalott","name":"The Lady of Shalott","heroes":["Gawain","Morgana","Socrates","Nikola Tesla"],"stats":["allAtk","heroAtk","res"],"productivity":"Alcohol","artist":"John William Waterhouse","year":"1888"},
+      {"id":"romeo-and-juliet","name":"Romeo and Juliet","heroes":["William Shakespeare","Eleanor of Aquitaine","Guinevere","Livia Drusilla"],"stats":["allHp","heroHp","fs"],"productivity":"Leather","artist":"Frank Dicksee","year":"1884","image":"romeo-and-juliet.webp"}
     ] },
     { "id": "modernist-new-voice", "name": "Modernist New Voice", "rarity": "SSR", "effect": "Collection and Cryptid Damage Reduction +12% until battle ends.", "paintings": [
       {"id":"composition","name":"Composition","heroes":["Da Vinci","Nikola Tesla","Beethoven","Richard I"],"stats":["allAtk","heroAtk","res"],"productivity":"Copper"},
-      {"id":"dance","name":"Dance","heroes":["Beethoven","Guinevere","Charles the Great","Socrates"],"stats":["allHp","heroHp","fs"],"productivity":"Cloth"},
-      {"id":"composition-viii","name":"Composition VIII","heroes":["Beethoven","Nikola Tesla","Isaac Newton","Blackbeard"],"stats":["allAtk","heroAtk","res"],"productivity":"Iron"}
+      {"id":"dance","name":"Dance","heroes":["Beethoven","Guinevere","Charles the Great","Socrates"],"stats":["allHp","heroHp","fs"],"productivity":"Cloth","artist":"Henri Matisse","year":"1910"},
+      {"id":"composition-viii","name":"Composition VIII","heroes":["Beethoven","Nikola Tesla","Isaac Newton","Blackbeard"],"stats":["allAtk","heroAtk","res"],"productivity":"Iron","artist":"Wassily Kandinsky","year":"1923","image":"composition-viii.webp"}
     ] },
     { "id": "beyond-the-earth", "name": "Beyond The Earth", "rarity": "SSR", "effect": "Collection and Cryptid Damage Bonus +12% until battle ends.", "paintings": [
-      {"id":"buzz-aldrin-on-the-moon","name":"Buzz Aldrin on the Moon","heroes":["Galileo Galilei","Isaac Newton","Nikola Tesla"],"stats":["allHp","heroHp","fs"],"productivity":"Wood"},
-      {"id":"earthrise","name":"Earthrise","heroes":["Charles Darwin","Columbus","Morgana","Charles the Great"],"stats":["allAtk","heroAtk","res"],"productivity":"Food"},
-      {"id":"pale-blue-dot","name":"Pale Blue Dot","heroes":["Galileo Galilei","Isaac Newton","Confucius","Richard I"],"stats":["allHp","heroHp","fs"],"productivity":"Stone"}
+      {"id":"buzz-aldrin-on-the-moon","name":"Buzz Aldrin on the Moon","heroes":["Galileo Galilei","Isaac Newton","Nikola Tesla"],"stats":["allHp","heroHp","fs"],"productivity":"Wood","artist":"Neil Armstrong","year":"1969"},
+      {"id":"earthrise","name":"Earthrise","heroes":["Charles Darwin","Columbus","Morgana","Charles the Great"],"stats":["allAtk","heroAtk","res"],"productivity":"Food","artist":"William Anders","year":"1968"},
+      {"id":"pale-blue-dot","name":"Pale Blue Dot","heroes":["Galileo Galilei","Isaac Newton","Confucius","Richard I"],"stats":["allHp","heroHp","fs"],"productivity":"Stone","artist":"Voyager 1","year":"1990"}
     ] },
     { "id": "sheltered-by-night", "name": "Sheltered by Night", "rarity": "SR", "effect": "Every 3 turns, when an ally acts, Extra Damage Reduction +5% for 2 turns.", "paintings": [
-      {"id":"nightshade","name":"Nightshade","heroes":["Thomas Edison","Nikola Tesla","Napoleon Bonaparte","Elizabeth I"],"stats":["allAtk","heroAtk","heroHp"],"productivity":"Glass"},
-      {"id":"cafe-terrace-at-night","name":"Cafe Terrace at Night","heroes":["Thomas Edison","Beethoven","Andersen","Gawain"],"stats":["allHp"]},
-      {"id":"evening-on-karl-johan-st","name":"Evening on Karl Johan St","heroes":["Dante","Morgana","Mary I","Hatshepsut"],"stats":["allAtk","heroAtk","heroHp"],"productivity":"Art Workshop"}
+      {"id":"nightshade","name":"Nightshade","heroes":["Thomas Edison","Nikola Tesla","Napoleon Bonaparte","Elizabeth I"],"stats":["allAtk","heroAtk","heroHp"],"productivity":"Glass","original":"Nighthawks","artist":"Edward Hopper","year":"1942","image":"nightshade.webp"},
+      {"id":"cafe-terrace-at-night","name":"Cafe Terrace at Night","heroes":["Thomas Edison","Beethoven","Andersen","Gawain"],"stats":["allHp"],"original":"Café Terrace at Night","artist":"Vincent van Gogh","year":"1888","image":"cafe-terrace-at-night.webp"},
+      {"id":"evening-on-karl-johan-st","name":"Evening on Karl Johan St","heroes":["Dante","Morgana","Mary I","Hatshepsut"],"stats":["allAtk","heroAtk","heroHp"],"productivity":"Art Workshop","original":"Evening on Karl Johan","artist":"Edvard Munch","year":"1892","image":"evening-on-karl-johan-st.webp"}
     ] },
     { "id": "impression-warmth", "name": "Impression: Warmth", "rarity": "SR", "effect": "Every 3 turns, when an ally acts, Extra Damage Bonus +5% for 2 turns.", "paintings": [
-      {"id":"the-umbrellas","name":"The Umbrellas","heroes":["Queen Victoria","Elizabeth I","Hammurabi","Isabella I"],"stats":["allHp"]},
+      {"id":"the-umbrellas","name":"The Umbrellas","heroes":["Queen Victoria","Elizabeth I","Hammurabi","Isabella I"],"stats":["allHp"],"original":"Woman with a Parasol – Madame Monet and Her Son","artist":"Claude Monet","year":"1875","image":"the-umbrellas.webp"},
       {"id":"the-dance-class","name":"The Dance Class","heroes":["Louis XIV","Queen Victoria","Drake","Saladin"],"stats":["allAtk","heroAtk","heroHp"],"productivity":"Alcohol"},
-      {"id":"luncheon-of-the-boating-party","name":"Luncheon of the Boating Party","heroes":["Franklin","Queen Victoria","Andersen","Hypatia"],"stats":["allHp","heroHp","heroAtk"],"productivity":"Leather"}
+      {"id":"luncheon-of-the-boating-party","name":"Luncheon of the Boating Party","heroes":["Franklin","Queen Victoria","Andersen","Hypatia"],"stats":["allHp","heroHp","heroAtk"],"productivity":"Leather","artist":"Pierre-Auguste Renoir","year":"1880–1881"}
     ] },
     { "id": "roar-of-steam", "name": "Roar of Steam", "rarity": "SR", "effect": "Every 3 turns, when an ally acts, DoT Damage Reduction +5% for 2 turns.", "paintings": [
-      {"id":"rain-steam-and-speed","name":"Rain, Steam and Speed","heroes":["James Watt","Queen Victoria","Nikola Tesla","Thomas Edison"],"stats":["allAtk","heroAtk","heroHp"],"productivity":"Copper"},
-      {"id":"the-gare-saint-lazare","name":"The Gare Saint-Lazare","heroes":["James Watt","Thomas Edison","Queen Victoria","Nikola Tesla"],"stats":["allHp","heroHp","heroAtk"],"productivity":"Cloth"},
-      {"id":"the-fighting-temeraire","name":"The Fighting Temeraire","heroes":["Drake","Blackbeard","Columbus","Noah"],"stats":["allAtk","heroAtk","heroHp"],"productivity":"Iron"}
+      {"id":"rain-steam-and-speed","name":"Rain, Steam and Speed","heroes":["James Watt","Queen Victoria","Nikola Tesla","Thomas Edison"],"stats":["allAtk","heroAtk","heroHp"],"productivity":"Copper","original":"Rain, Steam and Speed – The Great Western Railway","artist":"J. M. W. Turner","year":"1844"},
+      {"id":"the-gare-saint-lazare","name":"The Gare Saint-Lazare","heroes":["James Watt","Thomas Edison","Queen Victoria","Nikola Tesla"],"stats":["allHp","heroHp","heroAtk"],"productivity":"Cloth","artist":"Claude Monet","year":"1877","image":"the-gare-saint-lazare.webp"},
+      {"id":"the-fighting-temeraire","name":"The Fighting Temeraire","heroes":["Drake","Blackbeard","Columbus","Noah"],"stats":["allAtk","heroAtk","heroHp"],"productivity":"Iron","artist":"J. M. W. Turner","year":"1839","image":"the-fighting-temeraire.webp"}
     ] },
     { "id": "echoes-of-death", "name": "Echoes of Death", "rarity": "SR", "effect": "Every 3 turns, DoT Bonus +5% for 2 turns.", "paintings": [
-      {"id":"the-death-of-socrates","name":"The Death of Socrates","heroes":["Socrates","Hypatia","Gawain","Adam"],"stats":["allHp","heroHp","heroAtk"],"productivity":"Wood"},
-      {"id":"the-death-of-marat","name":"The Death of Marat","heroes":["Victor Hugo","Joan of Arc","Morgana","Mary I"],"stats":["allAtk","heroAtk","heroHp"],"productivity":"Food"},
-      {"id":"the-anatomy-lesson","name":"The Anatomy Lesson","heroes":["Charles Darwin","Da Vinci","Hypatia","Hatshepsut"],"stats":["allHp","heroHp","heroAtk"],"productivity":"Stone"}
+      {"id":"the-death-of-socrates","name":"The Death of Socrates","heroes":["Socrates","Hypatia","Gawain","Adam"],"stats":["allHp","heroHp","heroAtk"],"productivity":"Wood","artist":"Jacques-Louis David","year":"1787","image":"the-death-of-socrates.webp"},
+      {"id":"the-death-of-marat","name":"The Death of Marat","heroes":["Victor Hugo","Joan of Arc","Morgana","Mary I"],"stats":["allAtk","heroAtk","heroHp"],"productivity":"Food","artist":"Jacques-Louis David","year":"1793","image":"the-death-of-marat.webp"},
+      {"id":"the-anatomy-lesson","name":"The Anatomy Lesson","heroes":["Charles Darwin","Da Vinci","Hypatia","Hatshepsut"],"stats":["allHp","heroHp","heroAtk"],"productivity":"Stone","original":"The Anatomy Lesson of Dr. Nicolaes Tulp","artist":"Rembrandt","year":"1632"}
     ] },
     { "id": "faithful-companion", "name": "Faithful Companion", "rarity": "SR", "effect": "Every 3 turns if not Sealed, Damage Reduction +5% for 2 turns.", "paintings": [
-      {"id":"young-hare","name":"Young Hare","heroes":["Charles Darwin","Noah","Achilles","Hatshepsut"],"stats":["allAtk","heroAtk","heroHp"],"productivity":"Coffee"},
-      {"id":"friends-in-need","name":"Friends in Need","heroes":["Blackbeard","Livia Drusilla","Homer","Mary I"],"stats":["allHp","heroHp","heroAtk"],"productivity":"Coal"},
-      {"id":"hall-of-the-bulls-lascaux","name":"Hall of the Bulls, Lascaux","heroes":["Adam","Noah","Gilgamesh","Guinevere"],"stats":["allAtk","heroAtk","heroHp"],"productivity":"Precision Parts"}
+      {"id":"young-hare","name":"Young Hare","heroes":["Charles Darwin","Noah","Achilles","Hatshepsut"],"stats":["allAtk","heroAtk","heroHp"],"productivity":"Coffee","artist":"Albrecht Dürer","year":"1502","image":"young-hare.webp"},
+      {"id":"friends-in-need","name":"Friends in Need","heroes":["Blackbeard","Livia Drusilla","Homer","Mary I"],"stats":["allHp","heroHp","heroAtk"],"productivity":"Coal","artist":"Cassius Marcellus Coolidge","year":"1903"},
+      {"id":"hall-of-the-bulls-lascaux","name":"Hall of the Bulls, Lascaux","heroes":["Adam","Noah","Gilgamesh","Guinevere"],"stats":["allAtk","heroAtk","heroHp"],"productivity":"Precision Parts","artist":"Lascaux Cave"}
     ] },
     { "id": "heaven-and-earth-surge", "name": "Heaven and Earth Surge", "rarity": "SR", "effect": "Every 3 turns if not Sealed, Damage Bonus +5% for 2 turns.", "paintings": [
-      {"id":"wanderer-above-the-sea-of-fog","name":"Wanderer above the Sea of Fog","heroes":["Beethoven","Andersen","Guinevere","Elizabeth I"],"stats":["allHp","heroHp","heroAtk"],"productivity":"Steel"},
-      {"id":"the-hay-wain","name":"The Hay Wain","heroes":["James Watt","Queen Victoria","Charles Darwin","Homer"],"stats":["allAtk","heroAtk","heroHp"],"productivity":"Gunpowder"},
-      {"id":"the-oxbow","name":"The Oxbow","heroes":["Franklin","Morgana","Hannibal","Drake"],"stats":["allHp","heroHp","heroAtk"],"productivity":"Lemons"}
+      {"id":"wanderer-above-the-sea-of-fog","name":"Wanderer above the Sea of Fog","heroes":["Beethoven","Andersen","Guinevere","Elizabeth I"],"stats":["allHp","heroHp","heroAtk"],"productivity":"Steel","artist":"Caspar David Friedrich","year":"1818","circa":true,"image":"wanderer-above-the-sea-of-fog.webp"},
+      {"id":"the-hay-wain","name":"The Hay Wain","heroes":["James Watt","Queen Victoria","Charles Darwin","Homer"],"stats":["allAtk","heroAtk","heroHp"],"productivity":"Gunpowder","artist":"John Constable","year":"1821","image":"the-hay-wain.webp"},
+      {"id":"the-oxbow","name":"The Oxbow","heroes":["Franklin","Morgana","Hannibal","Drake"],"stats":["allHp","heroHp","heroAtk"],"productivity":"Lemons","artist":"Thomas Cole","year":"1836"}
     ] },
     { "id": "gaze-of-an-age", "name": "Gaze of An Age", "rarity": "SR", "effect": "Every 3 turns if not Sealed, ATK bonus +5% for 2 turns.", "paintings": [
-      {"id":"portrait-of-charles-darwin","name":"Portrait of Charles Darwin","heroes":["Isaac Newton","Galileo Galilei","Homer","Prometheus"],"stats":["allAtk","heroAtk","heroHp"],"productivity":"Glass"},
+      {"id":"portrait-of-charles-darwin","name":"Portrait of Charles Darwin","heroes":["Isaac Newton","Galileo Galilei","Homer","Prometheus"],"stats":["allAtk","heroAtk","heroHp"],"productivity":"Glass","artist":"Julia Margaret Cameron","year":"1868","image":"portrait-of-charles-darwin.webp"},
       {"id":"portrait-of-oscar-wilde","name":"Portrait of Oscar Wilde","heroes":["William Shakespeare","Andersen","Dante","Prometheus"],"stats":["allHp","heroHp","heroAtk"],"productivity":"Paper"},
-      {"id":"portrait-of-abraham-lincoln","name":"Portrait of Abraham Lincoln","heroes":["Franklin","Victor Hugo","Isaac Newton","Wallace"],"stats":["allAtk","heroAtk","heroHp"],"productivity":"Art Workshop"}
+      {"id":"portrait-of-abraham-lincoln","name":"Portrait of Abraham Lincoln","heroes":["Franklin","Victor Hugo","Isaac Newton","Wallace"],"stats":["allAtk","heroAtk","heroHp"],"productivity":"Art Workshop","artist":"Mathew Brady","year":"1860","image":"portrait-of-abraham-lincoln.webp"}
     ] },
     { "id": "wall-of-mosaics", "name": "Wall of Mosaics", "rarity": "SR", "effect": "Every 4 turns if not Sealed, gains a shield equal to 5% of max HP.", "paintings": [
-      {"id":"empress-theodora-and-her-attendants","name":"Empress Theodora and her Attendants","heroes":["Hatshepsut","Tutankhamun","Livia Drusilla","Catherine de'Medici"],"stats":["allHp","heroHp","heroAtk"],"productivity":"Horses"},
-      {"id":"alexander-mosaic","name":"Alexander Mosaic","heroes":["Alexander the Great","Hannibal","Hector","Wallace"],"stats":["allAtk","heroAtk"],"productivity":"Alcohol"},
-      {"id":"madaba-mosaic-map","name":"Madaba Mosaic Map","heroes":["Saladin","Noah","Blackbeard","Hammurabi"],"stats":["allHp","heroHp","heroAtk"],"productivity":"Leather"}
+      {"id":"empress-theodora-and-her-attendants","name":"Empress Theodora and her Attendants","heroes":["Hatshepsut","Tutankhamun","Livia Drusilla","Catherine de'Medici"],"stats":["allHp","heroHp","heroAtk"],"productivity":"Horses","artist":"Basilica of San Vitale, Ravenna","year":"547","circa":true,"image":"empress-theodora-and-her-attendants.webp"},
+      {"id":"alexander-mosaic","name":"Alexander Mosaic","heroes":["Alexander the Great","Hannibal","Hector","Wallace"],"stats":["allAtk","heroAtk"],"productivity":"Alcohol","artist":"House of the Faun, Pompeii"},
+      {"id":"madaba-mosaic-map","name":"Madaba Mosaic Map","heroes":["Saladin","Noah","Blackbeard","Hammurabi"],"stats":["allHp","heroHp","heroAtk"],"productivity":"Leather","original":"Madaba Map","artist":"Church of Saint George, Madaba"}
     ] },
     { "id": "sacred-window-radiance", "name": "Sacred Window Radiance", "rarity": "SR", "effect": "Every 4 turns if not Sealed, heals 5% of max HP.", "paintings": [
       {"id":"rose-windows-of-notre-dame","name":"Rose Windows of Notre Dame","heroes":["Victor Hugo","Charles the Great","Eleanor of Aquitaine","Andersen"],"stats":["allAtk","heroAtk","heroHp"],"productivity":"Copper"},
-      {"id":"king-s-college-chapel","name":"King's College Chapel","heroes":["Alfred the Great","Elizabeth I","Mary I","Augustus"],"stats":["allHp","heroHp","heroAtk"],"productivity":"Cloth"},
+      {"id":"king-s-college-chapel","name":"King's College Chapel","heroes":["Alfred the Great","Elizabeth I","Mary I","Augustus"],"stats":["allHp","heroHp","heroAtk"],"productivity":"Cloth","image":"king-s-college-chapel.webp"},
       {"id":"chartres-cathedral","name":"Chartres Cathedral","heroes":["Eleanor of Aquitaine","Richard I","Saladin","Hannibal"],"stats":["allAtk","heroAtk","heroHp"],"productivity":"Iron"}
     ] },
     { "id": "master-s-sketch", "name": "Master's Sketch", "rarity": "SR", "effect": "Every 4 turns if not Sealed, deals skill damage equal to 80% of ATK to the enemy.", "paintings": [
-      {"id":"portrait-of-isabella-d-este","name":"Portrait of Isabella d'Este","heroes":["Isabella I","Catherine de'Medici","Da Vinci","Michelangelo"],"stats":["allHp","heroHp","heroAtk"],"productivity":"Wood"},
-      {"id":"lion","name":"Lion","heroes":["Gilgamesh","Tutankhamun","Wallace","Isabella I"],"stats":["allAtk","heroAtk","heroHp"],"productivity":"Food"},
-      {"id":"the-resurrection","name":"The Resurrection","heroes":["Adam","Prometheus","Michelangelo","William Shakespeare"],"stats":["allHp","heroHp","heroAtk"],"productivity":"Stone"}
+      {"id":"portrait-of-isabella-d-este","name":"Portrait of Isabella d'Este","heroes":["Isabella I","Catherine de'Medici","Da Vinci","Michelangelo"],"stats":["allHp","heroHp","heroAtk"],"productivity":"Wood","artist":"Leonardo da Vinci","year":"1499–1500","image":"portrait-of-isabella-d-este.webp"},
+      {"id":"lion","name":"Lion","heroes":["Gilgamesh","Tutankhamun","Wallace","Isabella I"],"stats":["allAtk","heroAtk","heroHp"],"productivity":"Food","image":"lion.webp"},
+      {"id":"the-resurrection","name":"The Resurrection","heroes":["Adam","Prometheus","Michelangelo","William Shakespeare"],"stats":["allHp","heroHp","heroAtk"],"productivity":"Stone","image":"the-resurrection.webp"}
     ] },
     { "id": "monkey-society", "name": "Monkey Society", "rarity": "R", "effect": "At Turn 4, if not Sealed, Skill Damage Reduction +5% for 2 turns.", "paintings": [
-      {"id":"the-monkey-painter","name":"The Monkey Painter","heroes":["Cervantes","Saladin","Mary Shelley"],"stats":["allHp"],"productivity":"Coal","starStats":["allHp","allAtk"]},
-      {"id":"the-monkey-dentist","name":"The Monkey Dentist","heroes":["Florence Nightingale","Thomas Edison","Cu Chulainn"],"stats":["allAtk"],"productivity":"Precision Parts","starStats":["allHp","allAtk"]},
-      {"id":"the-monkey-antiquarian","name":"The Monkey Antiquarian","heroes":["Marco Polo","Isabella I","Himiko"],"stats":["allHp"],"productivity":"Food","starStats":["allHp","allAtk"]}
+      {"id":"the-monkey-painter","name":"The Monkey Painter","heroes":["Cervantes","Saladin","Mary Shelley"],"stats":["allHp"],"productivity":"Coal","starStats":["allHp","allAtk"],"artist":"Jean-Siméon Chardin","year":"1740","circa":true,"image":"the-monkey-painter.webp"},
+      {"id":"the-monkey-dentist","name":"The Monkey Dentist","heroes":["Florence Nightingale","Thomas Edison","Cu Chulainn"],"stats":["allAtk"],"productivity":"Precision Parts","starStats":["allHp","allAtk"],"image":"the-monkey-dentist.webp"},
+      {"id":"the-monkey-antiquarian","name":"The Monkey Antiquarian","heroes":["Marco Polo","Isabella I","Himiko"],"stats":["allHp"],"productivity":"Food","starStats":["allHp","allAtk"],"artist":"Jean-Siméon Chardin","year":"1740","circa":true,"image":"the-monkey-antiquarian.webp"},
+      {"id":"the-monkey-sculptor","name":"The Monkey Sculptor","heroes":[],"stats":["allAtk"],"artist":"David Teniers the Younger","image":"the-monkey-sculptor.webp"}
     ] },
     { "id": "so-delicious", "name": "So Delicious", "rarity": "R", "effect": "At Turn 4, if not Sealed, Skill Damage Bonus +5% for 2 turns.", "paintings": [
-      {"id":"the-ricotta-eaters","name":"The Ricotta Eaters","heroes":["Chaucer","Cervantes","Noah"],"stats":["allHp"],"productivity":"Steel","starStats":["allHp","allAtk"]},
-      {"id":"the-beaneater","name":"The Beaneater","heroes":["Cervantes","Robin Hood","Saladin"],"stats":["allAtk"],"productivity":"Gunpowder","starStats":["allHp","allAtk"]},
-      {"id":"the-fat-kitchen","name":"The Fat Kitchen","heroes":["Mary I","Anne Bonny","Cu Chulainn"],"stats":["allHp"],"productivity":"Lemons","starStats":["allHp","allAtk"]},
-      {"id":"the-thin-kitchen","name":"The Thin Kitchen","heroes":["Robin Hood","Wallace","Florence Nightingale"],"stats":["allAtk"],"productivity":"Coffee","starStats":["allHp","allAtk"]}
+      {"id":"the-ricotta-eaters","name":"The Ricotta Eaters","heroes":["Chaucer","Cervantes","Noah"],"stats":["allHp"],"productivity":"Steel","starStats":["allHp","allAtk"],"artist":"Vincenzo Campi","year":"1580","circa":true,"image":"the-ricotta-eaters.webp"},
+      {"id":"the-beaneater","name":"The Beaneater","heroes":["Cervantes","Robin Hood","Saladin"],"stats":["allAtk"],"productivity":"Gunpowder","starStats":["allHp","allAtk"],"artist":"Annibale Carracci","year":"1580–1590","image":"the-beaneater.webp"},
+      {"id":"the-fat-kitchen","name":"The Fat Kitchen","heroes":["Mary I","Anne Bonny","Cu Chulainn"],"stats":["allHp"],"productivity":"Lemons","starStats":["allHp","allAtk"],"artist":"Pieter van der Heyden after Pieter Bruegel the Elder","year":"1563","image":"the-fat-kitchen.webp"},
+      {"id":"the-thin-kitchen","name":"The Thin Kitchen","heroes":["Robin Hood","Wallace","Florence Nightingale"],"stats":["allAtk"],"productivity":"Coffee","starStats":["allHp","allAtk"],"artist":"Pieter van der Heyden after Pieter Bruegel the Elder","year":"1563","image":"the-thin-kitchen.webp"}
     ] },
     { "id": "hidden-face", "name": "Hidden Face", "rarity": "R", "effect": "At Turn 4, if not Sealed, ATK bonus +5% for 2 turns.", "paintings": [
-      {"id":"the-gardener","name":"The Gardener","heroes":["Mary Shelley","James Watt","Florence Nightingale"],"stats":["allHp"],"productivity":"Leather","starStats":["allAtk","allHp"]},
-      {"id":"the-cook","name":"The Cook","heroes":["Chaucer","Catherine de'Medici","Dido"],"stats":["allAtk"],"productivity":"Glass","starStats":["allHp","allAtk"]},
+      {"id":"the-gardener","name":"The Gardener","heroes":["Mary Shelley","James Watt","Florence Nightingale"],"stats":["allHp"],"productivity":"Leather","starStats":["allAtk","allHp"],"original":"The Vegetable Gardener","artist":"Giuseppe Arcimboldo","year":"1587–1590","circa":true,"image":"the-gardener.webp"},
+      {"id":"the-cook","name":"The Cook","heroes":["Chaucer","Catherine de'Medici","Dido"],"stats":["allAtk"],"productivity":"Glass","starStats":["allHp","allAtk"],"artist":"Giuseppe Arcimboldo","year":"1570","circa":true,"image":"the-cook.webp"},
       {"id":"summer","name":"Summer","heroes":["Marco Polo","Adam","Alexander Hamilton"],"stats":["allHp"],"productivity":"Paper","starStats":["allHp","allAtk"]},
-      {"id":"landscape-shaped-like-a-face","name":"Landscape Shaped Like A Face","heroes":["Archimedes","Prometheus","Himiko"],"stats":["allAtk"],"productivity":"Art Workshop","starStats":["allHp","allAtk"]}
+      {"id":"landscape-shaped-like-a-face","name":"Landscape Shaped Like A Face","heroes":["Archimedes","Prometheus","Himiko"],"stats":["allAtk"],"productivity":"Art Workshop","starStats":["allHp","allAtk"],"image":"landscape-shaped-like-a-face.webp"}
     ] },
     { "id": "four-seasons-reborn", "name": "Four Seasons Reborn", "rarity": "R", "effect": "At Turn 6, if not Sealed, heals 5% of max HP.", "paintings": [
-      {"id":"the-four-seasons-ii-spring","name":"The Four Seasons II: Spring","heroes":["Himiko","Wallace","Archimedes"],"stats":["allHp"],"productivity":"Cloth","starStats":["allAtk","allHp"]},
-      {"id":"the-four-seasons-ii-summer","name":"The Four Seasons II: Summer","heroes":["Adam","Anne Bonny","Robin Hood"],"stats":["allAtk"],"productivity":"Iron","starStats":["allHp","allAtk"]},
-      {"id":"the-four-seasons-ii-autumn","name":"The Four Seasons II: Autumn","heroes":["Chaucer","Robin Hood","Hannibal"],"stats":["allHp"],"productivity":"Horses","starStats":["allAtk","allHp"]},
-      {"id":"the-four-seasons-ii-winter","name":"The Four Seasons II: Winter","heroes":["Victor Hugo","Alexander Hamilton","Dido"],"stats":["allAtk"],"productivity":"Alcohol","starStats":["allHp","allAtk"]}
+      {"id":"the-four-seasons-ii-spring","name":"The Four Seasons II: Spring","heroes":["Himiko","Wallace","Archimedes"],"stats":["allHp"],"productivity":"Cloth","starStats":["allAtk","allHp"],"original":"The Four Seasons: Spring","artist":"Giuseppe Arcimboldo","image":"the-four-seasons-ii-spring.webp"},
+      {"id":"the-four-seasons-ii-summer","name":"The Four Seasons II: Summer","heroes":["Adam","Anne Bonny","Robin Hood"],"stats":["allAtk"],"productivity":"Iron","starStats":["allHp","allAtk"],"original":"The Four Seasons: Summer","artist":"Giuseppe Arcimboldo","image":"the-four-seasons-ii-summer.webp"},
+      {"id":"the-four-seasons-ii-autumn","name":"The Four Seasons II: Autumn","heroes":["Chaucer","Robin Hood","Hannibal"],"stats":["allHp"],"productivity":"Horses","starStats":["allAtk","allHp"],"original":"The Four Seasons: Autumn","artist":"Giuseppe Arcimboldo","image":"the-four-seasons-ii-autumn.webp"},
+      {"id":"the-four-seasons-ii-winter","name":"The Four Seasons II: Winter","heroes":["Victor Hugo","Alexander Hamilton","Dido"],"stats":["allAtk"],"productivity":"Alcohol","starStats":["allHp","allAtk"],"original":"The Four Seasons: Winter","artist":"Giuseppe Arcimboldo","image":"the-four-seasons-ii-winter.webp"}
     ] },
     { "id": "four-seasonal-beauties", "name": "Four Seasonal Beauties", "rarity": "R", "effect": "At Turn 6, if not Sealed, deals skill damage equal to 50% of ATK to the enemy.", "paintings": [
-      {"id":"the-four-seasons-i-spring","name":"The Four Seasons I: Spring","heroes":["Catherine de'Medici","Cervantes","Chaucer"],"stats":["allHp"],"productivity":"Wood","starStats":["allHp","allAtk"]},
-      {"id":"the-four-seasons-i-summer","name":"The Four Seasons I: Summer","heroes":["Dido","Hypatia","Alexander Hamilton"],"stats":["allAtk"],"productivity":"Food","starStats":["allHp","allAtk"]},
-      {"id":"the-four-seasons-i-autumn","name":"The Four Seasons I: Autumn","heroes":["Isabella I","Dido","Anne Bonny"],"stats":["allHp"],"productivity":"Stone","starStats":["allAtk","allHp"]},
-      {"id":"the-four-seasons-i-winter","name":"The Four Seasons I: Winter","heroes":["Mary Shelley","Hannibal","Cu Chulainn"],"stats":["allAtk"],"productivity":"Copper","starStats":["allHp","allAtk"]}
+      {"id":"the-four-seasons-i-spring","name":"The Four Seasons I: Spring","heroes":["Catherine de'Medici","Cervantes","Chaucer"],"stats":["allHp"],"productivity":"Wood","starStats":["allHp","allAtk"],"original":"The Seasons: Spring","artist":"Alphonse Mucha","year":"1896","image":"the-four-seasons-i-spring.webp"},
+      {"id":"the-four-seasons-i-summer","name":"The Four Seasons I: Summer","heroes":["Dido","Hypatia","Alexander Hamilton"],"stats":["allAtk"],"productivity":"Food","starStats":["allHp","allAtk"],"original":"The Seasons: Summer","artist":"Alphonse Mucha","year":"1896","image":"the-four-seasons-i-summer.webp"},
+      {"id":"the-four-seasons-i-autumn","name":"The Four Seasons I: Autumn","heroes":["Isabella I","Dido","Anne Bonny"],"stats":["allHp"],"productivity":"Stone","starStats":["allAtk","allHp"],"original":"The Seasons: Autumn","artist":"Alphonse Mucha","year":"1896","image":"the-four-seasons-i-autumn.webp"},
+      {"id":"the-four-seasons-i-winter","name":"The Four Seasons I: Winter","heroes":["Mary Shelley","Hannibal","Cu Chulainn"],"stats":["allAtk"],"productivity":"Copper","starStats":["allHp","allAtk"],"original":"The Seasons: Winter","artist":"Alphonse Mucha","year":"1896","image":"the-four-seasons-i-winter.webp"}
     ] }
   ]
 }

@@ -1,19 +1,22 @@
 "use client";
 
-import { useId, useMemo, useRef, useState, useSyncExternalStore, type KeyboardEvent } from "react";
+import { useId, useMemo, useRef, useState, useSyncExternalStore, type DragEvent, type KeyboardEvent } from "react";
 import {
   PAINTING_RARITIES,
   PAINTING_SETS,
   PAINTING_STATS,
+  artworkImageUrl,
   type PaintingRarity,
 } from "../../lib/content/artwork";
 import {
+  PAINTING_IMAGE_MAX_EDGE,
   addHero,
   addPainting,
   addSet,
   catalogTextBlocks,
   countCatalogTextChanges,
   countChanges,
+  exportArtwork,
   exportCatalogTexts,
   findPainting,
   findProblems,
@@ -24,8 +27,10 @@ import {
   publishedCatalogTexts,
   removeHero,
   removePainting,
+  removePaintingImage,
   removeSet,
   serializePaintingData,
+  setPaintingImage,
   setPaintingText,
   setSetText,
   toCatalogue,
@@ -46,7 +51,7 @@ import { HeroAvatar } from "../components/HeroAvatar";
 import { useLocale } from "../components/LocaleProvider";
 import { createPersistentStore } from "../components/persistentStore";
 import { BackLink, PageHead } from "../components/Ui";
-import { CheckIcon, CloseIcon, CopyIcon, DownloadIcon, TrashIcon } from "../components/Icons";
+import { CheckIcon, CloseIcon, CopyIcon, DownloadIcon, TrashIcon, UploadIcon } from "../components/Icons";
 
 type Guide = Dictionary["guideEntries"]["artwork"];
 type EditorText = Dictionary["artworkEditor"];
@@ -62,6 +67,42 @@ const draftStore = createPersistentStore<EditorState | null>({
   fallback: () => null,
   serialize: (value) => JSON.stringify(value),
 });
+
+const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
+
+/** Shrinks a picture to at most PAINTING_IMAGE_MAX_EDGE on its long side and re-encodes it as WebP. */
+async function shrinkImage(file: File): Promise<string> {
+  const bitmap = await createImageBitmap(file);
+  const scale = Math.min(1, PAINTING_IMAGE_MAX_EDGE / Math.max(bitmap.width, bitmap.height));
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+  canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+  const context = canvas.getContext("2d");
+  if (!context) throw new Error("Canvas unavailable");
+  context.imageSmoothingQuality = "high";
+  context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+  bitmap.close();
+  const webp = canvas.toDataURL("image/webp", 0.9);
+  // Older Safari cannot encode WebP and silently returns PNG instead.
+  return webp.startsWith("data:image/webp") ? webp : canvas.toDataURL("image/png");
+}
+
+/** False only when the browser refuses the draft for size; storage that is off entirely keeps it in memory. */
+function fitsStorage(next: EditorState): boolean {
+  try {
+    localStorage.setItem(ARTWORK_CATALOGUE_DRAFT_STORAGE_KEY, JSON.stringify(next));
+    return true;
+  } catch (error) {
+    return !(error instanceof DOMException && (error.name === "QuotaExceededError" || error.name === "NS_ERROR_DOM_QUOTA_REACHED"));
+  }
+}
+
+function saveFile(href: string, name: string) {
+  const link = document.createElement("a");
+  link.href = href;
+  link.download = name;
+  link.click();
+}
 
 type Ctx = {
   state: EditorState;
@@ -338,6 +379,32 @@ function PaintingForm({ ctx, canvas, onClose }: { ctx: Ctx; canvas: EditorPainti
           commit(locale === DEFAULT_LOCALE ? updatePainting(state, canvas.uid, { name: value }) : setPaintingText(state, canvas.uid, locale, "name", value))
         }
       />
+      <PaintingImageField ctx={ctx} canvas={canvas} />
+      <TranslatedField
+        label={e.fieldOriginal}
+        hint={e.fieldOriginalHint}
+        languages={ctx.languages}
+        get={(locale) => (locale === DEFAULT_LOCALE ? canvas.original : canvas.texts[locale]?.original ?? "")}
+        set={(locale, value) =>
+          commit(locale === DEFAULT_LOCALE
+            ? updatePainting(state, canvas.uid, { original: value })
+            : setPaintingText(state, canvas.uid, locale, "original", value))
+        }
+      />
+      <div className="field">
+        <label htmlFor={`${id}-artist`}>{e.fieldArtist}</label>
+        <input id={`${id}-artist`} value={canvas.artist} onChange={(event) => commit(updatePainting(state, canvas.uid, { artist: event.target.value }))} />
+      </div>
+      <div className="field">
+        <label htmlFor={`${id}-year`}>{e.fieldYear}</label>
+        <div className="artwork-year-row">
+          <input id={`${id}-year`} value={canvas.year} inputMode="numeric" onChange={(event) => commit(updatePainting(state, canvas.uid, { year: event.target.value }))} />
+          <label className="tier-edit-check">
+            <input type="checkbox" checked={canvas.circa} onChange={(event) => commit(updatePainting(state, canvas.uid, { circa: event.target.checked }))} />
+            {e.fieldCirca}
+          </label>
+        </div>
+      </div>
       <TranslatedField
         label={e.fieldProductivity}
         languages={ctx.languages}
@@ -406,6 +473,88 @@ function PaintingForm({ ctx, canvas, onClose }: { ctx: Ctx; canvas: EditorPainti
   );
 }
 
+function PaintingImageField({ ctx, canvas }: { ctx: Ctx; canvas: EditorPainting }) {
+  const { e } = ctx;
+  const input = useRef<HTMLInputElement>(null);
+  const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [dragging, setDragging] = useState(false);
+  const src = canvas.image?.data ?? (canvas.image?.file ? artworkImageUrl(canvas.image.file) : null);
+
+  const addFile = async (files: FileList | null) => {
+    const file = files?.[0];
+    if (!file) return;
+    setError("");
+    setBusy(true);
+    try {
+      if (!file.type.startsWith("image/")) { setError(e.uploadNotImage); return; }
+      if (file.size > MAX_UPLOAD_BYTES) { setError(e.uploadTooBig); return; }
+      let data: string;
+      try {
+        data = await shrinkImage(file);
+      } catch {
+        setError(e.uploadNotImage);
+        return;
+      }
+      // Read the store again: the draft may have changed while the picture was encoding.
+      const next = setPaintingImage(draftStore.getSnapshot() ?? PUBLISHED, canvas.uid, data);
+      if (!fitsStorage(next)) {
+        setError(e.storageFull);
+        return;
+      }
+      draftStore.set(next);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const onDrop = (event: DragEvent<HTMLElement>) => {
+    event.preventDefault();
+    setDragging(false);
+    void addFile(event.dataTransfer.files);
+  };
+
+  return (
+    <fieldset
+      className={dragging ? "hero-edit-images is-dragging" : "hero-edit-images"}
+      onDragOver={(event) => { event.preventDefault(); setDragging(true); }}
+      onDragLeave={() => setDragging(false)}
+      onDrop={onDrop}
+    >
+      <legend>{e.imageHeading}</legend>
+      <div className="theater-edit-cover">
+        {src ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={src} alt="" />
+        ) : null}
+        <button type="button" className="hero-edit-drop" onClick={() => input.current?.click()} disabled={busy}>
+          <UploadIcon className="icon" />
+          <strong>{src ? e.replaceImage : e.uploadImage}</strong>
+          <small>{e.dropHint}</small>
+        </button>
+        {canvas.image ? (
+          <button type="button" className="small-button button-danger" onClick={() => ctx.commit(removePaintingImage(ctx.state, canvas.uid))}>
+            <TrashIcon className="icon icon-sm" />
+            {e.removeImage}
+          </button>
+        ) : null}
+        <input
+          ref={input}
+          type="file"
+          accept="image/png,image/jpeg,image/webp,image/gif,image/avif"
+          hidden
+          onChange={(event) => {
+            void addFile(event.target.files);
+            event.target.value = "";
+          }}
+        />
+      </div>
+      <p className="tier-small">{e.imageHint}</p>
+      {error ? <p className="notice notice-warn" role="alert">{error}</p> : null}
+    </fieldset>
+  );
+}
+
 function StatField({
   ctx,
   canvas,
@@ -466,6 +615,7 @@ function ExportDialog({
   const dialog = useRef<HTMLDialogElement>(null);
   const [copied, setCopied] = useState("");
   const json = useMemo(() => serializePaintingData(data), [data]);
+  const files = useMemo(() => exportArtwork(ctx.state), [ctx.state]);
   const problems = useMemo(() => findProblems(ctx.state), [ctx.state]);
 
   const copy = (value: string) =>
@@ -503,6 +653,49 @@ function ExportDialog({
             <strong>{ctx.e.problemsTitle}</strong>
             <ul>{problems.map((problem, index) => <li key={index}>{problemText(ctx, problem)}</li>)}</ul>
           </div>
+        </div>
+      ) : null}
+      {files.uploads.length > 0 ? (
+        <div className="tier-export-block">
+          <div className="tier-export-head">
+            <strong>{ctx.tf(ctx.e.uploadsHeading, { count: files.uploads.length })}</strong>
+            <div className="tier-edit-row-actions">
+              <button
+                className="small-button"
+                type="button"
+                onClick={() => files.uploads.forEach((upload, index) => window.setTimeout(() => saveFile(upload.data, upload.file), index * 300))}
+              >
+                <DownloadIcon className="icon icon-sm" />
+                {ctx.e.downloadAll}
+              </button>
+            </div>
+          </div>
+          <ul className="hero-export-files">
+            {files.uploads.map((upload) => (
+              <li key={upload.file}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={upload.data} alt="" width={40} height={40} />
+                <span>
+                  <code>public/artwork/{upload.file}</code>
+                  <small>{upload.painting}</small>
+                </span>
+                <button className="small-button" type="button" onClick={() => saveFile(upload.data, upload.file)}>
+                  <DownloadIcon className="icon icon-sm" />
+                  {ctx.e.download}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+      {files.removedFiles.length > 0 ? (
+        <div className="tier-export-block">
+          <div className="tier-export-head">
+            <strong>{ctx.tf(ctx.e.removedHeading, { count: files.removedFiles.length })}</strong>
+          </div>
+          <ul className="hero-export-removed">
+            {files.removedFiles.map((file) => <li key={file}><code>public/artwork/{file}</code></li>)}
+          </ul>
         </div>
       ) : null}
       <div className="tier-export-block">

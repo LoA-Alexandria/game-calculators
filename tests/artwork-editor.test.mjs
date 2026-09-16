@@ -105,10 +105,11 @@ test("set and painting wording is edited per language and exported per dictionar
   assert.equal(findSet(state, set.uid).name, set.name, "English is edited with updateSet, not as a translation");
 
   const exported = exportCatalogTexts(state);
-  assert.deepEqual(exported.de, {
-    sets: { [set.id]: { name: "Ruhm und Schatten" } },
-    paintings: { [canvas.id]: { productivity: "Glashütte" } },
-  });
+  assert.deepEqual(exported.de.sets, { [set.id]: { name: "Ruhm und Schatten" } });
+  // The German catalogue already holds original titles; the edit only adds the productivity.
+  assert.deepEqual(exported.de.paintings[canvas.id], { ...texts.de.paintings?.[canvas.id], productivity: "Glashütte" });
+  const others = (catalog) => Object.fromEntries(Object.entries(catalog ?? {}).filter(([id]) => id !== canvas.id));
+  assert.deepEqual(others(exported.de.paintings), others(texts.de.paintings));
   assert.deepEqual(exported.en, {});
   assert.equal(countCatalogTextChanges(exported, texts), 2);
   const blocks = catalogTextBlocks(exported, texts);
@@ -127,4 +128,49 @@ test("set and painting wording is edited per language and exported per dictionar
   delete older.sets[0].texts;
   delete older.sets[0].paintings[0].texts;
   assert.deepEqual(parseDraft(JSON.stringify(older)).sets[0].texts, {}, "drafts from before translations still load");
+});
+
+test("an uploaded picture and the original title export with the painting", async () => {
+  const { exportArtwork, removePaintingImage, setPaintingImage } = await import("../lib/content/artwork-editor.ts");
+  const pixel = "data:image/webp;base64,UklGRhoAAABXRUJQVlA4TA0AAAAvAAAAEAcQERGIiP4HAA==";
+  const monkeys = published.sets.find((set) => set.id === "monkey-society");
+  const added = addPainting(published, monkeys.uid, "The Monkey Cook");
+  let state = updatePainting(added.state, added.uid, { name: "The Monkey Cook", original: "Monkeys in the Kitchen", artist: "David Teniers the Younger", year: "1645", circa: true });
+  state = setPaintingImage(state, added.uid, pixel);
+  assert.equal(setPaintingImage(state, added.uid, "data:text/html;base64,AAAA"), state, "only raster pictures are kept");
+
+  const result = exportArtwork(state);
+  const row = result.data.sets.find((set) => set.id === "monkey-society").paintings.at(-1);
+  assert.equal(row.id, added.state.sets.find((set) => set.uid === monkeys.uid).paintings.at(-1).id);
+  assert.deepEqual(
+    { original: row.original, artist: row.artist, year: row.year, circa: row.circa, image: row.image },
+    { original: "Monkeys in the Kitchen", artist: "David Teniers the Younger", year: "1645", circa: true, image: `${row.id}.webp` },
+  );
+  assert.deepEqual(result.uploads.map((upload) => upload.file), [`${row.id}.webp`]);
+  assert.deepEqual(result.removedFiles, []);
+  assert.match(serializePaintingData(result.data), /"original":"Monkeys in the Kitchen","artist":"David Teniers the Younger","year":"1645","circa":true,"image":"[a-z0-9-]+\.webp"\}/);
+
+  // Taking a published picture away lists its file for deletion.
+  const swing = published.sets.flatMap((set) => set.paintings).find((canvas) => canvas.id === "the-swing");
+  assert.equal(swing.image?.file, "the-swing.webp");
+  assert.deepEqual(exportArtwork(removePaintingImage(published, swing.uid)).removedFiles, ["the-swing.webp"]);
+});
+
+test("drafts saved before pictures and original titles load with them empty", () => {
+  const old = JSON.parse(JSON.stringify(published));
+  for (const set of old.sets) {
+    for (const canvas of set.paintings) {
+      delete canvas.original;
+      delete canvas.artist;
+      delete canvas.year;
+      delete canvas.circa;
+      delete canvas.image;
+    }
+  }
+  const parsed = parseDraft(JSON.stringify(old));
+  const canvas = parsed.sets[0].paintings[0];
+  assert.deepEqual([canvas.original, canvas.artist, canvas.year, canvas.circa, canvas.image], ["", "", "", false, null]);
+  const broken = JSON.parse(JSON.stringify(published));
+  broken.sets[0].paintings[0].image = { uid: "x", data: "data:text/html;base64,AAAA" };
+  assert.equal(parseDraft(JSON.stringify(broken)), null);
 });
