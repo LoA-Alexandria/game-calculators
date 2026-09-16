@@ -1,0 +1,201 @@
+{
+  "buildings": [
+    {
+      "id": "anaximander-planetarium",
+      "name": "Anaximander Planetarium",
+      "stats": [
+        "initiative",
+        "insight"
+      ],
+      "heroes": [
+        "Odysseus",
+        "Augustus",
+        "Hammurabi",
+        "Louis XIV",
+        "Isabella I",
+        "Chaucer",
+        "Guan Yu"
+      ]
+    },
+    {
+      "id": "apelles-studio",
+      "name": "Apelles Studio",
+      "stats": [
+        "intellect",
+        "creativity"
+      ],
+      "heroes": [
+        "Napoleon Bonaparte",
+        "Galileo Galilei",
+        "Charles Darwin",
+        "Saladin",
+        "Mary Shelley",
+        "Heracles",
+        "Lu Bu"
+      ]
+    },
+    {
+      "id": "delphi-oracle-hall",
+      "name": "Delphi Oracle Hall",
+      "stats": [
+        "intellect",
+        "insight"
+      ],
+      "heroes": [
+        "Blackbeard",
+        "Hector",
+        "Franklin",
+        "Wallace",
+        "Anne Bonny",
+        "Lagertha",
+        "Miyamoto Musashi"
+      ]
+    },
+    {
+      "id": "euclid-library",
+      "name": "Euclid Library",
+      "stats": [
+        "initiative",
+        "intellect"
+      ],
+      "heroes": [
+        "Pompey",
+        "Tutankhamun",
+        "Livia Drusilla",
+        "Victor Hugo",
+        "Hypatia",
+        "Himiko",
+        "Cleopatra"
+      ]
+    },
+    {
+      "id": "heraclitus-thought-pavilion",
+      "name": "Heraclitus Thought Pavilion",
+      "stats": [
+        "insight",
+        "initiative"
+      ],
+      "heroes": [
+        "King Arthur",
+        "Alexander the Great",
+        "Confucius",
+        "Adam",
+        "Elizabeth I",
+        "Cu Chulainn"
+      ]
+    },
+    {
+      "id": "hippocrates-medical-college",
+      "name": "Hippocrates Medical College",
+      "stats": [
+        "creativity",
+        "intellect"
+      ],
+      "heroes": [
+        "Spartacus",
+        "Richard I",
+        "Dante",
+        "Hannibal",
+        "Thomas Edison",
+        "Marco Polo"
+      ]
+    },
+    {
+      "id": "muse-conservatory",
+      "name": "Muse Conservatory",
+      "stats": [
+        "insight",
+        "intellect"
+      ],
+      "heroes": [
+        "Ragnar Lodbrok",
+        "Charles the Great",
+        "Gilgamesh",
+        "Noah",
+        "Andersen",
+        "Dido",
+        "Circe"
+      ]
+    },
+    {
+      "id": "pheidias-workshop",
+      "name": "Pheidias Workshop",
+      "stats": [
+        "creativity",
+        "initiative"
+      ],
+      "heroes": [
+        "Caesar",
+        "Da Vinci",
+        "Socrates",
+        "James Watt",
+        "Catherine de'Medici",
+        "Cervantes"
+      ]
+    },
+    {
+      "id": "plato-academy",
+      "name": "Plato Academy",
+      "stats": [
+        "creativity",
+        "insight"
+      ],
+      "heroes": [
+        "William Shakespeare",
+        "Joan of Arc",
+        "Columbus",
+        "Hatshepsut",
+        "Robin Hood",
+        "Lancelot"
+      ]
+    },
+    {
+      "id": "pythagoras-sanctum",
+      "name": "Pythagoras Sanctum",
+      "stats": [
+        "initiative",
+        "creativity"
+      ],
+      "heroes": [
+        "Isaac Newton",
+        "Eleanor of Aquitaine",
+        "Nikola Tesla",
+        "Homer",
+        "Alexander Hamilton",
+        "Guinevere",
+        "Yi Sun-sin"
+      ]
+    },
+    {
+      "id": "socrates-rostrum",
+      "name": "Socrates Rostrum",
+      "stats": [
+        "insight",
+        "creativity"
+      ],
+      "heroes": [
+        "Achilles",
+        "Gawain",
+        "Michelangelo",
+        "Drake",
+        "Prometheus",
+        "Archimedes",
+        "Merlin"
+      ]
+    },
+    {
+      "id": "theater-of-sophocles",
+      "name": "Theater of Sophocles",
+      "stats": [],
+      "heroes": [
+        "Queen Victoria",
+        "Alfred the Great",
+        "Beethoven",
+        "Mary I",
+        "Florence Nightingale",
+        "Bjorn Ironside",
+        "Morgana"
+      ]
+    }
+  ]
+}
