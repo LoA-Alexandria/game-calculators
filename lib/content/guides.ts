@@ -30,10 +30,9 @@ export function isGuideEntryId(
 }
 
 /**
- * Artwork, Artwork layouts, Heroes, Hero layouts, the Hero tier list, Goddess
- * Theater, Hero linking, and Anecdotes have their own editors. The dictionary-snippet
- * Edit / Remove on the guide page would only rewrite surrounding copy, so
- * those skip it.
+ * Guides with their own editor (listed in `lib/content/guide-meta.ts`) skip the
+ * dictionary-snippet Edit / Remove: on those pages it would only rewrite
+ * surrounding copy.
  */
 const SNIPPET_EDITOR_SKIP = new Set<string>([
   "artwork",
@@ -49,6 +48,8 @@ const SNIPPET_EDITOR_SKIP = new Set<string>([
   "heroLeveling",
   "productionBuildings",
   "cryptides",
+  "goddesses",
+  "goddessLeveling",
 ]);
 
 export function guideHasSnippetEditor(id: string): boolean {
@@ -80,13 +81,15 @@ export type GuideLayout =
   | "heroLeveling"
   | "productionBuildings"
   | "cryptides"
+  | "goddessLeveling"
   | "article";
 
 /**
  * Which renderer a guide entry needs. Each custom layout is recognised by a
  * field no other entry has — `builds` alone is not enough, because Artwork and
  * Hero layouts both have one. Goddesses also has `filterAll` like Heroes, so
- * `phases` is checked first. Goddess Theater is recognised by `playsHeading`
+ * `goddessTexts` is checked first. Goddess leveling is recognised by
+ * `phaseTexts`, Goddess Theater is recognised by `playsHeading`
  * Hero linking by `linksHeading`, Anecdotes by `anecdoteTexts`, Server age
  * unlocks by `timelineHeading`, Museion by `buildingsHeading`, Hero leveling
  * by `focusHeading`, production buildings by `requirementsHeading`, and
@@ -94,7 +97,8 @@ export type GuideLayout =
  * `tests/guides.test.mjs` pins every entry.
  */
 export function guideLayout(guide: object): GuideLayout {
-  if ("phases" in guide) return "goddesses";
+  if ("goddessTexts" in guide) return "goddesses";
+  if ("phaseTexts" in guide) return "goddessLeveling";
   if ("battleTiers" in guide) return "heroTierList";
   if ("buildTexts" in guide) return "heroLayouts";
   if ("levels" in guide) return "artworkLayouts";

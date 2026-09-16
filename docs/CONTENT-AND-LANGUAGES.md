@@ -1,7 +1,7 @@
 # Content and languages
 
-The site is organised into five sections â€” News, Events, Guides, Calculators,
-and Simulations â€” and speaks English, German, and French. Both the navigation
+The site is organised into five sections — News, Events, Guides, Calculators,
+and Simulations — and speaks English, German, and French. Both the navigation
 and the translations are driven by data, so adding an entry or a language does
 not mean touching the layout.
 
@@ -14,8 +14,8 @@ lib/i18n/dictionaries/fr.ts   French
 lib/i18n/index.ts             language registry, negotiation, {placeholder} filling
 lib/i18n/translations.ts      text kept in every language at once (editors)
 app/components/EditorLanguages.tsx  language fields, toggle, and export blocks for all editors
-scripts/add-language.mjs      pnpm i18n:add â€” adds a language
-scripts/i18n-report.mjs       pnpm i18n:report â€” lists what is still untranslated
+scripts/add-language.mjs      pnpm i18n:add — adds a language
+scripts/i18n-report.mjs       pnpm i18n:report — lists what is still untranslated
 lib/navigation.ts             the section tree: sidebar and indexes
 lib/content/news.ts           news entries (dates and links only; text is in the dictionaries)
 lib/content/banners.ts        optional images for the section banners
@@ -33,14 +33,14 @@ There is one set of URLs for all languages.
 always carries English. A reader with German stored sees one frame of English
 before the page settles, a German page cannot be shared as a German link, and
 search engines index the English text only. If that becomes a problem, move the
-pages under `app/[locale]/` and generate one copy per language â€” every string is
+pages under `app/[locale]/` and generate one copy per language — every string is
 already in a dictionary, so the pages themselves would barely change.
 
 ## Adding a language
 
 ```sh
-pnpm i18n:add es "EspaÃ±ol"
-pnpm i18n:add pt-BR "PortuguÃªs (Brasil)" --short PT --html-lang pt-BR
+pnpm i18n:add es "Español"
+pnpm i18n:add pt-BR "Português (Brasil)" --short PT --html-lang pt-BR
 ```
 
 The command copies `lib/i18n/dictionaries/en.ts` to `<code>.ts`, typed as
@@ -64,9 +64,11 @@ Nothing else changes. Everything below reads the registry:
 
 ### Text that lives in data files
 
-Hero wording, the Artwork catalogue, Goddess Theater names, and Anecdotes are
-English in `lib/data/*.json`. Each dictionary holds only the translations, keyed
-by id: `guideEntries.heroes.heroTexts`, `guideEntries.artwork.catalogTexts`,
+Hero wording, the Artwork catalogue, goddess affinity and obtain, the goddess
+upgrade order, Goddess Theater names, and Anecdotes are English in
+`lib/data/*.json`. Each dictionary holds only the translations, keyed by id:
+`guideEntries.heroes.heroTexts`, `guideEntries.artwork.catalogTexts`,
+`guideEntries.goddesses.goddessTexts`, `guideEntries.goddessLeveling.phaseTexts`,
 `guideEntries.goddessTheater.playTexts`, and
 `guideEntries.anecdotes.anecdoteTexts`. A new language starts with `{}` there.
 Readers see the English text until someone translates it, and an empty field
@@ -121,7 +123,8 @@ filter. There is no second list to keep in step.
    use `coreElements`; placement guides (hero layouts, artwork
    layouts) use `layouts`; ranking guides (hero tier list) use `tierLists`;
    building guides (Goddess Theater, Museion) use `buildings`; advice that is not tied to
-   one system (hero linking, anecdotes, server age unlocks, hero leveling) uses `tips`. The top-level Events section is the
+   one system (hero linking, anecdotes, server age unlocks, hero leveling, goddess
+   leveling) uses `tips`. The top-level Events section is the
    calendar; keep `event` for a future event-related guide.
 4. For a new slug, copy `app/guides/support/page.tsx` and pass the new id
    to `GuideArticle`.
@@ -157,19 +160,22 @@ A guide that needs more than headings and paragraphs gets its own renderer next
 to `GuideArticle`: `GoddessesGuide`, `ArtworkGuide`, `ArtworkLayoutsGuide`,
 `HeroLayoutsGuide`, `HeroRoster`, `HeroTierListGuide`, `GoddessTheaterGuide`,
 `HeroLinkingGuide`, `AnecdotesGuide`, `ServerAgeUnlocksGuide`, `MuseionGuide`,
-`HeroLevelingGuide`, `ProductionBuildingsGuide`, and `CryptidesGuide`.
+`HeroLevelingGuide`, `GoddessLevelingGuide`, `ProductionBuildingsGuide`, and
+`CryptidesGuide`.
 `guideLayout()` in `lib/content/guides.ts` picks the renderer from a field only
-that guide has (`phases` for Goddesses, `playsHeading` for Goddess Theater,
+that guide has (`goddessTexts` for Goddesses, `phaseTexts` for Goddess leveling,
+`playsHeading` for Goddess Theater,
 `linksHeading` for Hero linking, `anecdoteTexts` for Anecdotes,
 `timelineHeading` for Server age unlocks, `buildingsHeading` for Museion,
-`focusHeading` for Hero leveling, `requirementsHeading` for production`nbuildings, `cryptidesHeading` for Cryptides, before
+`focusHeading` for Hero leveling, `requirementsHeading` for production
+buildings, `cryptidesHeading` for Cryptides, before
 `filterAll` for Heroes), and
 `tests/guides.test.mjs` pins every entry, so two guides cannot claim the same
 renderer by sharing a field name. Keep `sections` and `note` in those entries
-too, since the editor reads them. Goddess names, rarity, and portraits live in
-`lib/data/goddesses.json`, once for all languages; affinity and obtain stay in
-the dictionaries so they can be translated. `tests/goddesses.test.mjs` checks
-the roster against `public/goddesses/`. Goddess Theater casts live in
+too, since the editor reads them. Goddess names, rarity, portraits, and the
+English affinity and obtain live in `lib/data/goddesses.json`, once for all
+languages; `goddessTexts` translates the wording. `tests/goddesses.test.mjs`
+checks the roster against `public/goddesses/`. Goddess Theater casts live in
 `lib/data/goddess-theater.json`, once for all languages; `tests/goddess-theater.test.mjs`
 checks every name against that roster and every cover against
 `public/goddess-theater/`. Play and role names in that JSON are the English wiki
@@ -208,7 +214,7 @@ Members with `guides.draft` see **Edit builds** in the guide head, which opens
 `/guides/hero-layouts/edit/`:
 
 - **Hero pool** (beside the builds, above them on a phone): heroes from Core
-  elements â€º Heroes. By default it shows only heroes that are not in the layout
+  elements › Heroes. By default it shows only heroes that are not in the layout
   yet; it can also show heroes missing from the selected build, or all heroes,
   filtered by rarity or name. Drag a hero into any zone, or tap **Key**,
   **Important**, or **Other** to add it to the selected build.
@@ -233,7 +239,7 @@ The Heroes roster spells some heroes differently from the layouts and the tier
 list ("Isaac Newton" for Newton, "Livia Drusilla" for Livia).
 `lib/content/hero-names.ts` maps them, so the pool does not offer a hero that is
 already placed under the other spelling. Remove an entry there once the roster
-and the guides agree â€” Gawain lost his entry that way, after the obtain guide
+and the guides agree — Gawain lost his entry that way, after the obtain guide
 confirmed the spelling the other guides already used.
 
 ## Editing the hero tier list
@@ -249,7 +255,7 @@ the top of the page is hidden here.
   bonus, note, or reason, or to remove it. **Add hero** sits at the end of every
   tier.
 - A text the dictionaries do not have yet (a new effect, note, or reason) can be
-  typed in English, German, and French from the **New textâ€¦** option.
+  typed in English, German, and French from the **New text…** option.
 - **Quality** is the rarity a placement is rated at, for heroes whose rarity
   changes in the game. Joan of Arc is SS at UR+ and S at UR, so each entry sets
   its own `rarity` and gets that frame (UR+ with the glow, UR red, SSR gold) and
@@ -292,7 +298,7 @@ the top of the page is hidden here.
   start empty or copy an existing one. The last remaining build cannot be
   deleted.
 - A text the dictionaries do not have yet (a new build name, note, or reason)
-  can be typed in English, German, and French from the **New textâ€¦** option.
+  can be typed in English, German, and French from the **New text…** option.
 
 The draft is saved in that browser only
 (`localStorage['popepoch-artwork-layout-draft']`). **Export** produces:
@@ -315,13 +321,13 @@ page is hidden here.
   or paintings.
 - **Add set** / **Add painting** create empty rows. **Add a hero** lists the
   Heroes roster that is not already on that canvas, grouped by rarity.
-- Autumnâ€™s catalogue has no UR+ heroes except Joan of Arc; the export dialog
+- Autumn’s catalogue has no UR+ heroes except Joan of Arc; the export dialog
   warns if a UR+ name is attached.
 - **Picture** takes the painting from the game without its frame. It is shrunk
   to 480 px WebP in the browser and exported as `public/artwork/<id>.webp`.
 - **Original title**, **Artist**, and **Year** (with **approximate**) name the
   real artwork the painting is based on. The English original only goes into
-  the JSON when the game renames the work (Nightshade is Hopperâ€™s
+  the JSON when the game renames the work (Nightshade is Hopper’s
   *Nighthawks*); every language can have its own original title. Leave them
   empty when the picture or the title does not settle which work it is.
 
@@ -355,8 +361,8 @@ Heroes as well.
   **new** or **changed** in the draft. Select one to edit their name, rarity,
   obtain text, abilities, and artifact, or to move them within their rarity.
 - **Languages**: name, rarity, and pictures are the same everywhere and stay in
-  `lib/data/heroes.json`. The wording the game shows â€” obtain note, ability
-  names, level texts, artifact â€” is translated, so those fields appear once per
+  `lib/data/heroes.json`. The wording the game shows — obtain note, ability
+  names, level texts, artifact — is translated, so those fields appear once per
   language: English plus the language the page is in, or every language with
   **Edit all languages**. English is what goes into the JSON; a blank
   translation shows the English text as its placeholder, because that is what a
@@ -364,7 +370,7 @@ Heroes as well.
   translation moved.
 - **Abilities**: every hero has exactly three, a **Skill**, a **Buff**, and a
   **Production** bonus. Each holds a name and one text per level (Lv. 1, Lv. 2,
-  â€¦). **Add Lv. N** copies the level before it, so only the numbers need
+  …). **Add Lv. N** copies the level before it, so only the numbers need
   changing. A level may stay empty when its text is not known yet (Cleopatra's
   Lv. 1). Empty slots are left out of the export. On the Heroes page, each
   ability is a card with a level slider, and the numbers that changed since
@@ -399,7 +405,7 @@ which is enough for dozens of pictures. The editor tells you when it is full.
 
 An untouched draft exports the published file and every dictionary block byte
 for byte (`tests/hero-editor.test.mjs`). `tests/heroes.test.mjs` checks the
-roster against the folder â€” every listed file exists and no file is left over â€”
+roster against the folder — every listed file exists and no file is left over —
 and that each `heroTexts` key is a hero in the roster.
 
 The portraits in `public/heroes/` were saved from the Pop Epoch Wiki rarity
@@ -408,17 +414,18 @@ roster credits it under the grid. To take the pictures down, delete the folder
 and empty the `images` lists.
 
 The Goddesses guide uses the same tile grid. Rows live in
-`lib/data/goddesses.json` (id, English name, rarity, images). Affinity and
-obtain stay in `guideEntries.goddesses.roster` so they stay translatable.
+`lib/data/goddesses.json` (id, name, rarity, English affinity and obtain,
+images, and the flags below); `guideEntries.goddesses.goddessTexts` translates
+affinity and obtain by id, and an empty translation falls back to English.
 Rarity follows the wiki card colours on
 https://pop-epochmobile.fandom.com/wiki/Goddess as of 14 September 2026: gold
 SSR, purple SR, blue R. Portraits in `public/goddesses/` come from that page
 (`scripts/fetch-goddess-portraits.py`). Bastet's wiki card is a placeholder, so
 she has no picture. Isis and Calypso are named by the obtain guide but not by
-the wiki, so they have a roster row and no picture. The upgrade-order numbers are the published
-community sequence on this site (phase 2 Fortuna and Bastet stop at 60), not
-the wiki's level list. To take the pictures down, delete the folder and empty
-the `images` lists.
+the wiki, so they have a roster row and no picture. To take the pictures down,
+delete the folder and empty the `images` lists. The upgrade order used to sit at
+the bottom of this guide; it is now its own guide under Tips and tricks (see
+**Goddess leveling / upgrade order**), and the Goddesses page links to it.
 
 ### Where a hero or goddess comes from
 
@@ -429,8 +436,8 @@ you edit the text.
 
 A hero's source is the `obtain` field in `lib/data/heroes.json`, which
 `heroTexts` can translate. For a goddess it is `obtain` in
-`guideEntries.goddesses.roster`, translated per dictionary, and
-`tests/goddesses.test.mjs` requires a line for every goddess in every language.
+`lib/data/goddesses.json`, which `goddessTexts` can translate, and
+`tests/goddesses.test.mjs` requires a line for every goddess.
 For an event hero the number is which run of that event first offered him, so
 `Holy Grail #3` means the third Grail. A hero with an empty `obtain` comes from
 the shared pools instead, which `sources` lists once per rarity.
@@ -463,6 +470,58 @@ card on https://pop-epochmobile.fandom.com/wiki/Goddess_Theater as of
 the rarity-framed poster (UR / SSR / SR / R); the stills beside it stay off
 the site. To take the pictures down, delete the folder and empty each play's
 `image` field.
+
+## Editing goddesses
+
+Members with `guides.draft` see **Edit goddesses** in the Goddesses head, which
+opens `/guides/goddesses/edit/`. It works like the Heroes editor:
+
+- The list on the left filters by rarity and name and marks goddesses that are
+  **new** or **changed**. Select one to edit her name, rarity, availability,
+  affinity, and obtain, or to move her within her rarity.
+- **Availability** is one of three choices: obtainable, **Not obtainable now**
+  (`missable`), or **Source unconfirmed** (`unconfirmed`), so a goddess never
+  carries both flags. **A skin raises her to SSR** sets `skinRaisesTo`.
+- **Languages**: name, rarity, flags, and pictures are shared. Affinity and
+  obtain appear once per language — English plus the page language, or every
+  language with **Edit all languages**. English goes into the JSON.
+- **Pictures**: the first is the portrait, the others are skins. Uploads are
+  shrunk to 240 px WebP in the browser and named after the goddess id.
+- **Export** gives the complete `lib/data/goddesses.json`, new pictures for
+  `public/goddesses/`, the files to delete, and one `goddessTexts` block per
+  dictionary that changed. It warns when a goddess is renamed or removed while
+  Goddess Theater casts or skins still name her, when the upgrade order still
+  uses her id, and when a removed picture is part of the banner collage
+  (`lib/content/goddess-banner.ts`).
+
+The draft is saved in that browser only
+(`localStorage['popepoch-goddess-draft']`). An untouched draft reproduces the
+published JSON and dictionary blocks byte for byte
+(`tests/goddess-editor.test.mjs`).
+
+## Goddess leveling / upgrade order
+
+The goddess upgrade order sits under **Tips and tricks**
+(`/guides/goddess-leveling/`, renderer `GoddessLevelingGuide`, detector
+`phaseTexts`). Phases live in `lib/data/goddess-leveling.json`: an `id`, the
+English `subtitle` and `lede`, and rows with a goddess `id` (or `null` for
+everyone the phases do not name), the `target` level, and `withoutSsr` where
+she stops lower without an SSR skin. Levels are written as the game writes them
+and are the same in every language. `guideEntries.goddessLeveling.phaseTexts`
+translates subtitle and lede by phase id. The page shows each phase as a row of
+goddess cards and then one line per goddess across the phases.
+
+Members with `guides.draft` see **Edit upgrade order** in the guide head, which
+opens `/guides/goddess-leveling/edit/`. Phases can be added, reordered, and
+removed; rows pick a goddess from the roster (or **Everyone else**), and set the
+level and the level without an SSR skin. **Export** produces the complete JSON
+and one `phaseTexts` block per dictionary, and warns about a phase without a
+subtitle or goddess, a row without a level, and a goddess listed twice in one
+phase. The draft is saved in that browser only
+(`localStorage['popepoch-goddess-leveling-draft']`). An untouched draft
+reproduces the published file byte for byte (`tests/goddess-leveling.test.mjs`).
+The numbers are the community order this site already published (phase 2 stops
+Fortuna and Bastet at 60), not the wiki's level list.
 
 ## Editing Goddess Theater
 
@@ -506,7 +565,7 @@ Members with `guides.draft` see **Edit linking** in the guide head, which opens
   rarity and without the heroes that list already has, so the same hero cannot
   be added twice. A new link takes the next free step of its track.
 - **Track** and **Step** are what the guide groups and numbers by. Two heroes on
-  the same step of one track would both claim to be â€œ#1â€, so the export warns.
+  the same step of one track would both claim to be “#1”, so the export warns.
 - **Position** in the link order is what the advice is: the first hero is the
   one to spend a single link on, the second is next, and so on.
 - **Note** is optional prose beside a hero, not game data, so it lives in the
@@ -519,7 +578,7 @@ Members with `guides.draft` see **Edit linking** in the guide head, which opens
 
 The draft is saved in that browser only
 (`localStorage['popepoch-linking-draft']`). **Export** produces the complete
-`lib/data/hero-linking.json` â€” links sorted by track, then step â€” and one
+`lib/data/hero-linking.json` — links sorted by track, then step — and one
 `linkTexts` block per dictionary to paste under `guideEntries.heroLinking`. An
 untouched draft reproduces the published file and all three blocks byte for
 byte.
@@ -580,7 +639,7 @@ Members with `guides.draft` see **Edit priorities** in the guide head, which ope
 (`localStorage['popepoch-leveling-draft']`). **Export** produces the complete
 JSON and one `heroNotes` block per dictionary. An untouched draft reproduces
 the published file byte for byte (`tests/hero-leveling.test.mjs`).
-Source: Boahâ€™s Discord list, with Autumnâ€™s addendum (Ice, S12), 6 August 2026.
+Source: Boah’s Discord list, with Autumn’s addendum (Ice, S12), 6 August 2026.
 
 ## Production building resource requirements
 
@@ -667,7 +726,7 @@ same change as the tool that relies on them.
 
 ## Adding an event
 
-Events are versioned data, not database rows â€” the same reason news is. An entry
+Events are versioned data, not database rows — the same reason news is. An entry
 typed into a browser on a static site would exist only in that browser, so
 committing it is what makes it visible.
 
@@ -689,7 +748,7 @@ deriving it from each reader's clock would show different answers.
 
 1. Open `/news/new/` signed in with `news.write`. The editor prints both the row
    and the dictionary block. Existing entries on `/news/` have Edit and Remove,
-   which load that row or print the deletion notes â€” the same pattern as events.
+   which load that row or print the deletion notes — the same pattern as events.
 2. Add or replace the row in `NEWS` in `lib/content/news.ts` with an ISO date and,
    optionally, an `href` to the thing the entry is about.
 3. Write or update the text under `newsEntries.<id>` in all three dictionaries
@@ -716,13 +775,13 @@ guide title.
 
 Calculation errors carry a `code` and its parameters (`lib/calculators/errors.ts`).
 The interface turns that into a sentence with `useCalculatorError()`. The English
-`message` on the error stays exactly as it was â€” the calculation tests assert on
-it â€” so never reword one without updating `tests/` in the same change.
+`message` on the error stays exactly as it was — the calculation tests assert on
+it — so never reword one without updating `tests/` in the same change.
 
 Adding a new validation:
 
 1. Add the code to `CalculatorErrorCode`.
-2. Throw `new CalculatorError("<code>", "<English message>", { â€¦params })`.
+2. Throw `new CalculatorError("<code>", "<English message>", { …params })`.
 3. Add `errors.<code>` to all three dictionaries, using the same `{placeholders}`.
 
 ## Names that need a second pair of eyes

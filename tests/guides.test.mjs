@@ -52,6 +52,8 @@ test("structured ranking guides skip the snippet Edit / Remove", () => {
   assert.equal(guideHasSnippetEditor("heroLeveling"), false);
   assert.equal(guideHasSnippetEditor("productionBuildings"), false);
   assert.equal(guideHasSnippetEditor("cryptides"), false);
+  assert.equal(guideHasSnippetEditor("goddesses"), false);
+  assert.equal(guideHasSnippetEditor("goddessLeveling"), false);
   assert.equal(guideHasSnippetEditor("support"), true);
 });
 
@@ -60,15 +62,6 @@ test("artwork layouts levels SSR ATK first", () => {
   assert.equal(levels[0]?.rarity, "SSR");
   assert.equal(levels[0]?.stat, "ATK");
   assert.equal(Object.keys(buildNames).join(), "crit,pursuit,dot,hybrid");
-  assert.equal(note, "");
-});
-
-test("goddesses phase 2 stops Fortuna and Bastet at 60", () => {
-  const { phases, note } = en.guideEntries.goddesses;
-  const phase2 = phases.find((phase) => phase.tone === "2");
-  assert.ok(phase2, "missing phase 2");
-  assert.equal(phase2.rows.find((row) => row.name === "Fortuna")?.target, "60");
-  assert.equal(phase2.rows.find((row) => row.name === "Bastet")?.target, "60");
   assert.equal(note, "");
 });
 
@@ -88,6 +81,7 @@ test("each guide entry is claimed by exactly the renderer it was written for", (
     heroLeveling: "heroLeveling",
     productionBuildings: "productionBuildings",
     cryptides: "cryptides",
+    goddessLeveling: "goddessLeveling",
   };
   for (const [code, dictionary] of Object.entries(mapLocales(getDictionary))) {
     for (const [id, guide] of Object.entries(dictionary.guideEntries)) {

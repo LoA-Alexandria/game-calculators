@@ -11,6 +11,7 @@ import {
   goddessNamed,
   goddessPortrait,
   goddessesByRarity,
+  localizedGoddess,
   searchGoddesses,
 } from "../lib/content/goddesses.ts";
 import { guideLayout } from "../lib/content/guides.ts";
@@ -50,12 +51,11 @@ test("a goddess is marked missable or unconfirmed, never both", () => {
   }
   // A marked goddess still says what is known, so the mark never stands alone.
   for (const name of [...missable, ...unconfirmed]) {
-    const row = en.guideEntries.goddesses.roster.find((entry) => entry.name === name);
-    assert.ok(row?.obtain.trim(), `${name} has an obtain line next to the mark`);
+    assert.ok(goddessNamed(name)?.obtain.trim(), `${name} has an obtain line next to the mark`);
   }
 });
 
-test("portraits resolve roster names and skip names that are only in the upgrade order", () => {
+test("portraits resolve roster names and skip names that are not in the roster", () => {
   assert.equal(goddessPortrait("Lady Liberty"), goddessImageUrl("lady-liberty.webp"));
   assert.equal(goddessPortrait("  hera "), goddessImageUrl("hera.webp"));
   assert.equal(goddessPortrait("Bastet"), null);
@@ -73,22 +73,26 @@ test("roster covers the wiki rarities and skins that raise to SSR", () => {
   assert.equal(goddessNamed("Venus")?.skinRaisesTo, undefined);
 });
 
-test("affinity and obtain stay in every dictionary, keyed by the English roster name", () => {
-  const names = GODDESSES.map((goddess) => goddess.name).sort();
+test("affinity and obtain are English in the roster and translated by id in every other language", () => {
+  const ids = new Set(GODDESSES.map((goddess) => goddess.id));
+  for (const goddess of GODDESSES) assert.ok(goddess.obtain.trim(), `${goddess.name} names a source`);
+  assert.deepEqual(en.guideEntries.goddesses.goddessTexts, {});
   for (const [code, dictionary] of Object.entries(LANGUAGES)) {
-    const roster = dictionary.guideEntries.goddesses.roster ?? [];
-    assert.deepEqual(roster.map((row) => row.name).sort(), names, `${code} roster names`);
-    // Every goddess now says where she comes from, in every language.
-    for (const row of roster) assert.ok(row.obtain.trim(), `${code} names a source for ${row.name}`);
+    const texts = dictionary.guideEntries.goddesses.goddessTexts;
+    for (const id of Object.keys(texts)) assert.ok(ids.has(id), `${code}: goddessTexts.${id} is a roster id`);
+    // Every goddess says where she comes from in every language, translated or English.
+    for (const goddess of GODDESSES) assert.ok(localizedGoddess(goddess, texts).obtain, `${code} names a source for ${goddess.name}`);
   }
-  const venus = en.guideEntries.goddesses.roster.find((row) => row.name === "Venus");
-  assert.equal(venus?.obtain, "First top-up, $2.50");
-  const bastet = en.guideEntries.goddesses.roster.find((row) => row.name === "Bastet");
-  assert.equal(bastet?.affinity, "");
+  assert.equal(goddessNamed("Venus")?.obtain, "First top-up, $2.50");
+  assert.equal(goddessNamed("Bastet")?.affinity, "");
+  const german = LANGUAGES.de.guideEntries.goddesses.goddessTexts;
+  assert.equal(localizedGoddess(goddessNamed("Venus"), german).obtain, "Erste Aufladung, 2,50 $");
+  // An empty translation falls back to English rather than showing nothing.
+  assert.equal(localizedGoddess(goddessNamed("Venus"), { venus: { obtain: " " } }).obtain, "First top-up, $2.50");
 });
 
 test("the first source of a goddess comes before the Ring Toss that brings her back", () => {
-  const row = (name) => en.guideEntries.goddesses.roster.find((entry) => entry.name === name)?.obtain ?? "";
+  const row = (name) => goddessNamed(name)?.obtain ?? "";
   // Muse, Moirai and Ixchel arrived with a feature; Ring Toss #4 and #5 are a
   // second chance, not the first source, which is what the roster used to say.
   assert.match(row("Muse"), /^Museion unlock event.*back in Ring Toss #4$/);
@@ -99,8 +103,8 @@ test("the first source of a goddess comes before the Ring Toss that brings her b
 
 test("goddess search matches affinity and obtain from the current language", () => {
   const extra = (goddess) => {
-    const row = en.guideEntries.goddesses.roster.find((entry) => entry.name === goddess.name);
-    return `${row?.affinity ?? ""} ${row?.obtain ?? ""}`;
+    const text = localizedGoddess(goddess, en.guideEntries.goddesses.goddessTexts);
+    return `${text.affinity} ${text.obtain}`;
   };
   const hits = searchGoddesses("ring toss", "all", extra);
   assert.equal(hits.some((goddess) => goddess.id === "medusa"), true);
@@ -109,10 +113,10 @@ test("goddess search matches affinity and obtain from the current language", () 
   assert.equal(searchGoddesses("bastet", "SSR", extra).map((goddess) => goddess.id).join(), "bastet");
 });
 
-test("goddesses still use the phases layout after gaining the heroes filter keys", () => {
+test("goddesses keep their own layout although they share the heroes filter keys", () => {
   assert.equal(guideLayout(en.guideEntries.goddesses), "goddesses");
   assert.equal("filterAll" in en.guideEntries.goddesses, true);
-  assert.equal("phases" in en.guideEntries.heroes, false);
+  assert.equal("goddessTexts" in en.guideEntries.heroes, false);
 });
 
 test("the goddesses banner collage uses primary portraits that exist on disk", async () => {

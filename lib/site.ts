@@ -71,6 +71,12 @@ export const LEVELING_DRAFT_STORAGE_KEY = "popepoch-leveling-draft";
 /** Local draft of the production buildings editor. */
 export const PRODUCTION_BUILDINGS_DRAFT_STORAGE_KEY = "popepoch-production-buildings-draft";
 
+/** Local draft of the Goddesses roster editor, uploaded portraits included. */
+export const GODDESS_DRAFT_STORAGE_KEY = "popepoch-goddess-draft";
+
+/** Local draft of the goddess upgrade order editor. */
+export const GODDESS_LEVELING_DRAFT_STORAGE_KEY = "popepoch-goddess-leveling-draft";
+
 /** Whether the desktop sidebar is collapsed to an icon rail. */
 export const NAV_COLLAPSED_STORAGE_KEY = "popepoch-nav-collapsed";
 
