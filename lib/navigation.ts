@@ -168,6 +168,13 @@ export const SECTIONS: NavSection[] = [
         categoryId: "tips",
       },
       {
+        href: "/guides/goddess-leveling/",
+        label: (t) => t.guideEntries.goddessLeveling.title,
+        description: (t) => t.guideEntries.goddessLeveling.summary,
+        badge: (t) => t.guideCategories.tips,
+        categoryId: "tips",
+      },
+      {
         href: "/guides/anecdotes/",
         label: (t) => t.guideEntries.anecdotes.title,
         description: (t) => t.guideEntries.anecdotes.summary,

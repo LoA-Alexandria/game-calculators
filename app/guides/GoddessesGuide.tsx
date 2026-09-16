@@ -2,14 +2,15 @@
 
 import Link from "next/link";
 import { useCallback, useId, useMemo, useRef, useState, useSyncExternalStore, type KeyboardEvent } from "react";
+import { GODDESS_LEVELING_DATA } from "../../lib/content/goddess-leveling";
 import { guideHref, guideLayout } from "../../lib/content/guides";
 import {
   GODDESS_RARITIES,
   GODDESSES,
   goddessImageUrl,
   goddessNamed,
-  goddessPortrait,
   goddessesByRarity,
+  localizedGoddess,
   searchGoddesses,
   type Goddess,
   type GoddessRarity,
@@ -25,69 +26,17 @@ import { ObtainMark } from "./ObtainMark";
 import { SkinCatalog, SkinLines } from "./SkinCatalog";
 
 type Guide = Dictionary["guideEntries"]["goddesses"];
-type Phase = NonNullable<Guide["phases"]>[number];
-type RosterRow = NonNullable<Guide["roster"]>[number];
+
+/** The first goddesses the upgrade order raises, with a portrait, for the link card. */
+const LEVELING_FACES = GODDESS_LEVELING_DATA.phases
+  .flatMap((phase) => phase.rows.map((row) => (row.goddess ? GODDESSES.find((goddess) => goddess.id === row.goddess) : undefined)))
+  .filter((goddess, index, all): goddess is Goddess => Boolean(goddess?.images[0]) && all.indexOf(goddess) === index)
+  .slice(0, 4);
 
 export function isGoddessesGuide(
   guide: Dictionary["guideEntries"][keyof Dictionary["guideEntries"]],
 ): guide is Dictionary["guideEntries"]["goddesses"] {
   return guideLayout(guide) === "goddesses";
-}
-
-function rosterRow(guide: Guide, name: string): RosterRow | undefined {
-  return (guide.roster ?? []).find((row) => row.name.toLowerCase() === name.trim().toLowerCase());
-}
-
-function NameCell({ name }: { name: string }) {
-  const goddess = goddessNamed(name);
-  const src = goddessPortrait(name);
-  return (
-    <span className="guide-name">
-      <HeroPortrait name={name} rarity={goddess?.rarity} src={src} className="hero-portrait-small" />
-      {name}
-    </span>
-  );
-}
-
-function PhaseCard({ phase, colName, colTarget, colHint }: {
-  phase: Phase;
-  colName: string;
-  colTarget: string;
-  colHint: string;
-}) {
-  const showHint = phase.rows.some((row) => row.hint);
-  return (
-    <article className="phase-card" data-tone={phase.tone}>
-      <header className="phase-card-head">
-        <span className="phase-index" aria-hidden="true">{phase.tone}</span>
-        <div>
-          <p className="phase-kicker">{phase.title}</p>
-          <h3>{phase.subtitle}</h3>
-        </div>
-      </header>
-      {phase.lede ? <p className="phase-lede">{phase.lede}</p> : null}
-      <div className="table-scroll">
-        <table className="data-table">
-          <thead>
-            <tr>
-              <th>{colName}</th>
-              <th>{colTarget}</th>
-              {showHint ? <th>{colHint}</th> : null}
-            </tr>
-          </thead>
-          <tbody>
-            {phase.rows.map((row) => (
-              <tr key={row.name}>
-                <td data-label={colName}><NameCell name={row.name} /></td>
-                <td data-label={colTarget}><strong className="mono">{row.target}</strong></td>
-                {showHint ? <td data-label={colHint}>{row.hint || "—"}</td> : null}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </article>
-  );
 }
 
 const subscribeHash = (onChange: () => void) => {
@@ -162,8 +111,8 @@ export function GoddessesGuide({ guide }: { guide: Guide }) {
   const rows = useMemo(
     () =>
       searchGoddesses(query, rarity, (goddess) => {
-        const row = rosterRow(guide, goddess.name);
-        return `${row?.affinity ?? ""} ${row?.obtain ?? ""} ${skinSearchText(goddess.name, GODDESS_SKINS, [guide.skinTexts])}`;
+        const text = localizedGoddess(goddess, guide.goddessTexts);
+        return `${text.affinity} ${text.obtain} ${skinSearchText(goddess.name, GODDESS_SKINS, [guide.skinTexts])}`;
       }),
     [query, rarity, guide],
   );
@@ -289,18 +238,18 @@ export function GoddessesGuide({ guide }: { guide: Guide }) {
       />
       <p className="hero-credit">{guide.skinsCredit}</p>
 
-      <h2>{guide.orderHeading}</h2>
-      <div className="phase-grid">
-        {guide.phases.map((phase) => (
-          <PhaseCard
-            key={phase.tone}
-            phase={phase}
-            colName={guide.colName}
-            colTarget={guide.colTarget}
-            colHint={guide.colHint}
-          />
-        ))}
-      </div>
+      <h2>{guide.levelingTitle}</h2>
+      <Link className="guide-link-card" href={guideHref("goddessLeveling")}>
+        <span className="guide-link-card-art" aria-hidden="true">
+          {LEVELING_FACES.map((goddess) => (
+            <HeroPortrait key={goddess.id} name={goddess.name} rarity={goddess.rarity} src={goddessImageUrl(goddess.images[0])} className="hero-portrait-small" />
+          ))}
+        </span>
+        <span className="guide-link-card-text">
+          <span>{guide.levelingBody}</span>
+          <strong>{guide.levelingLink} →</strong>
+        </span>
+      </Link>
 
       <h2>{guide.toolsHeading}</h2>
       <div className="card-grid">
@@ -348,7 +297,7 @@ function GoddessDialog({
   const index = list.findIndex((entry) => entry.id === goddess.id);
   const previous = index > 0 ? list[index - 1] : null;
   const next = index >= 0 && index < list.length - 1 ? list[index + 1] : null;
-  const row = rosterRow(guide, goddess.name);
+  const text = localizedGoddess(goddess, guide.goddessTexts);
   const file = goddess.images[0];
   const [shown, setShown] = useState(0);
   const current = goddess.images[shown] ?? file;
@@ -411,9 +360,9 @@ function GoddessDialog({
       </header>
       <div className="hero-detail-body">
         <h3>{guide.colAffinity}</h3>
-        <p>{row?.affinity.trim() ? row.affinity : "—"}</p>
+        <p>{text.affinity || "—"}</p>
         <h3>{guide.colObtain}</h3>
-        <p>{row?.obtain.trim() ? row.obtain : "—"}</p>
+        <p>{text.obtain || "—"}</p>
         {skinsFor(GODDESS_SKINS, goddess.name).length > 0 ? (
           <>
             <h3>{guide.skinsHeading}</h3>

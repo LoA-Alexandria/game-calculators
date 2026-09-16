@@ -2,14 +2,15 @@
  * Goddess roster from the Pop Epoch Wiki Goddess page
  * (https://pop-epochmobile.fandom.com/wiki/Goddess) as of 14 September 2026.
  *
- * Rows live in `lib/data/goddesses.json`. Names stay in English. Affinity and
- * obtain stay in the dictionaries so they can be translated. Rarity follows
- * the wiki card colours: gold SSR, purple SR, blue R. Portraits are in
+ * Rows live in `lib/data/goddesses.json`, edited at `/guides/goddesses/edit/`.
+ * Names are the same in every language. Affinity and obtain are English in
+ * the JSON; other languages override them in
+ * `guideEntries.goddesses.goddessTexts`, keyed by id. Rarity follows the wiki
+ * card colours: gold SSR, purple SR, blue R. Portraits are in
  * `public/goddesses/`. Bastet's wiki card is a placeholder, so she has no
  * picture. The artwork belongs to the game's publisher; the roster credits it.
  *
- * Upgrade order on the guide is the community table already published here,
- * not the wiki's level list (wiki phase 2 takes Fortuna and Bastet to 90).
+ * The upgrade order is its own guide (`lib/content/goddess-leveling.ts`).
  *
  * Where each goddess comes from is Autumn's obtain guide, shared on Discord on
  * 9 August 2026. It also named Isis and Calypso, who are not on the wiki page;
@@ -26,6 +27,10 @@ export type Goddess = {
   id: string;
   name: string;
   rarity: GoddessRarity;
+  /** English affinity bonus; empty while nobody has written it down. */
+  affinity: string;
+  /** English note on where she comes from. */
+  obtain: string;
   /** File names in `public/goddesses/`; the first is the portrait. */
   images: string[];
   /** Wiki sidenote: this skin raises her to SSR. */
@@ -40,6 +45,9 @@ export type Goddess = {
 };
 
 export type GoddessData = { goddesses: Goddess[] };
+
+/** Per-language overrides of the English affinity and obtain, keyed by goddess id. */
+export type GoddessTexts = Record<string, { affinity?: string; obtain?: string }>;
 
 /** JSON has no string literal types; `tests/goddesses.test.mjs` checks rarities. */
 export const GODDESS_DATA = roster as GoddessData;
@@ -62,6 +70,19 @@ export function searchGoddesses(
     const hay = [goddess.name, extra(goddess)].join(" ").toLowerCase();
     return hay.includes(needle);
   });
+}
+
+/** Affinity and obtain in the reader's language, falling back to English per field. */
+export function localizedGoddess(goddess: Goddess, texts: GoddessTexts): { affinity: string; obtain: string } {
+  const local = texts[goddess.id];
+  return {
+    affinity: local?.affinity?.trim() || goddess.affinity,
+    obtain: local?.obtain?.trim() || goddess.obtain,
+  };
+}
+
+export function goddessById(id: string): Goddess | undefined {
+  return GODDESSES.find((goddess) => goddess.id === id);
 }
 
 export function goddessImageUrl(file: string): string {
