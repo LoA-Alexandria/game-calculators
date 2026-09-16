@@ -1,0 +1,296 @@
+{
+  "milestones": [
+    {
+      "id": "day-1",
+      "day": 1,
+      "events": [
+        { "id": "glorious-civilization", "name": "Glorious Civilization", "oneTime": true },
+        { "id": "battlefield-campaign", "name": "Battlefield Campaign", "oneTime": true },
+        { "id": "server-day-launch-fest", "name": "Server Day Launch Fest", "oneTime": true }
+      ]
+    },
+    {
+      "id": "day-2",
+      "day": 2,
+      "events": [
+        {
+          "id": "genesis-shovel",
+          "name": "Genesis Shovel Unlock",
+          "detail": "Genesis Relic",
+          "oneTime": true
+        },
+        { "id": "imperial-invasion", "name": "Imperial Invasion" }
+      ]
+    },
+    {
+      "id": "day-3",
+      "day": 3,
+      "events": [
+        { "id": "mushroom-adventure", "name": "Mushroom Adventure" },
+        {
+          "id": "goddess-of-time",
+          "name": "Goddess of Time",
+          "detail": "Civilization Evolution"
+        },
+        {
+          "id": "guild-boss",
+          "name": "Guild Boss",
+          "detail": "Northern Enemy"
+        },
+        { "id": "holy-grail", "name": "Holy Grail" },
+        { "id": "merchant-sea", "name": "Merchant Sea" }
+      ]
+    },
+    {
+      "id": "day-5",
+      "day": 5,
+      "events": [
+        { "id": "sovereigns-spire", "name": "Sovereign's Spire" },
+        { "id": "crown-glory", "name": "Crown Glory" }
+      ]
+    },
+    {
+      "id": "day-6",
+      "day": 6,
+      "events": [
+        {
+          "id": "life-incubator-lab",
+          "name": "Life Incubator Lab",
+          "detail": "Life Incubator"
+        },
+        {
+          "id": "civilization-evolution",
+          "name": "Civilization Evolution"
+        }
+      ]
+    },
+    {
+      "id": "day-8",
+      "day": 8,
+      "events": [
+        {
+          "id": "muses-choice",
+          "name": "Muse's Choice",
+          "detail": "Chronogate Unlock Event — Museion",
+          "oneTime": true
+        },
+        {
+          "id": "cultural-relic",
+          "name": "Cultural Relic",
+          "detail": "Humanities Shovel Unlock",
+          "oneTime": true
+        },
+        { "id": "knights-ascent", "name": "Knights' Ascent" }
+      ]
+    },
+    {
+      "id": "day-9",
+      "day": 9,
+      "events": [
+        {
+          "id": "legend-of-serenissima",
+          "name": "Legend of Serenissima",
+          "detail": "Civilization Evolution"
+        },
+        { "id": "supply-reform", "name": "Supply Reform" },
+        {
+          "id": "dawn-of-rome",
+          "name": "Dawn of Rome",
+          "detail": "Later replaced by Crown of the Nile"
+        }
+      ]
+    },
+    {
+      "id": "day-10",
+      "day": 10,
+      "events": [
+        {
+          "id": "hero-destiny",
+          "name": "Hero Destiny",
+          "detail": "Hero / Collection Destiny",
+          "relatedGuide": "heroes"
+        }
+      ]
+    },
+    {
+      "id": "day-12",
+      "day": 12,
+      "events": [
+        { "id": "monument-of-eternity", "name": "Monument of Eternity" }
+      ]
+    },
+    {
+      "id": "day-14",
+      "day": 14,
+      "events": [
+        {
+          "id": "divine-grace",
+          "name": "Divine Grace",
+          "detail": "Chronogate Unlock Event — Egypt",
+          "oneTime": true
+        }
+      ]
+    },
+    {
+      "id": "day-15",
+      "day": 15,
+      "events": [
+        {
+          "id": "delve-into-atlantis",
+          "name": "Delve into Atlantis",
+          "detail": "Atlantis"
+        }
+      ]
+    },
+    {
+      "id": "day-17",
+      "day": 17,
+      "events": [
+        {
+          "id": "collection-destiny-genesis",
+          "name": "Collection Destiny — Genesis",
+          "detail": "Yellow shovels",
+          "relatedGuide": "collection"
+        }
+      ]
+    },
+    {
+      "id": "day-20",
+      "day": 20,
+      "events": [
+        {
+          "id": "goddess-theater-chronogate",
+          "name": "Goddess Theater Chronogate",
+          "detail": "Timing still unconfirmed",
+          "oneTime": true,
+          "relatedGuide": "goddessTheater"
+        }
+      ]
+    },
+    {
+      "id": "day-21",
+      "day": 21,
+      "events": [
+        {
+          "id": "trials-of-odin",
+          "name": "Trials of Odin",
+          "detail": "Ragnarok"
+        }
+      ]
+    },
+    {
+      "id": "day-24",
+      "day": 24,
+      "events": [
+        {
+          "id": "collection-destiny-humanities",
+          "name": "Collection Destiny — Humanities",
+          "detail": "Blue shovels",
+          "relatedGuide": "collection"
+        }
+      ]
+    },
+    {
+      "id": "day-30",
+      "day": 30,
+      "events": [
+        {
+          "id": "cryptids",
+          "name": "Cryptids",
+          "detail": "Tower and system",
+          "relatedGuide": "cryptides"
+        }
+      ]
+    },
+    {
+      "id": "day-38",
+      "day": 38,
+      "events": [{ "id": "spring-returns", "name": "Spring Returns" }]
+    },
+    {
+      "id": "day-40",
+      "day": 40,
+      "events": [
+        {
+          "id": "island-adventure",
+          "name": "Island Adventure",
+          "detail": "Chronogate Unlock Event — Grand Voyage",
+          "oneTime": true
+        }
+      ]
+    },
+    {
+      "id": "around-day-40",
+      "label": "Somewhere in this patch…",
+      "events": [
+        { "id": "astral-wonderland", "name": "Astral Wonderland" },
+        { "id": "duel-festival", "name": "Duel Festival" }
+      ]
+    },
+    {
+      "id": "day-50",
+      "day": 50,
+      "events": [
+        {
+          "id": "artwork-unlocks",
+          "name": "Artwork Unlocks",
+          "relatedGuide": "artwork"
+        }
+      ]
+    },
+    {
+      "id": "day-60-70",
+      "label": "Day 60–70ish",
+      "events": [
+        { "id": "cross-server-merging", "name": "Cross-Server Merging" }
+      ]
+    },
+    {
+      "id": "day-90",
+      "day": 90,
+      "events": [
+        {
+          "id": "crown-of-the-nile",
+          "name": "Crown of the Nile",
+          "detail": "Replaces Dawn of Rome"
+        }
+      ]
+    }
+  ],
+  "unconfirmed": [
+    { "id": "road-to-the-cup", "name": "Road to the Cup" },
+    {
+      "id": "heart-of-gold",
+      "name": "Heart of Gold",
+      "detail": "Post–Grand Voyage for sure"
+    },
+    {
+      "id": "cross-server-matchmaking",
+      "name": "Cross-Server Event Matchmaking",
+      "detail": "Usually around day 24"
+    },
+    {
+      "id": "quick-negotiation",
+      "name": "Quick Negotiation",
+      "detail": "Merchant Sea feature"
+    },
+    {
+      "id": "blue-fire-gathering",
+      "name": "Blue fire gathering (all)",
+      "detail": "For star upgrades"
+    },
+    {
+      "id": "all-task-rewards",
+      "name": "All task rewards gathered at once",
+      "detail": "May follow account era rather than server age"
+    },
+    {
+      "id": "race-to-civilization",
+      "name": "Race to Civilization / Great Flood",
+      "detail": "Between day 12 and 35"
+    },
+    { "id": "genie", "name": "Genie" },
+    { "id": "ring-toss", "name": "Ring Toss" },
+    { "id": "shopping-cart", "name": "Shopping Cart" }
+  ]
+}

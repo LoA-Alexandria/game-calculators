@@ -17,6 +17,7 @@ import { HeroTierListGuide, isHeroTierListGuide } from "./HeroTierListGuide";
 import { GoddessTheaterGuide, isGoddessTheaterGuide } from "./GoddessTheaterGuide";
 import { HeroLinkingGuide, isHeroLinkingGuide } from "./HeroLinkingGuide";
 import { AnecdotesGuide, isAnecdotesGuide } from "./AnecdotesGuide";
+import { ServerAgeUnlocksGuide, isServerAgeUnlocksGuide } from "./ServerAgeUnlocksGuide";
 import { HeroBanner } from "./HeroBanner";
 import { GoddessBanner } from "./GoddessBanner";
 
@@ -62,6 +63,8 @@ export function GuideArticle({ id }: { id: GuideEntryId }) {
           <HeroLinkingGuide guide={guide} />
         ) : isAnecdotesGuide(guide) ? (
           <AnecdotesGuide guide={guide} />
+        ) : isServerAgeUnlocksGuide(guide) ? (
+          <ServerAgeUnlocksGuide guide={guide} />
         ) : isArtworkLayoutsGuide(guide) ? (
           <ArtworkLayoutsGuide guide={guide} />
         ) : isArtworkGuide(guide) ? (

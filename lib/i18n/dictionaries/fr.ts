@@ -1412,6 +1412,34 @@ const fr: Dictionary = {
       ],
       note: "Les valeurs par palier des autres Légendes ne sont pas encore relevées. Apportez une capture d’écran sur Discord et elles seront ajoutées.",
     },
+    serverAgeUnlocks: {
+      title: "Déblocages selon l’âge du serveur",
+      summary: "Quand les événements uniques et les fonctions liées à l’âge apparaissent d’abord sur un nouveau serveur.",
+      intro:
+        "Liste combinée des événements uniques qui se débloquent avec l’âge du serveur, des autres fonctions liées à l’âge, et de la première apparition des événements récurrents sur un nouveau serveur. Les jours sont les mêmes pour tous les serveurs ; les nouveautés ajoutées plus tard au jeu arrivent au point compatible le plus tôt et peuvent sortir de ce guide.",
+      timelineHeading: "Chronologie des déblocages",
+      timelineLede: "Suivez les jours de haut en bas. Les événements uniques sont marqués.",
+      dayLabel: "Jour {day}",
+      oneTimeMark: "Unique",
+      oneTimeHint: "Se joue une fois par serveur et ne revient pas selon un rythme.",
+      relatedLabel: "Voir {guide}",
+      unconfirmedHeading: "Timing encore non confirmé",
+      unconfirmedLede:
+        "Ces éléments apparaissent d’une façon ou d’une autre avec l’âge du serveur, mais personne n’a encore fixé un jour fiable.",
+      eventTexts: {},
+      credit:
+        "Déblocages selon l’âge du serveur par Autumn (Ice, S12), partagés sur Discord le 14 septembre 2026. Marqués comme en cours — les timings peuvent encore bouger.",
+      sections: [
+        {
+          heading: "Comment lire la liste",
+          body: [
+            "Les événements uniques se déclenchent une fois pendant que le serveur vieillit. Le reste est la première apparition d’un événement récurrent ou d’un déblocage de fonction.",
+            "Quand ce site a déjà un guide pour la fonction, un lien figure sous l’entrée. Les noms de salons Discord du message d’origine sont omis.",
+          ],
+        },
+      ],
+      note: "Cette liste est encore en cours de vérification. Apportez un jour confirmé ou une correction sur Discord pour la mettre à jour.",
+    },
   },
   tierEditor: {
     title: "Modifier le classement des héros",

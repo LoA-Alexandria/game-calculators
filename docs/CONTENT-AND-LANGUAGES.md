@@ -120,7 +120,7 @@ filter. There is no second list to keep in step.
    use `coreElements`; placement guides (hero layouts, artwork
    layouts) use `layouts`; ranking guides (hero tier list) use `tierLists`;
    building guides (Goddess Theater) use `buildings`; advice that is not tied to
-   one system (hero linking, anecdotes) uses `tips`. The top-level Events section is the
+   one system (hero linking, anecdotes, server age unlocks) uses `tips`. The top-level Events section is the
    calendar; keep `event` for a future event-related guide.
 4. For a new slug, copy `app/guides/support/page.tsx` and pass the new id
    to `GuideArticle`.
@@ -128,10 +128,11 @@ filter. There is no second list to keep in step.
 A guide that needs more than headings and paragraphs gets its own renderer next
 to `GuideArticle`: `GoddessesGuide`, `ArtworkGuide`, `ArtworkLayoutsGuide`,
 `HeroLayoutsGuide`, `HeroRoster`, `HeroTierListGuide`, `GoddessTheaterGuide`,
-`HeroLinkingGuide`, and `AnecdotesGuide`.
+`HeroLinkingGuide`, `AnecdotesGuide`, and `ServerAgeUnlocksGuide`.
 `guideLayout()` in `lib/content/guides.ts` picks the renderer from a field only
 that guide has (`phases` for Goddesses, `playsHeading` for Goddess Theater,
-`linksHeading` for Hero linking, `anecdoteTexts` for Anecdotes, before
+`linksHeading` for Hero linking, `anecdoteTexts` for Anecdotes,
+`timelineHeading` for Server age unlocks, before
 `filterAll` for Heroes), and
 `tests/guides.test.mjs` pins every entry, so two guides cannot claim the same
 renderer by sharing a field name. Keep `sections` and `note` in those entries
@@ -476,6 +477,17 @@ The linkable heroes and the link order come from a community list shared on
 Discord on 15 September 2026. The mechanic is read off an in-game screenshot
 from the same day; the per-Legend values are deliberately not recorded, because
 one screenshot is a single data point. The guide's `credit` says so.
+
+## Server age unlocks
+
+Server age unlocks sits under **Tips and tricks**. Milestones and unconfirmed
+rows live in `lib/data/server-age-unlocks.json` (English event names). The
+timeline renderer is `ServerAgeUnlocksGuide`; optional name/detail/label
+overrides go in `guideEntries.serverAgeUnlocks.eventTexts`. Related site guides
+are linked when `relatedGuide` names a published `guideEntries` id.
+`tests/server-age-unlocks.test.mjs` checks ids, the tips category, and related
+guide links. Source: Autumn (Ice, S12), Discord, 14 September 2026, marked in
+progress.
 
 ## Editing anecdotes
 
