@@ -109,7 +109,7 @@ filter. There is no second list to keep in step.
    `/guides/` and on the guide page have Edit and Remove — the same commit-snippet
    pattern as news and events. Artwork, Artwork layouts, Heroes, Hero layouts,
    the Hero tier list, Goddess Theater, Hero linking, Anecdotes, Server age
-   unlocks, Museion, and Hero leveling skip those buttons:
+   unlocks, Museion, Hero leveling, and production buildings skip those buttons:
    they have their own editors instead.
 2. Write or replace the text under `guideEntries.<id>` in all three dictionaries,
    following the shape of `support`: `title`, `summary`, `intro`,
@@ -117,11 +117,12 @@ filter. There is no second list to keep in step.
 3. Add or replace the item in the `guides` section in `lib/navigation.ts`,
    including a `badge` and `categoryId` from `guideCategories`. Reuse an existing
    category when the guide belongs next to one already there. Core systems
-   (heroes, artwork, technology, collection, manor, support, goddesses, cryptides)
+   (heroes, artwork, technology, collection, manor, support, goddesses, cryptides,
+   production buildings)
    use `coreElements`; placement guides (hero layouts, artwork
    layouts) use `layouts`; ranking guides (hero tier list) use `tierLists`;
    building guides (Goddess Theater, Museion) use `buildings`; advice that is not tied to
-   one system (hero linking, anecdotes, server age unlocks) uses `tips`. The top-level Events section is the
+   one system (hero linking, anecdotes, server age unlocks, hero leveling) uses `tips`. The top-level Events section is the
    calendar; keep `event` for a future event-related guide.
 4. For a new slug, copy `app/guides/support/page.tsx` and pass the new id
    to `GuideArticle`.
@@ -130,12 +131,13 @@ A guide that needs more than headings and paragraphs gets its own renderer next
 to `GuideArticle`: `GoddessesGuide`, `ArtworkGuide`, `ArtworkLayoutsGuide`,
 `HeroLayoutsGuide`, `HeroRoster`, `HeroTierListGuide`, `GoddessTheaterGuide`,
 `HeroLinkingGuide`, `AnecdotesGuide`, `ServerAgeUnlocksGuide`, `MuseionGuide`,
-and `HeroLevelingGuide`.
+`HeroLevelingGuide`, and `ProductionBuildingsGuide`.
 `guideLayout()` in `lib/content/guides.ts` picks the renderer from a field only
 that guide has (`phases` for Goddesses, `playsHeading` for Goddess Theater,
 `linksHeading` for Hero linking, `anecdoteTexts` for Anecdotes,
 `timelineHeading` for Server age unlocks, `buildingsHeading` for Museion,
-`focusHeading` for Hero leveling, before
+`focusHeading` for Hero leveling, `requirementsHeading` for production
+buildings, before
 `filterAll` for Heroes), and
 `tests/guides.test.mjs` pins every entry, so two guides cannot claim the same
 renderer by sharing a field name. Keep `sections` and `note` in those entries
@@ -553,6 +555,24 @@ JSON and one `heroNotes` block per dictionary. An untouched draft reproduces
 the published file byte for byte (`tests/hero-leveling.test.mjs`).
 Source: Boah’s Discord list, with Autumn’s addendum (Ice, S12), 6 August 2026.
 
+## Production building resource requirements
+
+Production buildings sit under **Core elements**. Groups, produces/requires
+resources, priority asterisks, and barracks/research tags live in
+`lib/data/production-buildings.json`. The guide renderer is
+`ProductionBuildingsGuide` (detector `requirementsHeading`). Group labels,
+resource names, tag prose, and building name/note overrides live in
+`guideEntries.productionBuildings` (`buildingTexts` is sparse per language).
+
+Members with `guides.draft` see **Edit buildings**, which opens
+`/guides/production-buildings/edit/`. The draft is saved in that browser only
+(`localStorage['popepoch-production-buildings-draft']`). **Export** produces the
+complete JSON and one `buildingTexts` block per dictionary. An untouched draft
+reproduces the published file byte for byte (`tests/production-buildings.test.mjs`).
+Building pictures in `public/production-buildings/` were cut from German client
+screenshots on 16 September 2026, with speech bubbles and other UI overlays
+removed (`image` on each JSON row). Coal has no picture yet.
+Source: community Discord list; Enlightenment entries thanks to Spitzell.
 
 ## Editing anecdotes
 
