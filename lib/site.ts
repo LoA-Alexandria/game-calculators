@@ -62,6 +62,9 @@ export const ANECDOTE_DRAFT_STORAGE_KEY = "popepoch-anecdote-draft";
 /** Local draft of the Server age unlocks editor. */
 export const AGE_UNLOCKS_DRAFT_STORAGE_KEY = "popepoch-age-unlocks-draft";
 
+/** Local draft of the Museion editor. */
+export const MUSEION_DRAFT_STORAGE_KEY = "popepoch-museion-draft";
+
 /** Whether the desktop sidebar is collapsed to an icon rail. */
 export const NAV_COLLAPSED_STORAGE_KEY = "popepoch-nav-collapsed";
 

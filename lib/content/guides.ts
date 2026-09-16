@@ -45,6 +45,7 @@ const SNIPPET_EDITOR_SKIP = new Set<string>([
   "heroLinking",
   "anecdotes",
   "serverAgeUnlocks",
+  "museion",
 ]);
 
 export function guideHasSnippetEditor(id: string): boolean {
@@ -72,6 +73,7 @@ export type GuideLayout =
   | "heroLinking"
   | "anecdotes"
   | "serverAgeUnlocks"
+  | "museion"
   | "article";
 
 /**
@@ -79,8 +81,9 @@ export type GuideLayout =
  * field no other entry has — `builds` alone is not enough, because Artwork and
  * Hero layouts both have one. Goddesses also has `filterAll` like Heroes, so
  * `phases` is checked first. Goddess Theater is recognised by `playsHeading`
- * Hero linking by `linksHeading`, Anecdotes by `anecdoteTexts`, and Server age
- * unlocks by `timelineHeading`. `tests/guides.test.mjs` pins every entry.
+ * Hero linking by `linksHeading`, Anecdotes by `anecdoteTexts`, Server age
+ * unlocks by `timelineHeading`, and Museion by `buildingsHeading`.
+ * `tests/guides.test.mjs` pins every entry.
  */
 export function guideLayout(guide: object): GuideLayout {
   if ("phases" in guide) return "goddesses";
@@ -92,6 +95,7 @@ export function guideLayout(guide: object): GuideLayout {
   if ("linksHeading" in guide) return "heroLinking";
   if ("anecdoteTexts" in guide) return "anecdotes";
   if ("timelineHeading" in guide) return "serverAgeUnlocks";
+  if ("buildingsHeading" in guide) return "museion";
   if ("filterAll" in guide) return "heroes";
   return "article";
 }

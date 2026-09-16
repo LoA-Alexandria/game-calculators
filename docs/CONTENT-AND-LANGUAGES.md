@@ -108,8 +108,8 @@ filter. There is no second list to keep in step.
    row, and (for a new slug) a note to copy the page file. Existing guides on
    `/guides/` and on the guide page have Edit and Remove — the same commit-snippet
    pattern as news and events. Artwork, Artwork layouts, Heroes, Hero layouts,
-   the Hero tier list, Goddess Theater, Hero linking, Anecdotes, and Server age
-   unlocks skip those buttons:
+   the Hero tier list, Goddess Theater, Hero linking, Anecdotes, Server age
+   unlocks, and Museion skip those buttons:
    they have their own editors instead.
 2. Write or replace the text under `guideEntries.<id>` in all three dictionaries,
    following the shape of `support`: `title`, `summary`, `intro`,
@@ -120,7 +120,7 @@ filter. There is no second list to keep in step.
    (heroes, artwork, technology, collection, manor, support, goddesses, cryptides)
    use `coreElements`; placement guides (hero layouts, artwork
    layouts) use `layouts`; ranking guides (hero tier list) use `tierLists`;
-   building guides (Goddess Theater) use `buildings`; advice that is not tied to
+   building guides (Goddess Theater, Museion) use `buildings`; advice that is not tied to
    one system (hero linking, anecdotes, server age unlocks) uses `tips`. The top-level Events section is the
    calendar; keep `event` for a future event-related guide.
 4. For a new slug, copy `app/guides/support/page.tsx` and pass the new id
@@ -129,11 +129,11 @@ filter. There is no second list to keep in step.
 A guide that needs more than headings and paragraphs gets its own renderer next
 to `GuideArticle`: `GoddessesGuide`, `ArtworkGuide`, `ArtworkLayoutsGuide`,
 `HeroLayoutsGuide`, `HeroRoster`, `HeroTierListGuide`, `GoddessTheaterGuide`,
-`HeroLinkingGuide`, `AnecdotesGuide`, and `ServerAgeUnlocksGuide`.
+`HeroLinkingGuide`, `AnecdotesGuide`, `ServerAgeUnlocksGuide`, and `MuseionGuide`.
 `guideLayout()` in `lib/content/guides.ts` picks the renderer from a field only
 that guide has (`phases` for Goddesses, `playsHeading` for Goddess Theater,
 `linksHeading` for Hero linking, `anecdoteTexts` for Anecdotes,
-`timelineHeading` for Server age unlocks, before
+`timelineHeading` for Server age unlocks, `buildingsHeading` for Museion, before
 `filterAll` for Heroes), and
 `tests/guides.test.mjs` pins every entry, so two guides cannot claim the same
 renderer by sharing a field name. Keep `sections` and `note` in those entries
@@ -515,6 +515,22 @@ complete JSON, new pictures to put into `public/server-age-unlocks/`, files to
 delete, and one `eventTexts` block per dictionary. An untouched draft
 reproduces the published file byte for byte (`tests/server-age-unlocks.test.mjs`).
 Source: Autumn (Ice, S12), Discord, 14 September 2026, marked in progress.
+
+## Museion
+
+Museion sits under **Buildings**. Halls, competition stats, and hero markers
+live in `lib/data/museion.json` (English). The guide renderer is `MuseionGuide`;
+building name overrides go in `guideEntries.museion.buildingTexts`. Heroes use
+Core roster spellings when they exist; a short off-roster allow-list covers
+names Autumn listed that are not in `heroes.json` yet.
+
+Members with `guides.draft` see **Edit Museion**, which opens
+`/guides/museion/edit/`. The draft is saved in that browser only
+(`localStorage['popepoch-museion-draft']`). **Export** produces the complete
+JSON and one `buildingTexts` block per dictionary. An untouched draft
+reproduces the published file byte for byte (`tests/museion.test.mjs`).
+Source: Autumn (Ice, S12), Discord, 20 August 2026, with later placements from
+Spitzell and Zee.
 
 ## Editing anecdotes
 
