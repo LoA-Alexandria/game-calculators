@@ -1,0 +1,84 @@
+{
+  "defaultBuild": "crit",
+  "builds": [
+    {
+      "id": "crit",
+      "bands": [
+        {
+          "id": "sPlus",
+          "heroes": [
+            "Joan of Arc",
+            "Achilles",
+            "Tutankhamun",
+            "Blackbeard"
+          ]
+        },
+        {
+          "id": "gold",
+          "heroes": [
+            "Pompey",
+            "Caesar",
+            "Spartacus"
+          ]
+        },
+        {
+          "id": "silver",
+          "heroes": [
+            "Lagertha",
+            "Lancelot"
+          ]
+        }
+      ],
+      "fragments": [
+        {
+          "kind": "unlocks"
+        },
+        {
+          "kind": "allUr",
+          "hero": "Achilles"
+        },
+        {
+          "kind": "allSsrWhenUrPlus",
+          "hero": "Joan of Arc"
+        },
+        {
+          "kind": "splitEvenWhenUr",
+          "heroes": [
+            "Hammurabi",
+            "Joan of Arc"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "dot",
+      "bands": [],
+      "fragments": []
+    },
+    {
+      "id": "pursuit",
+      "bands": [],
+      "fragments": []
+    },
+    {
+      "id": "execute",
+      "bands": [],
+      "fragments": []
+    }
+  ],
+  "levelTargets": [
+    {
+      "id": "urUrPlus",
+      "target": "200+"
+    },
+    {
+      "id": "ssr",
+      "target": "150",
+      "noAscend": true
+    },
+    {
+      "id": "rSr",
+      "target": "120–130"
+    }
+  ]
+}

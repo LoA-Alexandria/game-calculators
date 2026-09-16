@@ -2623,6 +2623,111 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
   min-width: 0;
 }
 
+.leveling-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 14px;
+}
+.leveling-filters button {
+  appearance: none;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  color: var(--ink);
+  padding: 8px 12px;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.leveling-filters button.is-active {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, var(--surface));
+  color: var(--accent);
+}
+.leveling-band { margin: 0 0 14px; }
+.leveling-band h4 {
+  margin: 0 0 8px;
+  font-size: .92rem;
+  color: var(--ink-soft);
+}
+.leveling-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+.leveling-list li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+}
+.leveling-rank {
+  min-width: 2.4rem;
+  color: var(--ink-faint);
+  font-size: .78rem;
+  font-weight: 700;
+}
+.leveling-note {
+  color: var(--ink-soft);
+  font-size: .84rem;
+}
+.leveling-fragment-body {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+.leveling-fragment-heroes {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+}
+.leveling-levels {
+  margin: 0 0 12px;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+.leveling-levels li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 12px;
+}
+.leveling-edit-rows {
+  margin: 0 0 12px;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+.leveling-edit-rows > li {
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface);
+}
+.leveling-edit-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.leveling-edit-fields {
+  display: grid;
+  gap: 10px;
+}
+.leveling-edit-build,
+.leveling-edit-levels {
+  margin-top: 18px;
+}
+
 .museion-edit-layout {
   display: grid;
   grid-template-columns: minmax(180px, 240px) minmax(0, 1fr);
