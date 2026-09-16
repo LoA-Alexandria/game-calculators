@@ -1,0 +1,81 @@
+{
+  "talent": {
+    "unlockCost": 5,
+    "dropAmount": 5,
+    "dropEveryLevels": 20
+  },
+  "cryptides": [
+    {
+      "id": "nidhogg",
+      "name": "Nidhogg",
+      "rarity": "SSR",
+      "tower": "bow",
+      "talentMaterial": "branch",
+      "image": "nidhogg.webp",
+      "skills": [
+        { "id": "fireball-hail", "image": "skills/nidhogg-1.webp" },
+        { "id": "charged-dragon-breath", "image": "skills/nidhogg-2.webp" },
+        { "id": "ash-breath", "image": "skills/nidhogg-3.webp" }
+      ],
+      "foods": [
+        { "id": "meat-with-bones", "growth": 10, "image": "foods/nidhogg-1.webp" },
+        { "id": "ribs", "growth": 30, "image": "foods/nidhogg-2.webp" },
+        { "id": "asgard-tribute-meat", "growth": 100, "image": "foods/nidhogg-3.webp" }
+      ]
+    },
+    {
+      "id": "caladrius",
+      "name": "Caladrius",
+      "rarity": "SSR",
+      "tower": "shield",
+      "talentMaterial": "potion",
+      "image": "caladrius.webp",
+      "skills": [
+        { "id": "bubble-shield", "image": "skills/caladrius-1.webp" },
+        { "id": "feather-dance", "image": "skills/caladrius-2.webp" },
+        { "id": "holy-protection", "image": "skills/caladrius-3.webp" }
+      ],
+      "foods": [
+        { "id": "healing-tomato", "growth": 10, "image": "foods/caladrius-1.webp" },
+        { "id": "flying-eggplant", "growth": 30, "image": "foods/caladrius-2.webp" },
+        { "id": "mandrake-tomato", "growth": 100, "image": "foods/caladrius-3.webp" }
+      ]
+    },
+    {
+      "id": "cerberus",
+      "name": "Cerberus",
+      "rarity": "SSR",
+      "tower": "pike",
+      "talentMaterial": "bell",
+      "image": "cerberus.webp",
+      "skills": [
+        { "id": "nether-barrage", "image": "skills/cerberus-1.webp" },
+        { "id": "hell-fork", "image": "skills/cerberus-2.webp" },
+        { "id": "purgatory-tear", "image": "skills/cerberus-3.webp" }
+      ],
+      "foods": [
+        { "id": "juicy-bbq", "growth": 10, "image": "foods/cerberus-1.webp" },
+        { "id": "deluxe-bbq", "growth": 30, "image": "foods/cerberus-2.webp" },
+        { "id": "underworld-bbq", "growth": 100, "image": "foods/cerberus-3.webp" }
+      ]
+    },
+    {
+      "id": "sleipnir",
+      "name": "Sleipnir",
+      "rarity": "SSR",
+      "tower": "horse",
+      "talentMaterial": "grass",
+      "image": "sleipnir.webp",
+      "skills": [
+        { "id": "healing-pulse", "image": "skills/sleipnir-1.webp" },
+        { "id": "electromagnetic-interference", "image": "skills/sleipnir-2.webp" },
+        { "id": "thunder-field", "image": "skills/sleipnir-3.webp" }
+      ],
+      "foods": [
+        { "id": "fresh-grass", "growth": 10, "image": "foods/sleipnir-1.webp" },
+        { "id": "morning-dew-grass", "growth": 30, "image": "foods/sleipnir-2.webp" },
+        { "id": "thunder-grass", "growth": 100, "image": "foods/sleipnir-3.webp" }
+      ]
+    }
+  ]
+}
