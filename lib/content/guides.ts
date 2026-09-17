@@ -51,6 +51,7 @@ const SNIPPET_EDITOR_SKIP = new Set<string>([
   "goddesses",
   "goddessLeveling",
   "collection",
+  "collectionLayouts",
 ]);
 
 export function guideHasSnippetEditor(id: string): boolean {
@@ -84,6 +85,7 @@ export type GuideLayout =
   | "cryptides"
   | "goddessLeveling"
   | "collection"
+  | "collectionLayouts"
   | "article";
 
 /**
@@ -91,7 +93,8 @@ export type GuideLayout =
  * field no other entry has — `builds` alone is not enough, because Artwork and
  * Hero layouts both have one. Goddesses also has `filterAll` like Heroes, so
  * `goddessTexts` is checked first. Goddess leveling is recognised by
- * `phaseTexts`, Collection by `collectionTexts`, Goddess Theater is recognised by `playsHeading`
+ * `phaseTexts`, Collection by `collectionTexts`, Collection layouts by
+ * `setupTexts`, Goddess Theater is recognised by `playsHeading`
  * Hero linking by `linksHeading`, Anecdotes by `anecdoteTexts`, Server age
  * unlocks by `timelineHeading`, Museion by `buildingsHeading`, Hero leveling
  * by `focusHeading`, production buildings by `requirementsHeading`, and
@@ -102,6 +105,7 @@ export function guideLayout(guide: object): GuideLayout {
   if ("goddessTexts" in guide) return "goddesses";
   if ("phaseTexts" in guide) return "goddessLeveling";
   if ("collectionTexts" in guide) return "collection";
+  if ("setupTexts" in guide) return "collectionLayouts";
   if ("battleTiers" in guide) return "heroTierList";
   if ("buildTexts" in guide) return "heroLayouts";
   if ("levels" in guide) return "artworkLayouts";

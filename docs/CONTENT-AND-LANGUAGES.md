@@ -712,6 +712,45 @@ the published JSON and dictionary blocks byte for byte
 (`tests/collection-editor.test.mjs`; `tests/collection.test.mjs` checks the
 pictures and translations).
 
+## Collection layouts
+
+Collection layouts sit under **Layouts** (`/guides/collection-layouts/`,
+renderer `CollectionLayoutsGuide`, detector `setupTexts`). The guide is the
+general one: which collection goes into each of the six age slots. Data lives
+in `lib/data/collection-layouts.json`:
+
+- `setups`: `id`, `credit`, `tags`, English `title`, `lede`, `notes`, and
+  `slots` with one collection id per age (`iceAge`, `stoneAge`, `bronzeAge`,
+  `classical`, `medieval`, `renaissance`).
+- `options`: every active collection with its `age`, the collection `item` id,
+  an English `name` used until the Collection guide has that item, `tags`, and
+  the English `note` on what it does.
+
+Slots and options name a collection by its id in `lib/data/collection.json`, so
+the picture and the translated name come from the Collection guide; a
+collection that is not there yet shows its name without a picture and the guide
+says so. Ages and tags are named in `guideEntries.collectionLayouts`, along with
+the build shapes, the upgrade priorities, and the authors' notes;
+`setupTexts` and `optionTexts` translate setup titles, ledes, notes, and what a
+collection does, keyed by setup id and collection id.
+
+Setup ids are stable so Hero layouts can point at a setup later: this guide
+stays the general one, while a hero build can carry its own collection line.
+
+Members with `guides.draft` see **Edit layouts** in the guide head, which opens
+`/guides/collection-layouts/edit/`. The left column lists the setups and then
+the collections by age; a setup form takes the credit, tags, the six slots, and
+the title, lede, and notes in every language, and a collection form takes its
+tags and what it does. **Export** produces the complete JSON and one
+`setupTexts` / `optionTexts` pair per dictionary, and warns about a missing or
+duplicate title, an empty or unknown slot, and a collection without English
+text. The draft is saved in that browser only
+(`localStorage['popepoch-collection-layouts-draft']`). An untouched draft
+reproduces the published file and blocks byte for byte
+(`tests/collection-layouts-editor.test.mjs`; `tests/collection-layouts.test.mjs`
+checks the data and the translations).
+Source: Boah's and Autumn's (Ice, S12) Discord guides, August and September 2026.
+
 ## Cryptides
 
 Cryptides sits under **Core elements**. Structured rows (tower, talent material,

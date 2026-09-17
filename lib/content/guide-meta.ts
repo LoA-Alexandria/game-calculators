@@ -65,6 +65,11 @@ export const GUIDE_PRESENTATION: Record<GuideEntryId, GuidePresentation> = {
     art: ["/heroes/achilles.webp", "/heroes/caesar.webp", "/heroes/lancelot.webp", "/heroes/tutankhamun.webp"],
     editor: { href: "/guides/hero-layouts/edit/", label: (t) => t.layoutEditor.openEditor },
   },
+  collectionLayouts: {
+    art: ["/collection/thors-hammer.webp", "/collection/golden-mask-of-agamemnon.webp", "/collection/prometheus-torch.webp"],
+    editor: { href: "/guides/collection-layouts/edit/", label: (t) => t.collectionLayoutsEditor.openEditor },
+    cutout: true,
+  },
   artworkLayouts: {
     art: ["/artwork/wanderer-above-the-sea-of-fog.webp", "/artwork/cafe-terrace-at-night.webp", "/artwork/composition-viii.webp"],
     editor: { href: "/guides/artwork-layouts/edit/", label: (t) => t.artworkLayoutEditor.openEditor },

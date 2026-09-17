@@ -1,0 +1,201 @@
+{
+  "setups": [
+    {
+      "id": "boah-all-round",
+      "credit": "Boah",
+      "tags": ["allRound", "pvp", "tower"],
+      "title": "All-round setup",
+      "lede": "The most efficient overall setup so far against very tanky enemies, especially in the tower, and Boah's own main PvP setup.",
+      "notes": ["Icarus’ Wings only come in rarely; in very few cases they give a better result."],
+      "slots": { "iceAge": "model-of-noahs-ark", "stoneAge": "flintstone-pedal-car", "bronzeAge": "golden-mask-of-agamemnon", "classical": "olympia-olive-wreath", "medieval": "holy-hand-grenade", "renaissance": "the-creation-of-adam" }
+    },
+    {
+      "id": "autumn-cavalry-mirage",
+      "credit": "Autumn (Ice, S12)",
+      "tags": ["mirage", "pursuit", "dot"],
+      "title": "Cavalry mirage",
+      "lede": "Autumn's most successful setup in cavalry mirage.",
+      "notes": ["Cavalry brings Pompey and a lot of DoT and Pursuit heroes, so extending the buff when Pompey's barrier triggers gives you about three rounds of invincibility."],
+      "slots": { "iceAge": "prometheus-torch", "stoneAge": "thors-hammer", "bronzeAge": "golden-mask-of-agamemnon", "classical": "brutus-dagger", "medieval": "notre-dame-de-paris-replica", "renaissance": "galileos-telescope" }
+    },
+    {
+      "id": "autumn-pve",
+      "credit": "Autumn (Ice, S12)",
+      "tags": ["pve", "tower", "guildBoss", "invasion"],
+      "title": "PvE: tower, guild boss, invasion",
+      "lede": "Autumn's current PvE formation.",
+      "notes": ["The hammer can be swapped for the pedal car, and the ark for the torch, without much trouble.", "If the dagger gets stuck, swap it for the wreath but keep the telescope (in the tower)."],
+      "slots": { "iceAge": "model-of-noahs-ark", "stoneAge": "thors-hammer", "bronzeAge": "golden-mask-of-agamemnon", "classical": "brutus-dagger", "medieval": "holy-hand-grenade", "renaissance": "galileos-telescope" }
+    }
+  ],
+  "options": [
+    {
+      "age": "iceAge",
+      "item": "prometheus-torch",
+      "name": "Prometheus’ Torch",
+      "tags": ["allRound"],
+      "note": "Permanent ATK and skill damage buff, good in every build. The skill percentage also feeds off the ATK increase, so this is a lot of buff."
+    },
+    {
+      "age": "iceAge",
+      "item": "model-of-noahs-ark",
+      "name": "Model of Noah’s Ark",
+      "tags": ["deep", "antiSeal"],
+      "note": "Every 4 rounds it triggers four times damage for the first hero in formation order who has not cast a skill yet. Anti-seal and best for deep builds: it moves even while sealed, but you have to survive the whole round for full value."
+    },
+    {
+      "age": "iceAge",
+      "item": "scarab-amulet",
+      "name": "Scarab Amulet",
+      "tags": ["allRound"],
+      "note": "Attack grows over 5 rounds and then stays. Good all round, slower to start than the torch."
+    },
+    {
+      "age": "iceAge",
+      "item": "pandoras-box",
+      "name": "Pandora’s Box",
+      "tags": ["wide"],
+      "note": "Good for wide builds. High risk, high reward."
+    },
+    {
+      "age": "stoneAge",
+      "item": "thors-hammer",
+      "name": "Thor’s Hammer",
+      "tags": ["antiCrit", "mandatory"],
+      "note": "Anti-crit and anti-deep; close to mandatory once you climb high enough in the tower, but it needs healing or a lot of HP to carry you long term."
+    },
+    {
+      "age": "stoneAge",
+      "item": "flintstone-pedal-car",
+      "name": "Flintstone Pedal Car",
+      "tags": ["allRound", "shield"],
+      "note": "Damage reducer, anti-wide, good all round: a shield below 50% HP and a permanent buff after the shield."
+    },
+    {
+      "age": "stoneAge",
+      "item": "model-of-the-minotaurs-labyrinth",
+      "name": "Model of the Minotaur’s Labyrinth",
+      "tags": ["heal"],
+      "note": "Heals below 50% HP, better with heal stackers."
+    },
+    {
+      "age": "stoneAge",
+      "item": "heimdalls-horn",
+      "name": "Heimdall’s Horn",
+      "tags": ["allRound"],
+      "note": "Damage reduction stacking over 5 rounds, then permanent. Good all round."
+    },
+    {
+      "age": "bronzeAge",
+      "item": "golden-mask-of-agamemnon",
+      "name": "Golden Mask of Agamemnon",
+      "tags": ["deep", "mandatory"],
+      "note": "Steals ATK from the enemy and raises your own for the first 5 rounds. Excellent for deep builds and still the best all-round pick for offensive modes where you will not die, such as guild boss and invasion."
+    },
+    {
+      "age": "bronzeAge",
+      "item": "wings-of-icarus",
+      "name": "Wings of Icarus",
+      "tags": ["situational", "notInBoss"],
+      "note": "Revives after everyone is dead. Can swing a fight in mystic tower or PvP when your healing is strong. Useless in guild boss and invasion apart from the stats."
+    },
+    {
+      "age": "bronzeAge",
+      "item": "trojan-horse",
+      "name": "Trojan Horse",
+      "tags": ["seal", "situational"],
+      "note": "Seals all movement after 3 skills. A seal build together with the wreath works because they do not overlap, but both are percentage triggers, so it stays unreliable. When it does keep working you can stop someone 2 rounds out of 3 unless they have a forced move."
+    },
+    {
+      "age": "bronzeAge",
+      "item": "otzis-copper-axe",
+      "name": "Ötzi’s Copper Axe",
+      "tags": ["situational"],
+      "note": "Anti-deep, debuffs every 3 rounds. There are better picks in this slot."
+    },
+    {
+      "age": "classical",
+      "item": "olympia-olive-wreath",
+      "name": "Olympia Olive Wreath",
+      "tags": ["seal", "notInBoss"],
+      "note": "Needs 2 debuffs; every 2 rounds it has a chance to stop the enemy from moving at all. Generally recommended, but apart from the stats useless in guild boss and imperial invasion."
+    },
+    {
+      "age": "classical",
+      "item": "brutus-dagger",
+      "name": "Brutus’ Dagger",
+      "tags": ["dot", "allRound"],
+      "note": "DoT focused: it adds an extra trigger for DoT damage. Good all round and the best pick in this slot for guild boss and imperial invasion."
+    },
+    {
+      "age": "classical",
+      "item": "discobolus",
+      "name": "Discobolus",
+      "tags": ["dot", "situational"],
+      "note": "Debuff extender, DoT focused (it extends DoT as well). Situational."
+    },
+    {
+      "age": "classical",
+      "item": "dead-sea-scrolls",
+      "name": "Dead Sea Scrolls",
+      "tags": ["dot", "situational"],
+      "note": "Raises DoT damage. Situational."
+    },
+    {
+      "age": "medieval",
+      "item": "notre-dame-de-paris-replica",
+      "name": "Notre-Dame de Paris Replica",
+      "tags": ["pursuit", "wide", "allRound"],
+      "note": "Pursuit focused and good for wide builds: extra damage every time a skill or a Pursuit goes off. Good all round."
+    },
+    {
+      "age": "medieval",
+      "item": "holy-hand-grenade",
+      "name": "Holy Hand Grenade",
+      "tags": ["crit", "deep"],
+      "note": "Crit focused and good for deep builds: more crit damage, and more skill damage the more heroes fall, leaving your deep heroes standing."
+    },
+    {
+      "age": "medieval",
+      "item": "cross-of-lorraine-flag",
+      "name": "Cross of Lorraine Flag",
+      "tags": ["pursuit", "wide"],
+      "note": "Pursuit focused, good for wide builds, with a near permanent debuff."
+    },
+    {
+      "age": "medieval",
+      "item": "plague-doctor-mask",
+      "name": "Plague Doctor Mask",
+      "tags": ["crit", "allRound"],
+      "note": "Flat ATK and crit buff, permanent."
+    },
+    {
+      "age": "renaissance",
+      "item": "the-creation-of-adam",
+      "name": "The Creation of Adam",
+      "tags": ["shield", "heal"],
+      "note": "Shields when you heal. Strongest with shield enhancers and several healers."
+    },
+    {
+      "age": "renaissance",
+      "item": "david",
+      "name": "David",
+      "tags": ["heal"],
+      "note": "Needs 2 buffs — take permanent buffs from other collections to be sure — and heals every 2 rounds. High HP helps a lot."
+    },
+    {
+      "age": "renaissance",
+      "item": "galileos-telescope",
+      "name": "Galileo’s Telescope",
+      "tags": ["situational"],
+      "note": "Buff extender. Situational and it needs several buffers, but it can keep strong buffs running for a long time. Comes into its own after the Exploration Age."
+    },
+    {
+      "age": "renaissance",
+      "item": "decameron-manuscript",
+      "name": "The Decameron Manuscript",
+      "tags": ["heal", "situational"],
+      "note": "Raises healing. Good with very strong healers, but there are better picks in this slot."
+    }
+  ]
+}

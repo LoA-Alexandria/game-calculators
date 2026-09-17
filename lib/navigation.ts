@@ -140,6 +140,13 @@ export const SECTIONS: NavSection[] = [
         categoryId: "layouts",
       },
       {
+        href: "/guides/collection-layouts/",
+        label: (t) => t.guideEntries.collectionLayouts.title,
+        description: (t) => t.guideEntries.collectionLayouts.summary,
+        badge: (t) => t.guideCategories.layouts,
+        categoryId: "layouts",
+      },
+      {
         href: "/guides/artwork-layouts/",
         label: (t) => t.guideEntries.artworkLayouts.title,
         description: (t) => t.guideEntries.artworkLayouts.summary,
