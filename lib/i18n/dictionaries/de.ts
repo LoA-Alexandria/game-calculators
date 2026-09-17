@@ -516,6 +516,36 @@ const de: Dictionary = {
           skillName: "Eid des Donnerwächters",
           skillText: "Begrenzt den erlittenen Schaden für 3 Runden auf 13.5% der maximalen LP, wenn die LP zum ersten Mal unter 35% fallen.",
         },
+        "wings-of-icarus": {
+          name: "Flügel des Ikarus",
+          skillName: "Zum Sterben geboren",
+          skillText: "100% Chance, beim ersten Mal, wenn die LP auf 0 fallen, 9–11 gefallene Verbündete mit aufgefüllten Fähigkeiten wiederzubeleben.",
+        },
+        "brutus-dagger": {
+          name: "Dolch des Brutus",
+          skillName: "Racheklinge",
+          skillText: "Nachdem Gegner gehandelt haben, erleiden sie zusätzlichen Sammlungsschaden in Höhe von 108% des gesamten DoT-Schadens dieser Runde.",
+        },
+        "holy-hand-grenade": {
+          name: "Heilige Handgranate",
+          skillName: "Märtyrer",
+          skillText: "Erhöht den KT-SCH der Verbündeten um 64%. Jeder gefallene Verbündete erhöht zusätzlich den Fähigkeitsschaden-Bonus aller Verbündeten um 4.8%. Hält den gesamten Kampf an.",
+        },
+        "olympia-olive-wreath": {
+          name: "Olympischer Ölzweigkranz",
+          skillName: "Göttliches Siegel",
+          skillText: "Nach den Aktionen der Verbündeten, alle 2 Runden: Haben Gegner mindestens 2 Debuffs, besteht eine 65% Chance, [Siegel] auszulösen (handlungsunfähig für 1 Runde).",
+        },
+        "notre-dame-de-paris-replica": {
+          name: "Notre-Dame-Modell",
+          skillName: "Glockenurteil",
+          skillText: "Nachdem Verbündete eine Fähigkeit wirken oder [Verfolgung] (ein zusätzliches Wirken eines Zaubers) auslösen, besteht eine 55% Chance, 1 Schadensinstanz in Höhe von 150% des ANG zu verursachen.",
+        },
+        "the-creation-of-adam": {
+          name: "Die Erschaffung Adams",
+          skillName: "Göttliches Lebensgeschenk",
+          skillText: "Verbündete erhalten einen Schild in Höhe von 80% des Heilungseffekts, wenn sie einen solchen erhalten.",
+        },
         "pandoras-box": {
           name: "Büchse der Pandora",
           skillName: "Rad des Unglücks",

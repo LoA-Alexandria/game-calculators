@@ -29,7 +29,7 @@ test("every collection picture is a WebP file in public/collection and none is l
 });
 
 test("items have unique ids, a known rarity, a skill level, and text", () => {
-  assert.equal(COLLECTION_ITEMS.length, 19);
+  assert.equal(COLLECTION_ITEMS.length, 25);
   assert.equal(new Set(COLLECTION_ITEMS.map((item) => item.id)).size, COLLECTION_ITEMS.length);
   for (const item of COLLECTION_ITEMS) {
     assert.ok(COLLECTION_RARITIES.includes(item.rarity), `${item.id} rarity`);
@@ -39,7 +39,7 @@ test("items have unique ids, a known rarity, a skill level, and text", () => {
   // Grouped by rarity in the file, the way the guide shows them.
   const order = COLLECTION_ITEMS.map((item) => COLLECTION_RARITIES.indexOf(item.rarity));
   assert.deepEqual(order, [...order].sort((a, b) => a - b));
-  assert.deepEqual([itemsByRarity("UR").length, itemsByRarity("SSR").length, itemsByRarity("SR").length], [1, 6, 12]);
+  assert.deepEqual([itemsByRarity("UR").length, itemsByRarity("SSR").length, itemsByRarity("SR").length], [1, 12, 12]);
 });
 
 test("German and French translate every item, keyed by id, and English stays in the JSON", () => {
@@ -69,7 +69,9 @@ test("search finds items by name, skill, or effect in the reader's language and 
   assert.deepEqual(searchCollection("torch", "all", german).map((item) => item.id), ["prometheus-torch"]);
   assert.deepEqual(searchCollection("otzi", "all", {}).map((item) => item.id), ["otzis-copper-axe"]);
   assert.ok(searchCollection("heilung", "SR", german).some((item) => item.id === "decameron-manuscript"));
-  assert.equal(searchCollection("heilung", "SSR", german).length, 0);
+  // "Heilungseffekt" only appears in the Creation of Adam among the SSR items.
+  assert.deepEqual(searchCollection("heilung", "SSR", german).map((item) => item.id), ["the-creation-of-adam"]);
+  assert.equal(searchCollection("zzz", "SSR", german).length, 0);
   assert.equal(searchCollection("", "UR", german).map((item) => item.id).join(), "aeolus-bag-of-winds");
 });
 

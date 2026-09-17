@@ -8,7 +8,7 @@
  * skill name, and effect in `guideEntries.collection.collectionTexts`, keyed
  * by id; an empty translation shows the English text.
  *
- * The first 19 items come from German client screenshots taken on
+ * The first 25 items come from German client screenshots taken on
  * 16 September 2026. German is the game's wording; English and French are
  * translations. Each effect text is written for the skill level stored next
  * to it, because the numbers change with the level. Rarity follows the colour
