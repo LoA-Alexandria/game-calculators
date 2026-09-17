@@ -374,7 +374,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   aria-label={label}
                   aria-current={pathIsExact(pathname, section.href) ? "page" : undefined}
                   onClick={() => {
-                    if (!narrow) writeCollapsed(section.items.length === 0);
+                    if (!narrow) writeCollapsed(!sectionHasBrowsePanel(section));
                   }}
                 >
                   <Icon className="icon" />
