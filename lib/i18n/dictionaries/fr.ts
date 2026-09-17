@@ -3526,6 +3526,31 @@ const fr: Dictionary = {
       ],
       note: "Astuce communautaire pour Atlantis Endless Floor et Bonus Area.",
     },
+    springReturns: {
+      title: "Compétition de guilde — Spring Returns",
+      summary: "Objectifs de dons quotidiens, quand les dépasser, et quels objets chaque match demande.",
+      intro:
+        "Rythme de dons pour la compétition de guilde Spring Returns : atteindre le score quotidien efficacement, garder le surplus pour les matchs serrés, et suivre les objets demandés par round.",
+      sections: [
+        {
+          heading: "Stratégie de base",
+          body: [
+            "Efficacité des dons quotidiens : arrêtez de donner une fois 1 000 points de score atteints chaque jour. Atteignez ce seuil avec l’un de ces paliers — rareté bleue : 1 000 objets ; violette : 333 objets ; or : 100 objets.",
+            "Adaptations compétitives : conservez le surplus pour un levier maximal. Dépassez le seuil quotidien seulement si l’adversaire actuel menace sérieusement votre score de match global. Stockez jusqu’au dernier round pour optimiser le taux de victoire quand les enjeux sont les plus élevés.",
+          ],
+        },
+        {
+          heading: "Quels objets de don sont requis ?",
+          body: [
+            "Round 1 — Match 1 : Signboards. Match 2 : Buntings. Match 3 : pas encore listé. Match 4 : pas encore listé. Match 5 : pas encore listé.",
+            "Round 2 — Match 1–5 : pas encore listés.",
+            "Round 3 — Match 1–5 : pas encore listés.",
+            "Round 4 — Match 1–5 : pas encore listés.",
+          ],
+        },
+      ],
+      note: "Compléter les objets des matchs restants quand le calendrier des rounds est connu. Les corrections vont sur Discord.",
+    },
   },
   events: {
     title: "Événements",

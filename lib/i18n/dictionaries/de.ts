@@ -3583,6 +3583,31 @@ const de: Dictionary = {
       ],
       note: "Community-Tipp zu Atlantis Endless Floor und Bonus Area.",
     },
+    springReturns: {
+      title: "Gildenwettbewerb — Spring Returns",
+      summary: "Tägliche Spendenziele, wann mehr sinnvoll ist, und welche Items jedes Match braucht.",
+      intro:
+        "Spenden-Tempo im Gildenwettbewerb Spring Returns: den Tages-Score effizient erreichen, Überschuss für enge Matches sparen und die Item-Liste je Runde im Blick behalten.",
+      sections: [
+        {
+          heading: "Kernstrategie",
+          body: [
+            "Tägliche Spendeneffizienz: Hör auf zu spenden, sobald du 1 000 Punkte am Tag hast. Erreiche das mit einer dieser Stufen — blaue Seltenheit: 1 000 Items; lila: 333 Items; gold: 100 Items.",
+            "Wettbewerbliche Anpassungen: Behalte Überschuss für maximale Hebelwirkung. Überschreite die Tagesgrenze nur, wenn der aktuelle Gegner deinen Match-Gesamtscore ernsthaft bedroht. Horde Items bis zur letzten Runde, um die Siegquote zu verbessern, wenn am meisten auf dem Spiel steht.",
+          ],
+        },
+        {
+          heading: "Welche Spenden-Items braucht ihr?",
+          body: [
+            "Runde 1 — Match 1: Signboards. Match 2: Buntings. Match 3: noch nicht gelistet. Match 4: noch nicht gelistet. Match 5: noch nicht gelistet.",
+            "Runde 2 — Match 1–5: noch nicht gelistet.",
+            "Runde 3 — Match 1–5: noch nicht gelistet.",
+            "Runde 4 — Match 1–5: noch nicht gelistet.",
+          ],
+        },
+      ],
+      note: "Die übrigen Match-Items ergänzen, sobald der Rundenplan feststeht. Korrekturen gehören auf Discord.",
+    },
   },
   events: {
     title: "Events",

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { camelToKebab } from "../../lib/content/guides";
 import type { Dictionary } from "../../lib/i18n";
 import { sectionById, type EventCategoryId } from "../../lib/navigation";
 import { useDocumentTitle, useLocale } from "../components/LocaleProvider";
@@ -16,7 +17,7 @@ export function isEventGuideId(
 }
 
 function categoryForGuide(id: EventGuideId): EventCategoryId {
-  const href = `/events/${id}/`;
+  const href = `/events/${camelToKebab(id)}/`;
   const item = sectionById("events").items.find((entry) => entry.href === href);
   const categoryId = item?.categoryId;
   if (categoryId === "anleitungen" || categoryId === "tips") return categoryId;
