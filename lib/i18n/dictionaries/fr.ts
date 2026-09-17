@@ -516,6 +516,36 @@ const fr: Dictionary = {
           skillName: "Serment du gardien du tonnerre",
           skillText: "Limite les dégâts subis à 13,5 % des PV max pendant 3 tours quand les PV passent pour la première fois sous 35 %.",
         },
+        "wings-of-icarus": {
+          name: "Ailes d’Icare",
+          skillName: "Né pour mourir",
+          skillText: "100 % de chances, la première fois que les PV tombent à 0, de ressusciter 9 à 11 alliés tombés avec leurs compétences rechargées.",
+        },
+        "brutus-dagger": {
+          name: "Dague de Brutus",
+          skillName: "Lame de vengeance",
+          skillText: "Après l’action des ennemis, ils subissent des dégâts de collection supplémentaires égaux à 108 % des dégâts sur la durée totaux de ce tour.",
+        },
+        "holy-hand-grenade": {
+          name: "Sainte Grenade",
+          skillName: "Martyr",
+          skillText: "Augmente les DGT CRIT des alliés de 64 %. Chaque allié tombé augmente en plus le bonus de dégâts de compétence de tous les alliés de 4,8 %. Dure tout le combat.",
+        },
+        "olympia-olive-wreath": {
+          name: "Couronne d’olivier d’Olympie",
+          skillName: "Sceau divin",
+          skillText: "Après l’action des alliés, tous les 2 tours : si les ennemis ont au moins 2 debuffs, 65 % de chances de déclencher [Sceau] (incapables d’agir pendant 1 tour).",
+        },
+        "notre-dame-de-paris-replica": {
+          name: "Maquette de Notre-Dame de Paris",
+          skillName: "Verdict des cloches",
+          skillText: "Après qu’un allié lance une compétence ou déclenche [Poursuite] (un lancer de sort supplémentaire), 55 % de chances d’infliger une instance de dégâts égale à 150 % de l’ATQ.",
+        },
+        "the-creation-of-adam": {
+          name: "La Création d’Adam",
+          skillName: "Don divin de vie",
+          skillText: "Les alliés reçoivent un bouclier égal à 80 % de l’effet de soin lorsqu’ils sont soignés.",
+        },
         "pandoras-box": {
           name: "Boîte de Pandore",
           skillName: "Roue de l’infortune",

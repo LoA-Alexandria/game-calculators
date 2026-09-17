@@ -690,7 +690,7 @@ The effect text belongs to the skill level stored with it, because the numbers
 change per level, so the card shows that level next to the skill name. Rarity
 follows the colour of the item name in the game: red UR, gold SSR, purple SR.
 
-The first 19 items were read from German client screenshots on 16 September
+The first 25 items were read from German client screenshots on 16 September
 2026. German is the game's wording (the in-game typo "Fäigkeitsschadens…" is
 corrected); English and French are translations and the guide's credit says so.
 The item pictures were cut out with a background-removal model run locally
@@ -729,7 +729,8 @@ in `lib/data/collection-layouts.json`:
 Slots and options name a collection by its id in `lib/data/collection.json`, so
 the picture and the translated name come from the Collection guide; a
 collection that is not there yet shows its name without a picture and the guide
-says so. Ages and tags are named in `guideEntries.collectionLayouts`, along with
+says so; every collection the published setups equip has a picture
+(`tests/collection-layouts.test.mjs`). Ages and tags are named in `guideEntries.collectionLayouts`, along with
 the build shapes, the upgrade priorities, and the authors' notes;
 `setupTexts` and `optionTexts` translate setup titles, ledes, notes, and what a
 collection does, keyed by setup id and collection id.

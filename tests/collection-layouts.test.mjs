@@ -59,8 +59,10 @@ test("every setup fills all six slots with a collection the options list knows",
 });
 
 test("pictures come from the Collection guide, and a missing collection still shows its name", () => {
-  const known = COLLECTION_LAYOUTS_DATA.options.filter((option) => KNOWN.has(option.item));
-  assert.ok(known.length >= 18, "most collections already have a picture");
+  // Every collection a setup equips has a picture; an option may wait for the Collection guide.
+  for (const setup of COLLECTION_LAYOUTS_DATA.setups) {
+    for (const item of Object.values(setup.slots)) assert.ok(KNOWN.has(item), `${setup.id}: ${item} is in the Collection guide`);
+  }
   const torch = layoutItem("prometheus-torch", "fallback", LANGUAGES.de.guideEntries.collection.collectionTexts);
   assert.equal(torch.known, true);
   assert.equal(torch.name, "Prometheus’ Fackel");
