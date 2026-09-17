@@ -288,6 +288,14 @@ real changes.
 
 ## Editing artwork layouts
 
+The page shows each ranked set as a card: the set's paintings as one strip (only
+the ones that already have a picture; a set without any keeps an empty frame),
+the rank, the set skill, its effect, the painting names, and a link to that set
+on the Artwork page. Every set card on Artwork carries its id as an anchor, and
+that page opens the matching rarity tab when the address has one
+(`/guides/artwork/#rococo-curtain`). Set skills are translated in
+`catalogTexts.sets[id].effect` per dictionary.
+
 Members with `guides.draft` see **Edit set skills** in the Artwork layouts head, which
 opens `/guides/artwork-layouts/edit/`. The dictionary-snippet Edit / Remove at
 the top of the page is hidden here.

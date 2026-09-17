@@ -662,6 +662,83 @@ const de: Dictionary = {
       detailClose: "Schließen",
       pictureCredit: "Bilder aus dem Spiel, am 16. September 2026 aus Screenshots des deutschen Clients ausgeschnitten, ohne Rahmen. Es sind die neu gezeichneten Fassungen des Spiels; sie gehören dem Publisher. Originaltitel, Künstler und Jahr stammen aus Wikipedia und von den Museen, die die Werke besitzen, und stehen nur dort, wo das Bild eindeutig ist.",
       catalogTexts: {
+        sets: {
+          "glory-and-shadow": {
+            effect: "Zu Kampfbeginn einen Schild in Höhe von 10 % der maximalen LP.",
+          },
+          "self-portrait": {
+            effect: "Jedes Mal, wenn ein Verbündeter Fähigkeits- oder Zusatzschaden verursacht: Zusatzschadensbonus +10 % für 1 Runde.",
+          },
+          "nature-in-bloom": {
+            effect: "Bei einem kritischen Treffer steigt der kritische Schaden der Verbündeten um zusätzliche 5–50 %.",
+          },
+          "urban-proletariat": {
+            effect: "In den ersten 3 Kampfrunden: DoT-Schaden +12 % bis zum Kampfende.",
+          },
+          "rococo-curtain": {
+            effect: "Der erste Fähigkeitsschaden, den ein Verbündeter pro Runde erleidet, wird um 20 % reduziert.",
+          },
+          "chinese-landscape": {
+            effect: "Alle 2 Runden (wenn nicht versiegelt) 15 % Chance, 1 Debuff von einem Verbündeten zu entfernen.",
+          },
+          "ukiya-e-masterpieces": {
+            effect: "Endschadensreduzierung der Verbündeten +12 % bis zum Kampfende.",
+          },
+          "tragic-maiden": {
+            effect: "Endschadensbonus der Verbündeten +12 % bis zum Kampfende.",
+          },
+          "modernist-new-voice": {
+            effect: "Collection- und Cryptid-Schadensreduzierung +12 % bis zum Kampfende.",
+          },
+          "beyond-the-earth": {
+            effect: "Collection- und Cryptid-Schadensbonus +12 % bis zum Kampfende.",
+          },
+          "sheltered-by-night": {
+            effect: "Alle 3 Runden, wenn ein Verbündeter handelt: Zusatzschadensreduzierung +5 % für 2 Runden.",
+          },
+          "impression-warmth": {
+            effect: "Alle 3 Runden, wenn ein Verbündeter handelt: Zusatzschadensbonus +5 % für 2 Runden.",
+          },
+          "roar-of-steam": {
+            effect: "Alle 3 Runden, wenn ein Verbündeter handelt: DoT-Schadensreduzierung +5 % für 2 Runden.",
+          },
+          "echoes-of-death": {
+            effect: "Alle 3 Runden: DoT-Bonus +5 % für 2 Runden.",
+          },
+          "faithful-companion": {
+            effect: "Alle 3 Runden, wenn nicht versiegelt: Schadensreduzierung +5 % für 2 Runden.",
+          },
+          "heaven-and-earth-surge": {
+            effect: "Alle 3 Runden, wenn nicht versiegelt: Schadensbonus +5 % für 2 Runden.",
+          },
+          "gaze-of-an-age": {
+            effect: "Alle 3 Runden, wenn nicht versiegelt: ANG-Bonus +5 % für 2 Runden.",
+          },
+          "wall-of-mosaics": {
+            effect: "Alle 4 Runden, wenn nicht versiegelt: ein Schild in Höhe von 5 % der maximalen LP.",
+          },
+          "sacred-window-radiance": {
+            effect: "Alle 4 Runden, wenn nicht versiegelt: Heilung von 5 % der maximalen LP.",
+          },
+          "master-s-sketch": {
+            effect: "Alle 4 Runden, wenn nicht versiegelt: Fähigkeitsschaden in Höhe von 80 % des ANG am Gegner.",
+          },
+          "monkey-society": {
+            effect: "In Runde 4, wenn nicht versiegelt: Fähigkeitsschadensreduzierung +5 % für 2 Runden.",
+          },
+          "so-delicious": {
+            effect: "In Runde 4, wenn nicht versiegelt: Fähigkeitsschadensbonus +5 % für 2 Runden.",
+          },
+          "hidden-face": {
+            effect: "In Runde 4, wenn nicht versiegelt: ANG-Bonus +5 % für 2 Runden.",
+          },
+          "four-seasons-reborn": {
+            effect: "In Runde 6, wenn nicht versiegelt: Heilung von 5 % der maximalen LP.",
+          },
+          "four-seasonal-beauties": {
+            effect: "In Runde 6, wenn nicht versiegelt: Fähigkeitsschaden in Höhe von 50 % des ANG am Gegner.",
+          },
+        },
         paintings: {
           "the-coronation-of-napoleon": {
             original: "Le Sacre de Napoléon",
@@ -1117,6 +1194,7 @@ const de: Dictionary = {
       ],
       catalogueLede: "Welche Gemälde welche Helden tragen, plus Effekte:",
       catalogueLink: "Artwork",
+      openSet: "Im Artwork ansehen",
       setSkillsHeading: "Beste Set-Skills",
       setSkillsLede: "SSR-Set-Skills, wie Autumn sie für jeden Build gereiht hat.",
       buildNames: {

@@ -686,6 +686,7 @@ const en = {
       ],
       catalogueLede: "Which paintings contain which heroes, plus effects:",
       catalogueLink: "Artwork",
+      openSet: "Open in Artwork",
       setSkillsHeading: "Best set skills",
       setSkillsLede: "SSR set skills as Autumn ranked them for each build.",
       buildNames: {

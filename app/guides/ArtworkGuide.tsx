@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useId, useMemo, useRef, useState, type KeyboardEvent } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import Link from "next/link";
 import { guideLayout } from "../../lib/content/guides";
 import {
@@ -10,6 +10,7 @@ import {
   localizedPainting,
   localizedSet,
   originalTitle,
+  paintingSetById,
   searchCatalogue,
   setsByRarity,
   type Painting,
@@ -176,7 +177,7 @@ function PaintingBlock({
 
 function SetCard({ entry, guide, onOpen }: { entry: PaintingSet; guide: Guide; onOpen: OpenPainting }) {
   return (
-    <article className="utility-card painting-set" data-rarity={entry.rarity}>
+    <article className="utility-card painting-set" id={entry.id} data-rarity={entry.rarity}>
       <header className="painting-set-head">
         <span className="rarity" data-rarity={entry.rarity}>{entry.rarity}</span>
         <h3>{entry.name}</h3>
@@ -194,6 +195,19 @@ function SetCard({ entry, guide, onOpen }: { entry: PaintingSet; guide: Guide; o
 function RarityTabs({ guide, onOpen }: { guide: Guide; onOpen: OpenPainting }) {
   const base = useId();
   const [rarity, setRarity] = useState<PaintingRarity>("SSR");
+  // A link such as /guides/artwork/#rococo-curtain opens that set's rarity tab.
+  useEffect(() => {
+    const open = () => {
+      const id = decodeURIComponent(window.location.hash.slice(1));
+      const set = id ? paintingSetById(id) : undefined;
+      if (!set) return;
+      setRarity(set.rarity);
+      window.requestAnimationFrame(() => document.getElementById(set.id)?.scrollIntoView({ block: "start" }));
+    };
+    open();
+    window.addEventListener("hashchange", open);
+    return () => window.removeEventListener("hashchange", open);
+  }, []);
   const sets = setsByRarity(rarity).map((set) => localizedSet(set, guide.catalogTexts as PaintingTexts));
 
   const tabId = (id: PaintingRarity) => `${base}-tab-${id}`;
