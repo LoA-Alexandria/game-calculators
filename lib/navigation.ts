@@ -73,6 +73,13 @@ export const SECTIONS: NavSection[] = [
         badge: (t) => t.eventCategories.tips,
         categoryId: "tips",
       },
+      {
+        href: "/events/monument-of-eternity/",
+        label: (t) => t.eventGuideEntries.monumentOfEternity.title,
+        description: (t) => t.eventGuideEntries.monumentOfEternity.summary,
+        badge: (t) => t.eventCategories.tips,
+        categoryId: "tips",
+      },
     ],
   },
   {

@@ -3104,6 +3104,35 @@ const en = {
       ],
       note: "Guide by Autumn (Ice, S12), shared on Discord, 14 September 2026.",
     },
+    monumentOfEternity: {
+      title: "Monument of Eternity",
+      summary: "When to donate guild flags to the tower, and when to save them between cycles.",
+      intro:
+        "Donate guild flags and banners to your guild’s tower for buffs and score — and bank most of them for Monument of Eternity rather than spending between cycles.",
+      sections: [
+        {
+          heading: "Basics",
+          body: [
+            "Donate guild flags / banners to your guild’s tower for buffs and score.",
+          ],
+        },
+        {
+          heading: "Tips",
+          body: [
+            "Only use or donate flags during Monument of Eternity, and save them between event cycles. You can usually bank about 120–150 flags between cycles, unless events sync with servers during an event-server pool expansion.",
+            "Always donate your guild flags before leaving a guild or joining another — they vanish if you do not.",
+          ],
+        },
+        {
+          heading: "Low-activity servers",
+          body: [
+            "On NA and other low-activity servers there is a caveat: guild flags help everything by a low percentage. If there are almost no donations at all, save about 80–90% for Monument of Eternity and donate a little so the tower still makes some progress. You can also donate on days when you really need guild coins, but try not to burn through too many flags.",
+            "Per account it is more efficient to burst-donate during Monument of Eternity if the guild is active — but on NA and older servers that can be hard. As a rule of thumb: if daily donations would take your guild more than about 5–6 days to reach the next tower level, save the flags for the event.",
+          ],
+        },
+      ],
+      note: "Guide by Autumn (Ice, S12), shared on Discord, 10 August 2026.",
+    },
   },
   events: {
     title: "Events",

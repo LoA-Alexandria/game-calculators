@@ -3580,6 +3580,35 @@ const fr: Dictionary = {
       ],
       note: "Guide d’Autumn (Ice, S12), partagé sur Discord, 14 septembre 2026.",
     },
+    monumentOfEternity: {
+      title: "Monument of Eternity",
+      summary: "Quand donner les drapeaux de guilde à la tour, et quand les garder entre les cycles.",
+      intro:
+        "Donnez drapeaux et bannières de guilde à la tour pour des buffs et du score — et gardez-en la plupart pour Monument of Eternity plutôt que de les dépenser entre les cycles.",
+      sections: [
+        {
+          heading: "Bases",
+          body: [
+            "Donnez drapeaux / bannières de guilde à la tour de votre guilde pour des buffs et du score.",
+          ],
+        },
+        {
+          heading: "Astuces",
+          body: [
+            "N’utilisez ou ne donnez des drapeaux que pendant Monument of Eternity, et économisez-les entre les cycles d’événement. Vous pouvez en général en garder environ 120–150 entre les cycles, sauf si les événements se synchronisent avec les serveurs lors d’une expansion du pool de serveurs d’événement.",
+            "Donnez toujours vos drapeaux de guilde avant de quitter une guilde ou d’en rejoindre une autre — sinon ils disparaissent.",
+          ],
+        },
+        {
+          heading: "Serveurs peu actifs",
+          body: [
+            "Sur NA et d’autres serveurs peu actifs, il y a une nuance : les drapeaux aident un peu à tout. S’il n’y a quasiment aucun don, gardez environ 80–90 % pour Monument of Eternity et donnez un peu pour que la tour avance. Vous pouvez aussi donner les jours où vous avez vraiment besoin de pièces de guilde, sans trop en brûler.",
+            "Par compte, un burst de dons pendant Monument of Eternity est plus efficace si la guilde est active — mais sur NA et les vieux serveurs c’est souvent difficile. En règle générale : si les dons quotidiens prendraient plus d’environ 5–6 jours pour atteindre le niveau suivant de la tour, gardez les drapeaux pour l’événement.",
+          ],
+        },
+      ],
+      note: "Guide d’Autumn (Ice, S12), partagé sur Discord, 10 août 2026.",
+    },
   },
   events: {
     title: "Événements",
