@@ -3498,6 +3498,35 @@ const fr: Dictionary = {
     anleitungen: "Guides",
     tips: "Astuces",
   },
+  eventGuideEntries: {
+    atlantis: {
+      title: "Atlantis",
+      summary: "Priorités pour Endless Floor, et quand les gemmes Bonus Area valent le coup.",
+      intro:
+        "Un ordre de run pratique pour Atlantis Endless Floor, plus une courte note sur l’achat de tentatives Bonus Area.",
+      sections: [
+        {
+          heading: "Endless Floor",
+          body: [
+            "Pour mieux classer en Endless Floor, une bonne règle est de rester à environ 5 PV de la recommandation et à environ 100–200 d’attaque. Hors de cette fourchette, balayez (sweep).",
+            "Priorité générale, dans l’ordre : ouvrez autant d’espaces que possible sans perdre de vie (tuez d’abord l’oursin qui tire sur vous), avec pour but principal de trouver le boss vers l’étage suivant ; puis PV, puis lances, puis le reste ; ignorez les monstres. Tuez aussi peu de monstres que possible pour limiter la perte de PV — seulement s’ils bloquent le chemin vers le boss. Tuez le boss. Récoltez tout sur les cases ouvertes et les potions de PV. Vous pouvez combattre des monstres si les potions vous soignent au-delà du maximum.",
+            "Si vous restez dans cette fourchette de stats, il vous faudra environ 7–8 PV pour tuer le boss final du chapitre (après 9 ou 14 étages). Choisissez entre full-clear des étages et avancer dès que possible.",
+            "Les lances valent environ 3–4 PV. Les potions soignent 2, et deux potions apparaissent souvent sur un étage donné.",
+            "Si vous avez moins de 7 PV à l’étage 9 (ou 14), full-clearez l’étage en cours et réessayez. Demander le soutien de la guilde n’est surtout utile s’il vous en manque un seul.",
+          ],
+        },
+        {
+          heading: "Bonus Area",
+          body: [
+            "Vous pouvez acheter plus de tentatives avec des gemmes.",
+            "En F2P : si vous faites le top 20 sans gemmes, n’en achetez pas davantage.",
+            "Pour les dépenseurs : à vous de voir, mais même les plus gros s’arrêtent souvent vers 1 000 gemmes par jour — aller plus loin coûte trop cher pour une ressource assez limitée, même en achetant tous les funds.",
+          ],
+        },
+      ],
+      note: "Astuce communautaire pour Atlantis Endless Floor et Bonus Area.",
+    },
+  },
   events: {
     title: "Événements",
     lede: "Guides et astuces pour les événements à durée limitée — séparés des systèmes couverts sous Guides.",

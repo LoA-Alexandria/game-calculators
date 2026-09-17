@@ -43,15 +43,25 @@ test("home counters match the published navigation tree", () => {
 test("Events index always exposes Anleitungen and Tips categories", () => {
   const en = getDictionary("en");
   assert.deepEqual([...EVENT_CATEGORY_IDS], ["anleitungen", "tips"]);
-  assert.equal(sectionById("events").items.length, 0);
+  assert.ok(sectionById("events").items.some((item) => item.href === "/events/atlantis/"));
   const groups = eventCategoryGroups(en);
   assert.deepEqual(
     groups.map((group) => ({ id: group.id, category: group.category, count: group.items.length })),
     [
       { id: "anleitungen", category: en.eventCategories.anleitungen, count: 0 },
-      { id: "tips", category: en.eventCategories.tips, count: 0 },
+      { id: "tips", category: en.eventCategories.tips, count: 1 },
     ],
   );
+});
+
+test("Atlantis is listed under Events Tips in every language", () => {
+  for (const locale of ["en", "de", "fr"]) {
+    const dictionary = getDictionary(locale);
+    const entry = dictionary.eventGuideEntries.atlantis;
+    assert.equal(entry.title, "Atlantis");
+    assert.ok(entry.sections.some((section) => section.heading === "Endless Floor"));
+    assert.ok(entry.sections.some((section) => /Bonus Area/i.test(section.heading)));
+  }
 });
 
 test("Guides and Events open the browse panel even when Events has no items", () => {

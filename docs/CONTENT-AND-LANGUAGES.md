@@ -857,9 +857,9 @@ categories `anleitungen` and `tips` (`eventCategories` in the dictionaries).
 
 1. Add a nav item under `events.items` in `lib/navigation.ts` with
    `href: "/events/<slug>/"`, `badge` / `categoryId` from `eventCategories`.
-2. Add the page under `app/events/<slug>/` and the texts in the dictionaries
-   (follow the same commit-snippet pattern as other content when an editor
-   exists).
+2. Add `app/events/<slug>/page.tsx` that renders `EventArticle` with that id,
+   and write `eventGuideEntries.<id>` (`title`, `summary`, `intro`,
+   `sections[]`, `note`) in all three dictionaries.
 3. Do not list event write-ups under `guides.items`.
 
 ## Adding a news entry

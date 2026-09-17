@@ -3555,6 +3555,35 @@ const de: Dictionary = {
     anleitungen: "Anleitungen",
     tips: "Tips",
   },
+  eventGuideEntries: {
+    atlantis: {
+      title: "Atlantis",
+      summary: "Prioritäten für Endless Floor und wann Bonus-Area-Edelsteine sich lohnen.",
+      intro:
+        "Eine praktische Reihenfolge für Atlantis Endless Floor und ein kurzer Hinweis zu zusätzlichen Bonus-Area-Versuchen.",
+      sections: [
+        {
+          heading: "Endless Floor",
+          body: [
+            "Um in Endless Floor höher zu ranken, gilt als Faustregel: etwa 5 HP an der empfohlenen Anforderung und etwa 100–200 Angriff. Liegt ihr außerhalb davon, sweept.",
+            "Allgemeine Priorität in chronologischer Reihenfolge: so viele Felder wie möglich öffnen, ohne Leben zu verlieren (zuerst den Seeigel töten, der auf euch schießt); Hauptziel ist der Boss zum nächsten Stock; dann HP, dann Speere, dann alles andere; Monster überspringen. So wenige Monster wie möglich töten, um HP-Verlust klein zu halten — nur wenn sie den Weg zum Boss versperren. Boss töten. Alles von geöffneten Feldern und HP-Tränke einsammeln. Monster dürft ihr angreifen, wenn die Tränke euch über voll heilen würden.",
+            "Bleibt ihr in dem empfohlenen Stat-Bereich, braucht ihr grob 7–8 Leben für den Schlussboss des Kapitels (nach 9 oder 14 Etagen). Entscheidet zwischen voller Floor-Clear und möglichst schnellem Weitergehen.",
+            "Speere sind etwa 3–4 HP wert. Tränke heilen 2, und zwei Tränke spawnen auf einer typischen Etage oft.",
+            "Habt ihr auf Etage 9 (oder 14) weniger als 7 HP, cleart die aktuelle Etage vollständig und versucht es erneut. Gilden-Support lohnt sich vor allem, wenn euch genau einer fehlt.",
+          ],
+        },
+        {
+          heading: "Bonus Area",
+          body: [
+            "Weitere Versuche könnt ihr mit Edelsteinen kaufen.",
+            "Als F2P: schafft ihr Top 20 ohne Edelsteine, kauft keine weiteren Versuche.",
+            "Als Spender: entscheidet selbst — auch starke Spender bleiben meist bei etwa 1 000 Edelsteinen pro Tag; darüber hinaus ist es zu teuer für eine recht knappe Ressource, selbst wenn ihr alle Funds kauft.",
+          ],
+        },
+      ],
+      note: "Community-Tipp zu Atlantis Endless Floor und Bonus Area.",
+    },
+  },
   events: {
     title: "Events",
     lede: "Guides und Tipps zu zeitlich begrenzten Events — getrennt von den Systemen unter Guides.",
