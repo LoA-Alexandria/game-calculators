@@ -74,6 +74,9 @@ export const PRODUCTION_BUILDINGS_DRAFT_STORAGE_KEY = "popepoch-production-build
 /** Local draft of the Goddesses roster editor, uploaded portraits included. */
 export const GODDESS_DRAFT_STORAGE_KEY = "popepoch-goddess-draft";
 
+/** Local draft of the collection layouts editor. */
+export const COLLECTION_LAYOUTS_DRAFT_STORAGE_KEY = "popepoch-collection-layouts-draft";
+
 /** Local draft of the Collection editor, uploaded pictures included. */
 export const COLLECTION_DRAFT_STORAGE_KEY = "popepoch-collection-draft";
 

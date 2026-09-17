@@ -23,7 +23,7 @@ const only = args.find((arg) => !arg.startsWith("--"));
 const all = args.includes("--all");
 
 /** Catalogs are sparse by design; they are counted separately below. */
-const CATALOGS = /(?:^|\.)(heroTexts|playTexts|catalogTexts|goddessTexts|phaseTexts|collectionTexts)(?:\.|$)/;
+const CATALOGS = /(?:^|\.)(heroTexts|playTexts|catalogTexts|goddessTexts|phaseTexts|collectionTexts|setupTexts|optionTexts)(?:\.|$)/;
 
 const english = new Map(leaves(getDictionary(DEFAULT_LOCALE)).filter(([path]) => !CATALOGS.test(path)));
 const paintings = PAINTING_SETS.reduce((sum, set) => sum + set.paintings.length, 0);
