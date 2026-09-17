@@ -636,6 +636,13 @@ Hero layouts build (Crit, DoT, Pursuit, Execute), and shared level caps live in
 labels, and optional hero notes live in `guideEntries.heroLeveling`
 (`heroNotes` is sparse per language).
 
+The page uses the same look as the goddess upgrade order: each focus band is a
+numbered stage on a coloured timeline with a tile per hero (rank on the right,
+optional note underneath), each fragment rule is a numbered step, a table shows
+every hero of the build with rank, band, and fragment steps, and the level caps
+are tiles with the level as a large number. The styles are the shared `gl-*`
+classes in `app/globals.css`.
+
 Members with `guides.draft` see **Edit priorities** in the guide head, which opens
 `/guides/hero-leveling/edit/`. The draft is saved in that browser only
 (`localStorage['popepoch-leveling-draft']`). **Export** produces the complete

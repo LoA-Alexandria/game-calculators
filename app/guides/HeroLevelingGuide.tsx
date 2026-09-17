@@ -7,7 +7,6 @@ import {
   FOCUS_BANDS,
   LEVELING_DATA,
   buildById,
-  focusHeroes,
   heroNote,
   levelingBuildIds,
   type FocusBandId,
@@ -22,7 +21,8 @@ import { useLocale } from "../components/LocaleProvider";
 
 type Guide = Dictionary["guideEntries"]["heroLeveling"];
 
-type RankedHero = { hero: string; rank: number; band: FocusBandId; note: string };
+type RankedHero = { hero: string; rank: number; note: string };
+type FocusStage = { band: FocusBandId; heroes: RankedHero[] };
 
 export function isHeroLevelingGuide(
   guide: Dictionary["guideEntries"][keyof Dictionary["guideEntries"]],
@@ -30,164 +30,201 @@ export function isHeroLevelingGuide(
   return guideLayout(guide) === "heroLeveling";
 }
 
-function rankedFocus(build: LevelingBuild, notes: Guide["heroNotes"]): RankedHero[] {
-  const rows: RankedHero[] = [];
+/** Focus bands in order, each with its heroes numbered straight through the list. */
+function focusStages(build: LevelingBuild, notes: Guide["heroNotes"]): FocusStage[] {
+  const stages: FocusStage[] = [];
+  let rank = 0;
   for (const bandId of FOCUS_BANDS) {
     const band = build.bands.find((entry) => entry.id === bandId);
-    if (!band) continue;
-    for (const hero of band.heroes) {
-      rows.push({
-        hero,
-        rank: rows.length + 1,
-        band: bandId,
-        note: heroNote(hero, notes),
-      });
-    }
+    if (!band?.heroes.length) continue;
+    stages.push({
+      band: bandId,
+      heroes: band.heroes.map((hero) => ({ hero, rank: ++rank, note: heroNote(hero, notes) })),
+    });
   }
-  return rows;
+  return stages;
 }
 
-function HeroChip({
-  hero,
-  size,
-}: {
-  hero: string;
-  size: "hero-portrait-large" | "hero-portrait-medium" | "hero-portrait-small";
-}) {
+function fragmentHeroes(rule: FragmentRule): string[] {
+  if ("hero" in rule) return [rule.hero];
+  if ("heroes" in rule) return [...rule.heroes];
+  return [];
+}
+
+/** Colour of a stage or step: the four tones repeat when there are more. */
+const tone = (index: number) => String((index % 4) + 1);
+
+function HeroCard({ hero, guide, rank, note }: { hero: string; guide: Guide; rank?: number; note?: string }) {
   const found = heroNamed(hero);
-  const body = (
+  const face = (
     <>
-      <HeroPortrait name={hero} rarity={found?.rarity} src={heroPortrait(hero)} className={size} />
-      <span className="leveling-chip-meta">
-        <span className="leveling-chip-name">{hero}</span>
-        {found ? (
-          <span className="leveling-chip-rarity" data-rarity={found.rarity}>
-            {found.rarity}
-          </span>
-        ) : null}
+      <HeroPortrait name={hero} rarity={found?.rarity} src={heroPortrait(hero)} className="hero-portrait-medium" />
+      <span className="gl-card-text">
+        <strong className="gl-name">{hero}</strong>
+        {found ? <span className="rarity" data-rarity={found.rarity}>{found.rarity}</span> : null}
       </span>
     </>
   );
-  if (!found) return <span className="leveling-chip">{body}</span>;
   return (
-    <Link className="leveling-chip" href={`${guideHref("heroes")}#${encodeURIComponent(found.id)}`}>
-      {body}
-    </Link>
+    <li className="gl-card" data-rarity={found?.rarity}>
+      {found ? (
+        <Link className="gl-card-link" href={`${guideHref("heroes")}#${encodeURIComponent(found.id)}`}>{face}</Link>
+      ) : (
+        <span className="gl-card-link">{face}</span>
+      )}
+      {rank ? (
+        <span className="gl-level">
+          <span className="gl-level-label">{guide.rankWord}</span>
+          <strong className="gl-level-value">{fill(guide.rankLabel, { rank })}</strong>
+        </span>
+      ) : null}
+      {note ? <span className="gl-card-note">{note}</span> : null}
+    </li>
   );
 }
 
-function fragmentText(rule: FragmentRule, guide: Guide): string {
-  switch (rule.kind) {
-    case "unlocks":
-      return guide.fragmentKinds.unlocks;
-    case "allUr":
-      return guide.fragmentKinds.allUr;
-    case "allSsrWhenUrPlus":
-      return guide.fragmentKinds.allSsrWhenUrPlus;
-    case "splitEvenWhenUr":
-      return guide.fragmentKinds.splitEvenWhenUr;
-    default:
-      return "";
+function BuildBoard({ build, guide }: { build: LevelingBuild; guide: Guide }) {
+  const stages = focusStages(build, guide.heroNotes);
+  if (stages.length === 0 && build.fragments.length === 0) {
+    return <p className="callout">{guide.emptyBuild}</p>;
   }
-}
 
-function ShardHeroes({ rule }: { rule: FragmentRule }) {
-  if ("hero" in rule) return <HeroChip hero={rule.hero} size="hero-portrait-small" />;
-  if ("heroes" in rule) {
-    return (
-      <div className="leveling-shard-heroes">
-        <HeroChip hero={rule.heroes[0]} size="hero-portrait-small" />
-        <HeroChip hero={rule.heroes[1]} size="hero-portrait-small" />
-      </div>
-    );
-  }
-  return null;
-}
-
-function PriorityBoard({
-  buildId,
-  guide,
-  buildNames,
-}: {
-  buildId: LevelingBuildId;
-  guide: Guide;
-  buildNames: Record<string, string>;
-}) {
-  const build = buildById(buildId);
-  if (!build) return null;
-  const empty = focusHeroes(build).length === 0 && build.fragments.length === 0;
-  const ranked = rankedFocus(build, guide.heroNotes);
-  const podium = ranked.slice(0, 3);
-  const podiumBand = podium.at(-1)?.band;
-  const rest = ranked.slice(3).map((entry, index, list) => ({
-    ...entry,
-    showBand: index === 0 ? entry.band !== podiumBand : entry.band !== list[index - 1]?.band,
-  }));
-
-  if (empty) {
-    return (
-      <section className="leveling-board" aria-label={buildNames[buildId] ?? buildId}>
-        <p className="callout">{guide.emptyBuild}</p>
-      </section>
-    );
-  }
+  // Which focus stage and fragment steps each hero appears in, for the overview.
+  const overview = new Map<string, { rank?: number; stage?: number; fragments: number[] }>();
+  stages.forEach((stage, index) => {
+    for (const entry of stage.heroes) overview.set(entry.hero, { rank: entry.rank, stage: index, fragments: [] });
+  });
+  build.fragments.forEach((rule, index) => {
+    for (const hero of fragmentHeroes(rule)) {
+      const row = overview.get(hero) ?? { fragments: [] };
+      if (!row.fragments.includes(index)) row.fragments.push(index);
+      overview.set(hero, row);
+    }
+  });
 
   return (
-    <section className="leveling-board" aria-label={buildNames[buildId] ?? buildId}>
-      <div className="leveling-board-main">
-        <header className="leveling-board-head">
-          <h3>{guide.focusHeading}</h3>
-          <p>{guide.focusLede}</p>
-        </header>
-
-        {podium.length > 0 ? (
-          <ol className="leveling-podium">
-            {podium.map((entry) => (
-              <li key={entry.hero} className="leveling-podium-item" data-rank={entry.rank}>
-                <span className="leveling-podium-rank">{fill(guide.rankLabel, { rank: entry.rank })}</span>
-                <HeroChip hero={entry.hero} size="hero-portrait-large" />
-                {entry.note ? <p className="leveling-podium-note">{entry.note}</p> : null}
-              </li>
-            ))}
+    <>
+      {stages.length > 0 ? (
+        <>
+          <h2>{guide.focusHeading}</h2>
+          <p className="guide-lede">{guide.focusLede}</p>
+          <ol className="gl-phases">
+            {stages.map((stage, index) => {
+              const first = stage.heroes[0].rank;
+              const last = stage.heroes[stage.heroes.length - 1].rank;
+              return (
+                <li className="gl-phase" key={stage.band} data-tone={tone(index)}>
+                  <header className="gl-phase-head">
+                    <span className="gl-phase-number" aria-hidden="true">{index + 1}</span>
+                    <div>
+                      <p className="gl-phase-kicker">
+                        {first === last ? fill(guide.rankLabel, { rank: first }) : fill(guide.rankRange, { from: first, to: last })}
+                      </p>
+                      <h3>{guide.bands[stage.band]}</h3>
+                    </div>
+                  </header>
+                  <ul className="gl-cards">
+                    {stage.heroes.map((entry) => (
+                      <HeroCard key={entry.hero} hero={entry.hero} guide={guide} rank={entry.rank} note={entry.note} />
+                    ))}
+                  </ul>
+                </li>
+              );
+            })}
           </ol>
-        ) : null}
-
-        {rest.length > 0 ? (
-          <ol className="leveling-ladder">
-            {rest.map((entry) => (
-              <li key={entry.hero} className="leveling-ladder-item">
-                {entry.showBand ? <p className="leveling-ladder-band">{guide.bands[entry.band]}</p> : null}
-                <div className="leveling-ladder-row">
-                  <span className="leveling-ladder-rank">{fill(guide.rankLabel, { rank: entry.rank })}</span>
-                  <HeroChip hero={entry.hero} size="hero-portrait-medium" />
-                  {entry.note ? <p className="leveling-ladder-note">{entry.note}</p> : null}
-                </div>
-              </li>
-            ))}
-          </ol>
-        ) : null}
-      </div>
+        </>
+      ) : null}
 
       {build.fragments.length > 0 ? (
-        <aside className="leveling-shards">
-          <header className="leveling-board-head">
-            <h3>{guide.fragmentsHeading}</h3>
-            <p>{guide.fragmentsLede}</p>
-          </header>
-          <ol className="leveling-shard-list">
-            {build.fragments.map((rule, index) => (
-              <li key={`${rule.kind}-${index}`}>
-                <span className="leveling-shard-index">{fill(guide.rankLabel, { rank: index + 1 })}</span>
-                <div className="leveling-shard-body">
-                  <p>{fragmentText(rule, guide)}</p>
-                  <ShardHeroes rule={rule} />
-                </div>
-              </li>
-            ))}
+        <>
+          <h2>{guide.fragmentsHeading}</h2>
+          <p className="guide-lede">{guide.fragmentsLede}</p>
+          <ol className="gl-phases">
+            {build.fragments.map((rule, index) => {
+              const heroes = fragmentHeroes(rule);
+              return (
+                <li className="gl-phase" key={`${rule.kind}-${index}`} data-tone={tone(index)}>
+                  <header className="gl-phase-head">
+                    <span className="gl-phase-number" aria-hidden="true">{index + 1}</span>
+                    <div>
+                      <p className="gl-phase-kicker">{fill(guide.stepLabel, { step: index + 1 })}</p>
+                      <h3>{guide.fragmentKinds[rule.kind]}</h3>
+                    </div>
+                  </header>
+                  {heroes.length > 0 ? (
+                    <ul className="gl-cards">
+                      {heroes.map((hero) => <HeroCard key={hero} hero={hero} guide={guide} />)}
+                    </ul>
+                  ) : null}
+                </li>
+              );
+            })}
           </ol>
-        </aside>
+        </>
       ) : null}
-    </section>
+
+      {overview.size > 0 ? (
+        <>
+          <h2>{guide.overviewHeading}</h2>
+          <p className="guide-lede">{guide.overviewLede}</p>
+          <div className="table-scroll panel gl-overview">
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th scope="col">{guide.colHero}</th>
+                  <th scope="col">{guide.colRank}</th>
+                  <th scope="col">{guide.colFocus}</th>
+                  <th scope="col">{guide.colFragments}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[...overview.entries()].map(([hero, row]) => {
+                  const found = heroNamed(hero);
+                  return (
+                    <tr key={hero}>
+                      <th scope="row">
+                        <span className="guide-name">
+                          <HeroPortrait name={hero} rarity={found?.rarity} src={heroPortrait(hero)} className="hero-portrait-small" />
+                          {hero}
+                        </span>
+                      </th>
+                      <td data-tone={row.stage === undefined ? undefined : tone(row.stage)}>
+                        {row.rank ? (
+                          <strong className="gl-overview-level">{fill(guide.rankLabel, { rank: row.rank })}</strong>
+                        ) : (
+                          <span className="gl-overview-empty" aria-hidden="true">·</span>
+                        )}
+                      </td>
+                      <td className="gl-overview-text">
+                        {row.stage === undefined ? (
+                          <span className="gl-overview-empty" aria-hidden="true">·</span>
+                        ) : (
+                          guide.bands[stages[row.stage].band]
+                        )}
+                      </td>
+                      <td className="gl-overview-text">
+                        {row.fragments.length ? (
+                          <span className="gl-steps">
+                            {row.fragments.map((step) => (
+                              <span className="gl-step" key={step}>
+                                <span className="gl-step-number" data-tone={tone(step)} aria-hidden="true">{step + 1}</span>
+                                {guide.fragmentKinds[build.fragments[step].kind]}
+                              </span>
+                            ))}
+                          </span>
+                        ) : (
+                          <span className="gl-overview-empty" aria-hidden="true">·</span>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </>
+      ) : null}
+    </>
   );
 }
 
@@ -202,52 +239,44 @@ export function HeroLevelingGuide({ guide }: { guide: Guide }) {
     }
     return names;
   }, [buildIds, guide.buildNames, t.guideEntries.heroLayouts.buildTexts]);
+  const build = buildById(selected);
 
   return (
     <div className="guide-wide leveling-guide">
       <p className="intro">{guide.intro}</p>
 
-      <div className="leveling-toolbar">
-        <div>
-          <div className="tier-lists-head">
-            <h2>{guide.buildsHeading}</h2>
-          </div>
-          <p className="guide-lede">{guide.buildsLede}</p>
-        </div>
-        <div className="hero-filters leveling-filters" aria-label={guide.buildsHeading}>
-          {buildIds.map((id) => (
-            <button
-              key={id}
-              type="button"
-              className="hero-filter"
-              aria-pressed={id === selected}
-              onClick={() => setSelected(id)}
-            >
-              {buildNames[id]}
-            </button>
-          ))}
-        </div>
+      <h2>{guide.buildsHeading}</h2>
+      <p className="guide-lede">{guide.buildsLede}</p>
+      <div className="hero-filters leveling-filters" role="group" aria-label={guide.buildsHeading}>
+        {buildIds.map((id) => (
+          <button key={id} type="button" className="hero-filter" aria-pressed={id === selected} onClick={() => setSelected(id)}>
+            {buildNames[id]}
+          </button>
+        ))}
       </div>
 
-      <PriorityBoard key={selected} buildId={selected} guide={guide} buildNames={buildNames} />
+      {build ? <BuildBoard key={selected} build={build} guide={guide} /> : null}
 
-      <section className="leveling-caps-block">
-        <h2>{guide.levelsHeading}</h2>
-        <p className="guide-lede">{guide.levelsLede}</p>
-        <ol className="leveling-caps-rail">
-          {LEVELING_DATA.levelTargets.map((target, index) => (
-            <li key={target.id}>
-              <span className="leveling-caps-index">{index + 1}</span>
-              <div>
-                <strong>{guide.levelTargets[target.id]}</strong>
-                <span className="leveling-caps-value">{fill(guide.levelTargetValue, { target: target.target })}</span>
-                {target.noAscend ? <span className="leveling-caps-note">{guide.noAscend}</span> : null}
-              </div>
-            </li>
-          ))}
-        </ol>
-        <p className="leveling-caps-after">{guide.levelsAfter}</p>
-      </section>
+      <h2>{guide.levelsHeading}</h2>
+      <p className="guide-lede">{guide.levelsLede}</p>
+      <ol className="gl-cards leveling-caps">
+        {LEVELING_DATA.levelTargets.map((target, index) => (
+          <li className="gl-card" key={target.id} data-tone={tone(index)}>
+            <span className="gl-card-link">
+              <span className="gl-cap-number" aria-hidden="true">{index + 1}</span>
+              <span className="gl-card-text">
+                <strong className="gl-name">{guide.levelTargets[target.id]}</strong>
+              </span>
+            </span>
+            <span className="gl-level">
+              <span className="gl-level-label">{guide.levelWord}</span>
+              <strong className="gl-level-value">{target.target}</strong>
+            </span>
+            {target.noAscend ? <span className="gl-without">{guide.noAscend}</span> : null}
+          </li>
+        ))}
+      </ol>
+      <p className="leveling-caps-after">{guide.levelsAfter}</p>
 
       {guide.sections.map((section) => (
         <details className="leveling-details" key={section.heading}>
