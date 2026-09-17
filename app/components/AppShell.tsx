@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { SECTIONS, eventCategoryGroups, groupByBadge, type NavItem, type NavSection } from "../../lib/navigation";
+import { SECTIONS, eventCategoryGroups, groupByBadge, sectionHasBrowsePanel, type NavItem, type NavSection } from "../../lib/navigation";
 import { navCrumbs, pathIsCurrentOrNested, pathIsExact } from "../../lib/content/nav-shell";
 import { DISCORD_CONFIGURED, DISCORD_URL, NAV_COLLAPSED_STORAGE_KEY, REPOSITORY_URL } from "../../lib/site";
 import { useAuth } from "./AuthProvider";
@@ -101,12 +101,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   const pathSection = sectionForPath(pathname);
   const onOverview = pathIsExact(pathname, "/");
-  const pathHasPanel = Boolean(pathSection?.items.length);
+  const pathHasPanel = Boolean(pathSection && sectionHasBrowsePanel(pathSection));
   const query = filter.trim().toLocaleLowerCase();
   const searching = query.length > 0;
   /**
-   * Overview is rail-only. The browse panel opens for sections that have a
-   * list (Guides, Calculators, Simulations), or while a search is running.
+   * Overview is rail-only. The browse panel opens for sections with a nested
+   * list (Guides, Events, Calculators, Simulations), or while a search runs.
    */
   const panelClosed = !narrow && !searching && (onOverview || !pathHasPanel || collapsed);
   const panelVisible = narrow ? open : !panelClosed;
@@ -494,7 +494,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                           className={active ? "panel-link is-active" : "panel-link"}
                           href={section.href}
                           onClick={() => {
-                            if (!narrow) writeCollapsed(section.items.length === 0);
+                            if (!narrow) writeCollapsed(!sectionHasBrowsePanel(section));
                           }}
                         >
                           <span className="panel-link-title">{section.label(t)}</span>

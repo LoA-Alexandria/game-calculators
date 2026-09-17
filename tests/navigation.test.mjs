@@ -8,6 +8,7 @@ import {
   groupByBadge,
   guideCount,
   sectionById,
+  sectionHasBrowsePanel,
   toolCount,
 } from "../lib/navigation.ts";
 
@@ -51,4 +52,11 @@ test("Events index always exposes Anleitungen and Tips categories", () => {
       { id: "tips", category: en.eventCategories.tips, count: 0 },
     ],
   );
+});
+
+test("Guides and Events open the browse panel even when Events has no items", () => {
+  assert.equal(sectionHasBrowsePanel(sectionById("guides")), true);
+  assert.equal(sectionHasBrowsePanel(sectionById("events")), true);
+  assert.equal(sectionHasBrowsePanel(sectionById("news")), false);
+  assert.equal(sectionHasBrowsePanel(sectionById("calculators")), true);
 });
