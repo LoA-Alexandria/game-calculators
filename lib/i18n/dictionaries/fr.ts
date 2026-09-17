@@ -662,6 +662,83 @@ const fr: Dictionary = {
       detailClose: "Fermer",
       pictureCredit: "Images du jeu découpées le 16 septembre 2026 dans des captures du client allemand, sans le cadre. Ce sont les versions redessinées du jeu ; elles appartiennent à son éditeur. Titres originaux, artistes et dates viennent de Wikipédia et des musées qui conservent les œuvres, et ne sont indiqués que lorsque l’image ne laisse aucun doute.",
       catalogTexts: {
+        sets: {
+          "glory-and-shadow": {
+            effect: "Au début du combat, un bouclier égal à 10 % des PV max.",
+          },
+          "self-portrait": {
+            effect: "Chaque fois qu’un allié inflige des dégâts de compétence ou supplémentaires : bonus de dégâts supplémentaires +10 % pendant 1 tour.",
+          },
+          "nature-in-bloom": {
+            effect: "Sur un coup critique, les dégâts critiques des alliés augmentent de 5 à 50 % supplémentaires.",
+          },
+          "urban-proletariat": {
+            effect: "Pendant les 3 premiers tours du combat : dégâts sur la durée +12 % jusqu’à la fin du combat.",
+          },
+          "rococo-curtain": {
+            effect: "Les premiers dégâts de compétence subis par un allié à chaque tour sont réduits de 20 %.",
+          },
+          "chinese-landscape": {
+            effect: "Tous les 2 tours (si non scellé), 15 % de chances de dissiper 1 debuff d’un allié.",
+          },
+          "ukiya-e-masterpieces": {
+            effect: "Réduction des dégâts finaux des alliés +12 % jusqu’à la fin du combat.",
+          },
+          "tragic-maiden": {
+            effect: "Bonus de dégâts finaux des alliés +12 % jusqu’à la fin du combat.",
+          },
+          "modernist-new-voice": {
+            effect: "Réduction des dégâts de collection et de Cryptide +12 % jusqu’à la fin du combat.",
+          },
+          "beyond-the-earth": {
+            effect: "Bonus de dégâts de collection et de Cryptide +12 % jusqu’à la fin du combat.",
+          },
+          "sheltered-by-night": {
+            effect: "Tous les 3 tours, quand un allié agit : réduction des dégâts supplémentaires +5 % pendant 2 tours.",
+          },
+          "impression-warmth": {
+            effect: "Tous les 3 tours, quand un allié agit : bonus de dégâts supplémentaires +5 % pendant 2 tours.",
+          },
+          "roar-of-steam": {
+            effect: "Tous les 3 tours, quand un allié agit : réduction des dégâts sur la durée +5 % pendant 2 tours.",
+          },
+          "echoes-of-death": {
+            effect: "Tous les 3 tours : bonus de dégâts sur la durée +5 % pendant 2 tours.",
+          },
+          "faithful-companion": {
+            effect: "Tous les 3 tours si non scellé : réduction des dégâts +5 % pendant 2 tours.",
+          },
+          "heaven-and-earth-surge": {
+            effect: "Tous les 3 tours si non scellé : bonus de dégâts +5 % pendant 2 tours.",
+          },
+          "gaze-of-an-age": {
+            effect: "Tous les 3 tours si non scellé : bonus d’ATQ +5 % pendant 2 tours.",
+          },
+          "wall-of-mosaics": {
+            effect: "Tous les 4 tours si non scellé : un bouclier égal à 5 % des PV max.",
+          },
+          "sacred-window-radiance": {
+            effect: "Tous les 4 tours si non scellé : soigne 5 % des PV max.",
+          },
+          "master-s-sketch": {
+            effect: "Tous les 4 tours si non scellé : inflige des dégâts de compétence égaux à 80 % de l’ATQ à l’ennemi.",
+          },
+          "monkey-society": {
+            effect: "Au tour 4, si non scellé : réduction des dégâts de compétence +5 % pendant 2 tours.",
+          },
+          "so-delicious": {
+            effect: "Au tour 4, si non scellé : bonus de dégâts de compétence +5 % pendant 2 tours.",
+          },
+          "hidden-face": {
+            effect: "Au tour 4, si non scellé : bonus d’ATQ +5 % pendant 2 tours.",
+          },
+          "four-seasons-reborn": {
+            effect: "Au tour 6, si non scellé : soigne 5 % des PV max.",
+          },
+          "four-seasonal-beauties": {
+            effect: "Au tour 6, si non scellé : inflige des dégâts de compétence égaux à 50 % de l’ATQ à l’ennemi.",
+          },
+        },
         paintings: {
           "the-coronation-of-napoleon": {
             original: "Le Sacre de Napoléon",
@@ -1059,6 +1136,7 @@ const fr: Dictionary = {
       ],
       catalogueLede: "Quels tableaux portent quels héros, plus les effets :",
       catalogueLink: "Artwork",
+      openSet: "Voir dans Artwork",
       setSkillsHeading: "Meilleurs skills de set",
       setSkillsLede: "Skills de set SSR tels qu’Autumn les a classés pour chaque build.",
       buildNames: {

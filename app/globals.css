@@ -1999,6 +1999,8 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
 .guide-link-card:hover { transform: translateY(-2px); border-color: color-mix(in srgb, var(--good) 45%, var(--line)); }
 .guide-link-card-art { display: flex; padding-left: 10px; }
 .guide-link-card-art .hero-portrait { margin-left: -10px; box-shadow: 0 0 0 2px var(--surface); }
+/* Plain pictures in a link card, such as the paintings on Artwork layouts. */
+.article .guide-link-card-art img { width: 46px; height: 60px; margin-left: -10px; border: 0; border-radius: 10px; object-fit: cover; box-shadow: 0 0 0 2px var(--surface); }
 .guide-link-card-text { display: grid; flex: 1 1 260px; gap: 4px; color: var(--ink-soft); font-size: .92rem; }
 .guide-link-card-text strong { color: var(--accent); }
 
@@ -2149,6 +2151,160 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
 @media (prefers-reduced-motion: reduce) {
   .collection-card, .collection-card-art img { transition: none; }
   .collection-card:hover, .collection-card:hover .collection-card-art img { transform: none; }
+}
+
+/* --- artwork layouts: the set skills as ranked cards with their paintings --- */
+.artwork-layouts .painting-set,
+:is(.al-set, .al-canvas, .al-level) { --rarity: var(--accent); }
+:is(.al-set, .al-canvas, .al-level)[data-rarity="SSR"] { --rarity: var(--gold); }
+:is(.al-set, .al-canvas, .al-level)[data-rarity="SR"] { --rarity: #9b6bd6; }
+:is(.al-set, .al-canvas, .al-level)[data-rarity="R"] { --rarity: #4a89dc; }
+
+.al-steps {
+  align-items: start;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 12px;
+  margin: 12px 0 22px;
+  padding: 0;
+  list-style: none;
+}
+.al-step {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--accent);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+}
+.al-step-number {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-family: var(--font-display);
+  font-weight: 700;
+}
+.article .al-step h3 { margin: 0 0 4px; font-size: 1rem; }
+.article .al-step p { margin: 0; color: var(--ink-soft); font-size: .88rem; line-height: 1.5; }
+
+.al-levels {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 170px), 1fr));
+  gap: 8px;
+  margin: 12px 0 22px;
+  padding: 0;
+  list-style: none;
+}
+.al-level {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--rarity);
+  border-radius: var(--r-md);
+  background: color-mix(in srgb, var(--rarity) 7%, var(--surface));
+}
+.al-level-rank { color: var(--ink-faint); font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; }
+.al-level .rarity { min-height: 20px; padding: 0 7px; font-size: .66rem; }
+.al-level-stat { margin-left: auto; font-size: .95rem; }
+
+.al-panel { padding: 0; border: 0; background: none; }
+.al-sets { display: grid; gap: 12px; margin: 14px 0 0; padding: 0; list-style: none; }
+.al-set {
+  display: grid;
+  grid-template-columns: minmax(0, 210px) minmax(0, 1fr);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--rarity);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+.al-set:hover { transform: translateY(-2px); box-shadow: var(--shadow-2); }
+/* The set's paintings, joined into one strip. */
+.al-set-art {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 4px;
+  height: 176px;
+  padding: 10px;
+  background:
+    radial-gradient(ellipse at 50% 120%, color-mix(in srgb, var(--rarity) 40%, transparent), transparent 70%),
+    linear-gradient(160deg, color-mix(in srgb, var(--rarity) 16%, #17130f), #110e0b);
+}
+.al-canvas {
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  height: 100%;
+  border: 1px solid color-mix(in srgb, var(--rarity) 55%, rgba(255, 255, 255, .25));
+  border-radius: 8px;
+  background: rgba(0, 0, 0, .25);
+  color: color-mix(in srgb, var(--rarity) 70%, #fff);
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+}
+.article .al-canvas img { width: 100%; height: 100%; border: 0; border-radius: 0; object-fit: cover; }
+.al-set-art[data-count="0"] { place-items: center; }
+.al-canvas.is-empty { width: 76px; height: 76px; border-style: dashed; color: color-mix(in srgb, var(--rarity) 60%, #fff); }
+.al-canvas.is-empty svg { width: 30px; height: 30px; opacity: .8; }
+.al-set-body { display: grid; align-content: start; gap: 8px; min-width: 0; padding: 12px 14px 14px; }
+.al-set-head { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 10px; }
+.al-rank {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--rarity) 70%, #000), var(--rarity));
+  color: #17130f;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+.article .al-set-head h3 { margin: 0; font-size: 1.05rem; line-height: 1.25; }
+.article .al-reason { margin: 2px 0 0; color: var(--accent); font-size: .84rem; font-weight: 600; }
+.article .al-effect { margin: 0; color: var(--ink-soft); font-size: .88rem; line-height: 1.5; }
+.al-canvas-names { display: flex; flex-wrap: wrap; gap: 4px; margin: 0; padding: 0; list-style: none; }
+.al-canvas-names li {
+  display: inline-flex;
+  align-items: center;
+  min-height: 22px;
+  padding: 0 9px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink-soft);
+  font-size: .72rem;
+}
+.article .al-set-link { color: var(--accent); font-size: .84rem; font-weight: 700; text-decoration: none; }
+.article .al-set-link:hover { text-decoration: underline; }
+.al-insert {
+  margin: 8px 0 0;
+  padding: 8px 12px;
+  border: 1px dashed color-mix(in srgb, var(--gold) 50%, var(--line));
+  border-radius: var(--r-md);
+  color: var(--gold);
+  font-size: .84rem;
+}
+.al-note { margin-top: 14px; }
+/* Linked sets on the Artwork page stop below the top bar. */
+.painting-set { scroll-margin-top: calc(var(--topbar) + 16px); }
+
+@media (max-width: 560px) {
+  .al-set { grid-template-columns: minmax(0, 1fr); }
+  .al-set-art { grid-auto-columns: minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .al-set { transition: none; }
+  .al-set:hover { transform: none; }
 }
 
 /* --- collection layouts: one equip bar per setup, options by age --- */

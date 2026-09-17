@@ -2,9 +2,9 @@
 
 import { useId, useState, type KeyboardEvent } from "react";
 import Link from "next/link";
-import { guideLayout } from "../../lib/content/guides";
+import { guideHref, guideLayout } from "../../lib/content/guides";
 import { ARTWORK_LAYOUT_DATA, setSkillRank } from "../../lib/content/artwork-layouts";
-import { localizedSet, type PaintingTexts } from "../../lib/content/artwork";
+import { PAINTING_SETS, artworkImageUrl, localizedSet, type Painting, type PaintingSet, type PaintingTexts } from "../../lib/content/artwork";
 import type { Dictionary } from "../../lib/i18n";
 import { useLocale } from "../components/LocaleProvider";
 
@@ -18,6 +18,64 @@ export function isArtworkLayoutsGuide(
 
 function labelOf(map: Record<string, string>, key: string): string {
   return map[key] ?? key;
+}
+
+/** Link straight to a set on the Artwork page. */
+const setHref = (id: string) => `${guideHref("artwork")}#${encodeURIComponent(id)}`;
+
+/** A few paintings with a picture, for the link card at the top. */
+const COVER_PAINTINGS = PAINTING_SETS.flatMap((set) => set.paintings.filter((canvas) => canvas.image)).slice(0, 4);
+
+function PaintingTile({ painting, rarity }: { painting: Painting; rarity: string }) {
+  return (
+    <span className="al-canvas" data-rarity={rarity} title={painting.name}>
+      {/* In-game crops, already small WebP files; a static export cannot optimise them. */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={artworkImageUrl(painting.image ?? "")} alt="" loading="lazy" decoding="async" />
+    </span>
+  );
+}
+
+/** A set nobody has added pictures for yet keeps the strip, as an empty frame. */
+function EmptyFrame({ rarity }: { rarity: string }) {
+  return (
+    <span className="al-canvas is-empty" data-rarity={rarity} aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+        <rect x="3" y="3" width="18" height="18" rx="2" />
+        <path d="m6 16 4-5 3 3 2-2 3 4" />
+        <circle cx="9" cy="8.5" r="1.3" />
+      </svg>
+    </span>
+  );
+}
+
+function SetCard({ set, rank, reason, guide }: { set: PaintingSet; rank: number; reason: string; guide: Guide }) {
+  // Only paintings that already have a picture; the names below cover the rest.
+  const withPictures = set.paintings.filter((canvas) => canvas.image);
+  return (
+    <article className="al-set" data-rarity={set.rarity}>
+      <div className="al-set-art" data-count={withPictures.length} aria-hidden="true">
+        {withPictures.length > 0
+          ? withPictures.map((canvas) => <PaintingTile key={canvas.id} painting={canvas} rarity={set.rarity} />)
+          : <EmptyFrame rarity={set.rarity} />}
+      </div>
+      <div className="al-set-body">
+        <header className="al-set-head">
+          <span className="al-rank" aria-hidden="true">{rank}</span>
+          <div>
+            <h3>{set.name}</h3>
+            <p className="al-reason">{reason}</p>
+          </div>
+          <span className="rarity" data-rarity={set.rarity}>{set.rarity}</span>
+        </header>
+        <p className="al-effect">{set.effect}</p>
+        <ul className="al-canvas-names">
+          {set.paintings.map((canvas) => <li key={canvas.id}>{canvas.name}</li>)}
+        </ul>
+        <Link className="al-set-link" href={setHref(set.id)}>{guide.openSet} →</Link>
+      </div>
+    </article>
+  );
 }
 
 function SetSkillTabs({ guide }: { guide: Guide }) {
@@ -75,27 +133,26 @@ function SetSkillTabs({ guide }: { guide: Guide }) {
         })}
       </div>
       <div
-        className="build-panel painting-panel"
+        className="build-panel al-panel"
         data-build={build?.id}
         id={`${base}-panel`}
         role="tabpanel"
         aria-labelledby={build ? tabId(build.id) : undefined}
       >
-        <ol className="set-skill-rank">
+        <ol className="al-sets">
           {rows.map((row, index) => (
             <li key={`${row.set.id}-${index}`}>
-              <article className="formation-rule">
-                <span className="formation-rule-index" aria-hidden="true">{index + 1}</span>
-                <h3>{localizedSet(row.set, artworkTexts).name}</h3>
-                <p>{labelOf(reasons, row.reason)}</p>
-              </article>
-              {row.insert ? (
-                <p className="set-skill-insert">{guide.hybridSlot}</p>
-              ) : null}
+              <SetCard
+                set={localizedSet(row.set, artworkTexts)}
+                rank={index + 1}
+                reason={labelOf(reasons, row.reason)}
+                guide={guide}
+              />
+              {row.insert ? <p className="al-insert">{guide.hybridSlot}</p> : null}
             </li>
           ))}
         </ol>
-        {note ? <p className="set-skill-note">{note}</p> : null}
+        {note ? <p className="callout al-note">{note}</p> : null}
       </div>
     </>
   );
@@ -103,58 +160,49 @@ function SetSkillTabs({ guide }: { guide: Guide }) {
 
 export function ArtworkLayoutsGuide({ guide }: { guide: Guide }) {
   return (
-    <div className="guide-wide hero-layouts artwork-layouts">
+    <div className="guide-wide artwork-layouts">
       <p className="intro">{guide.intro}</p>
-      <p className="callout">
-        {guide.catalogueLede}{" "}
-        <Link href="/guides/artwork/">{guide.catalogueLink}</Link>
-      </p>
 
-      <div className="formation-intro artwork-spend">
-        <div>
-          <h2>{guide.spendHeading}</h2>
-          <div className="formation-rules">
-            {guide.steps.map((step, index) => (
-              <article className="formation-rule" key={step.title}>
-                <span className="formation-rule-index" aria-hidden="true">{index + 1}</span>
-                <h3>{step.title}</h3>
-                <p>{step.body}</p>
-              </article>
-            ))}
-          </div>
-        </div>
-        <div>
-          <h2>{guide.levelsHeading}</h2>
-          {guide.levelsLede ? <p className="utility-lede">{guide.levelsLede}</p> : null}
-          <div className="table-scroll panel guide-table-panel">
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>{guide.colRank}</th>
-                  <th>{guide.colRarity}</th>
-                  <th>{guide.colStat}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {guide.levels.map((row) => (
-                  <tr key={`${row.rarity}-${row.stat}`}>
-                    <td data-label={guide.colRank}><strong className="mono">{row.rank}</strong></td>
-                    <td data-label={guide.colRarity}>
-                      <span className="rarity" data-rarity={row.rarity}>{row.rarity}</span>
-                    </td>
-                    <td data-label={guide.colStat}>{row.stat}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
+      <Link className="guide-link-card" href={guideHref("artwork")}>
+        <span className="guide-link-card-art" aria-hidden="true">
+          {COVER_PAINTINGS.map((canvas) => (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img key={canvas.id} src={artworkImageUrl(canvas.image ?? "")} alt="" loading="lazy" decoding="async" />
+          ))}
+        </span>
+        <span className="guide-link-card-text">
+          <span>{guide.catalogueLede}</span>
+          <strong>{guide.catalogueLink} →</strong>
+        </span>
+      </Link>
 
-      <div className="tier-lists-head">
-        <h2>{guide.setSkillsHeading}</h2>
-      </div>
-      <p className="utility-lede">{guide.setSkillsLede}</p>
+      <h2>{guide.spendHeading}</h2>
+      <ol className="al-steps">
+        {guide.steps.map((step, index) => (
+          <li className="al-step" key={step.title} data-step={index + 1}>
+            <span className="al-step-number" aria-hidden="true">{index + 1}</span>
+            <div>
+              <h3>{step.title}</h3>
+              <p>{step.body}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+
+      <h2>{guide.levelsHeading}</h2>
+      {guide.levelsLede ? <p className="guide-lede">{guide.levelsLede}</p> : null}
+      <ol className="al-levels">
+        {guide.levels.map((row) => (
+          <li className="al-level" key={`${row.rarity}-${row.stat}`} data-rarity={row.rarity}>
+            <span className="al-level-rank" aria-hidden="true">{row.rank}</span>
+            <span className="rarity" data-rarity={row.rarity}>{row.rarity}</span>
+            <strong className="al-level-stat">{row.stat}</strong>
+          </li>
+        ))}
+      </ol>
+
+      <h2>{guide.setSkillsHeading}</h2>
+      <p className="guide-lede">{guide.setSkillsLede}</p>
       <SetSkillTabs guide={guide} />
     </div>
   );

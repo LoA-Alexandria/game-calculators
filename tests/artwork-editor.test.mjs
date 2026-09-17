@@ -105,7 +105,10 @@ test("set and painting wording is edited per language and exported per dictionar
   assert.equal(findSet(state, set.uid).name, set.name, "English is edited with updateSet, not as a translation");
 
   const exported = exportCatalogTexts(state);
-  assert.deepEqual(exported.de.sets, { [set.id]: { name: "Ruhm und Schatten" } });
+  // The German catalogue already translates every set skill; this edit adds a name and clears one effect.
+  assert.deepEqual(exported.de.sets[set.id], { name: "Ruhm und Schatten" });
+  const otherSets = (catalog) => Object.fromEntries(Object.entries(catalog ?? {}).filter(([id]) => id !== set.id));
+  assert.deepEqual(otherSets(exported.de.sets), otherSets(texts.de.sets));
   // The German catalogue already holds original titles; the edit only adds the productivity.
   assert.deepEqual(exported.de.paintings[canvas.id], { ...texts.de.paintings?.[canvas.id], productivity: "Glashütte" });
   const others = (catalog) => Object.fromEntries(Object.entries(catalog ?? {}).filter(([id]) => id !== canvas.id));
