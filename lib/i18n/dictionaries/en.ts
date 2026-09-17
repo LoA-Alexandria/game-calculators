@@ -196,6 +196,8 @@ const en = {
       "The planner itself is a self-contained application and is currently available in English only. It follows the site theme.",
     model:
       "A production building counts the sum of every water source whose range touches its footprint anywhere — each source once, whether or not the ranges overlap. The goal is 640 water.",
+    levels:
+      "The Upgrade tab carries the level tables from the game: the worker slots each level opens, what every single upgrade costs, and the research that lifts the level cap. They reach as far as the research the game has shown so far.",
     storage:
       "Layouts, building types, research, and bonuses are stored in your browser only. Use Export in the planner’s settings tab to pass a configuration to someone else.",
     tagSolver: "Auto-layout solver",

@@ -34,6 +34,7 @@ export default function IrrigationPlannerPage() {
 
       <div className="planner-notes">
         <p className="assumption">{t.irrigation.model}</p>
+        <p className="assumption">{t.irrigation.levels}</p>
         <p className="assumption">{t.irrigation.storage}</p>
         <p className="assumption">{t.irrigation.languageNote}</p>
       </div>

@@ -195,6 +195,8 @@ const de: Dictionary = {
       "Der Planer selbst ist eine eigenständige Anwendung und derzeit nur auf Englisch verfügbar. Die Darstellung folgt der Seite.",
     model:
       "Ein Produktionsgebäude zählt die Summe jeder Wasserquelle, deren Reichweite seine Grundfläche irgendwo berührt — jede Quelle einmal, ob sich die Reichweiten überschneiden oder nicht. Das Ziel sind 640 Wasser.",
+    levels:
+      "Der Upgrade-Tab enthält die Stufentabellen aus dem Spiel: die Arbeiterplätze, die jede Stufe öffnet, die Kosten jeder einzelnen Stufe und die Forschung, die das Stufenlimit anhebt. Sie reichen so weit wie die bisher bekannte Forschung.",
     storage:
       "Layouts, Gebäudetypen, Forschung und Boni liegen ausschließlich in deinem Browser. Über „Export“ im Einstellungs-Tab des Planers gibst du eine Konfiguration an andere weiter.",
     tagSolver: "Automatischer Layout-Löser",
