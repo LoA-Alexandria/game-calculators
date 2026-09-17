@@ -195,6 +195,8 @@ const fr: Dictionary = {
       "Le planificateur est une application autonome, disponible pour l’instant en anglais uniquement. Il suit le thème du site.",
     model:
       "Un bâtiment de production additionne chaque source d’eau dont la portée touche son emprise, où que ce soit — chaque source une seule fois, que les portées se chevauchent ou non. L’objectif est de 640 d’eau.",
+    levels:
+      "L’onglet Upgrade contient les tables de niveaux du jeu : les postes d’ouvriers que chaque niveau ouvre, le coût de chaque amélioration et la recherche qui lève le plafond de niveau. Elles vont aussi loin que les recherches connues à ce jour.",
     storage:
       "Plans, types de bâtiments, recherches et bonus restent uniquement dans votre navigateur. Utilisez « Export » dans l’onglet Réglages du planificateur pour transmettre une configuration.",
     tagSolver: "Solveur de disposition",
