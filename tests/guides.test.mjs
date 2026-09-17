@@ -54,6 +54,7 @@ test("structured ranking guides skip the snippet Edit / Remove", () => {
   assert.equal(guideHasSnippetEditor("cryptides"), false);
   assert.equal(guideHasSnippetEditor("goddesses"), false);
   assert.equal(guideHasSnippetEditor("goddessLeveling"), false);
+  assert.equal(guideHasSnippetEditor("collection"), false);
   assert.equal(guideHasSnippetEditor("support"), true);
 });
 
@@ -82,6 +83,7 @@ test("each guide entry is claimed by exactly the renderer it was written for", (
     productionBuildings: "productionBuildings",
     cryptides: "cryptides",
     goddessLeveling: "goddessLeveling",
+    collection: "collection",
   };
   for (const [code, dictionary] of Object.entries(mapLocales(getDictionary))) {
     for (const [id, guide] of Object.entries(dictionary.guideEntries)) {
