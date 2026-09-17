@@ -80,6 +80,13 @@ export const SECTIONS: NavSection[] = [
         badge: (t) => t.eventCategories.tips,
         categoryId: "tips",
       },
+      {
+        href: "/events/supply-reform/",
+        label: (t) => t.eventGuideEntries.supplyReform.title,
+        description: (t) => t.eventGuideEntries.supplyReform.summary,
+        badge: (t) => t.eventCategories.tips,
+        categoryId: "tips",
+      },
     ],
   },
   {

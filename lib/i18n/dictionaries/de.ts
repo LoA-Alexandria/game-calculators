@@ -3666,6 +3666,29 @@ const de: Dictionary = {
       ],
       note: "Guide von Autumn (Ice, S12), geteilt auf Discord, 10. August 2026.",
     },
+    supplyReform: {
+      title: "Supply Reform",
+      summary: "Linien cleares, indem du Teile verschiebst — Randlücken, Stückgröße und die nächste Reihe.",
+      intro:
+        "Kurze Brettpuzzle-Tipps: Ränder dicht halten, große Teile tief parken und die Vorschau der nächsten Reihe am unteren Rand für Sofort-Clears nutzen.",
+      sections: [
+        {
+          heading: "Grundlagen",
+          body: [
+            "Verschiebe Teile, um Linien zu füllen und zu clearen.",
+          ],
+        },
+        {
+          heading: "Effizienz",
+          body: [
+            "Lass links und rechts am Rand keine Lücken — die Mitte zu füllen ist in fast allen Fällen leichter als den Rand.",
+            "Halte große Objekte möglichst weit unten und kleine möglichst weit oben, damit du in kniffligen Lagen flexibler manövrieren kannst.",
+            "Schau immer ganz nach unten: dort wird die nächste Reihe angezeigt, die erscheint. Wenn möglich, lass Lücken, die genau zu einem Block in dieser Vorschau passen, damit die Linie sofort cleart, sobald die Reihe einfällt.",
+          ],
+        },
+      ],
+      note: "Community-Tipp zu Supply Reform Line-Clears und der Vorschau der nächsten Reihe.",
+    },
   },
   events: {
     title: "Events",
