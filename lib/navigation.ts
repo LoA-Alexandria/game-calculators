@@ -288,6 +288,15 @@ export function eventCategoryGroups(t: Dictionary, items = sectionById("events")
   }));
 }
 
+/**
+ * Whether the sidebar browse panel should open for this section. Guides and
+ * Events use nested categories, so they open even with no items yet.
+ */
+export function sectionHasBrowsePanel(section: NavSection): boolean {
+  if (section.id === "guides" || section.id === "events") return true;
+  return section.items.length > 0;
+}
+
 export type NavGroup = {
   id: string;
   category: string;
