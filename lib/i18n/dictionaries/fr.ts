@@ -3632,6 +3632,54 @@ const fr: Dictionary = {
       ],
       note: "Astuce communautaire pour Supply Reform et l’aperçu de la prochaine rangée.",
     },
+    trialsOfOdin: {
+      title: "Trials of Odin (Ragnarok)",
+      summary:
+        "Combat et dons de phase 1, économie des cors/anneaux en siège, et quels monstres one-shot ou last-hit.",
+      intro:
+        "Rythme de guilde pour Trials of Odin : poussez le Supply avec explorations et dons, puis gardez Military Tokens (cors) et Draupnir Rings pour le dernier jour de siège.",
+      sections: [
+        {
+          heading: "1re phase — Combat",
+          body: [
+            "Utilisez vos explorations et attaquez d’abord vos monstres. Si l’Auto Battle pose problème, choisissez les héros manuellement dans le slot — vous pouvez avoir plus d’endurance que l’interface n’en montre.",
+            "Améliorez les bâtiments avec ce que vous avez déjà.",
+            "S’il vous reste des objets d’attaque mais plus d’endurance d’exploration, ouvrez Guild Intel et attaquez les monstres trouvés par d’autres.",
+          ],
+        },
+        {
+          heading: "1re phase — Dons",
+          body: [
+            "Pour les grosses récompenses, ouvrez le bâtiment Supplies et donnez toutes vos ressources en trop — ignorez les avertissements. Chaque amélioration à votre niveau rapporte beaucoup d’ID Plates et récompenses similaires.",
+          ],
+        },
+        {
+          heading: "1re phase — Cibles Supply",
+          body: [
+            "Essayez de one-shot chaque monstre que vous pouvez, et visez la rareté la plus haute que vous one-shotez. Exceptions : Surtr (jaune / SSR) — prenez le last hit pour les bonus max ; Jörmungandr (rouge / UR) — prenez le last hit de chaque stage si possible.",
+            "Si vous pouvez atteindre un last hit en environ 5–10 héros (et que vous en avez plus de 30), payez le coût. Sinon, revenez au one-shot.",
+            "Les spawns de monstres sont limités pour l’événement — utilisez-les bien. Contournez les plus faibles et laissez-les à la guilde : la guilde ne peut stocker que 100 monstres à la fois, donc gardez de la place pour les explorations.",
+            "Si les membres ont déjà tout tué en phase de combat, frappez l’arbre au centre de la carte pour des points.",
+          ],
+        },
+        {
+          heading: "2e phase — Siège",
+          body: [
+            "Attaquez les autres guildes avec vos attaques normales seulement, sauf si le score de dégâts est très serré ou si vous risquez de ne pas vous qualifier pour le jour suivant.",
+            "Gardez les Military Tokens (cors / attaques bonus) et Draupnir Rings (Odin’s Help pour Eye of Odin ou Gungnir) jusqu’au dernier jour de siège. Les deux sont récupérés après l’événement.",
+            "Visez toujours le joueur le plus fort : vous ne pouvez tuer que jusqu’à deux joueurs par attaque, et les dégâts au-delà ne comptent pas.",
+            "Le dernier jour (finale), attaquez immédiatement au reset quotidien pour le score maximum.",
+          ],
+        },
+        {
+          heading: "Filtre de sélection de héros",
+          body: [
+            "Fatigué de choisir les héros à la main en phase 1 ? Dans Battle Settings, filtrez par coût de déploiement (consommer casque 1–5, ou Free Deploy) pour remplir automatiquement le slot avec un héros qui correspond à cette consommation.",
+          ],
+        },
+      ],
+      note: "Astuces de phase par Cherr (Earth S2), 6 août 2026 ; addendum cibles Supply par Autumn (Ice S12), 11 septembre 2026 — merci Zee.",
+    },
   },
   events: {
     title: "Événements",
