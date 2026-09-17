@@ -41,7 +41,8 @@ Setup, the first-admin mapping, and deploy order are in
 
 `/guides/new/` is a frontend editor. It currently supports structured sections,
 image previews, local draft saving, and a snippet to commit into the
-dictionaries and navigation — the same pattern as news and events. Existing
+dictionaries and navigation — the same pattern as news and the overview
+schedule editor (`events.write`). Existing
 guides can be edited or removed from the guide page and the Guides index.
 It does not yet publish to a shared wiki table. Data remains on the editor's
 device unless they copy the snippet and commit it.

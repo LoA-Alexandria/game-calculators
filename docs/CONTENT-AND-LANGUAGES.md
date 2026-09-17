@@ -125,8 +125,10 @@ filter. There is no second list to keep in step.
    layouts) use `layouts`; ranking guides (hero tier list) use `tierLists`;
    building guides (Goddess Theater, Museion) use `buildings`; advice that is not tied to
    one system (hero linking, anecdotes, server age unlocks, hero leveling, goddess
-   leveling) uses `tips`. The top-level Events section is the
-   calendar; keep `event` for a future event-related guide.
+   leveling) uses `tips`. Limited-time event write-ups belong under the top-level
+   Events section (`eventCategories.anleitungen` / `eventCategories.tips` in
+   `lib/navigation.ts`), not under Guides — do not reuse `guideCategories.event`
+   for Guides items.
 4. For a new slug, copy `app/guides/support/page.tsx` and pass the new id
    to `GuideArticle`.
 5. Add the guide to `GUIDE_PRESENTATION` in `lib/content/guide-meta.ts`: up to
@@ -824,15 +826,19 @@ Guides describe game mechanics, so treat their numbers the way the repository
 treats any other game data: say where they came from, and correct them in the
 same change as the tool that relies on them.
 
-## Adding an event
+## Adding an event (schedule)
 
-Events are versioned data, not database rows — the same reason news is. An entry
-typed into a browser on a static site would exist only in that browser, so
-committing it is what makes it visible.
+The live calendar and schedule editor sit on the overview (`/`), not on
+`/events/`. `/events/` is the category index for event guides and tips.
 
-1. Open `/events/` signed in with `events.write`. The schedule list can load an
-   existing row into the editor or produce the notes for removing it. A blank
-   form still prints a new row and the dictionary keys.
+Schedule rows are versioned data, not database rows — the same reason news is.
+An entry typed into a browser on a static site would exist only in that browser,
+so committing it is what makes it visible.
+
+1. Open `/` (overview) signed in with `events.write`. Scroll to the events
+   schedule. The list can load an existing row into the editor or produce the
+   notes for removing it. A blank form still prints a new row and the
+   dictionary keys. Account menu **New event** jumps there.
 2. Paste or replace the row in `EVENTS` in `lib/content/events.ts`.
 3. Add, update, or delete `eventEntries.<id>` with `name` and `summary` in all
    three dictionaries.
@@ -843,6 +849,18 @@ The recurrence rules live in `lib/events.ts` and are covered by
 on a day that clamps to the end of shorter months, or a one-off. Everything is
 computed in UTC, because a game event starts at the same moment for everyone and
 deriving it from each reader's clock would show different answers.
+
+## Adding an event guide
+
+Event guides are separate from the Guides section. They use the Events index
+categories `anleitungen` and `tips` (`eventCategories` in the dictionaries).
+
+1. Add a nav item under `events.items` in `lib/navigation.ts` with
+   `href: "/events/<slug>/"`, `badge` / `categoryId` from `eventCategories`.
+2. Add the page under `app/events/<slug>/` and the texts in the dictionaries
+   (follow the same commit-snippet pattern as other content when an editor
+   exists).
+3. Do not list event write-ups under `guides.items`.
 
 ## Adding a news entry
 

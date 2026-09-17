@@ -1,206 +1,165 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { EVENTS, EVENTS_ARE_PLACEHOLDER } from "../../lib/content/events";
-import { activeAt, monthGrid, upcomingAfter, type Occurrence } from "../../lib/events";
-import type { EventEntry } from "../../lib/content/events";
-import { useAuth } from "../components/AuthProvider";
-import { kindLabel, MonthCalendar, useMonthOccurrences } from "../components/EventCalendar";
+import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { eventCategoryGroups, sectionById, type NavGroup, type NavItem } from "../../lib/navigation";
+import { EventsIcon, SearchIcon } from "../components/Icons";
 import { useDocumentTitle, useLocale } from "../components/LocaleProvider";
-import { useNow } from "../components/useNow";
 import { PageHead, SectionBanner } from "../components/Ui";
-import { EventEditor, type EventEditorTarget } from "./EventEditor";
-import { AlertIcon, PenIcon, TrashIcon } from "../components/Icons";
+
+/** Lower-case and without accents, so "grosse" finds Große. */
+function fold(value: string): string {
+  return value.toLowerCase().normalize("NFKD").replace(/[̀-ͯ]/g, "").trim();
+}
 
 export default function EventsPage() {
-  const { t, locale, tf } = useLocale();
-  const { allows } = useAuth();
-  const now = useNow();
+  const { t } = useLocale();
+  const pathname = usePathname();
+  const section = sectionById("events");
+  const groups = useMemo(() => eventCategoryGroups(t, section.items), [section.items, t]);
+  const [category, setCategory] = useState<string>("all");
+  const [query, setQuery] = useState("");
   useDocumentTitle(t.events.title);
 
-  const [selected, setSelected] = useState<string | null>(null);
-  const [target, setTarget] = useState<EventEditorTarget | null>(null);
+  useEffect(() => {
+    const apply = () => {
+      const hash = window.location.hash.replace(/^#/, "");
+      setCategory(groups.some((group) => group.id === hash) ? hash : "all");
+    };
+    apply();
+    window.addEventListener("hashchange", apply);
+    return () => window.removeEventListener("hashchange", apply);
+  }, [pathname, groups]);
 
-  const live = useMemo(() => (now ? activeAt(EVENTS, now) : []), [now]);
-  const next = useMemo(() => (now ? upcomingAfter(EVENTS, now, 60, 6) : []), [now]);
+  const pick = (id: string) => {
+    setCategory(id);
+    window.history.replaceState(null, "", id === "all" ? (pathname ?? "/events/") : `#${id}`);
+  };
 
-  const grid = useMemo(() => {
-    const at = now ?? new Date();
-    return monthGrid(at.getUTCFullYear(), at.getUTCMonth());
-  }, [now]);
-  const byDay = useMonthOccurrences(grid);
-  const onSelectedDay = selected ? byDay.get(selected) ?? [] : [];
+  const needle = fold(query);
+  const shown = groups
+    .filter((group) => category === "all" || group.id === category)
+    .map((group) => ({
+      ...group,
+      items: group.items.filter(
+        (item) =>
+          !needle ||
+          fold(`${item.label(t)} ${item.description?.(t) ?? ""} ${group.category}`).includes(needle),
+      ),
+    }))
+    .filter((group) => !needle || group.items.length > 0 || category !== "all");
+
+  const total = section.items.length;
 
   return (
     <>
       <SectionBanner id="events" />
-      <PageHead eyebrow={t.nav.events} title={t.events.title} lede={t.events.lede} />
+      <PageHead eyebrow={t.navDescriptions.events} title={t.events.title} lede={t.events.lede} />
 
-      {EVENTS_ARE_PLACEHOLDER && (
-        <div className="notice notice-warn" style={{ marginBottom: 20 }}>
-          <AlertIcon className="icon" />
-          <div>
-            <strong>{t.events.placeholderTitle}</strong>
-            <p>{t.events.placeholderBody}</p>
+      <div className="guides-index">
+        <ul className="guides-stats">
+          <li>
+            <strong>{total}</strong> {t.events.statEntries}
+          </li>
+          <li>
+            <strong>{groups.length}</strong> {t.events.statCategories}
+          </li>
+        </ul>
+
+        <div className="guides-toolbar">
+          <label className="guides-search">
+            <SearchIcon className="icon icon-sm" />
+            <span className="visually-hidden">{t.events.searchLabel}</span>
+            <input
+              type="search"
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder={t.events.searchPlaceholder}
+            />
+          </label>
+          <div className="guides-filters" role="group" aria-label={t.events.filterLabel}>
+            <button type="button" className="guides-filter" aria-pressed={category === "all"} onClick={() => pick("all")}>
+              {t.events.filterAll}
+              <span className="guides-filter-count">{total}</span>
+            </button>
+            {groups.map((group) => (
+              <button
+                key={group.id}
+                type="button"
+                className="guides-filter"
+                data-category={group.id}
+                aria-pressed={category === group.id}
+                onClick={() => pick(group.id)}
+              >
+                {group.category}
+                <span className="guides-filter-count">{group.items.length}</span>
+              </button>
+            ))}
           </div>
         </div>
-      )}
 
-      <div className="events-layout">
-        <div>
-          <section className="panel">
-            <h2>{t.events.liveNow}</h2>
-            {now === null ? (
-              <p className="assumption" style={{ margin: 0 }}>…</p>
-            ) : live.length === 0 ? (
-              <p className="assumption" style={{ margin: 0 }}>{t.events.noneRunning}</p>
-            ) : (
-              <ul className="event-list">
-                {live.map((occurrence) => (
-                  <EventRow key={`${occurrence.event.id}-${occurrence.start.toISOString()}`} occurrence={occurrence} now={now} live />
-                ))}
-              </ul>
-            )}
-          </section>
+        {needle && shown.every((group) => group.items.length === 0) ? (
+          <p className="empty-state">{t.events.noMatch}</p>
+        ) : null}
 
-          <section className="panel">
-            <h2>{t.events.upcoming}</h2>
-            {now === null ? (
-              <p className="assumption" style={{ margin: 0 }}>…</p>
-            ) : next.length === 0 ? (
-              <p className="assumption" style={{ margin: 0 }}>{t.events.noneUpcoming}</p>
-            ) : (
-              <ul className="event-list">
-                {next.map((occurrence) => (
-                  <EventRow key={`${occurrence.event.id}-${occurrence.start.toISOString()}`} occurrence={occurrence} now={now} />
-                ))}
-              </ul>
-            )}
-          </section>
-        </div>
-
-        <div>
-          <section className="panel">
-            <h2>{t.events.calendar}</h2>
-            <MonthCalendar today={now} selected={selected} onSelect={setSelected} />
-            <p className="assumption">{t.events.timesAreUtc}</p>
-          </section>
-
-          {selected && (
-            <section className="panel">
-              <h2>
-                {tf(t.events.onDay, {
-                  day: new Intl.DateTimeFormat(locale, { dateStyle: "long", timeZone: "UTC" })
-                    .format(new Date(`${selected}T12:00:00Z`)),
-                })}
-              </h2>
-              {onSelectedDay.length === 0 ? (
-                <p className="assumption" style={{ margin: 0 }}>{t.events.nothingOnDay}</p>
-              ) : (
-                <ul className="event-list">
-                  {onSelectedDay.map((occurrence) => (
-                    <EventRow key={`${occurrence.event.id}-${occurrence.start.toISOString()}`} occurrence={occurrence} now={now} />
-                  ))}
-                </ul>
-              )}
-            </section>
-          )}
-        </div>
+        {shown.map((group) => (
+          <EventCategory key={group.id} group={group} />
+        ))}
       </div>
-
-      {allows("events.write") && (
-        <>
-          <section className="panel" style={{ marginTop: 24 }}>
-            <h2>{t.events.scheduleTitle}</h2>
-            <p>{t.events.scheduleLede}</p>
-            {EVENTS.length === 0 ? (
-              <p className="assumption" style={{ margin: 0 }}>{t.common.empty}</p>
-            ) : (
-              <ul className="event-list">
-                {EVENTS.map((event) => (
-                  <li className={`event-row event-${event.kind}`} key={event.id}>
-                    <span className={`dot dot-${event.kind}`} aria-hidden="true" />
-                    <div className="event-body">
-                      <div className="event-title">
-                        <strong>{event.name(t)}</strong>
-                        <span className="pill">{kindLabel(event.kind, t)}</span>
-                      </div>
-                      <p>{event.summary(t)}</p>
-                      <div className="event-actions">
-                        <button
-                          className="small-button"
-                          type="button"
-                          onClick={() => {
-                            setTarget({ event, action: "edit" });
-                            window.setTimeout(() => document.getElementById("event-editor")?.scrollIntoView({ block: "start" }), 0);
-                          }}
-                        >
-                          <PenIcon className="icon icon-sm" />
-                          {t.events.editEvent}
-                        </button>
-                        <button
-                          className="small-button button-danger"
-                          type="button"
-                          onClick={() => {
-                            setTarget({ event, action: "remove" });
-                            window.setTimeout(() => document.getElementById("event-editor")?.scrollIntoView({ block: "start" }), 0);
-                          }}
-                        >
-                          <TrashIcon className="icon icon-sm" />
-                          {t.events.removeEvent}
-                        </button>
-                      </div>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </section>
-          <EventEditor
-            key={target ? `${target.action}-${target.event.id}` : "new"}
-            target={target}
-            onClose={() => setTarget(null)}
-          />
-        </>
-      )}
     </>
   );
 }
 
-function EventRow({ occurrence, now, live = false }: { occurrence: Occurrence<EventEntry>; now: Date | null; live?: boolean }) {
-  const { t, locale } = useLocale();
-  const when = new Intl.DateTimeFormat(locale, { dateStyle: "medium", timeStyle: "short", timeZone: "UTC" });
-  const relative = new Intl.RelativeTimeFormat(locale, { numeric: "auto" });
-
-  const target = live ? occurrence.end : occurrence.start;
-  let phrase = when.format(target);
-  if (now) {
-    const minutes = Math.round((target.getTime() - now.getTime()) / 60_000);
-    const spoken =
-      Math.abs(minutes) < 60
-        ? relative.format(minutes, "minute")
-        : Math.abs(minutes) < 60 * 48
-          ? relative.format(Math.round(minutes / 60), "hour")
-          : relative.format(Math.round(minutes / 1440), "day");
-    phrase = spoken;
-  }
-
+function EventCategory({ group }: { group: NavGroup }) {
+  const { t, tf } = useLocale();
+  const ledes = t.events.categoryLedes as Record<string, string>;
   return (
-    <li className={`event-row event-${occurrence.event.kind}`}>
-      <span className={`dot dot-${occurrence.event.kind}`} aria-hidden="true" />
-      <div className="event-body">
-        <div className="event-title">
-          <strong>{occurrence.event.name(t)}</strong>
-          <span className="pill">{kindLabel(occurrence.event.kind, t)}</span>
-        </div>
-        <p>{occurrence.event.summary(t)}</p>
-        <span className="event-when mono">
-          {live ? `${t.events.liveNow} · ` : ""}
-          {when.format(occurrence.start)}
-          {" · "}
-          {live ? `${t.events.ends.replace("{when}", phrase)}` : `${t.events.starts.replace("{when}", phrase)}`}
+    <section className="guides-category" id={group.id} data-category={group.id} aria-labelledby={`events-${group.id}`}>
+      <header className="guides-category-head">
+        <h2 id={`events-${group.id}`}>{group.category}</h2>
+        <span className="guides-category-count">
+          {group.items.length === 1
+            ? t.events.countEntriesOne
+            : tf(t.events.countEntries, { count: group.items.length })}
         </span>
+        {ledes[group.id] ? <p>{ledes[group.id]}</p> : null}
+      </header>
+      {group.items.length === 0 ? (
+        <p className="assumption" style={{ margin: 0 }}>
+          {t.events.categoryEmpty}
+        </p>
+      ) : (
+        <ul className="guides-grid">
+          {group.items.map((item) => (
+            <li key={item.href}>
+              <EventCard item={item} category={group.id} />
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  );
+}
+
+function EventCard({ item, category }: { item: NavItem; category: string }) {
+  const { t } = useLocale();
+  return (
+    <article className="guide-card" data-category={category}>
+      <div className="guide-card-art is-glyph" aria-hidden="true">
+        <EventsIcon className="guide-card-glyph" />
       </div>
-    </li>
+      <div className="guide-card-body">
+        <h3>
+          <Link className="guide-card-link" href={item.href}>
+            {item.label(t)}
+          </Link>
+        </h3>
+        {item.description ? <p>{item.description(t)}</p> : null}
+        <div className="guide-card-foot">
+          <span className="guide-card-category">{item.badge?.(t)}</span>
+        </div>
+      </div>
+    </article>
   );
 }

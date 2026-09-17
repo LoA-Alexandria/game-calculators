@@ -1,7 +1,15 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { groupByBadge, guideCount, toolCount } from "../lib/navigation.ts";
+import { getDictionary } from "../lib/i18n/index.ts";
+import {
+  EVENT_CATEGORY_IDS,
+  eventCategoryGroups,
+  groupByBadge,
+  guideCount,
+  sectionById,
+  toolCount,
+} from "../lib/navigation.ts";
 
 test("groups nav items by category id, then badge, and keeps first-seen order", () => {
   const t = {};
@@ -29,4 +37,18 @@ test("groups nav items by category id, then badge, and keeps first-seen order", 
 test("home counters match the published navigation tree", () => {
   assert.equal(toolCount(), 6);
   assert.equal(guideCount(), 20);
+});
+
+test("Events index always exposes Anleitungen and Tips categories", () => {
+  const en = getDictionary("en");
+  assert.deepEqual([...EVENT_CATEGORY_IDS], ["anleitungen", "tips"]);
+  assert.equal(sectionById("events").items.length, 0);
+  const groups = eventCategoryGroups(en);
+  assert.deepEqual(
+    groups.map((group) => ({ id: group.id, category: group.category, count: group.items.length })),
+    [
+      { id: "anleitungen", category: en.eventCategories.anleitungen, count: 0 },
+      { id: "tips", category: en.eventCategories.tips, count: 0 },
+    ],
+  );
 });

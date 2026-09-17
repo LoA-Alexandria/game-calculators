@@ -8,9 +8,9 @@ The project is a statically exported Next.js site. GitHub Pages serves the gener
 
 ```text
 app/
-  page.tsx                     Home: news slide, site stats, and the event calendar
+  page.tsx                     Home: news slide, site stats, event calendar + schedule editor
   news/                        News index
-  events/                      Event calendar and schedule editor
+  events/                      Event guides index (Anleitungen / Tips categories)
   guides/<slug>/               Guides
   calculators/<slug>/          Calculators, plus their index
   simulations/<slug>/          Simulations, plus their index
@@ -22,12 +22,13 @@ lib/
   calculators/errors.ts        Validation errors with translatable codes
   i18n/                        Language registry and dictionaries
   content/news.ts              News entries
-  content/events.ts            Event schedule
+  content/events.ts            Event schedule (overview calendar)
   content/guides.ts            Guide slug and dictionary-id helpers
   content/banners.ts           Optional section banner images
   navigation.ts                Section tree driving sidebar and indexes
   site.ts                      Base path, Discord, repository, storage keys
   theme.ts                     Colour-scheme ids and validation
+  events.ts                    Schedule recurrence math (UTC)
 docs/                          Human and agent guidance
 public/
   tools/irrigation-planner/    Vendored standalone planner (see below)
