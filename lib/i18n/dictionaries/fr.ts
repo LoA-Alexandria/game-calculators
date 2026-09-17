@@ -3551,6 +3551,35 @@ const fr: Dictionary = {
       ],
       note: "Compléter les objets des matchs restants quand le calendrier des rounds est connu. Les corrections vont sur Discord.",
     },
+    holyGrail: {
+      title: "Holy Grail",
+      summary: "Former une équipe, avancer avec l’endurance, et timer la Zone 3 pour le score PvP.",
+      intro:
+        "Un événement simple : rejoignez ou créez une équipe active, poussez les étapes avec l’endurance, et abordez Map 3 / Zone 3 avec prudence une fois le PvP actif.",
+      sections: [
+        {
+          heading: "Bases",
+          body: [
+            "Trouvez une équipe active ou créez-en une. Utilisez votre endurance pour progresser dans les étapes.",
+          ],
+        },
+        {
+          heading: "Efficacité sur la Map 3",
+          body: [
+            "Le PvP est activé sur la Map 3. N’y entrez que si vous avez une bonne réserve d’endurance — cette map donne le plus de score, et vous voulez bouger autant que possible avant de mourir.",
+          ],
+        },
+        {
+          heading: "Timing de la Zone 3",
+          body: [
+            "Vous pouvez attendre au bord de la Zone 2, ou entrer en Zone 3 et attendre avant la fin des protections. Le compromis : le jeu utilise l’heure d’entrée en Zone 3 pour savoir combien de joueurs vous croisez — et vous voulez ces rencontres, car le PvP donne un score bonus pour chaque combat en Zone 3.",
+            "La Zone 3 est peuplée de tous les joueurs qui y étaient à votre entrée et qui n’ont pas encore été éliminés. Le meilleur moment pour scorer est quand le plus de monde est en ligne et en Zone 3 ; les scores dépendent donc fortement du hasard selon qui s’y trouve quand vous entrez.",
+            "Avant de quitter les trois protections de la Zone 3 et de bouger, utilisez toutes les fioles d’endurance prévues, pour ne pas perdre de temps à en ajouter pendant que vous pouvez encore être expulsé de la Zone 3.",
+          ],
+        },
+      ],
+      note: "Guide d’Autumn (Ice, S12), partagé sur Discord, 14 septembre 2026.",
+    },
   },
   events: {
     title: "Événements",

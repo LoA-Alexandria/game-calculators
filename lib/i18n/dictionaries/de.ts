@@ -3608,6 +3608,35 @@ const de: Dictionary = {
       ],
       note: "Die übrigen Match-Items ergänzen, sobald der Rundenplan feststeht. Korrekturen gehören auf Discord.",
     },
+    holyGrail: {
+      title: "Holy Grail",
+      summary: "Team finden, Stamina durch die Maps pushen und Zone 3 für PvP-Score timen.",
+      intro:
+        "Ein geradliniges Event: aktives Team finden oder gründen, Stufen mit Stamina vorantreiben und Map 3 / Zone 3 mit PvP bewusst angehen.",
+      sections: [
+        {
+          heading: "Grundlagen",
+          body: [
+            "Finde ein aktives Team oder gründe eines. Nutze deine Stamina, um die Stufen voranzutreiben.",
+          ],
+        },
+        {
+          heading: "Effizienz auf Map 3",
+          body: [
+            "Auf Map 3 ist PvP aktiv. Geh erst rein, wenn du genug Stamina hast — diese Map gibt die meisten Punkte, und du willst dich so weit wie möglich bewegen, bevor du stirbst.",
+          ],
+        },
+        {
+          heading: "Timing in Zone 3",
+          body: [
+            "Du kannst am Rand von Zone 2 warten oder Zone 3 betreten und warten, bevor der Schutz ausläuft. Der Tradeoff: Das Spiel nutzt den Zeitpunkt deines Zone-3-Eintritts, um zu bestimmen, wie vielen Leuten du begegnest — und die Begegnungen willst du, weil PvP in Zone 3 Bonus-Score für jeden Kampf gibt.",
+            "Zone 3 ist mit allen Spielern gefüllt, die beim Eintritt drin waren und noch nicht rausgeschlagen wurden. Die höchsten Scores kommen, wenn die meisten online und in Zone 3 sind — die Punktzahl hängt stark vom RNG ab, wer gerade dort sitzt, wenn du reingehst.",
+            "Bevor du die drei Schutze in Zone 3 verlässt und dich bewegst, verbrauche alle Stamina-Flaschen, die du nutzen willst, damit du keine Zeit mit Nachfüllen verlierst, in der du noch aus Zone 3 gekickt werden kannst.",
+          ],
+        },
+      ],
+      note: "Guide von Autumn (Ice, S12), geteilt auf Discord, 14. September 2026.",
+    },
   },
   events: {
     title: "Events",
