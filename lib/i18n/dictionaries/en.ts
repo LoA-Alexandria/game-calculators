@@ -3050,6 +3050,31 @@ const en = {
       ],
       note: "Community tip shared for Atlantis Endless Floor and Bonus Area.",
     },
+    springReturns: {
+      title: "Guild Competition — Spring Returns",
+      summary: "Daily donation targets, when to go over them, and which items each match asks for.",
+      intro:
+        "Guild Competition donation pacing for Spring Returns: hit the daily score efficiently, save extras for clutch matches, and track which items each round needs.",
+      sections: [
+        {
+          heading: "Core strategy",
+          body: [
+            "Daily donation efficiency: stop donating once you reach 1 000 score points each day. Reach that milestone with one of these tiers — blue rarity: 1 000 items; purple rarity: 333 items; gold rarity: 100 items.",
+            "Competitive adaptations: conserve excess items for maximum leverage. Exceed the daily threshold only if your current opponent seriously threatens your overall match score. Hoard items until the final round to improve your win rate when the stakes are highest.",
+          ],
+        },
+        {
+          heading: "Which donation items are required?",
+          body: [
+            "Round 1 — Match 1: Signboards. Match 2: Buntings. Match 3: not listed yet. Match 4: not listed yet. Match 5: not listed yet.",
+            "Round 2 — Match 1–5: not listed yet.",
+            "Round 3 — Match 1–5: not listed yet.",
+            "Round 4 — Match 1–5: not listed yet.",
+          ],
+        },
+      ],
+      note: "Fill in the remaining match items when the round schedule is known. Corrections belong on Discord.",
+    },
   },
   events: {
     title: "Events",
