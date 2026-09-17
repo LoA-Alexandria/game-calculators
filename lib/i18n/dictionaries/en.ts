@@ -3022,6 +3022,35 @@ const en = {
     anleitungen: "Guides",
     tips: "Tips",
   },
+  eventGuideEntries: {
+    atlantis: {
+      title: "Atlantis",
+      summary: "Endless Floor priorities, and when Bonus Area gem spends are worth it.",
+      intro:
+        "A practical run order for Atlantis Endless Floor, plus a short note on buying more Bonus Area attempts.",
+      sections: [
+        {
+          heading: "Endless Floor",
+          body: [
+            "To rank higher in Endless Floor, a good rule of thumb is to stay within about 5 HP of the recommended requirement and within about 100–200 Attack. If you are outside that range, sweep.",
+            "General priority, in chronological order: open as many spaces as you can without losing health (first kill the sea urchin that fires at you), with the main goal to find the boss to the next floor; then HP, then spears, then everything else; skip monsters. Kill as few monsters as possible to limit HP loss — only when they block the path to the boss. Kill the boss. Claim everything from the spaces you opened and any HP potions. You can fight monsters if the HP potions will heal you past full.",
+            "If you stay in that recommended stat range, you will roughly need 7–8 health to kill the final boss of that chapter (after 9 or 14 floors). Decide between full-clearing floors and moving on as soon as you can.",
+            "Spears are worth about 3–4 HP. Potions heal 2, and two potions commonly spawn on any given floor.",
+            "If you have less than 7 HP on floor 9 (or 14), full-clear the floor you are on and retry. Asking the guild for support is best only when you are one short.",
+          ],
+        },
+        {
+          heading: "Bonus Area",
+          body: [
+            "You can buy more attempts with gems.",
+            "For F2P: if you can make top 20 without gems, skip buying more.",
+            "For spenders: pick your poison, but even higher spenders usually stop around 1 000 gems each day — going further is too costly for a fairly limited resource, even if you buy all the funds.",
+          ],
+        },
+      ],
+      note: "Community tip shared for Atlantis Endless Floor and Bonus Area.",
+    },
+  },
   events: {
     title: "Events",
     lede: "Guides and tips for limited-time events — separate from the systems covered under Guides.",

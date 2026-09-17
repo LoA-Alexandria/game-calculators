@@ -51,7 +51,15 @@ export const SECTIONS: NavSection[] = [
      * `eventCategories` (`anleitungen` | `tips`). The schedule calendar lives
      * on the overview, not in this section.
      */
-    items: [],
+    items: [
+      {
+        href: "/events/atlantis/",
+        label: (t) => t.eventGuideEntries.atlantis.title,
+        description: (t) => t.eventGuideEntries.atlantis.summary,
+        badge: (t) => t.eventCategories.tips,
+        categoryId: "tips",
+      },
+    ],
   },
   {
     id: "guides",
