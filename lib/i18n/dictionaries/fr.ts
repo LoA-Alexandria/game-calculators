@@ -3609,6 +3609,29 @@ const fr: Dictionary = {
       ],
       note: "Guide d’Autumn (Ice, S12), partagé sur Discord, 10 août 2026.",
     },
+    supplyReform: {
+      title: "Supply Reform",
+      summary: "Effacer des lignes en déplaçant des pièces — bords, taille des objets et aperçu de la prochaine rangée.",
+      intro:
+        "Petite fiche puzzle : gardez les bords solides, placez les gros objets en bas, et utilisez l’aperçu de la prochaine rangée en bas du plateau pour préparer des clears immédiats.",
+      sections: [
+        {
+          heading: "Bases",
+          body: [
+            "Déplacez les pièces pour remplir des lignes et les effacer.",
+          ],
+        },
+        {
+          heading: "Efficacité",
+          body: [
+            "Ne laissez pas de trous sur les bords gauche et droit — remplir le milieu est plus facile que le bord dans presque tous les cas.",
+            "Gardez les gros objets le plus bas possible et les petits le plus haut possible, pour manœuvrer plus librement dans les situations difficiles.",
+            "Surveillez tout en bas du plateau : l’aperçu montre la prochaine rangée qui va apparaître. Si possible, laissez des trous qui correspondent exactement à une pièce de cet aperçu, pour effacer la ligne dès que la rangée tombe.",
+          ],
+        },
+      ],
+      note: "Astuce communautaire pour Supply Reform et l’aperçu de la prochaine rangée.",
+    },
   },
   events: {
     title: "Événements",

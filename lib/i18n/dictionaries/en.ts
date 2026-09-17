@@ -3133,6 +3133,29 @@ const en = {
       ],
       note: "Guide by Autumn (Ice, S12), shared on Discord, 10 August 2026.",
     },
+    supplyReform: {
+      title: "Supply Reform",
+      summary: "Clear lines by sliding pieces — edge gaps, piece size, and the next-row preview.",
+      intro:
+        "A short board-puzzle tip sheet: keep edges solid, park big pieces low, and use the next-row preview at the bottom of the board to set up instant clears.",
+      sections: [
+        {
+          heading: "Basics",
+          body: [
+            "Move pieces around to fill lines and clear them.",
+          ],
+        },
+        {
+          heading: "Efficiency",
+          body: [
+            "Keep the left and right borders free of gaps — filling the middle is easier than filling the edge in almost every case.",
+            "Keep bigger objects as far down as possible and small objects as far up as possible, so you have more room to maneuver in awkward layouts.",
+            "Watch the very bottom of the board: it shows the next row that will appear. If you can, leave gaps that match a piece in that preview so the line clears as soon as the row drops in.",
+          ],
+        },
+      ],
+      note: "Community tip for Supply Reform line clears and the next-row preview.",
+    },
   },
   events: {
     title: "Events",

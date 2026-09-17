@@ -45,12 +45,13 @@ test("Events index always exposes Anleitungen and Tips categories", () => {
   assert.deepEqual([...EVENT_CATEGORY_IDS], ["anleitungen", "tips"]);
   assert.ok(sectionById("events").items.some((item) => item.href === "/events/atlantis/"));
   assert.ok(sectionById("events").items.some((item) => item.href === "/events/monument-of-eternity/"));
+  assert.ok(sectionById("events").items.some((item) => item.href === "/events/supply-reform/"));
   const groups = eventCategoryGroups(en);
   assert.deepEqual(
     groups.map((group) => ({ id: group.id, category: group.category, count: group.items.length })),
     [
       { id: "anleitungen", category: en.eventCategories.anleitungen, count: 0 },
-      { id: "tips", category: en.eventCategories.tips, count: 4 },
+      { id: "tips", category: en.eventCategories.tips, count: 5 },
     ],
   );
 });
@@ -92,6 +93,15 @@ test("Monument of Eternity is listed under Events Tips in every language", () =>
     assert.equal(entry.title, "Monument of Eternity");
     assert.ok(entry.sections.some((section) => /120/.test(section.body.join(" ")) || /80–90|80-90|80 – 90/.test(section.body.join(" "))));
     assert.match(entry.note, /Autumn/);
+  }
+});
+
+test("Supply Reform is listed under Events Tips in every language", () => {
+  for (const locale of ["en", "de", "fr"]) {
+    const dictionary = getDictionary(locale);
+    const entry = dictionary.eventGuideEntries.supplyReform;
+    assert.equal(entry.title, "Supply Reform");
+    assert.ok(entry.sections.some((section) => /next row|nächste Reihe|prochaine rangée/i.test(section.body.join(" "))));
   }
 });
 
