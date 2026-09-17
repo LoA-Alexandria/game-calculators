@@ -32,7 +32,11 @@ export const GUIDE_PRESENTATION: Record<GuideEntryId, GuidePresentation> = {
     editor: { href: "/guides/artwork/edit/", label: (t) => t.artworkEditor.openEditor },
   },
   technology: { art: [] },
-  collection: { art: [] },
+  collection: {
+    art: ["/collection/prometheus-torch.webp", "/collection/pandoras-box.webp", "/collection/aeolus-bag-of-winds.webp"],
+    editor: { href: "/guides/collection/edit/", label: (t) => t.collectionEditor.openEditor },
+    cutout: true,
+  },
   manor: { art: [] },
   support: { art: [] },
   goddesses: {

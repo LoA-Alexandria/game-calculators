@@ -65,10 +65,11 @@ Nothing else changes. Everything below reads the registry:
 ### Text that lives in data files
 
 Hero wording, the Artwork catalogue, goddess affinity and obtain, the goddess
-upgrade order, Goddess Theater names, and Anecdotes are English in
+upgrade order, Collection items, Goddess Theater names, and Anecdotes are English in
 `lib/data/*.json`. Each dictionary holds only the translations, keyed by id:
 `guideEntries.heroes.heroTexts`, `guideEntries.artwork.catalogTexts`,
 `guideEntries.goddesses.goddessTexts`, `guideEntries.goddessLeveling.phaseTexts`,
+`guideEntries.collection.collectionTexts`,
 `guideEntries.goddessTheater.playTexts`, and
 `guideEntries.anecdotes.anecdoteTexts`. A new language starts with `{}` there.
 Readers see the English text until someone translates it, and an empty field
@@ -160,10 +161,11 @@ A guide that needs more than headings and paragraphs gets its own renderer next
 to `GuideArticle`: `GoddessesGuide`, `ArtworkGuide`, `ArtworkLayoutsGuide`,
 `HeroLayoutsGuide`, `HeroRoster`, `HeroTierListGuide`, `GoddessTheaterGuide`,
 `HeroLinkingGuide`, `AnecdotesGuide`, `ServerAgeUnlocksGuide`, `MuseionGuide`,
-`HeroLevelingGuide`, `GoddessLevelingGuide`, `ProductionBuildingsGuide`, and
-`CryptidesGuide`.
+`HeroLevelingGuide`, `GoddessLevelingGuide`, `CollectionGuide`,
+`ProductionBuildingsGuide`, and `CryptidesGuide`.
 `guideLayout()` in `lib/content/guides.ts` picks the renderer from a field only
 that guide has (`goddessTexts` for Goddesses, `phaseTexts` for Goddess leveling,
+`collectionTexts` for Collection,
 `playsHeading` for Goddess Theater,
 `linksHeading` for Hero linking, `anecdoteTexts` for Anecdotes,
 `timelineHeading` for Server age unlocks, `buildingsHeading` for Museion,
@@ -659,6 +661,41 @@ Building pictures in `public/production-buildings/` were cut from German client
 screenshots on 16 September 2026, with speech bubbles and other UI overlays
 removed (`image` on each JSON row). Coal has no picture yet.
 Source: community Discord list; Enlightenment entries thanks to Spitzell.
+
+## Collection
+
+Collection sits under **Core elements** (`/guides/collection/`, renderer
+`CollectionGuide`, detector `collectionTexts`). Items live in
+`lib/data/collection.json`, one line each: `id`, English `name`, `rarity`, the
+cut-out `image`, and the `skill` with its English `name`, `level`, `text`, and
+round `icon`. Pictures are WebP files in `public/collection/`
+(`<id>.webp`, `<id>-skill.webp`). `guideEntries.collection.collectionTexts`
+translates name, skill name, and effect by id; an empty field shows English.
+The effect text belongs to the skill level stored with it, because the numbers
+change per level, so the card shows that level next to the skill name. Rarity
+follows the colour of the item name in the game: red UR, gold SSR, purple SR.
+
+The first 19 items were read from German client screenshots on 16 September
+2026. German is the game's wording (the in-game typo "Fäigkeitsschadens…" is
+corrected); English and French are translations and the guide's credit says so.
+The item pictures were cut out with a background-removal model run locally
+(rembg, `birefnet-general`), with the glow behind each item removed. The skill
+icons are the circle inside the white ring, with the type badge and level
+number painted over.
+
+Members with `guides.draft` see **Edit collection** in the guide head, which
+opens `/guides/collection/edit/`. Items can be added, removed, regrouped by
+rarity, and reordered; name, skill name, and effect are edited in every
+language; the skill level is shared. The item picture (360 px) and the skill
+icon (144 px) are uploaded separately and shrunk to WebP in the browser, keeping
+transparency. **Export** gives the complete JSON, new and removed pictures, and
+one `collectionTexts` block per dictionary, and warns about a missing name,
+picture, icon, or skill text, a duplicate name, and a level that is not a whole
+number. The draft is saved in that browser only
+(`localStorage['popepoch-collection-draft']`). An untouched draft reproduces
+the published JSON and dictionary blocks byte for byte
+(`tests/collection-editor.test.mjs`; `tests/collection.test.mjs` checks the
+pictures and translations).
 
 ## Cryptides
 
