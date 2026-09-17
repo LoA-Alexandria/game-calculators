@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { SECTIONS, groupByBadge, type NavItem, type NavSection } from "../../lib/navigation";
+import { SECTIONS, eventCategoryGroups, groupByBadge, type NavItem, type NavSection } from "../../lib/navigation";
 import { navCrumbs, pathIsCurrentOrNested, pathIsExact } from "../../lib/content/nav-shell";
 import { DISCORD_CONFIGURED, DISCORD_URL, NAV_COLLAPSED_STORAGE_KEY, REPOSITORY_URL } from "../../lib/site";
 import { useAuth } from "./AuthProvider";
@@ -241,7 +241,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const crumbs = useMemo(() => navCrumbs(pathname, t), [pathname, t]);
 
   const renderItemList = (section: NavSection, items: NavItem[]) => {
-    const groups = section.id === "guides" ? groupByBadge(items, t, t.guides.other) : null;
+    const groups =
+      section.id === "guides"
+        ? groupByBadge(items, t, t.guides.other)
+        : section.id === "events"
+          ? eventCategoryGroups(t, items)
+          : null;
     const shown = searching || groups ? items : items.slice(0, VISIBLE_ITEMS);
     const hidden = groups ? 0 : items.length - shown.length;
     const sectionExact = pathIsExact(pathname, section.href);

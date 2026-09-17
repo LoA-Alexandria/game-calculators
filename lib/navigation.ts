@@ -44,8 +44,13 @@ export const SECTIONS: NavSection[] = [
     id: "events",
     href: "/events/",
     label: (t) => t.nav.events,
-    description: (t) => t.events.lede,
+    description: (t) => t.navDescriptions.events,
     icon: "events",
+    /**
+     * Event guides and tips land here with `badge` + `categoryId` from
+     * `eventCategories` (`anleitungen` | `tips`). The schedule calendar lives
+     * on the overview, not in this section.
+     */
     items: [],
   },
   {
@@ -267,6 +272,20 @@ export function toolCount(): number {
 /** Published guides, used for the counter on the home page. */
 export function guideCount(): number {
   return sectionById("guides").items.length;
+}
+
+/** Stable Events index categories, in display order. */
+export const EVENT_CATEGORY_IDS = ["anleitungen", "tips"] as const;
+export type EventCategoryId = (typeof EVENT_CATEGORY_IDS)[number];
+
+/** Empty groups for the Events index and sidebar, filled once items exist. */
+export function eventCategoryGroups(t: Dictionary, items = sectionById("events").items): NavGroup[] {
+  const byId = new Map(groupByBadge(items, t, t.events.other).map((group) => [group.id, group]));
+  return EVENT_CATEGORY_IDS.map((id) => ({
+    id,
+    category: t.eventCategories[id],
+    items: byId.get(id)?.items ?? [],
+  }));
 }
 
 export type NavGroup = {
