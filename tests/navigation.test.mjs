@@ -44,13 +44,13 @@ test("Events index always exposes Anleitungen and Tips categories", () => {
   const en = getDictionary("en");
   assert.deepEqual([...EVENT_CATEGORY_IDS], ["anleitungen", "tips"]);
   assert.ok(sectionById("events").items.some((item) => item.href === "/events/atlantis/"));
-  assert.ok(sectionById("events").items.some((item) => item.href === "/events/holy-grail/"));
+  assert.ok(sectionById("events").items.some((item) => item.href === "/events/monument-of-eternity/"));
   const groups = eventCategoryGroups(en);
   assert.deepEqual(
     groups.map((group) => ({ id: group.id, category: group.category, count: group.items.length })),
     [
       { id: "anleitungen", category: en.eventCategories.anleitungen, count: 0 },
-      { id: "tips", category: en.eventCategories.tips, count: 3 },
+      { id: "tips", category: en.eventCategories.tips, count: 4 },
     ],
   );
 });
@@ -81,6 +81,16 @@ test("Holy Grail is listed under Events Tips in every language", () => {
     const entry = dictionary.eventGuideEntries.holyGrail;
     assert.equal(entry.title, "Holy Grail");
     assert.ok(entry.sections.some((section) => /Zone 3/i.test(section.heading) || /Zone 3/i.test(section.body.join(" "))));
+    assert.match(entry.note, /Autumn/);
+  }
+});
+
+test("Monument of Eternity is listed under Events Tips in every language", () => {
+  for (const locale of ["en", "de", "fr"]) {
+    const dictionary = getDictionary(locale);
+    const entry = dictionary.eventGuideEntries.monumentOfEternity;
+    assert.equal(entry.title, "Monument of Eternity");
+    assert.ok(entry.sections.some((section) => /120/.test(section.body.join(" ")) || /80–90|80-90|80 – 90/.test(section.body.join(" "))));
     assert.match(entry.note, /Autumn/);
   }
 });

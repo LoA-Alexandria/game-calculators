@@ -3637,6 +3637,35 @@ const de: Dictionary = {
       ],
       note: "Guide von Autumn (Ice, S12), geteilt auf Discord, 14. September 2026.",
     },
+    monumentOfEternity: {
+      title: "Monument of Eternity",
+      summary: "Wann Gildenflaggen am Turm spenden — und wann du sie zwischen den Zyklen hortest.",
+      intro:
+        "Spende Gildenflaggen und Banner an den Gildenturm für Buffs und Score — und spare die meisten für Monument of Eternity, statt sie zwischen den Zyklen zu verbrauchen.",
+      sections: [
+        {
+          heading: "Grundlagen",
+          body: [
+            "Spende Gildenflaggen / Banner an den Turm eurer Gilde für Buffs und Score.",
+          ],
+        },
+        {
+          heading: "Tipps",
+          body: [
+            "Nutze bzw. spende Flaggen nur während Monument of Eternity und spare sie zwischen den Event-Zyklen. Zwischen den Zyklen kannst du meist etwa 120–150 Flaggen anhäufen — außer Events synchronisieren sich mit Servern bei einer Event-Server-Pool-Erweiterung.",
+            "Spende deine Gildenflaggen immer, bevor du die Gilde verlässt oder einer anderen beitrittst — sonst verschwinden sie.",
+          ],
+        },
+        {
+          heading: "Server mit wenig Aktivität",
+          body: [
+            "Auf NA und anderen wenig aktiven Servern gibt es einen Vorbehalt: Gildenflaggen helfen bei allem nur um einen kleinen Prozentsatz. Wenn praktisch niemand spendet, spare etwa 80–90 % für Monument of Eternity und spende ein wenig, damit der Turm überhaupt vorankommt. An Tagen, an denen du dringend Gildenmünzen brauchst, darfst du auch spenden — aber verbrauche nicht zu viele Flaggen.",
+            "Pro Account ist Burst-Spenden während Monument of Eternity effizienter, wenn die Gilde aktiv ist — auf NA und älteren Servern ist das oft schwierig. Faustregel: Braucht eure Gilde mit täglichen Spenden mehr als etwa 5–6 Tage bis zur nächsten Turmstufe, spare die Flaggen fürs Event.",
+          ],
+        },
+      ],
+      note: "Guide von Autumn (Ice, S12), geteilt auf Discord, 10. August 2026.",
+    },
   },
   events: {
     title: "Events",
