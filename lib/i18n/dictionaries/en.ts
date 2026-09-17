@@ -3075,6 +3075,35 @@ const en = {
       ],
       note: "Fill in the remaining match items when the round schedule is known. Corrections belong on Discord.",
     },
+    holyGrail: {
+      title: "Holy Grail",
+      summary: "Team up, spend stamina through the maps, and time Zone 3 for PvP score.",
+      intro:
+        "A straightforward event run: join or make an active team, push stages with stamina, and treat Map 3 / Zone 3 carefully once PvP is on.",
+      sections: [
+        {
+          heading: "Basics",
+          body: [
+            "Find an active team or make one. Use your stamina to progress through the stages.",
+          ],
+        },
+        {
+          heading: "Map 3 efficiency",
+          body: [
+            "PvP is enabled in Map 3. Only enter when you have a decent amount of stamina — that map gives the most score, and you want to move as much as possible before you die.",
+          ],
+        },
+        {
+          heading: "Zone 3 timing",
+          body: [
+            "You can wait at the edge of Zone 2, or enter Zone 3 and wait before your protections run out. The tradeoff: the game uses the time you entered Zone 3 to decide how many people you run into — and you want those encounters, because PvP gives bonus score for every fight in Zone 3.",
+            "Zone 3 is populated with every player who was inside when you enter and has not been knocked out yet. The highest-scoring window is when the most people are online and in Zone 3, so scores are heavily RNG depending on who is sitting there when you enter.",
+            "Before you start moving out of the three protections in Zone 3, use up all the stamina bottles you plan to use, so you do not waste time topping up stamina while you can still be knocked out of Zone 3.",
+          ],
+        },
+      ],
+      note: "Guide by Autumn (Ice, S12), shared on Discord, 14 September 2026.",
+    },
   },
   events: {
     title: "Events",

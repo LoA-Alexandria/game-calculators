@@ -66,6 +66,13 @@ export const SECTIONS: NavSection[] = [
         badge: (t) => t.eventCategories.tips,
         categoryId: "tips",
       },
+      {
+        href: "/events/holy-grail/",
+        label: (t) => t.eventGuideEntries.holyGrail.title,
+        description: (t) => t.eventGuideEntries.holyGrail.summary,
+        badge: (t) => t.eventCategories.tips,
+        categoryId: "tips",
+      },
     ],
   },
   {
