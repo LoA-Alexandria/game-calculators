@@ -3156,6 +3156,54 @@ const en = {
       ],
       note: "Community tip for Supply Reform line clears and the next-row preview.",
     },
+    trialsOfOdin: {
+      title: "Trials of Odin (Ragnarok)",
+      summary:
+        "Phase 1 combat and donations, Siege horn/ring savings, and which monsters to one-shot or last-hit.",
+      intro:
+        "Guild pacing for Trials of Odin: push Supply with explorations and donations, then bank Military Tokens (horns) and Draupnir Rings for the last Siege day.",
+      sections: [
+        {
+          heading: "1st Phase — Combat",
+          body: [
+            "Use your explorations and attack your monsters first. If Auto Battle misbehaves, pick heroes manually in the slot — you may have more stamina than the UI shows.",
+            "Upgrade the buildings with what you already have.",
+            "If you still have items to attack but no exploration stamina, open Guild Intel and attack monsters other people have found.",
+          ],
+        },
+        {
+          heading: "1st Phase — Donations",
+          body: [
+            "For the big rewards, open the Supplies building and donate all of your excess resources — ignore the pop-up warnings. Every upgrade at your level yields a lot of ID Plates and similar rewards.",
+          ],
+        },
+        {
+          heading: "1st Phase — Supply targets",
+          body: [
+            "Try to one-shot every monster you can, and go for the highest rarity you can one-shot. Exceptions: Surtr (yellow / SSR) — take the last hit for maximum bonuses; Jörmungandr (red / UR) — take the last hit of each stage if you can.",
+            "If you can reach a last hit within about 5–10 heroes (and you have more than 30 heroes), spend the cost. If you cannot, go back to one-shotting monsters.",
+            "Monster spawns are limited for the event, so spend them wisely. Skip weaker ones and leave them for guildmates — the guild can only store 100 monsters at once, so keep some space free for explorations.",
+            "If guildmates have already cleared everything in the battle phase, hit the tree in the center of the map for points.",
+          ],
+        },
+        {
+          heading: "2nd Phase — Siege",
+          body: [
+            "Attack other guilds with your regular attacks only, unless the damage race is very close or you risk failing to qualify for the next day.",
+            "Save Military Tokens (horns / bonus attacks) and Draupnir Rings (Odin’s Help for Eye of Odin or Gungnir) until the last day of Siege. Both are reclaimed after the event.",
+            "Always target the strongest player: you can only kill up to two players per attack, and damage beyond that does not count.",
+            "On the last day (finals), attack instantly at daily reset for maximum score.",
+          ],
+        },
+        {
+          heading: "Hero selection filter",
+          body: [
+            "Tired of picking heroes by hand in Phase 1? In Battle Settings, filter by deploy cost (Consume helmet 1–5, or Free Deploy) so the slot auto-fills a hero that matches that item consumption.",
+          ],
+        },
+      ],
+      note: "Phase tips from Cherr (Earth S2), 6 August 2026; Supply-target addendum by Autumn (Ice S12), 11 September 2026 — thanks Zee.",
+    },
   },
   events: {
     title: "Events",

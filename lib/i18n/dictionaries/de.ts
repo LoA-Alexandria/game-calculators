@@ -3689,6 +3689,54 @@ const de: Dictionary = {
       ],
       note: "Community-Tipp zu Supply Reform Line-Clears und der Vorschau der nächsten Reihe.",
     },
+    trialsOfOdin: {
+      title: "Trials of Odin (Ragnarok)",
+      summary:
+        "Phase-1-Kampf und Spenden, Horn-/Ring-Sparen in der Belagerung, und welche Monster one-shotten oder last-hitten.",
+      intro:
+        "Gilden-Tempo für Trials of Odin: Supply mit Explorationen und Spenden pushen, dann Military Tokens (Hörner) und Draupnir Rings für den letzten Belagerungstag sparen.",
+      sections: [
+        {
+          heading: "1. Phase — Kampf",
+          body: [
+            "Nutze deine Explorationen und greife zuerst deine Monster an. Wenn Auto Battle hakt, wähle Helden manuell im Slot — du kannst mehr Stamina haben, als die UI zeigt.",
+            "Upgrade die Gebäude mit dem, was du schon hast.",
+            "Hast du noch Angriffs-Items, aber keine Explorations-Stamina, öffne Guild Intel und greife Monster an, die andere gefunden haben.",
+          ],
+        },
+        {
+          heading: "1. Phase — Spenden",
+          body: [
+            "Für die großen Belohnungen öffne das Supplies-Gebäude und spende alle überschüssigen Ressourcen — ignoriere die Pop-up-Warnungen. Jedes Upgrade auf eurem Level bringt viele ID Plates und ähnliche Rewards.",
+          ],
+        },
+        {
+          heading: "1. Phase — Supply-Ziele",
+          body: [
+            "Versuche jedes Monster zu one-shotten, das du kannst, und geh auf die höchste Seltenheit, die du one-shotten kannst. Ausnahmen: Surtr (gelb / SSR) — hole den Last Hit für maximale Boni; Jörmungandr (rot / UR) — hole wenn möglich den Last Hit jeder Stage.",
+            "Schaffst du einen Last Hit mit etwa 5–10 Helden (und hast mehr als 30 Helden), zahl die Kosten. Wenn nicht, bleib beim One-Shotten.",
+            "Monster-Spawns sind im Event begrenzt — nutze sie klug. Schwächere überspringen und der Gilde überlassen: die Gilde kann nur 100 Monster gleichzeitig speichern, also Platz für Explorationen frei halten.",
+            "Haben Gildenmitglieder in der Kampfphase schon alles leer gemacht, schlag den Baum in der Kartenmitte für Punkte.",
+          ],
+        },
+        {
+          heading: "2. Phase — Belagerung",
+          body: [
+            "Greife andere Gilden nur mit normalen Angriffen an — außer der Schaden ist sehr knapp oder ihr riskiert, euch nicht für den nächsten Tag zu qualifizieren.",
+            "Spare Military Tokens (Hörner / Bonusangriffe) und Draupnir Rings (Odin’s Help für Eye of Odin oder Gungnir) bis zum letzten Belagerungstag. Beides wird nach dem Event zurückgeholt.",
+            "Ziele immer auf den stärksten Spieler: pro Angriff kannst du nur bis zu zwei Spieler töten — Schaden darüber zählt nicht.",
+            "Am letzten Tag (Finale) sofort beim Daily Reset angreifen für maximalen Score.",
+          ],
+        },
+        {
+          heading: "Heldenauswahl-Filter",
+          body: [
+            "Nervt manuelles Heldenwählen in Phase 1? Unter Battle Settings nach Deploy-Kosten filtern (Helmet 1–5 verbrauchen, oder Free Deploy), damit der Slot automatisch einen Helden mit passendem Item-Verbrauch füllt.",
+          ],
+        },
+      ],
+      note: "Phasen-Tipps von Cherr (Earth S2), 6. August 2026; Supply-Ziele-Nachtrag von Autumn (Ice S12), 11. September 2026 — Danke Zee.",
+    },
   },
   events: {
     title: "Events",

@@ -87,6 +87,13 @@ export const SECTIONS: NavSection[] = [
         badge: (t) => t.eventCategories.tips,
         categoryId: "tips",
       },
+      {
+        href: "/events/trials-of-odin/",
+        label: (t) => t.eventGuideEntries.trialsOfOdin.title,
+        description: (t) => t.eventGuideEntries.trialsOfOdin.summary,
+        badge: (t) => t.eventCategories.tips,
+        categoryId: "tips",
+      },
     ],
   },
   {
