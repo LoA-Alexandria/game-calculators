@@ -659,6 +659,14 @@ resources, priority asterisks, and barracks/research tags live in
 resource names, tag prose, and building name/note overrides live in
 `guideEntries.productionBuildings` (`buildingTexts` is sparse per language).
 
+The page shows each age group as a numbered stage (the shared `gl-*` timeline)
+with compact cards: the cut-out, stars for priority, the produced resource as a
+large chip, upgrade costs as smaller chips, and the tags as notes. Every
+resource has its own colour (`.production-guide [data-resource]` in
+`app/globals.css`). A search and a resource filter narrow the cards to the
+buildings that make or need a resource, and a table lists every building by
+age with the same chips and stars.
+
 Members with `guides.draft` see **Edit buildings** in the guide head, which opens
 `/guides/production-buildings/edit/`. The draft is saved in that browser only
 (`localStorage['popepoch-production-buildings-draft']`). **Export** produces the
