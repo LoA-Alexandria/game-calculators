@@ -3756,6 +3756,40 @@ const fr: Dictionary = {
       ],
       note: "Guide d’Autumn (Ice S12), Discord 18–22 août 2026 — maths des dés merci Pendulum.",
     },
+    mushroomAdventure: {
+      title: "Mushroom Adventure",
+      summary:
+        "Progression de merge permanente, quand faucher les bas niveaux, et comment économiser l’endurance sur les connexions.",
+      intro:
+        "Reliez quatre champignons pour les upgrader. La progression reste d’un event à l’autre — les gemmes valent le coup même si les récompenses semblent faibles.",
+      sections: [
+        {
+          heading: "Général",
+          body: [
+            "Reliez 4 champignons pour les upgrader. La progression est permanente sur plusieurs events. Ça vaut la peine de dépenser des gemmes même si les récompenses n’en ont pas l’air.",
+          ],
+        },
+        {
+          heading: "Efficacité",
+          body: [
+            "Une fois les champignons au-delà du niveau 8 débloqués, utilisez les faux (Scythes) pour enlever les niveau 3 s’il y en a trois ou plus sur le plateau — surtout si vous ne pouvez pas les connecter. Même logique pour les champignons environ 4–5 niveaux sous votre maximum.",
+            "N’utilisez Nutrient Solution que lorsque tout le plateau est rempli de champignons de niveau correct pour votre progression.",
+            "Si le plateau est trop vide, déplacez les champignons pour déclencher des spawns tout en alignant 2–3 du même type. Gardez les plus hauts niveaux séparés pour mieux utiliser l’espace et laisser les bas niveaux spawn en quatuor.",
+            "Ne connectez pas toujours quatre sauf si le plateau est saturé ou qu’il faut de la place pour bouger. Connecter trois préserve l’endurance et laisse les spawns finir le quatre.",
+            "Ne connectez jamais volontairement plus de quatre hauts niveaux : 4, 5 ou 20 du même niveau ne donnent qu’un seul upgrade.",
+          ],
+        },
+        {
+          heading: "Placement et faux",
+          body: [
+            "Pour le top play, placez le champignon le plus haut au centre plutôt qu’en coin, pour ouvrir plus de connexions et pousser le merge le plus haut possible.",
+            "Avant le niveau 8, laissez les spawns faire la plupart des merges — gardez juste les connexions libres. Après le niveau 8, clear davantage et fauchez les champignons qui ne spawnent plus. En gros, les spawns arrivent environ 2–5 niveaux sous votre max (ex. max 8 → spawn 3–6).",
+            "F2P : Nutrient Solution seulement quand le plateau est bloqué et que vous ne pouvez plus progresser — la carte get-out-of-jail.",
+          ],
+        },
+      ],
+      note: "Guide d’Autumn (Ice S12), partagé sur Discord, 6 septembre 2026.",
+    },
   },
   events: {
     title: "Événements",

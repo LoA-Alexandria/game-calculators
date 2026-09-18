@@ -3813,6 +3813,40 @@ const de: Dictionary = {
       ],
       note: "Guide von Autumn (Ice S12), Discord 18.–22. August 2026 — Würfel-Rechnung Danke Pendulum.",
     },
+    mushroomAdventure: {
+      title: "Mushroom Adventure",
+      summary:
+        "Permanentes Merge-Progress, wann niedrige Pilze scythen, und wie du Stamina bei Verbindungen sparst.",
+      intro:
+        "Verbinde vier Pilze zum Upgrade. Fortschritt bleibt über Event-Läufe hinweg — Edelsteine lohnen sich, auch wenn die Rewards schwach wirken.",
+      sections: [
+        {
+          heading: "Allgemein",
+          body: [
+            "Verbinde 4 Pilze, um sie zu upgraden. Progression bleibt über mehrere Events hinweg. Edelsteine lohnen sich, auch wenn die Belohnungen nicht so wirken.",
+          ],
+        },
+        {
+          heading: "Effizienz",
+          body: [
+            "Sobald Pilze über Level 8 freigeschaltet sind, nutze Sensen (Scythes), um Level-3-Pilze zu entfernen, wenn du drei oder mehr auf dem Board hast — besonders wenn du sie nicht verbinden kannst. Das gilt weiter für Pilze etwa 4–5 Level unter deinem höchsten.",
+            "Nutrient Solution nur, wenn das ganze Board mit anständigen Level-Pilzen für deinen aktuellen Stand gefüllt ist.",
+            "Ist das Board zu leer, schiebe Pilze hin und her, um Spawns auszulösen, und richte 2–3 gleiche aus. Halte höchste Level getrennt, damit du Platz sparst und niedrigere Pilze eher zu einer Vierer-Verbindung spawnen.",
+            "Verbinde nicht immer vier, außer das Board ist voll oder du brauchst Platz zum Verschieben. Bei drei Verbindungen sparst du Stamina und lässt neue Spawns die Vier komplettieren.",
+            "Verbinde absichtlich nie mehr als vier hohe Level: 4, 5 oder 20 gleiche ergeben trotzdem nur ein Upgrade.",
+          ],
+        },
+        {
+          heading: "Board-Platzierung und Sensen",
+          body: [
+            "Für Top-Play den höchsten Pilz in die Mitte statt in eine Ecke legen, damit mehr Felder andocken und du höhere Merges pushen kannst.",
+            "Vor Level 8 sollen Spawns die meisten Merges machen — Verbindungen nur freiräumen. Nach Level 8 das Board aktiver clearen und Pilze scythen, die nicht mehr spawnen. Grobe Regel: neue Pilze spawnen etwa 2–5 Level unter dem Maximum (z. B. höchster Level 8 → Spawn Level 3–6).",
+            "F2P: Nutrient Solution nur, wenn das Board blockiert ist und nichts mehr geht — die Get-out-of-jail-Karte.",
+          ],
+        },
+      ],
+      note: "Guide von Autumn (Ice S12), geteilt auf Discord, 6. September 2026.",
+    },
   },
   events: {
     title: "Events",

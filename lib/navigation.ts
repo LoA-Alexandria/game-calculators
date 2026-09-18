@@ -101,6 +101,13 @@ export const SECTIONS: NavSection[] = [
         badge: (t) => t.eventCategories.tips,
         categoryId: "tips",
       },
+      {
+        href: "/events/mushroom-adventure/",
+        label: (t) => t.eventGuideEntries.mushroomAdventure.title,
+        description: (t) => t.eventGuideEntries.mushroomAdventure.summary,
+        badge: (t) => t.eventCategories.tips,
+        categoryId: "tips",
+      },
     ],
   },
   {
