@@ -129,6 +129,13 @@ export const SECTIONS: NavSection[] = [
         badge: (t) => t.eventCategories.tips,
         categoryId: "tips",
       },
+      {
+        href: "/events/life-incubator/",
+        label: (t) => t.eventGuideEntries.lifeIncubator.title,
+        description: (t) => t.eventGuideEntries.lifeIncubator.summary,
+        badge: (t) => t.eventCategories.tips,
+        categoryId: "tips",
+      },
     ],
   },
   {

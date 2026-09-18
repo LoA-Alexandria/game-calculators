@@ -3992,6 +3992,39 @@ const de: Dictionary = {
       ],
       note: "Prioritäten von Cherr (Earth S2), 6. August 2026; Draw-Rechnung von Autumn (Ice S12) / Boah, 25. August 2026 — Danke Spitzell.",
     },
+    lifeIncubator: {
+      title: "Life Incubator",
+      summary:
+        "Drop-and-Merge-Gräben, aufsteigende Stacks und wann Rearrange oder Choice Block lohnen.",
+      intro:
+        "Lass Teile von oben fallen; gleiche Level mergen, und größere Multi-Merges überspringen mehr Stufen. Baue Gräben und aufsteigende Stacks, damit jeder Drop maximal arbeitet.",
+      sections: [
+        {
+          heading: "Grundlagen",
+          body: [
+            "Lass Teile von oben fallen. Teile gleichen Levels mergen — je mehr gleiche Level auf einmal mergen, desto mehr Stufen überspringst du.",
+          ],
+        },
+        {
+          heading: "Effizienz",
+          body: [
+            "Baue einen „Graben“ für eine Kreatur: gleiches Level unten, Wände links und rechts, damit Merges effizient sind. Mit Platz T- oder L-Formen bevorzugen — Merge von 3 springt das Endstück 2 Level; Merge von 4 springt 3. Das beschleunigt Early Game (Boahs „Trench“).",
+            "Blinkt der Screen rot und ist Platz knapp, geht Clearen vor Fancy-Setups — außer du schaffst T/L in etwa zwei Tiles.",
+            "Niedrigste Level oben halten und Teile mit 1–2 Level Abstand übereinander droppen. Aufsteigende Stacks (niedrig oben, hoch unten) funktionieren am besten als vertikale Kette; horizontal geht mit Planung. Combo-Stack an einer Randspalte halten, wenn möglich.",
+            "Der Modus gibt oft Pairs oder Triples von dem, was du brauchst, kehrt die Reihenfolge aber manchmal um. Eine Kante offen lassen für Überraschungen. Preview bis zu zwei Tiles — immer freien Drop-Platz halten.",
+            "Rearrange nur, wenn du kurz vorm Verlieren bist oder ein sehr niedriges Block unten festhängt. Gleiche Regel für Choice Block.",
+          ],
+        },
+        {
+          heading: "Spawn-Range und Platzierung",
+          body: [
+            "Verfügbare Tiles: die vier Level unter deinem höchsten auf dem Board, zehn Level rückwärts — das niedrigste in der Range ist selten. Beispiel: höchstes Level 16 → Teile etwa 2–12. Choice Block zeigt, welche Tiles noch droppen können.",
+            "Anders als 2048 ist die Mitte die vielseitigste Spalte für dein höchstes Tile (oder so nah wie möglich). Höchste Level gehören in die unterste Reihe.",
+          ],
+        },
+      ],
+      note: "Guide von Autumn (Ice S12), geteilt auf Discord, 19. August 2026 — Graben-Framing von Boah.",
+    },
   },
   events: {
     title: "Events",

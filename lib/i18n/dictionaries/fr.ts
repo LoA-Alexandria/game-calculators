@@ -3935,6 +3935,39 @@ const fr: Dictionary = {
       ],
       note: "Priorités par Cherr (Earth S2), 6 août 2026 ; maths des tirages par Autumn (Ice S12) / Boah, 25 août 2026 — merci Spitzell.",
     },
+    lifeIncubator: {
+      title: "Life Incubator",
+      summary:
+        "Tranchées drop-and-merge, stacks ascendants, et quand dépenser Rearrange ou Choice Block.",
+      intro:
+        "Faites tomber des pièces d’en haut ; les mêmes niveaux fusionnent, et les multi-merges sautent plus de niveaux. Construisez tranchées et stacks ascendants pour que chaque drop fasse le maximum.",
+      sections: [
+        {
+          heading: "Bases",
+          body: [
+            "Faites tomber les pièces d’en haut. Les pièces de même niveau fusionnent — plus il y en a en même temps, plus vous sautez de niveaux.",
+          ],
+        },
+        {
+          heading: "Efficacité",
+          body: [
+            "Essayez une « tranchée » pour une créature : même niveau en bas, murs à gauche et à droite, pour un merge très efficace. Avec de l’espace, préférez des formes en T ou L — merger 3 saute le résultat de 2 niveaux ; merger 4 saute 3. Ça accélère le early game (la « trench » de Boah).",
+            "Si l’écran clignote rouge et l’espace manque, clear avant les setups fancy — sauf si vous finissez un T/L en environ deux tuiles.",
+            "Gardez les plus bas niveaux en haut et droppez avec 1–2 niveaux d’écart. Les stacks ascendants (bas en haut, haut en bas) marchent mieux en chaîne verticale ; l’horizontale est possible avec du planning. Gardez un combo stack sur une colonne de bord si possible.",
+            "Le mode donne souvent des paires ou triplets de ce qu’il faut, mais inverse parfois l’ordre. Laissez un bord ouvert pour les surprises. Preview jusqu’à deux tuiles — gardez toujours un espace libre pour dropper.",
+            "Rearrange seulement si vous êtes près de perdre ou qu’un bloc très bas est coincé en bas. Même règle pour Choice Block.",
+          ],
+        },
+        {
+          heading: "Plage de spawn et placement",
+          body: [
+            "Tuiles dispo : les quatre niveaux sous votre max sur le plateau, en remontant dix niveaux — le plus bas de la plage est rare. Ex. : max niveau 16 → pièces environ 2–12. Choice Block indique ce qui peut encore tomber.",
+            "Contrairement à 2048, l’endroit le plus polyvalent pour votre tuile la plus haute est la colonne centrale (ou aussi près que possible). Les plus hauts niveaux vont sur la rangée du bas.",
+          ],
+        },
+      ],
+      note: "Guide d’Autumn (Ice S12), partagé sur Discord, 19 août 2026 — framing tranchée de Boah.",
+    },
   },
   events: {
     title: "Événements",

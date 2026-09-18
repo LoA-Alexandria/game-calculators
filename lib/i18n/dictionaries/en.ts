@@ -3459,6 +3459,39 @@ const en = {
       ],
       note: "Priorities by Cherr (Earth S2), 6 August 2026; draw math by Autumn (Ice S12) / Boah, 25 August 2026 — thanks Spitzell.",
     },
+    lifeIncubator: {
+      title: "Life Incubator",
+      summary:
+        "Drop-and-merge trenches, ascending stacks, and when to spend Rearrange or Choice Block.",
+      intro:
+        "Drop pieces from above; same-level pieces merge, and bigger multi-merges skip more levels. Build trenches and ascending stacks so each drop does as much work as possible.",
+      sections: [
+        {
+          heading: "Basics",
+          body: [
+            "Drop pieces from above. Pieces of the same level merge — the more same-level pieces merge at once, the more levels you skip.",
+          ],
+        },
+        {
+          heading: "Efficiency",
+          body: [
+            "Try to build a “trench” for one creature: same level on the bottom, with walls left and right, so a merge is highly efficient. With space, prefer T- or L-shaped setups — merging 3 jumps the final piece 2 levels; merging 4 jumps it 3. That accelerates early game (Boah’s “trench”).",
+            "When the screen flashes red and space is tight, clearing room beats fancy setups — unless you can finish a T/L within about two tiles.",
+            "Keep lowest levels at the top and drop pieces with 1–2 level gaps above each other. Ascending stacks (lowest on top, highest on bottom) work best as a vertical chain; horizontal chains are possible with planning. Keep a combo stack on an edge column when you can.",
+            "The mode tends to give pairs or triples of what you need, but sometimes reverses arrival order. Leave one edge open for surprise pieces. You can preview up to two tiles ahead — always keep a free drop space.",
+            "Use Rearrange only when you are close to losing or a very low block is stuck on the bottom. Same rule for Choice Block.",
+          ],
+        },
+        {
+          heading: "Spawn range and placement",
+          body: [
+            "Available tiles are the four levels below your highest on the board, going ten levels backward — the lowest in that range is rare. Example: highest Level 16 → pieces from about 2–12. Choice Block shows which tiles can still drop.",
+            "Unlike 2048, the most versatile spot for your highest tile is the center column (or as close as you can get). Highest levels belong on the bottom row.",
+          ],
+        },
+      ],
+      note: "Guide by Autumn (Ice S12), shared on Discord, 19 August 2026 — trench framing from Boah.",
+    },
   },
   events: {
     title: "Events",
