@@ -171,6 +171,13 @@ export const SECTIONS: NavSection[] = [
         badge: (t) => t.eventCategories.tips,
         categoryId: "tips",
       },
+      {
+        href: "/events/global-regatta/",
+        label: (t) => t.eventGuideEntries.globalRegatta.title,
+        description: (t) => t.eventGuideEntries.globalRegatta.summary,
+        badge: (t) => t.eventCategories.tips,
+        categoryId: "tips",
+      },
     ],
   },
   {

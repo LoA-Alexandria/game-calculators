@@ -3641,6 +3641,29 @@ const en = {
       ],
       note: "Community tip for Red Carpet stamina and lipstick banking.",
     },
+    globalRegatta: {
+      title: "Global Regatta",
+      summary: "Score miles while travelling, bank stamina and barrels, and keep the ship moving.",
+      intro:
+        "Score equals miles travelled. Ship upgrades and Cryptid progression set your speed — bank stamina, time, and barrels so you can sail hard when the event opens.",
+      sections: [
+        {
+          heading: "Basics",
+          body: [
+            "Gain score by travelling miles. One mile travelled equals one score. Travel speed and time efficiency depend on ship upgrades and Cryptid progression.",
+          ],
+        },
+        {
+          heading: "Efficiency",
+          body: [
+            "Save up your stamina / time three days before the event starts.",
+            "Save barrels from daily rewards (or the Fund) between events.",
+            "Always keep your ship travelling. Take long trips when you know you will be away from the game for a while.",
+          ],
+        },
+      ],
+      note: "Community tip for Global Regatta mileage scoring and pre-event banking.",
+    },
   },
   events: {
     title: "Events",

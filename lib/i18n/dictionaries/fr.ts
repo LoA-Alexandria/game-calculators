@@ -4202,6 +4202,29 @@ const fr: Dictionary = {
       ],
       note: "Astuce communautaire pour Red Carpet — banking endurance et rouges à lèvres.",
     },
+    globalRegatta: {
+      title: "Global Regatta",
+      summary: "Score = miles parcourus, banquez endurance et barils, gardez le navire en route.",
+      intro:
+        "Le score égale les miles parcourus. Les upgrades du navire et la progression Cryptid fixent la vitesse — banquez endurance, temps et barils pour voguer fort à l’ouverture.",
+      sections: [
+        {
+          heading: "Bases",
+          body: [
+            "Gagnez du score en parcourant des miles. Un mile = un score. La vitesse et l’efficacité temporelle dépendent des upgrades du navire et de la progression Cryptid.",
+          ],
+        },
+        {
+          heading: "Efficacité",
+          body: [
+            "Économisez endurance / temps trois jours avant le début de l’event.",
+            "Gardez les barils des récompenses quotidiennes (ou du Fund) entre les events.",
+            "Gardez toujours le navire en voyage. Prenez de longs trajets quand vous savez que vous serez absent du jeu un moment.",
+          ],
+        },
+      ],
+      note: "Astuce communautaire pour Global Regatta — score en miles et banking avant l’event.",
+    },
   },
   events: {
     title: "Événements",
