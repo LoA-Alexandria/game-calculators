@@ -6480,6 +6480,29 @@ const de: Dictionary = {
       ],
       note: "Community-Tipp zu Red Carpet — Stamina- und Lippenstift-Banking.",
     },
+    globalRegatta: {
+      title: "Global Regatta",
+      summary: "Meilen = Score, Stamina und Fässer sparen, Schiff immer fahren lassen.",
+      intro:
+        "Score entspricht gereisten Meilen. Schiffs-Upgrades und Cryptid-Progress bestimmen die Geschwindigkeit — spare Stamina, Zeit und Fässer, damit du beim Event-Start hart segeln kannst.",
+      sections: [
+        {
+          heading: "Grundlagen",
+          body: [
+            "Score kommt durch gereiste Meilen. Eine Meile = ein Score. Reise-Geschwindigkeit und Zeit-Effizienz hängen von Schiffs-Upgrades und Cryptid-Progression ab.",
+          ],
+        },
+        {
+          heading: "Effizienz",
+          body: [
+            "Spare Stamina / Zeit drei Tage vor Event-Start.",
+            "Spare Fässer aus täglichen Rewards (oder dem Fund) zwischen den Events.",
+            "Lass dein Schiff immer fahren. Nimm lange Trips, wenn du weißt, dass du längere Zeit nicht im Spiel bist.",
+          ],
+        },
+      ],
+      note: "Community-Tipp zu Global Regatta — Meilen-Score und Pre-Event-Banking.",
+    },
   },
   events: {
     title: "Events",
