@@ -49,12 +49,13 @@ test("Events index always exposes Anleitungen and Tips categories", () => {
   assert.ok(sectionById("events").items.some((item) => item.href === "/events/trials-of-odin/"));
   assert.ok(sectionById("events").items.some((item) => item.href === "/events/astral-wonderland/"));
   assert.ok(sectionById("events").items.some((item) => item.href === "/events/mushroom-adventure/"));
+  assert.ok(sectionById("events").items.some((item) => item.href === "/events/great-flood/"));
   const groups = eventCategoryGroups(en);
   assert.deepEqual(
     groups.map((group) => ({ id: group.id, category: group.category, count: group.items.length })),
     [
       { id: "anleitungen", category: en.eventCategories.anleitungen, count: 0 },
-      { id: "tips", category: en.eventCategories.tips, count: 8 },
+      { id: "tips", category: en.eventCategories.tips, count: 9 },
     ],
   );
 });
@@ -138,6 +139,17 @@ test("Mushroom Adventure is listed under Events Tips in every language", () => {
     assert.equal(entry.title, "Mushroom Adventure");
     assert.ok(entry.sections.some((section) => /Level 8|niveau 8/i.test(section.body.join(" "))));
     assert.ok(entry.sections.some((section) => /Scythe|Sensen|faux/i.test(section.body.join(" "))));
+    assert.match(entry.note, /Autumn/);
+  }
+});
+
+test("Great Flood is listed under Events Tips in every language", () => {
+  for (const locale of ["en", "de", "fr"]) {
+    const dictionary = getDictionary(locale);
+    const entry = dictionary.eventGuideEntries.greatFlood;
+    assert.equal(entry.title, "Great Flood");
+    assert.ok(entry.sections.some((section) => /Stockpile/i.test(section.heading) || /Stockpile/i.test(section.body.join(" "))));
+    assert.ok(entry.sections.some((section) => /bend|abbiegen|tourner/i.test(section.body.join(" "))));
     assert.match(entry.note, /Autumn/);
   }
 });

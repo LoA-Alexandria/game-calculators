@@ -3790,6 +3790,47 @@ const fr: Dictionary = {
       ],
       note: "Guide d’Autumn (Ice S12), partagé sur Discord, 6 septembre 2026.",
     },
+    greatFlood: {
+      title: "Great Flood",
+      summary:
+        "Appariements de l’extérieur vers l’intérieur selon les stage effects, et Stockpile en blackjack aux dés.",
+      intro:
+        "Videz le plateau d’animaux en reliant des tuiles identiques sur des chemins courts, puis traitez le Stockpile Food Supplies comme un blackjack avec blé, carottes et lapins.",
+      sections: [
+        {
+          heading: "Stratégie plateau",
+          body: [
+            "Appariez d’abord les bords extérieurs qui ne bougent pas. S’il n’y a rien, prenez un match qui fait bouger le plateau. Travaillez de l’extérieur vers l’intérieur — et « extérieur » peut être le centre une fois l’espace ouvert au milieu.",
+            "N’utilisez les objets spéciaux (Auto-Match, Rearrange) que si vous êtes près de perdre. Dépensez-les quand même avant la fin — ils ne se conservent pas entre les cycles.",
+          ],
+        },
+        {
+          heading: "Règles d’appariement",
+          body: [
+            "Reliez deux tuiles identiques. Le chemin le plus court doit être libre et ne peut tourner que deux fois au maximum.",
+            "Quatre formes de chemin qui marchent toujours : (1) tuiles qui se touchent ; (2) même ligne ou colonne si les deux sont sur le bord extérieur du plateau restant ; (3) tranchée claire entre les deux ; (4) à angle droit si le coin est vide.",
+          ],
+        },
+        {
+          heading: "Priorités selon le stage effect",
+          body: [
+            "Up / Down / Left / Right : commencez par le bord opposé (ex. Stage Effect Left → d’abord le bord droit, puis gauche, puis les autres).",
+            "Separate Vertically : bords gauche et droit d’abord, puis le milieu quand l’espace s’ouvre. Separate Horizontally : haut et bas d’abord, puis le milieu.",
+            "Gather Horizontally : haut et bas, puis gauche et droite. Gather Vertically : gauche et droite, puis haut et bas.",
+            "Separate Outward : n’importe quel bord, puis le milieu. Gather Inwards : n’importe quel bord.",
+          ],
+        },
+        {
+          heading: "Stockpile (Food Supplies)",
+          body: [
+            "Le Stockpile est un blackjack aux dés. Les récompenses sont faibles sauf si vous avez besoin d’items de monture parce que Race to Civilization tourne en même temps. Les carottes sont plus sûres que le blé mais plus rares ; les lapins les plus sûrs mais les plus rares. Vous pouvez garder blé, carottes et lapins pour le prochain Great Flood.",
+            "Ne commencez pas à rouler sans carottes ou au moins 2 blés. Claim avant la fin même avec un score moyen — le score Stockpile n’est pas sauvegardé.",
+            "Stratégie : roulez le blé deux fois, puis encore seulement si vous vous sentez chanceux. Ne roulez plus de blé à 16+. Toujours du blé à 10–11. Toujours des carottes à 17–18. À 19–20, claim ou encore une carotte — à vous de voir.",
+          ],
+        },
+      ],
+      note: "Guide d’Autumn (Ice S12), partagé sur Discord, 8 août 2026.",
+    },
   },
   events: {
     title: "Événements",
