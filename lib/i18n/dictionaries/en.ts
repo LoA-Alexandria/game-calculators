@@ -885,21 +885,22 @@ const en = {
     // Phase 2 Fortuna and Bastet are 60, not the older community sheet's 90.
     goddesses: {
       title: "Goddesses",
-      summary: "Every goddess with her affinity, where she comes from, and her skins.",
+      summary: "Every goddess with her story, affinity, where she comes from, and her skins.",
       intro: "Gifts raise affinity and unlock bonuses. Recruit a goddess once her conditions are met; the roster below says where each one comes from.",
       rosterHeading: "Roster",
-      rosterLede: "Tap a goddess for affinity, obtain, and skins. Rarity follows the Pop Epoch Wiki card colours: gold SSR, purple SR, blue R.",
+      rosterLede: "Tap a goddess for her story, affinity, obtain, and skins. Rarity follows the Pop Epoch Wiki card colours: gold SSR, purple SR, blue R.",
       filterLabel: "Rarity",
       filterAll: "All",
       searchLabel: "Search goddesses",
-      searchPlaceholder: "Name, affinity, event, or skin…",
+      searchPlaceholder: "Name, story, affinity, event, or skin…",
       countLabel: "{count} shown",
       empty: "No goddess matches that filter.",
       groupCount: "{count} goddesses",
       groupCountOne: "1 goddess",
       skinCount: "{count} skins",
       skinCountOne: "1 skin",
-      portraitCredit: "Goddess portraits from the Pop Epoch Wiki (Fandom). The artwork belongs to the game’s publisher and is shown here for free, non-commercial community guides. Bastet has no portrait on that page yet.",
+      portraitCredit:
+        "Goddess portraits, titles, and stories from the Pop Epoch Wiki Goddess page (Fandom), last merged on 18 September 2026. The artwork belongs to the game’s publisher and is shown here for free, non-commercial community guides.",
       previousGoddess: "Previous goddess",
       nextGoddess: "Next goddess",
       close: "Close",
@@ -915,6 +916,7 @@ const en = {
       colName: "Goddess",
       colAffinity: "Affinity",
       colObtain: "Obtain",
+      bioHeading: "Story",
       missableLabel: "Not obtainable now",
       unconfirmedLabel: "Source unconfirmed",
       sourcesHeading: "Where they come from",
@@ -937,7 +939,7 @@ const en = {
         },
       ],
       obtainCredit:
-        "Where each goddess comes from is Autumn’s obtain guide, shared on Discord on 9 August 2026, with screenshots from several players. “Not obtainable now” means no source is running, and there may not be one again for a long time. “Source unconfirmed” means nobody has verified it. Isis and Calypso are not on the wiki page, so they have no portrait here yet.",
+        "Where each goddess comes from is Autumn’s obtain guide, shared on Discord on 9 August 2026, with screenshots from several players. “Not obtainable now” means no source is running, and there may not be one again for a long time. “Source unconfirmed” means nobody has verified it. Lilith is on the wiki Goddess page without a confirmed obtain line.",
       skinsHeading: "Skins",
       skinsLede:
         "Named skins, not the extra pictures on a roster card. Those files have no names, so they cannot be matched to this list. SSR goddesses have no skins yet. A goddess skin raises her level cap.",
