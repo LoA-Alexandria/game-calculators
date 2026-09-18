@@ -3023,10 +3023,6 @@ const en = {
     removeOutput: "Removal notes",
     cancel: "Back",
   },
-  eventCategories: {
-    anleitungen: "Guides",
-    tips: "Tips",
-  },
   eventGuideEntries: {
     atlantis: {
       title: "Atlantis",
@@ -3748,23 +3744,13 @@ const en = {
   },
   events: {
     title: "Events",
-    lede: "Guides and tips for limited-time events — separate from the systems covered under Guides.",
+    lede: "Write-ups for limited-time events — separate from the systems covered under Guides.",
     empty: "No event guides yet. The live schedule sits on the overview.",
     other: "Other",
     searchLabel: "Search events",
     searchPlaceholder: "Red Carpet, Grand Voyage…",
-    filterLabel: "Filter by category",
-    filterAll: "All",
     statEntries: "Entries",
-    statCategories: "Categories",
-    countEntriesOne: "1 entry",
-    countEntries: "{count} entries",
     noMatch: "No event guide matches that search.",
-    categoryEmpty: "Nothing in this category yet.",
-    categoryLedes: {
-      anleitungen: "How an event works and what to do during the run.",
-      tips: "Priorities, shortcuts, and what is worth spending on.",
-    },
     browseIndex: "Browse event guides",
     kindMain: "Main event",
     kindRoutine: "Routine",

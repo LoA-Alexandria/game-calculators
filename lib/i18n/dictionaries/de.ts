@@ -5862,10 +5862,6 @@ const de: Dictionary = {
     removeOutput: "Notizen zum Entfernen",
     cancel: "Zurück",
   },
-  eventCategories: {
-    anleitungen: "Anleitungen",
-    tips: "Tips",
-  },
   eventGuideEntries: {
     atlantis: {
       title: "Atlantis",
@@ -6587,23 +6583,13 @@ const de: Dictionary = {
   },
   events: {
     title: "Events",
-    lede: "Guides und Tipps zu zeitlich begrenzten Events — getrennt von den Systemen unter Guides.",
+    lede: "Texte zu zeitlich begrenzten Events — getrennt von den Systemen unter Guides.",
     empty: "Noch keine Event-Guides. Der laufende Zeitplan steht auf der Übersicht.",
     other: "Sonstiges",
     searchLabel: "Events durchsuchen",
     searchPlaceholder: "Red Carpet, Große Reise…",
-    filterLabel: "Nach Kategorie filtern",
-    filterAll: "Alle",
     statEntries: "Einträge",
-    statCategories: "Kategorien",
-    countEntriesOne: "1 Eintrag",
-    countEntries: "{count} Einträge",
     noMatch: "Kein Event-Guide passt zu dieser Suche.",
-    categoryEmpty: "In dieser Kategorie ist noch nichts.",
-    categoryLedes: {
-      anleitungen: "Wie ein Event funktioniert und was du währenddessen tun solltest.",
-      tips: "Prioritäten, Abkürzungen und was sich zu investieren lohnt.",
-    },
     browseIndex: "Event-Guides ansehen",
     kindMain: "Hauptevent",
     kindRoutine: "Routine-Event",
