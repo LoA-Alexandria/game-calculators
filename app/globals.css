@@ -1515,6 +1515,12 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
 .article .intro { color: var(--ink); font-size: 1.06rem; }
 .article h2 { margin-top: 34px; font-size: 1.28rem; }
 .article img { border-radius: var(--r-md); border: 1px solid var(--line); }
+.article .event-tip-figure {
+  display: block;
+  width: min(100%, 560px);
+  height: auto;
+  margin-top: 8px;
+}
 .article .callout {
   margin-top: 26px;
   padding: 15px 18px;

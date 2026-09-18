@@ -178,6 +178,13 @@ export const SECTIONS: NavSection[] = [
         badge: (t) => t.eventCategories.tips,
         categoryId: "tips",
       },
+      {
+        href: "/events/heart-of-gold/",
+        label: (t) => t.eventGuideEntries.heartOfGold.title,
+        description: (t) => t.eventGuideEntries.heartOfGold.summary,
+        badge: (t) => t.eventCategories.tips,
+        categoryId: "tips",
+      },
     ],
   },
   {

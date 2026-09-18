@@ -3664,6 +3664,58 @@ const en = {
       ],
       note: "Community tip for Global Regatta mileage scoring and pre-event banking.",
     },
+    heartOfGold: {
+      title: "Heart of Gold",
+      summary: "Clear three maps per stage, bank exploration stamina, and dig the boss in a 2×2-efficient pattern.",
+      intro:
+        "Each stage has three maps and one key item per map. Find The Bullet, The Whip, and The Feather, then move on — do not dig a finished map dry.",
+      sections: [
+        {
+          heading: "Main objective",
+          body: [
+            "Clear three maps per stage. Each map holds exactly one object. As soon as you find the current map’s item, move to the next map.",
+            "The three items are The Bullet, The Whip, and The Feather. Finding all three unlocks the next stage with three fresh maps.",
+            "Questions that pop up while exploring always have the correct answer on the left.",
+          ],
+        },
+        {
+          heading: "Stamina for exploration",
+          body: [
+            "Passive regen is 1 exploration stamina every 15 minutes. Over a 142-hour run that is 568 stamina from regen alone.",
+            "You start with 50 stamina. F2P extras from daily ad and gem bundles add about 22 per day; across six days that is 132 more.",
+            "Event length is 5 days and 22 hours. Free-to-play stamina overall lands around 750 (50 + 568 + 132).",
+          ],
+        },
+        {
+          heading: "Bonus Area",
+          body: [
+            "Opens daily from 5:00 PM to 9:00 PM server time.",
+            "Only the guild leader and the top four daily scorers from the guild qualify to represent and fight other guilds.",
+          ],
+        },
+        {
+          heading: "Bonus loot and passes",
+          body: [
+            "Read unlocked articles in the Guild Intel tab for extra rewards.",
+            "There are two event passes. The $15 pass is worth it; the $5 pass is not recommended.",
+            "Some exploration maps hide a guild treasure-chest area. Whoever finds it can pick three chests; everyone else can grab one.",
+          ],
+        },
+        {
+          heading: "Boss dig pattern",
+          body: [
+            "The boss that holds one of the three key items occupies four tiles (2×2). Dig in the annotated pattern so every possible 2×2 block is hit without clearing the whole map.",
+          ],
+          image: {
+            src: "/events/heart-of-gold-boss-pattern.webp",
+            alt: "Annotated desert dig grid: clear a full mid row first, then spaced tiles on the rows above and below so a 2×2 boss cannot be missed.",
+            width: 1019,
+            height: 778,
+          },
+        },
+      ],
+      note: "Community tip for Heart of Gold — quiz answers from Esme (Creek, S13); dig pattern from Cherr (Earth, S2) and Admos (Woods, S5).",
+    },
   },
   events: {
     title: "Events",

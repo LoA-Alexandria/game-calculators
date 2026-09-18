@@ -6503,6 +6503,58 @@ const de: Dictionary = {
       ],
       note: "Community-Tipp zu Global Regatta — Meilen-Score und Pre-Event-Banking.",
     },
+    heartOfGold: {
+      title: "Heart of Gold",
+      summary: "Drei Maps pro Stage, Exploration-Stamina banken, Boss im 2×2-Muster graben.",
+      intro:
+        "Jede Stage hat drei Maps und ein Schlüssel-Item pro Map. Finde The Bullet, The Whip und The Feather — und wechsle die Map, sobald das Item da ist.",
+      sections: [
+        {
+          heading: "Hauptziel",
+          body: [
+            "Drei Maps pro Stage clearen. Jede Map hält genau ein Objekt. Sobald du das Item der aktuellen Map hast, weiter zur nächsten.",
+            "Die drei Items sind The Bullet, The Whip und The Feather. Alle drei freischalten die nächste Stage mit drei neuen Maps.",
+            "Fragen beim Erkunden haben die richtige Antwort immer links.",
+          ],
+        },
+        {
+          heading: "Stamina für Exploration",
+          body: [
+            "Passive Regen: 1 Exploration-Stamina alle 15 Minuten. Über 142 Stunden sind das 568 Stamina nur aus Regen.",
+            "Startbasis: 50 Stamina. F2P-Extras aus täglichen Ad- und Gem-Bundles ca. 22 pro Tag; über sechs Tage 132 extra.",
+            "Event-Dauer: 5 Tage und 22 Stunden. Free-to-play-Stamina insgesamt rund 750 (50 + 568 + 132).",
+          ],
+        },
+        {
+          heading: "Bonus Area",
+          body: [
+            "Täglich von 17:00 bis 21:00 Serverzeit offen.",
+            "Nur Guild-Leader und die Top-4 der täglichen Scorer der Gilde dürfen die Gilde vertreten und gegen andere kämpfen.",
+          ],
+        },
+        {
+          heading: "Bonus-Loot und Pässe",
+          body: [
+            "Freigeschaltete Artikel im Tab Guild Intel lesen — dort gibt es Extra-Rewards.",
+            "Zwei Event-Pässe: der 15-$-Pass lohnt sich; der 5-$-Pass wird nicht empfohlen.",
+            "Manche Exploration-Maps haben eine Guild-Schatztruhen-Zone. Wer sie findet, darf drei Truhen nehmen; alle anderen eine.",
+          ],
+        },
+        {
+          heading: "Boss-Grabmuster",
+          body: [
+            "Der Boss mit einem der drei Schlüssel-Items belegt vier Felder (2×2). Grabe nach dem annotierten Muster, damit jedes mögliche 2×2-Feld getroffen wird, ohne die ganze Map freizuräumen.",
+          ],
+          image: {
+            src: "/events/heart-of-gold-boss-pattern.webp",
+            alt: "Annotiertes Wüsten-Grabgitter: zuerst eine volle Mittelreihe, dann versetzte Felder darüber und darunter, damit ein 2×2-Boss nicht verfehlt wird.",
+            width: 1019,
+            height: 778,
+          },
+        },
+      ],
+      note: "Community-Tipp zu Heart of Gold — Quiz-Antworten von Esme (Creek, S13); Grabmuster von Cherr (Earth, S2) und Admos (Woods, S5).",
+    },
   },
   events: {
     title: "Events",
