@@ -56,9 +56,9 @@ export const GUIDE_PRESENTATION: Record<GuideEntryId, GuidePresentation> = {
     art: ["/heroes/socrates.webp", "/heroes/confucius.webp", "/heroes/hammurabi.webp"],
     editor: { href: "/guides/museion/edit/", label: (t) => t.museionEditor.openEditor },
   },
-  productionBuildings: {
-    art: ["/production-buildings/farm.webp", "/production-buildings/blacksmith.webp", "/production-buildings/steel-plant.webp"],
-    editor: { href: "/guides/production-buildings/edit/", label: (t) => t.productionBuildingsEditor.openEditor },
+  buildings: {
+    art: ["/production-buildings/farm.webp", "/production-buildings/blacksmith.webp", "/buildings/tent.webp"],
+    editor: { href: "/guides/buildings/edit/", label: (t) => t.buildingsEditor.openEditor },
     cutout: true,
   },
   heroLayouts: {

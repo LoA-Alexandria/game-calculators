@@ -2,47 +2,49 @@
 
 import { useId, useMemo, useState, useSyncExternalStore } from "react";
 import {
+  BUILDING_CATEGORIES,
   PRODUCTION_GROUPS,
   PRODUCTION_RESOURCES,
   PRODUCTION_TAGS,
+  type BuildingCategory,
   type ProductionGroupId,
   type ProductionResource,
   type ProductionTag,
-} from "../../lib/content/production-buildings";
+} from "../../lib/content/buildings";
 import {
-  PUBLISHED_PRODUCTION,
+  PUBLISHED_BUILDINGS,
   addBuilding,
   buildingByUid,
   buildingTextBlocks,
-  countProductionChanges,
-  exportProductionBuildings,
-  findProductionProblems,
+  countBuildingChanges,
+  exportBuildings,
+  findBuildingProblems,
   moveBuilding,
-  parseProductionDraft,
+  parseBuildingsDraft,
   removeBuilding,
-  serializeProductionData,
+  serializeBuildingsData,
   setBuildingFields,
   setBuildingName,
   setBuildingNote,
-  type ProductionBuildingsEditorState,
-  type ProductionProblem,
-} from "../../lib/content/production-buildings-editor";
+  type BuildingProblem,
+  type BuildingsEditorState,
+} from "../../lib/content/buildings-editor";
 import { DEFAULT_LOCALE, fill, toLocale, type Dictionary, type Locale } from "../../lib/i18n";
-import { PRODUCTION_BUILDINGS_DRAFT_STORAGE_KEY } from "../../lib/site";
+import { BUILDINGS_DRAFT_STORAGE_KEY } from "../../lib/site";
 import { AllLanguagesToggle, DictionaryBlocks, TranslatedField, useEditorLanguages } from "../components/EditorLanguages";
 import { CheckIcon, CloseIcon, CopyIcon, DownloadIcon, PlusIcon, TrashIcon } from "../components/Icons";
 import { useLocale } from "../components/LocaleProvider";
 import { createPersistentStore } from "../components/persistentStore";
 import { BackLink, PageHead } from "../components/Ui";
 
-type EditorText = Dictionary["productionBuildingsEditor"];
-type Guide = Dictionary["guideEntries"]["productionBuildings"];
+type EditorText = Dictionary["buildingsEditor"];
+type Guide = Dictionary["guideEntries"]["buildings"];
 type Tf = (template: string, values: Record<string, string | number>) => string;
 
-const draftStore = createPersistentStore<ProductionBuildingsEditorState | null>({
-  key: PRODUCTION_BUILDINGS_DRAFT_STORAGE_KEY,
+const draftStore = createPersistentStore<BuildingsEditorState | null>({
+  key: BUILDINGS_DRAFT_STORAGE_KEY,
   serverValue: null,
-  parse: parseProductionDraft,
+  parse: parseBuildingsDraft,
   fallback: () => null,
   serialize: (value) => JSON.stringify(value),
 });
@@ -54,7 +56,7 @@ function download(href: string, name: string) {
   link.click();
 }
 
-function problemText(e: EditorText, tf: Tf, problem: ProductionProblem): string {
+function problemText(e: EditorText, tf: Tf, problem: BuildingProblem): string {
   switch (problem.code) {
     case "noBuildings":
       return e.problemNoBuildings;
@@ -62,6 +64,10 @@ function problemText(e: EditorText, tf: Tf, problem: ProductionProblem): string 
       return tf(e.problemEmptyName, problem.values ?? {});
     case "duplicateId":
       return tf(e.problemDuplicateId, problem.values ?? {});
+    case "badCategory":
+      return tf(e.problemBadCategory, problem.values ?? {});
+    case "badLevelMax":
+      return tf(e.problemBadLevelMax, problem.values ?? {});
     case "badGroup":
       return tf(e.problemBadGroup, problem.values ?? {});
     case "badProduces":
@@ -78,8 +84,8 @@ function problemText(e: EditorText, tf: Tf, problem: ProductionProblem): string 
 }
 
 type Ctx = {
-  state: ProductionBuildingsEditorState;
-  commit: (next: ProductionBuildingsEditorState) => void;
+  state: BuildingsEditorState;
+  commit: (next: BuildingsEditorState) => void;
   e: EditorText;
   guide: Guide;
   tf: Tf;
@@ -93,9 +99,8 @@ function BuildingEditor({ ctx, uid }: { ctx: Ctx; uid: string }) {
   if (!building) return null;
   const { state, commit, e, guide, languages } = ctx;
   const name =
-    building.name[toLocale(locale)].trim() ||
-    building.name[DEFAULT_LOCALE].trim() ||
-    e.unnamedBuilding;
+    building.name[toLocale(locale)].trim() || building.name[DEFAULT_LOCALE].trim() || e.unnamedBuilding;
+  const isProduction = building.category === "production";
 
   const toggleRequire = (resource: ProductionResource) => {
     const has = building.requires.includes(resource);
@@ -153,75 +158,108 @@ function BuildingEditor({ ctx, uid }: { ctx: Ctx; uid: string }) {
 
       <div className="production-edit-fields">
         <div className="field">
-          <label htmlFor={`${id}-group`}>{e.fieldGroup}</label>
+          <label htmlFor={`${id}-category`}>{e.fieldCategory}</label>
           <select
-            id={`${id}-group`}
-            value={building.group}
+            id={`${id}-category`}
+            value={building.category}
             onChange={(event) =>
-              commit(setBuildingFields(state, uid, { group: event.target.value as ProductionGroupId }))
+              commit(setBuildingFields(state, uid, { category: event.target.value as BuildingCategory }))
             }
           >
-            {PRODUCTION_GROUPS.map((group) => (
-              <option key={group} value={group}>
-                {guide.groups[group]}
+            {BUILDING_CATEGORIES.map((category) => (
+              <option key={category} value={category}>
+                {guide.categories[category]}
               </option>
             ))}
           </select>
         </div>
         <div className="field">
-          <label htmlFor={`${id}-produces`}>{e.fieldProduces}</label>
-          <select
-            id={`${id}-produces`}
-            value={building.produces}
-            onChange={(event) =>
-              commit(setBuildingFields(state, uid, { produces: event.target.value as ProductionResource }))
-            }
-          >
-            {PRODUCTION_RESOURCES.map((resource) => (
-              <option key={resource} value={resource}>
-                {guide.resources[resource]}
-              </option>
-            ))}
-          </select>
+          <label htmlFor={`${id}-level`}>{e.fieldLevelMax}</label>
+          <input
+            id={`${id}-level`}
+            type="number"
+            min={1}
+            value={building.levelMax}
+            onChange={(event) => commit(setBuildingFields(state, uid, { levelMax: Number(event.target.value) }))}
+          />
         </div>
-        <div className="field">
-          <label htmlFor={`${id}-priority`}>{e.fieldPriority}</label>
-          <select
-            id={`${id}-priority`}
-            value={building.priority}
-            onChange={(event) => commit(setBuildingFields(state, uid, { priority: Number(event.target.value) }))}
-          >
-            <option value={0}>{e.priorityNone}</option>
-            <option value={1}>*</option>
-            <option value={2}>**</option>
-            <option value={3}>***</option>
-          </select>
-        </div>
+        {isProduction ? (
+          <>
+            <div className="field">
+              <label htmlFor={`${id}-group`}>{e.fieldGroup}</label>
+              <select
+                id={`${id}-group`}
+                value={building.group}
+                onChange={(event) =>
+                  commit(setBuildingFields(state, uid, { group: event.target.value as ProductionGroupId }))
+                }
+              >
+                {PRODUCTION_GROUPS.map((group) => (
+                  <option key={group} value={group}>
+                    {guide.groups[group]}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="field">
+              <label htmlFor={`${id}-produces`}>{e.fieldProduces}</label>
+              <select
+                id={`${id}-produces`}
+                value={building.produces}
+                onChange={(event) =>
+                  commit(setBuildingFields(state, uid, { produces: event.target.value as ProductionResource }))
+                }
+              >
+                {PRODUCTION_RESOURCES.map((resource) => (
+                  <option key={resource} value={resource}>
+                    {guide.resources[resource]}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="field">
+              <label htmlFor={`${id}-priority`}>{e.fieldPriority}</label>
+              <select
+                id={`${id}-priority`}
+                value={building.priority}
+                onChange={(event) => commit(setBuildingFields(state, uid, { priority: Number(event.target.value) }))}
+              >
+                <option value={0}>{e.priorityNone}</option>
+                <option value={1}>*</option>
+                <option value={2}>**</option>
+                <option value={3}>***</option>
+              </select>
+            </div>
+          </>
+        ) : null}
       </div>
 
-      <fieldset className="production-edit-checkboxes">
-        <legend>{e.fieldRequires}</legend>
-        {PRODUCTION_RESOURCES.map((resource) => (
-          <label key={resource} className="tier-edit-check">
-            <input
-              type="checkbox"
-              checked={building.requires.includes(resource)}
-              onChange={() => toggleRequire(resource)}
-            />
-            {guide.resources[resource]}
-          </label>
-        ))}
-      </fieldset>
-
-      <fieldset className="production-edit-checkboxes">
-        <legend>{e.fieldTags}</legend>
-        {PRODUCTION_TAGS.map((tag) => (
-          <label key={tag} className="tier-edit-check">
-            <input type="checkbox" checked={building.tags.includes(tag)} onChange={() => toggleTag(tag)} />
-            {guide.tags[tag]}
-          </label>
-        ))}
-      </fieldset>
+      {isProduction ? (
+        <>
+          <fieldset className="production-edit-checkboxes">
+            <legend>{e.fieldRequires}</legend>
+            {PRODUCTION_RESOURCES.map((resource) => (
+              <label key={resource} className="tier-edit-check">
+                <input
+                  type="checkbox"
+                  checked={building.requires.includes(resource)}
+                  onChange={() => toggleRequire(resource)}
+                />
+                {guide.resources[resource]}
+              </label>
+            ))}
+          </fieldset>
+          <fieldset className="production-edit-checkboxes">
+            <legend>{e.fieldTags}</legend>
+            {PRODUCTION_TAGS.map((tag) => (
+              <label key={tag} className="tier-edit-check">
+                <input type="checkbox" checked={building.tags.includes(tag)} onChange={() => toggleTag(tag)} />
+                {guide.tags[tag]}
+              </label>
+            ))}
+          </fieldset>
+        </>
+      ) : null}
     </section>
   );
 }
@@ -235,15 +273,15 @@ function ExportDialog({
 }: {
   open: boolean;
   onClose: () => void;
-  state: ProductionBuildingsEditorState;
+  state: BuildingsEditorState;
   e: EditorText;
   tf: Tf;
 }) {
   const [copied, setCopied] = useState<"json" | null>(null);
-  const exported = useMemo(() => exportProductionBuildings(state), [state]);
-  const json = useMemo(() => serializeProductionData(exported), [exported]);
+  const exported = useMemo(() => exportBuildings(state), [state]);
+  const json = useMemo(() => serializeBuildingsData(exported), [exported]);
   const blocks = useMemo(() => buildingTextBlocks(state), [state]);
-  const problems = useMemo(() => findProductionProblems(state), [state]);
+  const problems = useMemo(() => findBuildingProblems(state), [state]);
   if (!open) return null;
 
   return (
@@ -278,7 +316,7 @@ function ExportDialog({
       <div className="tier-export-block">
         <div className="tier-export-block-head">
           <h3>
-            <code>lib/data/production-buildings.json</code>
+            <code>lib/data/buildings.json</code>
           </h3>
           <div className="tier-edit-row-actions">
             <button
@@ -297,7 +335,7 @@ function ExportDialog({
               type="button"
               onClick={() => {
                 const url = URL.createObjectURL(new Blob([json], { type: "application/json" }));
-                download(url, "production-buildings.json");
+                download(url, "buildings.json");
                 window.setTimeout(() => URL.revokeObjectURL(url), 0);
               }}
             >
@@ -306,32 +344,32 @@ function ExportDialog({
             </button>
           </div>
         </div>
-        <textarea readOnly value={json} rows={12} spellCheck={false} aria-label="lib/data/production-buildings.json" />
+        <textarea readOnly value={json} rows={12} spellCheck={false} aria-label="lib/data/buildings.json" />
       </div>
       <DictionaryBlocks blocks={blocks} title={e.exportTexts} rows={8} />
     </dialog>
   );
 }
 
-export function ProductionBuildingsEditor() {
+export function BuildingsEditor() {
   const { t, tf, locale } = useLocale();
-  const e = t.productionBuildingsEditor;
-  const guide = t.guideEntries.productionBuildings;
+  const e = t.buildingsEditor;
+  const guide = t.guideEntries.buildings;
   const { languages } = useEditorLanguages({ withDefault: true });
   const uiLocale = toLocale(locale);
   const draft = useSyncExternalStore(draftStore.subscribe, draftStore.getSnapshot, draftStore.getServerSnapshot);
-  const state = draft ?? PUBLISHED_PRODUCTION;
-  const commit = (next: ProductionBuildingsEditorState) => draftStore.set(next);
+  const state = draft ?? PUBLISHED_BUILDINGS;
+  const commit = (next: BuildingsEditorState) => draftStore.set(next);
   const [selected, setSelected] = useState<string | null>(state.buildings[0]?.uid ?? null);
   const [exportOpen, setExportOpen] = useState(false);
-  const changes = useMemo(() => countProductionChanges(PUBLISHED_PRODUCTION, state), [state]);
-  const problems = useMemo(() => findProductionProblems(state), [state]);
-  const active = selected && buildingByUid(state, selected) ? selected : state.buildings[0]?.uid ?? null;
+  const changes = useMemo(() => countBuildingChanges(PUBLISHED_BUILDINGS, state), [state]);
+  const problems = useMemo(() => findBuildingProblems(state), [state]);
+  const active = selected && buildingByUid(state, selected) ? selected : (state.buildings[0]?.uid ?? null);
   const ctx: Ctx = { state, commit, e, guide, tf, languages };
 
   return (
     <div className="hero-tiers tier-editor production-editor">
-      <BackLink href="/guides/production-buildings/" label={e.back} />
+      <BackLink href="/guides/buildings/" label={e.back} />
       <PageHead eyebrow={e.eyebrow} title={e.title} lede={e.lede} />
 
       <div className="tier-toolbar tier-edit-toolbar">
@@ -391,7 +429,7 @@ export function ProductionBuildingsEditor() {
                   onClick={() => setSelected(building.uid)}
                 >
                   <span>{label}</span>
-                  <span className="tier-small">{guide.groups[building.group]}</span>
+                  <span className="tier-small">{guide.categories[building.category]}</span>
                 </button>
               </li>
             );

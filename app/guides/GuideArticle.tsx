@@ -25,7 +25,7 @@ import { HeroLevelingGuide, isHeroLevelingGuide } from "./HeroLevelingGuide";
 import { GoddessLevelingGuide, isGoddessLevelingGuide } from "./GoddessLevelingGuide";
 import { CollectionGuide, isCollectionGuide } from "./CollectionGuide";
 import { CollectionLayoutsGuide, isCollectionLayoutsGuide } from "./CollectionLayoutsGuide";
-import { ProductionBuildingsGuide, isProductionBuildingsGuide } from "./ProductionBuildingsGuide";
+import { BuildingsGuide, isBuildingsGuide } from "./BuildingsGuide";
 import { CryptidesGuide, isCryptidesGuide } from "./CryptidesGuide";
 import { HeroBanner } from "./HeroBanner";
 import { GoddessBanner } from "./GoddessBanner";
@@ -149,8 +149,8 @@ export function GuideArticle({ id }: { id: GuideEntryId }) {
           <CollectionGuide guide={guide} />
         ) : isCollectionLayoutsGuide(guide) ? (
           <CollectionLayoutsGuide guide={guide} />
-        ) : isProductionBuildingsGuide(guide) ? (
-          <ProductionBuildingsGuide guide={guide} />
+        ) : isBuildingsGuide(guide) ? (
+          <BuildingsGuide guide={guide} />
         ) : isCryptidesGuide(guide) ? (
           <CryptidesGuide guide={guide} />
         ) : isArtworkLayoutsGuide(guide) ? (

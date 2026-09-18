@@ -164,15 +164,15 @@ to `GuideArticle`: `GoddessesGuide`, `ArtworkGuide`, `ArtworkLayoutsGuide`,
 `HeroLayoutsGuide`, `HeroRoster`, `HeroTierListGuide`, `GoddessTheaterGuide`,
 `HeroLinkingGuide`, `AnecdotesGuide`, `ServerAgeUnlocksGuide`, `MuseionGuide`,
 `HeroLevelingGuide`, `GoddessLevelingGuide`, `CollectionGuide`,
-`ProductionBuildingsGuide`, and `CryptidesGuide`.
+`BuildingsGuide`, and `CryptidesGuide`.
 `guideLayout()` in `lib/content/guides.ts` picks the renderer from a field only
 that guide has (`goddessTexts` for Goddesses, `phaseTexts` for Goddess leveling,
 `collectionTexts` for Collection,
 `playsHeading` for Goddess Theater,
 `linksHeading` for Hero linking, `anecdoteTexts` for Anecdotes,
 `timelineHeading` for Server age unlocks, `buildingsHeading` for Museion,
-`focusHeading` for Hero leveling, `requirementsHeading` for production
-buildings, `cryptidesHeading` for Cryptides, before
+`focusHeading` for Hero leveling, `categoriesHeading` for Buildings,
+`cryptidesHeading` for Cryptides, before
 `filterAll` for Heroes), and
 `tests/guides.test.mjs` pins every entry, so two guides cannot claim the same
 renderer by sharing a field name. Keep `sections` and `note` in those entries
@@ -669,32 +669,34 @@ JSON and one `heroNotes` block per dictionary. An untouched draft reproduces
 the published file byte for byte (`tests/hero-leveling.test.mjs`).
 Source: Boah’s Discord list, with Autumn’s addendum (Ice, S12), 6 August 2026.
 
-## Production building resource requirements
+## Buildings
 
-Production buildings sit under **Core elements**. Groups, produces/requires
-resources, priority asterisks, and barracks/research tags live in
-`lib/data/production-buildings.json`. The guide renderer is
-`ProductionBuildingsGuide` (detector `requirementsHeading`). Group labels,
-resource names, tag prose, and building name/note overrides live in
-`guideEntries.productionBuildings` (`buildingTexts` is sparse per language).
+Buildings sits under **Core elements** (`/guides/buildings/`; old
+`/guides/production-buildings/` still opens the same guide). Population,
+production, and military rows live in `lib/data/buildings.json`. The guide
+renderer is `BuildingsGuide` (detector `categoriesHeading`). Category labels,
+production group labels, resource names, tag prose, and building name/note
+overrides live in `guideEntries.buildings` (`buildingTexts` is sparse per
+language).
 
-The page shows each age group as a numbered stage (the shared `gl-*` timeline)
-with compact cards: the cut-out, stars for priority, the produced resource as a
-large chip, upgrade costs as smaller chips, and the tags as notes. Every
-resource has its own colour (`.production-guide [data-resource]` in
-`app/globals.css`). A search and a resource filter narrow the cards to the
-buildings that make or need a resource, and a table lists every building by
-age with the same chips and stars.
+The page shows population → production age groups → military as numbered stages
+(the shared `gl-*` timeline) with compact cards: art, level cap, and for
+production the cut-out or resource dots, stars for priority, produced/required
+resource chips, and tags. A category filter, search, and resource filter narrow
+the cards. A table lists every building with the same facts.
 
 Members with `guides.draft` see **Edit buildings** in the guide head, which opens
-`/guides/production-buildings/edit/`. The draft is saved in that browser only
-(`localStorage['popepoch-production-buildings-draft']`). **Export** produces the
-complete JSON and one `buildingTexts` block per dictionary. An untouched draft
-reproduces the published file byte for byte (`tests/production-buildings.test.mjs`).
-Building pictures in `public/production-buildings/` were cut from German client
-screenshots on 16 September 2026, with speech bubbles and other UI overlays
-removed (`image` on each JSON row). Coal has no picture yet.
-Source: community Discord list; Enlightenment entries thanks to Spitzell.
+`/guides/buildings/edit/`. The draft is saved in that browser only
+(`localStorage['popepoch-buildings-draft']`). **Export** produces the complete
+JSON and one `buildingTexts` block per dictionary. An untouched draft reproduces
+the published file byte for byte (`tests/buildings.test.mjs`).
+Roster, level caps, and missing portraits come from the Pop Epoch Wiki Buildings
+page (Fandom), last merged on 18 September 2026. Production upgrade resources and
+priority asterisks are from a community Discord list (Enlightenment thanks to
+Spitzell). Production cut-outs in `public/production-buildings/` were taken from
+German client screenshots on 16 September 2026; wiki highest-stage art for
+population, military, and remaining production rows lives in `public/buildings/`.
+Per-level upgrade cost tables are not imported yet.
 
 ## Collection
 
