@@ -322,7 +322,7 @@
       "name": "Spice Workshop",
       "category": "production",
       "levelMax": 1450,
-      "image": "production-buildings/cafe.webp",
+      "image": "buildings/stages/spice-workshop-5.webp",
       "group": "enlightenment",
       "produces": "coffee",
       "requires": [

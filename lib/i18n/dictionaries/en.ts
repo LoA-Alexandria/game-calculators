@@ -1826,7 +1826,7 @@ const en = {
       title: "Buildings",
       summary: "Population, production, and military city buildings from the Pop Epoch Wiki, with production costs and priority.",
       intro:
-        "City buildings raise population, produce resources, and train soldiers. Production cards still list what each building makes, what upgrades cost, and barracks or research notes. Population and military cards show the wiki highest-stage art and level cap.",
+        "City buildings raise population, produce resources, and train soldiers. Open a card for upgrade-stage art and the wiki level-sample table. Production cards also list what each building makes, upgrade costs, and barracks or research notes.",
       categoriesHeading: "Buildings by type",
       categoriesLede:
         "Filter by population, production, or military. On production buildings, stars mark community priority (one to three), and the resource chips filter what each building makes or needs.",
@@ -1851,10 +1851,26 @@ const en = {
       buildingCount: "{count} buildings",
       buildingCountOne: "1 building",
       overviewHeading: "Every building at a glance",
-      overviewLede: "One row per building: type, level cap, and for production what it makes, costs, and priority.",
+      overviewLede: "One row per building: type, level cap, and for production what it makes, costs, and priority. Tap a name to open the detail panel.",
       colBuilding: "Building",
       colCategory: "Type",
       colLevels: "Levels",
+      previousBuilding: "Previous building",
+      nextBuilding: "Next building",
+      close: "Close",
+      stagesLabel: "Upgrade stages",
+      stageLabel: "Stage {number}",
+      notesHeading: "Notes",
+      levelsHeading: "Level table",
+      levelsLede:
+        "Wiki sample rows for this building — not necessarily every integer level up to the cap. Upgrade and upkeep costs use the resource names below.",
+      colLevel: "Level",
+      colPopulation: "Population",
+      colTroopCapacity: "Troop capacity",
+      colTroopLevel: "Troop level",
+      colCivIndex: "Civ index",
+      colUpgrade: "Upgrade cost",
+      colUpkeep: "Upkeep",
       groups: {
         basic: "Basic production",
         advanced: "Advanced resources",
@@ -1864,6 +1880,7 @@ const en = {
         steam: "Steam resources",
       },
       resources: {
+        land: "Land",
         wood: "Wood",
         food: "Food",
         stone: "Stone",
@@ -1879,7 +1896,7 @@ const en = {
         steel: "Steel",
         gunpowder: "Gunpowder",
         lemons: "Lemons",
-        coffee: "Coffee",
+        coffee: "Coffee beans",
         coal: "Coal",
         precisionParts: "Precision Parts",
         oil: "Oil",
@@ -1944,13 +1961,13 @@ const en = {
         "mounted-police-station": { name: "Mounted Police Station" },
       },
       credit:
-        "Roster, level caps, and missing portraits from the Pop Epoch Wiki Buildings page (Fandom), last merged on 18 September 2026. Production upgrade resources and priority asterisks from a community Discord list; Enlightenment thanks to Spitzell. Production cut-outs from German client screenshots on 16 September 2026. The artwork belongs to the game’s publisher.",
+        "Roster, level caps, stage arts, and level-sample tables from the Pop Epoch Wiki Buildings page (Fandom), last merged on 18 September 2026. Production upgrade resource types and priority asterisks from a community Discord list; Enlightenment thanks to Spitzell. Production cut-outs from German client screenshots on 16 September 2026. The artwork belongs to the game’s publisher.",
       sections: [
         {
           heading: "How to read the cards",
           body: [
-            "Population and military cards show the wiki highest-stage art and the level cap. Full per-level costs stay on the wiki for now.",
-            "On production cards, Produces is the resource the building makes and Requires is what its upgrades cost. Barracks and research tags sit under the costs when the building feeds soldiers or an age’s research. Stars are community priority, not an in-game rank.",
+            "Tap a card (or a name in the overview table) for upgrade-stage art and the wiki level-sample table: population or troop stats, civ index, upgrade cost, and upkeep where the wiki lists them.",
+            "On production cards, Produces is the resource the building makes and Requires is what its upgrades cost. The building name is the wiki building name (for example Spice Workshop). Coffee beans are what that workshop produces — not the building’s name. Barracks and research tags sit under the costs when the building feeds soldiers or an age’s research. Stars are community priority, not an in-game rank.",
           ],
         },
       ],

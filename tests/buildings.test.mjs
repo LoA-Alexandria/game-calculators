@@ -84,19 +84,29 @@ test("listed building pictures exist and none are orphaned under public/building
   const productionRoot = new URL("../public/production-buildings/", import.meta.url);
   for (const building of BUILDINGS) {
     assert.ok(building.image, building.id);
+    if (building.image.startsWith("production-buildings/")) {
+      assert.ok(existsSync(new URL(building.image.slice("production-buildings/".length), productionRoot)), building.image);
+    } else if (building.image.startsWith("buildings/stages/")) {
+      assert.ok(existsSync(new URL(building.image.slice("buildings/stages/".length), new URL("../public/buildings/stages/", import.meta.url))), building.image);
+    } else if (building.image.startsWith("buildings/")) {
+      assert.ok(existsSync(new URL(building.image.slice("buildings/".length), buildingsRoot)), building.image);
+    } else {
+      assert.fail(`unexpected image path ${building.image}`);
+    }
     const path = building.image.startsWith("production-buildings/")
       ? new URL(building.image.slice("production-buildings/".length), productionRoot)
-      : new URL(building.image.slice("buildings/".length), buildingsRoot);
-    assert.ok(existsSync(path), building.image);
+      : building.image.startsWith("buildings/stages/")
+        ? new URL(building.image.slice("buildings/stages/".length), new URL("../public/buildings/stages/", import.meta.url))
+        : new URL(building.image.slice("buildings/".length), buildingsRoot);
     const head = readFileSync(path).subarray(0, 12).toString("latin1");
     assert.ok(head.startsWith("RIFF") && head.endsWith("WEBP"), building.image);
   }
-  const listedBuildings = BUILDINGS.map((building) => building.image)
-    .filter((image) => image?.startsWith("buildings/"))
+  const listedTop = BUILDINGS.map((building) => building.image)
+    .filter((image) => image?.startsWith("buildings/") && !image.startsWith("buildings/stages/"))
     .map((image) => image.slice("buildings/".length))
     .sort();
   const files = readdirSync(buildingsRoot).filter((name) => name.endsWith(".webp")).sort();
-  assert.deepEqual(files, listedBuildings);
+  assert.deepEqual(files, listedTop);
 });
 
 test("an untouched draft exports the published buildings file byte for byte", () => {
@@ -112,4 +122,33 @@ test("adding and removing a building round-trips through export", () => {
   const removed = removeBuilding(added.state, added.uid);
   assert.equal(removed.buildings.length, PUBLISHED_BUILDINGS.buildings.length);
   assert.equal(productionBuildings().length, 20);
+});
+
+test("wiki level tables and stage arts cover every building", async () => {
+  const { BUILDING_LEVELS, buildingStageUrl } = await import("../lib/content/building-levels.ts");
+  assert.equal(Object.keys(BUILDING_LEVELS).length, BUILDINGS.length);
+  for (const building of BUILDINGS) {
+    const detail = BUILDING_LEVELS[building.id];
+    assert.ok(detail, building.id);
+    assert.ok(detail.stages.length >= 1, `${building.id} stages`);
+    assert.ok(detail.levels.length >= 1, `${building.id} levels`);
+    assert.equal(detail.levels[0].level, 1, `${building.id} starts at 1`);
+    for (const stage of detail.stages) {
+      const file = stage.replace(/^buildings\/stages\//, "");
+      assert.ok(existsSync(new URL(`../public/buildings/stages/${file}`, import.meta.url)), stage);
+    }
+    assert.match(buildingStageUrl(detail.stages[0]), /\/buildings\/stages\//);
+  }
+  const spice = BUILDING_LEVELS["spice-workshop"];
+  assert.equal(BUILDINGS.find((building) => building.id === "spice-workshop")?.name, "Spice Workshop");
+  assert.equal(spice.levels[0].upgrade?.[1]?.resource, "coffee");
+  for (const [code, dictionary] of Object.entries(mapLocales(getDictionary))) {
+    const guide = dictionary.guideEntries.buildings;
+    assert.ok(!(guide.buildingTexts["spice-workshop"]?.name ?? "").includes("Coffee"), code);
+    assert.match(guide.resources.coffee, /bean|Kaffee|caf/i, code);
+    assert.ok(guide.stagesLabel, code);
+    assert.ok(guide.levelsHeading, code);
+    assert.ok(guide.resources.land, code);
+  }
+  assert.equal(getDictionary("de").guideEntries.buildings.buildingTexts["spice-workshop"]?.name, "Gewürzhaus");
 });
