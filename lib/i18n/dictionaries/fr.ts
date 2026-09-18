@@ -485,12 +485,97 @@ const fr: Dictionary = {
       groupCountOne: "1 objet",
       skillLevel: "Niv. {level}",
       skillIconLabel: "Icône de compétence",
-      credit: "Objets, noms et compétences tirés de captures du client allemand du 16 septembre 2026, au niveau de compétence indiqué sur chaque carte. Le texte allemand est celui du jeu ; l’anglais et le français sont des traductions et peuvent différer du texte du jeu. Les images appartiennent à l’éditeur du jeu.",
+      credit: "Objets des emplacements d’âge, noms et compétences tirés de captures du client allemand du 16 septembre 2026 ; objets exclusifs de héros tirés de captures du 18 septembre 2026, au niveau de compétence indiqué sur chaque carte. Le texte allemand est celui du jeu ; l’anglais et le français sont des traductions et peuvent différer du texte du jeu. Les images appartiennent à l’éditeur du jeu.",
       collectionTexts: {
         "aeolus-bag-of-winds": {
           name: "Outre d’Éole",
           skillName: "Vent du retour",
           skillText: "Pendant 3 tours après avoir utilisé une compétence, Odysseus rend aux alliés, à la fin de chaque action ennemie, des PV égaux à 50 % des dégâts infligés par cette action.",
+        },
+        "golden-throne": {
+          name: "Trône d’or",
+          skillName: "Souveraineté éternelle",
+          skillText: "Quand César lance une compétence et que cela déclenche une deuxième ATQ supplémentaire, les alliés gagnent +10 % de bonus de dégâts de compétence et +50 % de bonus de dégâts supplémentaires pendant 3 tours.",
+        },
+        "sin-and-redemption": {
+          name: "« Péché » et « Rédemption »",
+          skillName: "Poursuite des revolvers jumeaux",
+          skillText: "Après que Billy the Kid a infligé des dégâts avec une compétence, 30 % de chances de déclencher [Coup fatal] sur 1 ennemi. Les cibles exécutées ne peuvent pas être réanimées.",
+        },
+        "winged-sandals": {
+          name: "Sandales ailées",
+          skillName: "Coup de pied express",
+          skillText: "Après qu’Hermès a utilisé sa compétence, les chances d’esquive de [Sprint] augmentent de 30 %.",
+        },
+        "divine-greaves": {
+          name: "Jambières divines",
+          skillName: "Achille",
+          skillText: "Avant d’utiliser une compétence, Achille augmente les DGT CRIT des alliés de 50 % pendant 3 tours.",
+        },
+        "broken-shackles": {
+          name: "Fers brisés",
+          skillName: "La Résistance",
+          skillText: "Avant que Spartacus ne lance une compétence, les alliés gagnent +15 % de bonus de dégâts de compétence. Pour chaque debuff sur l’ennemi, les alliés gagnent encore +15 % de bonus de dégâts de compétence pendant ce tour. Se cumule jusqu’à 2 fois.",
+        },
+        "eagle-scepter": {
+          name: "Sceptre de l’aigle",
+          skillName: "L’Aigle criard",
+          skillText: "Après que Pompée a lancé une compétence, si ses PV sont au-dessus de 50 %, les alliés gagnent +20 % de bonus de dégâts de compétence pendant 3 tours. Si ses PV sont à 50 % ou moins, les alliés récupèrent des PV égaux à 10 % de leurs PV max.",
+        },
+        "nemean-lion-pelt": {
+          name: "Peau du lion de Némée",
+          skillName: "Force d’Héraclès",
+          skillText: "Quand Héraclès utilise une compétence, 1 debuff est retiré des alliés. Si les alliés ont au plus autant de debuffs que les ennemis, 1 instance supplémentaire de dégâts égale à 100 % de l’ATQ est infligée.",
+        },
+        "circes-enchanted-chalice": {
+          name: "Calice enchanté de Circé",
+          skillName: "La bête intérieure",
+          skillText: "Après que Circé a utilisé une compétence, l’effet de soin des ennemis avec [Malédiction de mort] est réduit de 10 % pendant 1 tour avant leur action.",
+        },
+        "pearl-earrings": {
+          name: "Boucles d’oreilles de perles",
+          skillName: "Faste qui renverse les royaumes",
+          skillText: "Après que Cléopâtre a utilisé cette compétence, la prochaine action de l’ennemi est remplacée par une attaque alliée qui utilise une compétence ennemie aléatoire contre lui et inflige 80 % des dégâts d’origine de cette compétence.",
+        },
+        "mona-lisa": {
+          name: "« Mona Lisa ? »",
+          skillName: "La Joconde",
+          skillText: "Après que Da Vinci a utilisé une compétence, les alliés gagnent 20 % de réduction des dégâts de compétence pendant 3 tours.",
+        },
+        "augustus-coin": {
+          name: "Pièce d’Auguste",
+          skillName: "Pièce étincelante",
+          skillText: "Si Auguste lance une compétence pendant les 5 premiers tours, le coefficient de compétence des alliés augmente de 50 % pendant ce tour.",
+        },
+        "donkey-mask": {
+          name: "Masque d’âne",
+          skillName: "Shakespeare",
+          skillText: "Après que Shakespeare a lancé sa compétence, si l’ATQ des alliés est supérieure à celle des ennemis, 20 % de chances de déclencher 1 [Destruction] supplémentaire. Si l’ATQ des alliés est inférieure ou égale à celle des ennemis, 20 % de chances de déclencher 1 [Survie] supplémentaire.",
+        },
+        "tutankhamun-mask": {
+          name: "Masque de Toutankhamon",
+          skillName: "Épreuve du Pharaon",
+          skillText: "En utilisant une compétence, Toutankhamon a 50 % de chances de retirer 2 buffs aux ennemis qui ont au moins 2 buffs actifs.",
+        },
+        "bucephalus-golden-bridle": {
+          name: "Bride d’or de Bucéphale",
+          skillName: "Poursuite de Bucéphale",
+          skillText: "Après qu’Alexandre le Grand a déclenché [Poursuite] (un lancer de sort supplémentaire), 1 lancer de compétence supplémentaire est déclenché. 50 % de chances de déclencher à nouveau [Poursuite] et d’infliger des dégâts supplémentaires égaux à 100 % de l’ATQ.",
+        },
+        "grimoire-of-gravity": {
+          name: "Grimoire de la gravité",
+          skillName: "Guidage des étoiles",
+          skillText: "Quand Isaac Newton utilise une compétence, les chances d’accorder à tous les alliés un bonus d’ATQ et de DGT CRIT augmentent de 50 %.",
+        },
+        "queens-crown": {
+          name: "La couronne de la reine",
+          skillName: "La couronne de la reine",
+          skillText: "Après que la reine Victoria a lancé une compétence, elle accorde à tous les alliés [Réflexion] pendant 3 tours (quand le porteur est touché par une compétence, il renvoie 20 % des dégâts de compétence subis, jusqu’à 100 % de l’ATQ du lanceur).",
+        },
+        "napoleons-bicorne": {
+          name: "Bicorne de Napoléon",
+          skillName: "Brûle, Empire !",
+          skillText: "Quand Napoléon Bonaparte utilise une compétence et déclenche [Poursuite] (un lancer de sort supplémentaire), il inflige 1 attaque supplémentaire avec 100 % de dégâts supplémentaires.",
         },
         "prometheus-torch": {
           name: "Flambeau de Prométhée",

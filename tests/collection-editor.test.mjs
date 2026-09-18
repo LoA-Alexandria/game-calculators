@@ -91,11 +91,13 @@ test("replacing and removing pictures lists the files to add and delete", () => 
 test("rarity changes regroup an item, moves stay within a rarity, and removals count once", () => {
   const uid = uidOf(PUBLISHED_COLLECTION, "trojan-horse");
   const raised = setRarity(PUBLISHED_COLLECTION, uid, "UR");
-  assert.deepEqual(raised.items.slice(0, 2).map((item) => item.id), ["aeolus-bag-of-winds", "trojan-horse"]);
+  assert.equal(raised.items[0].id, "aeolus-bag-of-winds");
+  assert.equal(raised.items[18].id, "trojan-horse");
   const first = PUBLISHED_COLLECTION.items[0];
-  assert.equal(moveItem(PUBLISHED_COLLECTION, first.uid, 1), PUBLISHED_COLLECTION, "the only UR item cannot move");
+  assert.equal(moveItem(PUBLISHED_COLLECTION, first.uid, -1), PUBLISHED_COLLECTION, "the first UR item cannot move up");
   const torch = uidOf(PUBLISHED_COLLECTION, "prometheus-torch");
-  assert.equal(moveItem(PUBLISHED_COLLECTION, torch, 1).items[2].id, "prometheus-torch");
+  const torchIndex = PUBLISHED_COLLECTION.items.findIndex((item) => item.id === "prometheus-torch");
+  assert.equal(moveItem(PUBLISHED_COLLECTION, torch, 1).items[torchIndex + 1].id, "prometheus-torch");
   assert.equal(countCollectionChanges(PUBLISHED_COLLECTION, removeItem(PUBLISHED_COLLECTION, torch)), 1);
 });
 

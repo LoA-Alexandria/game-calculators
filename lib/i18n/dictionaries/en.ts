@@ -484,7 +484,7 @@ const en = {
       groupCountOne: "1 item",
       skillLevel: "Lv. {level}",
       skillIconLabel: "Skill icon",
-      credit: "Items, names, and skills from German client screenshots taken on 16 September 2026, at the skill level shown on each card. The German wording is the game’s; English and French are translations and may differ from the game’s own text. The pictures belong to the game’s publisher.",
+      credit: "Age-slot items, names, and skills from German client screenshots taken on 16 September 2026; hero-exclusive items from screenshots taken on 18 September 2026, at the skill level shown on each card. The German wording is the game’s; English and French are translations and may differ from the game’s own text. The pictures belong to the game’s publisher.",
       // English is the wording in lib/data/collection.json, so this catalog stays empty.
       collectionTexts: {},
       sections: [

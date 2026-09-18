@@ -710,8 +710,10 @@ change per level, so the card shows that level next to the skill name. Rarity
 follows the colour of the item name in the game: red UR, gold SSR, purple SR.
 
 The first 25 items were read from German client screenshots on 16 September
-2026. German is the game's wording (the in-game typo "Fäigkeitsschadens…" is
-corrected); English and French are translations and the guide's credit says so.
+2026. Seventeen hero-exclusive UR items were added from screenshots on
+18 September 2026; those cards use the St. 1 battle skill only. German is the
+game's wording (the in-game typo "Fäigkeitsschadens…" is corrected); English
+and French are translations and the guide's credit says so.
 The item pictures were cut out with a background-removal model run locally
 (rembg, `birefnet-general`), with the glow behind each item removed. The skill
 icons are the circle inside the white ring, with the type badge and level
