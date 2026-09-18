@@ -4069,6 +4069,37 @@ const de: Dictionary = {
       ],
       note: "Guide von Autumn (Ice S12), geteilt auf Discord, 13. August 2026.",
     },
+    duelFestival: {
+      title: "Duel Festival",
+      summary:
+        "Gegnerwahl in Phase 1, Default-Formations-Counter, Gruppenwahl und späte Attempts.",
+      intro:
+        "Phase 1 ist wie Glory Arena — nimm Kämpfe, die du sicher gewinnst. Spätere Phasen laufen automatisch. Counter Default-Formationen früh, dann counter die Formation, mit der du dich qualifiziert hast.",
+      sections: [
+        {
+          heading: "Phasen",
+          body: [
+            "Mehrere Phasen. Die erste ist wie Glory Arena: wähle Gegner, die du sicher schlägst. Alle späteren Phasen sind automatische Match-ups, bei denen du nicht aktiv eingreifen musst.",
+          ],
+        },
+        {
+          heading: "Formation",
+          body: [
+            "Verschiebe den Trupp deiner 1.-Formation in den letzten Slot — das full-countert automatisch jeden, der in Phase 1 noch Default-Formation nutzt.",
+            "Ab Phase 2 baue den Counter zu der Formation, die du in Phase 1 genutzt hast. Die meisten Qualifizierten fahren jetzt dasselbe Phase-1-Setup.",
+          ],
+        },
+        {
+          heading: "Effizienz",
+          body: [
+            "Als F2P keine Edelsteine für Phase-1-Attempts ausgeben, wenn du sicher Phase 2 erreichst — lohnt sich nicht.",
+            "Bei der Gruppenwahl 1–4 nicht Gruppe 1 nehmen. Die meisten Whales klicken achtlos Gruppe 1 — meist die härteste Bracket (seltene Ausnahmen).",
+            "Wie bei anderen Limited-Attempt-PvP-Events mit Ranking: Attempts etwa 1–2 Stunden vor Ende. Frühere Attempts geben anderen mehr Zeit, dich runterzuschlagen (−50 Punkte bei Niederlage in Runde 1), und hohe Ränge werden öfter als Ziel angezeigt.",
+          ],
+        },
+      ],
+      note: "Guide von Autumn (Ice S12), geteilt auf Discord, 10. August 2026.",
+    },
   },
   events: {
     title: "Events",
