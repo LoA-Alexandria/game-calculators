@@ -3492,6 +3492,50 @@ const en = {
       ],
       note: "Guide by Autumn (Ice S12), shared on Discord, 19 August 2026 — trench framing from Boah.",
     },
+    roadToWorldcup: {
+      title: "Road to Worldcup",
+      summary:
+        "Stamina recruiting, formation counters (ATT / POSS / DEF), Friendly Match elo, and Artifact spend.",
+      intro:
+        "Recruit with stamina, keep a balanced club, and counter formations in the ATT → POSS → DEF cycle. Push Friendly Match elo early and bank last-day attempts.",
+      sections: [
+        {
+          heading: "General",
+          body: [
+            "Use stamina to recruit players. Keep a balanced team across stats. Higher club level unlocks better player rarities.",
+            "Do not store more than 50 stamina — recovery stops above 50.",
+            "You can skip a match about 5 seconds in (match length varies, roughly 9′50–10′, longer on later stages).",
+          ],
+        },
+        {
+          heading: "Formations",
+          body: [
+            "Counters: ATT beats POSS, POSS beats DEF, DEF beats ATT.",
+            "Use 352 (POSS) to counter 442 (DEF). Use 442 (DEF) to counter 433 (ATT). Use 433 (ATT) to counter 352 (POSS).",
+          ],
+        },
+        {
+          heading: "Auto Recruit",
+          body: [
+            "Enable all attributes for auto recruitment so you do not miss chances to improve the squad.",
+          ],
+        },
+        {
+          heading: "Friendly Matches",
+          body: [
+            "Similar to Arena, but with your football team. Do all attempts daily. The earlier your team is strong, the better — climb elo ASAP and hold it.",
+            "On the last event day, save attempts until the event is almost over so you gain the most elo and reduce the window where others can attack you back.",
+          ],
+        },
+        {
+          heading: "Artifact",
+          body: [
+            "Requires Club Level 10. Expect about $120–180 depending on RNG.",
+          ],
+        },
+      ],
+      note: "Guide by Autumn (Ice S12), shared on Discord, 13 August 2026.",
+    },
   },
   events: {
     title: "Events",

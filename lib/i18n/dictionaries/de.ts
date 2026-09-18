@@ -4025,6 +4025,50 @@ const de: Dictionary = {
       ],
       note: "Guide von Autumn (Ice S12), geteilt auf Discord, 19. August 2026 — Graben-Framing von Boah.",
     },
+    roadToWorldcup: {
+      title: "Road to Worldcup",
+      summary:
+        "Stamina-Recruiting, Formations-Counter (ATT / POSS / DEF), Friendly-Match-Elo und Artifact-Spend.",
+      intro:
+        "Recruite mit Stamina, halte den Club ausgewogen und counter Formationen im Zyklus ATT → POSS → DEF. Friendly-Match-Elo früh pushen und Versuche am letzten Tag zurückhalten.",
+      sections: [
+        {
+          heading: "Allgemein",
+          body: [
+            "Nutze Stamina zum Recruiten. Halte das Team bei den Stats ausgewogen. Höheres Club-Level schaltet bessere Spieler-Seltenheiten frei.",
+            "Speichere nicht mehr als 50 Stamina — darüber stoppt die Regeneration.",
+            "Matches kannst du nach etwa 5 Sekunden skippen (Spieldauer variabel, grob 9′50–10′, später länger).",
+          ],
+        },
+        {
+          heading: "Formationen",
+          body: [
+            "Counter: ATT schlägt POSS, POSS schlägt DEF, DEF schlägt ATT.",
+            "352 (POSS) gegen 442 (DEF). 442 (DEF) gegen 433 (ATT). 433 (ATT) gegen 352 (POSS).",
+          ],
+        },
+        {
+          heading: "Auto Recruit",
+          body: [
+            "Aktiviere alle Attribute bei Auto Recruitment, damit du keine Chance verpasst, den Kader zu verbessern.",
+          ],
+        },
+        {
+          heading: "Friendly Matches",
+          body: [
+            "Ähnlich Arena, aber mit deinem Fußballteam. Täglich alle Attempts machen. Je früher das Team stark ist, desto besser — Elo schnell hoch und halten.",
+            "Am letzten Event-Tag Attempts sparen, bis das Event fast vorbei ist, damit du maximal Elo holst und weniger Zeit hast, zurückgegriffen zu werden.",
+          ],
+        },
+        {
+          heading: "Artifact",
+          body: [
+            "Braucht Club Level 10. Rechne mit etwa $120–180 je nach RNG.",
+          ],
+        },
+      ],
+      note: "Guide von Autumn (Ice S12), geteilt auf Discord, 13. August 2026.",
+    },
   },
   events: {
     title: "Events",

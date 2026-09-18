@@ -53,12 +53,13 @@ test("Events index always exposes Anleitungen and Tips categories", () => {
   assert.ok(sectionById("events").items.some((item) => item.href === "/events/dawn-of-rome/"));
   assert.ok(sectionById("events").items.some((item) => item.href === "/events/ring-toss/"));
   assert.ok(sectionById("events").items.some((item) => item.href === "/events/life-incubator/"));
+  assert.ok(sectionById("events").items.some((item) => item.href === "/events/road-to-worldcup/"));
   const groups = eventCategoryGroups(en);
   assert.deepEqual(
     groups.map((group) => ({ id: group.id, category: group.category, count: group.items.length })),
     [
       { id: "anleitungen", category: en.eventCategories.anleitungen, count: 0 },
-      { id: "tips", category: en.eventCategories.tips, count: 12 },
+      { id: "tips", category: en.eventCategories.tips, count: 13 },
     ],
   );
 });
@@ -189,6 +190,17 @@ test("Life Incubator is listed under Events Tips in every language", () => {
     assert.equal(entry.title, "Life Incubator");
     assert.ok(entry.sections.some((section) => /trench|Graben|tranchée/i.test(section.body.join(" "))));
     assert.ok(entry.sections.some((section) => /center|Mitte|centrale/i.test(section.body.join(" "))));
+    assert.match(entry.note, /Autumn/);
+  }
+});
+
+test("Road to Worldcup is listed under Events Tips in every language", () => {
+  for (const locale of ["en", "de", "fr"]) {
+    const dictionary = getDictionary(locale);
+    const entry = dictionary.eventGuideEntries.roadToWorldcup;
+    assert.equal(entry.title, "Road to Worldcup");
+    assert.ok(entry.sections.some((section) => /352/.test(section.body.join(" "))));
+    assert.ok(entry.sections.some((section) => /50/.test(section.body.join(" "))));
     assert.match(entry.note, /Autumn/);
   }
 });

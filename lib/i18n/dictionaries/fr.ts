@@ -3968,6 +3968,50 @@ const fr: Dictionary = {
       ],
       note: "Guide d’Autumn (Ice S12), partagé sur Discord, 19 août 2026 — framing tranchée de Boah.",
     },
+    roadToWorldcup: {
+      title: "Road to Worldcup",
+      summary:
+        "Recrutement à l’endurance, counters de formation (ATT / POSS / DEF), elo Friendly Match et dépense Artifact.",
+      intro:
+        "Recrutez avec l’endurance, gardez un club équilibré et counterez les formations dans le cycle ATT → POSS → DEF. Poussez l’elo Friendly Match tôt et gardez les tentatives du dernier jour.",
+      sections: [
+        {
+          heading: "Général",
+          body: [
+            "Utilisez l’endurance pour recruter. Gardez une équipe équilibrée en stats. Un club plus haut débloque de meilleures raretés de joueurs.",
+            "Ne stockez pas plus de 50 d’endurance — la régénération s’arrête au-dessus de 50.",
+            "Vous pouvez skip un match après environ 5 secondes (durée variable, environ 9′50–10′, plus long aux stages tardifs).",
+          ],
+        },
+        {
+          heading: "Formations",
+          body: [
+            "Counters : ATT bat POSS, POSS bat DEF, DEF bat ATT.",
+            "352 (POSS) contre 442 (DEF). 442 (DEF) contre 433 (ATT). 433 (ATT) contre 352 (POSS).",
+          ],
+        },
+        {
+          heading: "Auto Recruit",
+          body: [
+            "Activez tous les attributs pour l’auto-recrutement afin de ne manquer aucune chance d’améliorer l’effectif.",
+          ],
+        },
+        {
+          heading: "Friendly Matches",
+          body: [
+            "Similaire à l’Arena, mais avec votre équipe de foot. Faites toutes les tentatives chaque jour. Plus l’équipe est forte tôt, mieux c’est — grimpez l’elo vite et tenez-le.",
+            "Le dernier jour, gardez les tentatives jusqu’à presque la fin de l’event pour maximiser l’elo et réduire la fenêtre où on peut vous attaquer.",
+          ],
+        },
+        {
+          heading: "Artifact",
+          body: [
+            "Requiert Club Level 10. Comptez environ $120–180 selon le RNG.",
+          ],
+        },
+      ],
+      note: "Guide d’Autumn (Ice S12), partagé sur Discord, 13 août 2026.",
+    },
   },
   events: {
     title: "Événements",
