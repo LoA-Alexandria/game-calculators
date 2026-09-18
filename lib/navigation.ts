@@ -143,6 +143,13 @@ export const SECTIONS: NavSection[] = [
         badge: (t) => t.eventCategories.tips,
         categoryId: "tips",
       },
+      {
+        href: "/events/duel-festival/",
+        label: (t) => t.eventGuideEntries.duelFestival.title,
+        description: (t) => t.eventGuideEntries.duelFestival.summary,
+        badge: (t) => t.eventCategories.tips,
+        categoryId: "tips",
+      },
     ],
   },
   {

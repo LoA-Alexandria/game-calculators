@@ -4012,6 +4012,37 @@ const fr: Dictionary = {
       ],
       note: "Guide d’Autumn (Ice S12), partagé sur Discord, 13 août 2026.",
     },
+    duelFestival: {
+      title: "Duel Festival",
+      summary:
+        "Choix d’adversaires en phase 1, counters de formation par défaut, choix de groupe et timing des tentatives.",
+      intro:
+        "La phase 1 ressemble à Glory Arena — choisissez des combats que vous gagnez sûrement. Les phases suivantes sont des matchs automatiques. Counterez les formations par défaut tôt, puis counterez celle avec laquelle vous vous êtes qualifié.",
+      sections: [
+        {
+          heading: "Phases",
+          body: [
+            "Plusieurs phases. La première est comme Glory Arena : choisissez des ennemis que vous battez à coup sûr. Les phases suivantes sont des match-ups automatiques sans interaction active.",
+          ],
+        },
+        {
+          heading: "Formation",
+          body: [
+            "Déplacez la troupe de votre 1re formation en dernier slot — ça full-counter automatiquement quiconque reste en formation par défaut en phase 1.",
+            "À partir de la phase 2, construisez le counter de la formation utilisée en phase 1. La plupart des qualifiés joueront ce même setup.",
+          ],
+        },
+        {
+          heading: "Efficacité",
+          body: [
+            "En F2P, ne dépensez pas de gemmes sur les tentatives de phase 1 si vous êtes sûr de qualifier pour la phase 2 — ça ne vaut pas le coup.",
+            "Au choix initial des groupes 1–4, évitez le groupe 1. La plupart des whales cliquent négligemment le groupe 1 — souvent le bracket le plus dur (rares exceptions).",
+            "Comme les autres PvP à tentatives limitées avec classement : faites vos tentatives environ 1–2 heures avant la fin. Plus tôt vous jouez, plus on a le temps de vous faire chuter (−50 points à une défaite en round 1), et plus vous êtes haut, plus vous apparaissez comme cible.",
+          ],
+        },
+      ],
+      note: "Guide d’Autumn (Ice S12), partagé sur Discord, 10 août 2026.",
+    },
   },
   events: {
     title: "Événements",

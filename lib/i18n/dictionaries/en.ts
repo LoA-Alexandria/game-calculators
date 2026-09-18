@@ -3536,6 +3536,37 @@ const en = {
       ],
       note: "Guide by Autumn (Ice S12), shared on Discord, 13 August 2026.",
     },
+    duelFestival: {
+      title: "Duel Festival",
+      summary:
+        "Phase-1 opponent picks, default-formation counters, group choice, and late attempt timing.",
+      intro:
+        "Phase 1 plays like Glory Arena — pick fights you can win. Later phases are automatic match-ups. Counter default formations early, then counter whatever you used to qualify.",
+      sections: [
+        {
+          heading: "Phases",
+          body: [
+            "Multiple phases. The first is like Glory Arena: choose enemies you can surely beat. All later phases are automatic match-ups you do not need to interact with actively.",
+          ],
+        },
+        {
+          heading: "Formation",
+          body: [
+            "Move your 1st-formation troop to the last slot — that auto full-counters anyone still on default formation in Phase 1.",
+            "From Phase 2 on, build the counter to the formation you used in Phase 1. Most players who qualified will now run that same Phase-1 setup.",
+          ],
+        },
+        {
+          heading: "Efficiency",
+          body: [
+            "As F2P, do not spend gems on Phase-1 attempts if you are sure you can qualify for Phase 2 — it is not worth it.",
+            "When choosing groups 1–4 at the start, skip Group 1. Most whales casually pick Group 1, so it is usually the hardest bracket (rare exceptions aside).",
+            "Like other limited-attempt PvP events with ranking boards, do attempts about 1–2 hours before close. Earlier attempts give others more time to knock you down (−50 points on a loss in round one), and higher ranks show up more often as targets.",
+          ],
+        },
+      ],
+      note: "Guide by Autumn (Ice S12), shared on Discord, 10 August 2026.",
+    },
   },
   events: {
     title: "Events",
