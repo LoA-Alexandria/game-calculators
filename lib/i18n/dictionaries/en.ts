@@ -3280,6 +3280,40 @@ const en = {
       ],
       note: "Guide by Autumn (Ice S12), Discord 18–22 August 2026 — dice math thanks Pendulum.",
     },
+    mushroomAdventure: {
+      title: "Mushroom Adventure",
+      summary:
+        "Permanent merge progression, when to scythe low mushrooms, and how to spend stamina on connections.",
+      intro:
+        "Match four mushrooms to upgrade them. Progress carries across event runs — gem spends are worth it even when the rewards look light.",
+      sections: [
+        {
+          heading: "General",
+          body: [
+            "Match 4 mushrooms to upgrade them. Progression is permanent across multiple events. Worth spending gems on even if the rewards do not look like it.",
+          ],
+        },
+        {
+          heading: "Efficiency",
+          body: [
+            "Once mushrooms past Level 8 are unlocked, use Scythes to clear Level 3s if you have three or more on the board — especially when you cannot connect them. The same idea applies to mushrooms about 4–5 levels below your highest.",
+            "Only use Nutrient Solution when the whole board is filled with decent-level mushrooms for your current progression.",
+            "If the board is too empty, move mushrooms back and forth to trigger spawns while lining up 2–3 of the same type. Keep highest-level mushrooms separated so you use space well and give lower mushrooms a better chance to spawn into a four-of-a-kind.",
+            "Do not always connect four unless the board is crowded or you need space to move another mushroom. Connecting three preserves stamina and lets new spawns complete the four for you.",
+            "Never connect more than four high-level mushrooms on purpose: linking 4, 5, or 20 of the same level still yields only one upgrade.",
+          ],
+        },
+        {
+          heading: "Board placement and scythes",
+          body: [
+            "For top play, park the highest-level mushroom in the center rather than a corner so more tiles can connect into it and you can push the highest merge level.",
+            "Before Level 8, let spawns do most of the merging — just keep connections clear. After Level 8, clear the board more actively and scythe out mushrooms that no longer spawn. Roughly, new mushrooms spawn about 2–5 levels below your maximum (e.g. highest Level 8 → spawn Levels 3–6).",
+            "F2P: use Nutrient Solution only when the board is locked and you cannot progress — it is a get-out-of-jail card.",
+          ],
+        },
+      ],
+      note: "Guide by Autumn (Ice S12), shared on Discord, 6 September 2026.",
+    },
   },
   events: {
     title: "Events",

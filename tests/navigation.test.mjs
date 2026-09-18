@@ -48,12 +48,13 @@ test("Events index always exposes Anleitungen and Tips categories", () => {
   assert.ok(sectionById("events").items.some((item) => item.href === "/events/supply-reform/"));
   assert.ok(sectionById("events").items.some((item) => item.href === "/events/trials-of-odin/"));
   assert.ok(sectionById("events").items.some((item) => item.href === "/events/astral-wonderland/"));
+  assert.ok(sectionById("events").items.some((item) => item.href === "/events/mushroom-adventure/"));
   const groups = eventCategoryGroups(en);
   assert.deepEqual(
     groups.map((group) => ({ id: group.id, category: group.category, count: group.items.length })),
     [
       { id: "anleitungen", category: en.eventCategories.anleitungen, count: 0 },
-      { id: "tips", category: en.eventCategories.tips, count: 7 },
+      { id: "tips", category: en.eventCategories.tips, count: 8 },
     ],
   );
 });
@@ -126,6 +127,17 @@ test("Astral Wonderland is listed under Events Tips in every language", () => {
     assert.equal(entry.title, "Astral Wonderland");
     assert.ok(entry.sections.some((section) => /720/.test(section.body.join(" "))));
     assert.ok(entry.sections.some((section) => /Creator Area/i.test(section.heading) || /Creator Area/i.test(section.body.join(" "))));
+    assert.match(entry.note, /Autumn/);
+  }
+});
+
+test("Mushroom Adventure is listed under Events Tips in every language", () => {
+  for (const locale of ["en", "de", "fr"]) {
+    const dictionary = getDictionary(locale);
+    const entry = dictionary.eventGuideEntries.mushroomAdventure;
+    assert.equal(entry.title, "Mushroom Adventure");
+    assert.ok(entry.sections.some((section) => /Level 8|niveau 8/i.test(section.body.join(" "))));
+    assert.ok(entry.sections.some((section) => /Scythe|Sensen|faux/i.test(section.body.join(" "))));
     assert.match(entry.note, /Autumn/);
   }
 });
