@@ -1,22 +1,28 @@
 /**
  * Hero roster from the community wiki rarity pages (UR+ / UR / SSR / SR / R
- * "Hereos" slugs) as of 13 September 2026, plus in-game skill text for Merlin,
- * Morgana, Cleopatra, Heracles, Lagertha, Circe, and Bjorn Ironside from
- * screenshots the same day.
+ * "Hereos" slugs) as of 13 September 2026. Skill, buff, and production tables
+ * for 37 heroes come from German client screenshots on 18 September 2026;
+ * English is a translation of that German text. Alexander the Great and
+ * Augustus were added from those screenshots without portraits. Joan of Arc
+ * had no skill tables in that dump, so her abilities stay empty.
+ *
+ * Production mid-levels that were not photographed are interpolated as noted
+ * in the source files: UR/UR+ +4% per level, SSR 30% + 3% × (n−1). Do not
+ * treat those interpolated rows as photographed values.
  *
  * Rows live in `lib/data/heroes.json`; the roster editor exports a replacement
- * for that file. A missing `skill`, `buff`, or `production` means the wiki card
- * had no text for it yet. Do not invent it. The "Lv. N" skill cards became the
+ * for that file. A missing `skill`, `buff`, or `production` means nobody has
+ * added the text yet. Do not invent it. The "Lv. N" skill cards became the
  * levels of one ability. The fragment table is copied as printed on every
- * rarity page (identical). The wording in this file is the English wiki text;
+ * rarity page (identical). The wording in the JSON is English;
  * `guideEntries.heroes.heroTexts` can override the obtain note, ability names,
  * level texts, and artifact per language.
  *
- * Portraits are in `public/heroes/`, saved from the same wiki pages on 14
- * September 2026 (Cleopatra had none). The first file in `images` is the
- * portrait, any others are skins. The artwork belongs to the game's publisher;
- * the roster credits it, and removing the folder plus the `images` lists takes
- * it out again.
+ * Portraits are in `public/heroes/`, saved from the wiki pages on 14
+ * September 2026 (Cleopatra, Alexander the Great, and Augustus have none). The
+ * first file in `images` is the portrait, any others are skins. The artwork
+ * belongs to the game's publisher; the roster credits it, and removing the
+ * folder plus the `images` lists takes it out again.
  */
 
 import roster from "../data/heroes.json" with { type: "json" };
@@ -35,7 +41,7 @@ export type HeroSkill = {
 /**
  * Every hero has three abilities: a battle skill, a buff, and a production
  * bonus. `levels[0]` is the text at Lv. 1; an empty string marks a level whose
- * text is not known yet (Cleopatra's Lv. 1).
+ * text is not known yet.
  */
 export const HERO_ABILITY_KINDS = ["skill", "buff", "production"] as const;
 export type HeroAbilityKind = (typeof HERO_ABILITY_KINDS)[number];

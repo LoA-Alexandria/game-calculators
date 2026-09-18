@@ -4125,6 +4125,7 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
   .hero-detail-head { flex-direction: column; align-items: flex-start; padding: 58px 16px 16px; }
   .hero-detail-body { padding: 14px 16px 18px; }
   .hero-links li { grid-template-columns: minmax(0, 1fr); }
+  .ability-level { grid-template-columns: minmax(0, 1fr); }
 }
 
 
@@ -4164,22 +4165,38 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
 }
 .ability-head h4 { align-self: center; min-width: 0; margin: 0; padding: 10px 14px; font-size: .95rem; line-height: 1.3; }
 .ability-level { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 10px; padding: 12px 14px 0; }
-.ability-level label { min-width: 3.6em; margin: 0; color: var(--kind); font-family: var(--font-mono); font-size: .82rem; font-weight: 700; }
+.ability-level label { min-width: 6.2em; margin: 0; color: var(--kind); font-family: var(--font-mono); font-size: .82rem; font-weight: 700; }
+.ability-level-track { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 4px; min-width: 0; }
+.ability-level-down .icon { transform: rotate(180deg); }
+.ability-level .icon-button { width: 32px; height: 32px; color: var(--kind); }
 .ability-level input[type="range"] {
   width: 100%;
-  height: 6px;
-  min-height: 0;
+  height: 28px;
+  min-height: 28px;
   margin: 0;
   padding: 0;
   border: 0;
   border-radius: 999px;
-  background: linear-gradient(90deg, var(--kind) var(--fill, 100%), var(--line-strong) var(--fill, 100%));
+  background: linear-gradient(90deg, var(--kind) var(--fill, 100%), var(--line-strong) var(--fill, 100%)) no-repeat center / 100% 6px;
   cursor: pointer;
   appearance: none;
+}
+.ability-level input[type="range"]::-webkit-slider-runnable-track {
+  height: 6px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+}
+.ability-level input[type="range"]::-moz-range-track {
+  height: 6px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
 }
 .ability-level input[type="range"]::-webkit-slider-thumb {
   width: 20px;
   height: 20px;
+  margin-top: -7px;
   border: 3px solid var(--kind);
   border-radius: 50%;
   background: var(--surface);

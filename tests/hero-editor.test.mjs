@@ -119,19 +119,19 @@ test("abilities keep their three slots and their levels", () => {
   let state = fromHeroData(HERO_DATA);
   const heracles = heroByUid(state, uidOf(state, "Heracles"));
   assert.deepEqual(Object.keys(heracles.abilities), ["skill", "buff", "production"]);
-  assert.equal(heracles.abilities.skill.levels.length, 3);
-  assert.deepEqual(heracles.abilities.buff, { name: "", levels: [""] });
+  assert.equal(heracles.abilities.skill.levels.length, 9);
 
-  const circe = uidOf(state, "Circe");
-  state = addAbilityLevel(state, circe, "skill");
-  const copied = heroByUid(state, circe).abilities.skill.levels;
+  const morgana = uidOf(state, "Morgana");
+  assert.deepEqual(heroByUid(state, morgana).abilities.buff, { name: "", levels: [""] });
+  state = addAbilityLevel(state, morgana, "skill");
+  const copied = heroByUid(state, morgana).abilities.skill.levels;
   assert.equal(copied[1], copied[0], "a new level starts from the one before");
-  state = setAbilityLevel(state, circe, "skill", 1, copied[0].replace("200%", "210%"));
-  state = setAbilityName(state, circe, "production", "  Farm Mastery ");
-  state = setAbilityLevel(state, circe, "production", 0, "Farm Resource Productivity +40%. ");
-  state = setArtifact(state, circe, { name: "Wand", text: "Longer curses." });
+  state = setAbilityLevel(state, morgana, "skill", 1, copied[0].replace("200%", "210%"));
+  state = setAbilityName(state, morgana, "production", "  Farm Mastery ");
+  state = setAbilityLevel(state, morgana, "production", 0, "Farm Resource Productivity +40%. ");
+  state = setArtifact(state, morgana, { name: "Wand", text: "Longer curses." });
 
-  let row = exportHeroes(state, HERO_DATA).data.heroes.find((hero) => hero.name === "Circe");
+  let row = exportHeroes(state, HERO_DATA).data.heroes.find((hero) => hero.name === "Morgana");
   assert.equal(row.skill.levels.length, 2);
   assert.match(row.skill.levels[1], /210% of ATK/);
   assert.deepEqual(row.production, { name: "Farm Mastery", levels: ["Farm Resource Productivity +40%."] });
@@ -142,17 +142,22 @@ test("abilities keep their three slots and their levels", () => {
     "each ability sits on its own line",
   );
 
-  state = removeAbilityLevel(state, circe, "skill", 1);
-  state = clearAbility(setArtifact(state, circe, null), circe, "production");
-  row = exportHeroes(state, HERO_DATA).data.heroes.find((hero) => hero.name === "Circe");
-  assert.deepEqual(row, HERO_DATA.heroes.find((hero) => hero.name === "Circe"));
-  assert.deepEqual(heroByUid(removeAbilityLevel(state, circe, "skill", 0), circe).abilities.skill.levels, [""]);
+  state = removeAbilityLevel(state, morgana, "skill", 1);
+  state = clearAbility(setArtifact(state, morgana, null), morgana, "production");
+  row = exportHeroes(state, HERO_DATA).data.heroes.find((hero) => hero.name === "Morgana");
+  assert.deepEqual(row, HERO_DATA.heroes.find((hero) => hero.name === "Morgana"));
+  assert.deepEqual(heroByUid(removeAbilityLevel(state, morgana, "skill", 0), morgana).abilities.skill.levels, [""]);
 
-  // Cleopatra's Lv. 1 is unknown: the gap stays, only trailing blanks are dropped.
-  const cleopatra = uidOf(state, "Cleopatra");
-  state = addAbilityLevel(state, cleopatra, "skill");
-  state = setAbilityLevel(state, cleopatra, "skill", 2, "   ");
-  row = exportHeroes(state, HERO_DATA).data.heroes.find((hero) => hero.name === "Cleopatra");
+  // An empty first level is kept; only trailing blanks are dropped.
+  const gap = addHero(fromHeroData(HERO_DATA), "R");
+  let extra = updateHero(gap.state, gap.uid, { name: "Gap Hero" });
+  extra = setAbilityName(extra, gap.uid, "skill", "Gap");
+  extra = setAbilityLevel(extra, gap.uid, "skill", 0, "");
+  extra = addAbilityLevel(extra, gap.uid, "skill");
+  extra = setAbilityLevel(extra, gap.uid, "skill", 1, "200% ATK");
+  extra = addAbilityLevel(extra, gap.uid, "skill");
+  extra = setAbilityLevel(extra, gap.uid, "skill", 2, "   ");
+  row = exportHeroes(extra, HERO_DATA).data.heroes.find((hero) => hero.name === "Gap Hero");
   assert.equal(row.skill.levels[0], "");
   assert.equal(row.skill.levels.length, 2);
 });
@@ -208,17 +213,17 @@ test("English stays in the JSON; other languages export heroTexts", () => {
 test("a level a language translated keeps its place when English loses one", () => {
   let state = fromHeroData(HERO_DATA);
   const heracles = uidOf(state, "Heracles");
-  assert.equal(heroByUid(state, heracles).abilities.skill.levels.length, 3);
+  assert.equal(heroByUid(state, heracles).abilities.skill.levels.length, 9);
   for (const [index, text] of ["eins", "zwei", "drei"].entries()) {
     state = setAbilityLevel(state, heracles, "skill", index, text, "de");
   }
 
   state = removeAbilityLevel(state, heracles, "skill", 1);
-  assert.equal(heroByUid(state, heracles).abilities.skill.levels.length, 2);
+  assert.equal(heroByUid(state, heracles).abilities.skill.levels.length, 8);
   assert.deepEqual(heroTextOf(state, "de", heracles).abilities.skill.levels, ["eins", "drei"]);
 
   // A translation cannot invent a level the roster does not have.
-  assert.equal(setAbilityLevel(state, heracles, "skill", 5, "fünf", "de"), state);
+  assert.equal(setAbilityLevel(state, heracles, "skill", 20, "zwanzig", "de"), state);
 
   state = clearAbility(state, heracles, "skill");
   assert.deepEqual(heroTextOf(state, "de", heracles).abilities.skill, { name: "", levels: [] });
@@ -229,7 +234,9 @@ test("problems flag blanks, duplicates, and heroes other guides still name", () 
   let state = fromHeroData(HERO_DATA);
   const blank = addHero(state, "SSR");
   state = addHero(blank.state, "R", "circe").state;
+  state = clearAbility(state, uidOf(state, "Merlin"), "buff");
   state = setAbilityName(state, uidOf(state, "Merlin"), "buff", "Arcane Wisdom");
+  state = clearAbility(state, uidOf(state, "Circe"), "production");
   state = setAbilityLevel(state, uidOf(state, "Circe"), "production", 0, "Productivity +10%");
   state = setArtifact(state, uidOf(state, "Merlin"), { name: "Staff", text: " " });
   state = removeHero(state, uidOf(state, "Isaac Newton"));

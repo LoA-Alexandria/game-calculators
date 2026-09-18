@@ -36,28 +36,48 @@ test("portraits resolve the tier list and layouts spelling of a hero", () => {
   assert.equal(heroNamed("  merlin ")?.id, "merlin");
   assert.equal(heroPortrait("Cleopatra"), null);
   assert.equal(heroPortrait("Augustus"), null);
+  assert.equal(heroPortrait("Alexander the Great"), null);
   assert.equal(heroImageUrl("merlin.webp"), "/heroes/merlin.webp");
 });
 
 test("roster covers every wiki rarity and names the screenshot fills", () => {
   assert.equal(heroesByRarity("UR+").length, 14);
-  assert.equal(heroesByRarity("UR").length, 13);
+  assert.equal(heroesByRarity("UR").length, 15);
   assert.equal(heroesByRarity("SSR").length, 18);
   assert.equal(heroesByRarity("SR").length, 18);
   assert.equal(heroesByRarity("R").length, 12);
-  assert.equal(HEROES.length, 75);
+  assert.equal(HEROES.length, 77);
   assert.equal(new Set(HEROES.map((hero) => hero.id)).size, HEROES.length);
   assert.equal(HEROES.some((hero) => JSON.stringify(hero).includes("Data pending")), false);
 
+  const filled = HEROES.filter((hero) => hero.skill && hero.buff && hero.production);
+  assert.equal(filled.length, 37);
+  for (const hero of filled) {
+    assert.equal(hero.skill?.levels.length, 9, `${hero.name} skill table`);
+    assert.equal(hero.buff?.levels.length, 9, `${hero.name} buff table`);
+    assert.equal(hero.production?.levels.length, 25, `${hero.name} production table`);
+  }
+
   const merlin = HEROES.find((hero) => hero.id === "merlin");
   assert.equal(merlin?.skill?.name, "Ice Dragon's Breath");
+  assert.equal(merlin?.skill?.levels.length, 9);
+  assert.equal(merlin?.production?.levels.length, 25);
   const morgana = HEROES.find((hero) => hero.id === "morgana");
   assert.equal(morgana?.rarity, "UR");
   assert.match(morgana?.skill?.levels[0] ?? "", /Strip/);
   const cleopatra = HEROES.find((hero) => hero.id === "cleopatra");
   assert.equal(cleopatra?.rarity, "UR+");
+  assert.ok(cleopatra?.skill?.levels[0], "client screenshots filled Cleopatra Lv. 1");
   const hermes = HEROES.find((hero) => hero.id === "hermes");
   assert.equal(hermes?.obtain, "Tap Football");
+  const alexander = HEROES.find((hero) => hero.id === "alexander-the-great");
+  assert.equal(alexander?.rarity, "UR");
+  assert.deepEqual(alexander?.images, []);
+  assert.equal(alexander?.skill?.levels.length, 9);
+  const augustus = HEROES.find((hero) => hero.id === "augustus");
+  assert.equal(augustus?.rarity, "UR");
+  assert.deepEqual(augustus?.images, []);
+  assert.equal(augustus?.skill?.levels.length, 9);
 });
 
 test("event heroes name the run of their event, and only heroes with one source name it", () => {
@@ -126,6 +146,11 @@ test("every published dictionary keys its hero texts to a hero in the roster", a
     for (const id of Object.keys(texts)) assert.ok(ids.has(id), `${code}: ${id} is a hero id`);
   }
   assert.deepEqual(getDictionary("en").guideEntries.heroes.heroTexts, {}, "English is the roster JSON itself");
+  const de = getDictionary("de").guideEntries.heroes.heroTexts;
+  assert.equal(Object.keys(de).length, 37);
+  assert.equal(de.merlin?.skill?.name, "Eisiger Drachenatem");
+  assert.match(de.merlin?.skill?.levels[0] ?? "", /Schildbruch/);
+  assert.deepEqual(getDictionary("fr").guideEntries.heroes.heroTexts, {}, "French falls back to English");
 });
 
 test("the heroes banner collage uses primary portraits that exist on disk", async () => {

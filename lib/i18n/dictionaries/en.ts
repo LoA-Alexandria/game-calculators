@@ -417,7 +417,7 @@ const en = {
         unknown: { title: "Unknown", lede: "Nobody has confirmed the event. Autumn’s best guess is in the Obtain line." },
       },
       skinsCredit:
-        "Skin names and sources are Autumn’s skin guide, shared on Discord on 7 August 2026. Skins for heroes not in this roster yet — Billy the Kid, Alexander the Great, Augustus, Charlie Chaplin — are left out until those heroes are added. “Not obtainable now” means no source is running, and there may not be one again for a long time.",
+        "Skin names and sources are Autumn’s skin guide, shared on Discord on 7 August 2026. Skins for heroes not in this roster yet — Billy the Kid, Charlie Chaplin — are left out until those heroes are added. “Not obtainable now” means no source is running, and there may not be one again for a long time.",
       skinTexts: {},
       previousHero: "Previous hero",
       nextHero: "Next hero",
@@ -431,6 +431,9 @@ const en = {
       abilityMissing: "Not filled in yet",
       abilityPending: "Nobody has added this text yet.",
       levelLabel: "Lv. {level}",
+      levelOf: "Lv. {level} / {max}",
+      levelDown: "Previous level",
+      levelUp: "Next level",
       levelUnknown: "The text for Lv. {level} is not known yet.",
       appearsHeading: "In other guides",
       appearsNone: "No other guide names this hero yet.",
@@ -447,7 +450,7 @@ const en = {
           ],
         },
       ],
-      note: "",
+      note: "Skill, buff, and production tables for 37 heroes are from German client screenshots taken on 18 September 2026. English is a translation and may differ from the in-game English. Production levels that were not on those screenshots are interpolated: UR and UR+ +4% per level, SSR 30% + 3% × (n−1). Alexander the Great and Augustus have no portraits yet.",
     },
     technology: {
       title: "Technology",
@@ -1875,7 +1878,7 @@ const en = {
           ],
         },
       ],
-      note: "Augustus, Alexander the Great, Guan Yu, Lu Bu, Miyamoto Musashi, and Yi Sun-sin are not in the Core Heroes roster yet, so they appear without a portrait or roster link until those heroes are added.",
+      note: "Guan Yu, Lu Bu, Miyamoto Musashi, and Yi Sun-sin are not in the Core Heroes roster yet, so they appear without a portrait or roster link until those heroes are added.",
     },
   },
   ageUnlocksEditor: {

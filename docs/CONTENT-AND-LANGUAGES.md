@@ -383,10 +383,10 @@ Heroes as well.
 - **Abilities**: every hero has exactly three, a **Skill**, a **Buff**, and a
   **Production** bonus. Each holds a name and one text per level (Lv. 1, Lv. 2,
   …). **Add Lv. N** copies the level before it, so only the numbers need
-  changing. A level may stay empty when its text is not known yet (Cleopatra's
-  Lv. 1). Empty slots are left out of the export. On the Heroes page, each
-  ability is a card with a level slider, and the numbers that changed since
-  the level below are highlighted.
+  changing. A level may stay empty when its text is not known yet. Empty slots
+  are left out of the export. On the Heroes page, each ability is a card with a
+  level slider, and the numbers that changed since the level below are
+  highlighted.
 - **Add hero** creates an empty hero in the selected rarity. Their id, which
   also names their picture files, comes from the name on export. Published
   heroes keep their id when renamed.
@@ -421,9 +421,18 @@ roster against the folder — every listed file exists and no file is left over 
 and that each `heroTexts` key is a hero in the roster.
 
 The portraits in `public/heroes/` were saved from the Pop Epoch Wiki rarity
-pages on 14 September 2026. The artwork belongs to the game's publisher. The
-roster credits it under the grid. To take the pictures down, delete the folder
-and empty the `images` lists.
+pages on 14 September 2026. Cleopatra, Alexander the Great, and Augustus have
+none. The artwork belongs to the game's publisher. The roster credits it under
+the grid. To take the pictures down, delete the folder and empty the `images`
+lists.
+
+Skill, buff, and production tables for 37 heroes come from German client
+screenshots taken on 18 September 2026. English in `lib/data/heroes.json` is a
+translation of that German text; `guideEntries.heroes.heroTexts` holds the
+German wording. Production mid-levels that were not photographed are
+interpolated: UR/UR+ +4% per level, SSR 30% + 3% × (n−1), as noted in the
+source files. Joan of Arc had no skill tables in that dump, so her abilities
+stay empty. Billy the Kid is not in this roster (skin cards only).
 
 The Goddesses guide uses the same tile grid. Rows live in
 `lib/data/goddesses.json` (id, name, rarity, English affinity and obtain,
@@ -473,8 +482,8 @@ ids are unique, and that a group in the JSON has a heading in the dictionary.
 
 The skin guides are Autumn's list from 7 August 2026. Both pages credit her in
 `skinsCredit`. Keep that line if you edit the text. Skins for heroes not in
-the roster yet (Billy the Kid, Alexander the Great, Augustus, Charlie Chaplin)
-are left out until those heroes are added.
+the roster yet (Billy the Kid, Charlie Chaplin) are left out until those
+heroes are added.
 
 Goddess Theater covers in `public/goddess-theater/` are the first image on each
 card on https://pop-epochmobile.fandom.com/wiki/Goddess_Theater as of
@@ -626,7 +635,7 @@ building display names and competition-stat labels live in
 `guideEntries.museion` for every language (`buildingTexts`, `stats`,
 `primaryStatLabel`, `secondaryStatLabel`). Heroes use Core roster spellings
 when they exist; a short off-roster allow-list covers names Autumn listed that
-are not in `heroes.json` yet.
+are not in `heroes.json` yet (Guan Yu, Lu Bu, Miyamoto Musashi, Yi Sun-sin).
 
 Members with `guides.draft` see **Edit Museion** in the guide head, which opens
 `/guides/museion/edit/`. The draft is saved in that browser only
