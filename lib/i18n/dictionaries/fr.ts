@@ -3682,6 +3682,80 @@ const fr: Dictionary = {
       ],
       note: "Astuces de phase par Cherr (Earth S2), 6 août 2026 ; addendum cibles Supply par Autumn (Ice S12), 11 septembre 2026 — merci Zee.",
     },
+    astralWonderland: {
+      title: "Astral Wonderland",
+      summary:
+        "Rythme des dés, Creator Area, maths F2P, niveaux de tuiles et efficacité des packs.",
+      intro:
+        "Lancez des dés sur le plateau, gardez de l’endurance pour la Creator Area une fois qualifié, et dépensez juste assez de dés pour que la régénération ne s’arrête jamais au plafond de 20.",
+      sections: [
+        {
+          heading: "Bases",
+          body: [
+            "L’événement est simple : utilisez vos dés pour progresser sur le plateau.",
+            "Prenez les dés bonus via le symbole plus à côté du compteur. Sur la Claw Machine qui coûte de l’endurance, ne faites pas plus que la tentative gratuite tant qu’elle n’est pas niveau 4 — free attempt puis sortez.",
+          ],
+        },
+        {
+          heading: "Creator Area",
+          body: [
+            "La Creator Area est pour le top 100 des scores journaliers et donne des dés bonus (comme la Bonus Area d’Atlantis). Elle est au milieu du plateau et ouverte plusieurs heures par jour (environ 18h–22h heure serveur).",
+            "Une fois qualifié pour la Creator Area du jour, économisez l’endurance jusqu’au reset quotidien suivant pour viser le top 100 plus facilement le lendemain. Plus le score de guilde est élevé, plus vous avez de dés en Creator Area, plus de score perso, et plus facile de tenir un bon rang individuel.",
+          ],
+        },
+        {
+          heading: "Régénération des dés (F2P)",
+          body: [
+            "Le jeu ne le dit pas : la régénération s’arrête à 20 dés. Dépensez juste assez pour continuer à régénérer. Le F2P commence à 20 et plafonne à 20.",
+            "Vous gagnez 1 dé par heure, 6 via pubs et 9 via gemmes (897 gemmes/jour). Les dés pub et gemmes valent 2 rolls chacun — environ 30 rolls/jour de ces sources (merci Pendulum).",
+            "L’événement finit 2 heures avant le reset, donc vous ne pouvez pas claim le dernier dé horaire — il passe à l’heure pile même si vous avez commencé exactement au reset (merci Pendulum). Sur 6 jours, cela fait environ 341 dés au total (180 + 141 + 20).",
+          ],
+        },
+        {
+          heading: "Score",
+          body: [
+            "Score des tuiles par niveau : niveau 1 (null) 1,5k ; niveau 2 (vert) 2,25k ; niveau 3 (bleu) 3k ; niveau 4 (violet) 3,75k ; niveau 5 (orange / max) 4,5k.",
+            "Chaque tuile Creator Zone vaut soit 1k (bonus ATK ou réduction de dégâts) soit 5k points. Chaque combat Creator Zone donne +1k en victoire, ou −1k par défaite.",
+            "Vous pouvez skip les animations à partir de 10k points — 7 rolls depuis zéro.",
+          ],
+        },
+        {
+          heading: "Dés Creator Zone de guilde",
+          body: [
+            "Les points de guilde débloquent des dés Creator Zone : 1M → 10 ; 2,5M → 15 ; 5M → 20 ; 7,5M → 30 ; 10M → 40 ; 12,5M → 50 ; 15M → 60 ; 17,5M → 70 ; 20M → 80.",
+            "Le leveling des tuiles est individuel. Les seuils Creator Zone utilisent le score de guilde combiné de tous les points individuels.",
+          ],
+        },
+        {
+          heading: "Leveling des tuiles",
+          body: [
+            "Visites pour monter : niveau 1→2 (null→vert) 2 ; 2→3 (vert→bleu) 4 ; 3→4 (bleu→violet) 6 ; 4→5 (violet→orange) 8.",
+            "Environ 47 tuiles sur le plateau. Les tuiles portail 3× comptent pour 1 visite sur 2 tuiles. Les zones prennent 3–4 dés et n’ajoutent qu’1 visite à 1 tuile. Le Visitor Center augmente de 1 le compteur de la tuile la moins upgradée.",
+          ],
+        },
+        {
+          heading: "Plancher de dés des achievements",
+          body: [
+            "12 tuiles au vert : 24 dés minimum. 24 tuiles au bleu : 96 de plus (120 au total minimum). 36 au violet : 216 de plus (336 au total minimum). 48 à l’orange : 384 de plus (720 dés minimum au total).",
+          ],
+        },
+        {
+          heading: "Zones",
+          body: [
+            "Sleipnir → Land Deals. Caladrius → ID plates. Cerberus → barils de ressources. Nidhogg → horloges.",
+          ],
+        },
+        {
+          heading: "Packs",
+          body: [
+            "Les chiffres sont des rolls totaux (chaque dé de pack = 2 rolls). $1 : 8/jour (limite 1). $5 : 24/jour ou 1 dé Creator (1–6 au choix)/jour (limite 1 chacun). $10 : 40/jour et 1 dé Creator (limite 1). $20 : 70/jour et 1 dé Creator (limite 1), ou 3 dés Creator/jour (limite 5). $25 : 100/jour et 2 dés Creator (limite 1). $50 : 140/jour et 2 dés Creator (limite 1), ou 5 dés Creator/jour (limite 5). $100 : 280/jour et 2 dés Creator (limite 1), ou 10 dés Creator/jour (limite 5).",
+            "Les packs deviennent moins efficaces en montant. Pour maxer les tuiles après ~341 dés F2P, il manque environ 379 rolls (720 − 341). Chemin le moins cher si les maths tiennent : environ $95 (3× $25 + 2× $10), avec un peu de chance — plus 8 dés Creator à jouer.",
+            "Meilleur usage des dés Creator : zones Cryptid. En fin d’event pour level les tuiles, visez plutôt Visitor Center pour monter la tuile la plus basse de la carte.",
+          ],
+        },
+      ],
+      note: "Guide d’Autumn (Ice S12), Discord 18–22 août 2026 — maths des dés merci Pendulum.",
+    },
   },
   events: {
     title: "Événements",

@@ -3739,6 +3739,80 @@ const de: Dictionary = {
       ],
       note: "Phasen-Tipps von Cherr (Earth S2), 6. August 2026; Supply-Ziele-Nachtrag von Autumn (Ice S12), 11. September 2026 — Danke Zee.",
     },
+    astralWonderland: {
+      title: "Astral Wonderland",
+      summary:
+        "Würfel-Tempo, Creator Area, F2P-Roll-Rechnung, Tile-Stufen und Pack-Effizienz.",
+      intro:
+        "Würfle über das Spielfeld, spare Stamina für die Creator Area sobald du qualifiziert bist, und gib gerade so viele Würfel aus, dass die Regeneration am Cap von 20 nie stehen bleibt.",
+      sections: [
+        {
+          heading: "Grundlagen",
+          body: [
+            "Das Event ist geradlinig: nutze deine Würfel, um über das Spielfeld voranzukommen.",
+            "Extra-Würfel holst du über das Plus-Symbol neben dem Würfelzähler. Am Claw Machine, das Stamina kostet, bis Level 4 nicht mehr als den Free Attempt machen — Free Attempt und raus.",
+          ],
+        },
+        {
+          heading: "Creator Area",
+          body: [
+            "Die Creator Area ist für die Top 100 Tages-Scores und gibt Bonus-Würfel (ähnlich Atlantis Bonus Area). Sie liegt in der Mitte des Feldes und ist mehrere Stunden am Tag offen (etwa 18:00–22:00 Serverzeit).",
+            "Sobald du für die Creator Area des Tages qualifiziert bist, spare Stamina bis zum nächsten Daily Reset — so ist Top 100 am nächsten Tag leichter. Mehr Gilden-Score bedeutet mehr Würfel in der Creator Area, mehr persönlichen Score und leichter hohe Individual-Ranks.",
+          ],
+        },
+        {
+          heading: "Würfel-Regeneration (F2P)",
+          body: [
+            "Das Spiel sagt es nicht: Regeneration stoppt bei 20 Würfeln. Gib gerade genug aus, damit weiter regeneriert wird. F2P startet bei 20 und cappt bei 20.",
+            "Du bekommst 1 Würfel pro Stunde, 6 aus Ads und 9 aus Edelsteinen (897 Edelsteine/Tag). Ad- und Edelstein-Würfel zählen je 2 Rolls — also etwa 30 Rolls/Tag aus diesen Quellen (Danke Pendulum).",
+            "Das Event endet 2 Stunden vor Reset, deshalb kannst du den letzten Stunden-Würfel nicht claimen — er tickt um, sobald die Stunde voll ist, selbst wenn du exakt am Reset gestartet bist (Danke Pendulum). Über 6 Tage sind das etwa 341 Würfel insgesamt (180 + 141 + 20).",
+          ],
+        },
+        {
+          heading: "Scoring",
+          body: [
+            "Tile-Score nach Level: Level 1 (null) 1,5k; Level 2 (grün) 2,25k; Level 3 (blau) 3k; Level 4 (lila) 3,75k; Level 5 (orange / max) 4,5k.",
+            "Jedes Creator-Zone-Tile ist entweder 1k (ATK- oder Schadensreduktions-Bonus) oder 5k Punkte wert. Jeder Creator-Zone-Kampf gibt +1k bei Sieg bzw. −1k bei Niederlage.",
+            "Ab 10k Punkten kannst du Animationen skippen — das sind 7 Rolls von null.",
+          ],
+        },
+        {
+          heading: "Creator-Zone-Gildenwürfel",
+          body: [
+            "Gildenpunkte freischalten Creator-Zone-Würfel: 1M → 10; 2,5M → 15; 5M → 20; 7,5M → 30; 10M → 40; 12,5M → 50; 15M → 60; 17,5M → 70; 20M → 80.",
+            "Tile-Leveling ist individuell. Creator-Zone-Schwellen nutzen den kombinierten Gilden-Score aus allen Individual-Punkten.",
+          ],
+        },
+        {
+          heading: "Tile-Leveling",
+          body: [
+            "Besuche zum Aufleveln: Level 1→2 (null→grün) 2; Level 2→3 (grün→blau) 4; Level 3→4 (blau→lila) 6; Level 4→5 (lila→orange) 8.",
+            "Etwa 47 Tiles auf dem Board. 3×-Portal-Tiles zählen als 1 Besuch auf 2 Tiles. Zonen brauchen 3–4 Würfel und geben nur 1 Besuch auf 1 Tile. Visitor Center erhöht den Besuchszähler des niedrigst gelevelten Tiles um 1.",
+          ],
+        },
+        {
+          heading: "Achievement-Würfel-Untergrenzen",
+          body: [
+            "12 Tiles auf grün: mindestens 24 Würfel. 24 Tiles auf blau: 96 mehr (mindestens 120 insgesamt). 36 auf lila: 216 mehr (mindestens 336 insgesamt). 48 auf orange: 384 mehr (mindestens 720 Würfel insgesamt).",
+          ],
+        },
+        {
+          heading: "Zonen",
+          body: [
+            "Sleipnir → Land Deals. Caladrius → ID Plates. Cerberus → Ressourcenfässer. Nidhogg → Uhren.",
+          ],
+        },
+        {
+          heading: "Packs",
+          body: [
+            "Zahlen sind Gesamt-Rolls (jeder Pack-Würfel = 2 Rolls). $1: 8/Tag (Limit 1). $5: 24/Tag oder 1 Creator-Würfel (1–6 nach Wahl)/Tag (Limit 1 je). $10: 40/Tag und 1 Creator-Würfel (Limit 1). $20: 70/Tag und 1 Creator-Würfel (Limit 1), oder 3 Creator-Würfel/Tag (Limit 5). $25: 100/Tag und 2 Creator-Würfel (Limit 1). $50: 140/Tag und 2 Creator-Würfel (Limit 1), oder 5 Creator-Würfel/Tag (Limit 5). $100: 280/Tag und 2 Creator-Würfel (Limit 1), oder 10 Creator-Würfel/Tag (Limit 5).",
+            "Packs werden mit dem Preis weniger effizient. Für Max-Tiles fehlen nach ~341 F2P-Würfeln noch etwa 379 Rolls (720 − 341). Günstigster Weg laut Rechnung: etwa $95 (3× $25 + 2× $10), bei gutem Glück — plus 8 Creator-Würfel zum Spielen.",
+            "Creator-Würfel am besten auf Cryptid-Zonen landen. Zum Tile-Leveln gegen Ende eher Visitor Center, damit das niedrigste Tile auf der Map einen Besuch bekommt.",
+          ],
+        },
+      ],
+      note: "Guide von Autumn (Ice S12), Discord 18.–22. August 2026 — Würfel-Rechnung Danke Pendulum.",
+    },
   },
   events: {
     title: "Events",
