@@ -4503,7 +4503,7 @@ const de: Dictionary = {
         horses: "Pferde",
         gunpowder: "Schießpulver",
         lemons: "Zitronen",
-        coffee: "Kaffee",
+        coffee: "Kaffeebohnen",
         cloth: "Stoff",
         alcohol: "Alkohol",
         glass: "Glas",
@@ -6062,7 +6062,7 @@ const de: Dictionary = {
   },
   eventGuideEntries: {
     atlantis: {
-      title: "Atlantis",
+      title: "Delve into Atlantis",
       summary: "Prioritäten für Endless Floor und wann Bonus-Area-Edelsteine sich lohnen.",
       intro:
         "Eine praktische Reihenfolge für Atlantis Endless Floor und ein kurzer Hinweis zu zusätzlichen Bonus-Area-Versuchen.",
@@ -6089,7 +6089,7 @@ const de: Dictionary = {
       note: "Community-Tipp zu Atlantis Endless Floor und Bonus Area.",
     },
     springReturns: {
-      title: "Gildenwettbewerb — Spring Returns",
+      title: "Spring's Return",
       summary: "Tägliche Spendenziele, wann mehr sinnvoll ist, und welche Items jedes Match braucht.",
       intro:
         "Spenden-Tempo im Gildenwettbewerb Spring Returns: den Tages-Score effizient erreichen, Überschuss für enge Matches sparen und die Item-Liste je Runde im Blick behalten.",
@@ -6114,7 +6114,7 @@ const de: Dictionary = {
       note: "Die übrigen Match-Items ergänzen, sobald der Rundenplan feststeht. Korrekturen gehören auf Discord.",
     },
     holyGrail: {
-      title: "Holy Grail",
+      title: "Holy Grail Journey",
       summary: "Team finden, Stamina durch die Maps pushen und Zone 3 für PvP-Score timen.",
       intro:
         "Ein geradliniges Event: aktives Team finden oder gründen, Stufen mit Stamina vorantreiben und Map 3 / Zone 3 mit PvP bewusst angehen.",
@@ -6195,7 +6195,7 @@ const de: Dictionary = {
       note: "Community-Tipp zu Supply Reform Line-Clears und der Vorschau der nächsten Reihe.",
     },
     trialsOfOdin: {
-      title: "Trials of Odin (Ragnarok)",
+      title: "Trials of Odin",
       summary:
         "Phase-1-Kampf und Spenden, Horn-/Ring-Sparen in der Belagerung, und welche Monster one-shotten oder last-hitten.",
       intro:
@@ -6351,7 +6351,7 @@ const de: Dictionary = {
       note: "Guide von Autumn (Ice S12), geteilt auf Discord, 6. September 2026.",
     },
     greatFlood: {
-      title: "Great Flood",
+      title: "The Great Flood Is Back!",
       summary:
         "Von außen nach innen paaren unter Stage Effects, und Stockpile als Würfel-Blackjack.",
       intro:
@@ -6458,7 +6458,7 @@ const de: Dictionary = {
       note: "Schlachtplan von Cherr (Earth S2), 6. August 2026; Nile-Hinweise und Merit-Tabelle von Autumn (Ice S12) / Boah, August–September 2026.",
     },
     ringToss: {
-      title: "Ring Toss / Tap Football",
+      title: "Prize Toss Booth",
       summary:
         "Göttinnen zuerst, F2P-Züge bis 69, und der günstigste Weg zum Hard Pity.",
       intro:
@@ -6496,7 +6496,7 @@ const de: Dictionary = {
       note: "Prioritäten von Cherr (Earth S2), 6. August 2026; Draw-Rechnung von Autumn (Ice S12) / Boah, 25. August 2026 — Danke Spitzell.",
     },
     lifeIncubator: {
-      title: "Life Incubator",
+      title: "Life Incubator Lab",
       summary:
         "Drop-and-Merge-Gräben, aufsteigende Stacks und wann Rearrange oder Choice Block lohnen.",
       intro:
@@ -6529,7 +6529,7 @@ const de: Dictionary = {
       note: "Guide von Autumn (Ice S12), geteilt auf Discord, 19. August 2026 — Graben-Framing von Boah.",
     },
     roadToWorldcup: {
-      title: "Road to Worldcup",
+      title: "Road to the Cup",
       summary:
         "Stamina-Recruiting, Formations-Counter (ATT / POSS / DEF), Friendly-Match-Elo und Artifact-Spend.",
       intro:
@@ -6652,7 +6652,7 @@ const de: Dictionary = {
       note: "Community-Tipp zu Peak of Enlightenment — Harfen und Produktions-Banking.",
     },
     redCarpet: {
-      title: "Red Carpet",
+      title: "Red Carpet Night",
       summary: "Stamina und Lippenstifte sparen, UR-Proben früh fertig, Recovery vor dem Lauf timen.",
       intro:
         "Fülle Stamina vor Red Carpet, lass UR- / UR+-Proben ungesammelt und spare Lippenstifte nur fürs Event.",
@@ -6750,7 +6750,7 @@ const de: Dictionary = {
       note: "Community-Tipp zu Heart of Gold — Quiz-Antworten von Esme (Creek, S13); Grabmuster von Cherr (Earth, S2) und Admos (Woods, S5).",
     },
     springReturnsPlanting: {
-      title: "Spring Returns — Planting",
+      title: "Harvest Festival",
       summary: "Pflanzen anbauen, Save the Farmer mit Herbicide cleannen, Tiles schnell freischalten und lange Wachstumszeiten für Offline planen.",
       intro:
         "Neben dem Gildenwettbewerb hat Spring Returns einen Planting-Loop: Crops anbauen, Orders füllen und Herbicide in Save the Farmer für Manor-Items nutzen.",
@@ -6778,6 +6778,78 @@ const de: Dictionary = {
       ],
       note: "Community-Tipp zu Spring Returns Planting, Herbicide in Save the Farmer und Tile-Freischaltung.",
     },
+    gloryPick: {
+      title: "Glory Pick",
+      summary: "Auf World-Cup-Ergebnisse setzen, Prediction-Münzen kassieren und in der Münz-Rangliste steigen.",
+      intro:
+        "Von 24 Stunden vor Anpfiff bis 30 Minuten davor ein Ergebnis je Spiel wählen. Richtige Tipps zahlen Prediction-Münzen aus Einsatz und Quote.",
+      sections: [],
+      note: "Hilfe im Spiel aus dem Pop-Epoch-Wiki, 18. September 2026.",
+    },
+    shoppingCartRace: {
+      title: "Shopping Cart Race",
+      summary: "Energy Bars für Boosts ausgeben, Meilen-Belohnungen holen und Reste vor Event-Ende verbrauchen.",
+      intro:
+        "Jeder Energy Bar ist ein Boost. Meilen-Truhen liegen auf der Strecke; nach dem Ziel zahlen Loop-Belohnungen weiter für Extra-Distanz.",
+      sections: [],
+      note: "Hilfe im Spiel aus dem Pop-Epoch-Wiki, 18. September 2026. Unverbrauchte Energy Bars verfallen.",
+    },
+    genieWish: {
+      title: "Genie's Wish Machine Shop",
+      summary: "Mit Genie-Summon-Tickets wünschen, FEVER-Buchstaben für ein gratis 10er sammeln, Lampen-Münzen im Shop ausgeben.",
+      intro:
+        "Mayan Ruins ist obsolet — dieser Gacha-Shop hat es ersetzt. Drei gleiche Rewards in einem Wish geben Mengenbonus. Unverbrauchte Tickets werden gelöscht.",
+      sections: [],
+      note: "Hilfe im Spiel aus dem Pop-Epoch-Wiki, 18. September 2026.",
+    },
+    grandVoyage: {
+      title: "Grand Voyage",
+      summary: "Zehn Meeresregionen freischiffen, Reisezeit mit Flottengeschwindigkeit kürzen, plus einen Vorbereitungstag je Hop.",
+      intro:
+        "Eine dauerhafte Voyage-Karte mit zehn Regionen. Benachbarte Städte haben feste Distanz; schnellere Flotten verkürzen die Fahrt, jede Voyage braucht trotzdem einen Vorbereitungstag.",
+      sections: [],
+      note: "Hilfe im Spiel aus dem Pop-Epoch-Wiki, 18. September 2026. Der Routenrechner liegt unter Calculators.",
+    },
+    tourPerformance: {
+      title: "Tour Performance",
+      summary: "Im Event-Fenster Goddess-Theater-Stücke proben und extra Drama-Münzen verdienen.",
+      intro:
+        "Auch Theater Performance: dieselbe Goddess-Theater-Schleife, für das Event gewertet. Spielt freigeschaltete Stücke, solange es läuft.",
+      sections: [],
+      note: "Hilfe im Spiel aus dem Pop-Epoch-Wiki, 18. September 2026. Cover und Skills stehen im Goddess-Theater-Guide.",
+    },
+    goddessOfTime: {
+      title: "Goddess of Time",
+      summary: "Event-Punkte aus Göttinnen-Affinity — Geschenke und Patrol — bis die Claim-Phase beginnt.",
+      intro:
+        "Ranglisten-Event: Affinity aus Geschenken und Patrol zählt als Event-Punkte. Affinity nach der Claim-Phase scored nicht mehr. Tasks vorher abschließen.",
+      sections: [],
+      note: "Hilfe im Spiel aus dem Pop-Epoch-Wiki, 18. September 2026.",
+    },
+    legendOfSerenissima: {
+      title: "Legend of Serenissima",
+      summary: "Rangliste nach Merchant-Sea-Handelsdauer; eine Trade License zahlt die Dauer sofort als Punkte aus.",
+      intro:
+        "Punkte kommen aus der Handelsdauer. Sobald die Claim-Phase startet, zählt weitere Handelszeit nicht mehr. Offene Tasks lassen sich danach nicht mehr abschließen.",
+      sections: [],
+      note: "Hilfe im Spiel aus dem Pop-Epoch-Wiki, 18. September 2026.",
+    },
+    evolutionInstitute: {
+      title: "Evolution Institute",
+      summary: "2048-Merges auf 4×4 mit Mikroskopen bis Level 11, dann Eggs im Shop ausgeben.",
+      intro:
+        "Materialien schieben, bis gleiche Level mergen. Jeder Slide kostet ein Mikroskop (1 pro Minute, Cap 500, oder Scholar's Coffee). Reste werden zu Eggs.",
+      sections: [],
+      note: "Hilfe im Spiel aus dem Pop-Epoch-Wiki, 18. September 2026.",
+    },
+    militarySupplies: {
+      title: "Military Supplies",
+      summary: "Lieferungen der Great Generals erfüllen, bevor ihre Geduld endet.",
+      intro:
+        "General Requests: die Bestellungen der Great Generals abarbeiten. Ein Fehlschlag, und der General geht wütend. Geduld im Blick behalten.",
+      sections: [],
+      note: "Hilfe im Spiel aus dem Pop-Epoch-Wiki, 18. September 2026.",
+    },
   },
   events: {
     title: "Events",
@@ -6789,6 +6861,11 @@ const de: Dictionary = {
     statEntries: "Einträge",
     noMatch: "Kein Event-Guide passt zu dieser Suche.",
     browseIndex: "Event-Guides ansehen",
+    wikiHelp: "Hilfe im Spiel",
+    communityTips: "Community-Tipps",
+    wikiSource: "Wiki-Seite",
+    wikiCredit:
+      "Typische Regeln aus dem Pop-Epoch-Wiki, 18. September 2026. Belohnungen und Zeitpläne können je Saison wechseln.",
     kindMain: "Hauptevent",
     kindRoutine: "Routine-Event",
     kindLadder: "Ranglisten-Herausforderung",

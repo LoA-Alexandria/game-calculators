@@ -1,3 +1,4 @@
+import { eventWikiIcon } from "./content/event-guides.ts";
 import type { Dictionary } from "./i18n/index.ts";
 
 /**
@@ -14,6 +15,11 @@ export type NavItem = {
   /** Resolves the item's title in the active language. */
   label: (t: Dictionary) => string;
   description?: (t: Dictionary) => string;
+  /**
+   * Optional picture next to the label in the Events sidebar and on Events
+   * index cards. Path under `public/`, such as `/events/atlantis.webp`.
+   */
+  icon?: string;
   badge?: (t: Dictionary) => string;
   /**
    * Stable grouping key for nested sidebar rows and the Guides index.
@@ -30,6 +36,18 @@ export type NavSection = {
   icon: "news" | "events" | "guides" | "calculators" | "simulations";
   items: NavItem[];
 };
+
+function eventNav(
+  id: keyof Dictionary["eventGuideEntries"],
+  href: string,
+): NavItem {
+  return {
+    href,
+    label: (t) => t.eventGuideEntries[id].title,
+    description: (t) => t.eventGuideEntries[id].summary,
+    icon: eventWikiIcon(id),
+  };
+}
 
 export const SECTIONS: NavSection[] = [
   {
@@ -51,106 +69,35 @@ export const SECTIONS: NavSection[] = [
      * overview, not in this section.
      */
     items: [
-      {
-        href: "/events/atlantis/",
-        label: (t) => t.eventGuideEntries.atlantis.title,
-        description: (t) => t.eventGuideEntries.atlantis.summary,
-      },
-      {
-        href: "/events/spring-returns/",
-        label: (t) => t.eventGuideEntries.springReturns.title,
-        description: (t) => t.eventGuideEntries.springReturns.summary,
-      },
-      {
-        href: "/events/holy-grail/",
-        label: (t) => t.eventGuideEntries.holyGrail.title,
-        description: (t) => t.eventGuideEntries.holyGrail.summary,
-      },
-      {
-        href: "/events/monument-of-eternity/",
-        label: (t) => t.eventGuideEntries.monumentOfEternity.title,
-        description: (t) => t.eventGuideEntries.monumentOfEternity.summary,
-      },
-      {
-        href: "/events/supply-reform/",
-        label: (t) => t.eventGuideEntries.supplyReform.title,
-        description: (t) => t.eventGuideEntries.supplyReform.summary,
-      },
-      {
-        href: "/events/trials-of-odin/",
-        label: (t) => t.eventGuideEntries.trialsOfOdin.title,
-        description: (t) => t.eventGuideEntries.trialsOfOdin.summary,
-      },
-      {
-        href: "/events/astral-wonderland/",
-        label: (t) => t.eventGuideEntries.astralWonderland.title,
-        description: (t) => t.eventGuideEntries.astralWonderland.summary,
-      },
-      {
-        href: "/events/mushroom-adventure/",
-        label: (t) => t.eventGuideEntries.mushroomAdventure.title,
-        description: (t) => t.eventGuideEntries.mushroomAdventure.summary,
-      },
-      {
-        href: "/events/great-flood/",
-        label: (t) => t.eventGuideEntries.greatFlood.title,
-        description: (t) => t.eventGuideEntries.greatFlood.summary,
-      },
-      {
-        href: "/events/dawn-of-rome/",
-        label: (t) => t.eventGuideEntries.dawnOfRome.title,
-        description: (t) => t.eventGuideEntries.dawnOfRome.summary,
-      },
-      {
-        href: "/events/ring-toss/",
-        label: (t) => t.eventGuideEntries.ringToss.title,
-        description: (t) => t.eventGuideEntries.ringToss.summary,
-      },
-      {
-        href: "/events/life-incubator/",
-        label: (t) => t.eventGuideEntries.lifeIncubator.title,
-        description: (t) => t.eventGuideEntries.lifeIncubator.summary,
-      },
-      {
-        href: "/events/road-to-worldcup/",
-        label: (t) => t.eventGuideEntries.roadToWorldcup.title,
-        description: (t) => t.eventGuideEntries.roadToWorldcup.summary,
-      },
-      {
-        href: "/events/duel-festival/",
-        label: (t) => t.eventGuideEntries.duelFestival.title,
-        description: (t) => t.eventGuideEntries.duelFestival.summary,
-      },
-      {
-        href: "/events/mayan-ruins/",
-        label: (t) => t.eventGuideEntries.mayanRuins.title,
-        description: (t) => t.eventGuideEntries.mayanRuins.summary,
-      },
-      {
-        href: "/events/peak-of-enlightenment/",
-        label: (t) => t.eventGuideEntries.peakOfEnlightenment.title,
-        description: (t) => t.eventGuideEntries.peakOfEnlightenment.summary,
-      },
-      {
-        href: "/events/red-carpet/",
-        label: (t) => t.eventGuideEntries.redCarpet.title,
-        description: (t) => t.eventGuideEntries.redCarpet.summary,
-      },
-      {
-        href: "/events/global-regatta/",
-        label: (t) => t.eventGuideEntries.globalRegatta.title,
-        description: (t) => t.eventGuideEntries.globalRegatta.summary,
-      },
-      {
-        href: "/events/heart-of-gold/",
-        label: (t) => t.eventGuideEntries.heartOfGold.title,
-        description: (t) => t.eventGuideEntries.heartOfGold.summary,
-      },
-      {
-        href: "/events/spring-returns-planting/",
-        label: (t) => t.eventGuideEntries.springReturnsPlanting.title,
-        description: (t) => t.eventGuideEntries.springReturnsPlanting.summary,
-      },
+      eventNav("holyGrail", "/events/holy-grail/"),
+      eventNav("trialsOfOdin", "/events/trials-of-odin/"),
+      eventNav("dawnOfRome", "/events/dawn-of-rome/"),
+      eventNav("atlantis", "/events/atlantis/"),
+      eventNav("heartOfGold", "/events/heart-of-gold/"),
+      eventNav("duelFestival", "/events/duel-festival/"),
+      eventNav("roadToWorldcup", "/events/road-to-worldcup/"),
+      eventNav("gloryPick", "/events/glory-pick/"),
+      eventNav("shoppingCartRace", "/events/shopping-cart-race/"),
+      eventNav("astralWonderland", "/events/astral-wonderland/"),
+      eventNav("genieWish", "/events/genie-wish/"),
+      eventNav("ringToss", "/events/ring-toss/"),
+      eventNav("springReturns", "/events/spring-returns/"),
+      eventNav("springReturnsPlanting", "/events/spring-returns-planting/"),
+      eventNav("grandVoyage", "/events/grand-voyage/"),
+      eventNav("globalRegatta", "/events/global-regatta/"),
+      eventNav("redCarpet", "/events/red-carpet/"),
+      eventNav("tourPerformance", "/events/tour-performance/"),
+      eventNav("monumentOfEternity", "/events/monument-of-eternity/"),
+      eventNav("goddessOfTime", "/events/goddess-of-time/"),
+      eventNav("peakOfEnlightenment", "/events/peak-of-enlightenment/"),
+      eventNav("legendOfSerenissima", "/events/legend-of-serenissima/"),
+      eventNav("mayanRuins", "/events/mayan-ruins/"),
+      eventNav("evolutionInstitute", "/events/evolution-institute/"),
+      eventNav("lifeIncubator", "/events/life-incubator/"),
+      eventNav("militarySupplies", "/events/military-supplies/"),
+      eventNav("mushroomAdventure", "/events/mushroom-adventure/"),
+      eventNav("supplyReform", "/events/supply-reform/"),
+      eventNav("greatFlood", "/events/great-flood/"),
     ],
   },
   {

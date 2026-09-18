@@ -690,13 +690,15 @@ Members with `guides.draft` see **Edit buildings** in the guide head, which open
 (`localStorage['popepoch-buildings-draft']`). **Export** produces the complete
 JSON and one `buildingTexts` block per dictionary. An untouched draft reproduces
 the published file byte for byte (`tests/buildings.test.mjs`).
-Roster, level caps, and missing portraits come from the Pop Epoch Wiki Buildings
-page (Fandom), last merged on 18 September 2026. Production upgrade resources and
-priority asterisks are from a community Discord list (Enlightenment thanks to
-Spitzell). Production cut-outs in `public/production-buildings/` were taken from
-German client screenshots on 16 September 2026; wiki highest-stage art for
-population, military, and remaining production rows lives in `public/buildings/`.
-Per-level upgrade cost tables are not imported yet.
+Roster, level caps, stage arts, and level-sample tables come from the Pop Epoch
+Wiki Buildings page (Fandom), last merged on 18 September 2026. Production upgrade
+resource *types* and priority asterisks are from a community Discord list
+(Enlightenment thanks to Spitzell). Production cut-outs in
+`public/production-buildings/` were taken from German client screenshots on
+16 September 2026; wiki highest-stage and upgrade-stage art lives in
+`public/buildings/` and `public/buildings/stages/`. Level rows live in
+`lib/data/building-levels.json` (wiki samples, not necessarily every integer
+level up to the cap). Tap a card for the detail panel.
 
 ## Collection
 
@@ -865,15 +867,21 @@ deriving it from each reader's clock would show different answers.
 
 ## Adding an event guide
 
-Event guides are separate from the Guides section. They use the Events index
-categories `anleitungen` and `tips` (`eventCategories` in the dictionaries).
+Event guides are a flat list in the Events section (the schedule calendar
+stays on the overview). In-game help and square icons come from the Pop Epoch
+wiki Events hub (`lib/data/event-wiki.json`, last merged 18 September 2026);
+Discord tips stay in the dictionaries.
 
-1. Add a nav item under `events.items` in `lib/navigation.ts` with
-   `href: "/events/<slug>/"`, `badge` / `categoryId` from `eventCategories`.
+1. Add a nav item with `eventNav("<id>", "/events/<slug>/")` in
+   `lib/navigation.ts`. That pulls the title, summary, and wiki icon.
 2. Add `app/events/<slug>/page.tsx` that renders `EventArticle` with that id,
    and write `eventGuideEntries.<id>` (`title`, `summary`, `intro`,
-   `sections[]`, `note`) in all three dictionaries.
-3. Do not list event write-ups under `guides.items`.
+   `sections[]`, `note`) in all three dictionaries. Community tips go in
+   `sections`; leave `sections` empty if there are none yet.
+3. Put the wiki help icon in `public/events/<slug>.webp` and a matching row in
+   `lib/data/event-wiki.json` (or re-run `scripts/fetch-event-wiki.py`). Cite
+   the wiki page and the merge date.
+4. Do not list event write-ups under `guides.items`.
 
 ## Adding a news entry
 

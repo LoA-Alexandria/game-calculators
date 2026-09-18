@@ -10,7 +10,7 @@ The project is a statically exported Next.js site. GitHub Pages serves the gener
 app/
   page.tsx                     Home: news slide, site stats, event calendar + schedule editor
   news/                        News index
-  events/                      Event guides index (Anleitungen / Tips categories)
+  events/                      Event guides index (wiki icons + Discord tips)
   guides/<slug>/               Guides
   calculators/<slug>/          Calculators, plus their index
   simulations/<slug>/          Simulations, plus their index

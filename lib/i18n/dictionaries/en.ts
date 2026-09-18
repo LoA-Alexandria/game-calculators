@@ -3184,7 +3184,7 @@ const en = {
   },
   eventGuideEntries: {
     atlantis: {
-      title: "Atlantis",
+      title: "Delve into Atlantis",
       summary: "Endless Floor priorities, and when Bonus Area gem spends are worth it.",
       intro:
         "A practical run order for Atlantis Endless Floor, plus a short note on buying more Bonus Area attempts.",
@@ -3211,7 +3211,7 @@ const en = {
       note: "Community tip shared for Atlantis Endless Floor and Bonus Area.",
     },
     springReturns: {
-      title: "Guild Competition — Spring Returns",
+      title: "Spring's Return",
       summary: "Daily donation targets, when to go over them, and which items each match asks for.",
       intro:
         "Guild Competition donation pacing for Spring Returns: hit the daily score efficiently, save extras for clutch matches, and track which items each round needs.",
@@ -3236,7 +3236,7 @@ const en = {
       note: "Fill in the remaining match items when the round schedule is known. Corrections belong on Discord.",
     },
     holyGrail: {
-      title: "Holy Grail",
+      title: "Holy Grail Journey",
       summary: "Team up, spend stamina through the maps, and time Zone 3 for PvP score.",
       intro:
         "A straightforward event run: join or make an active team, push stages with stamina, and treat Map 3 / Zone 3 carefully once PvP is on.",
@@ -3317,7 +3317,7 @@ const en = {
       note: "Community tip for Supply Reform line clears and the next-row preview.",
     },
     trialsOfOdin: {
-      title: "Trials of Odin (Ragnarok)",
+      title: "Trials of Odin",
       summary:
         "Phase 1 combat and donations, Siege horn/ring savings, and which monsters to one-shot or last-hit.",
       intro:
@@ -3473,7 +3473,7 @@ const en = {
       note: "Guide by Autumn (Ice S12), shared on Discord, 6 September 2026.",
     },
     greatFlood: {
-      title: "Great Flood",
+      title: "The Great Flood Is Back!",
       summary:
         "Outside-in pair matching under stage effects, and Stockpile as dice blackjack.",
       intro:
@@ -3580,7 +3580,7 @@ const en = {
       note: "Battlefield plan by Cherr (Earth S2), 6 August 2026; Nile notes and merit table by Autumn (Ice S12) / Boah, August–September 2026.",
     },
     ringToss: {
-      title: "Ring Toss / Tap Football",
+      title: "Prize Toss Booth",
       summary:
         "Goddess-first priorities, F2P draw math to 69, and the cheapest path to hard pity.",
       intro:
@@ -3618,7 +3618,7 @@ const en = {
       note: "Priorities by Cherr (Earth S2), 6 August 2026; draw math by Autumn (Ice S12) / Boah, 25 August 2026 — thanks Spitzell.",
     },
     lifeIncubator: {
-      title: "Life Incubator",
+      title: "Life Incubator Lab",
       summary:
         "Drop-and-merge trenches, ascending stacks, and when to spend Rearrange or Choice Block.",
       intro:
@@ -3651,7 +3651,7 @@ const en = {
       note: "Guide by Autumn (Ice S12), shared on Discord, 19 August 2026 — trench framing from Boah.",
     },
     roadToWorldcup: {
-      title: "Road to Worldcup",
+      title: "Road to the Cup",
       summary:
         "Stamina recruiting, formation counters (ATT / POSS / DEF), Friendly Match elo, and Artifact spend.",
       intro:
@@ -3774,7 +3774,7 @@ const en = {
       note: "Community tip for Peak of Enlightenment harp and production banking.",
     },
     redCarpet: {
-      title: "Red Carpet",
+      title: "Red Carpet Night",
       summary: "Bank stamina and lipsticks, finish UR rehearsals early, and time recovery before the run.",
       intro:
         "Fill stamina before Red Carpet starts, leave UR / UR+ rehearsals unclaimed, and save lipsticks for the event only.",
@@ -3872,7 +3872,7 @@ const en = {
       note: "Community tip for Heart of Gold — quiz answers from Esme (Creek, S13); dig pattern from Cherr (Earth, S2) and Admos (Woods, S5).",
     },
     springReturnsPlanting: {
-      title: "Spring Returns — Planting",
+      title: "Harvest Festival",
       summary: "Plant crops, clear Save the Farmer with Herbicide, unlock tiles fast, and plan long grows for offline time.",
       intro:
         "Beside the guild competition, Spring Returns has a planting loop: grow crops, fill orders, and use Herbicide in Save the Farmer for Manor items.",
@@ -3900,6 +3900,78 @@ const en = {
       ],
       note: "Community tip for Spring Returns planting, Save the Farmer Herbicide, and tile unlock pacing.",
     },
+    gloryPick: {
+      title: "Glory Pick",
+      summary: "Bet on World Cup match results for prediction coins, then climb the coin ranking.",
+      intro:
+        "From 24 hours before kickoff until 30 minutes before, pick one outcome per match. Correct calls pay prediction coins from your stake and the odds.",
+      sections: [],
+      note: "In-game help from the Pop Epoch wiki, 18 September 2026.",
+    },
+    shoppingCartRace: {
+      title: "Shopping Cart Race",
+      summary: "Spend Energy Bars to boost a cart, claim mileage rewards, and use leftover bars before the event ends.",
+      intro:
+        "Each Energy Bar is one Boost. Mileage chests sit along the track; after the finish line, loop rewards keep paying for extra distance.",
+      sections: [],
+      note: "In-game help from the Pop Epoch wiki, 18 September 2026. Unused Energy Bars expire.",
+    },
+    genieWish: {
+      title: "Genie's Wish Machine Shop",
+      summary: "Wish with Genie Summon Tickets, collect FEVER letters for a free 10-pull, and spend lamp coins in the shop.",
+      intro:
+        "Mayan Ruins is obsolete — this gacha shop replaced it. Three matching rewards in one wish get a quantity bonus. Unused summon tickets are deleted when the event ends.",
+      sections: [],
+      note: "In-game help from the Pop Epoch wiki, 18 September 2026.",
+    },
+    grandVoyage: {
+      title: "Grand Voyage",
+      summary: "Sail ten unlocking sea regions, cut travel time with fleet speed, and plan the extra preparation day per hop.",
+      intro:
+        "A permanent voyage map with ten regions. Adjacent cities sit a fixed distance apart; faster fleets shorten the trip, and every voyage still adds one day of preparation.",
+      sections: [],
+      note: "In-game help from the Pop Epoch wiki, 18 September 2026. The Grand Voyage route calculator lives under Calculators.",
+    },
+    tourPerformance: {
+      title: "Tour Performance",
+      summary: "Rehearse Goddess Theater plays during the event window to earn extra drama coins.",
+      intro:
+        "Also called Theater Performance: the same Goddess Theater loop, scored for the event. Stage plays you have unlocked to bank drama coins while it is live.",
+      sections: [],
+      note: "In-game help from the Pop Epoch wiki, 18 September 2026. Play covers and skills sit in the Goddess Theater guide.",
+    },
+    goddessOfTime: {
+      title: "Goddess of Time",
+      summary: "Event points from Goddess affinity — gifts and Patrol — until the claiming period starts.",
+      intro:
+        "A ranking event: affinity you gain from gifts and Patrol counts as event points. Affinity after the claiming period no longer scores. Finish tasks before that cutoff.",
+      sections: [],
+      note: "In-game help from the Pop Epoch wiki, 18 September 2026.",
+    },
+    legendOfSerenissima: {
+      title: "Legend of Serenissima",
+      summary: "Rank on Merchant Sea trade duration; a Trade License cashes that duration in as instant points.",
+      intro:
+        "Points accrue from how long you trade. Once the reward-claim phase starts, further trade time no longer counts. Incomplete tasks cannot be finished after that phase.",
+      sections: [],
+      note: "In-game help from the Pop Epoch wiki, 18 September 2026.",
+    },
+    evolutionInstitute: {
+      title: "Evolution Institute",
+      summary: "2048-style merges on a 4×4 grid with microscopes, up to level 11, then spend Eggs in the shop.",
+      intro:
+        "Slide materials until identical levels merge. Each slide costs one microscope (1 per minute, cap 500, or Scholar's Coffee). Leftover coffee and DNA fragments convert to Eggs.",
+      sections: [],
+      note: "In-game help from the Pop Epoch wiki, 18 September 2026.",
+    },
+    militarySupplies: {
+      title: "Military Supplies",
+      summary: "Fill Great General supply orders for bonus points before their patience runs out.",
+      intro:
+        "General Requests: complete the orders Great Generals post. Fail one and that general leaves angry. Keep an eye on patience while you chain deliveries.",
+      sections: [],
+      note: "In-game help from the Pop Epoch wiki, 18 September 2026.",
+    },
   },
   events: {
     title: "Events",
@@ -3911,6 +3983,11 @@ const en = {
     statEntries: "Entries",
     noMatch: "No event guide matches that search.",
     browseIndex: "Browse event guides",
+    wikiHelp: "In-game help",
+    communityTips: "Community tips",
+    wikiSource: "Wiki page",
+    wikiCredit:
+      "Typical rules from the Pop Epoch wiki, 18 September 2026. Rewards and schedules can change by season.",
     kindMain: "Main event",
     kindRoutine: "Routine",
     kindLadder: "Ladder challenge",

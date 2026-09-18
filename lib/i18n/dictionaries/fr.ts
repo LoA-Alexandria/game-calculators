@@ -2224,7 +2224,7 @@ const fr: Dictionary = {
         horses: "Chevaux",
         gunpowder: "Poudre à canon",
         lemons: "Citrons",
-        coffee: "Café",
+        coffee: "Grains de café",
         cloth: "Tissu",
         alcohol: "Alcool",
         glass: "Verre",
@@ -3784,7 +3784,7 @@ const fr: Dictionary = {
   },
   eventGuideEntries: {
     atlantis: {
-      title: "Atlantis",
+      title: "Delve into Atlantis",
       summary: "Priorités pour Endless Floor, et quand les gemmes Bonus Area valent le coup.",
       intro:
         "Un ordre de run pratique pour Atlantis Endless Floor, plus une courte note sur l’achat de tentatives Bonus Area.",
@@ -3811,7 +3811,7 @@ const fr: Dictionary = {
       note: "Astuce communautaire pour Atlantis Endless Floor et Bonus Area.",
     },
     springReturns: {
-      title: "Compétition de guilde — Spring Returns",
+      title: "Spring's Return",
       summary: "Objectifs de dons quotidiens, quand les dépasser, et quels objets chaque match demande.",
       intro:
         "Rythme de dons pour la compétition de guilde Spring Returns : atteindre le score quotidien efficacement, garder le surplus pour les matchs serrés, et suivre les objets demandés par round.",
@@ -3836,7 +3836,7 @@ const fr: Dictionary = {
       note: "Compléter les objets des matchs restants quand le calendrier des rounds est connu. Les corrections vont sur Discord.",
     },
     holyGrail: {
-      title: "Holy Grail",
+      title: "Holy Grail Journey",
       summary: "Former une équipe, avancer avec l’endurance, et timer la Zone 3 pour le score PvP.",
       intro:
         "Un événement simple : rejoignez ou créez une équipe active, poussez les étapes avec l’endurance, et abordez Map 3 / Zone 3 avec prudence une fois le PvP actif.",
@@ -3917,7 +3917,7 @@ const fr: Dictionary = {
       note: "Astuce communautaire pour Supply Reform et l’aperçu de la prochaine rangée.",
     },
     trialsOfOdin: {
-      title: "Trials of Odin (Ragnarok)",
+      title: "Trials of Odin",
       summary:
         "Combat et dons de phase 1, économie des cors/anneaux en siège, et quels monstres one-shot ou last-hit.",
       intro:
@@ -4073,7 +4073,7 @@ const fr: Dictionary = {
       note: "Guide d’Autumn (Ice S12), partagé sur Discord, 6 septembre 2026.",
     },
     greatFlood: {
-      title: "Great Flood",
+      title: "The Great Flood Is Back!",
       summary:
         "Appariements de l’extérieur vers l’intérieur selon les stage effects, et Stockpile en blackjack aux dés.",
       intro:
@@ -4180,7 +4180,7 @@ const fr: Dictionary = {
       note: "Plan de bataille par Cherr (Earth S2), 6 août 2026 ; notes Nile et table de merits par Autumn (Ice S12) / Boah, août–septembre 2026.",
     },
     ringToss: {
-      title: "Ring Toss / Tap Football",
+      title: "Prize Toss Booth",
       summary:
         "Priorité déesse, maths F2P jusqu’à 69 tirages, et chemin le moins cher vers le hard pity.",
       intro:
@@ -4218,7 +4218,7 @@ const fr: Dictionary = {
       note: "Priorités par Cherr (Earth S2), 6 août 2026 ; maths des tirages par Autumn (Ice S12) / Boah, 25 août 2026 — merci Spitzell.",
     },
     lifeIncubator: {
-      title: "Life Incubator",
+      title: "Life Incubator Lab",
       summary:
         "Tranchées drop-and-merge, stacks ascendants, et quand dépenser Rearrange ou Choice Block.",
       intro:
@@ -4251,7 +4251,7 @@ const fr: Dictionary = {
       note: "Guide d’Autumn (Ice S12), partagé sur Discord, 19 août 2026 — framing tranchée de Boah.",
     },
     roadToWorldcup: {
-      title: "Road to Worldcup",
+      title: "Road to the Cup",
       summary:
         "Recrutement à l’endurance, counters de formation (ATT / POSS / DEF), elo Friendly Match et dépense Artifact.",
       intro:
@@ -4374,7 +4374,7 @@ const fr: Dictionary = {
       note: "Astuce communautaire pour Peak of Enlightenment — harpes et banking de production.",
     },
     redCarpet: {
-      title: "Red Carpet",
+      title: "Red Carpet Night",
       summary: "Banquez endurance et rouges à lèvres, finissez les répétitions UR tôt, et timez la régénération.",
       intro:
         "Remplissez l’endurance avant Red Carpet, laissez les répétitions UR / UR+ non collectées, et gardez les rouges à lèvres pour l’event seulement.",
@@ -4472,7 +4472,7 @@ const fr: Dictionary = {
       note: "Astuce communautaire pour Heart of Gold — réponses quiz d’Esme (Creek, S13) ; motif de fouille de Cherr (Earth, S2) et Admos (Woods, S5).",
     },
     springReturnsPlanting: {
-      title: "Spring Returns — Planting",
+      title: "Harvest Festival",
       summary: "Plantez, nettoyez Save the Farmer au Herbicide, débloquez les tuiles vite, et planifiez les longues pousses hors ligne.",
       intro:
         "À côté de la compétition de guilde, Spring Returns a une boucle de plantation : cultiver, remplir les commandes, et utiliser l’Herbicide dans Save the Farmer pour des objets de Manor.",
@@ -4500,6 +4500,78 @@ const fr: Dictionary = {
       ],
       note: "Astuce communautaire pour Spring Returns planting, Herbicide dans Save the Farmer, et déblocage des tuiles.",
     },
+    gloryPick: {
+      title: "Glory Pick",
+      summary: "Parier sur les matchs de la Coupe du monde, gagner des pièces de prédiction, puis monter au classement.",
+      intro:
+        "De 24 heures avant le coup d’envoi jusqu’à 30 minutes avant, un seul résultat par match. Les bons pronostics paient des pièces selon la mise et la cote.",
+      sections: [],
+      note: "Aide en jeu du wiki Pop Epoch, 18 septembre 2026.",
+    },
+    shoppingCartRace: {
+      title: "Shopping Cart Race",
+      summary: "Dépenser des Energy Bars pour booster le caddie, prendre les coffres de distance, et vider les barres restantes.",
+      intro:
+        "Chaque Energy Bar est un Boost. Les coffres de kilométrage jalonnent la piste ; après la ligne, des récompenses en boucle continuent de payer.",
+      sections: [],
+      note: "Aide en jeu du wiki Pop Epoch, 18 septembre 2026. Les Energy Bars non utilisées expirent.",
+    },
+    genieWish: {
+      title: "Genie's Wish Machine Shop",
+      summary: "Souhaiter avec des tickets Génie, collecter FEVER pour un 10 gratuit, dépenser les pièces de lampe.",
+      intro:
+        "Mayan Ruins est obsolète — cette boutique gacha l’a remplacée. Trois récompenses identiques dans un souhait donnent un bonus de quantité. Les tickets restants sont supprimés.",
+      sections: [],
+      note: "Aide en jeu du wiki Pop Epoch, 18 septembre 2026.",
+    },
+    grandVoyage: {
+      title: "Grand Voyage",
+      summary: "Dix régions maritimes à débloquer, moins de temps de voyage avec la flotte, plus un jour de préparation par trajet.",
+      intro:
+        "Carte de voyage permanente à dix régions. La distance entre villes voisines est fixe ; une flotte plus rapide raccourcit la route, chaque voyage ajoute encore un jour de préparation.",
+      sections: [],
+      note: "Aide en jeu du wiki Pop Epoch, 18 septembre 2026. Le calculateur d’itinéraire est sous Calculators.",
+    },
+    tourPerformance: {
+      title: "Tour Performance",
+      summary: "Répéter des pièces du Goddess Theater pendant l’event pour gagner plus de pièces de théâtre.",
+      intro:
+        "Aussi appelé Theater Performance : la même boucle Goddess Theater, notée pour l’event. Jouez les pièces débloquées tant que c’est ouvert.",
+      sections: [],
+      note: "Aide en jeu du wiki Pop Epoch, 18 septembre 2026. Couvertures et compétences sont dans le guide Goddess Theater.",
+    },
+    goddessOfTime: {
+      title: "Goddess of Time",
+      summary: "Points d’event via l’affinité des déesses — cadeaux et Patrol — jusqu’à la phase de réclamation.",
+      intro:
+        "Event de classement : l’affinité des cadeaux et du Patrol compte comme points. Après la phase de réclamation, l’affinité ne score plus. Finissez les tâches avant.",
+      sections: [],
+      note: "Aide en jeu du wiki Pop Epoch, 18 septembre 2026.",
+    },
+    legendOfSerenissima: {
+      title: "Legend of Serenissima",
+      summary: "Classement sur la durée de commerce en Merchant Sea ; une Trade License encaisse cette durée tout de suite.",
+      intro:
+        "Les points viennent du temps de commerce. Une fois la phase de réclamation commencée, le temps extra ne compte plus. Les tâches inachevées ne peuvent plus être finies.",
+      sections: [],
+      note: "Aide en jeu du wiki Pop Epoch, 18 septembre 2026.",
+    },
+    evolutionInstitute: {
+      title: "Evolution Institute",
+      summary: "Fusions façon 2048 sur 4×4 avec des microscopes jusqu’au niveau 11, puis dépenser les Eggs.",
+      intro:
+        "Glissez les matériaux jusqu’à fusionner les mêmes niveaux. Chaque glissement coûte un microscope (1 par minute, cap 500, ou Scholar's Coffee). Le reste devient des Eggs.",
+      sections: [],
+      note: "Aide en jeu du wiki Pop Epoch, 18 septembre 2026.",
+    },
+    militarySupplies: {
+      title: "Military Supplies",
+      summary: "Remplir les commandes des Great Generals avant que leur patience ne s’épuise.",
+      intro:
+        "General Requests : honorez les commandes. Un échec, et le général part en colère. Surveillez la patience pendant les livraisons.",
+      sections: [],
+      note: "Aide en jeu du wiki Pop Epoch, 18 septembre 2026.",
+    },
   },
   events: {
     title: "Événements",
@@ -4511,6 +4583,11 @@ const fr: Dictionary = {
     statEntries: "Entrées",
     noMatch: "Aucun guide d’événement ne correspond à cette recherche.",
     browseIndex: "Voir les guides d’événements",
+    wikiHelp: "Aide en jeu",
+    communityTips: "Conseils de la communauté",
+    wikiSource: "Page wiki",
+    wikiCredit:
+      "Règles types du wiki Pop Epoch, 18 septembre 2026. Récompenses et calendriers peuvent changer selon la saison.",
     kindMain: "Événement principal",
     kindRoutine: "Événement régulier",
     kindLadder: "Défi de classement",
