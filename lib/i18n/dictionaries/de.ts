@@ -6555,6 +6555,35 @@ const de: Dictionary = {
       ],
       note: "Community-Tipp zu Heart of Gold — Quiz-Antworten von Esme (Creek, S13); Grabmuster von Cherr (Earth, S2) und Admos (Woods, S5).",
     },
+    springReturnsPlanting: {
+      title: "Spring Returns — Planting",
+      summary: "Pflanzen anbauen, Save the Farmer mit Herbicide cleannen, Tiles schnell freischalten und lange Wachstumszeiten für Offline planen.",
+      intro:
+        "Neben dem Gildenwettbewerb hat Spring Returns einen Planting-Loop: Crops anbauen, Orders füllen und Herbicide in Save the Farmer für Manor-Items nutzen.",
+      sections: [
+        {
+          heading: "Planting",
+          body: [
+            "Nutze Herbicide auf die Pflanze in Save the Farmer, um Manor-Items zu bekommen.",
+            "Pflanze Crops, fülle normale Orders und Goddess-Orders — die findest du unten links am Crop-Feld.",
+          ],
+        },
+        {
+          heading: "Effizienz",
+          body: [
+            "Kauf die Pässe, wenn du kannst. Alle Tiles so schnell wie möglich freischalten snowballt den Ertrag für den Rest des Events.",
+            "Frisch freigeschaltete Pflanzen sofort leveln, damit Ertrag und Wachstumszeit direkt steigen.",
+            "Wenn du lange offline bist, pflanze Crops mit möglichst langer Wachstumszeit, damit keine Idle-Zeit entsteht.",
+            "Priorisiere Pflanzen aus deinen Orders, um EXP zu min-maxen.",
+          ],
+        },
+        {
+          heading: "Titel",
+          body: ["Der goldene Titel geht an den Guild-Leader der Siegergilde."],
+        },
+      ],
+      note: "Community-Tipp zu Spring Returns Planting, Herbicide in Save the Farmer und Tile-Freischaltung.",
+    },
   },
   events: {
     title: "Events",

@@ -60,12 +60,13 @@ test("Events index always exposes Anleitungen and Tips categories", () => {
   assert.ok(sectionById("events").items.some((item) => item.href === "/events/red-carpet/"));
   assert.ok(sectionById("events").items.some((item) => item.href === "/events/global-regatta/"));
   assert.ok(sectionById("events").items.some((item) => item.href === "/events/heart-of-gold/"));
+  assert.ok(sectionById("events").items.some((item) => item.href === "/events/spring-returns-planting/"));
   const groups = eventCategoryGroups(en);
   assert.deepEqual(
     groups.map((group) => ({ id: group.id, category: group.category, count: group.items.length })),
     [
       { id: "anleitungen", category: en.eventCategories.anleitungen, count: 0 },
-      { id: "tips", category: en.eventCategories.tips, count: 19 },
+      { id: "tips", category: en.eventCategories.tips, count: 20 },
     ],
   );
 });
@@ -271,6 +272,16 @@ test("Heart of Gold is listed under Events Tips in every language", () => {
     assert.ok(entry.sections.some((section) => /750/.test(section.body.join(" "))));
     assert.ok(entry.sections.some((section) => /2×2|2x2|vier Felder|quatre cases/i.test(section.body.join(" "))));
     assert.ok(entry.sections.some((section) => "image" in section && section.image?.src.includes("heart-of-gold-boss-pattern")));
+  }
+});
+
+test("Spring Returns Planting is listed under Events Tips in every language", () => {
+  for (const locale of ["en", "de", "fr"]) {
+    const dictionary = getDictionary(locale);
+    const entry = dictionary.eventGuideEntries.springReturnsPlanting;
+    assert.match(entry.title, /Spring Returns/);
+    assert.ok(entry.sections.some((section) => /Herbicide/i.test(section.body.join(" "))));
+    assert.ok(entry.sections.some((section) => /guild leader|Guild-Leader|chef de guilde/i.test(section.body.join(" "))));
   }
 });
 
