@@ -1,11 +1,11 @@
 /**
  * Anecdotes: hidden stories in the game, each unlocked by a prerequisite and
- * finished by tapping the right things in the right order. The list is Autumn's
- * (Ice, S12) guide shared on Discord, last added to on 10 September 2026, with
- * help from Kraes, Zee, Spitzell, and Popo. The wording was tidied
- * (spelling, one action per step) without changing what to do; where the guide
- * leaves a gap (the egg order in Philosophical Thesis, the colour order in The
- * Dome Confinement) the anecdote says so in `note` instead of guessing.
+ * finished by tapping the right things in the right order. The list started as
+ * Autumn's (Ice, S12) Discord guide (10 September 2026), with help from Kraes,
+ * Zee, Spitzell, and Popo, and was merged with the Pop Epoch Wiki Anecdote page
+ * (pictures and a few missing general anecdotes) on 18 September 2026. The
+ * wording was tidied without changing what to do; where the guide leaves a gap,
+ * the anecdote says so in `note` instead of guessing.
  *
  * Rows live in `lib/data/anecdotes.json`; the anecdote editor exports a
  * replacement for that file. The wording there is English;
