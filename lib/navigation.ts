@@ -136,6 +136,13 @@ export const SECTIONS: NavSection[] = [
         badge: (t) => t.eventCategories.tips,
         categoryId: "tips",
       },
+      {
+        href: "/events/road-to-worldcup/",
+        label: (t) => t.eventGuideEntries.roadToWorldcup.title,
+        description: (t) => t.eventGuideEntries.roadToWorldcup.summary,
+        badge: (t) => t.eventCategories.tips,
+        categoryId: "tips",
+      },
     ],
   },
   {
