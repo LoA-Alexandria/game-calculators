@@ -3888,6 +3888,72 @@ const de: Dictionary = {
       ],
       note: "Guide von Autumn (Ice S12), geteilt auf Discord, 8. August 2026.",
     },
+    dawnOfRome: {
+      title: "Dawn of Rome / Crown of the Nile",
+      summary:
+        "Gilden-Schlachtfeld: Counter, Drei-Tage-Revive-Caps, Auto-Play und Merit-Farming-Reihenfolge.",
+      intro:
+        "Crown of the Nile ist dasselbe Gilden-Schlachtfeld wie Dawn of Rome, mit Prep in jedem Kampftag. Nutze Truppen-Counter, Pre-Store Tokens klug und farm Merits auf den wertvollsten Zielen.",
+      sections: [
+        {
+          heading: "Unterschiede Crown of the Nile",
+          body: [
+            "Gleiches Event wie Dawn of Rome, außer Prep ist in die Battle-Phase integriert: Prep von Reset bis 10:00 Serverzeit, Battle 10:00–22:00, alle drei Tage. Ein neues Pyramiden-Gebäude gibt Truppen-Tokens bei Besetzung. Pompey, Caesar und Spartacus sind im Nile-Selektor (17. September 2026).",
+          ],
+        },
+        {
+          heading: "Truppen-Counter",
+          body: [
+            "Kavallerie countert Schildträger. Schildträger countern Bogenschützen. Bogenschützen countern Speerträger. Speerträger countern Kavallerie.",
+            "Hat ein Gegner 3–4 Truppen auf einem Tile, lies die Battlefield-Order und deploye so, dass deine Truppen in der exakten Counter-Reihenfolge ankommen.",
+          ],
+        },
+        {
+          heading: "Merit-Farming (nur erstes Rome)",
+          body: [
+            "Nur beim allerersten Rome-Event: alle Truppen gegen feindliche Gildenmauern schicken, reviven, wiederholen. Stoppen, bevor die Mauer wirklich bricht, damit sie regeneriert. Das farmt sehr effizient massenhaft Merits.",
+          ],
+        },
+        {
+          heading: "Kampf-Tipps",
+          body: [
+            "Am Ende von Tag 1 und 2 alle Truppen manuell zur Homebase schicken. Auto-Revive in der Barracks für nächtliches passives Heilen aktivieren — Truppen starten den nächsten Tag nicht von allein voll geheilt.",
+            "Truppen an Tag 1 oder 2 nie dismissen, sonst startest du den nächsten Tag mit null Truppen.",
+          ],
+        },
+        {
+          heading: "Pre-Storage & Tokens",
+          body: [
+            "Pre-Store Tokens (z. B. 75 von 100) füttern Auto-Replenish automatisch. Tokens direkt in die Barracks zu kippen trifft das Cap und stoppt die passive Reservisten-Regeneration. Pre-Storage hält die Generation laufen — mehr gratis Healing, weniger Token-Verbrauch.",
+          ],
+        },
+        {
+          heading: "Drei-Tage-Schlachtplan",
+          body: [
+            "Tag 1 — Setup & Claims: maximal 25 % der Revives. Standard-Tiles plus Rome claimen. Keine Gildenbasen angreifen (außer Wall-Merit-Farming). Keine Edelstein-Speedups.",
+            "Tag 2 — Expansion: maximal 40 % der Revives. Alles plus Rome halten und claimen. Gleiche Basis- und Speedup-Regeln wie Tag 1.",
+            "Tag 3 — Full Unleash: 100 % der Revives. Eure vorgesehenen 25 % der Map und einen Pass nach Rome sichern. Defensiv spielen, andere Gilden nicht provozieren. Waypoints kommen, sobald Spawns feststehen. Ziele können sich mit Gegneraktivität ändern.",
+          ],
+        },
+        {
+          heading: "Auto-Play (abwesende Spieler)",
+          body: [
+            "Rome-Screen → Settings → Auto-Replenish an → Slider auf das Tages-Token-Limit (Tag 1: 25 %, Tag 2: 40 %, Tag 3: 100 %) → grünes Pre-Store. Barracks → Auto-Revive für alle vier Truppentypen. Auto-Play → Commander zuweisen.",
+            "Commander können genau zwei Auto-Player pro Tag nehmen (täglich neu) und sie während der aktiven Battle-Phase nicht wechseln. Auto-Player müssen Pre-Storage und Auto-Revive vor Phasenstart fertig haben.",
+          ],
+        },
+        {
+          heading: "Merit-Werte",
+          body: [
+            "Stadtmauern: Merits = 10× Mauerschaden (z. B. 400k Schaden → 4M Merits). Neutrale oder unverteidigte Tiles: 3× Schaden als Merits. Truppenverlust und -kills zählen; PvP zahlt mehr als PvE, weil Spieler mehr HP haben. Bandit Suppression ≈ ein Tile. Stadtverteidiger grob 5× Merits vs. erlittener Schaden. Geteilte Kills teilen Merits gleich.",
+            "Solo-Baselines: neutrale Tiles ~10k + Truppenverlust; kleine Städte ~120k Mauern (100 %→0) und ~500k Verteidiger + Verlust; Barracks ~8M Mauern (10× Schaden) plus Verteidiger nach PvP-Power; Pass ~2M Mauern und ~2M Verteidiger + Verlust. PvP: 10× Merits für zugefügten Schaden und 10× für verlorene Truppen.",
+            "Nach Full Clear: Demobilization-Merits = 10× demobilisierte Truppen. Bandit Suppression am Ende von Tag 3 = 3× demobilisierte Truppen.",
+            "Schnellste Merit-Reihenfolge: PvP → Barracks-(Basis-)Mauern → Rome → Pässe → große Städte → kleine Städte → Demobilization → Tiles → Bandit Suppression.",
+          ],
+        },
+      ],
+      note: "Schlachtplan von Cherr (Earth S2), 6. August 2026; Nile-Hinweise und Merit-Tabelle von Autumn (Ice S12) / Boah, August–September 2026.",
+    },
   },
   events: {
     title: "Events",

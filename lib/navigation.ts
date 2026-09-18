@@ -115,6 +115,13 @@ export const SECTIONS: NavSection[] = [
         badge: (t) => t.eventCategories.tips,
         categoryId: "tips",
       },
+      {
+        href: "/events/dawn-of-rome/",
+        label: (t) => t.eventGuideEntries.dawnOfRome.title,
+        description: (t) => t.eventGuideEntries.dawnOfRome.summary,
+        badge: (t) => t.eventCategories.tips,
+        categoryId: "tips",
+      },
     ],
   },
   {

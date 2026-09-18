@@ -3831,6 +3831,72 @@ const fr: Dictionary = {
       ],
       note: "Guide d’Autumn (Ice S12), partagé sur Discord, 8 août 2026.",
     },
+    dawnOfRome: {
+      title: "Dawn of Rome / Crown of the Nile",
+      summary:
+        "Champ de bataille de guilde : counters, caps de revive sur trois jours, auto-play et ordre de farm de merits.",
+      intro:
+        "Crown of the Nile est le même champ de bataille que Dawn of Rome, avec la prep intégrée à chaque jour de combat. Utilisez les counters de troupes, pré-stockez les tokens, et farmtez les merits sur les meilleures cibles.",
+      sections: [
+        {
+          heading: "Différences Crown of the Nile",
+          body: [
+            "Même event que Dawn of Rome, sauf que la prep est fusionnée dans la phase de combat : prep du reset à 10:00 heure serveur, combat 10:00–22:00, les trois jours. Un nouveau bâtiment pyramide donne des tokens de troupes à l’occupation. Pompey, Caesar et Spartacus ont été ajoutés au sélecteur Nile (17 septembre 2026).",
+          ],
+        },
+        {
+          heading: "Counters de troupes",
+          body: [
+            "Cavalerie counter les Shieldmen. Shieldmen counter les Archers. Archers counter les Spearmen. Spearmen counter la Cavalerie.",
+            "Si un ennemi a 3–4 troupes sur une tuile, lisez l’ordre du champ de bataille et déployez pour arriver dans la séquence de counters exacte.",
+          ],
+        },
+        {
+          heading: "Farm de merits (premier Rome seulement)",
+          body: [
+            "Uniquement au tout premier event Rome : envoyez toutes les troupes sur les murs de guilde ennemis, revivez, répétez. Arrêtez avant que le mur ne tombe vraiment pour qu’il régénère. Ça farm énormément de merits efficacement.",
+          ],
+        },
+        {
+          heading: "Astuces de combat",
+          body: [
+            "En fin de Jour 1 et 2, renvoyez manuellement toutes les troupes à la base. Activez Auto-Revive dans les barracks pour soigner passivement la nuit — les troupes ne commencent pas le jour suivant pleinement soignées toutes seules.",
+            "Ne dismiss jamais les troupes les Jours 1 ou 2, sinon vous démarrez le jour suivant avec zéro troupes.",
+          ],
+        },
+        {
+          heading: "Pré-stockage & tokens",
+          body: [
+            "Pré-stocker des tokens (ex. 75 sur 100) alimente Auto-Replenish automatiquement. Injecter les tokens directement dans les barracks touche le cap et stoppe la régénération passive des réservistes. Le pré-stockage garde la génération active — plus de soin gratuit, moins de tokens dépensés.",
+          ],
+        },
+        {
+          heading: "Plan de bataille sur trois jours",
+          body: [
+            "Jour 1 — Setup & claims : max 25 % des revives. Claim les tuiles standard plus Rome. N’attaquez pas les bases de guilde (sauf farm de murs). Pas de speedups en gemmes.",
+            "Jour 2 — Expansion : max 40 % des revives. Tenir et claimer tout plus Rome. Mêmes règles bases / speedups que le Jour 1.",
+            "Jour 3 — Full unleash : 100 % des revives. Sécurisez le coin 25 % de map désigné et un pass vers Rome. Jouez défensif ; ne provoquez pas les autres guildes. Les waypoints sont annoncés une fois les spawns figés. Les cibles peuvent changer selon l’activité ennemie.",
+          ],
+        },
+        {
+          heading: "Auto-play (joueurs absents)",
+          body: [
+            "Écran Rome → Settings → activer Auto-Replenish → slider sur la limite du jour (Jour 1 : 25 %, Jour 2 : 40 %, Jour 3 : 100 %) → bouton vert Pre-Store. Barracks → Auto-Revive pour les 4 types. Auto-Play → assigner un commander.",
+            "Les commanders prennent exactement 2 auto-players par jour (nouveaux chaque jour) et ne peuvent pas les changer pendant la Battle Phase active. Les auto-players doivent finir pré-stockage et Auto-Revive avant le début de phase.",
+          ],
+        },
+        {
+          heading: "Valeurs de merits",
+          body: [
+            "Murs de ville : merits = 10× dégâts aux murs (ex. 400k dégâts → 4M merits). Tuiles neutres ou sans défense : 3× dégâts en merits. Pertes et kills de troupes comptent ; le PvP paie plus que le PvE car les joueurs ont plus de PV. Bandit Suppression ≈ une tuile. Défenseurs de ville ≈ 5× merits vs dégâts subis. Les kills partagés partagent les merits également.",
+            "Baselines solo : tuiles neutres ~10k + perte de troupes ; petites villes ~120k murs (100 %→0) et ~500k défenseurs + perte ; barracks ~8M murs (10× dégâts) plus défenseurs selon puissance PvP ; pass ~2M murs et ~2M défenseurs + perte. PvP : 10× merits pour dégâts infligés et 10× pour troupes perdues.",
+            "Après full clear : demobilization = 10× troupes démobilisées. Bandit Suppression fin Jour 3 = 3× troupes démobilisées.",
+            "Ordre de merits le plus rapide : PvP → murs Barracks (base) → Rome → Passes → grandes villes → petites villes → Demobilization → Tuiles → Bandit Suppression.",
+          ],
+        },
+      ],
+      note: "Plan de bataille par Cherr (Earth S2), 6 août 2026 ; notes Nile et table de merits par Autumn (Ice S12) / Boah, août–septembre 2026.",
+    },
   },
   events: {
     title: "Événements",
