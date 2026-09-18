@@ -3206,6 +3206,80 @@ const en = {
       ],
       note: "Phase tips from Cherr (Earth S2), 6 August 2026; Supply-target addendum by Autumn (Ice S12), 11 September 2026 — thanks Zee.",
     },
+    astralWonderland: {
+      title: "Astral Wonderland",
+      summary:
+        "Dice board pacing, Creator Area, F2P roll math, tile levels, and pack efficiency.",
+      intro:
+        "Roll dice across the board, bank stamina for Creator Area once you qualify, and spend just enough dice that regeneration never idles at the 20-dice cap.",
+      sections: [
+        {
+          heading: "Basics",
+          body: [
+            "The event is straightforward: use your dice to progress across the playing field.",
+            "Spend extra dice from the plus symbol next to your dice count. Do not take more than the free Claw Machine attempt that costs stamina until it is Level 4 — do the free run and exit.",
+          ],
+        },
+        {
+          heading: "Creator Area",
+          body: [
+            "Creator Area is for the top 100 daily scores and grants bonus dice (similar to Atlantis Bonus Area). It sits in the middle of the board and is open for several hours a day (about 18:00–22:00 server time).",
+            "Once you qualify for that day’s Creator Area, save stamina until the next daily reset so the next day’s top 100 is easier. Higher guild score means more dice in Creator Area, more personal score, and an easier time holding high individual ranks.",
+          ],
+        },
+        {
+          heading: "Dice regeneration (F2P)",
+          body: [
+            "The game does not spell this out: regeneration stops at 20 dice. Spend just enough that you keep regenerating. F2P starts at 20 and caps at 20.",
+            "You gain 1 die per hour, 6 from ads, and 9 from gems (897 gems per day). Ad and gem dice are worth 2 rolls each, so that is about 30 rolls a day from those sources (thanks Pendulum).",
+            "The event ends 2 hours before reset, so you cannot claim the final hourly die — it ticks over as the hour hits even if you started exactly at reset (thanks Pendulum). Over 6 days that is about 341 dice total (180 + 141 + 20).",
+          ],
+        },
+        {
+          heading: "Scoring",
+          body: [
+            "Tile score by level: Level 1 (null) 1.5k; Level 2 (green) 2.25k; Level 3 (blue) 3k; Level 4 (purple) 3.75k; Level 5 (orange / max) 4.5k.",
+            "Each Creator Zone tile is worth either 1k (ATK or damage-reduction bonus) or 5k points. Each Creator Zone fight adds 1k on victory, or costs 1k per loss.",
+            "You can skip animations from 10k points onward — that takes 7 rolls from zero.",
+          ],
+        },
+        {
+          heading: "Creator Zone guild dice",
+          body: [
+            "Guild points unlock Creator Zone dice: 1M → 10; 2.5M → 15; 5M → 20; 7.5M → 30; 10M → 40; 12.5M → 50; 15M → 60; 17.5M → 70; 20M → 80.",
+            "Tile leveling is individual. Creator Zone thresholds use the combined guild score from everyone’s individual points.",
+          ],
+        },
+        {
+          heading: "Tile leveling",
+          body: [
+            "Visits to level up: Level 1→2 (null→green) 2; Level 2→3 (green→blue) 4; Level 3→4 (blue→purple) 6; Level 4→5 (purple→orange) 8.",
+            "About 47 tiles on the board. 3× portal tiles count as 1 visit on 2 tiles. Zones take 3–4 dice to finish and only add 1 visit to 1 tile. Visitor Center raises the visit count of the lowest-upgraded tile by 1.",
+          ],
+        },
+        {
+          heading: "Achievement dice floors",
+          body: [
+            "12 tiles to green: 24 dice minimum. 24 tiles to blue: 96 more (120 total minimum). 36 to purple: 216 more (336 total minimum). 48 to orange: 384 more (720 dice minimum overall).",
+          ],
+        },
+        {
+          heading: "Zones",
+          body: [
+            "Sleipnir → Land Deals. Caladrius → ID plates. Cerberus → resource barrels. Nidhogg → clocks.",
+          ],
+        },
+        {
+          heading: "Packs",
+          body: [
+            "Numbers are total rolls (each pack die is worth 2 rolls). $1: 8/day (limit 1). $5: 24/day or 1 Creator die (1–6 of your choice)/day (limit 1 each). $10: 40/day and 1 Creator die (limit 1). $20: 70/day and 1 Creator die (limit 1), or 3 Creator dice/day (limit 5). $25: 100/day and 2 Creator dice (limit 1). $50: 140/day and 2 Creator dice (limit 1), or 5 Creator dice/day (limit 5). $100: 280/day and 2 Creator dice (limit 1), or 10 Creator dice/day (limit 5).",
+            "Packs get less efficient as they get more expensive. To max tiles from F2P’s ~341 you still need about 379 rolls (720 − 341). Cheapest path if the maths holds: about $95 (3× $25 + 2× $10), assuming good luck — and you also get 8 Creator dice to play with.",
+            "Best use of Creator dice is landing on Cryptid zones. Near the end, when leveling tiles, prefer Visitor Center so the lowest-level tile on the map gains a visit.",
+          ],
+        },
+      ],
+      note: "Guide by Autumn (Ice S12), Discord 18–22 August 2026 — dice math thanks Pendulum.",
+    },
   },
   events: {
     title: "Events",

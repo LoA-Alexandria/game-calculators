@@ -47,12 +47,13 @@ test("Events index always exposes Anleitungen and Tips categories", () => {
   assert.ok(sectionById("events").items.some((item) => item.href === "/events/monument-of-eternity/"));
   assert.ok(sectionById("events").items.some((item) => item.href === "/events/supply-reform/"));
   assert.ok(sectionById("events").items.some((item) => item.href === "/events/trials-of-odin/"));
+  assert.ok(sectionById("events").items.some((item) => item.href === "/events/astral-wonderland/"));
   const groups = eventCategoryGroups(en);
   assert.deepEqual(
     groups.map((group) => ({ id: group.id, category: group.category, count: group.items.length })),
     [
       { id: "anleitungen", category: en.eventCategories.anleitungen, count: 0 },
-      { id: "tips", category: en.eventCategories.tips, count: 6 },
+      { id: "tips", category: en.eventCategories.tips, count: 7 },
     ],
   );
 });
@@ -114,6 +115,17 @@ test("Trials of Odin is listed under Events Tips in every language", () => {
     assert.ok(entry.sections.some((section) => /Draupnir|Military Token/i.test(section.body.join(" "))));
     assert.ok(entry.sections.some((section) => /Surtr/.test(section.body.join(" "))));
     assert.match(entry.note, /Cherr/);
+    assert.match(entry.note, /Autumn/);
+  }
+});
+
+test("Astral Wonderland is listed under Events Tips in every language", () => {
+  for (const locale of ["en", "de", "fr"]) {
+    const dictionary = getDictionary(locale);
+    const entry = dictionary.eventGuideEntries.astralWonderland;
+    assert.equal(entry.title, "Astral Wonderland");
+    assert.ok(entry.sections.some((section) => /720/.test(section.body.join(" "))));
+    assert.ok(entry.sections.some((section) => /Creator Area/i.test(section.heading) || /Creator Area/i.test(section.body.join(" "))));
     assert.match(entry.note, /Autumn/);
   }
 });

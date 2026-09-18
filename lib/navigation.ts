@@ -94,6 +94,13 @@ export const SECTIONS: NavSection[] = [
         badge: (t) => t.eventCategories.tips,
         categoryId: "tips",
       },
+      {
+        href: "/events/astral-wonderland/",
+        label: (t) => t.eventGuideEntries.astralWonderland.title,
+        description: (t) => t.eventGuideEntries.astralWonderland.summary,
+        badge: (t) => t.eventCategories.tips,
+        categoryId: "tips",
+      },
     ],
   },
   {
