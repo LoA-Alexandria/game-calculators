@@ -1282,21 +1282,117 @@ const fr: Dictionary = {
       ],
       note: "Les coûts du manoir et les seuils de population seront ajoutés une fois vérifiés contre le client actuel.",
     },
-    support: {
-      title: "Soutien",
-      summary: "Bonus de soutien à l’échelle du compte — la liste est encore en rédaction.",
+    adsBuy: {
+      title: "Werbung / Buy",
+      summary: "Priorités pubs quotidiennes, et ce qui vaut d’être acheté en argent réel.",
       intro:
-        "Le soutien couvre les systèmes qui renforcent le reste de la ville plutôt que de produire une ressource eux-mêmes. Cette page tient l’emplacement Éléments fondamentaux jusqu’à ce que cette liste soit versionnée ici.",
+        "Par Autumn. Acheter l’ad-free est sans doute plus sain — utilisez ce guide si ce n’est pas possible, et pour des priorités d’achat claires.",
+      credit: "Guide pubs et achats par Autumn (Ice, S12), partagé sur Discord",
+      creditDate: "Août 2026",
       sections: [
         {
-          heading: "Ce que ce guide couvrira",
+          heading: "Pubs — comment les enchaîner",
           body: [
-            "Quelles pistes de soutien existent, ce qu’elles renforcent, et l’ordre dans lequel il vaut la peine de les monter.",
-            "Tant que ces pistes ne sont pas vérifiées, cette page est l’entrée de catégorie, pas un ordre complet.",
+            "Pour l’efficacité, alternez avec les pubs billboard : elles ont 5 minutes de cooldown entre chaque pub.",
+            "Pour la santé mentale, regardez les pubs en faisant autre chose. Temps total d’ads : environ 3–4 heures.",
+          ],
+        },
+        {
+          heading: "Priorités pubs — immédiatement / chaque jour",
+          body: [
+            "Dans l’ordre chronologique, du haut vers le bas.",
+            "Special : seulement si vous êtes resté absent plus longtemps que votre plafond de temps récupérable. Restaure environ 1 heure de ressources (30 minutes × 2), et seulement avant d’entrer vraiment dans le jeu.",
+            "Pubs billboard : les seules qui donnent 50 plaques ID gratuites par jour (10 × 5) plus 150 gemmes — chroniquement rares en F2P.",
+            "Ad Bundle : disponible seulement 2 heures après le premier login après un reset.",
+            "Speedup Research : de nouveau disponible toutes les 2 heures après en avoir regardé une. Prenez le rôle Discord research-timer pour un ping toutes les 2 heures.",
+            "Assistant auto-clicker : le plus tôt possible avant un reset. L’auto-clicker se met en pause pendant une pub ou une déconnexion — vous voulez les 30 minutes complètes.",
+            "Pubs Blessings (×5) : lancez-les quand votre % de blessing est déjà très haut. Timing variable — environ 1 heure avant que le % baisse ; montez en priorité #2 si le % est très haut.",
+            "Pubs stamina Main Event : Grail, Odin, Atlantis, Rome et autres main events à bannière bleue (plus les bannières d’events spéciaux en haut du calendrier).",
+            "Pubs stamina Savings Event : Genie, Ring Toss.",
+            "Autres pubs stamina d’event : Shopping Cart et similaires.",
+            "Pubs stamina minijeux — surtout Mushroom Adventure.",
+          ],
+        },
+        {
+          heading: "Priorités pubs — sans limite de temps",
+          body: [
+            "Dans n’importe quel ordre : Crown Glory, Museion, Grand Voyage, Industrial Soulcraft (après Exploration Age), Guild Development (au moins 1 pour l’Epoch Pass), et 1 Genesis Soulcraft / Genesis Excavation (pour garder soulcraft / pelles pour Destiny).",
+          ],
+        },
+        {
+          heading: "Priorités pubs — peuvent être sautées",
+          body: [
+            "Les autres pubs Genesis Soulcraft, sauf si tous les héros ne sont pas encore débloqués.",
+            "Les autres pubs Genesis / Humanities Excavation, sauf si toutes les excavations ne sont pas encore débloquées.",
+          ],
+        },
+        {
+          heading: "Guide d’achat — essentiel & obligatoire",
+          body: [
+            "Priorisez toujours votre budget. Achats classés par valeur et nécessité situationnelle.",
+            "Lifetime Ad-Free · 29,99 $ — le meilleur achat pour la santé mentale et la progression.",
+            "Venus first purchase · 2,99 $ — jour 1 pour un gros boost early.",
+            "Déesses Ring Toss · ~10 $ — achetez la déesse à chaque cycle d’event.",
+            "Héros initiaux Main Event · 15–20 $ — Arthur, Odysseus, Ragnar, etc. dès leur premier cycle.",
+            "Exception Rome · 10 $ — suffisant pour débloquer Caesar.",
+            "Museion first fund · 10 $ — jour 8 ; obligatoire.",
+            "Egypt first fund · 10 $ — jour 14 ; important.",
+            "Theater first fund · 10 $ — jour 20 ; progression essentielle.",
+            "Voyage first fund · 10 $ — jour 40 ; ne pas sauter.",
+          ],
+        },
+        {
+          heading: "Guide d’achat — utile & recommandé",
+          body: [
+            "Civilization funds — les 3 disponibles.",
+            "Goddess funds — les 3 disponibles.",
+            "Sea Merchant funds — les 3 disponibles.",
+            "Astral Pass · 15 $ — très bon rapport récurrent.",
+            "Heart of Gold Pass · 15 $ — fort payout de matériaux Cryptid.",
+            "Passes Spring Event · 10 $ et 20 $ — les deux jusqu’à ce que toutes les tuiles soient débloquées.",
+            "Weekly Pop Bundle · 15 $.",
+            "Daily Value Bundle avec 45 barils dorés · 2,99 $.",
+            "Joan of Arc : offre 5 $ vers UR, fund 20 $ vers UR+.",
+          ],
+        },
+        {
+          heading: "Guide d’achat — qualité de vie",
+          body: [
+            "Monthly Ad-Free Assistant Pass · 5 $/mois — assistant automatisé supplémentaire pour les tâches.",
+          ],
+        },
+        {
+          heading: "Guide d’achat — compétitif seulement",
+          body: [
+            "Tous les funds disponibles · ~500 $ au total — chaque fund milestone si vous poussez le top.",
+            "Buffs de livres UR+ — pousser chaque héros UR+ de chaque cycle d’event à au moins 1 étoile.",
+          ],
+        },
+        {
+          heading: "Guide d’achat — whales",
+          body: [
+            "Toutes les passes d’event et tous les funds pour une domination early totale.",
+            "Premier Grail (jour 3) · 1000 $+ — rush Map 3 et dépense lourde plaques ID / matériaux déesses ; snowball permanent.",
+            "Events Rome 1–3 — seuil 227m pour tous les artefacts exclusifs des trois premiers cycles.",
+            "Rotations de skins UR+ — chaque skin UR+ à chaque seconde rotation d’event.",
+            "Mayan et Genie · 200 $+ par event — max pour artefacts UR et skins d’event.",
+          ],
+        },
+        {
+          heading: "Guide d’achat — inutile",
+          body: [
+            "Land Deeds — n’y mettez pas d’argent. Piège ; dépensez ailleurs.",
+          ],
+        },
+        {
+          heading: "Addendum — top-up consécutif à 1 $/jour",
+          body: [
+            "Si vous dépensez environ 1 USD/jour pour le minimum de consecutive top-up (après le premier pack à 1 $), bonnes cibles dans l’ordre : lundis 1000 gemmes ; Ring Toss / Shopping Cart / Genie s’ils tournent ; main event ; bundles pop-up 25 choice barrels / harpes Museion s’ils sont là ; minijeux que vous aimez (surtout Mushroom Adventure) ; plaques ID ×100.",
+            "Cherchez la valeur par dollar (merci à Lynx et Popo). Exemple : daily bundle ~80 plaques/$, weekly bundle ~163 plaques/$.",
           ],
         },
       ],
-      note: "Les pistes de soutien viendront dans un changement ultérieur. Envoyez une liste vérifiée sur Discord si vous en tenez déjà une.",
+      note: "Priorités pubs et achats communautaires d’Autumn (Ice, S12). Prix et packs peuvent changer — corrections sur Discord.",
     },
     goddesses: {
       title: "Déesses",
@@ -3572,7 +3668,7 @@ const fr: Dictionary = {
     outputLede:
       "Collez chaque bloc de dictionnaire, puis la ligne de navigation, et créez le fichier de page comme indiqué.",
     outputNote:
-      "Collez chaque bloc sous guideEntries dans son dictionnaire et la ligne dans guides.items dans lib/navigation.ts. Pour un nouveau slug, copiez la page support.",
+      "Collez chaque bloc sous guideEntries dans son dictionnaire et la ligne dans guides.items dans lib/navigation.ts. Pour un nouveau slug, copiez la page ads-buy.",
     editTitle: "Modifier le guide",
     editLede: "Modifiez le texte et exportez le remplacement. C’est le commit qui met à jour la page en ligne.",
     replaceNote:

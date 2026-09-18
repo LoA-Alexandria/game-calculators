@@ -114,22 +114,22 @@ filter. There is no second list to keep in step.
    pattern as news and events. Every guide listed with an `editor` in
    `lib/content/guide-meta.ts` skips those buttons: it has its own editor instead.
 2. Write or replace the text under `guideEntries.<id>` in all three dictionaries,
-   following the shape of `support`: `title`, `summary`, `intro`,
+   following the shape of `adsBuy`: `title`, `summary`, `intro`,
    `sections[]`, `note`.
 3. Add or replace the item in the `guides` section in `lib/navigation.ts`,
    including a `badge` and `categoryId` from `guideCategories`. Reuse an existing
    category when the guide belongs next to one already there. Core systems
-   (heroes, artwork, technology, collection, manor, support, goddesses, cryptides,
+   (heroes, artwork, technology, collection, manor, goddesses, cryptides,
    production buildings)
    use `coreElements`; placement guides (hero layouts, artwork
    layouts) use `layouts`; ranking guides (hero tier list) use `tierLists`;
    building guides (Goddess Theater, Museion) use `buildings`; advice that is not tied to
    one system (hero linking, anecdotes, server age unlocks, hero leveling, goddess
-   leveling) uses `tips`. Limited-time event write-ups belong under the top-level
-   Events section (`eventCategories.anleitungen` / `eventCategories.tips` in
-   `lib/navigation.ts`), not under Guides — do not reuse `guideCategories.event`
+   leveling, ads / buy) uses `tips`. Limited-time event write-ups belong under the top-level
+   Events section in
+   `lib/navigation.ts`, not under Guides — do not reuse `guideCategories.event`
    for Guides items.
-4. For a new slug, copy `app/guides/support/page.tsx` and pass the new id
+4. For a new slug, copy `app/guides/ads-buy/page.tsx` and pass the new id
    to `GuideArticle`.
 5. Add the guide to `GUIDE_PRESENTATION` in `lib/content/guide-meta.ts`: up to
    four pictures already under `public/` for its card on `/guides/` (an empty

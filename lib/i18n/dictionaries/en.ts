@@ -747,21 +747,117 @@ const en = {
       ],
       note: "Manor costs and population gates will be added once they are checked against the current client.",
     },
-    support: {
-      title: "Support",
-      summary: "Account-wide support bonuses — the list is still being written.",
+    adsBuy: {
+      title: "Werbung / Buy",
+      summary: "Daily ad priorities for efficiency, and what is worth buying with real money.",
       intro:
-        "Support covers the systems that buff the rest of the city rather than producing a resource themselves. This page holds the Core elements slot until that list is versioned here.",
+        "Made by Autumn. Buying ad-free is probably more sane — use this when you are not in that position, and when you want a clear spend priority.",
+      credit: "Ads and spending guide by Autumn (Ice, S12), shared on Discord",
+      creditDate: "August 2026",
       sections: [
         {
-          heading: "What this guide will cover",
+          heading: "Ads — how to run them",
           body: [
-            "Which support tracks exist, what they buff, and the order worth raising them in.",
-            "Until those tracks are checked, this page is the category entry rather than a complete order.",
+            "For efficiency, alternate ads with billboard ads: billboards have a 5-minute cooldown between each ad.",
+            "For sanity, watch ads while doing something else. Total ad time is about 3–4 hours.",
+          ],
+        },
+        {
+          heading: "Ad priorities — do immediately / every day",
+          body: [
+            "Go in chronological order from top to bottom.",
+            "Special: only available if you have been away longer than your maximum recoverable-time cap. It restores about 1 hour of resources (30 minutes × 2), and you can only watch it before entering the game properly.",
+            "Billboard ads: the only ads that give 50 free ID plates every day (10 × 5) plus 150 gems — chronically short for F2P.",
+            "Ad Bundle: available for only 2 hours after your first login after a reset.",
+            "Speedup Research: available again every 2 hours after watching one. You can take the research-timer Discord role for a ping every 2 hours.",
+            "Auto-clicker ad assistant: do this as soon as possible before a reset. The auto-clicker pauses when you watch an ad or log out, and you want the full 30 minutes it offers.",
+            "Blessings ads (×5): run these when your blessing % is already very high. Timing is variable — you have about 1 hour before the % starts to drop, so move this up to priority #2 when the % is very high.",
+            "Main Event stamina ads: Grail, Odin, Atlantis, Rome, and other blue-banner main events (plus special event banners at the top of the calendar).",
+            "Savings Event stamina ads: Genie, Ring Toss.",
+            "Other Event stamina ads: Shopping Cart and similar.",
+            "Minigame stamina ads — especially Mushroom Adventure.",
+          ],
+        },
+        {
+          heading: "Ad priorities — not time-limited",
+          body: [
+            "These can be done in any order: Crown Glory, Museion, Grand Voyage, Industrial Soulcraft (if past Exploration Age), Guild Development (at least 1 for the Epoch Pass), and 1 Genesis Soulcraft / Genesis Excavation (to save soulcraft / shovels for Destiny).",
+          ],
+        },
+        {
+          heading: "Ad priorities — can be skipped",
+          body: [
+            "The other Genesis Soulcraft ads, unless you have not unlocked all heroes yet.",
+            "The other Genesis / Humanities Excavation ads, unless you have not unlocked all excavations yet.",
+          ],
+        },
+        {
+          heading: "Spending guide — essential & mandatory",
+          body: [
+            "Always prioritize your budget. This ranks purchases by value and situational necessity.",
+            "Lifetime Ad-Free · $29.99 — the single best purchase for sanity and progression.",
+            "Venus first purchase · $2.99 — buy on day 1 for a large early-game jump.",
+            "Ring Toss goddesses · ~$10 — buy the goddess every event cycle.",
+            "Main Event initial heroes · $15–$20 — unlock Arthur, Odysseus, Ragnar, and so on on their first cycles.",
+            "Rome event exception · $10 — enough to unlock Caesar.",
+            "Museion first fund · $10 — unlocks day 8; mandatory.",
+            "Egypt first fund · $10 — unlocks day 14; important.",
+            "Theater first fund · $10 — unlocks day 20; essential progression.",
+            "Voyage first fund · $10 — unlocks day 40; do not skip.",
+          ],
+        },
+        {
+          heading: "Spending guide — useful & recommended",
+          body: [
+            "Civilization funds — buy all three available.",
+            "Goddess funds — buy all three available.",
+            "Sea Merchant funds — buy all three available.",
+            "Astral Pass · $15 — strong recurring value.",
+            "Heart of Gold Pass · $15 — high Cryptid material payout.",
+            "Spring Event passes · $10 and $20 — buy both until every tile is unlocked.",
+            "Weekly Pop Bundle · $15.",
+            "Daily Value Bundle with 45 golden barrels · $2.99.",
+            "Joan of Arc: $5 offer toward UR, and $20 fund toward UR+.",
+          ],
+        },
+        {
+          heading: "Spending guide — quality of life",
+          body: [
+            "Monthly Ad-Free Assistant Pass · $5/month — adds the automated assistant that manages tasks.",
+          ],
+        },
+        {
+          heading: "Spending guide — competitive only",
+          body: [
+            "All available funds · ~$500 total — every milestone fund, if you push top ranks.",
+            "UR+ book buffs — push every UR+ hero from every event cycle to at least 1-star for the book buffs.",
+          ],
+        },
+        {
+          heading: "Spending guide — whales",
+          body: [
+            "All event passes and all funds for absolute early dominance.",
+            "First Grail (day 3) · $1000+ — rush Map 3 and heavy-spend ID plates and goddess materials; it snowballs permanently.",
+            "Rome events 1–3 — hit the 227m score threshold for all exclusive artifacts in the first three cycles.",
+            "UR+ skin rotations — take every UR+ skin on every second event rotation.",
+            "Mayan and Genie · $200+ per event — max for UR artifacts and event skins.",
+          ],
+        },
+        {
+          heading: "Spending guide — useless",
+          body: [
+            "Land Deeds — do not spend money here. A trap; put the cash elsewhere.",
+          ],
+        },
+        {
+          heading: "Addendum — $1/day consecutive top-up",
+          body: [
+            "If you spend about $1 USD a day for the minimum consecutive top-up (after the first $1 pack), good targets in chronological order: Mondays 1000 gems; Ring Toss / Shopping Cart / Genie when running; main event; pop-up bundles for 25 choice barrels / Museion harps when available; minigames you like (especially Mushroom Adventure); ID plates ×100.",
+            "Look for value per dollar (thanks to Lynx and Popo). Example: the daily bundle is about 80 plates per $, the weekly bundle about 163 plates per $.",
           ],
         },
       ],
-      note: "The support tracks will be added in a later change. Send a checked list on Discord if you already keep one.",
+      note: "Community ads and spending priorities from Autumn (Ice, S12). Prices and packs can change with the client — bring corrections to Discord.",
     },
     // Upgrade order is the LoA Alexandria sequence (13 Sep 2026).
     // Phase 2 Fortuna and Bastet are 60, not the older community sheet's 90.
@@ -3011,7 +3107,7 @@ const en = {
     outputLede:
       "Paste each dictionary block, then the navigation row, and add the page file as noted.",
     outputNote:
-      "Paste each block under guideEntries in its dictionary and the row into guides.items in lib/navigation.ts. Copy the support page for a new slug.",
+      "Paste each block under guideEntries in its dictionary and the row into guides.items in lib/navigation.ts. Copy the ads-buy page for a new slug.",
     editTitle: "Edit guide",
     editLede: "Change the text and export the replacement. Committing it is what updates the live page.",
     replaceNote:
