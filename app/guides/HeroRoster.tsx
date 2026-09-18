@@ -17,8 +17,11 @@ import {
   heroesByRarity,
   localizedHero,
   searchHeroes,
+  heroLoreTexts,
+  mergeHeroTexts,
   type Hero,
   type HeroRarity,
+  type HeroTexts,
 } from "../../lib/content/heroes";
 import { LOCALE_CODES, fill, getDictionary, type Dictionary } from "../../lib/i18n";
 import { HERO_SKIN_GROUPS, HERO_SKINS, skinSearchText, skinsFor } from "../../lib/content/skins";
@@ -102,6 +105,7 @@ function closeHeroHash() {
 }
 
 export function HeroRoster({ guide }: { guide: Guide }) {
+  const { locale } = useLocale();
   const [rarity, setRarity] = useState<HeroRarity | "all">("all");
   const [query, setQuery] = useState("");
   // Search every language's wording, so a reader finds a skill or skin by the name they know.
@@ -109,15 +113,19 @@ export function HeroRoster({ guide }: { guide: Guide }) {
     () => LOCALE_CODES.map((code) => getDictionary(code).guideEntries.heroes.skinTexts),
     [],
   );
+  const heroCatalogs = useMemo(
+    () => LOCALE_CODES.map((code) => mergeHeroTexts(getDictionary(code).guideEntries.heroes.heroTexts, heroLoreTexts(code))),
+    [],
+  );
   const rows = useMemo(
     () =>
       searchHeroes(
         query,
         rarity,
-        LOCALE_CODES.map((code) => getDictionary(code).guideEntries.heroes.heroTexts),
+        heroCatalogs,
         (hero) => skinSearchText(hero.name, HERO_SKINS, skinCatalogs),
       ),
-    [query, rarity, skinCatalogs],
+    [query, rarity, heroCatalogs, skinCatalogs],
   );
   const grouped = rarity === "all" && !query.trim();
   const fragmentLabels = guide.fragments;
@@ -129,6 +137,10 @@ export function HeroRoster({ guide }: { guide: Guide }) {
   const stepList = open && rows.some((hero) => hero.id === open.id) ? rows : HEROES;
 
   const openHero = (hero: Hero) => openHeroHash(hero.id);
+  const texts = useMemo(
+    () => mergeHeroTexts(guide.heroTexts, heroLoreTexts(locale)),
+    [guide.heroTexts, locale],
+  );
 
   return (
     <div className="guide-wide hero-roster">
@@ -288,6 +300,7 @@ export function HeroRoster({ guide }: { guide: Guide }) {
         <HeroDialog
           hero={open}
           guide={guide}
+          texts={texts}
           list={stepList}
           onStep={(hero) => stepHeroHash(hero.id)}
           onClose={closeHeroHash}
@@ -300,12 +313,14 @@ export function HeroRoster({ guide }: { guide: Guide }) {
 function HeroDialog({
   hero,
   guide,
+  texts,
   list,
   onStep,
   onClose,
 }: {
   hero: Hero;
   guide: Guide;
+  texts: HeroTexts;
   list: readonly Hero[];
   onStep: (hero: Hero) => void;
   onClose: () => void;
@@ -349,17 +364,27 @@ function HeroDialog({
           <CloseIcon className="icon icon-sm" />
         </button>
       </div>
-      <HeroDetail key={hero.id} hero={hero} guide={guide} nameId={`${id}-name`} />
+      <HeroDetail key={hero.id} hero={hero} guide={guide} texts={texts} nameId={`${id}-name`} />
     </dialog>
   );
 }
 
-function HeroDetail({ hero: row, guide, nameId }: { hero: Hero; guide: Guide; nameId: string }) {
+function HeroDetail({
+  hero: row,
+  guide,
+  texts,
+  nameId,
+}: {
+  hero: Hero;
+  guide: Guide;
+  texts: HeroTexts;
+  nameId: string;
+}) {
   const { t, tf } = useLocale();
   const artworkTexts = t.guideEntries.artwork.catalogTexts as PaintingTexts;
   const [shown, setShown] = useState(0);
-  // Name, rarity, and pictures are shared; the game text comes from the dictionary.
-  const hero = localizedHero(row, guide.heroTexts);
+  // Name, rarity, and pictures are shared; the game text comes from the dictionary + lore.
+  const hero = localizedHero(row, texts);
   const file = hero.images[shown] ?? hero.images[0];
   const found = heroAppearances(hero.name);
   const layouts = layoutTexts(t.guideEntries.heroLayouts);
@@ -374,6 +399,8 @@ function HeroDetail({ hero: row, guide, nameId }: { hero: Hero; guide: Guide; na
   };
   const nothing = !found.tiers.length && !found.builds.length && !found.roles.length && !found.paintings.length;
   const listedSkins = skinsFor(HERO_SKINS, hero.name);
+  const troopLabel = hero.troop ? guide.troops[hero.troop] : null;
+  const ageLabel = hero.age ? guide.ages[hero.age] : null;
 
   return (
     <>
@@ -381,8 +408,11 @@ function HeroDetail({ hero: row, guide, nameId }: { hero: Hero; guide: Guide; na
         <HeroPortrait name={hero.name} rarity={hero.rarity} src={file ? heroImageUrl(file) : null} className="hero-portrait-large" />
         <div className="hero-detail-title">
           <h2 id={nameId}>{hero.name}</h2>
+          {hero.title ? <p className="hero-detail-epithet">{hero.title}</p> : null}
           <p>
             <span className="rarity" data-rarity={hero.rarity}>{hero.rarity}</span>
+            {troopLabel ? <span className="hero-detail-fact">{troopLabel}</span> : null}
+            {ageLabel ? <span className="hero-detail-fact">{ageLabel}</span> : null}
           </p>
           {hero.images.length > 1 ? (
             <div className="hero-skins" role="group" aria-label={guide.imagesLabel}>
@@ -405,6 +435,12 @@ function HeroDetail({ hero: row, guide, nameId }: { hero: Hero; guide: Guide; na
       </header>
 
       <div className="hero-detail-body">
+        {hero.bio ? (
+          <>
+            <h3>{guide.bioHeading}</h3>
+            <p className="hero-bio">{hero.bio}</p>
+          </>
+        ) : null}
         {hero.obtain ? (
           <>
             <h3>{guide.colObtain}</h3>

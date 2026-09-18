@@ -13,6 +13,8 @@ export const ROSTER_SPELLING: Readonly<Record<string, string>> = {
   Bjorn: "Bjorn Ironside",
   "Catherine de Medici": "Catherine de'Medici",
   Livia: "Livia Drusilla",
+  "Lu Bu": "Lü Bu",
+  Musashi: "Miyamoto Musashi",
   Napoleon: "Napoleon Bonaparte",
   Newton: "Isaac Newton",
   Ragnar: "Ragnar Lodbrok",

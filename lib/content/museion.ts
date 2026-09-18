@@ -26,12 +26,7 @@ export type MuseionBuildingText = { name?: string };
 export type MuseionBuildingTexts = Record<string, MuseionBuildingText>;
 
 /** Heroes named by Autumn / Spitzell / Zee who are not in the Core roster yet. */
-export const MUSEION_OFF_ROSTER = [
-  "Guan Yu",
-  "Lu Bu",
-  "Miyamoto Musashi",
-  "Yi Sun-sin",
-] as const;
+export const MUSEION_OFF_ROSTER = [] as const;
 
 /** JSON has no string literal types; tests check ids, stats, and hero names. */
 export const MUSEION_DATA = data as MuseionData;
