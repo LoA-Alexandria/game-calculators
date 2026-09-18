@@ -54,6 +54,17 @@ export function EventArticle({ id }: { id: EventGuideId }) {
             {section.body.map((paragraph, index) => (
               <p key={index}>{paragraph}</p>
             ))}
+            {"image" in section && section.image ? (
+              <img
+                className="event-tip-figure"
+                src={section.image.src}
+                alt={section.image.alt}
+                width={section.image.width}
+                height={section.image.height}
+                loading="lazy"
+                decoding="async"
+              />
+            ) : null}
           </section>
         ))}
         {guide.note ? <p className="callout">{guide.note}</p> : null}

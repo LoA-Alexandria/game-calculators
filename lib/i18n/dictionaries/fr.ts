@@ -4225,6 +4225,58 @@ const fr: Dictionary = {
       ],
       note: "Astuce communautaire pour Global Regatta — score en miles et banking avant l’event.",
     },
+    heartOfGold: {
+      title: "Heart of Gold",
+      summary: "Trois cartes par stage, banquez l’endurance d’exploration, creusez le boss en motif 2×2.",
+      intro:
+        "Chaque stage a trois cartes et un objet-clé par carte. Trouvez The Bullet, The Whip et The Feather, puis changez de carte dès que l’objet est trouvé.",
+      sections: [
+        {
+          heading: "Objectif principal",
+          body: [
+            "Nettoyez trois cartes par stage. Chaque carte contient exactement un objet. Dès que vous trouvez l’objet de la carte actuelle, passez à la suivante.",
+            "Les trois objets sont The Bullet, The Whip et The Feather. Les trouver tous débloque le stage suivant avec trois nouvelles cartes.",
+            "Les questions pendant l’exploration ont toujours la bonne réponse à gauche.",
+          ],
+        },
+        {
+          heading: "Endurance d’exploration",
+          body: [
+            "Régénération passive : 1 endurance d’exploration toutes les 15 minutes. Sur 142 heures, cela fait 568 d’endurance rien qu’en regen.",
+            "Base de départ : 50. Les extras F2P des packs pubs et gemmes quotidiens ajoutent environ 22 par jour ; sur six jours, 132 de plus.",
+            "Durée de l’event : 5 jours et 22 heures. Endurance free-to-play totale autour de 750 (50 + 568 + 132).",
+          ],
+        },
+        {
+          heading: "Bonus Area",
+          body: [
+            "Ouverte chaque jour de 17 h à 21 h heure serveur.",
+            "Seuls le chef de guilde et les quatre meilleurs scoreurs quotidiens de la guilde peuvent représenter et combattre les autres guildes.",
+          ],
+        },
+        {
+          heading: "Loot bonus et passes",
+          body: [
+            "Lisez les articles débloqués dans l’onglet Guild Intel pour des récompenses extra.",
+            "Il y a deux passes d’event. La passe à 15 $ en vaut la peine ; celle à 5 $ n’est pas recommandée.",
+            "Certaines cartes d’exploration ont une zone de coffres de guilde. Celui qui la trouve peut prendre trois coffres ; les autres un seul.",
+          ],
+        },
+        {
+          heading: "Motif de fouille du boss",
+          body: [
+            "Le boss qui porte l’un des trois objets-clés occupe quatre cases (2×2). Creusez selon le motif annoté pour toucher chaque bloc 2×2 possible sans vider toute la carte.",
+          ],
+          image: {
+            src: "/events/heart-of-gold-boss-pattern.webp",
+            alt: "Grille de fouille annotée dans le désert : d’abord une rangée centrale complète, puis des cases espacées au-dessus et en dessous pour ne pas manquer un boss 2×2.",
+            width: 1019,
+            height: 778,
+          },
+        },
+      ],
+      note: "Astuce communautaire pour Heart of Gold — réponses quiz d’Esme (Creek, S13) ; motif de fouille de Cherr (Earth, S2) et Admos (Woods, S5).",
+    },
   },
   events: {
     title: "Événements",

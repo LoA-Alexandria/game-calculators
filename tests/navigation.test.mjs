@@ -59,12 +59,13 @@ test("Events index always exposes Anleitungen and Tips categories", () => {
   assert.ok(sectionById("events").items.some((item) => item.href === "/events/peak-of-enlightenment/"));
   assert.ok(sectionById("events").items.some((item) => item.href === "/events/red-carpet/"));
   assert.ok(sectionById("events").items.some((item) => item.href === "/events/global-regatta/"));
+  assert.ok(sectionById("events").items.some((item) => item.href === "/events/heart-of-gold/"));
   const groups = eventCategoryGroups(en);
   assert.deepEqual(
     groups.map((group) => ({ id: group.id, category: group.category, count: group.items.length })),
     [
       { id: "anleitungen", category: en.eventCategories.anleitungen, count: 0 },
-      { id: "tips", category: en.eventCategories.tips, count: 18 },
+      { id: "tips", category: en.eventCategories.tips, count: 19 },
     ],
   );
 });
@@ -259,6 +260,17 @@ test("Global Regatta is listed under Events Tips in every language", () => {
     assert.equal(entry.title, "Global Regatta");
     assert.ok(entry.sections.some((section) => /mile|Meile/i.test(section.body.join(" "))));
     assert.ok(entry.sections.some((section) => /barrel|Fässer|baril/i.test(section.body.join(" "))));
+  }
+});
+
+test("Heart of Gold is listed under Events Tips in every language", () => {
+  for (const locale of ["en", "de", "fr"]) {
+    const dictionary = getDictionary(locale);
+    const entry = dictionary.eventGuideEntries.heartOfGold;
+    assert.equal(entry.title, "Heart of Gold");
+    assert.ok(entry.sections.some((section) => /750/.test(section.body.join(" "))));
+    assert.ok(entry.sections.some((section) => /2×2|2x2|vier Felder|quatre cases/i.test(section.body.join(" "))));
+    assert.ok(entry.sections.some((section) => "image" in section && section.image?.src.includes("heart-of-gold-boss-pattern")));
   }
 });
 
