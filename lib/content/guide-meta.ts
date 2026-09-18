@@ -38,7 +38,7 @@ export const GUIDE_PRESENTATION: Record<GuideEntryId, GuidePresentation> = {
     cutout: true,
   },
   manor: { art: [] },
-  support: { art: [] },
+  adsBuy: { art: [] },
   goddesses: {
     art: ["/goddesses/athena.webp", "/goddesses/fortuna.webp", "/goddesses/venus.webp", "/goddesses/hera.webp"],
     editor: { href: "/guides/goddesses/edit/", label: (t) => t.goddessEditor.openEditor },

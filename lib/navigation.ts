@@ -196,13 +196,6 @@ export const SECTIONS: NavSection[] = [
         categoryId: "coreElements",
       },
       {
-        href: "/guides/support/",
-        label: (t) => t.guideEntries.support.title,
-        description: (t) => t.guideEntries.support.summary,
-        badge: (t) => t.guideCategories.coreElements,
-        categoryId: "coreElements",
-      },
-      {
         href: "/guides/goddesses/",
         label: (t) => t.guideEntries.goddesses.title,
         description: (t) => t.guideEntries.goddesses.summary,
@@ -297,6 +290,13 @@ export const SECTIONS: NavSection[] = [
         href: "/guides/server-age-unlocks/",
         label: (t) => t.guideEntries.serverAgeUnlocks.title,
         description: (t) => t.guideEntries.serverAgeUnlocks.summary,
+        badge: (t) => t.guideCategories.tips,
+        categoryId: "tips",
+      },
+      {
+        href: "/guides/ads-buy/",
+        label: (t) => t.guideEntries.adsBuy.title,
+        description: (t) => t.guideEntries.adsBuy.summary,
         badge: (t) => t.guideCategories.tips,
         categoryId: "tips",
       },
