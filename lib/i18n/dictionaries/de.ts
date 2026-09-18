@@ -3954,6 +3954,44 @@ const de: Dictionary = {
       ],
       note: "Schlachtplan von Cherr (Earth S2), 6. August 2026; Nile-Hinweise und Merit-Tabelle von Autumn (Ice S12) / Boah, August–September 2026.",
     },
+    ringToss: {
+      title: "Ring Toss / Tap Football",
+      summary:
+        "Göttinnen zuerst, F2P-Züge bis 69, und der günstigste Weg zum Hard Pity.",
+      intro:
+        "Ring Toss ist das aktuelle Banner-Event. Tap Football ist deprecated (altes Road to the Cup) und erscheint nicht mehr — Mount-Skin-Hinweise unten nur historisch.",
+      sections: [
+        {
+          heading: "Allgemein",
+          body: [
+            "Priorisiere immer den Göttinnen-Unlock vor allem anderen. Gib kein Geld aus bis zum letzten Tag — F2P reicht oft für alles, was du willst.",
+            "Mit Edelsteinen bekommst du etwa 69 Free Draws in Ring Toss und historisch 63 in Tap Football; rechne damit.",
+          ],
+        },
+        {
+          heading: "Tap Football (deprecated)",
+          body: [
+            "Tap Football gehörte zum originalen Road to the Cup und kommt nicht mehr. Damals waren featured Mount-Skins praktisch 2× $5, um über 80 Draws zu kommen.",
+          ],
+        },
+        {
+          heading: "Ring Toss F2P-Draws (3-Tage-Event)",
+          body: [
+            "Pro Tag: 3 aus Ads, 8 aus Edelsteinen (1 196 Edelsteine/Tag), 6 aus Tasks → 17/Tag. Über drei Tage: 17 × 3 = 51.",
+            "Milestones: 45 ohne Packs geben +15 (auf 60), dann +3 — F2P-Total 69 Draws. (Rechnung ursprünglich von Boah, neu von Autumn; Danke Spitzell für Korrekturen.)",
+          ],
+        },
+        {
+          heading: "Minimum-Spend bis Hard Pity",
+          body: [
+            "Pack-Raten (USD): $1 → 2 Draws/Tag; $5 → 7/Tag; $10 → 15/Tag.",
+            "Hard Pity liegt bei 100 Draws. Der 80er-Milestone gibt +6, also brauchst du 25 Pack-Draws zusätzlich zu F2P. Günstigste Mischung: $17 gesamt (2× $1-Tag, 1× $5-Tag, 1× $10-Tag) — also 2 + 2 + 7 + 15 = 26.",
+            "Um eine Göttin zu garantieren, kaufe mindestens ein $1-Pack am zweiten und eines am letzten Tag.",
+          ],
+        },
+      ],
+      note: "Prioritäten von Cherr (Earth S2), 6. August 2026; Draw-Rechnung von Autumn (Ice S12) / Boah, 25. August 2026 — Danke Spitzell.",
+    },
   },
   events: {
     title: "Events",

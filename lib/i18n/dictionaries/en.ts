@@ -3421,6 +3421,44 @@ const en = {
       ],
       note: "Battlefield plan by Cherr (Earth S2), 6 August 2026; Nile notes and merit table by Autumn (Ice S12) / Boah, August–September 2026.",
     },
+    ringToss: {
+      title: "Ring Toss / Tap Football",
+      summary:
+        "Goddess-first priorities, F2P draw math to 69, and the cheapest path to hard pity.",
+      intro:
+        "Ring Toss is the live banner event. Tap Football is deprecated (old Road to the Cup) and no longer appears — mount-skin notes below are historical only.",
+      sections: [
+        {
+          heading: "General",
+          body: [
+            "Always prioritize the goddess unlock over everything else. Do not spend money until the last day — you may get what you want free to play.",
+            "With gems you get about 69 free draws in Ring Toss and historically 63 in Tap Football; plan around those numbers.",
+          ],
+        },
+        {
+          heading: "Tap Football (deprecated)",
+          body: [
+            "Tap Football was part of the original Road to the Cup and no longer shows up. When it ran, featured mount skins were effectively a guaranteed 2× $5 spend to clear 80 draws.",
+          ],
+        },
+        {
+          heading: "Ring Toss F2P draws (3-day event)",
+          body: [
+            "Per day: 3 from ads, 8 from gems (1 196 gems/day), 6 from tasks → 17/day. Over three days: 17 × 3 = 51.",
+            "Milestones: 45 without packs grants +15 (to 60), then +3 more — F2P total 69 draws. (Math originally by Boah, recreated by Autumn; thanks Spitzell for corrections.)",
+          ],
+        },
+        {
+          heading: "Minimum spend to hard pity",
+          body: [
+            "Pack rates (USD): $1 → 2 draws/day; $5 → 7/day; $10 → 15/day.",
+            "Hard pity is 100 draws. The 80 milestone gives +6, so you need 25 pack draws on top of F2P. Cheapest mix: $17 total (2× $1/day worth of the $1 pack, 1× $5 day, 1× $10 day) — i.e. 2 + 2 + 7 + 15 = 26.",
+            "To guarantee a goddess, buy at least one $1 pack on the second day and one on the last day.",
+          ],
+        },
+      ],
+      note: "Priorities by Cherr (Earth S2), 6 August 2026; draw math by Autumn (Ice S12) / Boah, 25 August 2026 — thanks Spitzell.",
+    },
   },
   events: {
     title: "Events",

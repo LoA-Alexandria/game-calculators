@@ -3897,6 +3897,44 @@ const fr: Dictionary = {
       ],
       note: "Plan de bataille par Cherr (Earth S2), 6 août 2026 ; notes Nile et table de merits par Autumn (Ice S12) / Boah, août–septembre 2026.",
     },
+    ringToss: {
+      title: "Ring Toss / Tap Football",
+      summary:
+        "Priorité déesse, maths F2P jusqu’à 69 tirages, et chemin le moins cher vers le hard pity.",
+      intro:
+        "Ring Toss est l’event banner actuel. Tap Football est deprecated (ancien Road to the Cup) et n’apparaît plus — les notes skins de monture ci-dessous sont historiques seulement.",
+      sections: [
+        {
+          heading: "Général",
+          body: [
+            "Priorisez toujours le déblocage de la déesse avant tout le reste. Ne dépensez pas d’argent avant le dernier jour — le F2P peut suffire pour ce que vous voulez.",
+            "Avec des gemmes vous obtenez environ 69 tirages gratuits en Ring Toss et historiquement 63 en Tap Football ; calculez avec ça.",
+          ],
+        },
+        {
+          heading: "Tap Football (deprecated)",
+          body: [
+            "Tap Football faisait partie du Road to the Cup d’origine et n’apparaît plus. À l’époque, les skins de monture featured coûtaient en pratique 2× $5 pour dépasser 80 tirages.",
+          ],
+        },
+        {
+          heading: "Tirages F2P Ring Toss (event 3 jours)",
+          body: [
+            "Par jour : 3 via pubs, 8 via gemmes (1 196 gemmes/jour), 6 via tâches → 17/jour. Sur trois jours : 17 × 3 = 51.",
+            "Milestones : 45 sans packs donnent +15 (à 60), puis +3 — total F2P 69 tirages. (Maths d’origine Boah, reprises par Autumn ; merci Spitzell pour les corrections.)",
+          ],
+        },
+        {
+          heading: "Dépense minimale jusqu’au hard pity",
+          body: [
+            "Packs (USD) : $1 → 2 tirages/jour ; $5 → 7/jour ; $10 → 15/jour.",
+            "Le hard pity est à 100 tirages. Le milestone 80 donne +6, donc il faut 25 tirages de packs en plus du F2P. Mix le moins cher : $17 au total (2× jour $1, 1× jour $5, 1× jour $10) — soit 2 + 2 + 7 + 15 = 26.",
+            "Pour assurer une déesse, achetez au moins un pack $1 le deuxième jour et un le dernier jour.",
+          ],
+        },
+      ],
+      note: "Priorités par Cherr (Earth S2), 6 août 2026 ; maths des tirages par Autumn (Ice S12) / Boah, 25 août 2026 — merci Spitzell.",
+    },
   },
   events: {
     title: "Événements",
