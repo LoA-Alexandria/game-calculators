@@ -3355,6 +3355,72 @@ const en = {
       ],
       note: "Guide by Autumn (Ice S12), shared on Discord, 8 August 2026.",
     },
+    dawnOfRome: {
+      title: "Dawn of Rome / Crown of the Nile",
+      summary:
+        "Guild battlefield counters, three-day revive caps, auto-play setup, and merit farming order.",
+      intro:
+        "Crown of the Nile is the same guild battlefield as Dawn of Rome, with prep folded into each battle day. Use troop counters, pre-store tokens wisely, and spend merits on the highest-value targets.",
+      sections: [
+        {
+          heading: "Crown of the Nile differences",
+          body: [
+            "Same event as Dawn of Rome, except prep is merged into the battle phase: prep from reset to 10:00 server time, battle 10:00–22:00, all three days. A new pyramid building grants troop tokens when occupied. Pompey, Caesar, and Spartacus were added to the Nile selector (17 September 2026).",
+          ],
+        },
+        {
+          heading: "Troop counters",
+          body: [
+            "Cavalry counters Shieldmen. Shieldmen counter Archers. Archers counter Spearmen. Spearmen counter Cavalry.",
+            "If an enemy parks 3–4 troops on a tile, read the battlefield order and deploy so your troops arrive in the exact counter sequence.",
+          ],
+        },
+        {
+          heading: "Merit farming (first Rome only)",
+          body: [
+            "Only on the very first Rome event: send all troops into enemy guild walls to chip them, revive, and repeat. Stop before the wall actually breaks so it recovers. That farms massive merits efficiently.",
+          ],
+        },
+        {
+          heading: "Combat tips",
+          body: [
+            "At the end of Day 1 and Day 2, manually send all troops back to the home base. Enable Auto-Revive in barracks for overnight passive healing — troops do not start the next day fully healed on their own.",
+            "Never dismiss troops on Day 1 or 2, or you start the next day with zero troops.",
+          ],
+        },
+        {
+          heading: "Pre-storage & tokens",
+          body: [
+            "Pre-storing tokens (e.g. 75 of 100) feeds Auto-Replenish automatically. Dumping tokens straight into the barracks hits the cap and stops passive reservist regeneration. Pre-storage keeps generation running, so you get free extra healing and spend fewer tokens.",
+          ],
+        },
+        {
+          heading: "Three-day battle plan",
+          body: [
+            "Day 1 — Setup & claims: spend at most 25% of revives. Claim standard tiles plus Rome. Do not attack guild bases (except wall merit farming). No gem speedups.",
+            "Day 2 — Expansion: at most 40% of revives. Hold and claim everything plus Rome. Same base and speedup rules as Day 1.",
+            "Day 3 — Full unleash: 100% of revives. Secure your guild’s designated 25% map corner and one pass to Rome. Play defensively; do not provoke other guilds. Waypoints are announced once spawns lock. Targets can change with enemy activity.",
+          ],
+        },
+        {
+          heading: "Auto-play (absent players)",
+          body: [
+            "Rome screen → Settings → enable Auto-Replenish → set the slider to the day’s token limit (Day 1: 25%, Day 2: 40%, Day 3: 100%) → green Pre-Store. Barracks → Auto-Revive for all four troop types. Auto-Play → assign a commander.",
+            "Commanders can take exactly two auto-players per day (new picks each day) and cannot change them during the active Battle Phase. Auto-players must finish pre-storage and Auto-Revive before the phase starts.",
+          ],
+        },
+        {
+          heading: "Merit values",
+          body: [
+            "City walls: merits = 10× wall damage (e.g. 400k damage → 4M merits). Neutral or undefended tiles: 3× damage as merits. Troop loss and troop kills both count; PvP pays more than PvE because players have more HP. Bandit Suppression is about one tile’s worth. City defenders are roughly 5× merits vs damage taken. Shared kills split merits equally.",
+            "Solo baselines: neutral tiles ~10k + troop-loss merits; small cities ~120k walls (100%→0) and ~500k defenders + troop loss; barracks ~8M walls (10× damage) plus defenders by PvP power; pass ~2M walls and ~2M defenders + troop loss. PvP: 10× merits for damage dealt and 10× for troops lost.",
+            "After a full map clear, demobilization merits = 10× troops demobilized. End of Day 3 Bandit Suppression = 3× troops demobilized.",
+            "Fastest merit order: PvP → Barracks (base) walls → Rome → Passes → Big cities → Small cities → Demobilization → Tiles → Bandit Suppression.",
+          ],
+        },
+      ],
+      note: "Battlefield plan by Cherr (Earth S2), 6 August 2026; Nile notes and merit table by Autumn (Ice S12) / Boah, August–September 2026.",
+    },
   },
   events: {
     title: "Events",

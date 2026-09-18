@@ -50,12 +50,13 @@ test("Events index always exposes Anleitungen and Tips categories", () => {
   assert.ok(sectionById("events").items.some((item) => item.href === "/events/astral-wonderland/"));
   assert.ok(sectionById("events").items.some((item) => item.href === "/events/mushroom-adventure/"));
   assert.ok(sectionById("events").items.some((item) => item.href === "/events/great-flood/"));
+  assert.ok(sectionById("events").items.some((item) => item.href === "/events/dawn-of-rome/"));
   const groups = eventCategoryGroups(en);
   assert.deepEqual(
     groups.map((group) => ({ id: group.id, category: group.category, count: group.items.length })),
     [
       { id: "anleitungen", category: en.eventCategories.anleitungen, count: 0 },
-      { id: "tips", category: en.eventCategories.tips, count: 9 },
+      { id: "tips", category: en.eventCategories.tips, count: 10 },
     ],
   );
 });
@@ -150,6 +151,19 @@ test("Great Flood is listed under Events Tips in every language", () => {
     assert.equal(entry.title, "Great Flood");
     assert.ok(entry.sections.some((section) => /Stockpile/i.test(section.heading) || /Stockpile/i.test(section.body.join(" "))));
     assert.ok(entry.sections.some((section) => /bend|abbiegen|tourner/i.test(section.body.join(" "))));
+    assert.match(entry.note, /Autumn/);
+  }
+});
+
+test("Dawn of Rome is listed under Events Tips in every language", () => {
+  for (const locale of ["en", "de", "fr"]) {
+    const dictionary = getDictionary(locale);
+    const entry = dictionary.eventGuideEntries.dawnOfRome;
+    assert.match(entry.title, /Dawn of Rome/);
+    assert.match(entry.title, /Crown of the Nile/);
+    assert.ok(entry.sections.some((section) => /25%|25 %/.test(section.body.join(" "))));
+    assert.ok(entry.sections.some((section) => /Cavalry|Kavallerie|Cavalerie/.test(section.body.join(" "))));
+    assert.match(entry.note, /Cherr/);
     assert.match(entry.note, /Autumn/);
   }
 });
