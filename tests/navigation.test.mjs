@@ -52,12 +52,13 @@ test("Events index always exposes Anleitungen and Tips categories", () => {
   assert.ok(sectionById("events").items.some((item) => item.href === "/events/great-flood/"));
   assert.ok(sectionById("events").items.some((item) => item.href === "/events/dawn-of-rome/"));
   assert.ok(sectionById("events").items.some((item) => item.href === "/events/ring-toss/"));
+  assert.ok(sectionById("events").items.some((item) => item.href === "/events/life-incubator/"));
   const groups = eventCategoryGroups(en);
   assert.deepEqual(
     groups.map((group) => ({ id: group.id, category: group.category, count: group.items.length })),
     [
       { id: "anleitungen", category: en.eventCategories.anleitungen, count: 0 },
-      { id: "tips", category: en.eventCategories.tips, count: 11 },
+      { id: "tips", category: en.eventCategories.tips, count: 12 },
     ],
   );
 });
@@ -177,6 +178,17 @@ test("Ring Toss is listed under Events Tips in every language", () => {
     assert.ok(entry.sections.some((section) => /69/.test(section.body.join(" "))));
     assert.ok(entry.sections.some((section) => /hard pity|Hard Pity/i.test(section.heading) || /100/.test(section.body.join(" "))));
     assert.match(entry.note, /Cherr/);
+    assert.match(entry.note, /Autumn/);
+  }
+});
+
+test("Life Incubator is listed under Events Tips in every language", () => {
+  for (const locale of ["en", "de", "fr"]) {
+    const dictionary = getDictionary(locale);
+    const entry = dictionary.eventGuideEntries.lifeIncubator;
+    assert.equal(entry.title, "Life Incubator");
+    assert.ok(entry.sections.some((section) => /trench|Graben|tranchée/i.test(section.body.join(" "))));
+    assert.ok(entry.sections.some((section) => /center|Mitte|centrale/i.test(section.body.join(" "))));
     assert.match(entry.note, /Autumn/);
   }
 });
