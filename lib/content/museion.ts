@@ -27,8 +27,6 @@ export type MuseionBuildingTexts = Record<string, MuseionBuildingText>;
 
 /** Heroes named by Autumn / Spitzell / Zee who are not in the Core roster yet. */
 export const MUSEION_OFF_ROSTER = [
-  "Augustus",
-  "Alexander the Great",
   "Guan Yu",
   "Lu Bu",
   "Miyamoto Musashi",

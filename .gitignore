@@ -48,3 +48,8 @@ next-env.d.ts
 
 # local crop scratch
 .tmp-cryptid/
+
+# Hero client-data importer scratch
+scripts/__pycache__/
+scripts/_hero-daten.json
+lib/data/hero-texts-de.json

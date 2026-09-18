@@ -418,7 +418,7 @@ const fr: Dictionary = {
         unknown: { title: "Inconnu", lede: "Personne n’a confirmé l’événement. La meilleure estimation d’Autumn est dans la ligne Obtention." },
       },
       skinsCredit:
-        "Noms et sources des skins : guide des skins d’Autumn, partagé sur Discord le 7 août 2026. Les skins des héros absents de ce roster — Billy the Kid, Alexander the Great, Augustus, Charlie Chaplin — attendent que ces héros soient ajoutés. « Indisponible actuellement » signifie qu’aucune source n’est active et qu’il peut s’écouler longtemps avant qu’il y en ait une.",
+        "Noms et sources des skins : guide des skins d’Autumn, partagé sur Discord le 7 août 2026. Les skins des héros absents de ce roster — Billy the Kid, Charlie Chaplin — attendent que ces héros soient ajoutés. « Indisponible actuellement » signifie qu’aucune source n’est active et qu’il peut s’écouler longtemps avant qu’il y en ait une.",
       skinTexts: {},
       previousHero: "Héros précédent",
       nextHero: "Héros suivant",
@@ -432,6 +432,9 @@ const fr: Dictionary = {
       abilityMissing: "Pas encore renseigné",
       abilityPending: "Ce texte n’a pas encore été ajouté.",
       levelLabel: "Niv. {level}",
+      levelOf: "Niv. {level} / {max}",
+      levelDown: "Niveau précédent",
+      levelUp: "Niveau suivant",
       levelUnknown: "Le texte du niv. {level} n’est pas encore connu.",
       appearsHeading: "Dans les autres guides",
       appearsNone: "Aucun autre guide ne cite encore ce héros.",
@@ -448,7 +451,7 @@ const fr: Dictionary = {
           ],
         },
       ],
-      note: "",
+      note: "Les tableaux de compétence, buff et production de 37 héros viennent de captures d’écran du client allemand du 18 septembre 2026. L’anglais est une traduction et peut différer du texte anglais du jeu. Les niveaux de production absents de ces captures sont interpolés : UR et UR+ +4 % par niveau, SSR 30 % + 3 % × (n−1). Alexander the Great et Augustus n’ont pas encore de portrait.",
     },
     technology: {
       title: "Technologie",
@@ -2350,7 +2353,7 @@ const fr: Dictionary = {
           ],
         },
       ],
-      note: "Augustus, Alexander the Great, Guan Yu, Lu Bu, Miyamoto Musashi et Yi Sun-sin ne sont pas encore dans le roster Core des héros, donc ils apparaissent sans portrait ni lien roster jusqu’à ce que ces héros soient ajoutés.",
+      note: "Guan Yu, Lu Bu, Miyamoto Musashi et Yi Sun-sin ne sont pas encore dans le roster Core des héros, donc ils apparaissent sans portrait ni lien roster jusqu’à ce que ces héros soient ajoutés.",
     },
   },
   ageUnlocksEditor: {

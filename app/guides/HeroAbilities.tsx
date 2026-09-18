@@ -3,6 +3,7 @@
 import { useId, useState, type CSSProperties, type ReactNode } from "react";
 import { HERO_ABILITY_KINDS, type Hero, type HeroAbility, type HeroAbilityKind } from "../../lib/content/heroes";
 import type { Dictionary } from "../../lib/i18n";
+import { ChevronIcon } from "../components/Icons";
 import { useLocale } from "../components/LocaleProvider";
 
 type Guide = Dictionary["guideEntries"]["heroes"];
@@ -85,18 +86,40 @@ function AbilityCard({ kind, ability, guide }: { kind: HeroAbilityKind; ability?
       </header>
       {levels.length > 1 ? (
         <div className="ability-level">
-          <label htmlFor={`${id}-level`}>{tf(guide.levelLabel, { level })}</label>
-          <input
-            id={`${id}-level`}
-            type="range"
-            min={1}
-            max={levels.length}
-            step={1}
-            value={level}
-            aria-valuetext={tf(guide.levelLabel, { level })}
-            style={{ "--fill": `${fill}%` } as CSSProperties}
-            onChange={(event) => setLevel(Number(event.target.value))}
-          />
+          <label htmlFor={`${id}-level`}>{tf(guide.levelOf, { level, max: levels.length })}</label>
+          <div className="ability-level-track">
+            <button
+              type="button"
+              className="icon-button ability-level-down"
+              aria-label={guide.levelDown}
+              disabled={level <= 1}
+              onClick={() => setLevel((current) => Math.max(1, current - 1))}
+            >
+              <ChevronIcon className="icon icon-sm" />
+            </button>
+            <input
+              id={`${id}-level`}
+              type="range"
+              min={1}
+              max={levels.length}
+              step={1}
+              value={level}
+              aria-valuemin={1}
+              aria-valuemax={levels.length}
+              aria-valuetext={tf(guide.levelOf, { level, max: levels.length })}
+              style={{ "--fill": `${fill}%` } as CSSProperties}
+              onChange={(event) => setLevel(Number(event.target.value))}
+            />
+            <button
+              type="button"
+              className="icon-button ability-level-up"
+              aria-label={guide.levelUp}
+              disabled={level >= levels.length}
+              onClick={() => setLevel((current) => Math.min(levels.length, current + 1))}
+            >
+              <ChevronIcon className="icon icon-sm" />
+            </button>
+          </div>
         </div>
       ) : null}
       {ability ? (

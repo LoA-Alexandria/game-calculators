@@ -282,6 +282,8 @@ export function HeroRoster({ guide }: { guide: Guide }) {
         </table>
       </div>
 
+      {guide.note ? <p className="callout">{guide.note}</p> : null}
+
       {open ? (
         <HeroDialog
           hero={open}
