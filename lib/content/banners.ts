@@ -48,15 +48,25 @@ export type TitleBanner = { src: string; width: number; height: number };
  * 2026 (`public/banners/hero-tier-list.webp`, 1024 × 144). The Artwork
  * gallery banner was supplied the same day (`public/banners/artwork.webp`,
  * 1024 × 144). The Goddesses banner followed later that day
- * (`public/banners/goddesses.webp`, 1024 × 144).
+ * (`public/banners/goddesses.webp`, 1024 × 144). The Heroes banner is original
+ * splash art for the same 1024 × 144 title slot (`public/banners/heroes.webp`,
+ * 18 September 2026).
  */
+const TITLE_BANNER_VERSION: Partial<Record<GuideEntryId, string>> = {
+  heroes: "5",
+};
+
 export const GUIDE_TITLE_BANNERS: Partial<Record<GuideEntryId, TitleBanner>> = {
   heroTierList: { src: "/banners/hero-tier-list.webp", width: 1024, height: 144 },
   artwork: { src: "/banners/artwork.webp", width: 1024, height: 144 },
   goddesses: { src: "/banners/goddesses.webp", width: 1024, height: 144 },
+  heroes: { src: "/banners/heroes.webp", width: 1024, height: 144 },
 };
 
 export function guideTitleBanner(id: GuideEntryId): TitleBanner | null {
   const banner = GUIDE_TITLE_BANNERS[id];
-  return banner ? { ...banner, src: asset(banner.src) } : null;
+  if (!banner) return null;
+  const src = asset(banner.src);
+  const version = TITLE_BANNER_VERSION[id];
+  return { ...banner, src: version ? `${src}?v=${version}` : src };
 }
