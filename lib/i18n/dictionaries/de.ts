@@ -4100,6 +4100,32 @@ const de: Dictionary = {
       ],
       note: "Guide von Autumn (Ice S12), geteilt auf Discord, 10. August 2026.",
     },
+    mayanRuins: {
+      title: "Mayan Ruins",
+      summary:
+        "Hammer-Stages, Schachbrett-Graben und Spend-Vorsicht — obsoletes Event, ersetzt durch Genie.",
+      intro:
+        "Historischer Tippsheet: mit Hämmern graben, Statue finden, Floors voranschreiten. Das Event ist obsolete und wurde durch Genie (Genie Wish) ersetzt.",
+      sections: [
+        {
+          heading: "Allgemein",
+          body: [
+            "Nutze Hämmer, um die Statue zu finden und die nächste Stage zu erreichen. Stage 10 abgeschlossen gibt Collection-Items. Floor 23 schaltet einen Hero-Skin frei; Floor 27 einen Player-Skin; Floor 33 das Hero Artifact (ab dem 4. Mayan wählbar).",
+            "Hammer-Kosten steigen nach Stage 20 auf 2. Ein bestimmtes Reward/Stage-Ziel kann stark im Preis schwanken — vorsichtig sein.",
+          ],
+        },
+        {
+          heading: "Tipps",
+          body: [
+            "Tiles schachbrettartig öffnen (nicht direkt nebeneinander) — die korrekte Lösung hat meist zwei Tiles, die den Portal treffen können.",
+            "Die 4-Tile-Statue liegt meist irgendwo am Rand, aber die ganz äußeren Tiles nicht anfassen — ein Tile ins Board rein bleiben.",
+            "Die Stage-10-Axt für nach Stage 20 sparen, um Hämmer bei erhöhtem Preis zu schonen, wenn du über Stage 20 hinaus willst.",
+            "Nach dem $19,99-Bundle sinkt der Hammer-Wert stark. Außer du planst die Packs voll auszukaufen, nicht darüber hinaus kaufen und Ausgaben über mehrere Tage streuen.",
+          ],
+        },
+      ],
+      note: "Guide von Autumn (Ice S12), geteilt auf Discord, 9. August 2026. Event obsolete — Genie Wish hat es ersetzt.",
+    },
   },
   events: {
     title: "Events",

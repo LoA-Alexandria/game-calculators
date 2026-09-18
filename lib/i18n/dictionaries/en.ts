@@ -3567,6 +3567,32 @@ const en = {
       ],
       note: "Guide by Autumn (Ice S12), shared on Discord, 10 August 2026.",
     },
+    mayanRuins: {
+      title: "Mayan Ruins",
+      summary:
+        "Hammer stages, chessboard digging, and spend caution — obsolete event replaced by Genie.",
+      intro:
+        "Historical tip sheet: dig with hammers to find the statue and advance floors. This event is obsolete and has been replaced by Genie (Genie Wish).",
+      sections: [
+        {
+          heading: "General",
+          body: [
+            "Use hammers to find the statue and progress to the next stage. Stage 10 completed yields collection items. Floor 23 unlocks a hero skin; Floor 27 a player skin; Floor 33 the Hero Artifact (after the 4th Mayan you can choose).",
+            "Hammer cost rises to 2 after Stage 20. Aiming for a specific reward or stage can vary heavily in cost — be careful.",
+          ],
+        },
+        {
+          heading: "Tips",
+          body: [
+            "Open tiles in a chessboard pattern (do not open tiles right next to each other) — the correct solution usually has two tiles that can hit the portal.",
+            "The 4-tile statue is usually somewhere on the edge, but do not dig the very edge tiles — stay one tile into the board.",
+            "Save the Stage 10 axe for past Stage 20 to preserve hammers once cost is higher, if you plan to go beyond Stage 20.",
+            "After the $19.99 bundle, hammer value drops sharply. Unless you intend to buy the packs out fully, do not buy beyond those bundles, and spread spending across multiple days.",
+          ],
+        },
+      ],
+      note: "Guide by Autumn (Ice S12), shared on Discord, 9 August 2026. Event obsolete — Genie Wish replaced it.",
+    },
   },
   events: {
     title: "Events",

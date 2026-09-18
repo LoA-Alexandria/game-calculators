@@ -4043,6 +4043,32 @@ const fr: Dictionary = {
       ],
       note: "Guide d’Autumn (Ice S12), partagé sur Discord, 10 août 2026.",
     },
+    mayanRuins: {
+      title: "Mayan Ruins",
+      summary:
+        "Stages au marteau, fouille en damier et prudence sur les dépenses — event obsolète remplacé par Genie.",
+      intro:
+        "Fiche historique : creusez avec des marteaux pour trouver la statue et avancer. Cet event est obsolète et a été remplacé par Genie (Genie Wish).",
+      sections: [
+        {
+          heading: "Général",
+          body: [
+            "Utilisez des marteaux pour trouver la statue et passer à l’étage suivant. Stage 10 terminé donne des items Collection. Floor 23 débloque un skin héros ; Floor 27 un skin joueur ; Floor 33 l’Hero Artifact (après le 4e Mayan vous pouvez choisir).",
+            "Le coût par marteau passe à 2 après Stage 20. Viser une récompense / stage précis peut coûter très variablement — attention.",
+          ],
+        },
+        {
+          heading: "Astuces",
+          body: [
+            "Ouvrez les tuiles en damier (pas de tuiles côte à côte) — la bonne solution a en général deux tuiles qui peuvent toucher le portail.",
+            "La statue 4 tuiles est souvent au bord, mais ne touchez pas les tuiles tout au bord — restez une tuile dans le plateau.",
+            "Gardez la hache du Stage 10 pour après Stage 20 afin d’économiser des marteaux au coût augmenté si vous visez au-delà de Stage 20.",
+            "Après le pack $19.99, la valeur des marteaux chute fortement. Sauf si vous achetez les packs à fond, ne dépassez pas ces bundles et étaler les dépenses sur plusieurs jours.",
+          ],
+        },
+      ],
+      note: "Guide d’Autumn (Ice S12), partagé sur Discord, 9 août 2026. Event obsolète — Genie Wish l’a remplacé.",
+    },
   },
   events: {
     title: "Événements",
