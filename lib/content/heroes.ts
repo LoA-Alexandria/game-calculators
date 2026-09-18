@@ -1,10 +1,12 @@
 /**
  * Hero roster from the community wiki rarity pages (UR+ / UR / SSR / SR / R
- * "Hereos" slugs) as of 13 September 2026. Skill, buff, and production tables
- * for 37 heroes come from German client screenshots on 18 September 2026;
- * English is a translation of that German text. Alexander the Great and
- * Augustus were added from those screenshots without portraits. Joan of Arc
- * had no skill tables in that dump, so her abilities stay empty.
+ * "Hereos" slugs) as of 13 September 2026, merged with the Pop Epoch Wiki Hero
+ * page (title, troop, age, bio, and missing portraits) on 18 September 2026.
+ * Skill, buff, and production tables for 37 heroes come from German client
+ * screenshots on 18 September 2026; English is a translation of that German
+ * text. Joan of Arc had no skill tables in that dump, so her abilities stay
+ * empty. Five wiki heroes (Billy the Kid, Guan Yu, Miyamoto Musashi, Yi
+ * Sun-sin, Lü Bu) were added from the Hero page without skill tables.
  *
  * Production mid-levels that were not photographed are interpolated as noted
  * in the source files: UR/UR+ +4% per level, SSR 30% + 3% × (n−1). Do not
@@ -15,22 +17,42 @@
  * added the text yet. Do not invent it. The "Lv. N" skill cards became the
  * levels of one ability. The fragment table is copied as printed on every
  * rarity page (identical). The wording in the JSON is English;
- * `guideEntries.heroes.heroTexts` can override the obtain note, ability names,
- * level texts, and artifact per language.
+ * `guideEntries.heroes.heroTexts` can override the obtain note, title, bio,
+ * ability names, level texts, and artifact per language. Title and bio
+ * translations also live in `lib/data/hero-lore-de.json` and
+ * `hero-lore-fr.json`, merged at read time so skill catalogs stay separate.
  *
- * Portraits are in `public/heroes/`, saved from the wiki pages on 14
- * September 2026 (Cleopatra, Alexander the Great, and Augustus have none). The
- * first file in `images` is the portrait, any others are skins. The artwork
- * belongs to the game's publisher; the roster credits it, and removing the
- * folder plus the `images` lists takes it out again.
+ * Portraits are in `public/heroes/`, saved from the wiki pages on 14 and 18
+ * September 2026. The first file in `images` is the portrait, any others are
+ * skins. The artwork belongs to the game's publisher; the roster credits it,
+ * and removing the folder plus the `images` lists takes it out again.
  */
 
 import roster from "../data/heroes.json" with { type: "json" };
+import loreDe from "../data/hero-lore-de.json" with { type: "json" };
+import loreFr from "../data/hero-lore-fr.json" with { type: "json" };
 import { ROSTER_SPELLING } from "./hero-names.ts";
 import { asset } from "../site.ts";
+import type { Locale } from "../i18n";
 
 export const HERO_RARITIES = ["UR+", "UR", "SSR", "SR", "R"] as const;
 export type HeroRarity = (typeof HERO_RARITIES)[number];
+
+export const HERO_TROOPS = ["Pikeman", "Archer", "Shieldman", "Cavalry"] as const;
+export type HeroTroop = (typeof HERO_TROOPS)[number];
+
+export const HERO_AGES = [
+  "Ice Age",
+  "Stone Age",
+  "Bronze Age",
+  "Classical Age",
+  "Medieval Age",
+  "Renaissance Age",
+  "Exploration Age",
+  "Enlightenment Age",
+  "Steam Age",
+] as const;
+export type HeroAge = (typeof HERO_AGES)[number];
 
 /** An artifact: one effect, no levels. */
 export type HeroSkill = {
@@ -54,6 +76,12 @@ export type Hero = {
   obtain: string;
   /** File names in `public/heroes/`; the first is the portrait. */
   images: string[];
+  /** Short epithet from the wiki card, e.g. "Lever Master". */
+  title?: string;
+  troop?: HeroTroop;
+  age?: HeroAge;
+  /** Encyclopedia blurb from the wiki Hero page. */
+  bio?: string;
   skill?: HeroAbility;
   buff?: HeroAbility;
   production?: HeroAbility;
@@ -71,20 +99,52 @@ export type HeroData = { heroes: Hero[] };
 export type HeroAbilityText = { name?: string; levels?: string[] };
 
 /**
- * Translated hero text, keyed by hero id. Names, rarities, and portraits are
- * the same in every language and stay in `lib/data/heroes.json`; the wording
- * the game shows lives here so it can be translated.
+ * Translated hero text, keyed by hero id. Names, rarities, troops, ages, and
+ * portraits are the same in every language and stay in `lib/data/heroes.json`;
+ * the wording the game shows lives here so it can be translated.
  */
 export type HeroTexts = Record<
   string,
   {
     obtain?: string;
+    title?: string;
+    bio?: string;
     skill?: HeroAbilityText;
     buff?: HeroAbilityText;
     production?: HeroAbilityText;
     artifact?: { name?: string; text?: string };
   }
 >;
+
+const HERO_LORE: Partial<Record<Locale, HeroTexts>> = {
+  de: loreDe as HeroTexts,
+  fr: loreFr as HeroTexts,
+};
+
+/** Title/bio overrides for a language, or an empty catalog for English. */
+export function heroLoreTexts(locale: Locale): HeroTexts {
+  return HERO_LORE[locale] ?? {};
+}
+
+/**
+ * Dictionary skill/obtain texts plus title/bio from the lore files. Lore wins
+ * on title and bio so a skill-only dictionary entry still picks up the story.
+ */
+export function mergeHeroTexts(skills: HeroTexts, lore: HeroTexts): HeroTexts {
+  const ids = new Set([...Object.keys(skills), ...Object.keys(lore)]);
+  const out: HeroTexts = {};
+  for (const id of ids) {
+    const skill = skills[id];
+    const story = lore[id];
+    if (!skill && !story) continue;
+    out[id] = {
+      ...skill,
+      ...(story?.title?.trim() ? { title: story.title.trim() } : {}),
+      ...(story?.bio?.trim() ? { bio: story.bio.trim() } : {}),
+    };
+  }
+  return out;
+}
 
 function localizedAbility(ability: HeroAbility, text: HeroAbilityText | undefined): HeroAbility {
   if (!text) return ability;
@@ -101,6 +161,8 @@ export function localizedHero(hero: Hero, texts: HeroTexts): Hero {
   if (!local) return hero;
   const next: Hero = { ...hero };
   if (local.obtain?.trim()) next.obtain = local.obtain.trim();
+  if (local.title?.trim()) next.title = local.title.trim();
+  if (local.bio?.trim()) next.bio = local.bio.trim();
   for (const kind of HERO_ABILITY_KINDS) {
     const ability = hero[kind];
     if (ability) next[kind] = localizedAbility(ability, local[kind]);
@@ -147,7 +209,16 @@ export function heroesByRarity(rarity: HeroRarity | "all"): Hero[] {
 /** Every searchable string of one translation of a hero. */
 function textOf(hero: Hero): string[] {
   const abilities = HERO_ABILITY_KINDS.flatMap((kind) => [hero[kind]?.name ?? "", ...(hero[kind]?.levels ?? [])]);
-  return [hero.obtain, ...abilities, hero.artifact?.name ?? "", hero.artifact?.text ?? ""];
+  return [
+    hero.obtain,
+    hero.title ?? "",
+    hero.troop ?? "",
+    hero.age ?? "",
+    hero.bio ?? "",
+    ...abilities,
+    hero.artifact?.name ?? "",
+    hero.artifact?.text ?? "",
+  ];
 }
 
 /** `catalogs` lets a search also match the wording a reader sees in their language. */

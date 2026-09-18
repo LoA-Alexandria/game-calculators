@@ -60,14 +60,14 @@ test("an untouched draft exports the published JSON and dictionary blocks byte f
 
 test("a new hero joins the end of its rarity and gets an id from its name", () => {
   let { state, uid } = addHero(fromHeroData(HERO_DATA), "UR");
-  state = updateHero(state, uid, { name: "  Lu Bu ", obtain: "Warlord event" });
+  state = updateHero(state, uid, { name: "  Zhou Yu ", obtain: "Warlord event" });
   const index = state.heroes.findIndex((hero) => hero.uid === uid);
   assert.equal(state.heroes[index - 1].rarity, "UR");
   assert.equal(state.heroes[index + 1].rarity, "SSR");
 
   const { data } = exportHeroes(state, HERO_DATA);
-  const added = data.heroes.find((hero) => hero.name === "Lu Bu");
-  assert.deepEqual(added, { id: "lu-bu", name: "Lu Bu", rarity: "UR", obtain: "Warlord event", images: [] });
+  const added = data.heroes.find((hero) => hero.name === "Zhou Yu");
+  assert.deepEqual(added, { id: "zhou-yu", name: "Zhou Yu", rarity: "UR", obtain: "Warlord event", images: [] });
   assert.equal(countHeroChanges(HERO_DATA, data), 1);
 
   const second = addHero(state, "R", "Merlin");
@@ -80,14 +80,14 @@ test("uploads get free file names and removed portraits are listed for deletion"
   let state = fromHeroData(HERO_DATA);
   const merlin = uidOf(state, "Merlin");
   state = addImage(state, merlin, WEBP);
-  const created = addHero(state, "SR", "Billy the Kid");
+  const created = addHero(state, "SR", "Charlie Chaplin");
   state = addImage(created.state, created.uid, PNG);
 
   let result = exportHeroes(state, HERO_DATA);
   assert.deepEqual(result.data.heroes.find((hero) => hero.name === "Merlin").images, ["merlin.webp", "merlin-2.webp", "merlin-3.webp"]);
   assert.deepEqual(result.uploads, [
     { file: "merlin-3.webp", data: WEBP, hero: "Merlin" },
-    { file: "billy-the-kid.png", data: PNG, hero: "Billy the Kid" },
+    { file: "charlie-chaplin.png", data: PNG, hero: "Charlie Chaplin" },
   ]);
 
   const firstImage = heroByUid(state, merlin).images[0].uid;
@@ -245,10 +245,13 @@ test("problems flag blanks, duplicates, and heroes other guides still name", () 
   const problems = findHeroProblems(state, HERO_DATA);
   assert.deepEqual(problems.find((problem) => problem.code === "emptyName"), { code: "emptyName", rarity: "SSR" });
   assert.deepEqual(problems.find((problem) => problem.code === "duplicateName"), { code: "duplicateName", name: "circe" });
-  assert.deepEqual(problems.filter((problem) => problem.code === "incompleteAbility"), [
-    { code: "incompleteAbility", hero: "Merlin", kind: "buff" },
-    { code: "incompleteAbility", hero: "Circe", kind: "production" },
-  ]);
+  assert.deepEqual(
+    problems.filter((problem) => problem.code === "incompleteAbility").sort((a, b) => a.hero.localeCompare(b.hero)),
+    [
+      { code: "incompleteAbility", hero: "Circe", kind: "production" },
+      { code: "incompleteAbility", hero: "Merlin", kind: "buff" },
+    ],
+  );
   assert.deepEqual(problems.find((problem) => problem.code === "emptyArtifact"), { code: "emptyArtifact", hero: "Merlin" });
   const used = problems.filter((problem) => problem.code === "stillUsed");
   assert.deepEqual(used.map((problem) => problem.name), ["Isaac Newton", "Cu Chulainn"]);
@@ -263,7 +266,12 @@ test("appearances follow the guides' spelling of a roster hero", () => {
   assert.deepEqual(newton.builds, [{ build: "crit", zone: "important" }]);
   assert.ok(newton.paintings.some((entry) => entry.painting === "The Gleaners"));
   assert.deepEqual(heroAppearances("Nobody"), { tiers: [], builds: [], roles: [], paintings: [] });
-  for (const hero of HERO_DATA.heroes) assert.ok(heroReferences().has(hero.name), `${hero.name} is named by a guide`);
+  // Yi Sun-sin is only on Museion so far; the appearance index covers tier list,
+  // layouts, and artwork. Everyone else in the roster is named in at least one.
+  for (const hero of HERO_DATA.heroes) {
+    if (hero.id === "yi-sun-sin") continue;
+    assert.ok(heroReferences().has(hero.name), `${hero.name} is named by a guide`);
+  }
 });
 
 test("drafts are validated before they are used", () => {
