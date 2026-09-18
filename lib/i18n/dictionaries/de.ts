@@ -4126,6 +4126,28 @@ const de: Dictionary = {
       ],
       note: "Guide von Autumn (Ice S12), geteilt auf Discord, 9. August 2026. Event obsolete — Genie Wish hat es ersetzt.",
     },
+    peakOfEnlightenment: {
+      title: "Peak of Enlightenment",
+      summary: "Produktion und Harfen fürs Event sparen, und Harfen in Shops nach Prioritäts-Items kaufen.",
+      intro:
+        "Bereite dich vor, indem du Produktion stehen lässt und Harfen hortest, damit du sie während Peak of Enlightenment dumpst.",
+      sections: [
+        {
+          heading: "Vorbereitung",
+          body: [
+            "Stoppe das Einsammeln der Produktion 72 Stunden vor Event-Start.",
+            "Spare alle Harfen und nutze sie nur während Peak of Enlightenment.",
+          ],
+        },
+        {
+          heading: "Event-Shops",
+          body: [
+            "Siehst du Harfen in Event-Shops, kaufe sie immer sofort, sobald ID Plates und Land Deeds vollständig gekauft sind.",
+          ],
+        },
+      ],
+      note: "Community-Tipp zu Peak of Enlightenment — Harfen und Produktions-Banking.",
+    },
   },
   events: {
     title: "Events",

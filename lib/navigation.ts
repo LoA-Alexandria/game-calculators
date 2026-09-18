@@ -157,6 +157,13 @@ export const SECTIONS: NavSection[] = [
         badge: (t) => t.eventCategories.tips,
         categoryId: "tips",
       },
+      {
+        href: "/events/peak-of-enlightenment/",
+        label: (t) => t.eventGuideEntries.peakOfEnlightenment.title,
+        description: (t) => t.eventGuideEntries.peakOfEnlightenment.summary,
+        badge: (t) => t.eventCategories.tips,
+        categoryId: "tips",
+      },
     ],
   },
   {

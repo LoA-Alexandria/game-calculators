@@ -3593,6 +3593,28 @@ const en = {
       ],
       note: "Guide by Autumn (Ice S12), shared on Discord, 9 August 2026. Event obsolete — Genie Wish replaced it.",
     },
+    peakOfEnlightenment: {
+      title: "Peak of Enlightenment",
+      summary: "Bank production and harps for the event, and buy harps from shops after priority items.",
+      intro:
+        "Prepare by letting production sit and saving harps so you can dump them during Peak of Enlightenment.",
+      sections: [
+        {
+          heading: "How to prepare",
+          body: [
+            "Stop collecting production 72 hours before the event starts.",
+            "Save all harps and only ever use them during Peak of Enlightenment.",
+          ],
+        },
+        {
+          heading: "Event shops",
+          body: [
+            "If you see harps in event shops, always buy them immediately after ID Plates and Land Deeds are fully bought.",
+          ],
+        },
+      ],
+      note: "Community tip for Peak of Enlightenment harp and production banking.",
+    },
   },
   events: {
     title: "Events",

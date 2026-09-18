@@ -4069,6 +4069,28 @@ const fr: Dictionary = {
       ],
       note: "Guide d’Autumn (Ice S12), partagé sur Discord, 9 août 2026. Event obsolète — Genie Wish l’a remplacé.",
     },
+    peakOfEnlightenment: {
+      title: "Peak of Enlightenment",
+      summary: "Banquez production et harpes pour l’event, et achetez les harpes en shop après les items prioritaires.",
+      intro:
+        "Préparez-vous en laissant la production et en gardant les harpes pour les dépenser pendant Peak of Enlightenment.",
+      sections: [
+        {
+          heading: "Comment préparer",
+          body: [
+            "Arrêtez de collecter la production 72 heures avant le début de l’event.",
+            "Gardez toutes les harpes et ne les utilisez que pendant Peak of Enlightenment.",
+          ],
+        },
+        {
+          heading: "Boutiques d’event",
+          body: [
+            "Si vous voyez des harpes dans les boutiques d’event, achetez-les toujours immédiatement après que ID Plates et Land Deeds soient entièrement achetés.",
+          ],
+        },
+      ],
+      note: "Astuce communautaire pour Peak of Enlightenment — harpes et banking de production.",
+    },
   },
   events: {
     title: "Événements",
