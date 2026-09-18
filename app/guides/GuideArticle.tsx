@@ -125,7 +125,7 @@ export function GuideArticle({ id }: { id: GuideEntryId }) {
 
   return (
     <>
-      {heroesGuide ? <HeroBanner title={guide.title} /> : null}
+      {heroesGuide && !guideTitleBanner(id) ? <HeroBanner title={guide.title} /> : null}
       {goddessesGuide && !guideTitleBanner(id) ? <GoddessBanner title={guide.title} /> : null}
       <GuideHeader id={id} guide={guide} canSnippet={canWrite} onSnippet={openEditor} />
       <article className="article" data-category={category}>
