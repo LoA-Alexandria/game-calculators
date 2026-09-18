@@ -3772,7 +3772,33 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
 .production-guide [data-resource="precisionParts"] { --res: #7a8fa8; }
 .production-guide [data-resource="oil"] { --res: #3d4a3a; }
 .production-guide [data-resource="information"] { --res: #5b7fd6; }
+.production-guide [data-resource="land"] { --res: #6b8f4e; }
 .pb-level { margin: 0; color: var(--ink-faint); font-size: .78rem; }
+button.pb-card {
+  appearance: none; width: 100%; text-align: left; cursor: pointer; font: inherit; color: inherit;
+}
+button.pb-card:focus-visible { outline: none; box-shadow: var(--ring); }
+.pb-overview-name {
+  appearance: none; border: 0; background: none; padding: 0; cursor: pointer; font: inherit; text-align: left;
+}
+.building-detail-portrait {
+  display: grid; place-items: center; width: min(200px, 42vw); aspect-ratio: 1;
+  border-radius: 12px; background: color-mix(in srgb, var(--panel) 80%, var(--line));
+  overflow: hidden;
+}
+.building-detail-portrait img { width: 100%; height: 100%; object-fit: contain; }
+.pb-costs { display: flex; flex-wrap: wrap; gap: 4px 8px; }
+.pb-cost {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 2px 6px; border-radius: 999px;
+  background: color-mix(in srgb, var(--res, var(--accent)) 14%, var(--panel));
+  font-size: .78rem; white-space: nowrap;
+}
+.pb-cost-name { color: var(--ink-faint); }
+.pb-cost-amt { font-weight: 650; font-variant-numeric: tabular-nums; }
+.pb-levels { max-height: min(55vh, 28rem); }
+.pb-levels td, .pb-levels th { vertical-align: top; }
+
 .pb-costs { display: flex; flex-wrap: wrap; gap: 4px 8px; }
 .pb-cost {
   display: inline-flex; align-items: center; gap: 4px;

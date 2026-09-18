@@ -698,7 +698,7 @@ resource *types* and priority asterisks are from a community Discord list
 16 September 2026; wiki highest-stage and upgrade-stage art lives in
 `public/buildings/` and `public/buildings/stages/`. Level rows live in
 `lib/data/building-levels.json` (wiki samples, not necessarily every integer
-level up to the cap). Tap a card for the detail panel.
+level up to the cap). Tap a card for the detail panel. The building name is the wiki name (e.g. Spice Workshop / Gewürzhaus); coffee beans are the resource that workshop produces, not the building’s name.
 
 ## Collection
 

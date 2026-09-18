@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent } from "react";
+import { ChevronIcon, CloseIcon } from "../components/Icons";
 import { guideLayout } from "../../lib/content/guides";
 import {
   BUILDINGS,
@@ -17,6 +18,12 @@ import {
   type ProductionResource,
   type ProductionTag,
 } from "../../lib/content/buildings";
+import {
+  buildingLevelDetail,
+  buildingStageUrl,
+  type BuildingCost,
+  type BuildingLevelRow,
+} from "../../lib/content/building-levels";
 import { fill, type Dictionary } from "../../lib/i18n";
 
 type Guide = Dictionary["guideEntries"]["buildings"];
@@ -27,10 +34,8 @@ export function isBuildingsGuide(
   return guideLayout(guide) === "buildings";
 }
 
-/** Colour of a stage: the four tones repeat when there are more. */
 const tone = (index: number) => String((index % 4) + 1);
 
-/** Resources that at least one production building produces or needs. */
 const USED_RESOURCES = PRODUCTION_RESOURCES.filter((resource) =>
   BUILDINGS.some(
     (building) =>
@@ -67,13 +72,17 @@ function matches(
   return fold(words.join(" ")).includes(needle);
 }
 
+function resourceLabel(guide: Guide, resource: string): string {
+  return guide.resources[resource as ProductionResource] ?? resource;
+}
+
 function ResourceChip({
   resource,
   guide,
   output,
   active,
 }: {
-  resource: ProductionResource;
+  resource: string;
   guide: Guide;
   output?: boolean;
   active?: boolean;
@@ -82,7 +91,22 @@ function ResourceChip({
   return (
     <span className={className} data-resource={resource}>
       <span className="pb-dot" aria-hidden="true" />
-      {guide.resources[resource]}
+      {resourceLabel(guide, resource)}
+    </span>
+  );
+}
+
+function CostList({ costs, guide }: { costs?: BuildingCost[]; guide: Guide }) {
+  if (!costs?.length) return <span className="gl-overview-empty">—</span>;
+  return (
+    <span className="pb-costs">
+      {costs.map((cost) => (
+        <span key={`${cost.resource}-${cost.amount}`} className="pb-cost" data-resource={cost.resource}>
+          <span className="pb-dot" aria-hidden="true" />
+          <span className="pb-cost-name">{resourceLabel(guide, cost.resource)}</span>
+          <span className="pb-cost-amt">{cost.amount}</span>
+        </span>
+      ))}
     </span>
   );
 }
@@ -104,10 +128,12 @@ function BuildingCard({
   building,
   guide,
   resource,
+  onOpen,
 }: {
   building: Building;
   guide: Guide;
   resource: ProductionResource | null;
+  onOpen: (building: Building) => void;
 }) {
   const name = localizedBuildingName(building, guide.buildingTexts);
   const note = localizedBuildingNote(building, guide.buildingTexts);
@@ -118,7 +144,15 @@ function BuildingCard({
   ];
   const production = building.category === "production";
   return (
-    <article className="pb-card" id={building.id} data-resource={building.produces} data-category={building.category}>
+    <button
+      type="button"
+      className="pb-card"
+      id={building.id}
+      data-resource={building.produces}
+      data-category={building.category}
+      aria-haspopup="dialog"
+      onClick={() => onOpen(building)}
+    >
       <div className={image ? "pb-card-art" : "pb-card-art is-empty"}>
         {image ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -163,7 +197,202 @@ function BuildingCard({
           </ul>
         ) : null}
       </div>
-    </article>
+    </button>
+  );
+}
+
+function BuildingDetail({
+  building,
+  list,
+  guide,
+  onStep,
+  onClose,
+}: {
+  building: Building;
+  list: Building[];
+  guide: Guide;
+  onStep: (building: Building) => void;
+  onClose: () => void;
+}) {
+  const id = useId();
+  const dialog = useRef<HTMLDialogElement>(null);
+  const detail = buildingLevelDetail(building.id);
+  const stages = detail?.stages ?? [];
+  const [shown, setShown] = useState(() => Math.max(0, stages.length - 1));
+  const name = localizedBuildingName(building, guide.buildingTexts);
+  const note = localizedBuildingNote(building, guide.buildingTexts);
+  const index = list.findIndex((entry) => entry.id === building.id);
+  const previous = index > 0 ? list[index - 1] : undefined;
+  const next = index >= 0 && index < list.length - 1 ? list[index + 1] : undefined;
+  const production = building.category === "production";
+  const notes = [
+    ...(building.tags?.map((tag) => guide.tags[tag as ProductionTag]) ?? []),
+    ...(note ? [note] : []),
+  ];
+
+  useEffect(() => {
+    const node = dialog.current;
+    if (!node) return;
+    if (!node.open) node.showModal();
+  }, [building.id]);
+
+  const attach = (node: HTMLDialogElement | null) => {
+    dialog.current = node;
+  };
+
+  const onKeyDown = (event: KeyboardEvent<HTMLDialogElement>) => {
+    if (event.key === "ArrowLeft" && previous) {
+      event.preventDefault();
+      onStep(previous);
+    }
+    if (event.key === "ArrowRight" && next) {
+      event.preventDefault();
+      onStep(next);
+    }
+  };
+
+  const currentStage = stages[shown] ? buildingStageUrl(stages[shown]) : buildingImageUrl(building);
+
+  return (
+    <dialog
+      ref={attach}
+      className="hero-detail building-detail"
+      aria-labelledby={`${id}-name`}
+      onClose={onClose}
+      onKeyDown={onKeyDown}
+    >
+      <div className="hero-detail-nav">
+        <button
+          type="button"
+          className="icon-button hero-detail-prev"
+          aria-label={guide.previousBuilding}
+          disabled={!previous}
+          onClick={() => previous && onStep(previous)}
+        >
+          <ChevronIcon className="icon icon-sm" />
+        </button>
+        <span className="hero-detail-position">{index >= 0 ? `${index + 1} / ${list.length}` : ""}</span>
+        <button
+          type="button"
+          className="icon-button"
+          aria-label={guide.nextBuilding}
+          disabled={!next}
+          onClick={() => next && onStep(next)}
+        >
+          <ChevronIcon className="icon icon-sm" />
+        </button>
+        <button type="button" className="icon-button hero-detail-close" aria-label={guide.close} onClick={() => dialog.current?.close()}>
+          <CloseIcon className="icon icon-sm" />
+        </button>
+      </div>
+      <header className="hero-detail-head">
+        <div className="building-detail-portrait">
+          {currentStage ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={currentStage} alt="" width={200} height={200} decoding="async" />
+          ) : null}
+        </div>
+        <div className="hero-detail-title">
+          <h2 id={`${id}-name`}>{name}</h2>
+          <p>
+            <span className="rarity">{guide.categories[building.category]}</span>
+            {building.levelMax ? <span className="hero-detail-fact">{fill(guide.levelRange, { max: building.levelMax })}</span> : null}
+            {production ? <Stars priority={building.priority ?? 0} guide={guide} /> : null}
+          </p>
+          {stages.length > 1 ? (
+            <div className="hero-skins" role="group" aria-label={guide.stagesLabel}>
+              {stages.map((stage, position) => (
+                <button
+                  key={stage}
+                  type="button"
+                  className="hero-skin"
+                  aria-pressed={position === shown}
+                  aria-label={fill(guide.stageLabel, { number: position + 1 })}
+                  onClick={() => setShown(position)}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={buildingStageUrl(stage)} alt="" width={80} height={80} loading="lazy" decoding="async" />
+                </button>
+              ))}
+            </div>
+          ) : null}
+        </div>
+      </header>
+      <div className="hero-detail-body">
+        {production && building.produces && building.requires ? (
+          <>
+            <h3>{guide.producesLabel}</h3>
+            <p>
+              <ResourceChip resource={building.produces} guide={guide} output />
+            </p>
+            <h3>{guide.requiresLabel}</h3>
+            <p className="pb-chips">
+              {building.requires.map((entry) => (
+                <ResourceChip key={entry} resource={entry} guide={guide} />
+              ))}
+            </p>
+          </>
+        ) : null}
+        {notes.length > 0 ? (
+          <>
+            <h3>{guide.notesHeading}</h3>
+            <ul className="pb-notes">
+              {notes.map((text) => (
+                <li key={text}>{text}</li>
+              ))}
+            </ul>
+          </>
+        ) : null}
+        {detail?.levels.length ? (
+          <>
+            <h3>{guide.levelsHeading}</h3>
+            <p className="guide-lede">{guide.levelsLede}</p>
+            <LevelsTable building={building} rows={detail.levels} guide={guide} />
+          </>
+        ) : null}
+      </div>
+    </dialog>
+  );
+}
+
+function LevelsTable({ building, rows, guide }: { building: Building; rows: BuildingLevelRow[]; guide: Guide }) {
+  const population = building.category === "population";
+  const military = building.category === "military";
+  return (
+    <div className="table-scroll panel pb-levels">
+      <table className="data-table">
+        <thead>
+          <tr>
+            <th scope="col">{guide.colLevel}</th>
+            {population ? <th scope="col">{guide.colPopulation}</th> : null}
+            {military ? <th scope="col">{guide.colTroopCapacity}</th> : null}
+            {military ? <th scope="col">{guide.colTroopLevel}</th> : null}
+            <th scope="col">{guide.colCivIndex}</th>
+            <th scope="col">{guide.colUpgrade}</th>
+            {!population && !military ? <th scope="col">{guide.colUpkeep}</th> : null}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row) => (
+            <tr key={row.level}>
+              <th scope="row">{row.level}</th>
+              {population ? <td>{row.population ?? "—"}</td> : null}
+              {military ? <td>{row.troopCapacity ?? "—"}</td> : null}
+              {military ? <td>{row.troopLevel ?? "—"}</td> : null}
+              <td>{row.civIndex ?? "—"}</td>
+              <td>
+                <CostList costs={row.upgrade} guide={guide} />
+              </td>
+              {!population && !military ? (
+                <td>
+                  <CostList costs={row.upkeep} guide={guide} />
+                </td>
+              ) : null}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }
 
@@ -178,6 +407,7 @@ export function BuildingsGuide({ guide }: { guide: Guide }) {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<BuildingCategory | "all">("all");
   const [resource, setResource] = useState<ProductionResource | null>(null);
+  const [openId, setOpenId] = useState<string | null>(null);
   const needle = fold(query.trim());
 
   const stages = useMemo(() => {
@@ -209,7 +439,9 @@ export function BuildingsGuide({ guide }: { guide: Guide }) {
     return list;
   }, [guide, needle, category, resource]);
 
-  const shown = stages.reduce((sum, stage) => sum + stage.buildings.length, 0);
+  const flatList = useMemo(() => stages.flatMap((stage) => stage.buildings), [stages]);
+  const openBuilding = openId ? BUILDINGS.find((building) => building.id === openId) : undefined;
+  const shown = flatList.length;
   const showResourceFilter = category === "all" || category === "production";
 
   return (
@@ -247,12 +479,7 @@ export function BuildingsGuide({ guide }: { guide: Guide }) {
         </div>
         {showResourceFilter ? (
           <div className="pb-resource-filter" role="group" aria-label={guide.resourceFilterLabel}>
-            <button
-              type="button"
-              className="pb-filter"
-              aria-pressed={resource === null}
-              onClick={() => setResource(null)}
-            >
+            <button type="button" className="pb-filter" aria-pressed={resource === null} onClick={() => setResource(null)}>
               {guide.filterAll}
             </button>
             {USED_RESOURCES.map((entry) => (
@@ -301,7 +528,13 @@ export function BuildingsGuide({ guide }: { guide: Guide }) {
               </header>
               <div className="pb-grid">
                 {stage.buildings.map((building) => (
-                  <BuildingCard key={building.id} building={building} guide={guide} resource={resource} />
+                  <BuildingCard
+                    key={building.id}
+                    building={building}
+                    guide={guide}
+                    resource={resource}
+                    onOpen={(entry) => setOpenId(entry.id)}
+                  />
                 ))}
               </div>
             </li>
@@ -340,7 +573,7 @@ export function BuildingsGuide({ guide }: { guide: Guide }) {
                     return (
                       <tr key={building.id}>
                         <th scope="row">
-                          <a className="pb-overview-name" href={`#${building.id}`}>
+                          <button type="button" className="pb-overview-name" onClick={() => setOpenId(building.id)}>
                             <span className="pb-thumb">
                               {image ? (
                                 // eslint-disable-next-line @next/next/no-img-element
@@ -352,7 +585,7 @@ export function BuildingsGuide({ guide }: { guide: Guide }) {
                               )}
                             </span>
                             {localizedBuildingName(building, guide.buildingTexts)}
-                          </a>
+                          </button>
                         </th>
                         <td>{guide.categories[building.category]}</td>
                         <td>{building.levelMax ? fill(guide.levelRange, { max: building.levelMax }) : "—"}</td>
@@ -413,6 +646,17 @@ export function BuildingsGuide({ guide }: { guide: Guide }) {
 
       <p className="hero-credit">{guide.credit}</p>
       {guide.note ? <p className="callout">{guide.note}</p> : null}
+
+      {openBuilding ? (
+        <BuildingDetail
+          key={openBuilding.id}
+          building={openBuilding}
+          list={flatList.length ? flatList : BUILDINGS}
+          guide={guide}
+          onStep={(entry) => setOpenId(entry.id)}
+          onClose={() => setOpenId(null)}
+        />
+      ) : null}
     </div>
   );
 }
