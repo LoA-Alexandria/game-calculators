@@ -9,11 +9,16 @@
  * by id; an empty translation shows the English text.
  *
  * The first 25 items come from German client screenshots taken on
- * 16 September 2026. Seventeen hero-exclusive UR items were added from
- * screenshots taken on 18 September 2026; those cards use the St. 1 battle
- * skill. German is the game's wording; English and French are translations. Each effect text is written for the skill level stored next
+ * 16 September 2026. Hero-exclusive UR items were added from screenshots
+ * taken on 18 September 2026; those cards use the St. 1 battle skill.
+ * German is the game's wording; English and French are translations. Each effect text is written for the skill level stored next
  * to it, because the numbers change with the level. Rarity follows the colour
  * of the item name in the game: red UR, gold SSR, purple SR.
+ *
+ * Exclusive items are keyed to a roster hero in `EXCLUSIVE_COLLECTION_HEROES`
+ * from the hero named on the skill card. The Heroes guide shows that item as
+ * the artifact, using these translations instead of duplicating them in
+ * `heroTexts`.
  */
 
 import data from "../data/collection.json" with { type: "json" };
@@ -47,6 +52,60 @@ export type CollectionTexts = Record<string, { name?: string; skillName?: string
 /** JSON has no string literal types; `tests/collection.test.mjs` checks rarities. */
 export const COLLECTION_DATA = data as CollectionData;
 export const COLLECTION_ITEMS: CollectionItem[] = COLLECTION_DATA.items;
+
+/**
+ * Exclusive UR collection → roster hero id. Taken from the hero named on each
+ * 18 September 2026 skill card; not from a separate exclusive flag in JSON.
+ */
+export const EXCLUSIVE_COLLECTION_HEROES: Readonly<Record<string, string>> = {
+  "aeolus-bag-of-winds": "odysseus",
+  "golden-throne": "caesar",
+  "sin-and-redemption": "billy-the-kid",
+  "winged-sandals": "hermes",
+  "divine-greaves": "achilles",
+  "broken-shackles": "spartacus",
+  "eagle-scepter": "pompey",
+  "nemean-lion-pelt": "heracles",
+  "circes-enchanted-chalice": "circe",
+  "pearl-earrings": "cleopatra",
+  "mona-lisa": "da-vinci",
+  "augustus-coin": "augustus",
+  "donkey-mask": "william-shakespeare",
+  "tutankhamun-mask": "tutankhamun",
+  "bucephalus-golden-bridle": "alexander-the-great",
+  "grimoire-of-gravity": "isaac-newton",
+  "queens-crown": "queen-victoria",
+  "napoleons-bicorne": "napoleon-bonaparte",
+};
+
+const EXCLUSIVE_BY_HERO = new Map(
+  Object.entries(EXCLUSIVE_COLLECTION_HEROES).map(([itemId, heroId]) => [heroId, itemId]),
+);
+
+/** The exclusive collection of a roster hero, if that hero has one. */
+export function exclusiveCollectionForHero(
+  heroId: string,
+  items: readonly CollectionItem[] = COLLECTION_ITEMS,
+): CollectionItem | undefined {
+  const itemId = EXCLUSIVE_BY_HERO.get(heroId);
+  return itemId ? items.find((item) => item.id === itemId) : undefined;
+}
+
+/** Name, skill, and effect of a hero's exclusive collection in every catalog. */
+export function exclusiveCollectionSearchText(
+  heroId: string,
+  catalogs: readonly CollectionTexts[],
+  items: readonly CollectionItem[] = COLLECTION_ITEMS,
+): string {
+  const item = exclusiveCollectionForHero(heroId, items);
+  if (!item) return "";
+  return catalogs
+    .flatMap((texts) => {
+      const local = localizedItem(item, texts);
+      return [local.name, local.skillName, local.skillText];
+    })
+    .join(" ");
+}
 
 export function collectionImageUrl(file: string): string {
   return asset(`/collection/${file}`);

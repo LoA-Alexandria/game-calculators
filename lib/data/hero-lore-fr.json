@@ -1,11 +1,11 @@
 {
   "hermes": {
     "title": "Messager de l'oracle",
-    "bio": "Mime Genius fut acteur, réalisateur, scénariste, producteur et compositeur, et l'un des artistes de cinéma les plus influents de l'ère du muet. Né dans une pauvre famille de comédiens à Londres, il monta sur scène dès l'enfance pour gagner sa vie, partit ensuite en Amérique et, avec un chapeau melon, une moustache en brosse à dents, une canne et un pantalon ample, créa le célèbre « Little Tramp ». Il excellait à fusionner la comédie physique du music-hall avec un regard aigu sur la réalité sociale, peignant la pauvreté, l'industrialisation et la dignité ordinaire ; comme l'un des rares premiers auteurs capables de maîtriser jeu, mise en scène, écriture, production et même musique, il laissa une empreinte durable sur la comédie et le langage cinématographique."
+    "bio": "Hermes est l'un des Douze Olympiens de la mythologie grecque, fils de Zeus et de Maia. Dieu des messagers, des voyageurs, des marchands, des voleurs, des bergers, des athlètes et des âmes, il compte parmi les divinités les plus polyvalentes du panthéon grec. Selon les Hymnes homériques, Hermes inventa la lyre et déroba le bétail d'Apollon le jour même de sa naissance, puis désamorça habilement le conflit, révélant ses traits distinctifs d'esprit et de ruse."
   },
   "merlin": {
     "title": "Sage du lac",
-    "bio": "Bjorn Ironside est l'un des héros les plus célèbres de la légende nordique, généralement décrit comme un fils de Ragnar Lodbrok. Il apparaît surtout dans des textes médiévaux tels que la Saga de Ragnar Lodbrok, le Conte des fils de Ragnar et les Gesta Danorum de Saxo Grammaticus. Il est célèbre pour ses expéditions, ses batailles navales et sa réputation de guerrier presque indestructible. Selon la légende, il mena campagne avec ses frères en Angleterre, en Francie et en Méditerranée, et fut plus tard présenté comme une figure importante de la lignée royale primitive de Suède. Culturellement, il représente plus qu'un simple « guerrier viking » : il incarne l'idéal héroïque nordique du voyage, de la conquête, de la gloire ancestrale et de la quête d'une légende personnelle."
+    "bio": "Merlin est le magicien et conseiller central de la légende arthurienne, souvent lié à des motifs mystiques tels que la Dame du Lac et la lignée des dragons. Selon la légende, il guida le jeune Arthur pour tirer Excalibur et l'aida à fonder l'ordre des Chevaliers de la Table Ronde, devenant l'une des incarnations quintessentielles de la sagesse et de la magie dans la littérature britannique. L'image de Merlin a continuellement évolué selon les époques et les textes : tantôt sage vieillard, tantôt figure touchée par le charme et la contradiction. Pourtant, à travers ces transformations, il demeure l'architecte du mythos arthurien, façonnant ses fondations par un savoir au-delà de la portée mortelle et le pouvoir de la prophétie."
   },
   "heracles": {
     "title": "Roi des Douze Travaux",
@@ -13,7 +13,7 @@
   },
   "circe": {
     "title": "Maîtresse de l'île isolée",
-    "bio": "Hermes est l'un des Douze Olympiens de la mythologie grecque, fils de Zeus et de Maia. Dieu des messagers, des voyageurs, des marchands, des voleurs, des bergers, des athlètes et des âmes, il compte parmi les divinités les plus polyvalentes du panthéon grec. Selon les Hymnes homériques, Hermes inventa la lyre et déroba le bétail d'Apollon le jour même de sa naissance, puis désamorça habilement le conflit, révélant ses traits distinctifs d'esprit et de ruse."
+    "bio": "Circe est une sorcière et déesse de la mythologie grecque antique qui vit sur l'île mystérieuse d'Aiaia et est généralement considérée comme la fille du dieu soleil Helios. Son portrait le plus célèbre vient de l'épopée d'Homère, l'Odyssée : lorsque Odysseus et son équipage abordèrent son île, elle usa de vin enchanté et de magie pour les transformer en porcs. Seul Odysseus, aidé par Hermes, put résister à ses sorts et finit par devenir son hôte d'honneur. Circe n'est pas une simple méchante sorcière ; elle incarne un mélange complexe de séduction, de sagesse, de solitude et de transcendance, et dans la tradition classique, elle symbolise la frontière entre civilisation et sauvagerie."
   },
   "lancelot": {
     "title": "Chevalier de la rose",
@@ -29,7 +29,7 @@
   },
   "bjorn-ironside": {
     "title": "Ours de fer du Nord",
-    "bio": "Circe est une sorcière et déesse de la mythologie grecque antique qui vit sur l'île mystérieuse d'Aiaia et est généralement considérée comme la fille du dieu soleil Helios. Son portrait le plus célèbre vient de l'épopée d'Homère, l'Odyssée : lorsque Odysseus et son équipage abordèrent son île, elle usa de vin enchanté et de magie pour les transformer en porcs. Seul Odysseus, aidé par Hermes, put résister à ses sorts et finit par devenir son hôte d'honneur. Circe n'est pas une simple méchante sorcière ; elle incarne un mélange complexe de séduction, de sagesse, de solitude et de transcendance, et dans la tradition classique, elle symbolise la frontière entre civilisation et sauvagerie."
+    "bio": "Bjorn Ironside est l'un des héros les plus célèbres de la légende nordique, généralement décrit comme un fils de Ragnar Lodbrok. Il apparaît surtout dans des textes médiévaux tels que la Saga de Ragnar Lodbrok, le Conte des fils de Ragnar et les Gesta Danorum de Saxo Grammaticus. Il est célèbre pour ses expéditions, ses batailles navales et sa réputation de guerrier presque indestructible. Selon la légende, il mena campagne avec ses frères en Angleterre, en Francie et en Méditerranée, et fut plus tard présenté comme une figure importante de la lignée royale primitive de Suède. Culturellement, il représente plus qu'un simple « guerrier viking » : il incarne l'idéal héroïque nordique du voyage, de la conquête, de la gloire ancestrale et de la quête d'une légende personnelle."
   },
   "ragnar-lodbrok": {
     "title": "Roi guerrier viking",
@@ -37,7 +37,7 @@
   },
   "lagertha": {
     "title": "Reine des vierges guerrières",
-    "bio": "Merlin est le magicien et conseiller central de la légende arthurienne, souvent lié à des motifs mystiques tels que la Dame du Lac et la lignée des dragons. Selon la légende, il guida le jeune Arthur pour tirer Excalibur et l'aida à fonder l'ordre des Chevaliers de la Table Ronde, devenant l'une des incarnations quintessentielles de la sagesse et de la magie dans la littérature britannique. L'image de Merlin a continuellement évolué selon les époques et les textes : tantôt sage vieillard, tantôt figure touchée par le charme et la contradiction. Pourtant, à travers ces transformations, il demeure l'architecte du mythos arthurien, façonnant ses fondations par un savoir au-delà de la portée mortelle et le pouvoir de la prophétie."
+    "bio": "Lagertha est une légendaire vierge guerrière et souveraine viking, consignée par Saxo Grammaticus au XIIe siècle dans les Gesta Danorum. Elle apparaît d’abord dans l’ouest de la Norvège, combattant en habits d’homme, les cheveux dénoués sur les épaules, pour venger le roi Siward ; son courage gagne à la fois la bataille et l’attention de Ragnar Lodbrok. Après avoir épousé Ragnar et lui avoir donné des enfants, elle est écartée lorsqu’il prend une autre épouse ; elle revient pourtant avec une flotte, le sauve dans une guerre civile et retourne une ligne chancelante en frappant l’ennemi à revers. Saxo clôt son récit en reine de son propre droit : de retour en Norvège, elle tue son mari suivant et s’empare de son trône, préférant régner seule plutôt que de partager le pouvoir. Guerrière historique, amazone littéraire ou souvenir de la déesse Thorgerd, elle demeure l’emblème de la vierge guerrière nordique — vaillance, indépendance et une couronne conquise par la lance."
   },
   "pompey": {
     "title": "Crépuscule de la gloire",

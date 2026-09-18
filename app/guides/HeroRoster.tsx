@@ -24,6 +24,7 @@ import {
   type HeroTexts,
 } from "../../lib/content/heroes";
 import { LOCALE_CODES, fill, getDictionary, type Dictionary } from "../../lib/i18n";
+import { exclusiveCollectionSearchText, type CollectionTexts } from "../../lib/content/collection";
 import { HERO_SKIN_GROUPS, HERO_SKINS, skinSearchText, skinsFor } from "../../lib/content/skins";
 import { ChevronIcon, CloseIcon } from "../components/Icons";
 import { HeroPortrait } from "../components/HeroPortrait";
@@ -117,15 +118,23 @@ export function HeroRoster({ guide }: { guide: Guide }) {
     () => LOCALE_CODES.map((code) => mergeHeroTexts(getDictionary(code).guideEntries.heroes.heroTexts, heroLoreTexts(code))),
     [],
   );
+  const collectionCatalogs = useMemo(
+    () => LOCALE_CODES.map((code) => getDictionary(code).guideEntries.collection.collectionTexts as CollectionTexts),
+    [],
+  );
   const rows = useMemo(
     () =>
       searchHeroes(
         query,
         rarity,
         heroCatalogs,
-        (hero) => skinSearchText(hero.name, HERO_SKINS, skinCatalogs),
+        (hero) =>
+          [
+            skinSearchText(hero.name, HERO_SKINS, skinCatalogs),
+            exclusiveCollectionSearchText(hero.id, collectionCatalogs),
+          ].join(" "),
       ),
-    [query, rarity, heroCatalogs, skinCatalogs],
+    [query, rarity, heroCatalogs, skinCatalogs, collectionCatalogs],
   );
   const grouped = rarity === "all" && !query.trim();
   const fragmentLabels = guide.fragments;
@@ -382,9 +391,11 @@ function HeroDetail({
 }) {
   const { t, tf } = useLocale();
   const artworkTexts = t.guideEntries.artwork.catalogTexts as PaintingTexts;
+  const collectionTexts = t.guideEntries.collection.collectionTexts as CollectionTexts;
   const [shown, setShown] = useState(0);
   // Name, rarity, and pictures are shared; the game text comes from the dictionary + lore.
-  const hero = localizedHero(row, texts);
+  // Exclusive collection names come from the Collection guide, not from heroTexts.
+  const hero = localizedHero(row, texts, collectionTexts);
   const file = hero.images[shown] ?? hero.images[0];
   const found = heroAppearances(hero.name);
   const layouts = layoutTexts(t.guideEntries.heroLayouts);

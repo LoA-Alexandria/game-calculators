@@ -1,11 +1,11 @@
 {
   "hermes": {
     "title": "Orakelbote",
-    "bio": "Mime Genius war Schauspieler, Regisseur, Drehbuchautor, Produzent und Komponist und einer der einflussreichsten Filmkünstler der Stummfilmära. Geboren in eine arme Künstlerfamilie in London, stand er schon als Junge auf der Bühne, ging später nach Amerika und schuf mit Melone, Zahnbürstenbart, Stock und weiten Hosen den weltberühmten „Little Tramp“. Er verband meisterhaft Music-Hall-Körperkomik mit scharfem Blick auf die soziale Wirklichkeit und porträtierte Armut, Industrialisierung und die Würde des einfachen Menschen; als einer der wenigen frühen Autoren, die Darstellung, Regie, Schreiben, Produktion und sogar Musik beherrschten, prägte er Komödie und Filmsprache nachhaltig."
+    "bio": "Hermes ist einer der zwölf Olympier der griechischen Mythologie, Sohn von Zeus und Maia. Als Gott der Boten, Reisenden, Kaufleute, Diebe, Hirten, Athleten und Seelen gehört er zu den vielseitigsten Gottheiten des griechischen Pantheons. Den homerischen Hymnen zufolge erfand Hermes am Tag seiner Geburt die Lyra, stahl Apollons Rinder und entschärfte den Konflikt mit List – und offenbarte damit seine prägenden Züge von Witz und Schlauheit."
   },
   "merlin": {
     "title": "Weiser vom See",
-    "bio": "Bjorn Ironside ist einer der berühmtesten Helden der nordischen Sage und wird gemeinhin als Sohn von Ragnar Lodbrok beschrieben. Er erscheint vor allem in mittelalterlichen Texten wie der Saga von Ragnar Lodbrok, der Erzählung von Ragnars Söhnen und Saxo Grammaticus’ Gesta Danorum. Berühmt ist er für seine Fahrten, Seeschlachten und den Ruf eines nahezu unzerstörbaren Kriegers. Der Legende nach zog er mit seinen Brüdern durch England, Frankenreich und Mittelmeer und wurde später als wichtige Figur der frühen schwedischen Königslinie dargestellt. Kulturell steht er für mehr als den „Wikingerkrieger“: Er verkörpert das nordische Heldenideal von Fahrt, Eroberung, Ahnenruhm und dem Streben nach eigener Legende."
+    "bio": "Merlin ist der zentrale Zauberer und Ratgeber der Artus-Legende, oft verwoben mit mystischen Motiven wie der Herrin vom See und der Drachenblutlinie. Der Legende nach führte er den jungen Arthur dazu, Excalibur zu ziehen, und half ihm, den Orden der Ritter der Tafelrunde zu gründen; so wurde er zu einer der prägenden Verkörperungen von Weisheit und Magie in der britischen Literatur. Merlins Bild wandelte sich über Epochen und Texte: mal als weiser Greis, mal als Figur voller Widerspruch und Faszination. Doch durch alle Wandlungen bleibt er der Architekt des Artus-Mythos, der dessen Fundament durch übermenschliches Wissen und prophetische Kraft formte."
   },
   "heracles": {
     "title": "König der zwölf Arbeiten",
@@ -13,7 +13,7 @@
   },
   "circe": {
     "title": "Herrin der einsamen Insel",
-    "bio": "Hermes ist einer der zwölf Olympier der griechischen Mythologie, Sohn von Zeus und Maia. Als Gott der Boten, Reisenden, Kaufleute, Diebe, Hirten, Athleten und Seelen gehört er zu den vielseitigsten Gottheiten des griechischen Pantheons. Den homerischen Hymnen zufolge erfand Hermes am Tag seiner Geburt die Lyra, stahl Apollons Rinder und entschärfte den Konflikt mit List – und offenbarte damit seine prägenden Züge von Witz und Schlauheit."
+    "bio": "Circe ist eine Zauberin und Göttin der antiken griechischen Mythologie, die auf der geheimnisvollen Insel Aiaia lebt und allgemein als Tochter des Sonnengottes Helios gilt. Ihre berühmteste Darstellung stammt aus Homers Epos der Odyssee: Als Odysseus und seine Gefährten auf ihrer Insel landeten, verwandelte sie sie mit verzaubertem Wein und Magie in Schweine. Nur Odysseus, unterstützt von Hermes, widerstand ihren Zaubern und wurde schließlich ihr geehrter Gast. Circe ist nicht bloß eine böse Hexe; sie verkörpert eine komplexe Mischung aus Verführung, Weisheit, Einsamkeit und Transzendenz und symbolisiert in der klassischen Tradition die Grenze zwischen Zivilisation und Wildheit."
   },
   "lancelot": {
     "title": "Rosenritter",
@@ -29,7 +29,7 @@
   },
   "bjorn-ironside": {
     "title": "Nördlicher Eisenbär",
-    "bio": "Circe ist eine Zauberin und Göttin der antiken griechischen Mythologie, die auf der geheimnisvollen Insel Aiaia lebt und allgemein als Tochter des Sonnengottes Helios gilt. Ihre berühmteste Darstellung stammt aus Homers Epos der Odyssee: Als Odysseus und seine Gefährten auf ihrer Insel landeten, verwandelte sie sie mit verzaubertem Wein und Magie in Schweine. Nur Odysseus, unterstützt von Hermes, widerstand ihren Zaubern und wurde schließlich ihr geehrter Gast. Circe ist nicht bloß eine böse Hexe; sie verkörpert eine komplexe Mischung aus Verführung, Weisheit, Einsamkeit und Transzendenz und symbolisiert in der klassischen Tradition die Grenze zwischen Zivilisation und Wildheit."
+    "bio": "Bjorn Ironside ist einer der berühmtesten Helden der nordischen Sage und wird gemeinhin als Sohn von Ragnar Lodbrok beschrieben. Er erscheint vor allem in mittelalterlichen Texten wie der Saga von Ragnar Lodbrok, der Erzählung von Ragnars Söhnen und Saxo Grammaticus’ Gesta Danorum. Berühmt ist er für seine Fahrten, Seeschlachten und den Ruf eines nahezu unzerstörbaren Kriegers. Der Legende nach zog er mit seinen Brüdern durch England, Frankenreich und Mittelmeer und wurde später als wichtige Figur der frühen schwedischen Königslinie dargestellt. Kulturell steht er für mehr als den „Wikingerkrieger“: Er verkörpert das nordische Heldenideal von Fahrt, Eroberung, Ahnenruhm und dem Streben nach eigener Legende."
   },
   "ragnar-lodbrok": {
     "title": "Wikinger-Kriegskönig",
@@ -37,7 +37,7 @@
   },
   "lagertha": {
     "title": "Königin der Schildmaiden",
-    "bio": "Merlin ist der zentrale Zauberer und Ratgeber der Artus-Legende, oft verwoben mit mystischen Motiven wie der Herrin vom See und der Drachenblutlinie. Der Legende nach führte er den jungen Arthur dazu, Excalibur zu ziehen, und half ihm, den Orden der Ritter der Tafelrunde zu gründen; so wurde er zu einer der prägenden Verkörperungen von Weisheit und Magie in der britischen Literatur. Merlins Bild wandelte sich über Epochen und Texte: mal als weiser Greis, mal als Figur voller Widerspruch und Faszination. Doch durch alle Wandlungen bleibt er der Architekt des Artus-Mythos, der dessen Fundament durch übermenschliches Wissen und prophetische Kraft formte."
+    "bio": "Lagertha ist eine legendäre wikingische Schildmaid und Herrscherin, die Saxo Grammaticus im zwölften Jahrhundert in den Gesta Danorum festhielt. Sie tritt zuerst im westlichen Norwegen auf, kämpft in Männerkleidung mit offenem Haar über den Schultern, um König Siward zu rächen, und ihre Tapferkeit gewinnt sowohl die Schlacht als auch die Aufmerksamkeit Ragnar Lodbroks. Nach der Ehe mit Ragnar und der Geburt gemeinsamer Kinder wird sie beiseitegesetzt, als er eine andere Frau nimmt; dennoch kehrt sie mit einer Flotte zurück, rettet ihn in einem Bürgerkrieg und wendet eine wankende Linie, indem sie dem Feind in den Rücken fällt. Saxo schließt ihre Geschichte als Königin aus eigenem Recht: In Norwegen erschlägt sie ihren nächsten Gemahl und nimmt seinen Thron, weil sie lieber allein herrscht als den Thron zu teilen. Ob historische Kriegerin, literarische Amazone oder Erinnerung an die Göttin Thorgerd – sie bleibt das Sinnbild der nordischen Schildmaid: Mut, Unabhängigkeit und eine Krone, die mit dem Speer gewonnen wird."
   },
   "pompey": {
     "title": "Dämmerung des Ruhms",
