@@ -55,12 +55,13 @@ test("Events index always exposes Anleitungen and Tips categories", () => {
   assert.ok(sectionById("events").items.some((item) => item.href === "/events/life-incubator/"));
   assert.ok(sectionById("events").items.some((item) => item.href === "/events/road-to-worldcup/"));
   assert.ok(sectionById("events").items.some((item) => item.href === "/events/duel-festival/"));
+  assert.ok(sectionById("events").items.some((item) => item.href === "/events/mayan-ruins/"));
   const groups = eventCategoryGroups(en);
   assert.deepEqual(
     groups.map((group) => ({ id: group.id, category: group.category, count: group.items.length })),
     [
       { id: "anleitungen", category: en.eventCategories.anleitungen, count: 0 },
-      { id: "tips", category: en.eventCategories.tips, count: 14 },
+      { id: "tips", category: en.eventCategories.tips, count: 15 },
     ],
   );
 });
@@ -213,6 +214,17 @@ test("Duel Festival is listed under Events Tips in every language", () => {
     assert.equal(entry.title, "Duel Festival");
     assert.ok(entry.sections.some((section) => /Group 1|Gruppe 1|groupe 1/i.test(section.body.join(" "))));
     assert.ok(entry.sections.some((section) => /1–2|1-2/.test(section.body.join(" "))));
+    assert.match(entry.note, /Autumn/);
+  }
+});
+
+test("Mayan Ruins is listed under Events Tips in every language", () => {
+  for (const locale of ["en", "de", "fr"]) {
+    const dictionary = getDictionary(locale);
+    const entry = dictionary.eventGuideEntries.mayanRuins;
+    assert.equal(entry.title, "Mayan Ruins");
+    assert.ok(entry.sections.some((section) => /Stage 20|Stage 20/.test(section.body.join(" ")) || /20/.test(section.body.join(" "))));
+    assert.match(entry.note, /obsolete|obsolet|obsolète/i);
     assert.match(entry.note, /Autumn/);
   }
 });

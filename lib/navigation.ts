@@ -150,6 +150,13 @@ export const SECTIONS: NavSection[] = [
         badge: (t) => t.eventCategories.tips,
         categoryId: "tips",
       },
+      {
+        href: "/events/mayan-ruins/",
+        label: (t) => t.eventGuideEntries.mayanRuins.title,
+        description: (t) => t.eventGuideEntries.mayanRuins.summary,
+        badge: (t) => t.eventCategories.tips,
+        categoryId: "tips",
+      },
     ],
   },
   {
