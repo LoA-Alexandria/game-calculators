@@ -344,18 +344,40 @@ const en = {
       filterLabel: "Rarity",
       filterAll: "All",
       searchLabel: "Search heroes",
-      searchPlaceholder: "Name, skill, event, or skin…",
+      searchPlaceholder: "Name, skill, event, story, or skin…",
       countLabel: "{count} shown",
       colObtain: "Obtain",
+      colTitle: "Title",
+      colTroop: "Troop",
+      colAge: "Age",
+      bioHeading: "Story",
+      troops: {
+        Pikeman: "Pikeman",
+        Archer: "Archer",
+        Shieldman: "Shieldman",
+        Cavalry: "Cavalry",
+      },
+      ages: {
+        "Ice Age": "Ice Age",
+        "Stone Age": "Stone Age",
+        "Bronze Age": "Bronze Age",
+        "Classical Age": "Classical Age",
+        "Medieval Age": "Medieval Age",
+        "Renaissance Age": "Renaissance Age",
+        "Exploration Age": "Exploration Age",
+        "Enlightenment Age": "Enlightenment Age",
+        "Steam Age": "Steam Age",
+      },
       colName: "Hero",
       artifactLabel: "Artifact",
       empty: "No hero matches that filter.",
-      rosterLede: "Tap a hero for skills, skins, and where the tier list, Hero layouts, and Artwork use them.",
+      rosterLede: "Tap a hero for their story, skills, skins, and where the tier list, Hero layouts, and Artwork use them.",
       groupCount: "{count} heroes",
       groupCountOne: "1 hero",
       skinCount: "{count} skins",
       skinCountOne: "1 skin",
-      portraitCredit: "Hero portraits from the Pop Epoch Wiki (Fandom). The artwork belongs to the game’s publisher and is shown here for free, non-commercial community guides.",
+      portraitCredit:
+        "Hero portraits, titles, troops, ages, and stories from the Pop Epoch Wiki Hero page (Fandom), last merged on 18 September 2026. The artwork belongs to the game’s publisher and is shown here for free, non-commercial community guides.",
       sourcesHeading: "Where they come from",
       sources: [
         {
@@ -376,7 +398,7 @@ const en = {
         },
         {
           title: "Crown Vault",
-          body: "500 crown coins per 50 shards for Guan Yu, Lu Bu, Musashi, and Sun-Sin, none of whom are in the roster here yet. Coins come from placing in Mushroom Adventure, Incubator Lab, Supply Reform, and the Great Flood, from the final point rankings, and from the first seven merge levels in Mushroom and Incubator.",
+          body: "500 crown coins per 50 shards for Guan Yu, Lü Bu, Miyamoto Musashi, and Yi Sun-sin. Coins come from placing in Mushroom Adventure, Incubator Lab, Supply Reform, and the Great Flood, from the final point rankings, and from the first seven merge levels in Mushroom and Incubator.",
         },
         {
           title: "Monument of Eternity",
@@ -417,7 +439,7 @@ const en = {
         unknown: { title: "Unknown", lede: "Nobody has confirmed the event. Autumn’s best guess is in the Obtain line." },
       },
       skinsCredit:
-        "Skin names and sources are Autumn’s skin guide, shared on Discord on 7 August 2026. Skins for heroes not in this roster yet — Billy the Kid, Charlie Chaplin — are left out until those heroes are added. “Not obtainable now” means no source is running, and there may not be one again for a long time.",
+        "Skin names and sources are Autumn’s skin guide, shared on Discord on 7 August 2026. Skins for Charlie Chaplin are left out until that hero is added. “Not obtainable now” means no source is running, and there may not be one again for a long time.",
       skinTexts: {},
       previousHero: "Previous hero",
       nextHero: "Next hero",
@@ -450,7 +472,7 @@ const en = {
           ],
         },
       ],
-      note: "Skill, buff, and production tables for 37 heroes are from German client screenshots taken on 18 September 2026. English is a translation and may differ from the in-game English. Production levels that were not on those screenshots are interpolated: UR and UR+ +4% per level, SSR 30% + 3% × (n−1). Alexander the Great and Augustus have no portraits yet.",
+      note: "Skill, buff, and production tables for 37 heroes are from German client screenshots taken on 18 September 2026. English is a translation and may differ from the in-game English. Production levels that were not on those screenshots are interpolated: UR and UR+ +4% per level, SSR 30% + 3% × (n−1). Titles, troops, ages, bios, and the five Crown Vault / Billy the Kid cards come from the Pop Epoch Wiki Hero page; those five have no skill tables here yet.",
     },
     technology: {
       title: "Technology",
@@ -747,41 +769,138 @@ const en = {
       ],
       note: "Manor costs and population gates will be added once they are checked against the current client.",
     },
-    support: {
-      title: "Support",
-      summary: "Account-wide support bonuses — the list is still being written.",
+    adsBuy: {
+      title: "Werbung / Buy",
+      summary: "Daily ad priorities for efficiency, and what is worth buying with real money.",
       intro:
-        "Support covers the systems that buff the rest of the city rather than producing a resource themselves. This page holds the Core elements slot until that list is versioned here.",
+        "Made by Autumn. Buying ad-free is probably more sane — use this when you are not in that position, and when you want a clear spend priority.",
+      credit: "Ads and spending guide by Autumn (Ice, S12), shared on Discord",
+      creditDate: "August 2026",
       sections: [
         {
-          heading: "What this guide will cover",
+          heading: "Ads — how to run them",
           body: [
-            "Which support tracks exist, what they buff, and the order worth raising them in.",
-            "Until those tracks are checked, this page is the category entry rather than a complete order.",
+            "For efficiency, alternate ads with billboard ads: billboards have a 5-minute cooldown between each ad.",
+            "For sanity, watch ads while doing something else. Total ad time is about 3–4 hours.",
+          ],
+        },
+        {
+          heading: "Ad priorities — do immediately / every day",
+          body: [
+            "Go in chronological order from top to bottom.",
+            "Special: only available if you have been away longer than your maximum recoverable-time cap. It restores about 1 hour of resources (30 minutes × 2), and you can only watch it before entering the game properly.",
+            "Billboard ads: the only ads that give 50 free ID plates every day (10 × 5) plus 150 gems — chronically short for F2P.",
+            "Ad Bundle: available for only 2 hours after your first login after a reset.",
+            "Speedup Research: available again every 2 hours after watching one. You can take the research-timer Discord role for a ping every 2 hours.",
+            "Auto-clicker ad assistant: do this as soon as possible before a reset. The auto-clicker pauses when you watch an ad or log out, and you want the full 30 minutes it offers.",
+            "Blessings ads (×5): run these when your blessing % is already very high. Timing is variable — you have about 1 hour before the % starts to drop, so move this up to priority #2 when the % is very high.",
+            "Main Event stamina ads: Grail, Odin, Atlantis, Rome, and other blue-banner main events (plus special event banners at the top of the calendar).",
+            "Savings Event stamina ads: Genie, Ring Toss.",
+            "Other Event stamina ads: Shopping Cart and similar.",
+            "Minigame stamina ads — especially Mushroom Adventure.",
+          ],
+        },
+        {
+          heading: "Ad priorities — not time-limited",
+          body: [
+            "These can be done in any order: Crown Glory, Museion, Grand Voyage, Industrial Soulcraft (if past Exploration Age), Guild Development (at least 1 for the Epoch Pass), and 1 Genesis Soulcraft / Genesis Excavation (to save soulcraft / shovels for Destiny).",
+          ],
+        },
+        {
+          heading: "Ad priorities — can be skipped",
+          body: [
+            "The other Genesis Soulcraft ads, unless you have not unlocked all heroes yet.",
+            "The other Genesis / Humanities Excavation ads, unless you have not unlocked all excavations yet.",
+          ],
+        },
+        {
+          heading: "Spending guide — essential & mandatory",
+          body: [
+            "Always prioritize your budget. This ranks purchases by value and situational necessity.",
+            "Lifetime Ad-Free · $29.99 — the single best purchase for sanity and progression.",
+            "Venus first purchase · $2.99 — buy on day 1 for a large early-game jump.",
+            "Ring Toss goddesses · ~$10 — buy the goddess every event cycle.",
+            "Main Event initial heroes · $15–$20 — unlock Arthur, Odysseus, Ragnar, and so on on their first cycles.",
+            "Rome event exception · $10 — enough to unlock Caesar.",
+            "Museion first fund · $10 — unlocks day 8; mandatory.",
+            "Egypt first fund · $10 — unlocks day 14; important.",
+            "Theater first fund · $10 — unlocks day 20; essential progression.",
+            "Voyage first fund · $10 — unlocks day 40; do not skip.",
+          ],
+        },
+        {
+          heading: "Spending guide — useful & recommended",
+          body: [
+            "Civilization funds — buy all three available.",
+            "Goddess funds — buy all three available.",
+            "Sea Merchant funds — buy all three available.",
+            "Astral Pass · $15 — strong recurring value.",
+            "Heart of Gold Pass · $15 — high Cryptid material payout.",
+            "Spring Event passes · $10 and $20 — buy both until every tile is unlocked.",
+            "Weekly Pop Bundle · $15.",
+            "Daily Value Bundle with 45 golden barrels · $2.99.",
+            "Joan of Arc: $5 offer toward UR, and $20 fund toward UR+.",
+          ],
+        },
+        {
+          heading: "Spending guide — quality of life",
+          body: [
+            "Monthly Ad-Free Assistant Pass · $5/month — adds the automated assistant that manages tasks.",
+          ],
+        },
+        {
+          heading: "Spending guide — competitive only",
+          body: [
+            "All available funds · ~$500 total — every milestone fund, if you push top ranks.",
+            "UR+ book buffs — push every UR+ hero from every event cycle to at least 1-star for the book buffs.",
+          ],
+        },
+        {
+          heading: "Spending guide — whales",
+          body: [
+            "All event passes and all funds for absolute early dominance.",
+            "First Grail (day 3) · $1000+ — rush Map 3 and heavy-spend ID plates and goddess materials; it snowballs permanently.",
+            "Rome events 1–3 — hit the 227m score threshold for all exclusive artifacts in the first three cycles.",
+            "UR+ skin rotations — take every UR+ skin on every second event rotation.",
+            "Mayan and Genie · $200+ per event — max for UR artifacts and event skins.",
+          ],
+        },
+        {
+          heading: "Spending guide — useless",
+          body: [
+            "Land Deeds — do not spend money here. A trap; put the cash elsewhere.",
+          ],
+        },
+        {
+          heading: "Addendum — $1/day consecutive top-up",
+          body: [
+            "If you spend about $1 USD a day for the minimum consecutive top-up (after the first $1 pack), good targets in chronological order: Mondays 1000 gems; Ring Toss / Shopping Cart / Genie when running; main event; pop-up bundles for 25 choice barrels / Museion harps when available; minigames you like (especially Mushroom Adventure); ID plates ×100.",
+            "Look for value per dollar (thanks to Lynx and Popo). Example: the daily bundle is about 80 plates per $, the weekly bundle about 163 plates per $.",
           ],
         },
       ],
-      note: "The support tracks will be added in a later change. Send a checked list on Discord if you already keep one.",
+      note: "Community ads and spending priorities from Autumn (Ice, S12). Prices and packs can change with the client — bring corrections to Discord.",
     },
     // Upgrade order is the LoA Alexandria sequence (13 Sep 2026).
     // Phase 2 Fortuna and Bastet are 60, not the older community sheet's 90.
     goddesses: {
       title: "Goddesses",
-      summary: "Every goddess with her affinity, where she comes from, and her skins.",
+      summary: "Every goddess with her story, affinity, where she comes from, and her skins.",
       intro: "Gifts raise affinity and unlock bonuses. Recruit a goddess once her conditions are met; the roster below says where each one comes from.",
       rosterHeading: "Roster",
-      rosterLede: "Tap a goddess for affinity, obtain, and skins. Rarity follows the Pop Epoch Wiki card colours: gold SSR, purple SR, blue R.",
+      rosterLede: "Tap a goddess for her story, affinity, obtain, and skins. Rarity follows the Pop Epoch Wiki card colours: gold SSR, purple SR, blue R.",
       filterLabel: "Rarity",
       filterAll: "All",
       searchLabel: "Search goddesses",
-      searchPlaceholder: "Name, affinity, event, or skin…",
+      searchPlaceholder: "Name, story, affinity, event, or skin…",
       countLabel: "{count} shown",
       empty: "No goddess matches that filter.",
       groupCount: "{count} goddesses",
       groupCountOne: "1 goddess",
       skinCount: "{count} skins",
       skinCountOne: "1 skin",
-      portraitCredit: "Goddess portraits from the Pop Epoch Wiki (Fandom). The artwork belongs to the game’s publisher and is shown here for free, non-commercial community guides. Bastet has no portrait on that page yet.",
+      portraitCredit:
+        "Goddess portraits, titles, and stories from the Pop Epoch Wiki Goddess page (Fandom), last merged on 18 September 2026. The artwork belongs to the game’s publisher and is shown here for free, non-commercial community guides.",
       previousGoddess: "Previous goddess",
       nextGoddess: "Next goddess",
       close: "Close",
@@ -797,6 +916,7 @@ const en = {
       colName: "Goddess",
       colAffinity: "Affinity",
       colObtain: "Obtain",
+      bioHeading: "Story",
       missableLabel: "Not obtainable now",
       unconfirmedLabel: "Source unconfirmed",
       sourcesHeading: "Where they come from",
@@ -819,7 +939,7 @@ const en = {
         },
       ],
       obtainCredit:
-        "Where each goddess comes from is Autumn’s obtain guide, shared on Discord on 9 August 2026, with screenshots from several players. “Not obtainable now” means no source is running, and there may not be one again for a long time. “Source unconfirmed” means nobody has verified it. Isis and Calypso are not on the wiki page, so they have no portrait here yet.",
+        "Where each goddess comes from is Autumn’s obtain guide, shared on Discord on 9 August 2026, with screenshots from several players. “Not obtainable now” means no source is running, and there may not be one again for a long time. “Source unconfirmed” means nobody has verified it. Lilith is on the wiki Goddess page without a confirmed obtain line.",
       skinsHeading: "Skins",
       skinsLede:
         "Named skins, not the extra pictures on a roster card. Those files have no names, so they cannot be matched to this list. SSR goddesses have no skins yet. A goddess skin raises her level cap.",
@@ -1051,7 +1171,7 @@ const en = {
       linkLabel: "Link to {anecdote}",
       anecdoteTexts: {},
       credit:
-        "Anecdote guide by Autumn (Ice, S12), shared on Discord and last added to on 10 September 2026, with help from Kraes, Zee, and Spitzell on Egyptian Tales and from Popo. The wording was tidied without changing the steps; where the guide has a gap, a note says so.",
+        "Anecdote steps by Autumn (Ice, S12), shared on Discord and last added to on 10 September 2026, with help from Kraes, Zee, and Spitzell on Egyptian Tales and from Popo. Pictures and three further general anecdotes from the Pop Epoch Wiki Anecdote page (Fandom) as of 18 September 2026. The artwork belongs to the game’s publisher and is shown here for free, non-commercial community guides. The wording was tidied without changing the steps; where the guide has a gap, a note says so.",
       sections: [
         {
           heading: "Before you start",
@@ -1878,7 +1998,7 @@ const en = {
           ],
         },
       ],
-      note: "Guan Yu, Lu Bu, Miyamoto Musashi, and Yi Sun-sin are not in the Core Heroes roster yet, so they appear without a portrait or roster link until those heroes are added.",
+      note: "Guan Yu, Lü Bu, Miyamoto Musashi, and Yi Sun-sin are in the Core Heroes roster with wiki portraits as of 18 September 2026.",
     },
   },
   ageUnlocksEditor: {
@@ -3011,7 +3131,7 @@ const en = {
     outputLede:
       "Paste each dictionary block, then the navigation row, and add the page file as noted.",
     outputNote:
-      "Paste each block under guideEntries in its dictionary and the row into guides.items in lib/navigation.ts. Copy the support page for a new slug.",
+      "Paste each block under guideEntries in its dictionary and the row into guides.items in lib/navigation.ts. Copy the ads-buy page for a new slug.",
     editTitle: "Edit guide",
     editLede: "Change the text and export the replacement. Committing it is what updates the live page.",
     replaceNote:
@@ -3022,10 +3142,6 @@ const en = {
       "Delete the guideEntries block from every dictionary, then the navigation row and the page folder for this slug.",
     removeOutput: "Removal notes",
     cancel: "Back",
-  },
-  eventCategories: {
-    anleitungen: "Guides",
-    tips: "Tips",
   },
   eventGuideEntries: {
     atlantis: {
@@ -3748,23 +3864,13 @@ const en = {
   },
   events: {
     title: "Events",
-    lede: "Guides and tips for limited-time events — separate from the systems covered under Guides.",
+    lede: "Write-ups for limited-time events — separate from the systems covered under Guides.",
     empty: "No event guides yet. The live schedule sits on the overview.",
     other: "Other",
     searchLabel: "Search events",
     searchPlaceholder: "Red Carpet, Grand Voyage…",
-    filterLabel: "Filter by category",
-    filterAll: "All",
     statEntries: "Entries",
-    statCategories: "Categories",
-    countEntriesOne: "1 entry",
-    countEntries: "{count} entries",
     noMatch: "No event guide matches that search.",
-    categoryEmpty: "Nothing in this category yet.",
-    categoryLedes: {
-      anleitungen: "How an event works and what to do during the run.",
-      tips: "Priorities, shortcuts, and what is worth spending on.",
-    },
     browseIndex: "Browse event guides",
     kindMain: "Main event",
     kindRoutine: "Routine",

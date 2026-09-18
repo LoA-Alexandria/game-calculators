@@ -1,0 +1,90 @@
+{
+  "lady-liberty": {
+    "title": "Lady Liberty",
+    "bio": "Sie glaubt, dass jeder auf eigene Weise mitmachen kann: manche schwenken Fahnen, manche schlagen Trommeln, und manche singen einfach leise mit. Solange sie bereit sind, ihre Stimme zu erheben, fängt sie diesen kleinen Funken Mut auf und lässt ihn zu einer tosenden Welle über die Ränge wachsen."
+  },
+  "bastet": {
+    "title": "Katzengöttin",
+    "bio": "Auf einem ägyptischen Basar im Zwielicht dreht sich ein barfüßiges Mädchen unter den Katzen zu ihren Füßen. Ihr Rock streift die Ränder der Marktstände, und das Instrument in ihren Händen klingt sanft im Rhythmus. Die Katzen springen und winden sich um sie, als wäre sie selbst eine fließende Melodie. Sie will keine göttliche Macht zur Schau stellen; sie spricht einfach durch den Tanz zu den lebenden Wesen, und ohne Zögern antworten sie ihr gleich."
+  },
+  "hela": {
+    "title": "Königin der Unterwelt",
+    "bio": "Sie ist noch nicht die Herrscherin der Unterwelt und sitzt nicht auf dem Thron der Toten. Doch dann und wann streicht unter dem Mantel der Nacht ein Schatten über die Spitze des Uhrturms. Jene, die die Schwachen ausbeuten — reiche Herren, gierige Geldverleiher oder Straßentyrannen in den Gassen — finden oft noch vor dem Morgengrauen ein stilles Ende."
+  },
+  "ixchel": {
+    "title": "Mondgöttin",
+    "bio": "Sie ist ein Mädchen, das im Dschungel aufgewachsen ist und gern in hellen Mondnächten erscheint. Wenn etwas Ungewöhnliches an ihr ist, dann ihre Gabe, überall, wohin sie geht, Regen zu bringen."
+  },
+  "medusa": {
+    "title": "Gorgo",
+    "bio": "Woher stammt das Gerücht, dass jeder, der sie sieht, zu Stein wird? Medusa weiß es nicht und kümmert sich auch nicht darum. Diese Künstlerin, die gerne Momente des Schreckens in Stein festhält, dreht ihr Schnitzmesser und sinniert: vielleicht braucht ihr nächstes Werk neue Inspiration."
+  },
+  "moirai": {
+    "title": "Göttin des Schicksals",
+    "bio": "Das Spinnrad entwirrt die Fäden, die Schere bemisst ihr Maß, und die Spindel sammelt sie alle. Mit Mustern und Maßen in der Hand weben sie das vollkommene Gewand — einmal fertig, lässt es sich nie mehr ändern."
+  },
+  "muse": {
+    "title": "Göttin der Kunst",
+    "bio": "Sie stehen nie förmlich im Pantheon und tragen auch nicht den Titel Quelle der Inspiration. Sie sind gewöhnliche Frauen — Dorfkünstlerinnen, wandernde Dichterinnen, Sängerinnen am Fluss —, doch können sie, ohne es zu wollen, in anderen erstaunliche Ideen entfachen."
+  },
+  "athena": {
+    "title": "Göttin der Weisheit",
+    "bio": "Sie ist noch nicht die Verkörperung der Weisheit, sondern eine junge Gehilfin in der Bibliothek, die gerne Fragen stellt. Sie sitzt allein unter dem Lampenschein, vertieft in alte Schriftrollen, umgeben von Bronzehelmen und Waffenmodellen. Das Rascheln umgeschlagener Seiten ist der erste Klang der Ägis, die noch geschmiedet werden muss."
+  },
+  "isis": {
+    "title": "Göttin der Magie",
+    "bio": "Der Nil kann alles abwaschen, was auf der Erde liegt, doch die Narben, die in den Knochen eingegraben sind, kann er nicht tilgen. Was sie tun muss, ist, unter den Überresten die Wahrheit zusammenzusetzen, die die Toten nie aussprechen konnten."
+  },
+  "calypso": {
+    "title": "Göttin des Meeres",
+    "bio": "Die Leute sagen, das Meer begünstige sie, doch sie weiß, dass es niemanden begünstigt. Es bringt jedem denselben Wind und dieselben Wellen. Entscheidend ist, wer die Zähne zusammenbeißt und Schiff und alles wieder ans Ufer bringt."
+  },
+  "lilith": {
+    "title": "Okkulte Heilerin",
+    "bio": "Rezepte haben strenge Dosierungsvorschriften; ihre Regeln nicht. Niemand kann vorhersagen, wie Lilith heute abrechnen wird, ebenso wenig wie die Farbe ihres nächsten Heilmittels. Worauf man sich verlassen kann: Sie spielt nie mit Patienten — außer mit den dicken Geldbörsen."
+  },
+  "brunhild": {
+    "title": "Walküre",
+    "bio": "Flammen gleichen einem brennenden Kranz und singen sanft um ihren Thron. Brunhild schließt die Augen, und was in ihren Träumen widerhallt, sind nicht Odins Drohungen, sondern der schwache Schimmer, den sie einst auf dem Schlachtfeld für die Menschheit bewahrte. Ihrer Göttlichkeit beraubt, schläft sie und wartet auf den Bestimmten, der sie erwecken wird."
+  },
+  "venus": {
+    "title": "Gott der Liebe und Schönheit",
+    "bio": "Sie ist noch nicht aus Wellen und Schaum geboren, sondern ein Fischermädchen, das allein am Meer Wäsche wäscht. Die Leute sagen, ihr Lächeln lasse Fische an Land springen und schicke Boote mit dem Wind. Sie weiß nichts von dem Schicksal, Göttin der Liebe genannt zu werden; sie übt nur ihr Lächeln an der Flussmündung und blickt auf ihr Spiegelbild. Doch die Gezeiten beginnen bereits, sich still um sie zu drehen."
+  },
+  "vivian": {
+    "title": "Seefee",
+    "bio": "Obwohl Vivian noch nicht zur legendären Lady of the Lake geworden ist, teilen sich die Wasser schon für sie, und der Morgennebel umschlingt ihren Rock. Sie bietet dem Schicksal das Schwert dar und vertraut sich sanft einer ungewissen Zukunft an. Mit jedem Blick wählt sie still, wen das Schicksal begünstigen und wen es auf dem Grund des Sees vergessen wird."
+  },
+  "artemis": {
+    "title": "Göttin der Jagd",
+    "bio": "Die Besitzer der Bogenschießbuden hassten Artemis, die jeden Schuss traf. Sie versuchten, Bögen und Pfeile zu manipulieren und den Winkel der Tonkrüge zu verstellen, doch es gelang ihnen nie, sie vom Hauptpreis abzuhalten. Was sie nicht wussten: Hinter jedem Tonkrug, der mit dem Klang der gelösten Sehne fiel, zog ein schwarzer Hundekopf, der seinen Herrn angrinste, sich heimlich zurück."
+  },
+  "fortuna": {
+    "title": "Göttin des Glücks",
+    "bio": "Manche sagen, sie sei ein Dorfmädchen, das in die Stadt geraten sei; andere behaupten, sie sei eine verbannte Adlige. Doch niemand weiß wirklich, dass ihr Name bereits auf der Liste der Götter steht. Fortuna tanzt zwischen Würfelbechern und Roulette-Rädern; jeder Sieg zieht sie der Göttlichkeit näher. Und sie selbst? Sie kümmert sich nur um den nächsten Trunk, den nächsten Gewinn."
+  },
+  "freya": {
+    "title": "Gott der Liebe und des Krieges",
+    "bio": "Wer hätte ahnen können, dass derjenige, der heute in ihren Armen weint, Thor sein würde, der künftige Träger des Donners? Wer hätte vorhersehen können, dass der schlau lächelnde Loki neben ihm zum Feuer werden würde, das die Ordnung der Reiche umstürzt? Freya hat ihr göttliches Schicksal noch nicht ganz angenommen; sie trägt alle beginnenden Epen mit zartem Herzen in die Welt und lässt Sonne und Wind sie sanft krönen."
+  },
+  "hera": {
+    "title": "Königin",
+    "bio": "Der Angeklagte fürchtete ihre Autorität, und der Kläger dankte ihr für ihren Schutz, doch sie saß nur auf dem Richterstuhl und zerschlug mit ihrem Hammer alle Lügen in den Gelübden. In ihrem Gerichtshof war Liebe — oder deren Fehlen — nie der Schwerpunkt; ob man den vor dem Priester gesprochenen Gelübden treu blieb, war der Maßstab, der ihren Hammer lenkte."
+  },
+  "eve": {
+    "title": "Urmutter",
+    "bio": "In den üppigen Tiefen Edens blickt ein unschuldiges Mädchen einer Schlange in den Baumkronen in die Augen. Statt zurückzuweichen, wird sie von ihrem Flüstern angezogen. Ihre Fingerspitze zittert, während sie auf die verbotene Frucht zeigt und über ihre erwachende Göttlichkeit nachdenkt. In diesem Augenblick werden die Samen künftiger Katastrophe und Zivilisation still gesät."
+  },
+  "hestia": {
+    "title": "Göttin des Herdes",
+    "bio": "In diesem Augenblick sitzt Hestia noch nicht fest auf ihrem göttlichen Thron; sie ist nur eine sanfte Jungfrau, die den Herd im Zentrum der Stadt hütet. Sie reicht den Menschen das Feuer und vertreibt mit Wärme die Kälte der Nacht. Sie glaubt, dass Einheit und Heim das wahre Wesen der Zivilisation sind, und flüstert am Lagerfeuer von Träumen künftiger Gesellschaften."
+  },
+  "nike": {
+    "title": "Göttin des Sieges",
+    "bio": "Unter donnernden Beifallsrufen trat Nike an den ruhmbeladenen Krieger heran. Sie war noch nicht die höchste Göttin des Sieges, daher war ihr Lorbeer eher eine Geste des Verstehens und des Trostes. Sanft umwand sie die Schläfen des Kriegers mit Lorbeerblättern, lieh ihnen für einen flüchtigen Moment Göttlichkeit und ließ ihren Herzschlag mit dem Rhythmus des Olymp mitschwingen."
+  },
+  "demeter": {
+    "title": "Göttin der Ernte",
+    "bio": "Demeter hält ein Bündel schwerer Weizenähren, wie das freundliche Mädchen aus dem Nachbardorf, das auf den Feldwegen mit den Bauern plaudert und lacht. In diesem Augenblick ist sie noch ein einfaches Bauernmädchen, das die Ernte mit hellen Augen betrachtet. Doch ohne ihr Wissen steigen leise winzige Lichter aus den Weizenhalmen auf und sorgen dafür, dass dieses goldene Feld nicht länger durch Naturkatastrophen verdorren wird."
+  }
+}

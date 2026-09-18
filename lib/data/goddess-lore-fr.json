@@ -1,0 +1,90 @@
+{
+  "lady-liberty": {
+    "title": "Lady Liberty",
+    "bio": "Elle croit que chacun a sa façon de participer : certains agitent des drapeaux, d'autres battent des tambours, et d'autres encore chantent simplement à voix basse. Mais tant qu'ils sont prêts à élever la voix, elle saisit cette petite étincelle de courage et la transforme en une vague tonitruante à travers les gradins."
+  },
+  "bastet": {
+    "title": "Déesse des chats",
+    "bio": "Dans un bazar égyptien baigné de crépuscule, une jeune fille pieds nus tourne parmi les chats à ses pieds. Sa jupe frôle les bords des étals, et l'instrument entre ses mains résonne doucement au rythme. Les chats bondissent et s'entrelacent autour d'elle, comme si elle-même était une mélodie fluide. Elle n'a nul désir d'afficher un pouvoir divin ; elle parle simplement aux créatures vivantes par la danse, et sans hésiter, elles lui répondent de même."
+  },
+  "hela": {
+    "title": "Reine des Enfers",
+    "bio": "Elle n'est pas encore la souveraine des Enfers, ni assise sur le trône des morts. Pourtant, de temps à autre, sous le manteau de la nuit, une ombre balaye la flèche de l'horloge. Ceux qui s'en prennent aux faibles — seigneurs fortunés, prêteurs cupides ou tyrans des ruelles — trouvent souvent une fin silencieuse avant l'aube."
+  },
+  "ixchel": {
+    "title": "Déesse de la Lune",
+    "bio": "C'est une jeune fille élevée dans la jungle qui aime apparaître les nuits de pleine lune. S'il y a quelque chose d'inhabituel en elle, c'est son don d'apporter la pluie partout où elle passe."
+  },
+  "medusa": {
+    "title": "Gorgone",
+    "bio": "D'où vient la rumeur selon laquelle quiconque la voit se change en pierre ? Medusa l'ignore et s'en soucie peu. Cette artiste, qui aime figer dans la pierre les instants de terreur des gens, fait tourner son couteau de sculpture tout en réfléchissant : peut-être que sa prochaine œuvre a besoin d'une nouvelle inspiration."
+  },
+  "moirai": {
+    "title": "Déesse du Destin",
+    "bio": "Le rouet démêle les fils, les ciseaux en définissent la mesure, et le fuseau les rassemble tous. Armées de motifs et de mesures, elles tissent le costume parfait — une fois achevé, il ne peut plus jamais être modifié."
+  },
+  "muse": {
+    "title": "Déesse de l'Art",
+    "bio": "Elles ne figurent jamais formellement au panthéon, ni ne portent le titre de Source d'Inspiration. Ce sont des femmes ordinaires — artistes de village, poétesses itinérantes, chanteuses au bord de la rivière — et pourtant, sans le vouloir, elles peuvent faire naître chez autrui des idées étonnantes."
+  },
+  "athena": {
+    "title": "Déesse de la Sagesse",
+    "bio": "Elle n'est pas encore l'incarnation de la sagesse, mais une jeune apprentie de la bibliothèque qui aime poser des questions. Elle s'assoit seule sous la lampe, absorbée dans d'anciens rouleaux, entourée de casques de bronze et de modèles d'armes. Le bruissement des pages tournées est le premier retentissement de l'Égide encore à forger."
+  },
+  "isis": {
+    "title": "Déesse de la Magie",
+    "bio": "Le Nil peut emporter tout ce qui repose sur la terre, mais il ne peut effacer les cicatrices gravées dans l'os. Ce qu'elle doit faire, c'est recomposer, parmi les restes, la vérité que les morts n'ont jamais eu la chance de dire."
+  },
+  "calypso": {
+    "title": "Déesse de la Mer",
+    "bio": "On dit que la mer la favorise, mais elle sait qu'elle ne favorise personne. Elle apporte le même vent et les mêmes vagues à tous. Ce qui compte, c'est qui peut serrer les dents et ramener le navire, et tout le reste, jusqu'au rivage."
+  },
+  "lilith": {
+    "title": "Guérisseuse occulte",
+    "bio": "Les ordonnances ont des normes de dosage strictes ; ses règles, non. Nul ne peut prédire comment Lilith facturera aujourd'hui, pas plus que la couleur de son prochain remède. La seule chose dont on peut être sûr, c'est qu'elle ne joue jamais avec les patients — sauf avec les riches portefeuilles."
+  },
+  "brunhild": {
+    "title": "Valkyrie",
+    "bio": "Les flammes ressemblent à une couronne ardente et chantent doucement autour de son trône. Brunhild ferme les yeux, et ce qui résonne dans ses rêves n'est pas les menaces d'Odin, mais le faible éclat qu'elle préserva jadis pour l'humanité sur le champ de bataille. Dépouillée de sa divinité, elle dort, attendant celui que le destin a choisi pour la réveiller."
+  },
+  "venus": {
+    "title": "Dieu de l'Amour et de la Beauté",
+    "bio": "Elle n'est pas encore née des vagues et de l'écume, mais une jeune pêcheuse qui lave seule son linge au bord de la mer. On dit que son sourire fait bondir les poissons sur le rivage et envoie les bateaux voguer au gré du vent. Elle ne sait rien du destin nommé Déesse de l'Amour ; elle ne fait qu'exercer son sourire à l'embouchure du fleuve, contemplant son propre reflet. Pourtant, la marée a déjà commencé à tourbillonner silencieusement autour d'elle."
+  },
+  "vivian": {
+    "title": "Fée du lac",
+    "bio": "Bien que Vivian ne soit pas encore devenue la légendaire Lady of the Lake, les eaux s'écartent déjà pour elle, et la brume du matin enlace sa jupe. Elle offre l'épée au destin, se confiant doucement à un avenir incertain. À chaque regard, elle choisit en silence qui sera favorisé par le sort et qui sera oublié au fond du lac."
+  },
+  "artemis": {
+    "title": "Déesse de la Chasse",
+    "bio": "Les tenanciers des stands de tir à l'arc haïssaient Artemis, qui touchait à chaque coup. Ils tentèrent de trafiquer arcs et flèches, d'ajuster l'angle des jarres de terre cuite, mais ils ne réussirent jamais à l'empêcher de repartir avec le grand prix. Ce qu'ils ignoraient : derrière chaque jarre qui tombait au son de la corde lâchée, une tête de chien noir, ricanant à son maître, se rétractait en secret."
+  },
+  "fortuna": {
+    "title": "Déesse de la Fortune",
+    "bio": "Certains disent qu'elle est une villageoise égarée en ville ; d'autres prétendent qu'elle est une noble exilée. Mais personne ne sait vraiment que son nom figure déjà sur la liste des Dieux. Fortuna danse entre gobelets à dés et roulettes ; chaque victoire la rapproche de la divinité. Et elle-même ? Elle ne se soucie que du prochain verre, du prochain gain."
+  },
+  "freya": {
+    "title": "Dieu de l'Amour et de la Guerre",
+    "bio": "Qui aurait pu prédire que celui qui pleure aujourd'hui dans ses bras serait Thor, le futur porteur du tonnerre ? Qui aurait pu prévoir que le Loki au sourire narquois à ses côtés deviendrait le feu destiné à bouleverser l'ordre des royaumes ? Freya n'a pas encore pleinement embrassé son destin divin ; elle accueille toutes les épopées naissantes dans le monde avec un cœur tendre, laissant le soleil et la brise les couronner doucement."
+  },
+  "hera": {
+    "title": "Reine",
+    "bio": "L'accusé craignait son autorité, et le plaignant la remerciait de sa protection, pourtant elle se contentait de siéger au banc du jugement, brisant de son marteau tous les mensonges contenus dans les vœux. Dans son tribunal, l'amour — ou son absence — n'était jamais l'essentiel ; rester fidèle aux vœux prononcés devant le prêtre était le critère qui faisait pencher son marteau."
+  },
+  "eve": {
+    "title": "Dame primordiale",
+    "bio": "Dans les profondeurs luxuriantes d'Éden, une jeune fille innocente croise le regard d'un serpent dans les cimes. Au lieu de reculer, elle est attirée par ses murmures. Son doigt tremble en désignant le fruit défendu, débattant de sa divinité naissante. En cet instant, les graines du futur malheur et de la civilisation sont silencieusement semées."
+  },
+  "hestia": {
+    "title": "Déesse du Foyer",
+    "bio": "En cet instant, Hestia n'est pas encore solidement assise sur son trône divin ; elle n'est qu'une douce jeune fille veillant sur le foyer au centre de la ville. Elle remet le feu aux gens, chassant par la chaleur le froid de la nuit. Elle croit que l'unité et le foyer sont la véritable essence de la civilisation, murmurant au coin du feu des rêves de sociétés futures."
+  },
+  "nike": {
+    "title": "Déesse de la Victoire",
+    "bio": "Au milieu d'acclamations tonitruantes, Nike s'approcha du guerrier chargé de gloire. Elle n'était pas encore la déesse suprême de la victoire, aussi son laurier était-il davantage un geste de compréhension et de consolation. Elle cercla doucement les tempes du guerrier de feuilles de laurier, leur prêtant pour un instant fugace la divinité, permettant à leur cœur de battre au rythme de l'Olympe."
+  },
+  "demeter": {
+    "title": "Déesse de la Moisson",
+    "bio": "Demeter tient une gerbe de blé lourd, telle la jeune fille amicale du village voisin, bavardant et riant avec les fermiers sur les chemins des champs. En cet instant, elle n'est encore qu'une simple paysanne, contemplant les cultures d'un regard clair. Pourtant, à son insu, de minuscules lumières s'élèvent silencieusement des tiges de blé, veillant à ce que ce champ doré ne se flétrisse plus sous les désastres naturels."
+  }
+}

@@ -1,0 +1,330 @@
+{
+  "hermes": {
+    "title": "Messager de l'oracle",
+    "bio": "Mime Genius fut acteur, réalisateur, scénariste, producteur et compositeur, et l'un des artistes de cinéma les plus influents de l'ère du muet. Né dans une pauvre famille de comédiens à Londres, il monta sur scène dès l'enfance pour gagner sa vie, partit ensuite en Amérique et, avec un chapeau melon, une moustache en brosse à dents, une canne et un pantalon ample, créa le célèbre « Little Tramp ». Il excellait à fusionner la comédie physique du music-hall avec un regard aigu sur la réalité sociale, peignant la pauvreté, l'industrialisation et la dignité ordinaire ; comme l'un des rares premiers auteurs capables de maîtriser jeu, mise en scène, écriture, production et même musique, il laissa une empreinte durable sur la comédie et le langage cinématographique."
+  },
+  "merlin": {
+    "title": "Sage du lac",
+    "bio": "Bjorn Ironside est l'un des héros les plus célèbres de la légende nordique, généralement décrit comme un fils de Ragnar Lodbrok. Il apparaît surtout dans des textes médiévaux tels que la Saga de Ragnar Lodbrok, le Conte des fils de Ragnar et les Gesta Danorum de Saxo Grammaticus. Il est célèbre pour ses expéditions, ses batailles navales et sa réputation de guerrier presque indestructible. Selon la légende, il mena campagne avec ses frères en Angleterre, en Francie et en Méditerranée, et fut plus tard présenté comme une figure importante de la lignée royale primitive de Suède. Culturellement, il représente plus qu'un simple « guerrier viking » : il incarne l'idéal héroïque nordique du voyage, de la conquête, de la gloire ancestrale et de la quête d'une légende personnelle."
+  },
+  "heracles": {
+    "title": "Roi des Douze Travaux",
+    "bio": "Heracles est l'un des héros les plus iconiques de la mythologie grecque, fils de Zeus et de la mortelle Alcmène. Réputé pour sa force et sa résilience extraordinaires, sa vie est marquée par la tragédie : sous la persécution d'Héra, il tua involontairement sa famille dans un accès de folie, puis entreprit les célèbres « Douze Travaux » pour expier ses fautes. Incarnant à la fois le héros et le souffrant, son apothéose finale sur l'Olympe symbolise le parcours du mortel vers la divinité."
+  },
+  "circe": {
+    "title": "Maîtresse de l'île isolée",
+    "bio": "Hermes est l'un des Douze Olympiens de la mythologie grecque, fils de Zeus et de Maia. Dieu des messagers, des voyageurs, des marchands, des voleurs, des bergers, des athlètes et des âmes, il compte parmi les divinités les plus polyvalentes du panthéon grec. Selon les Hymnes homériques, Hermes inventa la lyre et déroba le bétail d'Apollon le jour même de sa naissance, puis désamorça habilement le conflit, révélant ses traits distinctifs d'esprit et de ruse."
+  },
+  "lancelot": {
+    "title": "Chevalier de la rose",
+    "bio": "Lancelot compte parmi les plus grands chevaliers arthuriens ; son image est largement définie par des œuvres telles que Le Morte d'Arthur et Lancelot, le Chevalier à la charrette. Connu pour une valeur inégalée, un sens intransigeant de l'honneur chevaleresque et un amour interdit pour Guinevere, il incarne la profonde tension de la littérature médiévale entre l'idéal du « chevalier parfait » et le dilemme moral."
+  },
+  "king-arthur": {
+    "title": "Roi chevalier",
+    "bio": "King Arthur est un héros et monarque légendaire de Bretagne, dont les récits sont immortalisés dans des œuvres médiévales telles que Le Morte d'Arthur, les Légendes de la Table Ronde et la Légende du Saint Graal. Symbolisant justice et unité, il est célèbre pour avoir tiré l'épée du rocher afin de revendiquer sa royauté, rassemblé les Chevaliers de la Table Ronde et poursuivi le Saint Graal — des actes riches de sens symbolique. Mêlant mythe celtique, allégorie chrétienne et chevalerie, la légende de King Arthur incarne l'idéal de la royauté au Moyen Âge. Elle a profondément façonné la mythologie de la monarchie en Bretagne et à travers l'Europe, et continue d'inspirer littérature, cinéma et métaphore politique."
+  },
+  "odysseus": {
+    "title": "Le revenant d'Ithaque",
+    "bio": "Odysseus est le héros de l'Odyssée d'Homère, roi d'Ithaque, connu pour son esprit et son endurance. Il gagna la gloire dans la guerre de Troie avec le cheval de Troie, mais c'est sa longue lutte pour rentrer chez lui qui devint un récit grec fondateur de la condition humaine — prise entre volonté divine, périls naturels et désir personnel. Il triomphe non par une force écrasante, mais par la parole, le déguisement et le jugement, marquant un passage de l'épopée héroïque pure vers une histoire plus humaine, fondée sur l'expérience. Son image a façonné le motif durable du « voyageur qui revient », symbole d'intellect, de patience et d'identité reconquise."
+  },
+  "bjorn-ironside": {
+    "title": "Ours de fer du Nord",
+    "bio": "Circe est une sorcière et déesse de la mythologie grecque antique qui vit sur l'île mystérieuse d'Aiaia et est généralement considérée comme la fille du dieu soleil Helios. Son portrait le plus célèbre vient de l'épopée d'Homère, l'Odyssée : lorsque Odysseus et son équipage abordèrent son île, elle usa de vin enchanté et de magie pour les transformer en porcs. Seul Odysseus, aidé par Hermes, put résister à ses sorts et finit par devenir son hôte d'honneur. Circe n'est pas une simple méchante sorcière ; elle incarne un mélange complexe de séduction, de sagesse, de solitude et de transcendance, et dans la tradition classique, elle symbolise la frontière entre civilisation et sauvagerie."
+  },
+  "ragnar-lodbrok": {
+    "title": "Roi guerrier viking",
+    "bio": "Ragnar Lodbrok fut un seigneur viking légendaire de Scandinavie, dépeint dans des œuvres telles que la Saga de Ragnar Lodbrok et les Contes des Vikings comme un roi pillard qui terrorisa la France et l'Angleterre. Sa figure chevauche histoire et mythe et est revendiquée comme ancêtre par plusieurs lignées royales danoises et suédoises. Bien que son existence historique demeure incertaine, ses légendes reflètent la culture pirate et les idéaux héroïques de l'âge viking. Ragnar est aussi rappelé pour sa mort — jeté dans une fosse aux serpents — incarnant le défi du guerrier nordique face au destin et l'acceptation intrépide de la mort."
+  },
+  "lagertha": {
+    "title": "Reine des vierges guerrières",
+    "bio": "Merlin est le magicien et conseiller central de la légende arthurienne, souvent lié à des motifs mystiques tels que la Dame du Lac et la lignée des dragons. Selon la légende, il guida le jeune Arthur pour tirer Excalibur et l'aida à fonder l'ordre des Chevaliers de la Table Ronde, devenant l'une des incarnations quintessentielles de la sagesse et de la magie dans la littérature britannique. L'image de Merlin a continuellement évolué selon les époques et les textes : tantôt sage vieillard, tantôt figure touchée par le charme et la contradiction. Pourtant, à travers ces transformations, il demeure l'architecte du mythos arthurien, façonnant ses fondations par un savoir au-delà de la portée mortelle et le pouvoir de la prophétie."
+  },
+  "pompey": {
+    "title": "Crépuscule de la gloire",
+    "bio": "Pompey fut un homme fort militaire de la fin de la République romaine et membre du Premier Triumvirat. Devenu célèbre jeune général, il conquit la Méditerranée orientale et fut honoré par Sulla du titre de « Pompée le Grand ». Il forma ensuite le Premier Triumvirat avec Caesar et Crassus, mais fut finalement vaincu par Caesar dans leur lutte pour le pouvoir, trouvant la mort en Égypte par assassinat au port d'Alexandrie. Pompey incarne la lutte condamnée de l'aristocratie romaine pour préserver la République, soulignant le basculement décisif du gouvernement sénatorial vers la dictature personnelle."
+  },
+  "spartacus": {
+    "title": "Héros gladiateur",
+    "bio": "Spartacus, gladiateur thrace, mena la Troisième Guerre servile — le soulèvement d'esclaves le plus significatif de l'histoire romaine. Avec une organisation militaire remarquable et une brillance stratégique, il défit successivement plusieurs légions romaines, ébranlant les fondements mêmes de la République. Bien que la rébellion fût finalement écrasée, l'esprit de libération et de défi qu'il incarnait perdura, inspirant plus tard des mouvements démocratiques et de droits humains. Son héritage demeure comme un archétype héroïque dans d'innombrables œuvres littéraires et cinématographiques."
+  },
+  "caesar": {
+    "title": "Lame de la volonté de Rome",
+    "bio": "Julius Caesar fut le général et homme d'État le plus influent de la fin de la République romaine. Par la guerre civile, il brisa le système républicain et établit une dictature à vie, posant les fondations de l'essor de l'Empire romain. Son génie militaire, son talent littéraire et son élan réformateur lui valurent le soutien populaire mais éveillèrent la crainte des sénateurs, menant à son assassinat au Sénat. Caesar demeure à la fois l'architecte de l'Empire et le symbole de la chute de la République. Sa vie et sa mort sont depuis devenues des thèmes intemporels de la trahison politique et de la lutte pour le pouvoir."
+  },
+  "cleopatra": {
+    "title": "Reine d'Égypte",
+    "bio": "Cleopatra VII, dernière reine de la dynastie ptolémaïque d'Égypte, fut célèbre pour sa sagesse, son charme et son sens politique. Couronnée à 18 ans, elle reconquit son trône avec l'aide de Caesar, puis s'allia à Antony contre Octavian. Après sa défaite à Actium et la chute du port d'Alexandrie, elle choisit de mettre fin à ses jours. Sa vie légendaire en fit un symbole durable de pouvoir, de sagesse et d'allure royale."
+  },
+  "billy-the-kid": {
+    "title": "Hors-la-loi rebelle",
+    "bio": "Billy the Kid, généralement considéré comme ayant été né Henry McCarty et plus tard connu sous des alias tels que William H. Bonney, fut l'un des hors-la-loi les plus célèbres de l'ère de la frontière américaine. Actif dans le Territoire du Nouveau-Mexique, il gagna sa notoriété par son rôle dans la guerre du comté de Lincoln. Sa vie brève mais légendaire en vint à symboliser la liberté, la rébellion et l'esprit de la frontière dans la culture western américaine, devenant l'un des archétypes les plus iconiques de la littérature, du cinéma et de la culture populaire de l'Ouest."
+  },
+  "morgana": {
+    "title": "Mage déchue",
+    "bio": "Morgana, l'énigmatique sorcière de la légende arthurienne. Demi-sœur de King Arthur, elle déroba jadis le fourreau qui le protégeait de la mort au combat ; pourtant, après sa chute, elle vint d'elle-même escorter le roi d'autrefois et de demain vers l'île immortelle d'Avalon. Douée dans les arts arcanes, le savoir des herbes et la magie de l'ombre, elle est aussi d'une beauté saisissante qu'astucieuse et impénétrable. Prise dans la traction incessante entre amour familial et inimitié amère, Morgana demeure à jamais enchevêtrée dans le conflit, foulant la frontière ombragée entre justice et ruine."
+  },
+  "guinevere": {
+    "title": "Reine de Camelot",
+    "bio": "Guinevere est la reine de King Arthur et une figure centrale de la tragédie de la légende. Dans des œuvres telles que Le Morte d'Arthur et Idylls of the King, elle est façonnée comme une femme de beauté, d'agency émotionnelle et de symbolisme politique. Elle incarne l'idéal de l'amour courtois, tout en devenant une cause clé de l'effondrement de la Table Ronde, reflétant l'examen durable par la littérature des rôles féminins et de l'éthique du pouvoir, du Moyen Âge à la modernité."
+  },
+  "garwain": {
+    "title": "Chevalier du soleil",
+    "bio": "Gawain est un membre clé des légendaires Chevaliers de la Table Ronde de King Arthur. Dans le poème anglais médiéval Sir Gawain and the Green Knight, il accepte volontiers le défi du « jeu de la décapitation » pour prouver son honneur et sa résolution de chevalier. Après avoir affronté la peur, la dissimulation et la honte, il choisit d'avouer — devenant un symbole intemporel du chevalier qui reconnaît et répare ses fautes. Son récit capture la réflexion plus profonde de la fin du Moyen Âge sur la chevalerie et marque un basculement littéraire des exploits héroïques vers le caractère moral."
+  },
+  "queen-victoria": {
+    "title": "Reine du soleil qui ne se couche jamais",
+    "bio": "Alexandrina Victoria fut l'une des monarques britanniques au règne le plus long. Son règne, connu comme l'« ère victorienne », marqua l'apogée de l'âge industriel, de l'expansion impériale et d'un profond changement social. Elle défendit les réformes constitutionnelles et restreignit l'implication de la Couronne en politique, façonnant l'image moderne de la monarchie britannique. Sa conduite personnelle et ses valeurs morales influencèrent profondément la société et la culture britanniques du XIXe siècle. Sous son règne, l'Empire britannique grandit jusqu'à devenir la plus vaste puissance coloniale de l'histoire, englobant le globe comme « l'empire sur lequel le soleil ne se couche jamais »."
+  },
+  "napoleon-bonaparte": {
+    "title": "Aigle de France",
+    "bio": "Napoleon Bonaparte, Empereur des Français, fut un brillant commandant militaire et l'une des figures les plus controversées de l'Europe moderne. Accédant au pouvoir dans le sillage de la Révolution française, il remodela le continent par ses campagnes irrésistibles et porta le Code Napoléon, qui posa les fondations des systèmes juridiques modernes. Ses conquêtes balayèrent le continent, déclenchant les « guerres napoléoniennes » et altérant le destin de nombreuses nations. Après sa défaite à Waterloo, il fut exilé à Sainte-Hélène, devenant un symbole durable d'ambition politique et de pouvoir. Son influence s'étendit bien au-delà du champ de bataille, laissant une marque durable sur le droit, l'éducation, la géopolitique et l'image même du leadership."
+  },
+  "isaac-newton": {
+    "title": "Père de la gravité",
+    "bio": "Sir Isaac Newton fut un physicien, mathématicien, astronome et théologien anglais. Il posa les fondations de la science naturelle moderne en formulant les trois lois de la mécanique et en découvrant la loi de la gravitation universelle, unifiant ainsi les lois régissant le mouvement terrestre et céleste. Il inventa aussi le calcul infinitésimal, élucida la nature de la lumière et construisit le premier télescope réflecteur pratique. Son chef-d'œuvre, les « Principes mathématiques de la philosophie naturelle », définit les accomplissements de la Révolution scientifique, assurant son héritage aux côtés de figures telles que Copernicus, Galileo et Darwin. Newton représente le sommet du rationalisme."
+  },
+  "blackbeard": {
+    "title": "Seigneur de la marée noire",
+    "bio": "Blackbeard, de son vrai nom Edward Teach, fut le pirate le plus tristement célèbre des Caraïbes au début du XVIIIe siècle. Connu pour son apparence terrifiante et sa guerre psychologique — tactique consistant à s'envelopper de la fumée de mèches à combustion lente glissées sous son chapeau pour forger une image spectrale redoutable. Aux commandes du « Queen Anne's Revenge », il bloqua des ports et pilla d'innombrables navires marchands, devenant une figure iconique de l'« Âge d'or de la piraterie ». Il trouva la mort dans un dernier combat contre les forces britanniques au large de la Caroline du Nord. Sa légende a inspiré de nombreuses œuvres littéraires et cinématographiques, incarnant une double romance de terreur et de liberté."
+  },
+  "charles-the-great": {
+    "title": "Père de l'Europe",
+    "bio": "Charlemagne, le plus grand monarque de la dynastie carolingienne, fut successivement couronné roi des Francs, roi des Lombards et « Empereur des Romains », posant les fondations institutionnelles du Saint Empire romain au Moyen Âge. Par une série de conquêtes, il unifia une grande partie de l'Europe occidentale tout en promouvant la « Renaissance carolingienne », ravivant le savoir classique et faisant progresser l'érudition ecclésiastique. Il soutint l'éducation monastique, codifia les lois et — par son alliance impériale avec le pape — établit le principe du « pouvoir royal d'ordonnance divine ». Charlemagne est rappelé comme le politicien du haut Moyen Âge qui intégra le plus profondément des civilisations disparates en une sphère culturelle unifiée."
+  },
+  "achilles": {
+    "title": "Cauchemar de Troie",
+    "bio": "Achilles fut un héros de la mythologie grecque antique, fils de la déesse marine Thetis, et le plus fort guerrier de la coalition grecque dans la guerre de Troie. Il possédait un corps presque invincible, son talon étant sa seule faiblesse. Dans l'« Iliade », il incarna à la fois la férocité et le pathos, vengeant dans un accès de rage la mort de son compagnon Patroclus, et tuant finalement Hector. Son image représente l'éclat et la tragédie du héros classique, tout en portant les réflexions philosophiques grecques sur le destin, la gloire et l'humanité."
+  },
+  "william-shakespeare": {
+    "title": "Roi de la comédie",
+    "bio": "William Shakespeare fut le dramaturge et poète le plus renommé de la Renaissance anglaise, largement regardé comme le « Père de la littérature anglaise ». Ses œuvres dramatiques embrassent tragédies, comédies, chroniques et tragicomédies, explorant les profondeurs du conflit et des idéaux humains, telles que « Hamlet », « Macbeth », « King Lear » et « Romeo and Juliet ». Sa maîtrise de la langue anglaise, de la rhétorique et de l'insight psychologique continue d'être jouée et étudiée dans le monde entier."
+  },
+  "tutankhamun": {
+    "title": "Pharaon d'or",
+    "bio": "Tutankhamun fut un pharaon du Nouvel Empire de l'Égypte antique durant la Dix-huitième dynastie. Il monta sur le trône enfant, régna seulement neuf ans et mourut vers l'âge de 19 ans. Né dans une période de bouleversement religieux sous son père Akhenaten, qui imposa le culte monothéiste d'Aten, Tutankhamun restaura le culte traditionnel d'Amun, reconstruit des temples et rétablit l'ordre politique. Bien que ses accomplissements politiques durant son bref règne fussent limités, la découverte de sa tombe en 1922 par Howard Carter révéla une chambre funéraire presque intacte remplie de trésors splendides, dont le plus célèbre son exquis masque funéraire d'or. Cette trouvaille déclencha une fascination mondiale pour l'Égypte antique et assura à Tutankhamun une place dans l'histoire."
+  },
+  "da-vinci": {
+    "title": "Vision universelle",
+    "bio": "Leonardo da Vinci fut une figure fondatrice de la Renaissance italienne, apportant des contributions majeures à l'art, à l'anatomie, à l'ingénierie et à la botanique. Il affirmait que « la peinture est une activité mentale », soulignant la science, la structure et la proportion derrière le grand art. Ses carnets — remplis d'esquisses et de notes — demeurent des témoignages remarquables de la méthode scientifique naissante et d'une observation aiguë. Da Vinci incarne l'idéal renaissant du véritable polymathe."
+  },
+  "richard-i": {
+    "title": "Cœur de Lion",
+    "bio": "Richard I, roi d'Angleterre et surnommé « Lionheart », demeure le monarque-chevalier le plus célébré de l'histoire des croisades. Lors de la Troisième Croisade, il mena des forces en Terre sainte, affronta Saladin en plusieurs batailles et remporta plusieurs victoires clés. Bien qu'il n'ait pas repris Jérusalem, il obtint pour les chrétiens le droit de pèlerinage à la ville. Sa bravoure, sa décision et son charisme sur le champ de bataille devinrent légendaires à travers l'Europe. Pourtant, il passa peu de son règne en Angleterre, demeurant presque constamment en guerre ou en captivité. Par son incarnation de la chevalerie, il a dépassé sa gouvernance pratique dans la mémoire culturelle."
+  },
+  "alexander-the-great": {
+    "title": "Roi conquérant",
+    "bio": "Alexander the Great, roi de Macédoine, disciple d'Aristote et l'un des plus grands conquérants militaires du monde occidental. En un peu plus d'une décennie, il conquit la Grèce, l'Égypte, la Perse et même le nord-ouest de l'Inde, établissant un vaste empire à travers l'Europe, l'Asie et l'Afrique. Réputé pour ses innovations tactiques, il se consacra à la diffusion et à l'intégration de la culture grecque, inaugurant l'« ère hellénistique » d'une influence durable."
+  },
+  "augustus": {
+    "title": "Fondateur de Rome",
+    "bio": "Augustus, originellement nommé Gaius Octavius et fils adoptif de Julius Caesar, devint le premier empereur de l'Empire romain. Après avoir vaincu Mark Antony et Cleopatra dans la guerre civile, il unifia le monde romain et établit le « Principat », consolidant le pouvoir sous le titre de « Premier citoyen » tout en maintenant la façade des institutions républicaines. Il réorganisa l'armée et le gouvernement, restaura les infrastructures urbaines, institua des systèmes de sécurité publique et fit rédiger les Res Gestae Divi Augusti pour façonner son héritage politique. Sous son règne, Rome entra dans la « Pax Augusta », une ère de paix et de stabilité sans précédent, et son cadre politique devint le modèle des systèmes impériaux ultérieurs."
+  },
+  "guan-yu": {
+    "title": "Saint martial",
+    "bio": "Guan Yu, nom de courtoisie Yunchang, était originaire du district de Xie dans le commandement de Hedong. L'un des généraux les plus célèbres de la fin des Han orientaux, il suivit Liu Bei durant des années de campagne et, avec Zhang Fei, fut réputé « valoir dix mille hommes ». Il servit brièvement sous Cao Cao et tua le commandant de Yuan Shao, Yan Liang, à la bataille de Boma (Baima), puis quitta le camp de Cao Cao pour rejoindre Liu Bei. Après que Liu Bei eut saisi Jingzhou, Guan Yu tint cette province stratégique pendant une longue période. En Jian'an 24 (219 apr. J.-C.), il lança la campagne de Xiangfan, inonda les Sept Armées, captura Yu Jin et exécuta Pang De, si bien que « sa puissance ébranla le royaume ». Peu après, cependant, Sun Quan s'empara de Jingzhou, et Guan Yu fut vaincu et tué. Au fil des siècles, sa réputation posthume le transforma d'un général des Trois Royaumes en symbole culturel de loyauté et de vaillance. Honore à maintes reprises de titres impériaux sous les Song, Yuan, Ming et Qing, il devint le centre de la foi Guandi qui se répandit dans une grande partie de l'Asie de l'Est."
+  },
+  "lu-bu": {
+    "title": "Dieu de la guerre",
+    "bio": "Lü Bu, nom de courtoisie Fengxian, était natif de Jiuyuan dans le commandement de Wuyuan, guerrier et seigneur de guerre célèbre de la fin des Han orientaux. Le Roman des Trois Royaumes le présente encore comme le combattant le plus puissant de l'époque : brandissant la Perce-Ciel et chevauchant le Lièvre Rouge, il balaya les seigneurs rassemblés devant le col de Hulao jusqu'à ce que les efforts combinés de Liu Bei, Guan Yu et Zhang Fei le forcent à reculer ; plus tard, il « tira la hallebarde à la porte du camp », tranchant le différend entre Liu Bei et Ji Ling d'une seule flèche. Lü Bu se rattacha tour à tour à Ding Yuan, Dong Zhuo et Yuan Shao, conspira avec Wang Yun pour tuer Dong Zhuo, et finit par s'emparer de Xuzhou. En Jian'an 3 (198), après le siège de Xiapi, Cao Cao le captura vivant à la Tour de la Porte Blanche et le fit exécuter. L'histoire et la littérature forgèrent ensemble une figure de paradoxe frappant : un guerrier presque sans égal, qui ne put jamais maîtriser ses propres désirs, ses alliés ni son destin."
+  },
+  "miyamoto-musashi": {
+    "title": "Saint de l'épée",
+    "bio": "Miyamoto Musashi fut un célèbre escrimeur, stratège et artiste actif de la fin de l'époque Sengoku au début de l'époque Edo. Dans sa jeunesse, il parcourut le pays, se forgeant dans les duels ; selon son propre récit dans Le Livre des Cinq Anneaux, il commença à croiser le fer à treize ans et livra des dizaines de combats encore jeune homme. Le récit le plus célèbre à son sujet est son duel avec l'escrimeur de l'école Ganryu Sasaki Kojiro sur l'île de Ganryujima. Musashi fonda plus tard le Niten Ichi-ryu, une école distinguée par l'usage apparié du long et du court sabre, et composa dans ses dernières années Le Livre des Cinq Anneaux, exposant escrime, timing, état d'esprit et principes de stratégie en cinq rouleaux — Terre, Eau, Feu, Vent et Vide. Au-delà de l'art martial, Musashi fut aussi renommé pour la peinture à l'encre et la calligraphie, faisant de lui une figure rare de la culture japonaise, à la fois escrimeur, penseur et artiste."
+  },
+  "yi-sun-sin": {
+    "title": "Seigneur de la loyale vaillance",
+    "bio": "Yi Sun-sin, nom de courtoisie Yeohae, fut un célèbre commandant naval de la dynastie Joseon, plus tard gratifié du titre posthume Chungmu. Lorsque la guerre d'Imjin débuta en 1592, il mena la marine Joseon à une série de victoires sur la flotte japonaise, s'appuyant sur les navires de guerre panokseon, les canons et des formations serrées ; à la bataille de l'île de Hansan, il usa de la formation en aile de grue pour remporter une victoire décisive qui coupa les lignes de ravitaillement maritimes de l'ennemi. Il fut plus tard destitué et emprisonné au milieu des intrigues de cour ; lorsqu'il fut rétabli, la marine Joseon avait été virtuellement anéantie à Chilcheollyang, ne laissant qu'une poignée de navires. Confronté à des propositions d'abandonner la marine, il déclara : « J'ai encore douze navires », et en 1597 usa du chenal étroit et des marées du détroit de Myeongnyang pour repousser une flotte japonaise bien supérieure. En 1598, à la bataille de Noryang, il mena la flotte alliée à la poursuite des Japonais en retraite et fut tué d'un coup de mousquet. Son Journal de guerre (Nanjung Ilgi), enregistrement détaillé de la guerre, des affaires militaires et de la vie quotidienne, demeure une source de première main vitale sur la guerre d'Imjin. Pour les générations suivantes, Yi Sun-sin compte parmi les plus grands commandants de Corée et comme symbole de loyauté, de devoir et d'endurance."
+  },
+  "beethoven": {
+    "title": "Maître de la symphonie",
+    "bio": "Ludwig van Beethoven compte parmi les compositeurs les plus influents à la transition entre les âges classique et romantique dans la musique germano-autrichienne. Il éleva la symphonie, la sonate et le concerto à des hauteurs artistiques sans précédent ; des œuvres telles que sa Cinquième Symphonie, sa Neuvième Symphonie et la Sonate au Clair de lune devinrent des chefs-d'œuvre durables du patrimoine musical. Malgré la perte de l'ouïe au milieu de sa vie, il continua de produire certaines de ses compositions les plus profondes, démontrant le pouvoir de la volonté humaine face à l'adversité. Sa musique véhicule à la fois la lutte personnelle et une expression sublime de liberté, de dignité et d'émotion humaine, lui valant la reconnaissance d'un maître qui « donna voix à l'âme par les notes »."
+  },
+  "charles-darwin": {
+    "title": "Père de l'évolution",
+    "bio": "Charles Darwin fut un naturaliste britannique et théoricien de la biologie qui établit le principe de la sélection naturelle, remodelant les fondations de la biologie moderne. Son œuvre majeure On the Origin of Species (1859) systématisa la théorie de l'évolution, construisant des ponts théoriques entre histoire naturelle, géologie et anthropologie. Par la collecte de spécimens et l'observation des variations durant le voyage du « HMS Beagle », il démontra que les espèces ne sont pas statiques mais le résultat d'adaptations dynamiques à leur environnement. Bien que sa théorie ait d'abord provoqué une controverse théologique, elle demeure la pierre angulaire durable de la science biologique."
+  },
+  "nikola-tesla": {
+    "title": "Magicien de l'électricité",
+    "bio": "Nikola Tesla fut un inventeur, ingénieur électrique et mécanique, et futurologue serbo-américain, né dans l'Empire autrichien. Il mena le développement du système à courant alternatif (AC), qui prévalut sur le courant continu (DC) de Thomas Edison, faisant ainsi progresser le réseau électrique moderne. Ses inventions, englobant la transmission sans fil, le moteur à induction et la bobine Tesla, inspirèrent des technologies ultérieures telles que la communication radio et le radar. Bien qu'il ait fini sa vie dans la pauvreté et l'obscurité, ses idées furent redécouvertes à la fin du XXe siècle, le transformant en symbole à la fois de l'« utopisme technologique » et de l'archétype du « génie méconnu »."
+  },
+  "franklin": {
+    "title": "Dompteur de la foudre",
+    "bio": "Benjamin Franklin fut un Père fondateur des États-Unis, tout en se distinguant comme scientifique, éditeur, inventeur et diplomate. Par son expérience du cerf-volant, qui démontra la nature électrique de la foudre et valida des concepts comme la capacité électrique, il fit progresser significativement la science de l'électricité. Il inventa aussi des dispositifs pratiques tels que le paratonnerre et le poêle Franklin. Comme éditeur de Poor Richard's Almanack, il devint un emblème des Lumières américaines. En politique, il contribua à la rédaction de la Déclaration d'indépendance et de la Constitution des États-Unis, et obtint un soutien français crucial pour la cause américaine, s'établissant comme l'une des figures américaines les plus respectées internationalement de son temps."
+  },
+  "louis-xiv": {
+    "title": "Roi-Soleil",
+    "bio": "Louis XIV, le monarque le plus iconique de la dynastie bourbonienne française, régna 72 ans et fut connu comme le « Roi-Soleil ». Il consolida la monarchie absolue par la centralisation du pouvoir et une armée permanente, standardisa la culture de cour et les goûts artistiques, bâtit le château de Versailles et assura l'hégémonie française en Europe. Son règne établit la France comme centre culturel, militaire et politique du continent, tout en semant aussi les graines de la crise fiscale et de la révolution future. Son ère demeure à la fois le modèle de l'« absolutisme classique » et un récit édifiant."
+  },
+  "columbus": {
+    "title": "Grand explorateur",
+    "bio": "Christopher Columbus, explorateur et navigateur d'origine italienne, entreprit en 1492 son voyage transatlantique historique sous le patronage de la famille royale espagnole, atteignant les Amériques. Sans être le premier à découvrir le Nouveau Monde, ses expéditions établirent un contact soutenu entre l'Europe et les Amériques, marquant le début de la mondialisation. Ses quatre voyages posèrent les bases des empires coloniaux occidentaux et initièrent aussi une profonde rencontre et un échange intercivilisationnels. Bien que son héritage demeure complexe et souvent controversé, Columbus reste une figure pivotale de l'histoire maritime et mondiale."
+  },
+  "alfred-the-great": {
+    "title": "Roi d'Angleterre",
+    "bio": "Alfred the Great, roi du Wessex, est célébré comme l'un des monarques les plus exceptionnels de l'histoire anglaise. Face aux invasions viking incessantes, il monta une défense déterminée et mena finalement des contre-offensives victorieuses qui unifièrent le sud de l'Angleterre. Souverain d'une puissance à la fois intellectuelle et militaire, il initia la réforme éducative, codifia les lois et patronna des traductions d'œuvres latines, renforçant ainsi les fondations de la culture anglo-saxonne. La vision d'Alfred d'une « gouvernance éclairée » forgea un idéal durable de royauté fusionnée avec la sagesse et le savoir."
+  },
+  "galileo-galilei": {
+    "title": "Observateur céleste",
+    "bio": "Galileo Galilei fut un astronome, physicien et philosophe italien, acclamé comme le « Père de la science moderne ». Par l'observation télescopique, il documenta les lunes de Jupiter, la surface lunaire accidentée, les taches solaires et d'autres phénomènes célestes, apportant une validation robuste à la théorie héliocentrique de Copernicus et remettant directement en cause la vision aristotélicienne du monde. Ses expériences sur les corps en chute libre posèrent les fondations de la physique classique. Ces idées provoquèrent un conflit intense avec l'Église, transformant son héritage en symbole durable de la lutte entre liberté scientifique et autorité religieuse."
+  },
+  "eleanor-of-aquitaine": {
+    "title": "Reine de deux royaumes",
+    "bio": "Eleanor of Aquitaine fut l'une des femmes les plus puissantes et légendaires d'Europe au Moyen Âge. Elle devint successivement reine consort de Louis VII de France et de Henry II d'Angleterre, mère de dix enfants, dont le célèbre Richard the Lionheart et King John of England. Comme souveraine du vaste duché d'Aquitaine, elle servit à plusieurs reprises de régente durant les campagnes militaires de ses époux et fils, démontrant un remarquable sens politique. Elle fut aussi une célèbre mécène et promotrice de la culture troubadour, faisant des cours du sud de la France et d'Angleterre des centres de poésie et de chevalerie. Sa vie embrassa deux royaumes ; elle vit et influença les croisades, les guerres de succession royale et le renouveau culturel, établissant un modèle précoce d'influence politique féminine en Europe."
+  },
+  "hector": {
+    "title": "Pilier de Troie",
+    "bio": "Hector est le premier guerrier, prince et défenseur de la cité dans l'Iliade d'Homère. Loyal à son pays et à sa famille, il est souvent vu comme un modèle du héros tragique de l'âge classique. Avant son duel avec Achilles, il montre une profonde affection pour sa famille et une claire compréhension de son destin, sacrifiant finalement sa vie pour sa nation. Il représente non seulement la résistance de Troie, mais aussi la dignité de la volonté humaine face à la volonté divine et à la destruction."
+  },
+  "hammurabi": {
+    "title": "Législateur",
+    "bio": "Hammurabi fut le sixième roi de l'ancienne Babylone, renommé pour avoir créé l'un des plus anciens codes de lois systématiques au monde. Il montra une capacité exceptionnelle dans l'unification politique, le système juridique administratif de la Mésopotamie et le règne théocratique. Le Code d'Hammurabi fut inscrit sur une stèle de pierre, centré sur le principe « œil pour œil », reflétant la structure juridique et sociale de l'ancienne région mésopotamienne. Son style de gouvernance symbolisait l'unité du pouvoir royal et de la justice."
+  },
+  "joan-of-arc": {
+    "title": "Sainte",
+    "bio": "Joan of Arc, héroïne nationale française, fut une femme légendaire qui mena l'armée française à retourner le cours de la guerre de Cent Ans. À l'âge de 13 ans, elle affirma entendre des voix divines et fut chargée d'escorter le Dauphin jusqu'à son couronnement. Elle montra une intuition militaire et un pouvoir de motivation exceptionnels lors de la bataille d'Orléans, relevant grandement le moral français. Plus tard, elle fut capturée par les Anglais en raison des manipulations politiques de ses ennemis et exécutée par le bûcher pour « hérésie et port de vêtements masculins », à l'âge de dix-neuf ans. Après sa mort, elle fut réhabilitée et canonisée, devenant un symbole de foi, de sacrifice et de volonté nationale, ainsi qu'un emblème important de l'héroïsme féminin."
+  },
+  "livia-drusilla": {
+    "title": "Mère de Rome",
+    "bio": "Livia Drusilla fut la seconde épouse d'Augustus, premier empereur romain, et l'une des conseillères stratégiques les plus significatives tout au long de sa carrière politique. Renommée non seulement pour sa vertu, son sang-froid et sa résilience, elle exerça aussi une influence non officielle mais profonde, s'établissant comme une force féminine indispensable dans la structure du pouvoir impérial naissant. Par sa maîtrise de la gestion de la lignée impériale, elle ouvrit la voie à l'accession de son fils Tiberius, inaugurant ainsi le rôle politique d'« impératrice régente » dans la tradition impériale romaine. Après sa mort, l'empereur Claudius I lui conféra le titre honorifique de « Julia Augusta », établissant un modèle durable de vertu maternelle et d'influence politique pour les femmes impériales."
+  },
+  "dante": {
+    "title": "Pionnier artistique",
+    "bio": "Dante Alighieri fut un poète et penseur politique de premier plan à l'aube de la Renaissance. Sa Divine Comédie est célébrée comme le joyau de la littérature médiévale. Écrite à la première personne, elle suit son voyage symbolique à travers l'Enfer, le Purgatoire et le Paradis, tissant théologie, philosophie et une vision du jugement humain. Au-delà de sa grandeur littéraire, l'œuvre façonna profondément l'identité nationale italienne, unifia la langue et influença le cours de la pensée humaniste européenne."
+  },
+  "socrates": {
+    "title": "Philosophe des questions",
+    "bio": "Socrates fut un philosophe de la Grèce antique, salué comme l'un des fondateurs de la philosophie occidentale. Il guidait les gens à réfléchir sur les concepts du quotidien et le comportement moral par le questionnement de rue et les discussions heuristiques. Il n'écrivit aucun livre lui-même ; sa pensée est principalement connue par les dialogues de son disciple Plato. Socrates fut controversé de son vivant et fut finalement exécuté pour « corruption de la jeunesse » et « impiété ». Son attitude calme en buvant la ciguë pour mettre fin à sa vie fit de lui un symbole de conscience, de raison et de liberté d'expression pour les générations suivantes."
+  },
+  "gilgamesh": {
+    "title": "Roi d'Uruk",
+    "bio": "Gilgamesh fut le roi légendaire de la cité mésopotamienne d'Uruk au troisième millénaire av. J.-C., immortalisé dans les traditions épiques sumériennes et akkadiennes. L'« Épopée de Gilgamesh » est reconnue comme le plus ancien récit héroïque du monde, centré sur les thèmes de la vie et de la mort, de l'amitié et de la quête de l'éternité. Avec son compagnon Enkidu, il entreprend des épreuves, défie des divinités et confronte finalement la mortalité et les limites humaines, reflétant les méditations philosophiques des civilisations anciennes sur le destin et l'immortalité."
+  },
+  "confucius": {
+    "title": "Sage suprême",
+    "bio": "Confucius fut un philosophe et éducateur de la période des Printemps et Automnes en Chine, fondateur de l'école de pensée confucéenne. Il préconisait « la bienveillance, la propriété rituelle et le juste milieu », soulignant la cultivation morale et l'ordre social tout en façonnant le rapport entre individu et État par l'idéal de la « personne exemplaire ». Il voyagea parmi divers États, enseignant et rassemblant quelque 3 000 disciples ; ses enseignements furent plus tard compilés dans les Analectes. Pendant plus de deux millénaires, la pensée confucéenne a façonné l'éthique politique et les valeurs culturelles de l'Asie de l'Est, formant la pierre angulaire spirituelle de la civilisation chinoise."
+  },
+  "michelangelo": {
+    "title": "Artisan divin",
+    "bio": "Michelangelo fut un sculpteur, peintre, architecte et poète italien de l'âge de la Renaissance, acclamé comme le « maître prééminent parmi tous les polymaths ». Ses œuvres David, Genèse et Le Jugement dernier incarnent l'idéal divin de la forme et de l'esprit humains. Sa maîtrise suprême de l'anatomie, de la perspective et de la composition permit à l'art de transcender les thèmes religieux, le transformant en symbole de sublimité et de pouvoir. Sa philosophie artistique, selon laquelle « la sculpture est le processus de libérer l'âme du marbre », façonna profondément l'esthétique occidentale."
+  },
+  "victor-hugo": {
+    "title": "Prophète de l'humanité",
+    "bio": "Victor Hugo fut la figure de proue de la littérature romantique française, incarnant les rôles de poète, romancier et homme d'État. Ses chefs-d'œuvre Les Misérables et Notre-Dame de Paris exposent l'injustice sociale tout en illuminant la dignité humaine, vus comme une fusion de l'art littéraire et de la conscience sociale. Vivant un long exil, il défendit avec constance les principes libéraux et humanitaires. Hugo mania sa plume comme une épée, s'engageant en politique par l'écrit, devenant la voix symbolique de l'esprit moral et intellectuel de la France au XIXe siècle."
+  },
+  "thomas-edison": {
+    "title": "Roi de l'invention",
+    "bio": "Thomas Alva Edison fut un inventeur et industriel américain qui détint plus de 1000 brevets, dont le phonographe, l'ampoule électrique et la caméra de cinéma. Connu pour avoir systématisé l'expérimentation et industrialisé la recherche, il fut le pionnier du modèle du laboratoire de recherche industrielle. Edison aida non seulement à inaugurer l'Âge électrique, mais transforma aussi la relation entre inventeurs et industrie, devenant une incarnation du « capitalisme technologique ». Sa rivalité avec Tesla sur les systèmes électriques devint une opposition classique de l'histoire scientifique moderne."
+  },
+  "james-watt": {
+    "title": "Ingénieur de la vapeur",
+    "bio": "James Watt fut un ingénieur mécanique britannique qui améliora la machine à vapeur de Newcomen, l'adaptant au fonctionnement industriel continu et aidant à déclencher la Révolution industrielle. Il introduisit des concepts comme le « cheval-vapeur », quantifiant l'énergie comme métrique d'efficacité. Bien qu'il ne fût pas l'inventeur de la machine à vapeur, il est reconnu comme le pionnier de son application pratique. Watt fut instrumental dans la transition de la pensée d'ingénierie vers les systèmes industriels."
+  },
+  "andersen": {
+    "title": "Père des contes de fées",
+    "bio": "Andersen fut un auteur danois renommé dans le monde entier pour des contes tels que « La Petite Sirène », « Le Vilain Petit Canard » et « Les Habits neufs de l'empereur ». Il mêla la tragédie du monde réel au symbolisme poétique, élevant le conte au-delà de la littérature enfantine pour explorer de profonds thèmes humains et l'allégorie sociale. Ses œuvres ont été traduites en plus de 150 langues, exerçant une influence profonde et durable. Il est aussi une figure clé de l'internationalisation de la littérature européenne du XIXe siècle."
+  },
+  "elizabeth-i": {
+    "title": "Reine vierge",
+    "bio": "Elizabeth I, dernière monarque de la dynastie Tudor, présida un « Âge d'or » qui vit la stabilité religieuse, l'expansion maritime et l'épanouissement du théâtre en Angleterre. Elle consolida son pouvoir après avoir vaincu l'Armada espagnole, usant habilement du langage et de l'image pour maintenir son autorité. Elle ne se maria jamais, prenant fameusement la nation pour « époux ». Elle acheva un équilibre dramatique entre son genre et son pouvoir royal, façonnant le récit central de l'identité nationale anglaise."
+  },
+  "drake": {
+    "title": "Corsaire royal",
+    "bio": "Drake fut un marin et corsaire élisabéthain, le premier Anglais à faire le tour du globe. Son pillage des navires espagnols et l'exploration de la côte américaine posèrent les fondations de l'expansion et du développement naval de l'Angleterre. Connu en Espagne comme le « Diable des mers », il fut anobli en Angleterre. Il incarne à la fois l'explorateur héroïque et l'archétype du « pirate impérial »."
+  },
+  "mary-i": {
+    "title": "Reine de deux rois",
+    "bio": "Mary Stuart, reine des Écossais, fut enchevêtrée dans les troubles politiques en raison de sa revendication complexe sur le trône anglais, de ses trois mariages et des conflits religieux de l'époque. Elle fut emprisonnée 19 ans par sa cousine Elizabeth I, puis exécutée. Son image combine celle d'une femme politique, d'une martyre et d'une héroïne tragique romantique, faisant d'elle une figure historique continuellement réimaginée dans la littérature, le théâtre et le cinéma."
+  },
+  "saladin": {
+    "title": "Faucon kurde",
+    "bio": "Saladin fut un commandant militaire musulman kurde et fondateur de la dynastie ayyoubide, renommé pour avoir repris Jérusalem. Lors de la Troisième Croisade, il affronta Richard the Lionheart, déployant à la fois une brillance stratégique et une chevalerie personnelle, gagnant le respect des historiens d'Orient et d'Occident. Il symbolise l'honneur défensif du monde islamique et se dresse comme un point d'intersection culturelle, incarnant les idéaux complexes de la guerre sainte au Moyen Âge."
+  },
+  "homer": {
+    "title": "Source de l'épopée",
+    "bio": "Homer, le plus célèbre poète épique de la Grèce antique, est traditionnellement considéré comme l'auteur de l'« Iliade » et de l'« Odyssée ». Ses œuvres posèrent les fondations de toute la tradition narrative occidentale, influençant profondément l'identité nationale grecque, le concept d'héroïsme et les formes poétiques, malgré une vie hautement controversée et même suspectée d'être un nom collectif pour plusieurs auteurs."
+  },
+  "wallace": {
+    "title": "Défenseur de la liberté",
+    "bio": "William Wallace fut un héros national écossais, célébré pour avoir mené le soulèvement contre le roi Edward I d'Angleterre. Il remporta une victoire décisive à la bataille du pont de Stirling, fut plus tard vaincu à Falkirk, et finalement capturé et exécuté. Sa légende grandit à travers le folklore et la littérature, le transformant en symbole durable de l'indépendance écossaise et en récit puissant de la « lutte pour la liberté » dans le discours politique moderne."
+  },
+  "isabella-i": {
+    "title": "Mère de l'Espagne",
+    "bio": "Isabella I fut reine de Castille dont le mariage avec Ferdinand d'Aragon unifia l'Espagne. Son patronage des voyages de Christopher Columbus mena à la colonisation des Amériques, tandis que ses politiques imposèrent l'unité religieuse par l'expulsion des Juifs et l'établissement de l'Inquisition espagnole. Son règne marqua le début de l'Empire espagnol ; elle est rappelée comme l'une des « Rois catholiques », souveraine clé reliant les ères médiévale et moderne."
+  },
+  "hatshepsut": {
+    "title": "Pharaon femme",
+    "bio": "Hatshepsut, pharaon de la Dix-huitième dynastie de l'Égypte antique, l'une des premières femmes à être couronnée roi. Elle régna en habit masculin et consolida son règne par de vastes projets de construction et des expéditions vers le Pays de Pount. Son règne est considéré comme l'un des âges d'or du Nouvel Empire, montrant une excellente gestion politique et économique."
+  },
+  "hypatia": {
+    "title": "Sage païenne",
+    "bio": "Hypatia fut une célèbre mathématicienne, philosophe et conférencière de l'école néoplatonicienne d'Alexandrie, considérée comme l'une des dernières grandes exposantes de la tradition intellectuelle grecque classique. Elle enseigna l'astronomie, la géométrie et l'éthique, gagnant un large respect, pourtant ses croyances païennes et son influence politique en firent une cible dans les luttes de pouvoir chrétiennes d'Alexandrie. Sa mort symbolisa la fin du monde intellectuel classique et l'essor de la domination religieuse médiévale. À l'époque moderne, elle est devenue une icône de l'intellectuelle féminine et de l'esprit rationnel."
+  },
+  "hannibal": {
+    "title": "Fléau de Rome",
+    "bio": "Hannibal Barca fut le commandant militaire le plus renommé de Carthage, célèbre pour sa traversée audacieuse des Alpes afin d'attaquer Rome durant la Deuxième Guerre punique — un exploit encore regardé comme une merveille de l'histoire militaire antique. Brillant tacticien, il écrasa les légions romaines aux batailles de la Trébie, du lac Trasimène et de Cannes. Il fut aussi célèbre pour ses attaques surprises avec des éléphants de guerre que pour ses tactiques psychologiques, et ses stratégies restent étudiées comme modèles classiques de génie militaire dans les académies jusqu'à ce jour. Il représente à la fois le défiant contestataire de l'empire et la vaillance solitaire d'un stratège de naissance étrangère."
+  },
+  "catherine-de-medici": {
+    "title": "Tisseuse des cours",
+    "bio": "Catherine de' Medici fut reine puis régente de la dynastie Valois en France, sa carrière politique embrassant les règnes de trois rois. Imprégnée des arts politiques et de la culture de cour de l'Italie à l'âge de la Renaissance, elle excellait dans l'art de gouverner et la diplomatie d'équilibre. Au milieu des troubles des guerres de Religion françaises, elle chercha à réconcilier huguenots et catholiques, pourtant son héritage demeure terni par son rôle perçu dans l'instigation du massacre de la Saint-Barthélemy. Elle promut aussi l'esthétique de cour, l'astrologie, et fut entourée de rumeurs de poison, faisant d'elle un archétype du pouvoir et de la politique d'image dans les cours européennes."
+  },
+  "noah": {
+    "title": "Constructeur de l'arche",
+    "bio": "Noah est une figure prophétique hautement significative de la Bible hébraïque, révéré comme un juste par le judaïsme, le christianisme et l'islam. On dit qu'il vécut en un temps de corruption morale et de violence rampante, pourtant choisi par Dieu pour son intégrité afin de construire une arche avant le déluge apocalyptique, sauvant lui-même, sa famille et diverses créatures. Après le déluge, il offrit des sacrifices en gratitude et reçut l'« Alliance de l'arc-en-ciel » de Dieu — la promesse de ne plus détruire la terre par un déluge. Son histoire symbolise la droiture, la catastrophe et la renaissance dans la foi, et est une source clé du motif de « redémarrage de la civilisation » dans la civilisation occidentale."
+  },
+  "adam": {
+    "title": "Premier homme",
+    "bio": "Adam est considéré comme le progéniteur de l'humanité dans les traditions juive, chrétienne et islamique. Selon la Bible, il fut créé par Dieu à partir de poussière et résida dans le jardin d'Éden. Il fut plus tard expulsé pour avoir mangé le fruit défendu de la connaissance. Son image symbolise non seulement l'origine de l'humanité, mais représente aussi la plus ancienne exploration du libre arbitre, du péché et de la responsabilité. Comme père de l'humanité, il apparaît fréquemment dans l'art religieux et les débats philosophiques, incarnant de multiples symboles de l'état originel de la nature humaine."
+  },
+  "prometheus": {
+    "title": "Voleur de feu",
+    "bio": "Prometheus, dieu Titan de la mythologie grecque, déroba le feu des dieux pour le donner à l'humanité par compassion, leur enseignant les arts de la civilisation et de la pensée. Cet acte courrouça Zeus, menant Prometheus à être enchaîné au Caucase où un aigle dévorait quotidiennement son foie. Il symbolise le défi à l'autorité et l'esprit de sacrifice pour l'illumination, inspirant d'innombrables œuvres littéraires et philosophiques. Du romantisme à la philosophie moderne, Prometheus est vu comme l'archétype du « rebelle prophétique »."
+  },
+  "florence-nightingale": {
+    "title": "Dame à la lampe",
+    "bio": "Florence Nightingale fut la fondatrice des soins infirmiers modernes, célébrée comme la « Dame à la lampe » pour son service durant la guerre de Crimée. Elle systématisa la formation des infirmières, défendit les réformes d'hygiène hospitalière et usa largement de graphiques statistiques pour influencer la politique publique. Sa vie combina compassion humanitaire, compétence organisationnelle et analyse rationnelle, faisant d'elle une figure iconique de l'histoire de la médecine et de la participation sociale des femmes. Son héritage continue de façonner les soins infirmiers modernes, la santé publique et les systèmes médicaux militaires."
+  },
+  "mary-shelley": {
+    "title": "Mère de la science-fiction",
+    "bio": "Mary Shelley fut une écrivaine britannique, auteure de Frankenstein, et est largement regardée comme la « créatrice de la science-fiction ». Son œuvre mêla la tradition littéraire romantique et sa sensibilité poétique aux anxiétés scientifiques de l'ère industrielle, donnant naissance à l'archétype littéraire du « Modern Prometheus ». Profondément influencée par la pensée politique et féministe de ses parents, William Godwin et Mary Wollstonecraft, Shelley continua d'explorer les thèmes profonds de « raison et responsabilité » et de « création et abandon ». Sa place dans l'histoire littéraire s'est déplacée des marges vers le centre."
+  },
+  "alexander-hamilton": {
+    "title": "Plume de la Fédération",
+    "bio": "Alexander Hamilton fut un Père fondateur des États-Unis, auteur principal des Federalist Papers, premier secrétaire au Trésor et ardent défenseur d'un système fédéral fort. Il proposa la création d'une banque nationale, d'un système fiscal uniforme et d'un programme de crédit public, posant les fondations de l'architecture financière moderne de l'Amérique. Exceptionnellement intelligent et acerbe dans ses écrits, Hamilton fut aussi connu pour ses positions politiques claires et fermes, qui lui valurent des inimitiés durables et menèrent finalement à sa mort en duel avec le vice-président Aaron Burr. Son influence sur les institutions économiques, la structure constitutionnelle et l'efficacité administrative de la nation survécut de loin à sa propre carrière politique."
+  },
+  "anne-bonny": {
+    "title": "Héroïne des Caraïbes",
+    "bio": "Anne Bonny fut l'une des pirates féminines les plus renommées des Caraïbes du XVIIIe siècle, active durant l'âge d'or de la piraterie à New Providence. Combattant aux côtés de Mary Read, elle porta des habits d'homme à bord des navires de guerre, excellant au combat rapproché et célèbre pour son courage féroce. Bien que une grande part de sa vie soit consignée dans des récits semi-légendaires, sa figure brisa les conventions maritimes de genre et d'autorité, devenant un symbole durable de rébellion, de liberté et d'agency féminine. Largement diffusée dans la culture populaire, son histoire demeure l'une des représentations les plus iconiques des femmes dans le lore pirate."
+  },
+  "chaucer": {
+    "title": "Père de la poésie anglaise",
+    "bio": "Chaucer fut le premier poète anglais de la fin du Moyen Âge. Son chef-d'œuvre, The Canterbury Tales, mêla satire, lyrisme et récit, ouvrant la voie à l'usage de l'anglais — particulièrement le dialecte de Londres — pour la création littéraire sérieuse. À une époque où le latin et le français dominaient la tradition littéraire, l'œuvre de Chaucer révéla le riche potentiel de l'anglais comme langue littéraire, tout en reflétant les vies, croyances et attitudes envers le genre à travers les diverses classes sociales de l'Angleterre du XIVe siècle. Sa langue est regardée comme fondatrice du développement de la littérature anglaise moderne."
+  },
+  "robin-hood": {
+    "title": "Robin Hood",
+    "bio": "Robin Hood, héros populaire anglais médiéval, est célèbre pour « voler les riches pour aider les pauvres ». Apparu d'abord dans des ballades et des registres de cour du XIIIe siècle, il est dépeint comme le chef archer de la forêt de Sherwood, dans le Nottinghamshire — s'opposant à la tyrannie et défendant les faibles. Au fil des siècles, son image évolua du chevalier rebelle au champion paysan, du protestataire fiscal à l'icône nationale, reflétant les espoirs du peuple pour la justice et l'équité."
+  },
+  "himiko": {
+    "title": "Reine de Yamatai",
+    "bio": "Himiko fut une reine du Japon antique, dont le règne théocratique, fusionnant autorité politique et religieuse, établit la plus ancienne image enregistrée d'une polity japonaise unifiée dans les annales historiques chinoises. Par des missions diplomatiques au royaume Cao Wei, elle reçut le titre de « Souveraine de Wa, Amie de Wei ». Douée dans les rituels ésotériques, Himiko présida un gouvernement conduit par le chamanisme qui assura l'allégeance de dizaines d'États tribaux. Elle symbolise l'ancienne souveraine divine féminine et occupe une place distinctive dans l'histoire des premiers échanges sino-japonais et de la formation de la nation japonaise."
+  },
+  "marco-polo": {
+    "title": "Messager du monde",
+    "bio": "Marco Polo, marchand, voyageur et écrivain italien de Venise, est renommé pour ses voyages vers l'Orient, sa longue résidence sous la dynastie Yuan et l'écriture ultérieure du « Livre des merveilles » (Les Voyages de Marco Polo). Ses récits fournirent à l'Europe médiévale des descriptions de première main de la Chine et de l'Asie, influençant des explorateurs comme Columbus. Il fut à la fois un pionnier de l'échange interculturel et l'un des voyageurs les plus controversés de l'histoire."
+  },
+  "cervantes": {
+    "title": "Chevalier qui défia la chevalerie",
+    "bio": "Cervantes fut une figure fondatrice de la littérature espagnole, largement regardé comme l'auteur du premier roman européen moderne, Don Quixote. Par un récit mêlant satire et idéalisme, son chef-d'œuvre dissèque les conventions de la littérature chevaleresque du Moyen Âge, usant des illusions du protagoniste pour explorer les frontières entre réalité et illusion. Cervantes mena une vie tumultueuse comme soldat, percepteur et prisonnier — expériences qui informent profondément son écriture. Son œuvre reflète de profondes luttes de la nature humaine, de la classe sociale et de l'expérimentation linguistique, inaugurant une nouvelle ère pour le roman comme forme d'art, particulièrement dans la structure narrative et le développement des personnages."
+  },
+  "dido": {
+    "title": "Reine de Carthage",
+    "bio": "Dido fut une femme légendaire de descendance noble phénicienne qui fuit la tyrannie de son frère au IXe siècle av. J.-C. et fonda Carthage en Afrique du Nord. Elle assura la terre pour la cité par le « tour de la peau de bœuf », symbolisant l'ancienne sagesse politique. Dans l'« Énéide » de Virgile, elle est dépeinte comme une reine qui se sacrifia pour l'amour, ajoutant une dimension mythique. Dido est à la fois fondatrice de cité et représentation de la résilience et de la tragédie que les femmes peuvent incarner dans l'histoire et la légende."
+  },
+  "cu-chulainn": {
+    "title": "Molosse d'Ulster",
+    "bio": "Cu Chulainn est un héros de la mythologie celtique, originellement nommé Setanta, et salué comme le « Chien d'Ulster ». Né avec une grande vaillance, on dit qu'il est le fils du dieu soleil Lugh. Jeune, il gagna la renommée en défendant seul le gué et en repoussant des armées. Au combat, il entre souvent dans un état de fureur, combattant comme un monstre. Même mortellement blessé, il reste debout, inspirant la peur aux forces ennemies. Il symbolise la loyauté et la tragédie, et est regardé par les générations suivantes comme l'incarnation du guerrier idéal dans la culture celtique."
+  },
+  "archimedes": {
+    "title": "Maître du levier",
+    "bio": "Archimedes fut l'un des plus grands scientifiques de la Grèce antique, versé en mathématiques, mécanique, astronomie et ingénierie. Il dériva un algorithme d'approximation de pi en géométrie, formula la loi du levier en statique et découvrit le principe de la poussée d'Archimède en mécanique des fluides. Il fut aussi renommé dans l'histoire de la guerre pour l'invention d'engins de siège ; bien que la légende de ses « miroirs incendiaires de navires » soit disputée, elle montre sa capacité à allier science et application pratique. Il est salué comme une figure représentative de l'esprit scientifique classique."
+  }
+}

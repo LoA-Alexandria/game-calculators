@@ -345,18 +345,40 @@ const fr: Dictionary = {
       filterLabel: "Rareté",
       filterAll: "Tous",
       searchLabel: "Rechercher un héros",
-      searchPlaceholder: "Nom, compétence, événement ou skin…",
+      searchPlaceholder: "Nom, compétence, événement, histoire ou skin…",
       countLabel: "{count} affichés",
       colObtain: "Obtention",
+      colTitle: "Titre",
+      colTroop: "Troupe",
+      colAge: "Âge",
+      bioHeading: "Histoire",
+      troops: {
+        Pikeman: "Piquier",
+        Archer: "Archer",
+        Shieldman: "Porte-bouclier",
+        Cavalry: "Cavalerie",
+      },
+      ages: {
+        "Ice Age": "Âge de glace",
+        "Stone Age": "Âge de pierre",
+        "Bronze Age": "Âge de bronze",
+        "Classical Age": "Âge classique",
+        "Medieval Age": "Moyen Âge",
+        "Renaissance Age": "Renaissance",
+        "Exploration Age": "Âge des explorations",
+        "Enlightenment Age": "Âge des Lumières",
+        "Steam Age": "Âge de la vapeur",
+      },
       colName: "Héros",
       artifactLabel: "Artéfact",
       empty: "Aucun héros ne correspond à ce filtre.",
-      rosterLede: "Touchez un héros pour ses compétences, ses skins, et son usage dans le classement, les formations et Artwork.",
+      rosterLede: "Touchez un héros pour son histoire, ses compétences, ses skins, et son usage dans le classement, les formations et Artwork.",
       groupCount: "{count} héros",
       groupCountOne: "1 héros",
       skinCount: "{count} skins",
       skinCountOne: "1 skin",
-      portraitCredit: "Portraits des héros issus du Pop Epoch Wiki (Fandom). Les illustrations appartiennent à l’éditeur du jeu et sont montrées ici pour des guides communautaires gratuits et non commerciaux.",
+      portraitCredit:
+        "Portraits, titres, troupes, âges et histoires des héros issus de la page Hero du Pop Epoch Wiki (Fandom), fusionnés le 18 septembre 2026. Les illustrations appartiennent à l’éditeur du jeu et sont montrées ici pour des guides communautaires gratuits et non commerciaux.",
       sourcesHeading: "D’où ils viennent",
       sources: [
         {
@@ -377,7 +399,7 @@ const fr: Dictionary = {
         },
         {
           title: "Crown Vault",
-          body: "500 pièces de couronne pour 50 éclats, pour Guan Yu, Lu Bu, Musashi et Sun-Sin, qui ne figurent pas encore dans le roster ici. Les pièces viennent des classements de Mushroom Adventure, Incubator Lab, Supply Reform et The Great Flood, des classements de points finaux, et des sept premiers niveaux de fusion de Mushroom et Incubator.",
+          body: "500 pièces de couronne pour 50 éclats, pour Guan Yu, Lü Bu, Miyamoto Musashi et Yi Sun-sin. Les pièces viennent des classements de Mushroom Adventure, Incubator Lab, Supply Reform et The Great Flood, des classements de points finaux, et des sept premiers niveaux de fusion de Mushroom et Incubator.",
         },
         {
           title: "Monument of Eternity",
@@ -418,7 +440,7 @@ const fr: Dictionary = {
         unknown: { title: "Inconnu", lede: "Personne n’a confirmé l’événement. La meilleure estimation d’Autumn est dans la ligne Obtention." },
       },
       skinsCredit:
-        "Noms et sources des skins : guide des skins d’Autumn, partagé sur Discord le 7 août 2026. Les skins des héros absents de ce roster — Billy the Kid, Charlie Chaplin — attendent que ces héros soient ajoutés. « Indisponible actuellement » signifie qu’aucune source n’est active et qu’il peut s’écouler longtemps avant qu’il y en ait une.",
+        "Noms et sources des skins : guide des skins d’Autumn, partagé sur Discord le 7 août 2026. Les skins de Charlie Chaplin attendent que ce héros soit ajouté. « Indisponible actuellement » signifie qu’aucune source n’est active et qu’il peut s’écouler longtemps avant qu’il y en ait une.",
       skinTexts: {},
       previousHero: "Héros précédent",
       nextHero: "Héros suivant",
@@ -451,7 +473,7 @@ const fr: Dictionary = {
           ],
         },
       ],
-      note: "Les tableaux de compétence, buff et production de 37 héros viennent de captures d’écran du client allemand du 18 septembre 2026. L’anglais est une traduction et peut différer du texte anglais du jeu. Les niveaux de production absents de ces captures sont interpolés : UR et UR+ +4 % par niveau, SSR 30 % + 3 % × (n−1). Alexander the Great et Augustus n’ont pas encore de portrait.",
+      note: "Les tableaux de compétence, buff et production de 37 héros viennent de captures d’écran du client allemand du 18 septembre 2026. L’anglais est une traduction et peut différer du texte anglais du jeu. Les niveaux de production absents de ces captures sont interpolés : UR et UR+ +4 % par niveau, SSR 30 % + 3 % × (n−1). Titres, troupes, âges, biographies et les cinq cartes Crown Vault / Billy the Kid viennent de la page Hero du wiki ; ces cinq n’ont pas encore de tableaux de compétences ici.",
     },
     technology: {
       title: "Technologie",
@@ -1282,39 +1304,136 @@ const fr: Dictionary = {
       ],
       note: "Les coûts du manoir et les seuils de population seront ajoutés une fois vérifiés contre le client actuel.",
     },
-    support: {
-      title: "Soutien",
-      summary: "Bonus de soutien à l’échelle du compte — la liste est encore en rédaction.",
+    adsBuy: {
+      title: "Werbung / Buy",
+      summary: "Priorités pubs quotidiennes, et ce qui vaut d’être acheté en argent réel.",
       intro:
-        "Le soutien couvre les systèmes qui renforcent le reste de la ville plutôt que de produire une ressource eux-mêmes. Cette page tient l’emplacement Éléments fondamentaux jusqu’à ce que cette liste soit versionnée ici.",
+        "Par Autumn. Acheter l’ad-free est sans doute plus sain — utilisez ce guide si ce n’est pas possible, et pour des priorités d’achat claires.",
+      credit: "Guide pubs et achats par Autumn (Ice, S12), partagé sur Discord",
+      creditDate: "Août 2026",
       sections: [
         {
-          heading: "Ce que ce guide couvrira",
+          heading: "Pubs — comment les enchaîner",
           body: [
-            "Quelles pistes de soutien existent, ce qu’elles renforcent, et l’ordre dans lequel il vaut la peine de les monter.",
-            "Tant que ces pistes ne sont pas vérifiées, cette page est l’entrée de catégorie, pas un ordre complet.",
+            "Pour l’efficacité, alternez avec les pubs billboard : elles ont 5 minutes de cooldown entre chaque pub.",
+            "Pour la santé mentale, regardez les pubs en faisant autre chose. Temps total d’ads : environ 3–4 heures.",
+          ],
+        },
+        {
+          heading: "Priorités pubs — immédiatement / chaque jour",
+          body: [
+            "Dans l’ordre chronologique, du haut vers le bas.",
+            "Special : seulement si vous êtes resté absent plus longtemps que votre plafond de temps récupérable. Restaure environ 1 heure de ressources (30 minutes × 2), et seulement avant d’entrer vraiment dans le jeu.",
+            "Pubs billboard : les seules qui donnent 50 plaques ID gratuites par jour (10 × 5) plus 150 gemmes — chroniquement rares en F2P.",
+            "Ad Bundle : disponible seulement 2 heures après le premier login après un reset.",
+            "Speedup Research : de nouveau disponible toutes les 2 heures après en avoir regardé une. Prenez le rôle Discord research-timer pour un ping toutes les 2 heures.",
+            "Assistant auto-clicker : le plus tôt possible avant un reset. L’auto-clicker se met en pause pendant une pub ou une déconnexion — vous voulez les 30 minutes complètes.",
+            "Pubs Blessings (×5) : lancez-les quand votre % de blessing est déjà très haut. Timing variable — environ 1 heure avant que le % baisse ; montez en priorité #2 si le % est très haut.",
+            "Pubs stamina Main Event : Grail, Odin, Atlantis, Rome et autres main events à bannière bleue (plus les bannières d’events spéciaux en haut du calendrier).",
+            "Pubs stamina Savings Event : Genie, Ring Toss.",
+            "Autres pubs stamina d’event : Shopping Cart et similaires.",
+            "Pubs stamina minijeux — surtout Mushroom Adventure.",
+          ],
+        },
+        {
+          heading: "Priorités pubs — sans limite de temps",
+          body: [
+            "Dans n’importe quel ordre : Crown Glory, Museion, Grand Voyage, Industrial Soulcraft (après Exploration Age), Guild Development (au moins 1 pour l’Epoch Pass), et 1 Genesis Soulcraft / Genesis Excavation (pour garder soulcraft / pelles pour Destiny).",
+          ],
+        },
+        {
+          heading: "Priorités pubs — peuvent être sautées",
+          body: [
+            "Les autres pubs Genesis Soulcraft, sauf si tous les héros ne sont pas encore débloqués.",
+            "Les autres pubs Genesis / Humanities Excavation, sauf si toutes les excavations ne sont pas encore débloquées.",
+          ],
+        },
+        {
+          heading: "Guide d’achat — essentiel & obligatoire",
+          body: [
+            "Priorisez toujours votre budget. Achats classés par valeur et nécessité situationnelle.",
+            "Lifetime Ad-Free · 29,99 $ — le meilleur achat pour la santé mentale et la progression.",
+            "Venus first purchase · 2,99 $ — jour 1 pour un gros boost early.",
+            "Déesses Ring Toss · ~10 $ — achetez la déesse à chaque cycle d’event.",
+            "Héros initiaux Main Event · 15–20 $ — Arthur, Odysseus, Ragnar, etc. dès leur premier cycle.",
+            "Exception Rome · 10 $ — suffisant pour débloquer Caesar.",
+            "Museion first fund · 10 $ — jour 8 ; obligatoire.",
+            "Egypt first fund · 10 $ — jour 14 ; important.",
+            "Theater first fund · 10 $ — jour 20 ; progression essentielle.",
+            "Voyage first fund · 10 $ — jour 40 ; ne pas sauter.",
+          ],
+        },
+        {
+          heading: "Guide d’achat — utile & recommandé",
+          body: [
+            "Civilization funds — les 3 disponibles.",
+            "Goddess funds — les 3 disponibles.",
+            "Sea Merchant funds — les 3 disponibles.",
+            "Astral Pass · 15 $ — très bon rapport récurrent.",
+            "Heart of Gold Pass · 15 $ — fort payout de matériaux Cryptid.",
+            "Passes Spring Event · 10 $ et 20 $ — les deux jusqu’à ce que toutes les tuiles soient débloquées.",
+            "Weekly Pop Bundle · 15 $.",
+            "Daily Value Bundle avec 45 barils dorés · 2,99 $.",
+            "Joan of Arc : offre 5 $ vers UR, fund 20 $ vers UR+.",
+          ],
+        },
+        {
+          heading: "Guide d’achat — qualité de vie",
+          body: [
+            "Monthly Ad-Free Assistant Pass · 5 $/mois — assistant automatisé supplémentaire pour les tâches.",
+          ],
+        },
+        {
+          heading: "Guide d’achat — compétitif seulement",
+          body: [
+            "Tous les funds disponibles · ~500 $ au total — chaque fund milestone si vous poussez le top.",
+            "Buffs de livres UR+ — pousser chaque héros UR+ de chaque cycle d’event à au moins 1 étoile.",
+          ],
+        },
+        {
+          heading: "Guide d’achat — whales",
+          body: [
+            "Toutes les passes d’event et tous les funds pour une domination early totale.",
+            "Premier Grail (jour 3) · 1000 $+ — rush Map 3 et dépense lourde plaques ID / matériaux déesses ; snowball permanent.",
+            "Events Rome 1–3 — seuil 227m pour tous les artefacts exclusifs des trois premiers cycles.",
+            "Rotations de skins UR+ — chaque skin UR+ à chaque seconde rotation d’event.",
+            "Mayan et Genie · 200 $+ par event — max pour artefacts UR et skins d’event.",
+          ],
+        },
+        {
+          heading: "Guide d’achat — inutile",
+          body: [
+            "Land Deeds — n’y mettez pas d’argent. Piège ; dépensez ailleurs.",
+          ],
+        },
+        {
+          heading: "Addendum — top-up consécutif à 1 $/jour",
+          body: [
+            "Si vous dépensez environ 1 USD/jour pour le minimum de consecutive top-up (après le premier pack à 1 $), bonnes cibles dans l’ordre : lundis 1000 gemmes ; Ring Toss / Shopping Cart / Genie s’ils tournent ; main event ; bundles pop-up 25 choice barrels / harpes Museion s’ils sont là ; minijeux que vous aimez (surtout Mushroom Adventure) ; plaques ID ×100.",
+            "Cherchez la valeur par dollar (merci à Lynx et Popo). Exemple : daily bundle ~80 plaques/$, weekly bundle ~163 plaques/$.",
           ],
         },
       ],
-      note: "Les pistes de soutien viendront dans un changement ultérieur. Envoyez une liste vérifiée sur Discord si vous en tenez déjà une.",
+      note: "Priorités pubs et achats communautaires d’Autumn (Ice, S12). Prix et packs peuvent changer — corrections sur Discord.",
     },
     goddesses: {
       title: "Déesses",
-      summary: "Toutes les déesses avec leur affinité, leur obtention et leurs skins.",
+      summary: "Toutes les déesses avec histoire, affinité, obtention et skins.",
       intro: "Les cadeaux augmentent l’affinité et débloquent des bonus. Recrutez une déesse une fois ses conditions remplies ; la liste ci-dessous indique d’où vient chacune.",
       rosterHeading: "Roster",
-      rosterLede: "Touchez une déesse pour l’affinité, l’obtention et les skins. La rareté suit les couleurs des cartes du wiki Pop Epoch : or SSR, violet SR, bleu R.",
+      rosterLede: "Touchez une déesse pour l’histoire, l’affinité, l’obtention et les skins. La rareté suit les couleurs des cartes du wiki Pop Epoch : or SSR, violet SR, bleu R.",
       filterLabel: "Rareté",
       filterAll: "Toutes",
       searchLabel: "Rechercher des déesses",
-      searchPlaceholder: "Nom, affinité, événement ou skin…",
+      searchPlaceholder: "Nom, histoire, affinité, événement ou skin…",
       countLabel: "{count} affichées",
       empty: "Aucune déesse ne correspond à ce filtre.",
       groupCount: "{count} déesses",
       groupCountOne: "1 déesse",
       skinCount: "{count} skins",
       skinCountOne: "1 skin",
-      portraitCredit: "Portraits de déesses issus du wiki Pop Epoch (Fandom). Les illustrations appartiennent à l’éditeur du jeu et figurent ici dans des guides communautaires gratuits et non commerciaux. Bastet n’a pas encore de portrait sur cette page.",
+      portraitCredit:
+        "Portraits, titres et histoires des déesses issus de la page Goddess du wiki Pop Epoch (Fandom), fusionnés le 18 septembre 2026. Les illustrations appartiennent à l’éditeur du jeu et figurent ici dans des guides communautaires gratuits et non commerciaux.",
       previousGoddess: "Déesse précédente",
       nextGoddess: "Déesse suivante",
       close: "Fermer",
@@ -1330,6 +1449,7 @@ const fr: Dictionary = {
       colName: "Déesse",
       colAffinity: "Affinité",
       colObtain: "Obtention",
+      bioHeading: "Histoire",
       missableLabel: "Indisponible actuellement",
       unconfirmedLabel: "Source non confirmée",
       sourcesHeading: "D’où elles viennent",
@@ -1352,7 +1472,7 @@ const fr: Dictionary = {
         },
       ],
       obtainCredit:
-        "L’origine de chaque déesse vient du guide d’obtention d’Autumn, partagé sur Discord le 9 août 2026, avec des captures d’écran de plusieurs joueurs. « Indisponible actuellement » signifie qu’aucune source n’est active et qu’il peut s’écouler longtemps avant qu’il y en ait une. « Source non confirmée » signifie que personne ne l’a vérifiée. Isis et Calypso ne figurent pas sur la page du wiki et n’ont donc pas encore de portrait ici.",
+        "L’origine de chaque déesse vient du guide d’obtention d’Autumn, partagé sur Discord le 9 août 2026, avec des captures d’écran de plusieurs joueurs. « Indisponible actuellement » signifie qu’aucune source n’est active et qu’il peut s’écouler longtemps avant qu’il y en ait une. « Source non confirmée » signifie que personne ne l’a vérifiée. Lilith figure sur la page Goddess du wiki sans ligne d’obtention confirmée.",
       skinsHeading: "Skins",
       skinsLede:
         "Skins nommés, pas les images supplémentaires d’une carte du roster. Ces fichiers n’ont pas de nom et ne peuvent pas être reliés à cette liste. Les déesses SSR n’ont pas encore de skins. Un skin de déesse relève son plafond de niveau.",
@@ -1391,6 +1511,7 @@ const fr: Dictionary = {
         athena: { affinity: "Commandement de tous les héros +3 %. ATQ/PV de tous les héros +3 %.", obtain: "VIP 4" },
         isis: { obtain: "Événement de déblocage de l’Égypte, au niveau de ville 26" },
         calypso: { obtain: "Ring Toss, rapporté comme le sixième" },
+        lilith: { obtain: "Pas encore confirmé" },
         brunhild: { affinity: "Dégâts subis en Campagne −5 %. Cavalerie ATQ/PV +11 %.", obtain: "Terminer la Campagne 60-6" },
         venus: { affinity: "Productivité de tous les bâtiments +20 %. Héros piquiers ATQ/PV +6 %.", obtain: "Premier rechargement, 2,50 $" },
         vivian: { affinity: "Récompenses de sweep de la Tour mystique +6 %. Héros boucliers ATQ/PV +6 %.", obtain: "Atteindre le niveau 40 de la Tour mystique" },
@@ -1603,9 +1724,46 @@ const fr: Dictionary = {
       imagePending: "Pas encore d’image",
       imageOpen: "Ouvrir l’image de {anecdote}",
       linkLabel: "Lien vers {anecdote}",
-      anecdoteTexts: {},
+      anecdoteTexts: {
+        "the-apple-is-innocent": {
+          name: "La pomme est innocente",
+          prerequisite: "Niveau de civilisation atteint 18",
+          steps: [
+            { text: "Dans le jalon d’Odin, un serpent a volé une pomme." },
+            { text: "Une pomme semble avoir poussé sur l’arbre-monde." },
+          ],
+        },
+        "da-vincis-palette": {
+          name: "La palette de Da Vinci",
+          prerequisite: "Passer à l’âge de la Renaissance",
+          steps: [
+            {
+              text: "Ouvrez l’appareil volant posé près des montagnes et préparez-vous aux nuages de gaz colorés.",
+            },
+          ],
+        },
+        "pre-easter-trouble": {
+          name: "Souci avant Pâques",
+          prerequisite: "Participer à : Where is the Bunny?",
+          steps: [
+            {
+              text: "Regardez ! Nike est arrivée en ville, même en tenue de Pâques.",
+            },
+          ],
+        },
+        "femme-fatales-gift": {
+          steps: [
+            {
+              text: "La récolte de pierre semble un peu étrange. Regardez de plus près !",
+            },
+          ],
+        },
+        "glory-supercedes-blood": {
+          name: "La gloire surpasse le sang",
+        },
+      },
       credit:
-        "Guide des anecdotes par Autumn (Ice, S12), partagé sur Discord et complété pour la dernière fois le 10 septembre 2026, avec l’aide de Kraes, Zee et Spitzell pour Egyptian Tales et de Popo. La formulation a été retouchée sans changer les étapes ; quand le guide a un trou, une remarque le signale.",
+        "Étapes d’anecdotes par Autumn (Ice, S12), partagées sur Discord et complétées pour la dernière fois le 10 septembre 2026, avec l’aide de Kraes, Zee et Spitzell pour Egyptian Tales et de Popo. Images et trois anecdotes générales supplémentaires issues de la page Anecdote du wiki Pop Epoch (Fandom) au 18 septembre 2026. Les illustrations appartiennent à l’éditeur du jeu et figurent ici dans des guides communautaires gratuits et non commerciaux. La formulation a été retouchée sans changer les étapes ; quand le guide a un trou, une remarque le signale.",
       sections: [
         {
           heading: "Avant de commencer",
@@ -2438,7 +2596,7 @@ const fr: Dictionary = {
           ],
         },
       ],
-      note: "Guan Yu, Lu Bu, Miyamoto Musashi et Yi Sun-sin ne sont pas encore dans le roster Core des héros, donc ils apparaissent sans portrait ni lien roster jusqu’à ce que ces héros soient ajoutés.",
+      note: "Guan Yu, Lü Bu, Miyamoto Musashi et Yi Sun-sin figurent dans le roster Core des héros ; portraits et liens suivent le wiki au 18 septembre 2026.",
     },
   },
   ageUnlocksEditor: {
@@ -3572,7 +3730,7 @@ const fr: Dictionary = {
     outputLede:
       "Collez chaque bloc de dictionnaire, puis la ligne de navigation, et créez le fichier de page comme indiqué.",
     outputNote:
-      "Collez chaque bloc sous guideEntries dans son dictionnaire et la ligne dans guides.items dans lib/navigation.ts. Pour un nouveau slug, copiez la page support.",
+      "Collez chaque bloc sous guideEntries dans son dictionnaire et la ligne dans guides.items dans lib/navigation.ts. Pour un nouveau slug, copiez la page ads-buy.",
     editTitle: "Modifier le guide",
     editLede: "Modifiez le texte et exportez le remplacement. C’est le commit qui met à jour la page en ligne.",
     replaceNote:
@@ -3583,10 +3741,6 @@ const fr: Dictionary = {
       "Supprimez le bloc guideEntries de chaque dictionnaire, puis la ligne de navigation et le dossier de page de ce slug.",
     removeOutput: "Notes de retrait",
     cancel: "Retour",
-  },
-  eventCategories: {
-    anleitungen: "Guides",
-    tips: "Astuces",
   },
   eventGuideEntries: {
     atlantis: {
@@ -4309,23 +4463,13 @@ const fr: Dictionary = {
   },
   events: {
     title: "Événements",
-    lede: "Guides et astuces pour les événements à durée limitée — séparés des systèmes couverts sous Guides.",
+    lede: "Textes pour les événements à durée limitée — séparés des systèmes couverts sous Guides.",
     empty: "Pas encore de guides d’événements. Le calendrier en cours est sur l’aperçu.",
     other: "Autre",
     searchLabel: "Rechercher des événements",
     searchPlaceholder: "Red Carpet, Grand Voyage…",
-    filterLabel: "Filtrer par catégorie",
-    filterAll: "Tous",
     statEntries: "Entrées",
-    statCategories: "Catégories",
-    countEntriesOne: "1 entrée",
-    countEntries: "{count} entrées",
     noMatch: "Aucun guide d’événement ne correspond à cette recherche.",
-    categoryEmpty: "Rien dans cette catégorie pour l’instant.",
-    categoryLedes: {
-      anleitungen: "Comment fonctionne un événement et quoi faire pendant qu’il tourne.",
-      tips: "Priorités, raccourcis et ce qui vaut la peine d’être dépensé.",
-    },
     browseIndex: "Voir les guides d’événements",
     kindMain: "Événement principal",
     kindRoutine: "Événement régulier",

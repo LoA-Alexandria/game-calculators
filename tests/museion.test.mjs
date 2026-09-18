@@ -50,6 +50,10 @@ test("every Museion building has a unique id, known stats, and known heroes", ()
   for (const name of MUSEION_OFF_ROSTER) {
     assert.equal(heroNamed(name), undefined, `${name} should stay off-roster until added`);
   }
+  assert.ok(heroNamed("Guan Yu"));
+  assert.ok(heroNamed("Lu Bu"));
+  assert.ok(heroNamed("Miyamoto Musashi"));
+  assert.ok(heroNamed("Yi Sun-sin"));
 });
 
 test("an untouched draft exports the published Museion file byte for byte", () => {

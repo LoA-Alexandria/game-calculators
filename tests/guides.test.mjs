@@ -56,7 +56,7 @@ test("structured ranking guides skip the snippet Edit / Remove", () => {
   assert.equal(guideHasSnippetEditor("goddessLeveling"), false);
   assert.equal(guideHasSnippetEditor("collection"), false);
   assert.equal(guideHasSnippetEditor("collectionLayouts"), false);
-  assert.equal(guideHasSnippetEditor("support"), true);
+  assert.equal(guideHasSnippetEditor("adsBuy"), true);
 });
 
 test("artwork layouts levels SSR ATK first", () => {

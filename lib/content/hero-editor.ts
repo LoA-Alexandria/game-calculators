@@ -17,16 +17,20 @@
 import { heroReferences, rosterName, type HeroReference } from "./hero-links.ts";
 import {
   HERO_ABILITY_KINDS,
+  HERO_AGES,
   HERO_DATA,
   HERO_RARITIES,
+  HERO_TROOPS,
   type Hero,
   type HeroAbility,
   type HeroAbilityKind,
   type HeroAbilityText,
+  type HeroAge,
   type HeroData,
   type HeroRarity,
   type HeroSkill,
   type HeroTexts,
+  type HeroTroop,
 } from "./heroes.ts";
 import { DEFAULT_LOCALE, LOCALES, getDictionary, type Locale } from "../i18n/index.ts";
 
@@ -40,6 +44,10 @@ export type EditorHero = {
   name: string;
   rarity: HeroRarity;
   obtain: string;
+  title: string;
+  troop: HeroTroop | "";
+  age: HeroAge | "";
+  bio: string;
   images: EditorImage[];
   /** Every slot is always present in the editor; export leaves out the empty ones. */
   abilities: Record<HeroAbilityKind, HeroAbility>;
@@ -51,6 +59,8 @@ export type AbilityTextDraft = { name: string; levels: string[] };
 
 export type HeroTextDraft = {
   obtain: string;
+  title: string;
+  bio: string;
   abilities: Record<HeroAbilityKind, AbilityTextDraft>;
   artifact: { name: string; text: string };
 };
@@ -83,6 +93,8 @@ function emptyAbilityText(): AbilityTextDraft {
 function emptyHeroText(): HeroTextDraft {
   return {
     obtain: "",
+    title: "",
+    bio: "",
     abilities: { skill: emptyAbilityText(), buff: emptyAbilityText(), production: emptyAbilityText() },
     artifact: { name: "", text: "" },
   };
@@ -138,6 +150,8 @@ export function fromHeroData(data: HeroData, catalogs: Partial<Record<Locale, He
       if (!local) continue;
       const draft = emptyHeroText();
       draft.obtain = local.obtain ?? "";
+      draft.title = local.title ?? "";
+      draft.bio = local.bio ?? "";
       for (const kind of HERO_ABILITY_KINDS) {
         draft.abilities[kind] = {
           name: local[kind]?.name ?? "",
@@ -153,6 +167,10 @@ export function fromHeroData(data: HeroData, catalogs: Partial<Record<Locale, He
       name: hero.name,
       rarity: hero.rarity,
       obtain: hero.obtain,
+      title: hero.title ?? "",
+      troop: (hero.troop ?? "") as EditorHero["troop"],
+      age: (hero.age ?? "") as EditorHero["age"],
+      bio: hero.bio ?? "",
       images: hero.images.map((file) => ({ uid: `i${nextId++}`, file })),
       abilities,
       artifact: hero.artifact ? { name: hero.artifact.name, text: hero.artifact.text } : null,
@@ -175,6 +193,8 @@ export function heroTextOf(state: HeroEditorState, locale: Locale, uid: string):
     }
     return {
       obtain: hero.obtain,
+      title: hero.title,
+      bio: hero.bio,
       abilities,
       artifact: { name: hero.artifact?.name ?? "", text: hero.artifact?.text ?? "" },
     };
@@ -267,7 +287,17 @@ export function exportHeroes(state: HeroEditorState, published: HeroData): HeroE
       uploads.push({ file, data: image.data ?? "", hero: hero.name.trim() || id });
       return file;
     });
-    const row: Hero = { id, name: hero.name.trim(), rarity: hero.rarity, obtain: hero.obtain.trim(), images };
+    const row: Hero = {
+      id,
+      name: hero.name.trim(),
+      rarity: hero.rarity,
+      obtain: hero.obtain.trim(),
+      images,
+    };
+    if (hero.title?.trim()) row.title = hero.title.trim();
+    if (hero.troop) row.troop = hero.troop;
+    if (hero.age) row.age = hero.age;
+    if (hero.bio?.trim()) row.bio = hero.bio.trim();
     for (const kind of HERO_ABILITY_KINDS) {
       const ability = cleanAbility(hero.abilities[kind]);
       if (ability) row[kind] = ability;
@@ -301,7 +331,20 @@ function groupEnd(heroes: readonly EditorHero[], rarity: HeroRarity, skipUid?: s
 
 export function addHero(state: HeroEditorState, rarity: HeroRarity, name = ""): { state: HeroEditorState; uid: string } {
   const uid = `h${state.nextId}`;
-  const hero: EditorHero = { uid, id: "", name, rarity, obtain: "", images: [], abilities: emptyAbilities(), artifact: null };
+  const hero: EditorHero = {
+    uid,
+    id: "",
+    name,
+    rarity,
+    obtain: "",
+    title: "",
+    troop: "",
+    age: "",
+    bio: "",
+    images: [],
+    abilities: emptyAbilities(),
+    artifact: null,
+  };
   const heroes = [...state.heroes];
   heroes.splice(groupEnd(heroes, rarity), 0, hero);
   return { state: { ...state, heroes, nextId: state.nextId + 1 }, uid };
@@ -314,7 +357,7 @@ export function removeHero(state: HeroEditorState, uid: string): HeroEditorState
 export function updateHero(
   state: HeroEditorState,
   uid: string,
-  patch: Partial<Pick<EditorHero, "name" | "rarity" | "obtain">>,
+  patch: Partial<Pick<EditorHero, "name" | "rarity" | "obtain" | "title" | "troop" | "age" | "bio">>,
 ): HeroEditorState {
   const current = heroByUid(state, uid);
   if (!current) return state;
@@ -488,7 +531,18 @@ export function serializeHeroData(data: HeroData): string {
   const rows = data.heroes.map((hero, index, all) => {
     const comma = index < all.length - 1 ? "," : "";
     const images = `[${hero.images.map(json).join(", ")}]`;
-    const head = `    { "id": ${json(hero.id)}, "name": ${json(hero.name)}, "rarity": ${json(hero.rarity)}, "obtain": ${json(hero.obtain)}, "images": ${images}`;
+    const fields = [
+      `"id": ${json(hero.id)}`,
+      `"name": ${json(hero.name)}`,
+      `"rarity": ${json(hero.rarity)}`,
+      `"obtain": ${json(hero.obtain)}`,
+      `"images": ${images}`,
+    ];
+    if (hero.title) fields.push(`"title": ${json(hero.title)}`);
+    if (hero.troop) fields.push(`"troop": ${json(hero.troop)}`);
+    if (hero.age) fields.push(`"age": ${json(hero.age)}`);
+    if (hero.bio) fields.push(`"bio": ${json(hero.bio)}`);
+    const head = `    { ${fields.join(", ")}`;
     const parts: string[] = [];
     for (const kind of HERO_ABILITY_KINDS) {
       const ability = hero[kind];
@@ -528,6 +582,10 @@ function cleanHeroText(hero: EditorHero, draft: HeroTextDraft): HeroTexts[string
   const entry: HeroTexts[string] = {};
   const obtain = draft.obtain.trim();
   if (obtain) entry.obtain = obtain;
+  const title = draft.title.trim();
+  if (title) entry.title = title;
+  const bio = draft.bio.trim();
+  if (bio) entry.bio = bio;
   for (const kind of HERO_ABILITY_KINDS) {
     // Nothing to translate for a slot the roster has no English text for.
     const english = cleanAbility(hero.abilities[kind]);
@@ -581,6 +639,8 @@ function formatHeroTexts(catalog: HeroTexts): string {
     const entry = catalog[id];
     lines.push(`        ${property(id)}: {`);
     if (entry.obtain) lines.push(`          obtain: ${json(entry.obtain)},`);
+    if (entry.title) lines.push(`          title: ${json(entry.title)},`);
+    if (entry.bio) lines.push(`          bio: ${json(entry.bio)},`);
     for (const kind of HERO_ABILITY_KINDS) {
       const text = entry[kind];
       if (text) lines.push(...formatAbilityText(kind, text));
@@ -682,7 +742,10 @@ function isAbilityText(value: unknown): value is AbilityTextDraft {
 
 function isHeroText(value: unknown): value is HeroTextDraft {
   const text = value as HeroTextDraft;
-  if (typeof text?.obtain !== "string" || typeof text.abilities !== "object" || text.abilities === null) return false;
+  if (typeof text?.obtain !== "string") return false;
+  if (text.title !== undefined && typeof text.title !== "string") return false;
+  if (text.bio !== undefined && typeof text.bio !== "string") return false;
+  if (typeof text.abilities !== "object" || text.abilities === null) return false;
   if (typeof text.artifact?.name !== "string" || typeof text.artifact.text !== "string") return false;
   return HERO_ABILITY_KINDS.every((kind) => isAbilityText(text.abilities[kind]));
 }
@@ -708,12 +771,23 @@ export function parseHeroDraft(raw: string | null): HeroEditorState | null {
       const catalog = value.texts[code];
       if (!catalog) continue;
       if (typeof catalog !== "object") return null;
-      for (const draft of Object.values(catalog)) if (!isHeroText(draft)) return null;
+      for (const draft of Object.values(catalog)) {
+        if (!isHeroText(draft)) return null;
+        draft.title = draft.title ?? "";
+        draft.bio = draft.bio ?? "";
+      }
       texts[code] = catalog;
     }
     for (const hero of value.heroes) {
       if (typeof hero.uid !== "string" || typeof hero.id !== "string" || typeof hero.name !== "string") return null;
       if (!RARITY_SET.has(hero.rarity) || typeof hero.obtain !== "string") return null;
+      hero.title = typeof hero.title === "string" ? hero.title : "";
+      hero.bio = typeof hero.bio === "string" ? hero.bio : "";
+      const troopOk = hero.troop === undefined || hero.troop === "" || HERO_TROOPS.includes(hero.troop as HeroTroop);
+      const ageOk = hero.age === undefined || hero.age === "" || HERO_AGES.includes(hero.age as HeroAge);
+      if (!troopOk || !ageOk) return null;
+      hero.troop = (hero.troop ?? "") as EditorHero["troop"];
+      hero.age = (hero.age ?? "") as EditorHero["age"];
       if (!Array.isArray(hero.images) || typeof hero.abilities !== "object" || hero.abilities === null) return null;
       for (const image of hero.images) {
         if (typeof image?.uid !== "string") return null;

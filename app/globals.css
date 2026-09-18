@@ -797,15 +797,20 @@ p { margin: 0; }
 .panel-category:hover { color: var(--accent); }
 .panel-link {
   position: relative;
-  display: grid;
-  gap: 2px;
+  display: block;
+  width: 100%;
   min-height: 38px;
   padding: 9px 12px 9px 14px;
+  border: 0;
   border-radius: var(--r-sm);
+  background: transparent;
   color: var(--ink-soft);
+  font-family: inherit;
   font-size: .86rem;
   font-weight: 550;
   letter-spacing: -.01em;
+  text-align: left;
+  cursor: pointer;
   transition: background-color .14s ease, color .14s ease, transform .16s ease;
 }
 .panel-link-title { min-width: 0; }
@@ -4021,7 +4026,22 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
 }
 .hero-detail-title { min-width: 0; }
 .hero-detail-title h2 { margin: 0 0 6px; font-size: 1.45rem; }
+.hero-detail-epithet {
+  margin: -2px 0 8px;
+  color: var(--ink-faint);
+  font-size: .95rem;
+  font-style: italic;
+}
 .hero-detail-title p { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0; }
+.hero-detail-fact {
+  color: var(--ink-faint);
+  font-size: .82rem;
+}
+.hero-bio {
+  margin: 0;
+  line-height: 1.55;
+  color: var(--ink);
+}
 .hero-obtain { color: var(--ink-soft); font-size: .82rem; }
 /* Reads as words rather than a colour, so it survives a greyscale screenshot. */
 .obtain-mark {

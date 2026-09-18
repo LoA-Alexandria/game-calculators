@@ -3,7 +3,9 @@ import { readdirSync, readFileSync } from "node:fs";
 import test from "node:test";
 
 import {
+  HERO_AGES,
   HERO_RARITIES,
+  HERO_TROOPS,
   HEROES,
   HERO_STAR_COSTS,
   heroImageUrl,
@@ -25,8 +27,8 @@ test("every portrait in the roster is a file in public/heroes and none is orphan
     assert.ok(file.endsWith(".webp") ? head.startsWith("RIFF") && head.endsWith("WEBP") : file.endsWith(".png"), `${file} is an image`);
   }
   for (const hero of HEROES) assert.ok(HERO_RARITIES.includes(hero.rarity), `${hero.name} has a known rarity`);
-  assert.equal(HEROES.filter((hero) => hero.images.length > 0).length, 74);
-  assert.deepEqual(heroNamed("Cleopatra")?.images, []);
+  assert.equal(HEROES.filter((hero) => hero.images.length > 0).length, 82);
+  assert.ok(heroNamed("Cleopatra")?.images[0]);
 });
 
 test("portraits resolve the tier list and layouts spelling of a hero", () => {
@@ -34,19 +36,19 @@ test("portraits resolve the tier list and layouts spelling of a hero", () => {
   assert.equal(heroPortrait("Isaac Newton"), heroImageUrl("isaac-newton.webp"));
   assert.equal(heroNamed("Gawain")?.name, "Gawain");
   assert.equal(heroNamed("  merlin ")?.id, "merlin");
-  assert.equal(heroPortrait("Cleopatra"), null);
-  assert.equal(heroPortrait("Augustus"), null);
-  assert.equal(heroPortrait("Alexander the Great"), null);
+  assert.ok(heroPortrait("Cleopatra"));
+  assert.ok(heroPortrait("Augustus"));
+  assert.ok(heroPortrait("Alexander the Great"));
   assert.equal(heroImageUrl("merlin.webp"), "/heroes/merlin.webp");
 });
 
 test("roster covers every wiki rarity and names the screenshot fills", () => {
-  assert.equal(heroesByRarity("UR+").length, 14);
-  assert.equal(heroesByRarity("UR").length, 15);
+  assert.equal(heroesByRarity("UR+").length, 15);
+  assert.equal(heroesByRarity("UR").length, 19);
   assert.equal(heroesByRarity("SSR").length, 18);
   assert.equal(heroesByRarity("SR").length, 18);
   assert.equal(heroesByRarity("R").length, 12);
-  assert.equal(HEROES.length, 77);
+  assert.equal(HEROES.length, 82);
   assert.equal(new Set(HEROES.map((hero) => hero.id)).size, HEROES.length);
   assert.equal(HEROES.some((hero) => JSON.stringify(hero).includes("Data pending")), false);
 
@@ -72,12 +74,33 @@ test("roster covers every wiki rarity and names the screenshot fills", () => {
   assert.equal(hermes?.obtain, "Tap Football");
   const alexander = HEROES.find((hero) => hero.id === "alexander-the-great");
   assert.equal(alexander?.rarity, "UR");
-  assert.deepEqual(alexander?.images, []);
+  assert.ok(alexander?.images[0]);
   assert.equal(alexander?.skill?.levels.length, 9);
   const augustus = HEROES.find((hero) => hero.id === "augustus");
   assert.equal(augustus?.rarity, "UR");
-  assert.deepEqual(augustus?.images, []);
+  assert.ok(augustus?.images[0]);
   assert.equal(augustus?.skill?.levels.length, 9);
+});
+
+test("wiki Hero page fills title, troop, age, and bio for every roster card", () => {
+  for (const hero of HEROES) {
+    assert.ok(hero.title?.trim(), `${hero.name} has a title`);
+    assert.ok(HERO_TROOPS.includes(hero.troop), `${hero.name} troop`);
+    assert.ok(HERO_AGES.includes(hero.age), `${hero.name} age`);
+    assert.ok(hero.bio?.trim(), `${hero.name} has a bio`);
+  }
+  assert.equal(HEROES.find((hero) => hero.id === "archimedes")?.title, "Lever Master");
+  assert.match(HEROES.find((hero) => hero.id === "billy-the-kid")?.bio ?? "", /Outlaw|Billy|Kid/i);
+});
+
+test("localized hero title and bio fall back to English", () => {
+  const archimedes = HEROES.find((hero) => hero.id === "archimedes");
+  const de = { archimedes: { title: "Meister des Hebels", bio: "Deutsche Bio." } };
+  const translated = localizedHero(archimedes, de);
+  assert.equal(translated.title, "Meister des Hebels");
+  assert.equal(translated.bio, "Deutsche Bio.");
+  assert.equal(translated.troop, archimedes.troop);
+  assert.equal(searchHeroes("Meister des Hebels", "all", [de]).some((hero) => hero.id === "archimedes"), true);
 });
 
 test("event heroes name the run of their event, and only heroes with one source name it", () => {
@@ -96,8 +119,17 @@ test("event heroes name the run of their event, and only heroes with one source 
   assert.equal(source("achilles"), "Campaign red chest");
   assert.equal(source("charles-the-great"), "Monument of Eternity and the guild shop");
 
-  // Every UR+ comes from one event, so none of them may be left blank.
-  for (const hero of heroesByRarity("UR+")) assert.ok(hero.obtain.trim(), `${hero.name} names a source`);
+  // Every UR+ comes from one event, so none of them may be left blank — except
+  // Billy the Kid, whose wiki card has no obtain line yet.
+  for (const hero of heroesByRarity("UR+")) {
+    if (hero.id === "billy-the-kid") {
+      assert.equal(hero.obtain, "");
+      continue;
+    }
+    assert.ok(hero.obtain.trim(), `${hero.name} names a source`);
+  }
+  assert.equal(source("guan-yu"), "Crown Vault");
+  assert.equal(source("lu-bu"), "Crown Vault");
   // The rest come from the shared pools, which the guide lists once.
   assert.equal(source("confucius"), "");
 });
@@ -136,6 +168,21 @@ test("game text falls back to English until a language overrides it", () => {
   assert.equal(searchHeroes("Eisdrachen", "all", [de]).map((hero) => hero.id).includes("merlin"), true);
   assert.equal(searchHeroes("Eisdrachen", "all").length, 0);
   assert.equal(searchHeroes("Ice Dragon", "all", [de]).map((hero) => hero.id).includes("merlin"), true);
+});
+
+test("published lore catalogs cover every hero with a wiki bio", async () => {
+  const { heroLoreTexts, mergeHeroTexts } = await import("../lib/content/heroes.ts");
+  for (const code of ["de", "fr"]) {
+    const lore = heroLoreTexts(code);
+    assert.equal(Object.keys(lore).length, HEROES.length, `${code} lore`);
+    for (const hero of HEROES) {
+      assert.ok(lore[hero.id]?.title?.trim(), `${code} ${hero.id} title`);
+      assert.ok(lore[hero.id]?.bio?.trim(), `${code} ${hero.id} bio`);
+    }
+  }
+  const merged = mergeHeroTexts({ archimedes: { obtain: "Pool" } }, heroLoreTexts("de"));
+  assert.equal(merged.archimedes.obtain, "Pool");
+  assert.equal(merged.archimedes.title, heroLoreTexts("de").archimedes.title);
 });
 
 test("every published dictionary keys its hero texts to a hero in the roster", async () => {

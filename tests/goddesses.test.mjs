@@ -8,10 +8,12 @@ import {
   GODDESS_RARITIES,
   GODDESSES,
   goddessImageUrl,
+  goddessLoreTexts,
   goddessNamed,
   goddessPortrait,
   goddessesByRarity,
   localizedGoddess,
+  mergeGoddessTexts,
   searchGoddesses,
 } from "../lib/content/goddesses.ts";
 import { guideLayout } from "../lib/content/guides.ts";
@@ -32,20 +34,20 @@ test("every portrait in the goddess roster is a file in public/goddesses and non
   for (const goddess of GODDESSES) {
     assert.ok(GODDESS_RARITIES.includes(goddess.rarity), `${goddess.name} has a known rarity`);
   }
-  assert.equal(GODDESSES.length, 21);
+  assert.equal(GODDESSES.length, 22);
   assert.equal(new Set(GODDESSES.map((goddess) => goddess.id)).size, GODDESSES.length);
-  assert.deepEqual(goddessNamed("Bastet")?.images, []);
+  assert.deepEqual(goddessNamed("Bastet")?.images, ["bastet.webp"]);
   assert.deepEqual(goddessNamed("Hera")?.images, ["hera.webp"]);
-  // Autumn's obtain guide named these two, who are not on the wiki page.
-  assert.deepEqual(goddessNamed("Isis")?.images, []);
-  assert.deepEqual(goddessNamed("Calypso")?.images, []);
+  assert.deepEqual(goddessNamed("Isis")?.images, ["isis.webp"]);
+  assert.deepEqual(goddessNamed("Calypso")?.images, ["calypso.webp"]);
+  assert.deepEqual(goddessNamed("Lilith")?.images, ["lilith.webp"]);
 });
 
 test("a goddess is marked missable or unconfirmed, never both", () => {
   const missable = GODDESSES.filter((goddess) => goddess.missable).map((goddess) => goddess.name);
   const unconfirmed = GODDESSES.filter((goddess) => goddess.unconfirmed).map((goddess) => goddess.name);
   assert.deepEqual(missable.sort(), ["Freya", "Isis"]);
-  assert.deepEqual(unconfirmed.sort(), ["Calypso", "Hera"]);
+  assert.deepEqual(unconfirmed.sort(), ["Calypso", "Hera", "Lilith"]);
   for (const goddess of GODDESSES) {
     assert.ok(!(goddess.missable && goddess.unconfirmed), `${goddess.name} carries one mark at most`);
   }
@@ -58,19 +60,44 @@ test("a goddess is marked missable or unconfirmed, never both", () => {
 test("portraits resolve roster names and skip names that are not in the roster", () => {
   assert.equal(goddessPortrait("Lady Liberty"), goddessImageUrl("lady-liberty.webp"));
   assert.equal(goddessPortrait("  hera "), goddessImageUrl("hera.webp"));
-  assert.equal(goddessPortrait("Bastet"), null);
-  assert.equal(goddessPortrait("Calypso"), null);
+  assert.equal(goddessPortrait("Bastet"), goddessImageUrl("bastet.webp"));
+  assert.equal(goddessPortrait("Calypso"), goddessImageUrl("calypso.webp"));
   assert.equal(goddessPortrait("Everyone else"), null);
   assert.equal(goddessImageUrl("hera.webp"), "/goddesses/hera.webp");
 });
 
 test("roster covers the wiki rarities and skins that raise to SSR", () => {
-  assert.equal(goddessesByRarity("SSR").length, 10);
+  assert.equal(goddessesByRarity("SSR").length, 11);
   assert.equal(goddessesByRarity("SR").length, 7);
   assert.equal(goddessesByRarity("R").length, 4);
   assert.equal(GODDESSES.filter((goddess) => goddess.skinRaisesTo === "SSR").length, 7);
   assert.equal(goddessNamed("Brunhild")?.skinRaisesTo, "SSR");
   assert.equal(goddessNamed("Venus")?.skinRaisesTo, undefined);
+});
+
+test("wiki Goddess page fills title and bio for every roster card", () => {
+  for (const goddess of GODDESSES) {
+    assert.ok(goddess.title?.trim(), `${goddess.name} has a title`);
+    assert.ok(goddess.bio?.trim(), `${goddess.name} has a bio`);
+  }
+  assert.equal(goddessNamed("Bastet")?.title, "Cat Goddess");
+  assert.match(goddessNamed("Lilith")?.bio ?? "", /Lilith|medicine|patients/i);
+});
+
+test("localized goddess title and bio fall back to English", () => {
+  const bastet = goddessNamed("Bastet");
+  const de = { bastet: { title: "Katzengöttin", bio: "Deutsche Bio." } };
+  const translated = localizedGoddess(bastet, de);
+  assert.equal(translated.title, "Katzengöttin");
+  assert.equal(translated.bio, "Deutsche Bio.");
+  assert.equal(translated.obtain, bastet.obtain);
+  assert.equal(
+    searchGoddesses("Katzengöttin", "all", (goddess) => {
+      const text = localizedGoddess(goddess, de);
+      return `${text.title} ${text.bio}`;
+    }).some((goddess) => goddess.id === "bastet"),
+    true,
+  );
 });
 
 test("affinity and obtain are English in the roster and translated by id in every other language", () => {
@@ -85,8 +112,10 @@ test("affinity and obtain are English in the roster and translated by id in ever
   }
   assert.equal(goddessNamed("Venus")?.obtain, "First top-up, $2.50");
   assert.equal(goddessNamed("Bastet")?.affinity, "");
+  assert.equal(goddessNamed("Lilith")?.obtain, "Not confirmed yet");
   const german = LANGUAGES.de.guideEntries.goddesses.goddessTexts;
   assert.equal(localizedGoddess(goddessNamed("Venus"), german).obtain, "Erste Aufladung, 2,50 $");
+  assert.equal(localizedGoddess(goddessNamed("Lilith"), german).obtain, "Noch nicht bestätigt");
   // An empty translation falls back to English rather than showing nothing.
   assert.equal(localizedGoddess(goddessNamed("Venus"), { venus: { obtain: " " } }).obtain, "First top-up, $2.50");
 });
@@ -113,9 +142,24 @@ test("goddess search matches affinity and obtain from the current language", () 
   assert.equal(searchGoddesses("bastet", "SSR", extra).map((goddess) => goddess.id).join(), "bastet");
 });
 
+test("published lore catalogs cover every goddess with a wiki bio", () => {
+  for (const code of ["de", "fr"]) {
+    const lore = goddessLoreTexts(code);
+    assert.equal(Object.keys(lore).length, GODDESSES.length, `${code} lore`);
+    for (const goddess of GODDESSES) {
+      assert.ok(lore[goddess.id]?.title?.trim(), `${code} ${goddess.id} title`);
+      assert.ok(lore[goddess.id]?.bio?.trim(), `${code} ${goddess.id} bio`);
+    }
+  }
+  const merged = mergeGoddessTexts({ bastet: { obtain: "Ring Toss" } }, goddessLoreTexts("de"));
+  assert.equal(merged.bastet.obtain, "Ring Toss");
+  assert.equal(merged.bastet.title, goddessLoreTexts("de").bastet.title);
+});
+
 test("goddesses keep their own layout although they share the heroes filter keys", () => {
   assert.equal(guideLayout(en.guideEntries.goddesses), "goddesses");
   assert.equal("filterAll" in en.guideEntries.goddesses, true);
+  assert.equal("bioHeading" in en.guideEntries.goddesses, true);
   assert.equal("goddessTexts" in en.guideEntries.heroes, false);
 });
 

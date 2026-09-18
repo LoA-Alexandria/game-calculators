@@ -47,150 +47,109 @@ export const SECTIONS: NavSection[] = [
     description: (t) => t.navDescriptions.events,
     icon: "events",
     /**
-     * Event guides and tips land here with `badge` + `categoryId` from
-     * `eventCategories` (`anleitungen` | `tips`). The schedule calendar lives
-     * on the overview, not in this section.
+     * Event write-ups as a flat list. The schedule calendar lives on the
+     * overview, not in this section.
      */
     items: [
       {
         href: "/events/atlantis/",
         label: (t) => t.eventGuideEntries.atlantis.title,
         description: (t) => t.eventGuideEntries.atlantis.summary,
-        badge: (t) => t.eventCategories.tips,
-        categoryId: "tips",
       },
       {
         href: "/events/spring-returns/",
         label: (t) => t.eventGuideEntries.springReturns.title,
         description: (t) => t.eventGuideEntries.springReturns.summary,
-        badge: (t) => t.eventCategories.tips,
-        categoryId: "tips",
       },
       {
         href: "/events/holy-grail/",
         label: (t) => t.eventGuideEntries.holyGrail.title,
         description: (t) => t.eventGuideEntries.holyGrail.summary,
-        badge: (t) => t.eventCategories.tips,
-        categoryId: "tips",
       },
       {
         href: "/events/monument-of-eternity/",
         label: (t) => t.eventGuideEntries.monumentOfEternity.title,
         description: (t) => t.eventGuideEntries.monumentOfEternity.summary,
-        badge: (t) => t.eventCategories.tips,
-        categoryId: "tips",
       },
       {
         href: "/events/supply-reform/",
         label: (t) => t.eventGuideEntries.supplyReform.title,
         description: (t) => t.eventGuideEntries.supplyReform.summary,
-        badge: (t) => t.eventCategories.tips,
-        categoryId: "tips",
       },
       {
         href: "/events/trials-of-odin/",
         label: (t) => t.eventGuideEntries.trialsOfOdin.title,
         description: (t) => t.eventGuideEntries.trialsOfOdin.summary,
-        badge: (t) => t.eventCategories.tips,
-        categoryId: "tips",
       },
       {
         href: "/events/astral-wonderland/",
         label: (t) => t.eventGuideEntries.astralWonderland.title,
         description: (t) => t.eventGuideEntries.astralWonderland.summary,
-        badge: (t) => t.eventCategories.tips,
-        categoryId: "tips",
       },
       {
         href: "/events/mushroom-adventure/",
         label: (t) => t.eventGuideEntries.mushroomAdventure.title,
         description: (t) => t.eventGuideEntries.mushroomAdventure.summary,
-        badge: (t) => t.eventCategories.tips,
-        categoryId: "tips",
       },
       {
         href: "/events/great-flood/",
         label: (t) => t.eventGuideEntries.greatFlood.title,
         description: (t) => t.eventGuideEntries.greatFlood.summary,
-        badge: (t) => t.eventCategories.tips,
-        categoryId: "tips",
       },
       {
         href: "/events/dawn-of-rome/",
         label: (t) => t.eventGuideEntries.dawnOfRome.title,
         description: (t) => t.eventGuideEntries.dawnOfRome.summary,
-        badge: (t) => t.eventCategories.tips,
-        categoryId: "tips",
       },
       {
         href: "/events/ring-toss/",
         label: (t) => t.eventGuideEntries.ringToss.title,
         description: (t) => t.eventGuideEntries.ringToss.summary,
-        badge: (t) => t.eventCategories.tips,
-        categoryId: "tips",
       },
       {
         href: "/events/life-incubator/",
         label: (t) => t.eventGuideEntries.lifeIncubator.title,
         description: (t) => t.eventGuideEntries.lifeIncubator.summary,
-        badge: (t) => t.eventCategories.tips,
-        categoryId: "tips",
       },
       {
         href: "/events/road-to-worldcup/",
         label: (t) => t.eventGuideEntries.roadToWorldcup.title,
         description: (t) => t.eventGuideEntries.roadToWorldcup.summary,
-        badge: (t) => t.eventCategories.tips,
-        categoryId: "tips",
       },
       {
         href: "/events/duel-festival/",
         label: (t) => t.eventGuideEntries.duelFestival.title,
         description: (t) => t.eventGuideEntries.duelFestival.summary,
-        badge: (t) => t.eventCategories.tips,
-        categoryId: "tips",
       },
       {
         href: "/events/mayan-ruins/",
         label: (t) => t.eventGuideEntries.mayanRuins.title,
         description: (t) => t.eventGuideEntries.mayanRuins.summary,
-        badge: (t) => t.eventCategories.tips,
-        categoryId: "tips",
       },
       {
         href: "/events/peak-of-enlightenment/",
         label: (t) => t.eventGuideEntries.peakOfEnlightenment.title,
         description: (t) => t.eventGuideEntries.peakOfEnlightenment.summary,
-        badge: (t) => t.eventCategories.tips,
-        categoryId: "tips",
       },
       {
         href: "/events/red-carpet/",
         label: (t) => t.eventGuideEntries.redCarpet.title,
         description: (t) => t.eventGuideEntries.redCarpet.summary,
-        badge: (t) => t.eventCategories.tips,
-        categoryId: "tips",
       },
       {
         href: "/events/global-regatta/",
         label: (t) => t.eventGuideEntries.globalRegatta.title,
         description: (t) => t.eventGuideEntries.globalRegatta.summary,
-        badge: (t) => t.eventCategories.tips,
-        categoryId: "tips",
       },
       {
         href: "/events/heart-of-gold/",
         label: (t) => t.eventGuideEntries.heartOfGold.title,
         description: (t) => t.eventGuideEntries.heartOfGold.summary,
-        badge: (t) => t.eventCategories.tips,
-        categoryId: "tips",
       },
       {
         href: "/events/spring-returns-planting/",
         label: (t) => t.eventGuideEntries.springReturnsPlanting.title,
         description: (t) => t.eventGuideEntries.springReturnsPlanting.summary,
-        badge: (t) => t.eventCategories.tips,
-        categoryId: "tips",
       },
     ],
   },
@@ -233,13 +192,6 @@ export const SECTIONS: NavSection[] = [
         href: "/guides/manor/",
         label: (t) => t.guideEntries.manor.title,
         description: (t) => t.guideEntries.manor.summary,
-        badge: (t) => t.guideCategories.coreElements,
-        categoryId: "coreElements",
-      },
-      {
-        href: "/guides/support/",
-        label: (t) => t.guideEntries.support.title,
-        description: (t) => t.guideEntries.support.summary,
         badge: (t) => t.guideCategories.coreElements,
         categoryId: "coreElements",
       },
@@ -341,6 +293,13 @@ export const SECTIONS: NavSection[] = [
         badge: (t) => t.guideCategories.tips,
         categoryId: "tips",
       },
+      {
+        href: "/guides/ads-buy/",
+        label: (t) => t.guideEntries.adsBuy.title,
+        description: (t) => t.guideEntries.adsBuy.summary,
+        badge: (t) => t.guideCategories.tips,
+        categoryId: "tips",
+      },
     ],
   },
   {
@@ -415,23 +374,10 @@ export function guideCount(): number {
   return sectionById("guides").items.length;
 }
 
-/** Stable Events index categories, in display order. */
-export const EVENT_CATEGORY_IDS = ["anleitungen", "tips"] as const;
-export type EventCategoryId = (typeof EVENT_CATEGORY_IDS)[number];
-
-/** Empty groups for the Events index and sidebar, filled once items exist. */
-export function eventCategoryGroups(t: Dictionary, items = sectionById("events").items): NavGroup[] {
-  const byId = new Map(groupByBadge(items, t, t.events.other).map((group) => [group.id, group]));
-  return EVENT_CATEGORY_IDS.map((id) => ({
-    id,
-    category: t.eventCategories[id],
-    items: byId.get(id)?.items ?? [],
-  }));
-}
-
 /**
- * Whether the sidebar browse panel should open for this section. Guides and
- * Events use nested categories, so they open even with no items yet.
+ * Whether the sidebar browse panel should open for this section. Guides use
+ * nested categories, so they open even with no items yet. Events stay open so
+ * the index is reachable while the list is empty.
  */
 export function sectionHasBrowsePanel(section: NavSection): boolean {
   if (section.id === "guides" || section.id === "events") return true;

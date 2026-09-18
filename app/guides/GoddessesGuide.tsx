@@ -10,16 +10,20 @@ import {
   goddessImageUrl,
   goddessNamed,
   goddessesByRarity,
+  goddessLoreTexts,
   localizedGoddess,
+  mergeGoddessTexts,
   searchGoddesses,
   type Goddess,
   type GoddessRarity,
+  type GoddessTexts,
 } from "../../lib/content/goddesses";
 import { GODDESS_SKIN_GROUPS, GODDESS_SKINS, skinSearchText, skinsFor } from "../../lib/content/skins";
 import { fill, type Dictionary } from "../../lib/i18n";
 import { sectionById } from "../../lib/navigation";
 import { ChevronIcon, CloseIcon } from "../components/Icons";
 import { HeroPortrait } from "../components/HeroPortrait";
+import { useLocale } from "../components/LocaleProvider";
 import { ToolCard } from "../components/Ui";
 import { counted } from "./HeroRoster";
 import { ObtainMark } from "./ObtainMark";
@@ -105,16 +109,21 @@ function GoddessTile({ goddess, guide, onOpen }: { goddess: Goddess; guide: Guid
 }
 
 export function GoddessesGuide({ guide }: { guide: Guide }) {
+  const { locale } = useLocale();
   const tools = sectionById("calculators").items.filter((item) => item.href.includes("goddess"));
   const [rarity, setRarity] = useState<GoddessRarity | "all">("all");
   const [query, setQuery] = useState("");
+  const texts = useMemo(
+    () => mergeGoddessTexts(guide.goddessTexts, goddessLoreTexts(locale)),
+    [guide.goddessTexts, locale],
+  );
   const rows = useMemo(
     () =>
       searchGoddesses(query, rarity, (goddess) => {
-        const text = localizedGoddess(goddess, guide.goddessTexts);
-        return `${text.affinity} ${text.obtain} ${skinSearchText(goddess.name, GODDESS_SKINS, [guide.skinTexts])}`;
+        const text = localizedGoddess(goddess, texts);
+        return `${text.affinity} ${text.obtain} ${text.title} ${text.bio} ${skinSearchText(goddess.name, GODDESS_SKINS, [guide.skinTexts])}`;
       }),
-    [query, rarity, guide],
+    [query, rarity, texts, guide.skinTexts],
   );
   const grouped = rarity === "all" && !query.trim();
 
@@ -266,6 +275,7 @@ export function GoddessesGuide({ guide }: { guide: Guide }) {
           key={open.id}
           goddess={open}
           guide={guide}
+          texts={texts}
           list={stepList}
           onStep={(goddess) => stepGoddessHash(goddess.id)}
           onClose={closeGoddessHash}
@@ -278,12 +288,14 @@ export function GoddessesGuide({ guide }: { guide: Guide }) {
 function GoddessDialog({
   goddess,
   guide,
+  texts,
   list,
   onStep,
   onClose,
 }: {
   goddess: Goddess;
   guide: Guide;
+  texts: GoddessTexts;
   list: readonly Goddess[];
   onStep: (goddess: Goddess) => void;
   onClose: () => void;
@@ -297,7 +309,7 @@ function GoddessDialog({
   const index = list.findIndex((entry) => entry.id === goddess.id);
   const previous = index > 0 ? list[index - 1] : null;
   const next = index >= 0 && index < list.length - 1 ? list[index + 1] : null;
-  const text = localizedGoddess(goddess, guide.goddessTexts);
+  const text = localizedGoddess(goddess, texts);
   const file = goddess.images[0];
   const [shown, setShown] = useState(0);
   const current = goddess.images[shown] ?? file;
@@ -334,6 +346,7 @@ function GoddessDialog({
         <HeroPortrait name={goddess.name} rarity={goddess.rarity} src={current ? goddessImageUrl(current) : null} className="hero-portrait-large" />
         <div className="hero-detail-title">
           <h2 id={`${id}-name`}>{goddess.name}</h2>
+          {text.title ? <p className="hero-detail-epithet">{text.title}</p> : null}
           <p>
             <span className="rarity" data-rarity={goddess.rarity}>{goddess.rarity}</span>
             <ObtainBadge goddess={goddess} guide={guide} />
@@ -359,6 +372,12 @@ function GoddessDialog({
         </div>
       </header>
       <div className="hero-detail-body">
+        {text.bio ? (
+          <>
+            <h3>{guide.bioHeading}</h3>
+            <p className="hero-bio">{text.bio}</p>
+          </>
+        ) : null}
         <h3>{guide.colAffinity}</h3>
         <p>{text.affinity || "—"}</p>
         <h3>{guide.colObtain}</h3>

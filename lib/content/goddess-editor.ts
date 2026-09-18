@@ -43,6 +43,8 @@ export type EditorGoddess = {
   rarity: GoddessRarity;
   affinity: string;
   obtain: string;
+  title: string;
+  bio: string;
   images: EditorImage[];
   skinRaisesToSsr: boolean;
   mark: GoddessMark;
@@ -126,6 +128,8 @@ export function fromGoddessData(data: GoddessData, catalogs: Partial<Record<Loca
       rarity: goddess.rarity,
       affinity: goddess.affinity,
       obtain: goddess.obtain,
+      title: goddess.title ?? "",
+      bio: goddess.bio ?? "",
       images: goddess.images.map((file) => ({ uid: `i${nextId++}`, file })),
       skinRaisesToSsr: goddess.skinRaisesTo === "SSR",
       mark: markOf(goddess),
@@ -181,6 +185,8 @@ export function addGoddess(state: GoddessEditorState, rarity: GoddessRarity, nam
     rarity,
     affinity: "",
     obtain: "",
+    title: "",
+    bio: "",
     images: [],
     skinRaisesToSsr: false,
     mark: "none",
@@ -310,6 +316,8 @@ export function exportGoddesses(state: GoddessEditorState, published: GoddessDat
       obtain: goddess.obtain.trim(),
       images,
     };
+    if (goddess.title.trim()) row.title = goddess.title.trim();
+    if (goddess.bio.trim()) row.bio = goddess.bio.trim();
     if (goddess.skinRaisesToSsr) row.skinRaisesTo = "SSR";
     if (goddess.mark === "missable") row.missable = true;
     if (goddess.mark === "unconfirmed") row.unconfirmed = true;
@@ -332,6 +340,8 @@ export function serializeGoddessData(data: GoddessData): string {
       `"obtain": ${json(goddess.obtain)}`,
       `"images": [${goddess.images.map(json).join(", ")}]`,
     ];
+    if (goddess.title) parts.push(`"title": ${json(goddess.title)}`);
+    if (goddess.bio) parts.push(`"bio": ${json(goddess.bio)}`);
     if (goddess.skinRaisesTo) parts.push(`"skinRaisesTo": ${json(goddess.skinRaisesTo)}`);
     if (goddess.missable) parts.push(`"missable": true`);
     if (goddess.unconfirmed) parts.push(`"unconfirmed": true`);
@@ -473,6 +483,8 @@ export function parseGoddessDraft(raw: string | null): GoddessEditorState | null
       if (typeof goddess.uid !== "string" || typeof goddess.id !== "string" || typeof goddess.name !== "string") return null;
       if (!RARITY_SET.has(goddess.rarity) || !MARK_SET.has(goddess.mark)) return null;
       if (typeof goddess.affinity !== "string" || typeof goddess.obtain !== "string") return null;
+      goddess.title = typeof goddess.title === "string" ? goddess.title : "";
+      goddess.bio = typeof goddess.bio === "string" ? goddess.bio : "";
       if (typeof goddess.skinRaisesToSsr !== "boolean" || !Array.isArray(goddess.images)) return null;
       for (const image of goddess.images) {
         if (typeof image?.uid !== "string") return null;
