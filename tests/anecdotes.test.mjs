@@ -48,7 +48,7 @@ const PIXEL = "data:image/webp;base64,UklGRhoAAABXRUJQVlA4TA0AAAAvAAAAEAcQERGIiP
 const others = LOCALE_CODES.filter((code) => code !== DEFAULT_LOCALE);
 
 test("the anecdote list is well formed", () => {
-  assert.equal(ANECDOTES.length, 50);
+  assert.equal(ANECDOTES.length, 53);
   const ids = new Set();
   for (const anecdote of ANECDOTES) {
     assert.match(anecdote.id, /^[a-z0-9]+(?:-[a-z0-9]+)*$/, anecdote.id);
@@ -204,7 +204,7 @@ test("translations stay on their step when steps move or are removed", () => {
   }
   assert.deepEqual(texts[DEFAULT_LOCALE], {});
   const blocks = anecdoteTextBlocks(state);
-  assert.match(blocks.de, /^      anecdoteTexts: \{\n        "cat-tax": \{\n          name: "Katzensteuer",/);
+  assert.match(blocks.de, /"cat-tax": \{\n          name: "Katzensteuer"/);
   assert.equal(countAnecdoteChanges(PUBLISHED_ANECDOTES, state), 1);
 
   // The published list with that translation reads back into the same draft text.
@@ -223,10 +223,10 @@ test("chain links cannot loop, and anecdotes move only within their group", () =
   assert.ok(options.includes("river-gods-gift"));
   assert.equal(setAfter(PUBLISHED_ANECDOTES, jackals.uid, byId("stone-pet").uid), PUBLISHED_ANECDOTES);
 
-  const lastGeneral = byId("undelivered-photos");
+  const lastGeneral = byId("pre-easter-trouble");
   assert.equal(moveAnecdote(PUBLISHED_ANECDOTES, lastGeneral.uid, 1), PUBLISHED_ANECDOTES, "it does not cross into Egyptian Tales");
   const moved = moveAnecdote(PUBLISHED_ANECDOTES, lastGeneral.uid, -1);
-  assert.equal(moved.anecdotes.at(24).uid, byId("ocean-voyage-blocks").uid);
+  assert.equal(moved.anecdotes.at(27).uid, byId("da-vincis-palette").uid);
   assert.equal(countAnecdoteChanges(PUBLISHED_ANECDOTES, moved), 1, "a new order counts as one change");
 });
 

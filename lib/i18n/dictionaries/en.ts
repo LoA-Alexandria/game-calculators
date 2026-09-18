@@ -1147,7 +1147,7 @@ const en = {
       linkLabel: "Link to {anecdote}",
       anecdoteTexts: {},
       credit:
-        "Anecdote guide by Autumn (Ice, S12), shared on Discord and last added to on 10 September 2026, with help from Kraes, Zee, and Spitzell on Egyptian Tales and from Popo. The wording was tidied without changing the steps; where the guide has a gap, a note says so.",
+        "Anecdote steps by Autumn (Ice, S12), shared on Discord and last added to on 10 September 2026, with help from Kraes, Zee, and Spitzell on Egyptian Tales and from Popo. Pictures and three further general anecdotes from the Pop Epoch Wiki Anecdote page (Fandom) as of 18 September 2026. The artwork belongs to the game’s publisher and is shown here for free, non-commercial community guides. The wording was tidied without changing the steps; where the guide has a gap, a note says so.",
       sections: [
         {
           heading: "Before you start",

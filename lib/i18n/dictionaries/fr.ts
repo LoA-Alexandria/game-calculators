@@ -1699,9 +1699,46 @@ const fr: Dictionary = {
       imagePending: "Pas encore d’image",
       imageOpen: "Ouvrir l’image de {anecdote}",
       linkLabel: "Lien vers {anecdote}",
-      anecdoteTexts: {},
+      anecdoteTexts: {
+        "the-apple-is-innocent": {
+          name: "La pomme est innocente",
+          prerequisite: "Niveau de civilisation atteint 18",
+          steps: [
+            { text: "Dans le jalon d’Odin, un serpent a volé une pomme." },
+            { text: "Une pomme semble avoir poussé sur l’arbre-monde." },
+          ],
+        },
+        "da-vincis-palette": {
+          name: "La palette de Da Vinci",
+          prerequisite: "Passer à l’âge de la Renaissance",
+          steps: [
+            {
+              text: "Ouvrez l’appareil volant posé près des montagnes et préparez-vous aux nuages de gaz colorés.",
+            },
+          ],
+        },
+        "pre-easter-trouble": {
+          name: "Souci avant Pâques",
+          prerequisite: "Participer à : Where is the Bunny?",
+          steps: [
+            {
+              text: "Regardez ! Nike est arrivée en ville, même en tenue de Pâques.",
+            },
+          ],
+        },
+        "femme-fatales-gift": {
+          steps: [
+            {
+              text: "La récolte de pierre semble un peu étrange. Regardez de plus près !",
+            },
+          ],
+        },
+        "glory-supercedes-blood": {
+          name: "La gloire surpasse le sang",
+        },
+      },
       credit:
-        "Guide des anecdotes par Autumn (Ice, S12), partagé sur Discord et complété pour la dernière fois le 10 septembre 2026, avec l’aide de Kraes, Zee et Spitzell pour Egyptian Tales et de Popo. La formulation a été retouchée sans changer les étapes ; quand le guide a un trou, une remarque le signale.",
+        "Étapes d’anecdotes par Autumn (Ice, S12), partagées sur Discord et complétées pour la dernière fois le 10 septembre 2026, avec l’aide de Kraes, Zee et Spitzell pour Egyptian Tales et de Popo. Images et trois anecdotes générales supplémentaires issues de la page Anecdote du wiki Pop Epoch (Fandom) au 18 septembre 2026. Les illustrations appartiennent à l’éditeur du jeu et figurent ici dans des guides communautaires gratuits et non commerciaux. La formulation a été retouchée sans changer les étapes ; quand le guide a un trou, une remarque le signale.",
       sections: [
         {
           heading: "Avant de commencer",

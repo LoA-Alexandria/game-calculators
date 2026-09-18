@@ -3978,9 +3978,46 @@ const de: Dictionary = {
       imagePending: "Noch kein Bild",
       imageOpen: "Bild zu {anecdote} öffnen",
       linkLabel: "Link zu {anecdote}",
-      anecdoteTexts: {},
+      anecdoteTexts: {
+        "the-apple-is-innocent": {
+          name: "Der Apfel ist unschuldig",
+          prerequisite: "Zivilisationsstufe erreicht 18",
+          steps: [
+            { text: "In Odins Meilenstein hat eine Schlange einen Apfel gestohlen." },
+            { text: "Am Weltenbaum scheint ein Apfel gewachsen zu sein." },
+          ],
+        },
+        "da-vincis-palette": {
+          name: "Da Vincis Palette",
+          prerequisite: "Renaissance-Zeitalter erreichen",
+          steps: [
+            {
+              text: "Öffne das Fluggerät, das bei den Bergen gelandet ist, und mach dich auf bunte Gaswolken gefasst.",
+            },
+          ],
+        },
+        "pre-easter-trouble": {
+          name: "Vorösterlicher Ärger",
+          prerequisite: "Am Event „Where is the Bunny?“ teilnehmen",
+          steps: [
+            {
+              text: "Schau! Nike ist in die Stadt gekommen — und sogar im Oster-Outfit.",
+            },
+          ],
+        },
+        "femme-fatales-gift": {
+          steps: [
+            {
+              text: "Das Steinesammeln wirkt etwas seltsam. Schau genauer hin!",
+            },
+          ],
+        },
+        "glory-supercedes-blood": {
+          name: "Ruhm übertrifft Blut",
+        },
+      },
       credit:
-        "Anekdoten-Guide von Autumn (Ice, S12), geteilt auf Discord und zuletzt am 10. September 2026 ergänzt, mit Hilfe von Kraes, Zee und Spitzell bei Egyptian Tales und von Popo. Der Wortlaut wurde geglättet, ohne die Schritte zu ändern; wo der Guide eine Lücke hat, steht ein Hinweis.",
+        "Anekdoten-Schritte von Autumn (Ice, S12), geteilt auf Discord und zuletzt am 10. September 2026 ergänzt, mit Hilfe von Kraes, Zee und Spitzell bei Egyptian Tales und von Popo. Bilder und drei weitere allgemeine Anekdoten von der Pop-Epoch-Wiki-Seite Anecdote (Fandom) Stand 18. September 2026. Die Artwork gehört dem Publisher und steht hier für kostenlose, nicht-kommerzielle Community-Guides. Der Wortlaut wurde geglättet, ohne die Schritte zu ändern; wo der Guide eine Lücke hat, steht ein Hinweis.",
       sections: [
         {
           heading: "Bevor du anfängst",
