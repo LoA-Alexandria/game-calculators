@@ -40,6 +40,31 @@ AGES = {
 }
 
 
+# Encyclopedia bios that open with a fuller historical name than the roster card.
+BIO_OPENERS = {
+    "Caesar": "Julius Caesar",
+    "Queen Victoria": "Alexandrina Victoria",
+    "Isaac Newton": "Sir Isaac Newton",
+    "Charles the Great": "Charlemagne",
+    "Da Vinci": "Leonardo da Vinci",
+    "Beethoven": "Ludwig van Beethoven",
+    "Franklin": "Benjamin Franklin",
+    "Columbus": "Christopher Columbus",
+    "Eleanor of Aquitaine": "Eleanor Aquitaine",
+    "Thomas Edison": "Thomas Alva Edison",
+    "Mary I": "Mary Stuart",
+    "Wallace": "William Wallace",
+    "Catherine de'Medici": "Catherine de' Medici",
+}
+
+
+def bio_names_hero(name: str, bio: str) -> bool:
+    if bio.lower().startswith(name.lower()):
+        return True
+    opener = BIO_OPENERS.get(name)
+    return bool(opener and bio.lower().startswith(opener.lower()))
+
+
 def slugify(name: str) -> str:
     text = (
         name.casefold()
@@ -227,6 +252,10 @@ def main() -> None:
         hero["troop"] = card["troop"]
         hero["age"] = card["age"]
         hero["bio"] = card["bio"]
+        # The Fandom Hero page has had a shifted UR+ bio block (Lagertha through
+        # Hermes). Refuse to copy a blurb that does not name this card.
+        if not bio_names_hero(hero["name"], card["bio"]):
+            print(f"WARN bio subject mismatch {hero['id']}: {card['bio'][:60]}")
 
     # Keep the published order; new heroes were inserted at the end of their
     # rarity group by append + a pass that only moves brand-new rows.

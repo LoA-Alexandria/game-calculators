@@ -5,11 +5,14 @@ import test from "node:test";
 import {
   COLLECTION_ITEMS,
   COLLECTION_RARITIES,
+  EXCLUSIVE_COLLECTION_HEROES,
   collectionImageUrl,
+  exclusiveCollectionForHero,
   itemsByRarity,
   localizedItem,
   searchCollection,
 } from "../lib/content/collection.ts";
+import { HEROES } from "../lib/content/heroes.ts";
 import { guideLayout } from "../lib/content/guides.ts";
 import { getDictionary, mapLocales } from "../lib/i18n/index.ts";
 
@@ -82,5 +85,17 @@ test("search finds items by name, skill, or effect in the reader's language and 
 test("the Collection guide uses its own layout", () => {
   for (const dictionary of Object.values(LANGUAGES)) {
     assert.equal(guideLayout(dictionary.guideEntries.collection), "collection");
+  }
+});
+
+test("every exclusive UR item names one roster hero, and no hero has two", () => {
+  const heroIds = new Set(HEROES.map((hero) => hero.id));
+  const claimed = Object.values(EXCLUSIVE_COLLECTION_HEROES);
+  assert.equal(new Set(claimed).size, claimed.length);
+  assert.equal(Object.keys(EXCLUSIVE_COLLECTION_HEROES).length, itemsByRarity("UR").length);
+  for (const [itemId, heroId] of Object.entries(EXCLUSIVE_COLLECTION_HEROES)) {
+    assert.ok(COLLECTION_ITEMS.some((item) => item.id === itemId), itemId);
+    assert.ok(heroIds.has(heroId), `${itemId} -> ${heroId}`);
+    assert.equal(exclusiveCollectionForHero(heroId)?.id, itemId);
   }
 });

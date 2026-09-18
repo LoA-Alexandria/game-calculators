@@ -16,6 +16,29 @@ import {
   searchHeroes,
 } from "../lib/content/heroes.ts";
 
+/** Encyclopedia bios that open with a fuller name than the roster card. */
+const BIO_OPENERS = {
+  caesar: "Julius Caesar",
+  "queen-victoria": "Alexandrina Victoria",
+  "isaac-newton": "Sir Isaac Newton",
+  "charles-the-great": "Charlemagne",
+  "da-vinci": "Leonardo da Vinci",
+  beethoven: "Ludwig van Beethoven",
+  franklin: "Benjamin Franklin",
+  columbus: "Christopher Columbus",
+  "eleanor-of-aquitaine": ["Eleanor of Aquitaine", "Eleanor Aquitaine"],
+  "thomas-edison": "Thomas Alva Edison",
+  "mary-i": "Mary Stuart",
+  wallace: "William Wallace",
+  "catherine-de-medici": ["Catherine de'Medici", "Catherine de' Medici"],
+};
+
+function bioOpensFor(hero, bio) {
+  const aliases = BIO_OPENERS[hero.id];
+  const names = aliases ? (Array.isArray(aliases) ? aliases : [aliases]) : [hero.name];
+  return names.some((name) => bio.startsWith(name));
+}
+
 test("every portrait in the roster is a file in public/heroes and none is orphaned", () => {
   const folder = new URL("../public/heroes/", import.meta.url);
   const files = readdirSync(folder);
@@ -88,9 +111,15 @@ test("wiki Hero page fills title, troop, age, and bio for every roster card", ()
     assert.ok(HERO_TROOPS.includes(hero.troop), `${hero.name} troop`);
     assert.ok(HERO_AGES.includes(hero.age), `${hero.name} age`);
     assert.ok(hero.bio?.trim(), `${hero.name} has a bio`);
+    assert.ok(bioOpensFor(hero, hero.bio), `${hero.name} bio should open as that hero, not another: ${hero.bio.slice(0, 48)}`);
   }
   assert.equal(HEROES.find((hero) => hero.id === "archimedes")?.title, "Lever Master");
   assert.match(HEROES.find((hero) => hero.id === "billy-the-kid")?.bio ?? "", /Outlaw|Billy|Kid/i);
+  assert.match(HEROES.find((hero) => hero.id === "hermes")?.bio ?? "", /^Hermes\b/);
+  assert.match(HEROES.find((hero) => hero.id === "merlin")?.bio ?? "", /^Merlin\b/);
+  assert.match(HEROES.find((hero) => hero.id === "bjorn-ironside")?.bio ?? "", /^Bjorn Ironside\b/);
+  assert.match(HEROES.find((hero) => hero.id === "circe")?.bio ?? "", /^Circe\b/);
+  assert.match(HEROES.find((hero) => hero.id === "lagertha")?.bio ?? "", /^Lagertha\b/);
 });
 
 test("localized hero title and bio fall back to English", () => {
@@ -178,6 +207,7 @@ test("published lore catalogs cover every hero with a wiki bio", async () => {
     for (const hero of HEROES) {
       assert.ok(lore[hero.id]?.title?.trim(), `${code} ${hero.id} title`);
       assert.ok(lore[hero.id]?.bio?.trim(), `${code} ${hero.id} bio`);
+      assert.ok(bioOpensFor(hero, lore[hero.id].bio), `${code} ${hero.id} bio should open as that hero: ${lore[hero.id].bio.slice(0, 48)}`);
     }
   }
   const merged = mergeHeroTexts({ archimedes: { obtain: "Pool" } }, heroLoreTexts("de"));
@@ -208,4 +238,25 @@ test("the heroes banner collage uses primary portraits that exist on disk", asyn
     assert.ok(primary.has(file), `${file} should be a primary roster portrait`);
     await access(new URL(`../public/heroes/${file}`, import.meta.url));
   }
+});
+
+test("exclusive collection items overlay the hero artifact in the reader's language", async () => {
+  const { exclusiveCollectionForHero, exclusiveCollectionSearchText } = await import("../lib/content/collection.ts");
+  const { getDictionary } = await import("../lib/i18n/index.ts");
+  const german = getDictionary("de").guideEntries.collection.collectionTexts;
+  const french = getDictionary("fr").guideEntries.collection.collectionTexts;
+  const caesar = HEROES.find((hero) => hero.id === "caesar");
+  const hermes = HEROES.find((hero) => hero.id === "hermes");
+  const merlin = HEROES.find((hero) => hero.id === "merlin");
+  assert.equal(exclusiveCollectionForHero("merlin"), undefined);
+  assert.equal(exclusiveCollectionForHero("caesar")?.id, "golden-throne");
+  assert.equal(localizedHero(caesar, {}, german).artifact.name, "Goldener Thron");
+  assert.match(localizedHero(caesar, {}, german).artifact.text, /Fähigkeitsschadensbonus/);
+  assert.equal(localizedHero(hermes, {}, german).artifact.name, "Geflügelte Sandalen");
+  assert.equal(localizedHero(hermes, {}, french).artifact.name, "Sandales ailées");
+  assert.equal(localizedHero(merlin, {}, german).artifact, undefined);
+  assert.equal(
+    searchHeroes("Goldener Thron", "all", [], (hero) => exclusiveCollectionSearchText(hero.id, [german])).some((hero) => hero.id === "caesar"),
+    true,
+  );
 });

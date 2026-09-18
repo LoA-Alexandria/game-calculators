@@ -2,6 +2,11 @@
  * Hero roster from the community wiki rarity pages (UR+ / UR / SSR / SR / R
  * "Hereos" slugs) as of 13 September 2026, merged with the Pop Epoch Wiki Hero
  * page (title, troop, age, bio, and missing portraits) on 18 September 2026.
+ * The wiki UR+ block from Lagertha through Hermes had encyclopedia bios shifted
+ * one card down (Hermes carried a leftover Chaplin/"Mime Genius" blurb); those
+ * five were rematched on 18 September 2026 so each bio names its hero. Lagertha's
+ * missing wiki blurb was restored in the same encyclopedia style from Saxo
+ * Grammaticus's Gesta Danorum, not from in-game text.
  * Skill, buff, and production tables for 37 heroes come from German client
  * screenshots on 18 September 2026; English is a translation of that German
  * text. Joan of Arc had no skill tables in that dump, so her abilities stay
@@ -21,6 +26,8 @@
  * ability names, level texts, and artifact per language. Title and bio
  * translations also live in `lib/data/hero-lore-de.json` and
  * `hero-lore-fr.json`, merged at read time so skill catalogs stay separate.
+ * Exclusive collection items overlay the artifact from the Collection guide
+ * translations, so those names are not duplicated here.
  *
  * Portraits are in `public/heroes/`, saved from the wiki pages on 14 and 18
  * September 2026. The first file in `images` is the portrait, any others are
@@ -31,6 +38,7 @@
 import roster from "../data/heroes.json" with { type: "json" };
 import loreDe from "../data/hero-lore-de.json" with { type: "json" };
 import loreFr from "../data/hero-lore-fr.json" with { type: "json" };
+import { exclusiveCollectionForHero, localizedItem, type CollectionTexts } from "./collection.ts";
 import { ROSTER_SPELLING } from "./hero-names.ts";
 import { asset } from "../site.ts";
 import type { Locale } from "../i18n";
@@ -156,22 +164,28 @@ function localizedAbility(ability: HeroAbility, text: HeroAbilityText | undefine
 }
 
 /** The hero with every filled-in translation applied. */
-export function localizedHero(hero: Hero, texts: HeroTexts): Hero {
+export function localizedHero(hero: Hero, texts: HeroTexts, collectionTexts: CollectionTexts = {}): Hero {
   const local = texts[hero.id];
-  if (!local) return hero;
-  const next: Hero = { ...hero };
-  if (local.obtain?.trim()) next.obtain = local.obtain.trim();
-  if (local.title?.trim()) next.title = local.title.trim();
-  if (local.bio?.trim()) next.bio = local.bio.trim();
-  for (const kind of HERO_ABILITY_KINDS) {
-    const ability = hero[kind];
-    if (ability) next[kind] = localizedAbility(ability, local[kind]);
+  const next: Hero = local ? { ...hero } : hero;
+  if (local) {
+    if (local.obtain?.trim()) next.obtain = local.obtain.trim();
+    if (local.title?.trim()) next.title = local.title.trim();
+    if (local.bio?.trim()) next.bio = local.bio.trim();
+    for (const kind of HERO_ABILITY_KINDS) {
+      const ability = hero[kind];
+      if (ability) next[kind] = localizedAbility(ability, local[kind]);
+    }
+    if (hero.artifact) {
+      next.artifact = {
+        name: local.artifact?.name?.trim() || hero.artifact.name,
+        text: local.artifact?.text?.trim() || hero.artifact.text,
+      };
+    }
   }
-  if (hero.artifact) {
-    next.artifact = {
-      name: local.artifact?.name?.trim() || hero.artifact.name,
-      text: local.artifact?.text?.trim() || hero.artifact.text,
-    };
+  const exclusive = exclusiveCollectionForHero(hero.id);
+  if (exclusive) {
+    const item = localizedItem(exclusive, collectionTexts);
+    return { ...next, artifact: { name: item.name, text: item.skillText } };
   }
   return next;
 }
