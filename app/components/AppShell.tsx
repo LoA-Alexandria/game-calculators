@@ -92,6 +92,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
   const [filter, setFilter] = useState("");
   const [hash, setHash] = useState("");
+  const [expandedSections, setExpandedSections] = useState<Record<string, true>>({});
   const collapsed = useSyncExternalStore(subscribeCollapsed, readCollapsed, () => false);
   const narrow = useSyncExternalStore(subscribeDrawer, readDrawer, () => false);
   const wantFilterFocus = useRef(false);
@@ -242,9 +243,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   const renderItemList = (section: NavSection, items: NavItem[]) => {
     const groups = section.id === "guides" ? groupByBadge(items, t, t.guides.other) : null;
-    const shown = searching || groups ? items : items.slice(0, VISIBLE_ITEMS);
-    const hidden = groups ? 0 : items.length - shown.length;
-    const sectionExact = pathIsExact(pathname, section.href);
+    const onIndex = pathIsExact(pathname, section.href);
+    const showAll = searching || Boolean(groups) || onIndex || Boolean(expandedSections[section.id]);
+    const shown = showAll ? items : items.slice(0, VISIBLE_ITEMS);
+    const hidden = showAll ? 0 : items.length - shown.length;
+    const sectionExact = onIndex;
 
     if (groups) {
       return (
@@ -269,6 +272,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                         <Link
                           className={active ? "panel-link is-active" : "panel-link"}
                           href={item.href}
+                          title={item.description?.(t)}
                           aria-current={exact ? "page" : undefined}
                         >
                           {item.label(t)}
@@ -289,26 +293,29 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         {shown.map((item) => {
           const active = pathIsCurrentOrNested(pathname, item.href);
           const exact = pathIsExact(pathname, item.href);
+          const description = item.description?.(t);
           return (
             <li key={item.href}>
               <Link
                 className={active ? "panel-link is-active" : "panel-link"}
                 href={item.href}
+                title={description}
                 aria-current={exact ? "page" : undefined}
               >
-                <span className="panel-link-title">{item.label(t)}</span>
-                {item.description ? (
-                  <span className="panel-link-desc">{item.description(t)}</span>
-                ) : null}
+                {item.label(t)}
               </Link>
             </li>
           );
         })}
         {hidden > 0 && (
           <li>
-            <Link className="panel-link panel-more" href={section.href}>
+            <button
+              type="button"
+              className="panel-link panel-more"
+              onClick={() => setExpandedSections((prev) => ({ ...prev, [section.id]: true }))}
+            >
               {tf(t.shell.showAll, { count: items.length })}
-            </Link>
+            </button>
           </li>
         )}
       </ul>
@@ -488,12 +495,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                         <Link
                           className={active ? "panel-link is-active" : "panel-link"}
                           href={section.href}
+                          title={section.description(t)}
                           onClick={() => {
                             if (!narrow) writeCollapsed(!sectionHasBrowsePanel(section));
                           }}
                         >
-                          <span className="panel-link-title">{section.label(t)}</span>
-                          <span className="panel-link-desc">{section.description(t)}</span>
+                          {section.label(t)}
                         </Link>
                       </li>
                     );

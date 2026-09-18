@@ -797,15 +797,20 @@ p { margin: 0; }
 .panel-category:hover { color: var(--accent); }
 .panel-link {
   position: relative;
-  display: grid;
-  gap: 2px;
+  display: block;
+  width: 100%;
   min-height: 38px;
   padding: 9px 12px 9px 14px;
+  border: 0;
   border-radius: var(--r-sm);
+  background: transparent;
   color: var(--ink-soft);
+  font-family: inherit;
   font-size: .86rem;
   font-weight: 550;
   letter-spacing: -.01em;
+  text-align: left;
+  cursor: pointer;
   transition: background-color .14s ease, color .14s ease, transform .16s ease;
 }
 .panel-link-title { min-width: 0; }
