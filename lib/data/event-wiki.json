@@ -1,0 +1,2222 @@
+{
+  "source": "https://pop-epoch-help.fandom.com/wiki/Events",
+  "fetched": "2026-09-18",
+  "events": [
+    {
+      "id": "astralWonderland",
+      "wikiTitle": "Astral Wonderland",
+      "wikiUrl": "https://pop-epoch-help.fandom.com/wiki/Astral_Wonderland",
+      "icon": "/events/astral-wonderland.webp",
+      "intro": "Astral Wonderland is a limited-time event in Pop Epoch. Typical rules are below; schedules and rewards can change by season.",
+      "sections": [
+        {
+          "heading": "Overview",
+          "items": [
+            "During the event, You can spend stamina to roll dice and move through the Astral Wonderland. Upon reaching a destination, you will gain EXP and trigger various events.",
+            "Accumulate EXP to increase the tile level. A higher level affects the points earned and rewards obtained from events.",
+            "If you are lucky enough to reach the entrance to the Caladrius Zone, Sleipnir Zone, Cerberus Zone, or Nidhogg Zone, you can enter and explore these special zones."
+          ]
+        },
+        {
+          "heading": "Eligibility",
+          "items": [
+            "The event includes a preparation phase, which begins as soon as the event opens and ends at 23:55 on the same day.",
+            "When the preparation phase ends, the roster will be locked. Chieftains who are not in a guild at that time can only participate in solo mode and will be unable to join guild-related gameplay or receive the guild rewards.",
+            "Roster settlement will take place at 23:55 on the first day. Any guild changes made during this period will not take effect.",
+            "After the roster deadline, any changes to guild membership, joining a guild, or changing positions will not take effect within the event."
+          ]
+        },
+        {
+          "heading": "Special Zones",
+          "items": [
+            "Reach the special zone entrance to begin exploring. Until you fully explore all these special zones, you cannot continue moving in the [normal zone].",
+            "If the number of spaces rolled exceeds the finish point, you will still reach the finish point. Upon reaching the finish point, you will return to the [normal zone]."
+          ]
+        },
+        {
+          "heading": "Creator Zone",
+          "items": [
+            "The top 100 chieftains in daily personal points can explore the [creator zone] from 18:00 to 22:00 each day.",
+            "In the [creator zone], a separate [creator zone energy] is used to roll dice and move to random destinations. [Creator dice] cannot be used there.",
+            "Upon reaching a destination, if you encounter a chieftain from another guild, a contest will begin. If no other player is present, the corresponding event will be triggered instead.",
+            "The winner can plunder points from the opponent and enter a [recovery] state. The loser will lose points and respawn at a random point."
+          ]
+        },
+        {
+          "heading": "Competition Rules",
+          "items": [
+            "Debates are fought as hero battles, and the winner is determined by the final battle result.",
+            "When starting from or respawning during [creator zone], you begin with 10 Energy. After each contest with another encountered chieftain, 1 Energy will be consumed.",
+            "Energy only takes effect in the [creator zone]. For each 1 point of energy lost, battle attributes are reduced by 10%."
+          ]
+        },
+        {
+          "heading": "Scoring Rules",
+          "items": [
+            "Personal rankings are determined by total personal points. If multiple chieftains have the same score, the one who reached that score first will rank higher.",
+            "A guild's total points are the sum of all personal points earned by its members. By accumulating guild points, the guild can complete achievements, which not only unlock guild-wide rewards but also affect the initial [energy] for the daily exploring in [creator zone]."
+          ]
+        },
+        {
+          "heading": "Energy in Creator Zone",
+          "items": [
+            "By accumulating guild points, the guild can complete achievements, which not only unlock guild-wide rewards but also affect the initial [energy] for the daily exploring in [creator zone].",
+            "Guild achievements are based on the highest points ever reached during the event.",
+            "Only chieftains eligible for [creator zone] can receive the [energy].",
+            "During exploring in [creator zone], if a new [guild achievement] tier is unlocked, the energy difference will also be granted to the currently participating chieftains."
+          ]
+        }
+      ],
+      "images": [],
+      "stub": false
+    },
+    {
+      "id": "atlantis",
+      "wikiTitle": "Delve into Atlantis",
+      "wikiUrl": "https://pop-epoch-help.fandom.com/wiki/Delve_into_Atlantis",
+      "icon": "/events/atlantis.webp",
+      "intro": "Delve into Atlantis is a limited-time event in Pop Epoch. Typical rules are below; schedules and rewards can change by season.",
+      "sections": [
+        {
+          "heading": "Exploration Rules",
+          "items": [
+            "The roster will be locked at the end of the preparation phase.",
+            "Once the roster is locked, changing guilds, joining a guild, or changing positions will not take effect in this event.",
+            "During the event, You can consume bottled ships to explore the seafloor.",
+            "Tap unopened tiles to explore, or tap objects on tiles to interact with them."
+          ]
+        },
+        {
+          "heading": "Chieftain Attributes",
+          "items": [
+            "During the event, You can boost their event-specific attributes.",
+            "Your starting ATK is determined by your CIV Index.",
+            "Spend Poseidon's Blessing collected during exploration to boost your event ATK.",
+            "Your starting HP is a fixed value."
+          ]
+        },
+        {
+          "heading": "Stage Clear Rewards",
+          "items": [
+            "During the event, clear specific stages to claim the designated rewards.",
+            "Any unlocked but unclaimed rewards will be sent after the event ends."
+          ]
+        },
+        {
+          "heading": "Atlantean Pearls",
+          "items": [
+            "During the event, Chieftains may expend Atlantean Pearls collected during exploration to draw rewards.",
+            "Any unused Atlantean Pearls will be automatically used after this event ends."
+          ]
+        },
+        {
+          "heading": "Ranking",
+          "items": [
+            "Individual Points Ranking: Rankings are based on the chieftain's individual points earned during the current event period.",
+            "Endless Exploration Ranking: Rankings are based on the highest stage cleared by the chieftain in Endless Mode during the event.",
+            "Guild Points Ranking: Rankings are based on the total individual points earned by all members within the guild during the current event."
+          ]
+        },
+        {
+          "heading": "Abyss of the Lost",
+          "items": [
+            "The top 100 chieftains in daily individual points can participate in the Abyss of the Lost from 18:00 to 22:00.",
+            "In the Abyss of the Lost, you have independent stamina to flip tiles and interact with spawned enemies.",
+            "You may encounter other eligible chieftains in the Abyss of the Lost; interacting with them will trigger a battle. If you fail to defeat an enemy, the target's strength will decrease, allowing you to battle again.",
+            "If you are defeated by another chieftain, they will appear on your revenge list. You and eligible guild members can seek revenge against them."
+          ]
+        }
+      ],
+      "images": [],
+      "stub": false
+    },
+    {
+      "id": "dawnOfRome",
+      "wikiTitle": "The Crown of the Nile",
+      "wikiUrl": "https://pop-epoch-help.fandom.com/wiki/The_Crown_of_the_Nile",
+      "icon": "/events/dawn-of-rome.webp",
+      "intro": "The Crown of the Nile is a guild-based siege and territory event. Occupy more tiles to earn Prestige, then farm personal Merits through combat. The event usually opens on weekends. The Battle Phase lasts 3 days—Friday, Saturday, and Sunday. Exact start times per server follow the in-game event calendar. Typical rules are documented here; rewards and schedules can change by season.",
+      "sections": [
+        {
+          "heading": "Overview",
+          "items": [
+            "Core goals: Occupy more tiles to earn Prestige, then farm personal Merits through combat.",
+            "Prestige: Occupied tiles generate Prestige in real time. Claim path: Event interface → Council → Prestige → Claim.",
+            "Merits: Personal Merits mainly depend on troop losses and enemies killed.",
+            "Top rewards: A UR+ Hero shard selection chest from ranking rewards. Reaching set Hero star levels also unlocks free Skin shards—raise both guild and personal rankings.",
+            ":320px|link=|alt=Crown of the Nile UR+ Hero Fragment Choice Chest"
+          ]
+        },
+        {
+          "heading": "Event introduction",
+          "items": [
+            "The event opens by guild. In the Preparation Phase, eligibility is screened and the roster is locked, then a 3-day Battle Phase begins. Each Battle Phase day is split into Ready Period, Conflict Period, and Review Period.",
+            "For Chieftains, the Battle Phase is three things: occupy land, claim Prestige, and farm Merits. The more land you hold, the higher your guild’s Faction score and Prestige; the more you fight—and the better you use Advantage—the higher your personal Merits.",
+            "Occupy land",
+            "Connect roads, take Cities / Passes / Strongholds, and fill empty tiles. More tiles raise Faction and Prestige.",
+            "Claim Prestige",
+            "Occupied tiles generate Prestige in real time. Claim it in the Council Prestige panel; unclaimed Prestige is mailed after Conflict ends.",
+            "Farm Merits",
+            "Merits settle from losses and kills. Keep troops fighting—sitting in Cities after occupying stalls personal ranking.",
+            "Advantage",
+            "Cavalry counters Shieldman, Shieldman counters Archer, Archer counters Pikeman, Pikeman counters Cavalry. Advantage raises damage and Merits."
+          ]
+        },
+        {
+          "heading": "Event rules",
+          "items": [
+            "I"
+          ]
+        },
+        {
+          "heading": "Eligibility",
+          "items": [
+            "After each server’s eligible guilds are confirmed, the roster is locked. Changing guilds, joining a guild, or changing roles afterward does not take effect for this season.",
+            "On day 1 at 23:55, the roster is settled early. Chieftains not in a guild at that time cannot participate.",
+            "II"
+          ]
+        },
+        {
+          "heading": "Schedule & chapters",
+          "items": [
+            "The Battle Phase lasts 3 days. Each day has Ready Period, Conflict Period, and Review Period.",
+            "There are three chapters: Centurion, Legion Commander, and Consul. Guilds compete for promotion based on daily occupation results; guilds that do not promote stay in their current chapter the next day.",
+            "The Leader can appoint up to two Commanders. The Leader and Commanders can set up to three Strategic Objectives in priority order; members can view them on the strategy screen.",
+            "If Faction scores are tied, the guild that reached that score earlier ranks higher. If multiple guild strongholds are breached, the one breached earlier ranks lower.",
+            "Daily schedule",
+            "00:00",
+            "–",
+            "10:00",
+            "Ready Period",
+            "Check City and Stronghold layout; set Auto-battle and Strategic Objectives; plan the day’s routes",
+            "10:00",
+            "–",
+            "22:00",
+            "Conflict Period",
+            "March to occupy land, siege Cities, contest Pyramids and Passes",
+            "22:00",
+            "–",
+            "24:00",
+            "Review Period",
+            "Review the day’s finale and expansion for analysis",
+            "Conflict Period stages",
+            "10:00",
+            "–",
+            "12:00",
+            "Early Campaign",
+            "Strongholds, Passes, Pyramids, and other large targets are protected and cannot be attacked",
+            "12:00",
+            "–",
+            "19:00",
+            "Mid-Campaign",
+            "Pyramids open. Guilds still holding a Pyramid at Mid-Campaign end grant all members 1 Military Token",
+            "19:00",
+            "–",
+            "20:00",
+            "Liberation Period",
+            "Strongholds and Passes open. Guilds holding a Pass grant all members a Power bonus until this Conflict ends; higher Power means fewer casualties",
+            "20:00",
+            "–",
+            "22:00",
+            "Contention Period",
+            "The central Alexandria Port opens; all protection is lifted",
+            "III"
+          ]
+        },
+        {
+          "heading": "Troops, Reservists & Morale",
+          "items": [
+            "In the Conflict Period you can deploy four troop types from Stronghold Barracks: Archer, Cavalry, Shieldman, and Pikeman. Each troop’s power cap is affected by general Power, unit tier, and battlefield bonuses.",
+            "Barracks auto-recruit and store Reservists. Your Age affects recruitment speed; each unit’s power cap affects the Reservist storage cap.",
+            "Use Command Tokens to recruit specific Reservists directly. Auto-recruit stops when Reservists hit the cap, but Command Tokens can still push Reservists above the cap.",
+            "When a troop’s power hits 0, it is treated as fallen: it returns to the Stronghold at once and keeps losing Morale. Morale recovers over time; falling again during recovery resets the timer.",
+            "Troops in a Stronghold need at least 5,000 power to march out. Lower Morale raises the minimum power required to march.",
+            "IV"
+          ]
+        },
+        {
+          "heading": "Marching, paving & speedup",
+          "items": [
+            "Troops can only march on connected road tiles. If the path is cut mid-march, they stop at the break and must wait until the route is reconnected before moving on.",
+            "After departure you cannot change route mid-way. Re-order only after arrival, or after stopping because the road was cut.",
+            "March time depends on the number of tiles crossed. You can speed up with Diamonds—each use halves remaining march time. Speedup is only available when remaining time is greater than 10 seconds.",
+            "When attacking a tile, the previous tile is the retreat route. If another guild occupies that retreat route, the troop cannot leave the battle.",
+            "You can issue a leave order during combat; the troop only leaves and moves to the new destination after the current battle ends.",
+            "V"
+          ]
+        },
+        {
+          "heading": "Auto-Pave & Auto-March",
+          "items": [
+            "With Auto-Pave on, pick a target tile only. The troop takes the shortest route and auto-attacks all non-allied tiles along the way until it arrives.",
+            "If Auto-March is not also on, when power runs out the troop returns to the Stronghold and that Auto-Pave run ends.",
+            "With Auto-March also on, after returning to replenish, the troop continues Auto-Pave from the Stronghold along the shortest route to the original target.",
+            "VI"
+          ]
+        },
+        {
+          "heading": "Auto-battle",
+          "items": [
+            "Members other than the Leader and Commanders can apply for Auto-battle to the Leader or a Commander during Ready Period and Conflict Period. The Leader and each Commander can control at most 2 members each.",
+            "After Conflict Period starts, the Auto-battle list locks and cannot be changed. Commander appointments also cannot change from Battle Phase start until Battle Phase end.",
+            "Auto-battled Chieftains can still pre-store Military Tokens, use Military Tokens, and Sync Power, but cannot enable auto speedup, or manually march or attack.",
+            "Auto-battled troops auto-enable Auto-March and Auto-Replenish, and those cannot be turned off manually.",
+            "An Auto-battled Chieftain can cancel anytime. After canceling, they cannot apply for Auto-battle again in the same Conflict Period.",
+            "VII"
+          ]
+        },
+        {
+          "heading": "Combat",
+          "items": [
+            "Battles are City Battles, Field Battles, and Forest Battles. Field Battles fight defenders on plains. Forest Battles fight ambushers in woods, and ambush details cannot be previewed from outside.",
+            "In City Battles you must breach the City Wall before fighting defenders inside. Defenders can also sally out before the wall falls.",
+            "Advantage cycle: Cavalry counters Shieldman, Shieldman counters Archer, Archer counters Pikeman, Pikeman counters Cavalry. Advantage grants a damage bonus. If a unit is 3+ tiers above the other, Advantage is ignored.",
+            "City Walls have Durability. Before a breach, they only recover over time when there is no battle. Once breached, they cannot recover.",
+            "A City changes ownership after the wall is breached and the last defender loses. Land and woodland change ownership after the last defender loses.",
+            "When multiple sides contest the same tile, ownership goes to whoever has the highest remaining power among troops that took part in the final fight; troops that never entered that fight do not count.",
+            "After a City is taken, inner defenders do not refresh, but a City Wall with some Durability is rebuilt. After Land or woodland is taken, tile defenders reset to full strength.",
+            "Open Strongholds can also be taken by other guilds. After a Stronghold falls, that guild cannot march out for the rest of this Conflict; troops already marching disappear, and occupied tiles reset to unowned.",
+            "VIII"
+          ]
+        },
+        {
+          "heading": "Prestige, Merits & Disarm and Demobilize",
+          "items": [
+            "Occupying Cities, Land, waterways, and woodland settles Prestige over time, spendable in the Prestige Shop. Empty tiles, Cities, Passes, and Strongholds give different Prestige—large targets give more. Claim Prestige manually in the Council; unclaimed Prestige for the day is mailed after that day’s Conflict Period ends.",
+            "After each battle, Merits settle from both sides’ losses and kills, capped at 13× your own troop losses. Details are in Reports. Reach set Milestone (Merit achievement) thresholds for rewards; unclaimed Milestone rewards are reissued after the event.",
+            "After Conflict Period ends, unused soldiers can keep farming Merits via Suppress (bandit suppression). Merits from Suppress count toward Milestone rewards, but not personal ranking; convertible amount is at most 10% of Merits already earned this season.",
+            "When only one guild remains in the group and it holds every tile, Disarm and Demobilize unlocks. The winning guild can convert current troop power and Reservists into Merits at the same ratio as combat, until 22:00 that day.",
+            "IX"
+          ]
+        },
+        {
+          "heading": "Rankings & Congratulations",
+          "items": [
+            "After the Battle Phase, personal ranking uses total Merits earned this season. Ties go to whoever reached that total first.",
+            "Guild ranking uses total promotion points earned in the Battle Phase. Ties go to whoever ranked higher in the last round.",
+            "After the Battle Phase you can see the battlefield Top 3 and the champion guild’s Leader. Chieftains can congratulate the champion Leader and receive the Leader’s reward."
+          ]
+        },
+        {
+          "heading": "Before you start",
+          "items": [
+            "Join the guild you plan to fight with before day 1 23:55, and confirm you are on the locked roster.",
+            "Agree server-side coordination early: yield Strongholds and key Cities to each other, farm Merits on neutral defenders together, and save direct clashes for other rivals.",
+            "In Ready Period, agree: (1) Leader appoints up to two Commanders; (2) members who won’t micro troops finish Auto-battle setup; (3) dedicated players return to defend Strongholds in Liberation Period."
+          ]
+        },
+        {
+          "heading": "Occupation & Prestige",
+          "items": [
+            "More tiles → higher Faction → safer promotion; Prestige also keeps generating from occupied tiles. Guild ranking tracks Faction; the Prestige Shop tracks occupation—same line of play."
+          ]
+        },
+        {
+          "heading": ":360px|link=|alt=Council Prestige claim screen",
+          "items": [
+            "Connect roads first, then take Cities, Passes, and Strongholds, and fill empty tiles last. Passes and Strongholds give far more Faction and Prestige than empty tiles.",
+            "Push by protection windows: Early Campaign take already-open Land and Cities; Mid-Campaign contest Pyramids for Military Tokens for all members; Liberation Period secure your Stronghold first, then fight Passes for the Power bonus.",
+            "Prioritize Stronghold defense over ordinary Cities—especially after 19:00. Losing a Stronghold ends your occupation for that Conflict and drops Prestige and Faction together."
+          ]
+        },
+        {
+          "heading": "Raising Merits",
+          "items": [
+            "Personal ranking only counts cumulative Merits from your losses and kills. To chase personal rewards, keep troops fighting—don’t stop after occupying and sit in Cities.",
+            "Use Advantage matchups against enemy mains. Advantage raises kills, so the same losses yield more Merits."
+          ]
+        },
+        {
+          "heading": ":280px|link=|alt=Troop Advantage cycle",
+          "items": [
+            "Treat neutral tile defenders and post-breach City defenders as main Merit sources. Hitting walls alone yields low Merits—breach to clear defenders inside; empty-tile defenders also give steady kills.",
+            "Don’t leave Reservists at the cap for long—auto-recruit stops and you run out of troops to farm. Use Command Tokens to top up, including above the cap.",
+            "When using Auto-Pave, also enable Auto-March and Auto-Replenish so troops keep fighting after refill. Auto-Pave alone stops when power runs out, and Merits stop too."
+          ]
+        },
+        {
+          "heading": "Full map & endgame",
+          "items": [
+            "If your guild can take the whole map, clear remaining tiles early to trigger Disarm and Demobilize, convert current power and Reservists into Merits, and finish before 22:00 that day.",
+            "If you cannot hold the full map, spend troops during Conflict Period. Real combat grants both losses and kills; Disarm and Suppress miss kills, and Suppress also does not count for personal ranking.",
+            "Before the last Conflict ends, pre-store and spend all remaining Military Tokens in combat. Saving them for after Conflict ends won’t update personal ranking and wastes supply."
+          ]
+        },
+        {
+          "heading": "Auto-battle & command",
+          "items": [
+            "If you cannot stay on the battlefield UI, set Auto-battle to the Leader or a Commander in Ready Period so troops keep occupying and farming Merits instead of idling in the Stronghold.",
+            "Leaders and Commanders should fill Auto-battle slots before Conflict starts—the list locks once Conflict begins.",
+            "If an Auto-battled route clearly drifts from agreed targets, cancel and take control again. Confirm Strategic Objectives before handing over troops, or you may be unable to re-apply Auto-battle mid-Conflict."
+          ]
+        },
+        {
+          "heading": "Prestige Shop",
+          "items": [
+            "Occupied tiles keep producing Prestige. Claim it daily in the Council first, and prioritize buying out Command Tokens to keep Reservists flowing.",
+            "Also finish Identity Plate and Land Deed exchanges to help Age progress.",
+            "Newer Chieftains can pick up Fine Clay as needed. Choose other items by your own gaps.",
+            ":420px|link=|alt=Prestige Shop exchange list"
+          ]
+        },
+        {
+          "heading": "Notes",
+          "items": [
+            "Roster settles early at day 1 23:55. Not in a guild then → cannot join this season. After lock, guild or role changes do not apply in the event.",
+            "After a Stronghold falls, you cannot march out that Conflict; marching troops vanish; occupied tiles reset. This is the worst loss in a Conflict.",
+            "Breached City Walls cannot recover. If you cannot reinforce or sally immediately after a breach, the City will fall; attackers can enter in that window.",
+            "Forest Battles cannot preview ambushers. Forcing unknown woodland may hit unit types that counter you."
+          ]
+        },
+        {
+          "heading": ":They can be used together or alone.",
+          "items": [
+            "Auto-Pave only (no Auto-March): when power runs out, the troop returns to the Stronghold and paving stops.",
+            "Auto-Pave + Auto-March: after returning to replenish, the troop auto-continues paving to the previous target.",
+            ";Can I join without a guild?",
+            ":No. Eligibility is by guild. Joining a guild after the roster lock does not put you into this season.",
+            ";After canceling Auto-battle, can I hand troops to someone else?",
+            ":Not again in the same Conflict Period. You can re-apply before the next Conflict starts.",
+            ";The Stronghold is still ours—why can’t some troops march?",
+            ":Troops in a Stronghold need at least 5,000 power, and Morale also applies. Troops that just returned after falling have low Morale—wait for recovery, or refill Reservists above the march requirement.",
+            ";Multiple sides hit the same tile—who gets it?",
+            ":Whoever has the highest remaining power among troops that took part in the final fight. Troops that never entered that fight do not count."
+          ]
+        },
+        {
+          "heading": "Rules",
+          "items": [
+            "Strategy|",
+            "Events|",
+            "Guild",
+            "Main Page",
+            ":Category:Events|",
+            "Category:Events",
+            "Category:Game Tips"
+          ]
+        }
+      ],
+      "images": [
+        {
+          "src": "/events/crown-of-the-nile-advantage.webp",
+          "alt": "Troop advantage"
+        },
+        {
+          "src": "/events/crown-of-the-nile-council.webp",
+          "alt": "Guild council"
+        }
+      ],
+      "stub": true
+    },
+    {
+      "id": "duelFestival",
+      "wikiTitle": "Duel Festival",
+      "wikiUrl": "https://pop-epoch-help.fandom.com/wiki/Duel_Festival",
+      "icon": "/events/duel-festival.webp",
+      "intro": "Duel Festival is a limited-time event in Pop Epoch. Typical rules are below; schedules and rewards can change by season.",
+      "sections": [
+        {
+          "heading": "Overview",
+          "items": [
+            "Chieftains who reach a certain civilization level will be invited to participate in the Duel Festival.",
+            "Participating chieftains will use their own hero lineups to compete in 1v1 duels. After multiple rounds of competition, only the final winner can claim ultimate glory.",
+            "Chieftains who do not advance to later stages can still watch the remaining matches, predict the rankings, and earn prediction rewards."
+          ]
+        },
+        {
+          "heading": "Duel Festival Shop",
+          "items": [
+            "You can earn duel banners by participating in the various stages of the event. Duel banners can be used in the event shop to exchange for various item rewards.",
+            "After the event ends, unused duel banners will not be cleared. You can continue to use them when the next Duel Festival begins."
+          ]
+        },
+        {
+          "heading": "Grouping Rules",
+          "items": [
+            "During the preparation phase, registration will open for multiple groups, and chieftains may freely choose a group to register for. After registering successfully, if you want to switch groups, you must wait until the registration cooldown ends before registering for another group.",
+            "When the event officially begins, venues will be assigned based on each chieftain's registered group. Chieftains who entered the event page during the preparation phase but did not register will be automatically assigned to a random group.",
+            "Group registration will be locked 10 minutes before the preparation phase ends, and manual registration will no longer be available at that time."
+          ]
+        },
+        {
+          "heading": "Schedule",
+          "items": [
+            "The Duel Festival consists of three stages: Knight's Duel, Arena Breakout, and Peak Championship.",
+            "Only chieftains who stand out in each stage can advance to the next stage."
+          ]
+        },
+        {
+          "heading": "Knight's Duel",
+          "items": [
+            "The Knight's Duel stage begins after the preparation phase ends. This stage lasts for 2 days and 22 hours, and challenges can be initiated throughout the stage.",
+            "Each challenge consumes 1 attempt regardless of the outcome. After all attempts are used, a limited number of extra attempts can be purchased with diamonds. Free and purchasable attempts refresh daily.",
+            "For each challenge, 3 opponents of different strength levels will be matched based on the chieftain's power. Winning a challenge grants points, and stronger opponents grant more points. You can choose the opponent that suits them best.",
+            "Achievement rewards can be claimed when points reach certain milestones."
+          ]
+        },
+        {
+          "heading": "Arena Breakout",
+          "items": [
+            "During Arena Breakout, round of matches is held each day.",
+            "In each round, all participating chieftains are randomly divided into several groups. Chieftains compete in a round-robin format within their groups. Based on the number of wins, the top 2 in each group advance to the next round until the Top are determined.",
+            "Rankings within each group are based on the number of wins. If two chieftains are tied, the one with more wins in head-to-head battles ranks higher. If they are still tied, rankings will be determined by the Knight's Duel Rankings.",
+            "During the daily preparation phase, You can view their group assignments and opponents for the day and adjust their lineups. Once the matches begin, lineups will be locked. Any lineup changes made afterward will not be synced to the actual battle lineup until all matches in the current round have ended."
+          ]
+        }
+      ],
+      "images": [],
+      "stub": false
+    },
+    {
+      "id": "evolutionInstitute",
+      "wikiTitle": "Evolution Institute",
+      "wikiUrl": "https://pop-epoch-help.fandom.com/wiki/Evolution_Institute",
+      "icon": "/events/evolution-institute.webp",
+      "intro": "Evolution Institute is a limited-time event in Pop Epoch. Typical rules are below; schedules and rewards can change by season.",
+      "sections": [
+        {
+          "heading": "Evolution Institute",
+          "items": [
+            "During the event, you can evolve various creatures.",
+            "On a 4x4 grid, slide the screen up, down, left, or right. All materials move in the chosen direction until they encounter a boundary or another material.",
+            "When two materials of the same level collide, they merge into a material of one higher level, up to Level 11.",
+            "Each slide consumes 1 microscope. One microscope recovers per minute, or it can be replenished with [Scholar's Coffee]. The maximum capacity is 500 microscopes."
+          ]
+        },
+        {
+          "heading": "Additional Rewards",
+          "items": [
+            "Some materials contain rare DNA fragments. Merging such materials will grant additional rewards."
+          ]
+        },
+        {
+          "heading": "Shop Rules",
+          "items": [
+            "When materials are merged, chieftains receive [Eggs], which can be exchanged for specific items in the shop.",
+            "Unused [Eggs] will expire and be deleted after the event ends."
+          ]
+        },
+        {
+          "heading": "Bundle Rules",
+          "items": [
+            "During the event, You can purchase bundles to obtain various items as event assistance.",
+            "Each bundle has its own purchase limit. Please spend wisely, chieftain!"
+          ]
+        },
+        {
+          "heading": "Unused Item Rules",
+          "items": [
+            "After the event ends, any unused [Scholar's Coffee], [DNA Rearrangement Fragment], or [DNA Elimination Fragment] items will be automatically converted into [Eggs]."
+          ]
+        }
+      ],
+      "images": [],
+      "stub": false
+    },
+    {
+      "id": "genieWish",
+      "wikiTitle": "Genie's Wish Machine Shop",
+      "wikiUrl": "https://pop-epoch-help.fandom.com/wiki/Genie%27s_Wish_Machine_Shop",
+      "icon": "/events/genie-wish.webp",
+      "intro": "Genie's Wish Machine Shop is a limited-time event in Pop Epoch. Typical rules are below; schedules and rewards can change by season.",
+      "sections": [
+        {
+          "heading": "Wish Rules",
+          "items": [
+            "During the event, You can consume Genie Summon Tickets to make wishes and earn various rewards based on the results.",
+            "If 3 or more identical rewards appear in a single wish result, that reward will receive an additional quantity bonus."
+          ]
+        },
+        {
+          "heading": "FEVER Rules",
+          "items": [
+            "During wishing, there is a chance to obtain special letters. Collect all 5 letters to spell \"FEVER\" and get a free 10-Wish that consumes no items!",
+            "The bonus 10-Wish will also count toward your total wish count."
+          ]
+        },
+        {
+          "heading": "Wish Shop",
+          "items": [
+            "When making wishes, there is a chance to obtain [Silver Lamp Coin] and [Gold Lamp Coin], which can be used to exchange for items in the shop.",
+            "Some items in the shop can only be exchanged after reaching a certain wish count.",
+            "After the event ends, these coins will not be deleted."
+          ]
+        },
+        {
+          "heading": "Genie's Grand Rewards",
+          "items": [
+            "Reach a certain wish count during the event to claim the corresponding rewards.",
+            "Each reward can only be claimed once.",
+            "Unclaimed rewards will not be resent after the event ends. Please claim them in time."
+          ]
+        },
+        {
+          "heading": "Missions",
+          "items": [
+            "Complete daily tasks during the event to earn rewards.",
+            "Daily tasks reset at 00:00 server time each day. Missed rewards will not be reissued."
+          ]
+        },
+        {
+          "heading": "Bundles",
+          "items": [
+            "During the event, You can purchase bundles to obtain various items.",
+            "Different bundles have purchase limits. Please spend responsibly!"
+          ]
+        },
+        {
+          "heading": "Unused Item Rules",
+          "items": [
+            "After the event ends, any unused Genie Summon Tickets will expire and be deleted. Please use them in time."
+          ]
+        }
+      ],
+      "images": [],
+      "stub": false
+    },
+    {
+      "id": "globalRegatta",
+      "wikiTitle": "Global Regatta",
+      "wikiUrl": "https://pop-epoch-help.fandom.com/wiki/Global_Regatta",
+      "icon": "/events/global-regatta.webp",
+      "intro": "Global Regatta is a ranking event in Pop Epoch — your score is compared with other chieftains, then rewards land when the board settles.",
+      "sections": [
+        {
+          "heading": "Scoring Rules",
+          "items": [
+            "After the event begins, each time the fleet arrives at a city, points are earned based on the distance you sail.",
+            "Once the event enters the reward claim period, sailing distance will no longer count toward points."
+          ]
+        },
+        {
+          "heading": "Ranking",
+          "items": [
+            "During the event, individual rankings will be determined by each chieftain's sailing distance.",
+            "After the event ends, ranking rewards can be claimed based on your final ranking."
+          ]
+        },
+        {
+          "heading": "Tasks",
+          "items": [
+            "During the event, complete event missions to earn their respective rewards. An extra reward will be unlocked after completing all missions.",
+            "After entering the reward claim phase, you can claim any unclaimed task rewards. Unfinished missions can no longer be completed during this phase."
+          ]
+        }
+      ],
+      "images": [],
+      "stub": false
+    },
+    {
+      "id": "gloryPick",
+      "wikiTitle": "Glory Pick",
+      "wikiUrl": "https://pop-epoch-help.fandom.com/wiki/Glory_Pick",
+      "icon": "/events/glory-pick.webp",
+      "intro": "Glory Pick is a World Cup event in Pop Epoch. Drop in while it is live for themed rewards.",
+      "sections": [
+        {
+          "heading": "Glory Pick: Road to the Cup",
+          "items": [
+            "Starting 24 hours before each World Cup match, chieftains may place prediction bets on the match result. Betting closes 30 minutes before kickoff.",
+            "After the match ends, it will enter the settlement phase. Once settlement is complete, chieftains who predicted the correct result will receive prediction coins based on their wager amount and the corresponding odds.",
+            "Only one outcome may be selected for each match. Once a bet has been placed, the selected outcome cannot be changed. However, before the betting deadline, you may place additional wagers on your current prediction.",
+            "During the event, players will be ranked according to the number of prediction coins they hold. After the event ends, rewards will be distributed based on the final rankings."
+          ]
+        },
+        {
+          "heading": "Prediction Master",
+          "items": [
+            "Chieftains will be ranked based on the number of correct predictions they make.",
+            "If too many chieftains correctly predict the same match, only some of their avatars will be displayed."
+          ]
+        }
+      ],
+      "images": [],
+      "stub": false
+    },
+    {
+      "id": "goddessOfTime",
+      "wikiTitle": "Goddess of Time",
+      "wikiUrl": "https://pop-epoch-help.fandom.com/wiki/Goddess_of_Time",
+      "icon": "/events/goddess-of-time.webp",
+      "intro": "Goddess of Time is a ranking event in Pop Epoch — your score is compared with other chieftains, then rewards land when the board settles.",
+      "sections": [
+        {
+          "heading": "Affinity Rules",
+          "items": [
+            "During the event, increasing the Goddess's Affinity through actions like giving gifts and Patrol will also earn you Event Points based on the Affinity gained.",
+            "Once the event enters the Claiming Period, any Affinity gained will no longer count towards Event Points."
+          ]
+        },
+        {
+          "heading": "Ranking",
+          "items": [
+            "During the event, a personal ranking is determined by the total Affinity gained.",
+            "After the event ends, you can claim your ranking rewards from the corresponding ranking screen."
+          ]
+        },
+        {
+          "heading": "Tasks",
+          "items": [
+            "During the event, complete tasks to receive corresponding rewards. Complete all tasks to claim an additional reward.",
+            "After entering the reward collection phase, you can claim any unclaimed task rewards. Incomplete tasks cannot be completed after entering the reward collection phase."
+          ]
+        }
+      ],
+      "images": [],
+      "stub": false
+    },
+    {
+      "id": "grandVoyage",
+      "wikiTitle": "Grand Voyage",
+      "wikiUrl": "https://pop-epoch-help.fandom.com/wiki/Grand_Voyage",
+      "icon": "/events/grand-voyage.webp",
+      "intro": "Grand Voyage — The Grand Voyage is divided into 10 regions, which unlock progressively as the event advances. Typical rules are documented here. Rewards, stamina totals, and leaderboard cutoffs can change by season. I Community strategy from moderator Moon.",
+      "sections": [
+        {
+          "heading": "Maritime Territory",
+          "items": [
+            "The Grand Voyage is divided into 10 regions, which unlock progressively as the event advances.",
+            "Each region contains several cities. Chieftains can lead their fleets between unlocked cities.",
+            "The distance between adjacent cities is fixed. Increasing fleet speed reduces the time required to travel.",
+            "Each voyage also requires an additional 1 day of preparation time.",
+            "II"
+          ]
+        },
+        {
+          "heading": "Sailing Speed-Up",
+          "items": [
+            "Consuming speed-up time immediately reduces fleet travel time by the same amount.",
+            "Speed-Up time recovers naturally over time. Every 10 minutes of real time restores 30 minutes of speed-up time.",
+            "Speed-Up time can accumulate up to 200 hours. Once it reaches or exceeds this limit, it will no longer recover naturally.",
+            "Using 1 supply immediately restores 30 minutes of speed-up time, and this can exceed the maximum limit.",
+            "III"
+          ]
+        },
+        {
+          "heading": "Market Trading",
+          "items": [
+            "When the chieftain is in a city, they can buy and sell specialties at the market.",
+            "Each city sells different specialties and has different demand for others. Chieftains can buy low in one city and sell high in another to earn profits.",
+            "Specialty prices fluctuate over time and are updated every year in January, April, July, and October.",
+            "Each specialty has limited stock. All specialty stock is refreshed on January 1 each year.",
+            "The fleet's cargo capacity determines how many specialties can be transported at a time. Chieftains should continue upgrading their ships to improve trading efficiency.",
+            "When selling specialties, there is a chance to trigger bargaining and earn additional profit. The amount of extra profit depends on the fleet's bargaining stat.",
+            "IV"
+          ]
+        },
+        {
+          "heading": "Fleet",
+          "items": [
+            "When a fleet travels between cities on the map, the travel distance is determined by the distance between the cities. A ship's durability affects its maximum sailing range.",
+            "In addition, ship parts can be upgraded at the post station to improve speed, max durability, max cargo, and bargaining.",
+            "Once all ship parts have reached their maximum level, the ship can be upgraded in a city.",
+            "After being upgraded, the ship gains a new appearance, bonuses to all attributes, and a higher level cap for its parts.",
+            "V"
+          ]
+        },
+        {
+          "heading": "Guardian Cryptids",
+          "items": [
+            "The fleet has four guardian positions: vanguard, logistics, left flank, and right flank, corresponding to speed, durability, cargo, and bargaining respectively.",
+            "A guardian cryptid can be assigned to guard the fleet after its first part is unlocked, granting the corresponding attribute bonus.",
+            "Each guardian cryptid has four parts. As your merchant title increases, these parts will gradually unlock, granting additional attribute bonuses.",
+            "While guarding the fleet during voyages, guardian cryptids can obtain Poseidon's Blessing, which can be used to activate their potential.",
+            "VI"
+          ]
+        },
+        {
+          "heading": "Chamber of Commerce Investment",
+          "items": [
+            "Every city has its own chamber of commerce. Chieftains can spend bills of exchange to invest in it and raise its level.",
+            "Upgrading the chamber immediately increases market share and reputation, while also providing ongoing dividends.",
+            "As reputation increases, more and rarer specialty goods become available in the market.",
+            "Increasing territory level raises the maximum chamber of commerce level in all subordinate cities.",
+            "VII"
+          ]
+        },
+        {
+          "heading": "Territory Level",
+          "items": [
+            "When all subordinate cities within a region reach the required chamber of commerce level, the region's territory level can be upgraded.",
+            "After the territory level is increased, specialty stock and bargaining success rates in the region's subordinate cities will improve, and specialty goods can be purchased at lower prices.",
+            "VIII"
+          ]
+        },
+        {
+          "heading": "Merchant Title",
+          "items": [
+            "When certain requirements, such as total assets and total reputation, are met, the chieftain's merchant title can be upgraded.",
+            "Increasing merchant title level not only unlocks new regions and additional guardian cryptid slots, but also grants attribute bonuses to all of the chieftain's heroes."
+          ]
+        },
+        {
+          "heading": "Core Progression Strategy",
+          "items": [
+            "Golden Rule: Always prioritize the rarest resource available. Even if lower-tier goods are discounted, rare goods offer significantly higher value.",
+            "Trade Efficiency: Always sell your current cargo before buying new goods or upgrading ports to ensure you have maximum capital.",
+            "Ship Priority: Focus upgrades in this order: Storage Capacity (Revenue) Speed (Efficiency) Durability (Early Game)."
+          ]
+        },
+        {
+          "heading": "Critical Mistakes",
+          "items": [
+            "Idle Boats: Never leave your fleet stationary; it reduces dividend income by 25%.",
+            "Empty Cargo: Never travel without a full load of the rarest available goods.",
+            "Negotiation Stat: Generally considered a low-priority stat; focus on city dividends instead."
+          ]
+        },
+        {
+          "heading": "Rank Progression Strategy",
+          "items": [
+            "Phase 1: SR Rush",
+            "Loop between two SR-unlocking cities (Level 15). Focus on upgrading territories.",
+            "Phase 2: SSR Rush",
+            "Use adjacent cities (e.g., Saint-Malo/Paris) to reach Level 25 SSR goods.",
+            "Phase 3: UR End Game",
+            "Maximize two adjacent territories to Level 30; reach Level 35 for UR goods.",
+            "Guide contributors: Boah (Garden S9); Greco24 (Forest S13); Zinek (Stone S2)"
+          ]
+        },
+        {
+          "heading": "Rules",
+          "items": [
+            "Main Page",
+            ":Category:Gameplay|",
+            ":Category:Events|",
+            "Category:Gameplay",
+            "Category:Events"
+          ]
+        }
+      ],
+      "images": [],
+      "stub": false
+    },
+    {
+      "id": "greatFlood",
+      "wikiTitle": "The Great Flood Is Back!",
+      "wikiUrl": "https://pop-epoch-help.fandom.com/wiki/The_Great_Flood_Is_Back!",
+      "icon": "/events/great-flood.webp",
+      "intro": ";To be updated :To be updated",
+      "sections": [
+        {
+          "heading": "Overview",
+          "items": [
+            "The Great Flood Is Back! — To be updated"
+          ]
+        },
+        {
+          "heading": "Unlock and Access",
+          "items": [
+            "To be updated"
+          ]
+        },
+        {
+          "heading": "How It Works",
+          "items": [
+            "To be updated"
+          ]
+        },
+        {
+          "heading": "Progression and Rewards",
+          "items": [
+            "To be updated"
+          ]
+        },
+        {
+          "heading": "Rules",
+          "items": [
+            "Main Page",
+            "Category:Events"
+          ]
+        }
+      ],
+      "images": [],
+      "stub": true
+    },
+    {
+      "id": "heartOfGold",
+      "wikiTitle": "Heart of Gold",
+      "wikiUrl": "https://pop-epoch-help.fandom.com/wiki/Heart_of_Gold",
+      "icon": "/events/heart-of-gold.webp",
+      "intro": "Heart of Gold is a guild-based exploration event. Reach the highest possible exploration floors—final guild ranking is based on floor progress, and higher ranks earn better rewards. Event start times per server follow the in-game event calendar. Typical rules are documented here; rewards and schedules can change by season.",
+      "sections": [
+        {
+          "heading": "Overview",
+          "items": [
+            "Core goal: Reach the highest possible exploration floors. Final guild ranking is based on floor progress.",
+            "How to raise floors: Spend Stamina exploring Wasteland tiles. Defeat strong foes in all three areas and collect three Tokens, then advance to the next Wasteland floor."
+          ]
+        },
+        {
+          "heading": "Event introduction",
+          "items": [
+            "The event opens by guild. Each guild enters its own Wasteland map, shared by all guild members. Chieftains can explore unknown tiles, defeat enemies, open Hidden Treasures, Bless the Guild Chariot, and take part in the daily timed Hijack Operation.",
+            "Wilderness exploration",
+            "Each Wasteland has three areas. Exploration costs Stamina. Deeper floors cost more Stamina, and reward multipliers rise by the same ratio. Exact cost per exploration is shown in-game.",
+            "Area foes & Tokens",
+            "Each area has one strong foe. Defeat them to obtain Tokens. Collect all three Tokens to advance to the next Wasteland.",
+            "Guild Chariot",
+            "When the event starts, the Chieftain’s Civilization Index is the base Power in Event. Exploration Items can Bless the Guild Chariot to raise Power bonuses.",
+            "Hidden Treasure",
+            "After a Hidden Treasure area is found, the whole guild can open chests. The discoverer opens 2 extra chests.",
+            "Hijack Operation",
+            "Daily timed window 17:00–21:00. The sortie roster is the Leader plus the top 4 guild members by current point contribution. Train HP is shared server-wide. Daily attack attempts depend on total Stamina spent by the guild.",
+            "Rankings",
+            "Guild exploration ranking uses the guild’s highest exploration progress. Personal point ranking uses exploration points. Ties go to whoever reached the value first."
+          ]
+        },
+        {
+          "heading": "Event rules",
+          "items": [
+            "I"
+          ]
+        },
+        {
+          "heading": "Eligibility & exploration",
+          "items": [
+            "Participate as a guild. After registration ends, the guild roster is locked. Leaving, switching guilds, or changing roles does not change a Chieftain’s status for this season. Chieftains not in a guild at registration cutoff cannot join.",
+            "Each guild enters a different Wasteland; members share one map. Each Wasteland has 3 areas. Spending Stamina to explore tiles triggers various events. Chieftains can teleport between the 3 areas and move to already connected tiles.",
+            "Each area has one area foe. Defeat them for a Token. Collect 3 Tokens to activate the Wasteland beacon and move to the next Wasteland. (Once you advance, you can no longer claim unclaimed event rewards from the old Wasteland.)",
+            "Stamina regenerates over time up to the cap. You can also restore it immediately with items such as Wasteland Keg. Unused Stamina restoration items are cleared when the event ends.",
+            "After reaching certain depths, Stamina cost per exploration increases, and reward multipliers rise by the same ratio.",
+            "II"
+          ]
+        },
+        {
+          "heading": "Power in Event",
+          "items": [
+            "When the event starts, the Chieftain’s Civilization Index is the base Power in Event.",
+            "During the event, use Exploration Items to Bless the Guild Chariot and raise Power bonuses. Each Bless grants random rewards.",
+            "III"
+          ]
+        },
+        {
+          "heading": "Combat",
+          "items": [
+            "After encountering an enemy while exploring, you can attack. Damage equals the Chieftain’s Power in Event.",
+            "The first attack after discovering that enemy costs no Stamina. Further attacks by the discoverer cost Stamina.",
+            "You can invite fellow guild members to attack together. Single-hit damage equals inviter Power + invitee Power. No consent is required. The invitee gets no reward for that attack.",
+            "Undefeated enemies remain on the map and other members can attack them. On defeat, rewards go to the discoverer. Undefeated enemies do not block paths.",
+            "IV"
+          ]
+        },
+        {
+          "heading": "Duel events",
+          "items": [
+            "While exploring, you may encounter another guild and raid 5 random members. Higher Power wins, then you challenge the next member. During the raid, the attacker’s Power does not change. The raid ends after defeating 5 opponents or losing one fight.",
+            "Challenging other guilds grants points and challenge rewards. Total wins during the event grant extra bonuses and rewards. Only the discoverer can resolve this Duel on the spot.",
+            "V"
+          ]
+        },
+        {
+          "heading": "Emergency Wanted Order",
+          "items": [
+            "While exploring, you may find an Emergency Wanted Order with 3 bounties available. The first costs no Stamina; the 2nd and 3rd cost increasing Stamina.",
+            "The 3 orders match 3 bounty tiers. If you abandon, the event disappears from the map. Only the discoverer can handle it.",
+            "VI"
+          ]
+        },
+        {
+          "heading": "Hidden Treasure",
+          "items": [
+            "Each Wasteland has one Hidden Treasure. Revealing any tile in that area excavates all chests at once. After discovery, it is shared by the whole guild.",
+            "Each member gets 1 Hidden Treasure open attempt; total chests are limited. The discoverer opens 2 extra. After leaving the Wasteland, unopened chests can still be claimed on the Frontier Intel screen.",
+            "VII"
+          ]
+        },
+        {
+          "heading": "Hijack Operation",
+          "items": [
+            "During the event, a timed Hijack runs daily 17:00–21:00.",
+            "At start, the sortie roster locks: only the Leader and the top 4 guild members by then-current point contribution can fight. If all members have 0 points, only the Leader can sortie.",
+            "All sortie members can attack the train and share that day’s attack attempts. Each attack spends 1 attempt; damage equals the sum of all sortie members’ Power in Event. Attacks have a short cooldown.",
+            "Daily attack attempts are based on total Stamina spent by the guild and update in real time:",
+            "{| class=\"wikitable\"",
+            "! Guild total Stamina spent !! Attack attempts that day",
+            "|-",
+            "| 0 || 1",
+            "|-",
+            "| 1,000 || 2",
+            "|-",
+            "| 2,500 || 3",
+            "|-",
+            "| 4,500 || 4",
+            "|-",
+            "| 6,500 || 5",
+            "|-",
+            "| 9,000 || 6",
+            "|-",
+            "| 12,000 || 7"
+          ]
+        },
+        {
+          "heading": "|}",
+          "items": [
+            "All guilds on the server attack the same train; HP is shared server-wide. After a successful hijack, the next difficulty starts when cooldown ends. The day’s action ends when all trains that day are hijacked, or when the time window ends. Rewards are paid by each guild’s points ranking that day.",
+            "VIII"
+          ]
+        },
+        {
+          "heading": "Rankings",
+          "items": [
+            "Guild exploration ranking: highest guild exploration progress. Same progress → whoever reached it first.",
+            "Personal point ranking: exploration points from exploring. Same points → whoever reached them first."
+          ]
+        },
+        {
+          "heading": "Before you start",
+          "items": [
+            "Join the guild you plan to play with before registration ends, and confirm you will be on the locked roster.",
+            "Suggested guild agreements: (1) announce Hidden Treasure finds in chat; (2) focus fire on area foes; (3) before Hijack starts, confirm the Leader and top 4 contributors can sortie. Leaders should not disband the guild during the event."
+          ]
+        },
+        {
+          "heading": "Exploration",
+          "items": [
+            "Prioritize defeating foes in all three areas and collecting Tokens. Advance to a new Wasteland as soon as Tokens are complete—this helps guild ranking."
+          ]
+        },
+        {
+          "heading": ":300px|link=|alt=Defeat the three area opponents to obtain tokens and unlock the next wasteland",
+          "items": [
+            "Only step on tiles that form a valid 2×2 block. Skip edge tiles that cannot complete 2×2—they won’t spawn strong foes or Tokens."
+          ]
+        },
+        {
+          "heading": ":300px|link=|alt=Only step on tiles that form a valid 2×2 block; skip edge tiles",
+          "items": [
+            "If allies are exploring nearby, stagger exploration to avoid wasting Stamina.",
+            "After finding an enemy, use the free first attack. If you can’t finish it, leave it on the map for higher-Power members. Rewards still go to the discoverer—announce high-value enemies in guild chat.",
+            "Duels and Wanted Orders can only be handled by the discoverer. Resolve or accept them immediately; others cannot act for you.",
+            "In a Hidden Treasure area, revealing any tile excavates all chests. The discoverer should open extras first, then notify the guild. After leaving the Wasteland, claim remaining chests on the Frontier Intel screen.",
+            "Each day, claim natural regen plus free/ad Stamina, and prioritize Tokens and Hidden Treasure. Don’t sit at full Stamina for long, or natural regen stops.",
+            ":300px|link=|alt=Stamina bar showing current amount and natural regen timer"
+          ]
+        },
+        {
+          "heading": "Guild Chariot",
+          "items": [
+            "Bless the Guild Chariot daily. Save some items for the final guild floor-up so you can use the double attempts fully.",
+            ":300px|link=|alt=Ammo Bag item used to upgrade the Guild Chariot"
+          ]
+        },
+        {
+          "heading": "Hijack",
+          "items": [
+            "The sortie locks the top 4 by current contribution plus the Leader. Members who want to fight should raise contribution into that range before start.",
+            "Attack attempts come from whole-guild Stamina spend and are shared by the five sortie members. To raise daily attempts, keep exploring.",
+            "You can wait for the last hit—the finishing blow grants extra generous rewards.",
+            ":300px|link=|alt=Final Blow to the Train and guild rank reward preview"
+          ]
+        },
+        {
+          "heading": "Buying the Heart of Gold Pass unlocks Exploration Assistant, mainly for QoL.",
+          "items": [
+            "Capabilities include: 4× animation speed; auto-resolve fights you can one-shot; auto-challenge on raids; auto-pick correct Random Event answers you’ve gotten right before; explore up to 9 tiles at once; etc.",
+            "If budget allows, buying is recommended—saves time and helps catch up. If budget is tight, event packs often give more direct event value."
+          ]
+        },
+        {
+          "heading": "Random Event quiz",
+          "items": [
+            "In-game left/right option order is shuffled. Choose the Correct phrase below by meaning—do not memorize button positions."
+          ]
+        },
+        {
+          "heading": "Prairie Station",
+          "items": [
+            "{| class=\"wikitable\"",
+            "! What the question asks !! Correct phrase !! Do not choose",
+            "|-",
+            "| Why did Billy set out? || Resolve the inner conflict || Seek treasure",
+            "|-",
+            "| Why only a single gun? || Control emotions || Save a trump card",
+            "|-",
+            "| What does the silver bullet truly remind him of? || Price || Proof of strength",
+            "|-",
+            "| How should this wasteland be understood? || Land of blood and tears || A land beyond the law",
+            "|-",
+            "| What has he never truly learned in the wild? || Face the past || Spreading his fame",
+            "|-",
+            "| Why not take the railroad? || Resentment toward the railway company || Old roads feel more like treasure hunting",
+            "|}"
+          ]
+        },
+        {
+          "heading": "Mining Canyon",
+          "items": [
+            "{| class=\"wikitable\"",
+            "! What the question asks !! Correct phrase !! Do not choose",
+            "|-",
+            "| What does Billy want most? || Answer || Gold",
+            "|-",
+            "| To the old man, the Heart of Gold is? || Lies for capital || A real treasure",
+            "|-",
+            "| Biggest difference between him and the old man? || Exercise self-control || Being more warlike",
+            "|-",
+            "| What kind of strength is true strength? || Inner heart || Marksmanship",
+            "|-",
+            "| Why do mine rails lead people deeper? || Done by design || Nature’s guidance",
+            "|-",
+            "| What does the rein remind him of? || Freedom requires restraint || Freedom means acting without limit",
+            "|}"
+          ]
+        },
+        {
+          "heading": "Frontier Town",
+          "items": [
+            "{| class=\"wikitable\"",
+            "! What the question asks !! Correct phrase !! Do not choose",
+            "|-",
+            "| When there’s blood on the boots, his true attitude? || Confess to crimes || Pretend innocence",
+            "|-",
+            "| What does the gun he never draws symbolize? || Guilt || A secret weapon",
+            "|-",
+            "| Why not dual wield? || He wants to show restraint || He wants to show off",
+            "|-",
+            "| Facing the monster image on the wanted poster? || Ignore || Exploit it",
+            "|-",
+            "| The nameless gunman forgot why he drew—the warning is? || Must remember human nature || Win by any means",
+            "|-",
+            "| What do rumors most easily hide? || Billy's fear || The truth of the past",
+            "|}",
+            "With Exploration Assistant’s Random Event enabled, if you answered a question correctly before, it will auto-select the correct option later."
+          ]
+        },
+        {
+          "heading": "Notes",
+          "items": [
+            "Not in a guild before registration cutoff → cannot join this season. Do not disband the guild during the event.",
+            "Advancing to the next Wasteland too early → cannot claim remaining rewards from the old Wasteland.",
+            "Duels and Wanted Orders: discoverer only.",
+            "Invited co-attackers get no reward—this is not a way to hand out rewards.",
+            "Wasteland Keg and other Stamina items left unused are cleared when the event ends.",
+            "Low guild Stamina spend → few Hijack attacks that day, shared by five sortie members.",
+            "Ties go to whoever reached the value first. Catching up on the last day may still lose to earlier arrivals."
+          ]
+        },
+        {
+          "heading": "Rules",
+          "items": [
+            "Strategy|",
+            "Events|",
+            "Guild",
+            "Main Page",
+            ":Category:Events|",
+            "Category:Events",
+            "Category:Game Tips"
+          ]
+        }
+      ],
+      "images": [
+        {
+          "src": "/events/heart-of-gold-stamina.webp",
+          "alt": "Exploration stamina"
+        },
+        {
+          "src": "/events/heart-of-gold-tokens.webp",
+          "alt": "Event tokens"
+        }
+      ],
+      "stub": false
+    },
+    {
+      "id": "holyGrail",
+      "wikiTitle": "Holy Grail Journey",
+      "wikiUrl": "https://pop-epoch-help.fandom.com/wiki/Holy_Grail_Journey",
+      "icon": "/events/holy-grail.webp",
+      "intro": "Holy Grail Journey is a limited-time event in Pop Epoch. Typical rules are below; schedules and rewards can change by season.",
+      "sections": [
+        {
+          "heading": "Grail Journey",
+          "items": [
+            "During the event, You can form a 4-person team with other chieftains to embark on an adventure.",
+            "Each exploration consumes a certain amount of stamina. stamina recovers over time or can be restored using the Holy Flask. Unused holy flasks will expire and be deleted after the event ends.",
+            "The automatic stamina recovery cap is 30 points. 1 stamina recovers every 20 minutes. Automatic recovery pauses once the cap is reached.",
+            "During exploration, various random events may occur. Completing events grants points and item rewards."
+          ]
+        },
+        {
+          "heading": "Teaming Rules",
+          "items": [
+            "During the team-up period, You can create their own teams or join existing ones.",
+            "Chieftains who have joined a team can leave or disband the team during the preparation phase; the captain can remove team members.",
+            "After the team-up period ends, chieftains who are not in a team can still create or join one.",
+            "Within the last 5 minutes of the team-up period, members cannot be changed and teams cannot be disbanded."
+          ]
+        },
+        {
+          "heading": "Ranking",
+          "items": [
+            "After the event ends, individuals and teams will be ranked based on the increase in points during the event."
+          ]
+        },
+        {
+          "heading": "Gameplay",
+          "items": [
+            "Spend items to draw rewards during the event. Each draw grants a random reward, which may include limited characters. Tap the \"Details\" button to view the reward pool."
+          ]
+        },
+        {
+          "heading": "Guaranteed Rewards",
+          "items": [
+            "Reach the required total number of draws during the event to claim the corresponding guaranteed rewards."
+          ]
+        }
+      ],
+      "images": [],
+      "stub": false
+    },
+    {
+      "id": "legendOfSerenissima",
+      "wikiTitle": "Legend of Serenissima",
+      "wikiUrl": "https://pop-epoch-help.fandom.com/wiki/Legend_of_Serenissima",
+      "icon": "/events/legend-of-serenissima.webp",
+      "intro": "Legend of Serenissima is a ranking event in Pop Epoch — your score is compared with other chieftains, then rewards land when the board settles.",
+      "sections": [
+        {
+          "heading": "Legend of Serenissima",
+          "items": [
+            "During the event, Chieftains will earn points based on trading duration in the Merchant Sea."
+          ]
+        },
+        {
+          "heading": "Scoring Rules",
+          "items": [
+            "During trade, points accumulate by trade duration. Using a Trade License each time grants instant points equal to that duration.",
+            "Once the event enters the reward claim phase, trade duration will no longer count towards points."
+          ]
+        },
+        {
+          "heading": "Ranking",
+          "items": [
+            "During the event, personal rankings are based on your trade duration.",
+            "After the event ends, you can claim rewards according to your ranking position."
+          ]
+        },
+        {
+          "heading": "Tasks",
+          "items": [
+            "During the event, complete tasks to receive corresponding rewards. Complete all tasks to claim an additional reward.",
+            "After entering the reward claim phase, you can claim any unclaimed task rewards. Incomplete tasks cannot be completed after entering the reward claim phase."
+          ]
+        }
+      ],
+      "images": [],
+      "stub": false
+    },
+    {
+      "id": "lifeIncubator",
+      "wikiTitle": "Life Incubator Lab",
+      "wikiUrl": "https://pop-epoch-help.fandom.com/wiki/Life_Incubator_Lab",
+      "icon": "/events/life-incubator.webp",
+      "intro": "Life Incubator Lab is a limited-time event in Pop Epoch. Typical rules are below; schedules and rewards can change by season.",
+      "sections": [
+        {
+          "heading": "Rules",
+          "items": [
+            "Gene blocks range from Lv. 1 to Lv. 44. The game ends when a dropped block crosses the warning line.",
+            "Tap the screen to drop a gene block, or press and hold to move and choose a column. Release to let the block fall.",
+            "After landing, a gene block will merge with adjacent gene blocks of the same level to form a higher-level gene block.",
+            "Each merge grants score and eggs. The higher the combo count, the greater the bonus."
+          ]
+        },
+        {
+          "heading": "First Merge Reward",
+          "items": [
+            "During the event, merging a gene block of a specific level for the first time grants a First-Merge Reward."
+          ]
+        },
+        {
+          "heading": "Tier",
+          "items": [
+            "Reach the required tier to claim the corresponding tier reward.",
+            "The higher your tier, the higher your maximum stamina cap."
+          ]
+        },
+        {
+          "heading": "Ranking Rules",
+          "items": [
+            "During the event, personal rankings are based on cumulative points.",
+            "After the event ends, claim ranking rewards based on your final rank."
+          ]
+        },
+        {
+          "heading": "Shop Rules",
+          "items": [
+            "Earn [Egg] items when merging gene blocks, which can be exchanged for items in the Shop."
+          ]
+        },
+        {
+          "heading": "Unused Item Rules",
+          "items": [
+            "After the event ends, any unused [Scholar's Coffee], [Block Selector], and [Rearrange] items will be converted into [Eggs]."
+          ]
+        }
+      ],
+      "images": [],
+      "stub": false
+    },
+    {
+      "id": "mayanRuins",
+      "wikiTitle": "Mayan Ruins",
+      "wikiUrl": "https://pop-epoch-help.fandom.com/wiki/Mayan_Ruins",
+      "icon": "/events/mayan-ruins.webp",
+      "intro": "Mayan Ruins is a limited-time event in Pop Epoch. Typical rules are below; schedules and rewards can change by season.",
+      "sections": [
+        {
+          "heading": "Mayan Ruins",
+          "items": [
+            "During the event, you may explore the map in search of Maya statue! Each floor of the map contains several regular rewards and one statue. Once the statue on the current floor is found, you can proceed to the next floor to continue the treasure hunt.",
+            "Each excavation consumes a certain number of hammers. The number required increases as you advance through higher floors.",
+            "Digging ordinary tiles grants the rewards hidden underneath. There is also a chance to discover a special item: Thor's Axe, which clears all tiles in a cross-shaped area when used.",
+            "After finding a statue, you have four chances to wipe it. Each wipe may improve the statue's quality. When all four wipes are completed, you'll receive rewards based on the final quality."
+          ]
+        },
+        {
+          "heading": "Grand Prize",
+          "items": [
+            "Each floor contains a Grand Prize, which can be either a Fixed Prize or a Custom Prize.",
+            "You may freely choose the reward for the Custom Prize. Once the statue is found and wiped, the chosen prize will be granted.",
+            "The Fixed Prize is a permanent reward specific to each floor. Once the statue is found and wiped, this fixed reward will be received accordingly."
+          ]
+        },
+        {
+          "heading": "Mayan Shop",
+          "items": [
+            "While excavating tiles, you may obtain [Ruincity Coin] and [Ruincity Slates], which can be exchanged for items in the shop.",
+            "Some items in the shop can only be exchanged after reaching a specified number of excavations.",
+            "After the event ends, Ruincity Coin and Ruincity Slates will not be reclaimed."
+          ]
+        },
+        {
+          "heading": "Ruins Treasure",
+          "items": [
+            "During the event, you'll earn milestone rewards based on your total number of excavations.",
+            "Each reward can be claimed only once.",
+            "After the event ends, any unclaimed rewards will not be reissued. Claim them in time!"
+          ]
+        },
+        {
+          "heading": "Missions",
+          "items": [
+            "Complete daily tasks during the event to earn rewards.",
+            "Daily tasks reset at 00:00 server time each day. Missed rewards will not be reissued."
+          ]
+        },
+        {
+          "heading": "Bundles",
+          "items": [
+            "During the event, you may purchase bundles containing various items to aid in the quest for the treasure hunt.",
+            "Each bundle has a purchase limit."
+          ]
+        },
+        {
+          "heading": "Unused Item Rules",
+          "items": [
+            "After the event ends, any unused hammers will expire and be deleted. Make sure to use them before the event concludes!"
+          ]
+        }
+      ],
+      "images": [],
+      "stub": false
+    },
+    {
+      "id": "militarySupplies",
+      "wikiTitle": "Military Supplies",
+      "wikiUrl": "https://pop-epoch-help.fandom.com/wiki/Military_Supplies",
+      "icon": null,
+      "intro": "Military Supplies — General Requests: Fulfill supply orders requested by Great Generals to earn bonus points. Be careful: Generals have limited patience; failing an order causes them to leave in anger. Typical rules are documented here. Rewards, stamina totals, and leaderboard cutoffs can change by season. I Community strategy from moderator Moon.",
+      "sections": [
+        {
+          "heading": "How it works",
+          "items": [
+            "Collect Supplies",
+            "Spend Reserves to swap supply tiles. Match 3+ in rows or columns to secure them.",
+            "Restore Reserves",
+            "Energy regenerates naturally or via the Armament Rack. Match 4: Bombs Match 4 items for Bombs, clearing a 1-tile radius. Match 5+: Flags Match 5+ items for a Command Flag, clearing tiles in a cross pattern."
+          ]
+        },
+        {
+          "heading": "Military Scoring",
+          "items": [
+            "General Requests: Fulfill supply orders requested by Great Generals to earn bonus points. Be careful: Generals have limited patience; failing an order causes them to leave in anger.",
+            "Speed Mode: Certain intervals allow for Speed Mode, where your military points earned per supply collection are doubled.",
+            "II"
+          ]
+        },
+        {
+          "heading": "Special Effects",
+          "items": [
+            "Explosives: Clear tiles in a 1-tile radius around the center.",
+            "Command Flags: Trigger a cross-pattern clearance, removing all items along the row and column."
+          ]
+        },
+        {
+          "heading": "Combo Effects",
+          "items": [
+            "2 Bombs: Bigger Blast",
+            "2 Flags: Massive Area",
+            "Bomb + Flag: Directional Blast"
+          ]
+        },
+        {
+          "heading": "Rules",
+          "items": [
+            "Main Page",
+            ":Category:Events|",
+            "Category:Events"
+          ]
+        }
+      ],
+      "images": [],
+      "stub": false
+    },
+    {
+      "id": "monumentOfEternity",
+      "wikiTitle": "Monument of Eternity",
+      "wikiUrl": "https://pop-epoch-help.fandom.com/wiki/Monument_of_Eternity",
+      "icon": null,
+      "intro": ";To be updated :To be updated",
+      "sections": [
+        {
+          "heading": "Overview",
+          "items": [
+            "Monument of Eternity — To be updated"
+          ]
+        },
+        {
+          "heading": "Unlock and Access",
+          "items": [
+            "To be updated"
+          ]
+        },
+        {
+          "heading": "How It Works",
+          "items": [
+            "To be updated"
+          ]
+        },
+        {
+          "heading": "Progression and Rewards",
+          "items": [
+            "To be updated"
+          ]
+        },
+        {
+          "heading": "Rules",
+          "items": [
+            "Main Page",
+            "Category:Events"
+          ]
+        }
+      ],
+      "images": [],
+      "stub": true
+    },
+    {
+      "id": "mushroomAdventure",
+      "wikiTitle": "Mushroom Adventure",
+      "wikiUrl": "https://pop-epoch-help.fandom.com/wiki/Mushroom_Adventure",
+      "icon": "/events/mushroom-adventure.webp",
+      "intro": "Mushroom Adventure is a limited-time event in Pop Epoch. Typical rules are below; schedules and rewards can change by season.",
+      "sections": [
+        {
+          "heading": "Rules",
+          "items": [
+            "Mushrooms range from Lv. 1 to Lv. 35. Move mushrooms to connect 4 or more mushrooms of the same level to merge them into 1 higher-level mushroom. Each merge grants points and Tier Points. The higher the mushroom level, the more points and Tier Points you earn.",
+            "When the Gift Box progress bar is full, you will receive a random reward box.",
+            "There is a limit to how many mushrooms can be on the board. Once the board reaches its capacity, the game ends. You can then use items to continue or start a new game."
+          ]
+        },
+        {
+          "heading": "First Merge Reward",
+          "items": [
+            "During the event, the first time you merge a mushroom of a certain level, you can claim the corresponding first merge reward."
+          ]
+        },
+        {
+          "heading": "Tier",
+          "items": [
+            "Reach the required tier to claim the corresponding tier reward.",
+            "The higher your tier, the higher your maximum stamina cap."
+          ]
+        },
+        {
+          "heading": "Ranking Rules",
+          "items": [
+            "During the event, personal rankings are based on cumulative points.",
+            "After the event ends, claim ranking rewards based on your final rank."
+          ]
+        },
+        {
+          "heading": "Shop Rules",
+          "items": [
+            "Merge mushrooms to earn [Mushrooms], which can be used to redeem items in the shop."
+          ]
+        },
+        {
+          "heading": "Unused Item Rules",
+          "items": [
+            "After the event ends, any unused [Coconut Water], [Nutrient Solution], and [Sickle] will be converted into [Mushrooms]."
+          ]
+        }
+      ],
+      "images": [],
+      "stub": false
+    },
+    {
+      "id": "peakOfEnlightenment",
+      "wikiTitle": "Peak of Enlightenment",
+      "wikiUrl": "https://pop-epoch-help.fandom.com/wiki/Peak_of_Enlightenment",
+      "icon": "/events/peak-of-enlightenment.webp",
+      "intro": ";To be updated :To be updated",
+      "sections": [
+        {
+          "heading": "Overview",
+          "items": [
+            "Peak of Enlightenment — To be updated"
+          ]
+        },
+        {
+          "heading": "Unlock and Access",
+          "items": [
+            "To be updated"
+          ]
+        },
+        {
+          "heading": "How It Works",
+          "items": [
+            "To be updated"
+          ]
+        },
+        {
+          "heading": "Progression and Rewards",
+          "items": [
+            "To be updated"
+          ]
+        },
+        {
+          "heading": "Rules",
+          "items": [
+            "Main Page",
+            "Category:Events"
+          ]
+        }
+      ],
+      "images": [],
+      "stub": true
+    },
+    {
+      "id": "redCarpet",
+      "wikiTitle": "Red Carpet Night",
+      "wikiUrl": "https://pop-epoch-help.fandom.com/wiki/Red_Carpet_Night",
+      "icon": null,
+      "intro": ";To be updated :To be updated",
+      "sections": [
+        {
+          "heading": "Overview",
+          "items": [
+            "Red Carpet Night — To be updated"
+          ]
+        },
+        {
+          "heading": "Unlock and Access",
+          "items": [
+            "To be updated"
+          ]
+        },
+        {
+          "heading": "How It Works",
+          "items": [
+            "To be updated"
+          ]
+        },
+        {
+          "heading": "Progression and Rewards",
+          "items": [
+            "To be updated"
+          ]
+        },
+        {
+          "heading": "Rules",
+          "items": [
+            "Main Page",
+            "Category:Events"
+          ]
+        }
+      ],
+      "images": [],
+      "stub": true
+    },
+    {
+      "id": "ringToss",
+      "wikiTitle": "Prize Toss Booth",
+      "wikiUrl": "https://pop-epoch-help.fandom.com/wiki/Prize_Toss_Booth",
+      "icon": "/events/ring-toss.webp",
+      "intro": ";To be updated :To be updated",
+      "sections": [
+        {
+          "heading": "Overview",
+          "items": [
+            "Prize Toss Booth — To be updated"
+          ]
+        },
+        {
+          "heading": "Unlock and Access",
+          "items": [
+            "To be updated"
+          ]
+        },
+        {
+          "heading": "How It Works",
+          "items": [
+            "To be updated"
+          ]
+        },
+        {
+          "heading": "Progression and Rewards",
+          "items": [
+            "To be updated"
+          ]
+        },
+        {
+          "heading": "Rules",
+          "items": [
+            "Main Page",
+            "Category:Events"
+          ]
+        }
+      ],
+      "images": [],
+      "stub": true
+    },
+    {
+      "id": "roadToWorldcup",
+      "wikiTitle": "Road to the Cup",
+      "wikiUrl": "https://pop-epoch-help.fandom.com/wiki/Road_to_the_Cup",
+      "icon": "/events/road-to-worldcup.webp",
+      "intro": "Road to the Cup is a limited-time event in Pop Epoch. Typical rules are below; schedules and rewards can change by season.",
+      "sections": [
+        {
+          "heading": "Road to the Cup",
+          "items": [
+            "Once the event begins, You can spend event-exclusive Stamina to recruit players and build their lineup.",
+            "You can have up to 15 players at a time, with fixed position slots. If a position slot is full or a duplicate player is recruited, the Retirement/Replacement feature will be triggered, allowing chieftains to choose which player to retire.",
+            "Retiring players grants Club Points, which increase your Club Level.",
+            "The higher your Club Level, the greater your chance of recruiting rare players."
+          ]
+        }
+      ],
+      "images": [],
+      "stub": false
+    },
+    {
+      "id": "shoppingCartRace",
+      "wikiTitle": "Shopping Cart Race",
+      "wikiUrl": "https://pop-epoch-help.fandom.com/wiki/Shopping_Cart_Race",
+      "icon": "/events/shopping-cart-race.webp",
+      "intro": "Shopping Cart Race is a limited-time event in Pop Epoch. Typical rules are below; schedules and rewards can change by season.",
+      "sections": [
+        {
+          "heading": "Rules",
+          "items": [
+            "During the event, You can obtain Energy Bar by completing daily tasks, purchasing bundles, and more. Each Energy Bar lets you Boost once, moving the cart forward by a set distance.",
+            "Reach certain mileage to claim the corresponding mileage rewards. After the cart's mileage passes the finish line, you can claim a loop reward each time you travel a set distance.",
+            "Each time you Boost and move forward, the cart also randomly grants a shopping reward."
+          ]
+        },
+        {
+          "heading": "Unused Item Rules",
+          "items": [
+            "After the event ends, unused Energy Bar will expire and be deleted. Please use them in time, Chieftain."
+          ]
+        }
+      ],
+      "images": [],
+      "stub": false
+    },
+    {
+      "id": "springReturns",
+      "wikiTitle": "Spring's Return",
+      "wikiUrl": "https://pop-epoch-help.fandom.com/wiki/Spring%27s_Return",
+      "icon": "/events/spring-returns.webp",
+      "intro": "Spring's Return is a limited-time event in Pop Epoch. Typical rules are below; schedules and rewards can change by season.",
+      "sections": [
+        {
+          "heading": "Planting Plants",
+          "items": [
+            "During the event, plots will be unlocked in the manor, where you can plant various flora.",
+            "Use the Watering Can to accelerate growth; once matured, the plants can be harvested.",
+            "The number of plants obtained increases their level, which boosts yield and grants a chance for plants to mutate."
+          ]
+        },
+        {
+          "heading": "Guild Shop Competition",
+          "items": [
+            "On day 9 of the event, the Guild Shop Competition opens as a guild-based activity. Submit specific items earned from order rewards in the competition to earn points.",
+            "The competition has 4 rounds in total, and each round has 5 matches. Before each match, the participating guild roster will be locked.",
+            "Accumulating points unlocks Personal Chest and Guild Chest rewards.",
+            "Each match automatically pairs you against an opponent guild. Defeating them also grants extra victory rewards."
+          ]
+        },
+        {
+          "heading": "Overview",
+          "items": [
+            "The Guild Shop Competition opens on day 9 of the event. Guilds that meet the requirements may participate.",
+            "There are 4 rounds in total, and each round has 5 matches. Before each round begins, the system automatically matches opposing guilds.",
+            "Required decorations change daily during the competition. Submit the matching decorations to earn points. Points earned can unlock that day's Personal Chest and Guild Chest.",
+            "The two guilds in a duel compete on points. The side with more points for the day wins that day."
+          ]
+        },
+        {
+          "heading": "Season Level",
+          "items": [
+            "Increasing your Season Level unlocks more land and more plants.",
+            "Completing Orders grants Season EXP."
+          ]
+        },
+        {
+          "heading": "Complete Orders",
+          "items": [
+            "Orders require different plants. Submit the required plants to complete orders and earn rewards.",
+            "Complete a set number of orders daily to claim an additional reward.",
+            "The more orders you complete, the more order slots you will unlock."
+          ]
+        },
+        {
+          "heading": "Guild Assistance",
+          "items": [
+            "Guild members can help water each other's plants to reduce growth time. Each plant can be watered up to 3 times.",
+            "For fully grown plants, guild members can 'pick' from them. 'pick' does not affect the plant's original yield.",
+            "There is a daily limit on the number of times you can 'pick' from guild members' plants."
+          ]
+        }
+      ],
+      "images": [],
+      "stub": false
+    },
+    {
+      "id": "springReturnsPlanting",
+      "wikiTitle": "Harvest Festival",
+      "wikiUrl": "https://pop-epoch-help.fandom.com/wiki/Harvest_Festival",
+      "icon": "/events/spring-returns-planting.webp",
+      "intro": "Harvest Festival — Different decorations are required daily during the event. Chieftains can submit decorations to earn points. Typical rules are documented here. Rewards, stamina totals, and leaderboard cutoffs can change by season.",
+      "sections": [
+        {
+          "heading": "How it works",
+          "items": [
+            "Decorations Submission",
+            "During the competition, different decoration items will be requested each day. Submit the required items to earn points.",
+            "Personal Chests",
+            "Earn points to unlock personal chests. Rewards and progress reset daily. 1w Points: Wooden Chest 2w Points: Blue Chest 2.5w Points: Purple Chest 3w Points: Gold Chest 5w Points: Red Chest",
+            "Match Results",
+            "At the end of each day, the guild with more points wins that day's round. At the end of the match, the guild with the higher total score is considered the winner.",
+            "Guild Chest",
+            "The member with the highest daily event points will be displayed on the page. Points earned by every guild member in the event contribute to the progress of guild chests."
+          ]
+        },
+        {
+          "heading": "Event Overview",
+          "items": [
+            "Different decorations are required daily during the event. Chieftains can submit decorations to earn points.",
+            "Points earned can be used to unlock daily Personal Chests and Guild Chests.",
+            "Eligible guilds can participate in duels. At the start of the event, guilds will be matched with opponents.",
+            "Once the duel begins, matched guilds will compete for points. The guild with more points wins the day.",
+            "On the final day of the duel, the guild with the higher total score wins the duel.",
+            "Each round consists of 5 matches. Guilds will be promoted or demoted based on their total points after the round.",
+            "There are 4 rounds in total. Rewards will be distributed based on the guild's tier at the end of the final match.",
+            "II"
+          ]
+        },
+        {
+          "heading": "Eligibility",
+          "items": [
+            "The event is guild–based. Join a guild before the roster lock to participate. The roster lock deadline is 23:55 on the day before the match. Once the Assembly Phase ends, the roster will be locked.",
+            "The first roster lock will occur at 23:55 on the 8th day of the event. Subsequently, the roster will be re-locked on the day after each round of matches ends.",
+            "After the event starts, guilds that meet the ranking requirements can enter the duel. Participating guilds will each be matched with another guild as an opponent.",
+            "III"
+          ]
+        },
+        {
+          "heading": "Duel",
+          "items": [
+            "Guilds in a duel will compare their total daily points at the end of the decoration submission period. The side with more points wins the day and earns score points.",
+            "Opponent guilds remain the same throughout the match. At the end of the event, the guild with the higher total score is the winner and receives Victory Rewards.",
+            "During the duel, members of both guilds will be ranked daily based on their points. Chieftains will receive Daily Ranking Rewards based on these rankings!",
+            "IV"
+          ]
+        },
+        {
+          "heading": "Guild Grouping",
+          "items": [
+            "At the start of the event, guilds are ranked by their total Civilization Index. The top 50% enter the Elite Group, and the bottom 50% enter the Rookie Group. During a round, you will only be matched with guilds from the same group.",
+            "After all matches in a round end, guilds are re-ranked by total points, and promotions or demotions between groups will occur before the next round begins.",
+            "At the end of the final round, rewards are distributed based on the guild's group. The top 3 guilds in the Supreme Group will receive special rewards.",
+            "V"
+          ]
+        },
+        {
+          "heading": "Personal Chests",
+          "items": [
+            "During the event, Personal Chest rewards and progress reset daily.",
+            "Personal Chests are unlocked based on the points the chieftain earns that day.",
+            "VI"
+          ]
+        },
+        {
+          "heading": "Guild Chests",
+          "items": [
+            "During the event, Guild Chest rewards and progress reset daily.",
+            "Points earned by each guild member during the event contribute to the Guild Chest progress."
+          ]
+        },
+        {
+          "heading": "Rules",
+          "items": [
+            "Main Page",
+            ":Category:Events|",
+            "Category:Events"
+          ]
+        }
+      ],
+      "images": [],
+      "stub": false
+    },
+    {
+      "id": "supplyReform",
+      "wikiTitle": "Supply Reform",
+      "wikiUrl": "https://pop-epoch-help.fandom.com/wiki/Supply_Reform",
+      "icon": "/events/supply-reform.webp",
+      "intro": "Supply Reform is a limited-time event in Pop Epoch. Typical rules are below; schedules and rewards can change by season.",
+      "sections": [
+        {
+          "heading": "Rules",
+          "items": [
+            "On the 8×10 grid, press and hold any supply item, drag it left or right, then release. Fill a full row to clear it. The round ends when the supplies stack beyond 10 rows.",
+            "Clearing supplies grants [Supply Points] and [Supply Merits]. Consecutive clears also grant bonus [Supply Merits]. The higher the combo, the greater the bonus.",
+            "Each successful drag consumes [Reserve Supplies] and counts as 1 move. [Reserve Supplies] recover over time and can also be restored with an [Armory Rack].",
+            "As difficulty increases, each drag consumes more [Reserve Supplies]. At the same time, the [Supply Points], [Supply Merits], and chance of [Tokens] also increase."
+          ]
+        },
+        {
+          "heading": "Tier",
+          "items": [
+            "Reach the required tier to claim the corresponding tier reward.",
+            "The higher your tier, the higher your maximum stamina cap."
+          ]
+        },
+        {
+          "heading": "Ranking Rules",
+          "items": [
+            "During the event, personal rankings are based on your total [Supply Merits].",
+            "After the event ends, you can claim ranking rewards from the corresponding ranking tier."
+          ]
+        },
+        {
+          "heading": "Shop Rules",
+          "items": [
+            "Clearing supply items grants [Supply Points], which can be used to exchange for items in the shop."
+          ]
+        },
+        {
+          "heading": "Unused Item Rules",
+          "items": [
+            "After the event ends, any unused [Armory Rack], [Hatchet], and [Bugle] will be converted into [Supply Points]."
+          ]
+        },
+        {
+          "heading": "Reset Rewards",
+          "items": [
+            "After your first hunting, you can tap [Reset] at any time. After resetting, you will receive the guaranteed reward.",
+            "Guaranteed reward amount = Guaranteed item amount × (Current accumulated multiplier - Multiplier when the last item reward was obtained)"
+          ]
+        }
+      ],
+      "images": [],
+      "stub": false
+    },
+    {
+      "id": "tourPerformance",
+      "wikiTitle": "Tour Performance",
+      "wikiUrl": "https://pop-epoch-help.fandom.com/wiki/Tour_Performance",
+      "icon": "/events/tour-performance.webp",
+      "intro": "Tour Performance (Theater Performance) — In the Goddess Theater, you can rehearse and stage plays to earn drama coins. Typical rules are documented here. Rewards, stamina totals, and leaderboard cutoffs can change by season.",
+      "sections": [
+        {
+          "heading": "How it works",
+          "items": [
+            "Script Selection",
+            "Draw random scripts or use a Magic Lantern to select a specific play.",
+            "Assign Goddesses",
+            "Match goddess aptitudes to script requirements for major final reward bonuses.",
+            "Rehearsal Progress",
+            "Spend stamina to advance all active halls simultaneously and earn Drama Coins."
+          ]
+        },
+        {
+          "heading": "Theater Performance",
+          "items": [
+            "In the Goddess Theater, you can rehearse and stage plays to earn drama coins.",
+            "Drama coins can be used to upgrade various building components.",
+            "Upgrading building components will influence the theater's ticket prices, visitor flow, and merchandise value.",
+            "II"
+          ]
+        },
+        {
+          "heading": "Script Rehearsal",
+          "items": [
+            "You can draw a random script or use a magic lantern to select a specific one.",
+            "After choosing a script, goddesses can be assigned to perform main roles or serve as supporting actors.",
+            "Consuming stamina advances the progress of all halls currently in rehearsal. Each point of stamina spent contributes progress simultaneously across all active halls.",
+            "Completing a performance grants drama coins, and participating in rehearsals provides additional rewards.",
+            "III"
+          ]
+        },
+        {
+          "heading": "Goddess Assignment",
+          "items": [
+            "Each goddess possesses three aptitudes. Different aptitudes provide bonuses to resource productivity.",
+            "Each script also carries three aptitudes. For every matching aptitude between a goddess and the script, the performance receives an additional final reward bonus.",
+            "IV"
+          ]
+        },
+        {
+          "heading": "Theater Income",
+          "items": [
+            "Theater income consists of ticket income and merchandise income.",
+            "Ticket income = Ticket Price × Audiences × (1 + Final Income Bonus).",
+            "Merchandise income = Merchandise Price × Audiences × (1 + Final Income Bonus).",
+            "V"
+          ]
+        },
+        {
+          "heading": "EXP Acquisition",
+          "items": [
+            "After rehearsing and performing a script, the goddess gains Aptitude EXP based on how many of her aptitudes match the script.",
+            "If none of her aptitudes match the script, she only gains a small amount of base Aptitude EXP."
+          ]
+        },
+        {
+          "heading": "Oedipus Rex",
+          "items": [
+            "Vivian (Jocasta)",
+            "Brunhild (The Shepherd)",
+            "Demeter (Creon)",
+            "Hestia (Tiresias)",
+            "Hera (Oedipus)"
+          ]
+        },
+        {
+          "heading": "The Phantom Of The Opera",
+          "items": [
+            "Venus (Phantom)",
+            "Hela (Carlotta)",
+            "Ixchel (Manager)",
+            "Medusa (Raoul)",
+            "Muse (Christine)"
+          ]
+        },
+        {
+          "heading": "Alice In Wonderland",
+          "items": [
+            "Demeter (Cheshire Cat)",
+            "Ixchel (Mad Hatter)",
+            "Freya (White rabbit)",
+            "Medusa (Alice)",
+            "Hestia (Dormouse)"
+          ]
+        },
+        {
+          "heading": "Count Of Monte Cristo",
+          "items": [
+            "Fortuna (Edmond Dantès)",
+            "Eve (Abbé Faria)",
+            "Brunhilde (Mercedes)",
+            "Nike (Fernand)"
+          ]
+        },
+        {
+          "heading": "Robinson Crusoe",
+          "items": [
+            "Ixchel (Robinson Crusoe)",
+            "Brunhild (Friday)",
+            "Artemis (Cannibal)",
+            "Freya (English)"
+          ]
+        },
+        {
+          "heading": "Cats",
+          "items": [
+            "Eve (Macavity)",
+            "Ixchel (Tugger)",
+            "Bastet (Grizabella)",
+            "Venus (Mrs Mistoffelees)"
+          ]
+        },
+        {
+          "heading": "Frankenstein",
+          "items": [
+            "Eve (Elizabeth)",
+            "Fortuna (Henry Clerval)",
+            "Brunhild (The Creatur)",
+            "Hela (Frankenstein)"
+          ]
+        },
+        {
+          "heading": "Macbeth",
+          "items": [
+            "Nike (MacDuff)",
+            "Vivian (Lady Macbeth)",
+            "Hera (Banquo)",
+            "Brunhilde (Macbeth)"
+          ]
+        },
+        {
+          "heading": "Hamlet",
+          "items": [
+            "Medusa (Hamlet)",
+            "Athena (Claudius)",
+            "Moirai (Ophelia)",
+            "Hela (Laertes)"
+          ]
+        },
+        {
+          "heading": "Pride And Prejudice",
+          "items": [
+            "Athena (Elizabeth)",
+            "Hera (Darcy)",
+            "Freya (Jans)"
+          ]
+        },
+        {
+          "heading": "Romeo And Juliet",
+          "items": [
+            "Eve (Mercutio)",
+            "Hela (Juliet)",
+            "Venus (Romeo)",
+            "Brunhild (Tybalt)"
+          ]
+        },
+        {
+          "heading": "Treasure Island",
+          "items": [
+            "Muse (Jim Hawkins)",
+            "Brunhilde (Long John)",
+            "Athena (Squire Trelawney)",
+            "Medusa (Captain Smollett)"
+          ]
+        },
+        {
+          "heading": "Don Quixote",
+          "items": [
+            "Fortuna (Sancho Panza)",
+            "Athena (Support 1)",
+            "Hestia (Priest)",
+            "Brunhild (Don Quixote)"
+          ]
+        },
+        {
+          "heading": "Peter Pan",
+          "items": [
+            "Eve (Wendy)",
+            "Hestia (Tinkerbell)",
+            "Artemis (Peter)"
+          ]
+        },
+        {
+          "heading": "A Midsummer Night's Dream",
+          "items": [
+            "Eve (Hermia)",
+            "Fortuna (Oberon)",
+            "Venus (Puck)",
+            "Hera (Titania)"
+          ]
+        },
+        {
+          "heading": "Chicago",
+          "items": [
+            "Vivian (Mama)",
+            "Fortuna (Billy)",
+            "Hera (Velma)",
+            "Muse (Roxie)"
+          ]
+        },
+        {
+          "heading": "Sound Of Music",
+          "items": [
+            "Freya (Maria)",
+            "Demeter (Mother Abbess)",
+            "Artemis (Liesl)",
+            "Hera (Cpt Von Trapp)"
+          ]
+        },
+        {
+          "heading": "Robin Hood",
+          "items": [
+            "Artemis (Robin hood)",
+            "Hera (Sheriff)",
+            "Demeter (Little John)",
+            "Venus (Maid Marian)"
+          ]
+        },
+        {
+          "heading": "Wizard Of Oz",
+          "items": [
+            "Eve (Dorothy)",
+            "Hestia (Scarecrow)",
+            "Demeter (Tin Man)"
+          ]
+        },
+        {
+          "heading": "Aladdin",
+          "items": [
+            "Freya (Jasmine)",
+            "Fortuna (Genie)",
+            "Brunhild (Jafar)",
+            "Artemis (Aladdin)"
+          ]
+        },
+        {
+          "heading": "Sleeping Beauty",
+          "items": [
+            "Eve (Aurora)",
+            "Hestia (Prince)",
+            "Venus (Maleficient)",
+            "Demeter (Fairy)"
+          ]
+        },
+        {
+          "heading": "Little Woman",
+          "items": [
+            "Artemis (Jo March)",
+            "Hestia (Meg March)"
+          ]
+        },
+        {
+          "heading": "Little Red Riding Hood",
+          "items": [
+            "Freya (Grandmother)",
+            "Eve (Little Red Riding Hood)",
+            "Artemis (Hunter)",
+            "Brunhild (Big Bad Wolf)"
+          ]
+        },
+        {
+          "heading": "The Happy Prince",
+          "items": [
+            "Medusa (Prince)",
+            "Hestia (Swallow)",
+            "Vivian (Mayor)",
+            "Venus (Seamstress)"
+          ]
+        },
+        {
+          "heading": "The Lion King",
+          "items": [
+            "Hera (Scar)",
+            "Eve (Simba)",
+            "Vivian (Mufasa)",
+            "Artemis (Nala)"
+          ]
+        },
+        {
+          "heading": "Mozart",
+          "items": [
+            "Freya (Mozart)",
+            "Hela (Salieri)",
+            "Athena (Constanze)",
+            "Fortuna (Joseph II)"
+          ]
+        },
+        {
+          "heading": "The Three Musketeers",
+          "items": [
+            "Complete the Tutorial"
+          ]
+        },
+        {
+          "heading": "Rules",
+          "items": [
+            "Main Page",
+            ":Category:Events|",
+            "Category:Events"
+          ]
+        }
+      ],
+      "images": [],
+      "stub": false
+    },
+    {
+      "id": "trialsOfOdin",
+      "wikiTitle": "Trials of Odin",
+      "wikiUrl": "https://pop-epoch-help.fandom.com/wiki/Trials_of_Odin",
+      "icon": "/events/trials-of-odin.webp",
+      "intro": "Trials of Odin is a limited-time event in Pop Epoch. Typical rules are below; schedules and rewards can change by season.",
+      "sections": [
+        {
+          "heading": "Odin's Help",
+          "items": [
+            "The battlefield is ever-changing, and Odin's Help can turn the tide decisively.",
+            "Within each group, the strongest chieftain from each of the five guilds shall be honored as one of the Five Warlords, while the mightiest among them will ascend as the Supreme Warlord.",
+            "By invoking Odin's Help, chieftains may unite with the five guilds in their group to unleash either the Gungnir or the Eye of Odin.",
+            "Gungnir: The chieftain joins forces with the Five Warlords to target and besiege a chosen camp, inflicting devastating damage."
+          ]
+        },
+        {
+          "heading": "Overview",
+          "items": [
+            "The Trials of Odin event is divided into the preparation phase, siege phase, and final phase.",
+            "During the preparation phase, you can explore and gather supplies to strengthen camp buildings, which grant bonuses during the siege phase and final phase.",
+            "During the siege phase and final phase, all guilds will be divided into five major factions: \"Thor,\" \"Loki,\" \"Freyja,\" \"Heimdall,\" and \"Hel.\"",
+            "Every five guilds will form a group to fight on the corresponding battlefield, laying siege and conquering territory!"
+          ]
+        },
+        {
+          "heading": "Preparation Phase",
+          "items": [
+            "During the Preparation phase, you can explore to gather resources and construct camp buildings, increasing the camp level and preparing for the upcoming siege phase and final phasse.",
+            "While exploring, you may encounter monsters. Chiefs can dispatch their heroes to battle them. Defeating monsters grants construction materials and generous rewards. Depending on the battle outcome, you may receive either hero deployment rewards or monster kill rewardss.",
+            "Each hero can be deployed once for free per day. Any additional deployments require the warrior helmet. Free deployment attempts reset at 00:00.",
+            "When deploying heroes using warrior helmets, the cost will gradually increase based on the number of daily uses, but hero deployment rewards will also be multiplied accordingly."
+          ]
+        },
+        {
+          "heading": "Siege Phase & Finals",
+          "items": [
+            "During the siege phase, a camp's base HP is determined by the total hero power of all guild members, then further adjusted by the shield wall level and donation ranking bonuses to calculate the camp's final HP.",
+            "Chiefs can choose to attack other guilds' camps. Base ATK is determined by the Chief's total hero power, while the watchtower level provides additional attack damage bonuses.",
+            "After entering a city, the Chief must issue a challenge, and the enemy Chief will emerge to defend, allowing the attack to begin.",
+            "Attacks will first consume siege stamina. If siege stamina is insufficient, you may also use march orders to continue attacking."
+          ]
+        },
+        {
+          "heading": "Merits & Ranking",
+          "items": [
+            "A guild's merit is determined by both the total damage it inflicts and its remaining hp.",
+            "Guild merit = total guild damage x (1 + 1.5 x percentage of remaining guild HP).",
+            "Even when a guild's HP falls to 0, its members may continue to attack enemy camps to accrue additional merit. However, such merit shall be recorded solely as personal merit and will not contribute to the guild's total.",
+            "Once the siege concludes, rankings within each group will be established according to total merit, determining advancement eligibility and the allocation of promotion points."
+          ]
+        },
+        {
+          "heading": "Personal Ranking",
+          "items": [
+            "At the end of the preparation phase, individual rankings will be determined based on each Chief's prestige.",
+            "At the end of the finals, individual rankings will be determined based on the total damage each Chief dealt across the three siege battles. If two Chiefs have the same total damage, the one who reached that amount first will rank higher."
+          ]
+        },
+        {
+          "heading": "Guild Ranking",
+          "items": [
+            "At the end of each siege battle, guilds will earn points based on their rank within their group. The number of points awarded varies by battlefield tier.",
+            "Guild rankings will be determined by the total points earned across all three battles.",
+            "If two or more guilds have the same number of points, rankings will be decided based on the guild's total merit earned during the current event."
+          ]
+        }
+      ],
+      "images": [],
+      "stub": false
+    }
+  ]
+}

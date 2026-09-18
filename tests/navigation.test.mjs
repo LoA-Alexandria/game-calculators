@@ -57,7 +57,10 @@ test("Events index lists every published event write-up in one flat list", () =>
   assert.ok(sectionById("events").items.some((item) => item.href === "/events/global-regatta/"));
   assert.ok(sectionById("events").items.some((item) => item.href === "/events/heart-of-gold/"));
   assert.ok(sectionById("events").items.some((item) => item.href === "/events/spring-returns-planting/"));
-  assert.equal(sectionById("events").items.length, 20);
+  assert.ok(sectionById("events").items.some((item) => item.href === "/events/genie-wish/"));
+  assert.ok(sectionById("events").items.some((item) => item.href === "/events/grand-voyage/"));
+  assert.ok(sectionById("events").items.some((item) => item.href === "/events/legend-of-serenissima/"));
+  assert.equal(sectionById("events").items.length, 29);
   assert.ok(sectionById("events").items.every((item) => !item.categoryId && !item.badge));
 });
 
@@ -65,7 +68,7 @@ test("Atlantis is listed under Events Tips in every language", () => {
   for (const locale of ["en", "de", "fr"]) {
     const dictionary = getDictionary(locale);
     const entry = dictionary.eventGuideEntries.atlantis;
-    assert.equal(entry.title, "Atlantis");
+    assert.equal(entry.title, "Delve into Atlantis");
     assert.ok(entry.sections.some((section) => section.heading === "Endless Floor"));
     assert.ok(entry.sections.some((section) => /Bonus Area/i.test(section.heading)));
   }
@@ -75,7 +78,7 @@ test("Spring Returns is listed under Events Tips in every language", () => {
   for (const locale of ["en", "de", "fr"]) {
     const dictionary = getDictionary(locale);
     const entry = dictionary.eventGuideEntries.springReturns;
-    assert.match(entry.title, /Spring Returns/);
+    assert.match(entry.title, /Spring'?s Return/);
     assert.ok(entry.sections.some((section) => /Signboards/.test(section.body.join(" "))));
     assert.ok(entry.sections.some((section) => /Buntings/.test(section.body.join(" "))));
   }
@@ -85,7 +88,7 @@ test("Holy Grail is listed under Events Tips in every language", () => {
   for (const locale of ["en", "de", "fr"]) {
     const dictionary = getDictionary(locale);
     const entry = dictionary.eventGuideEntries.holyGrail;
-    assert.equal(entry.title, "Holy Grail");
+    assert.equal(entry.title, "Holy Grail Journey");
     assert.ok(entry.sections.some((section) => /Zone 3/i.test(section.heading) || /Zone 3/i.test(section.body.join(" "))));
     assert.match(entry.note, /Autumn/);
   }
@@ -148,7 +151,7 @@ test("Great Flood is listed under Events Tips in every language", () => {
   for (const locale of ["en", "de", "fr"]) {
     const dictionary = getDictionary(locale);
     const entry = dictionary.eventGuideEntries.greatFlood;
-    assert.equal(entry.title, "Great Flood");
+    assert.equal(entry.title, "The Great Flood Is Back!");
     assert.ok(entry.sections.some((section) => /Stockpile/i.test(section.heading) || /Stockpile/i.test(section.body.join(" "))));
     assert.ok(entry.sections.some((section) => /bend|abbiegen|tourner/i.test(section.body.join(" "))));
     assert.match(entry.note, /Autumn/);
@@ -172,7 +175,7 @@ test("Ring Toss is listed under Events Tips in every language", () => {
   for (const locale of ["en", "de", "fr"]) {
     const dictionary = getDictionary(locale);
     const entry = dictionary.eventGuideEntries.ringToss;
-    assert.match(entry.title, /Ring Toss/);
+    assert.match(entry.title, /Prize Toss Booth/);
     assert.ok(entry.sections.some((section) => /69/.test(section.body.join(" "))));
     assert.ok(entry.sections.some((section) => /hard pity|Hard Pity/i.test(section.heading) || /100/.test(section.body.join(" "))));
     assert.match(entry.note, /Cherr/);
@@ -184,7 +187,7 @@ test("Life Incubator is listed under Events Tips in every language", () => {
   for (const locale of ["en", "de", "fr"]) {
     const dictionary = getDictionary(locale);
     const entry = dictionary.eventGuideEntries.lifeIncubator;
-    assert.equal(entry.title, "Life Incubator");
+    assert.equal(entry.title, "Life Incubator Lab");
     assert.ok(entry.sections.some((section) => /trench|Graben|tranchée/i.test(section.body.join(" "))));
     assert.ok(entry.sections.some((section) => /center|Mitte|centrale/i.test(section.body.join(" "))));
     assert.match(entry.note, /Autumn/);
@@ -195,7 +198,7 @@ test("Road to Worldcup is listed under Events Tips in every language", () => {
   for (const locale of ["en", "de", "fr"]) {
     const dictionary = getDictionary(locale);
     const entry = dictionary.eventGuideEntries.roadToWorldcup;
-    assert.equal(entry.title, "Road to Worldcup");
+    assert.equal(entry.title, "Road to the Cup");
     assert.ok(entry.sections.some((section) => /352/.test(section.body.join(" "))));
     assert.ok(entry.sections.some((section) => /50/.test(section.body.join(" "))));
     assert.match(entry.note, /Autumn/);
@@ -238,7 +241,7 @@ test("Red Carpet is listed under Events Tips in every language", () => {
   for (const locale of ["en", "de", "fr"]) {
     const dictionary = getDictionary(locale);
     const entry = dictionary.eventGuideEntries.redCarpet;
-    assert.equal(entry.title, "Red Carpet");
+    assert.equal(entry.title, "Red Carpet Night");
     assert.ok(entry.sections.some((section) => /144/.test(section.body.join(" "))));
     assert.ok(entry.sections.some((section) => /lipstick|Lippenstift|rouges à lèvres/i.test(section.body.join(" "))));
   }
@@ -269,7 +272,7 @@ test("Spring Returns Planting is listed under Events Tips in every language", ()
   for (const locale of ["en", "de", "fr"]) {
     const dictionary = getDictionary(locale);
     const entry = dictionary.eventGuideEntries.springReturnsPlanting;
-    assert.match(entry.title, /Spring Returns/);
+    assert.match(entry.title, /Harvest Festival/);
     assert.ok(entry.sections.some((section) => /Herbicide/i.test(section.body.join(" "))));
     assert.ok(entry.sections.some((section) => /guild leader|Guild-Leader|chef de guilde/i.test(section.body.join(" "))));
   }

@@ -6,6 +6,7 @@ import { sectionById, type NavItem } from "../../lib/navigation";
 import { EventsIcon, SearchIcon } from "../components/Icons";
 import { useDocumentTitle, useLocale } from "../components/LocaleProvider";
 import { PageHead, SectionBanner } from "../components/Ui";
+import { asset } from "../../lib/site";
 
 /** Lower-case and without accents, so "grosse" finds Große. */
 function fold(value: string): string {
@@ -76,11 +77,19 @@ export default function EventsPage() {
 
 function EventCard({ item }: { item: NavItem }) {
   const { t } = useLocale();
+  const icon = item.icon ? asset(item.icon) : null;
   return (
     <article className="guide-card">
-      <div className="guide-card-art is-glyph" aria-hidden="true">
-        <EventsIcon className="guide-card-glyph" />
-      </div>
+      {icon ? (
+        <div className="guide-card-art is-icon" aria-hidden="true">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={icon} alt="" width={88} height={88} />
+        </div>
+      ) : (
+        <div className="guide-card-art is-glyph" aria-hidden="true">
+          <EventsIcon className="guide-card-glyph" />
+        </div>
+      )}
       <div className="guide-card-body">
         <h3>
           <Link className="guide-card-link" href={item.href}>

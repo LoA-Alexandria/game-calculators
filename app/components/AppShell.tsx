@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SECTIONS, groupByBadge, sectionHasBrowsePanel, type NavItem, type NavSection } from "../../lib/navigation";
 import { navCrumbs, pathIsCurrentOrNested, pathIsExact } from "../../lib/content/nav-shell";
-import { DISCORD_CONFIGURED, DISCORD_URL, NAV_COLLAPSED_STORAGE_KEY, REPOSITORY_URL } from "../../lib/site";
+import { DISCORD_CONFIGURED, DISCORD_URL, NAV_COLLAPSED_STORAGE_KEY, REPOSITORY_URL, asset } from "../../lib/site";
 import { useAuth } from "./AuthProvider";
 import { useLocale } from "./LocaleProvider";
 import { AccountMenu } from "./AccountMenu";
@@ -275,7 +275,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                           title={item.description?.(t)}
                           aria-current={exact ? "page" : undefined}
                         >
-                          {item.label(t)}
+                          {item.icon ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img className="panel-link-icon" src={asset(item.icon)} alt="" width={28} height={28} />
+                          ) : null}
+                          <span className="panel-link-title">{item.label(t)}</span>
                         </Link>
                       </li>
                     );
@@ -302,7 +306,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 title={description}
                 aria-current={exact ? "page" : undefined}
               >
-                {item.label(t)}
+                {item.icon ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img className="panel-link-icon" src={asset(item.icon)} alt="" width={28} height={28} />
+                ) : null}
+                <span className="panel-link-title">{item.label(t)}</span>
               </Link>
             </li>
           );
