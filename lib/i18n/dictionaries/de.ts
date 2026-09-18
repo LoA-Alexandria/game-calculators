@@ -2706,12 +2706,97 @@ const de: Dictionary = {
       groupCountOne: "1 Stück",
       skillLevel: "St. {level}",
       skillIconLabel: "Skill-Icon",
-      credit: "Stücke, Namen und Skills aus Screenshots des deutschen Clients vom 16. September 2026, auf der jeweils angezeigten Skill-Stufe. Der deutsche Wortlaut stammt aus dem Spiel; Englisch und Französisch sind Übersetzungen und können vom Spieltext abweichen. Die Bilder gehören dem Publisher des Spiels.",
+      credit: "Altersplatz-Stücke, Namen und Skills aus Screenshots des deutschen Clients vom 16. September 2026; heldenexklusive Stücke aus Screenshots vom 18. September 2026, auf der jeweils angezeigten Skill-Stufe. Der deutsche Wortlaut stammt aus dem Spiel; Englisch und Französisch sind Übersetzungen und können vom Spieltext abweichen. Die Bilder gehören dem Publisher des Spiels.",
       collectionTexts: {
         "aeolus-bag-of-winds": {
           name: "Aiolos’ Windschlauch",
           skillName: "Heimkehrwind",
           skillText: "Für 3 Runden nach Einsatz einer Fähigkeit stellt Odysseus Verbündeten am Ende jeder gegnerischen Aktion LP in Höhe von 50% des durch diese Aktion verursachten Schadens wieder her.",
+        },
+        "golden-throne": {
+          name: "Goldener Thron",
+          skillName: "Ewige Souveränität",
+          skillText: "Wenn Caesar eine Fähigkeit wirkt und dadurch einen zweiten zusätzlichen ANG auslöst, erhalten Verbündete für 3 Runden Fähigkeitsschadensbonus +10% sowie zusätzlichen Schadensbonus +50%.",
+        },
+        "sin-and-redemption": {
+          name: "„Sünde“ und „Erlösung“",
+          skillName: "Doppelrevolver-Verfolgung",
+          skillText: "Nachdem Billy the Kid mit einer Fähigkeit Schaden verursacht hat, besteht eine Chance von 30%, bei 1 Gegner [Todesstoß] auszulösen. Hingerichtete Ziele können nicht wiederbelebt werden.",
+        },
+        "winged-sandals": {
+          name: "Geflügelte Sandalen",
+          skillName: "Express-Kick",
+          skillText: "Nachdem Hermes seine Fähigkeit eingesetzt hat, erhöht sich die Ausweichchance bei \"Sprint\" um 30%.",
+        },
+        "divine-greaves": {
+          name: "Göttliche Beinschienen",
+          skillName: "Achilles",
+          skillText: "Vor dem Ausführen einer Fähigkeit erhöht Achilles den KT-SCH der Verbündeten für 3 Runden um 50%.",
+        },
+        "broken-shackles": {
+          name: "Gebrochene Fesseln",
+          skillName: "Der Widerstand",
+          skillText: "Bevor Spartacus eine Fähigkeit wirkt, erhalten Verbündete Fähigkeitsschadensbonus +15%. Für jeden Debuff auf dem Gegner erhalten Verbündete in dieser Runde zusätzlich +15% Fähigkeitsschadensbonus. Bis zu 2-fach stapelbar.",
+        },
+        "eagle-scepter": {
+          name: "Adler Zepter",
+          skillName: "Der schreiende Adler",
+          skillText: "Nachdem Pompejus eine Fähigkeit wirkt, erhalten Verbündete für 3 Runden +20% Fähigkeitsschadensbonus, wenn seine LP über 50% liegen. Liegen seine LP bei 50% oder darunter, stellen Verbündete LP in Höhe von 10% ihrer maximalen LP wieder her.",
+        },
+        "nemean-lion-pelt": {
+          name: "Fell des nemeischen Löwen",
+          skillName: "Stärke des Herakles",
+          skillText: "Wenn Herakles eine Fähigkeit einsetzt, wird 1 Debuff von Verbündeten entfernt. Haben Verbündete höchstens so viele Debuffs wie Gegner, wird zusätzlich 1-mal Schaden in Höhe von 100% ANG verursacht.",
+        },
+        "circes-enchanted-chalice": {
+          name: "Circes verzauberter Kelch",
+          skillName: "Das innere Tier",
+          skillText: "Nachdem Circe eine Fähigkeit eingesetzt hat, wird der Heilungseffekt von Gegnern mit [Fluch des Todes] vor ihrer Aktion 1 Runde lang um 10% reduziert.",
+        },
+        "pearl-earrings": {
+          name: "Perlenohrringe",
+          skillName: "Reichstürzender Prunk",
+          skillText: "Nachdem Kleopatra diese Fähigkeit einsetzt, wird die nächste Handlung des Gegners durch einen Angriff der Verbündeten ersetzt, die eine zufällige gegnerische Fähigkeit gegen ihn einsetzen und 80% des ursprünglichen Schadens dieser Fähigkeit verursachen.",
+        },
+        "mona-lisa": {
+          name: "\"Mona Lisa?\"",
+          skillName: "La Gioconda",
+          skillText: "Nachdem Da Vinci eine Fähigkeit eingesetzt hat, erhalten Verbündete 3 Runden lang 20% Fähigkeitsschadensreduzierung.",
+        },
+        "augustus-coin": {
+          name: "Augustus-Münze",
+          skillName: "Glänzende Münze",
+          skillText: "Wirkt Augustus innerhalb der ersten 5 Runden eine Fähigkeit, erhöht sich der Fähigkeitskoeffizient der Verbündeten in dieser Runde um 50%.",
+        },
+        "donkey-mask": {
+          name: "Eselmaske",
+          skillName: "Shakespeare",
+          skillText: "Nachdem Shakespeare seine Fähigkeit gewirkt hat, besteht eine 20% Chance, dass zusätzlich 1 Mal [Zerstörung] ausgelöst wird, wenn der ANG der Verbündeten höher ist als der der Gegner. Wenn der ANG der Verbündeten niedriger oder gleich dem der Gegner ist, besteht eine 20% Chance, dass zusätzlich 1 Mal [Überleben] ausgelöst wird.",
+        },
+        "tutankhamun-mask": {
+          name: "Tutanchamun-Maske",
+          skillName: "Prüfung des Pharaos",
+          skillText: "Beim Ausführen einer Fähigkeit hat Tutanchamun eine Chance von 50%, 2 Buffs von Gegnern zu entfernen, die mindestens 2 aktive Buffs haben.",
+        },
+        "bucephalus-golden-bridle": {
+          name: "Bukefalos’ goldener Zaum",
+          skillName: "Bukephalos’ Verfolgung",
+          skillText: "Nachdem Alexander der Große [Verfolgung] ausgelöst hat, wird 1 zusätzlicher Fähigkeitseinsatz ausgelöst. Dabei besteht eine 50% Chance, [Verfolgung] erneut auszulösen und zusätzlichen Schaden in Höhe von 100% ANG zu verursachen.",
+        },
+        "grimoire-of-gravity": {
+          name: "Grimoire der Schwerkraft",
+          skillName: "Sternenführung",
+          skillText: "Wenn Newton eine Fähigkeit einsetzt, steigt die Chance um 50%, allen Verbündeten einen Bonus auf ANG und KT-SCH zu verleihen.",
+        },
+        "queens-crown": {
+          name: "Die Krone der Königin",
+          skillName: "Die Krone der Königin",
+          skillText: "Nachdem Königin Victoria eine Fähigkeit gewirkt hat, verleiht sie allen Verbündeten für 3 Runden [Reflexion] (wird der Träger von einer Fähigkeit getroffen, reflektiert er 20% des erlittenen Fähigkeitsschadens, bis zu 100% des ANG des Wirkenden).",
+        },
+        "napoleons-bicorne": {
+          name: "Napoleons Zweispitz",
+          skillName: "Brenne, Imperium!",
+          skillText: "Wenn Napoleon Bonaparte eine Fähigkeit einsetzt und [Verfolgung] auslöst, verursacht er 1 zusätzlichen Angriff mit 100% zusätzlichem Schaden.",
         },
         "prometheus-torch": {
           name: "Prometheus’ Fackel",

@@ -9,8 +9,9 @@
  * by id; an empty translation shows the English text.
  *
  * The first 25 items come from German client screenshots taken on
- * 16 September 2026. German is the game's wording; English and French are
- * translations. Each effect text is written for the skill level stored next
+ * 16 September 2026. Seventeen hero-exclusive UR items were added from
+ * screenshots taken on 18 September 2026; those cards use the St. 1 battle
+ * skill. German is the game's wording; English and French are translations. Each effect text is written for the skill level stored next
  * to it, because the numbers change with the level. Rarity follows the colour
  * of the item name in the game: red UR, gold SSR, purple SR.
  */
