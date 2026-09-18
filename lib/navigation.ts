@@ -122,6 +122,13 @@ export const SECTIONS: NavSection[] = [
         badge: (t) => t.eventCategories.tips,
         categoryId: "tips",
       },
+      {
+        href: "/events/ring-toss/",
+        label: (t) => t.eventGuideEntries.ringToss.title,
+        description: (t) => t.eventGuideEntries.ringToss.summary,
+        badge: (t) => t.eventCategories.tips,
+        categoryId: "tips",
+      },
     ],
   },
   {
