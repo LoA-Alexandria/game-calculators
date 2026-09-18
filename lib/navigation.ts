@@ -164,6 +164,13 @@ export const SECTIONS: NavSection[] = [
         badge: (t) => t.eventCategories.tips,
         categoryId: "tips",
       },
+      {
+        href: "/events/red-carpet/",
+        label: (t) => t.eventGuideEntries.redCarpet.title,
+        description: (t) => t.eventGuideEntries.redCarpet.summary,
+        badge: (t) => t.eventCategories.tips,
+        categoryId: "tips",
+      },
     ],
   },
   {
