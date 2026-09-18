@@ -46,7 +46,7 @@ const SNIPPET_EDITOR_SKIP = new Set<string>([
   "serverAgeUnlocks",
   "museion",
   "heroLeveling",
-  "productionBuildings",
+  "buildings",
   "cryptides",
   "goddesses",
   "goddessLeveling",
@@ -81,7 +81,7 @@ export type GuideLayout =
   | "serverAgeUnlocks"
   | "museion"
   | "heroLeveling"
-  | "productionBuildings"
+  | "buildings"
   | "cryptides"
   | "goddessLeveling"
   | "collection"
@@ -97,7 +97,7 @@ export type GuideLayout =
  * `setupTexts`, Goddess Theater is recognised by `playsHeading`
  * Hero linking by `linksHeading`, Anecdotes by `anecdoteTexts`, Server age
  * unlocks by `timelineHeading`, Museion by `buildingsHeading`, Hero leveling
- * by `focusHeading`, production buildings by `requirementsHeading`, and
+ * by `focusHeading`, city buildings by `categoriesHeading`, and
  * Cryptides by `cryptidesHeading`.
  * `tests/guides.test.mjs` pins every entry.
  */
@@ -116,7 +116,7 @@ export function guideLayout(guide: object): GuideLayout {
   if ("timelineHeading" in guide) return "serverAgeUnlocks";
   if ("buildingsHeading" in guide) return "museion";
   if ("focusHeading" in guide) return "heroLeveling";
-  if ("requirementsHeading" in guide) return "productionBuildings";
+  if ("categoriesHeading" in guide) return "buildings";
   if ("cryptidesHeading" in guide) return "cryptides";
   if ("filterAll" in guide) return "heroes";
   return "article";

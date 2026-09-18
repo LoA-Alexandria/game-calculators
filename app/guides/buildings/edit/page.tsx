@@ -2,14 +2,14 @@
 
 import { useDocumentTitle, useLocale } from "../../../components/LocaleProvider";
 import { PermissionGate } from "../../../components/SignInGate";
-import { ProductionBuildingsEditor } from "../../ProductionBuildingsEditor";
+import { BuildingsEditor } from "../../BuildingsEditor";
 
-export default function EditProductionBuildingsPage() {
+export default function EditBuildingsPage() {
   const { t } = useLocale();
-  useDocumentTitle(t.productionBuildingsEditor.title);
+  useDocumentTitle(t.buildingsEditor.title);
   return (
     <PermissionGate permission="guides.draft">
-      <ProductionBuildingsEditor />
+      <BuildingsEditor />
     </PermissionGate>
   );
 }

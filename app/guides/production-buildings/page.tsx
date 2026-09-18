@@ -1,5 +1,6 @@
 import { GuideArticle } from "../GuideArticle";
 
-export default function ProductionBuildingsPage() {
-  return <GuideArticle id="productionBuildings" />;
+/** Old URL kept so bookmarks to production-buildings still open the Buildings guide. */
+export default function ProductionBuildingsRedirectPage() {
+  return <GuideArticle id="buildings" />;
 }

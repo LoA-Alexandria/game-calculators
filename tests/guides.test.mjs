@@ -50,7 +50,7 @@ test("structured ranking guides skip the snippet Edit / Remove", () => {
   assert.equal(guideHasSnippetEditor("serverAgeUnlocks"), false);
   assert.equal(guideHasSnippetEditor("museion"), false);
   assert.equal(guideHasSnippetEditor("heroLeveling"), false);
-  assert.equal(guideHasSnippetEditor("productionBuildings"), false);
+  assert.equal(guideHasSnippetEditor("buildings"), false);
   assert.equal(guideHasSnippetEditor("cryptides"), false);
   assert.equal(guideHasSnippetEditor("goddesses"), false);
   assert.equal(guideHasSnippetEditor("goddessLeveling"), false);
@@ -81,7 +81,7 @@ test("each guide entry is claimed by exactly the renderer it was written for", (
     serverAgeUnlocks: "serverAgeUnlocks",
     museion: "museion",
     heroLeveling: "heroLeveling",
-    productionBuildings: "productionBuildings",
+    buildings: "buildings",
     cryptides: "cryptides",
     goddessLeveling: "goddessLeveling",
     collection: "collection",

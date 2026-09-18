@@ -69,7 +69,9 @@ export const MUSEION_DRAFT_STORAGE_KEY = "popepoch-museion-draft";
 export const LEVELING_DRAFT_STORAGE_KEY = "popepoch-leveling-draft";
 
 /** Local draft of the production buildings editor. */
-export const PRODUCTION_BUILDINGS_DRAFT_STORAGE_KEY = "popepoch-production-buildings-draft";
+export const BUILDINGS_DRAFT_STORAGE_KEY = "popepoch-buildings-draft";
+/** @deprecated Use BUILDINGS_DRAFT_STORAGE_KEY. */
+export const PRODUCTION_BUILDINGS_DRAFT_STORAGE_KEY = BUILDINGS_DRAFT_STORAGE_KEY;
 
 /** Local draft of the Goddesses roster editor, uploaded portraits included. */
 export const GODDESS_DRAFT_STORAGE_KEY = "popepoch-goddess-draft";

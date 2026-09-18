@@ -3713,6 +3713,10 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
 .production-guide [data-resource="lemons"] { --res: #e8d03c; }
 .production-guide [data-resource="coffee"] { --res: #8b5e3c; }
 .production-guide [data-resource="coal"] { --res: #5f6670; }
+.production-guide [data-resource="precisionParts"] { --res: #7a8fa8; }
+.production-guide [data-resource="oil"] { --res: #3d4a3a; }
+.production-guide [data-resource="information"] { --res: #5b7fd6; }
+.pb-level { margin: 0; color: var(--ink-faint); font-size: .78rem; }
 
 .pb-toolbar { display: grid; gap: 10px; margin: 14px 0 4px; }
 .pb-toolbar .hero-search { max-width: 28rem; }
