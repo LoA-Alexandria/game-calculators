@@ -3615,6 +3615,29 @@ const en = {
       ],
       note: "Community tip for Peak of Enlightenment harp and production banking.",
     },
+    redCarpet: {
+      title: "Red Carpet",
+      summary: "Bank stamina and lipsticks, finish UR rehearsals early, and time recovery before the run.",
+      intro:
+        "Fill stamina before Red Carpet starts, leave UR / UR+ rehearsals unclaimed, and save lipsticks for the event only.",
+      sections: [
+        {
+          heading: "How to prepare",
+          body: [
+            "Let your stamina recover before the event starts. Stamina capacity depends on progression — divide your capacity by 12 to know how many hours before the event you should stop spending stamina.",
+            "Keep UR / UR+ rehearsals completed and do not collect them before the event. Ideally finish them 2–3 days early so stamina can recover fully.",
+            "Do not use lipsticks outside of Red Carpet — save them up for the event.",
+          ],
+        },
+        {
+          heading: "If you are not min-maxing",
+          body: [
+            "You generate 144 stamina per 12 hours. Worst case, let stamina recover for the last 72 hours before Red Carpet starts and you should be fine.",
+          ],
+        },
+      ],
+      note: "Community tip for Red Carpet stamina and lipstick banking.",
+    },
   },
   events: {
     title: "Events",

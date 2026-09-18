@@ -4091,6 +4091,29 @@ const fr: Dictionary = {
       ],
       note: "Astuce communautaire pour Peak of Enlightenment — harpes et banking de production.",
     },
+    redCarpet: {
+      title: "Red Carpet",
+      summary: "Banquez endurance et rouges à lèvres, finissez les répétitions UR tôt, et timez la régénération.",
+      intro:
+        "Remplissez l’endurance avant Red Carpet, laissez les répétitions UR / UR+ non collectées, et gardez les rouges à lèvres pour l’event seulement.",
+      sections: [
+        {
+          heading: "Comment préparer",
+          body: [
+            "Laissez votre endurance se régénérer avant le début. La capacité dépend de la progression — divisez-la par 12 pour savoir combien d’heures avant l’event arrêter de dépenser de l’endurance.",
+            "Gardez les répétitions UR / UR+ terminées et ne les collectez pas avant l’event. Idéalement 2–3 jours à l’avance pour que l’endurance se remplisse à fond.",
+            "N’utilisez pas les rouges à lèvres hors de Red Carpet — économisez-les pour l’event.",
+          ],
+        },
+        {
+          heading: "Sans min-max",
+          body: [
+            "Vous générez 144 d’endurance par 12 heures. Au pire, laissez régénérer les 72 dernières heures avant Red Carpet — ça devrait suffire.",
+          ],
+        },
+      ],
+      note: "Astuce communautaire pour Red Carpet — banking endurance et rouges à lèvres.",
+    },
   },
   events: {
     title: "Événements",

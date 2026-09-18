@@ -4148,6 +4148,29 @@ const de: Dictionary = {
       ],
       note: "Community-Tipp zu Peak of Enlightenment — Harfen und Produktions-Banking.",
     },
+    redCarpet: {
+      title: "Red Carpet",
+      summary: "Stamina und Lippenstifte sparen, UR-Proben früh fertig, Recovery vor dem Lauf timen.",
+      intro:
+        "Fülle Stamina vor Red Carpet, lass UR- / UR+-Proben ungesammelt und spare Lippenstifte nur fürs Event.",
+      sections: [
+        {
+          heading: "Vorbereitung",
+          body: [
+            "Lass deine Stamina vor Event-Start regenerieren. Die Kapazität hängt vom Progress ab — teile deine Kapazität durch 12, dann weißt du, wie viele Stunden vorher du keine Stamina mehr verbrauchen solltest.",
+            "Halte UR- / UR+-Proben abgeschlossen und sammle sie nicht vor dem Event ein. Ideal 2–3 Tage vorher fertig, damit Stamina voll regenerieren kann.",
+            "Nutze Lippenstifte nicht außerhalb von Red Carpet — spare sie fürs Event.",
+          ],
+        },
+        {
+          heading: "Ohne Min-Max",
+          body: [
+            "Du generierst 144 Stamina pro 12 Stunden. Im Worst Case lass die Stamina die letzten 72 Stunden vor Red Carpet regenerieren — das reicht in der Regel.",
+          ],
+        },
+      ],
+      note: "Community-Tipp zu Red Carpet — Stamina- und Lippenstift-Banking.",
+    },
   },
   events: {
     title: "Events",

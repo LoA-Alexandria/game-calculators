@@ -57,12 +57,13 @@ test("Events index always exposes Anleitungen and Tips categories", () => {
   assert.ok(sectionById("events").items.some((item) => item.href === "/events/duel-festival/"));
   assert.ok(sectionById("events").items.some((item) => item.href === "/events/mayan-ruins/"));
   assert.ok(sectionById("events").items.some((item) => item.href === "/events/peak-of-enlightenment/"));
+  assert.ok(sectionById("events").items.some((item) => item.href === "/events/red-carpet/"));
   const groups = eventCategoryGroups(en);
   assert.deepEqual(
     groups.map((group) => ({ id: group.id, category: group.category, count: group.items.length })),
     [
       { id: "anleitungen", category: en.eventCategories.anleitungen, count: 0 },
-      { id: "tips", category: en.eventCategories.tips, count: 16 },
+      { id: "tips", category: en.eventCategories.tips, count: 17 },
     ],
   );
 });
@@ -237,6 +238,16 @@ test("Peak of Enlightenment is listed under Events Tips in every language", () =
     assert.equal(entry.title, "Peak of Enlightenment");
     assert.ok(entry.sections.some((section) => /72/.test(section.body.join(" "))));
     assert.ok(entry.sections.some((section) => /harp|Harf/i.test(section.body.join(" "))));
+  }
+});
+
+test("Red Carpet is listed under Events Tips in every language", () => {
+  for (const locale of ["en", "de", "fr"]) {
+    const dictionary = getDictionary(locale);
+    const entry = dictionary.eventGuideEntries.redCarpet;
+    assert.equal(entry.title, "Red Carpet");
+    assert.ok(entry.sections.some((section) => /144/.test(section.body.join(" "))));
+    assert.ok(entry.sections.some((section) => /lipstick|Lippenstift|rouges à lèvres/i.test(section.body.join(" "))));
   }
 });
 
