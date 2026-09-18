@@ -3847,6 +3847,47 @@ const de: Dictionary = {
       ],
       note: "Guide von Autumn (Ice S12), geteilt auf Discord, 6. September 2026.",
     },
+    greatFlood: {
+      title: "Great Flood",
+      summary:
+        "Von außen nach innen paaren unter Stage Effects, und Stockpile als Würfel-Blackjack.",
+      intro:
+        "Räume das Tier-Board, indem du gleiche Kacheln über kurze Pfade verbindest — und behandle Food-Supplies-Stockpile wie Blackjack mit Weizen, Karotten und Kaninchen.",
+      sections: [
+        {
+          heading: "Board-Strategie",
+          body: [
+            "Paare zuerst Matches an Außenkanten, die sich nicht bewegen. Gibt es dort nichts, nimm ein Match, das die Platte shuffelt. Arbeite von außen nach innen — „außen“ kann die Mitte sein, sobald du Platz in der Center freigeräumt hast.",
+            "Special Items (Auto-Match, Rearrange) nur, wenn du kurz vorm Verlieren bist. Trotzdem vor Event-Ende aufbrauchen — sie speichern nicht zwischen Zyklen.",
+          ],
+        },
+        {
+          heading: "Paar-Regeln",
+          body: [
+            "Verbinde zwei identische Kacheln. Der kürzeste Pfad muss frei sein und darf höchstens zweimal abbiegen.",
+            "Vier Pfadformen, die immer gehen: (1) Kacheln berühren sich; (2) gleiche Zeile/Spalte, wenn beide am Außenrand des verbleibenden Boards liegen; (3) klarer Graben-Pfad dazwischen; (4) rechtwinklig, wenn die Ecke leer ist.",
+          ],
+        },
+        {
+          heading: "Prioritäten nach Stage Effect",
+          body: [
+            "Up / Down / Left / Right: zuerst die gegenüberliegende Kante (z. B. Stage Effect Left → zuerst rechts, dann links, dann andere Kanten).",
+            "Separate Vertically: zuerst links und rechts, dann die Mitte, wenn Platz entsteht. Separate Horizontally: zuerst oben und unten, dann die Mitte.",
+            "Gather Horizontally: oben und unten, dann links und rechts. Gather Vertically: links und rechts, dann oben und unten.",
+            "Separate Outward: jede Kante, dann die Mitte. Gather Inwards: jede Kante.",
+          ],
+        },
+        {
+          heading: "Stockpile (Food Supplies)",
+          body: [
+            "Stockpile ist Würfel-Blackjack. Rewards sind schwach, außer du brauchst Mount-Items wegen Race to Civilization parallel. Karotten sind sicherer als Weizen, aber seltener; Kaninchen am sichersten, aber am seltensten. Weizen, Karotten und Kaninchen kannst du fürs nächste Great Flood sparen.",
+            "Nicht starten ohne Karotten oder mindestens 2 Weizen. Vor Event-Ende claimen — egal wie der Score aussieht; Stockpile-Score speichert nicht.",
+            "Strategie: zweimal Weizen rollen, dann nur bei Glücksgefühl nochmal Weizen. Ab 16+ keinen Weizen mehr. Bei 10–11 immer Weizen. Bei 17–18 immer Karotte. Bei 19–20 entweder claimen oder nochmal Karotte — deine Entscheidung.",
+          ],
+        },
+      ],
+      note: "Guide von Autumn (Ice S12), geteilt auf Discord, 8. August 2026.",
+    },
   },
   events: {
     title: "Events",

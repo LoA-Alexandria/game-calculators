@@ -108,6 +108,13 @@ export const SECTIONS: NavSection[] = [
         badge: (t) => t.eventCategories.tips,
         categoryId: "tips",
       },
+      {
+        href: "/events/great-flood/",
+        label: (t) => t.eventGuideEntries.greatFlood.title,
+        description: (t) => t.eventGuideEntries.greatFlood.summary,
+        badge: (t) => t.eventCategories.tips,
+        categoryId: "tips",
+      },
     ],
   },
   {

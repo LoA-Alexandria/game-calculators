@@ -3314,6 +3314,47 @@ const en = {
       ],
       note: "Guide by Autumn (Ice S12), shared on Discord, 6 September 2026.",
     },
+    greatFlood: {
+      title: "Great Flood",
+      summary:
+        "Outside-in pair matching under stage effects, and Stockpile as dice blackjack.",
+      intro:
+        "Clear the animal board by pairing identical tiles along short paths, then treat Food Supplies Stockpile like blackjack with wheat, carrots, and rabbits.",
+      sections: [
+        {
+          heading: "Board strategy",
+          body: [
+            "Pair matches on outside edges that do not move. If nothing pairs there, take a match that does move to shuffle the board. Work from the outside in — and remember “outside” can be the middle once you have cleared space in the center.",
+            "Use special items (Auto-Match, Rearrange) only when you are close to losing. Still spend them all before the event ends — they do not carry between cycles.",
+          ],
+        },
+        {
+          heading: "Pair rules",
+          body: [
+            "Match two identical tiles. The shortest path between them must be clear, and it can bend at most twice.",
+            "Four path shapes that always work: (1) tiles touching each other; (2) tiles on the same row or column when both sit on the outside of the remaining board; (3) tiles with a clear trench path between them; (4) tiles at right angles when the corner is empty.",
+          ],
+        },
+        {
+          heading: "Stage-effect priorities",
+          body: [
+            "Up / Down / Left / Right: start on the opposite edge first (e.g. Stage Effect Left → check the right edge first, then left, then other edges).",
+            "Separate Vertically: left and right edges first, then the middle when space opens. Separate Horizontally: top and bottom first, then the middle.",
+            "Gather Horizontally: top and bottom, then left and right. Gather Vertically: left and right, then top and bottom.",
+            "Separate Outward: any edge, then the middle when it opens. Gather Inwards: any edge.",
+          ],
+        },
+        {
+          heading: "Stockpile (Food Supplies)",
+          body: [
+            "Stockpile is dice-based blackjack. Rewards are weak unless you need mount items because Race to Civilization overlaps. Carrots are safer than wheat but rarer; rabbits are safest but rarest. You can bank wheat, carrots, and rabbits for the next Great Flood.",
+            "Do not start rolling without carrots or at least 2 wheat. Claim before the event ends even at a mediocre score — stockpile score does not save.",
+            "Strategy: roll wheat twice, then roll wheat again only if you feel lucky. Do not roll wheat again at 16+. Always roll wheat at 10–11. Always roll carrots at 17–18. At 19–20, either claim or roll carrot again — your call.",
+          ],
+        },
+      ],
+      note: "Guide by Autumn (Ice S12), shared on Discord, 8 August 2026.",
+    },
   },
   events: {
     title: "Events",
