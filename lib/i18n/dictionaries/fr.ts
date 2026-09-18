@@ -3584,10 +3584,6 @@ const fr: Dictionary = {
     removeOutput: "Notes de retrait",
     cancel: "Retour",
   },
-  eventCategories: {
-    anleitungen: "Guides",
-    tips: "Astuces",
-  },
   eventGuideEntries: {
     atlantis: {
       title: "Atlantis",
@@ -4309,23 +4305,13 @@ const fr: Dictionary = {
   },
   events: {
     title: "Événements",
-    lede: "Guides et astuces pour les événements à durée limitée — séparés des systèmes couverts sous Guides.",
+    lede: "Textes pour les événements à durée limitée — séparés des systèmes couverts sous Guides.",
     empty: "Pas encore de guides d’événements. Le calendrier en cours est sur l’aperçu.",
     other: "Autre",
     searchLabel: "Rechercher des événements",
     searchPlaceholder: "Red Carpet, Grand Voyage…",
-    filterLabel: "Filtrer par catégorie",
-    filterAll: "Tous",
     statEntries: "Entrées",
-    statCategories: "Catégories",
-    countEntriesOne: "1 entrée",
-    countEntries: "{count} entrées",
     noMatch: "Aucun guide d’événement ne correspond à cette recherche.",
-    categoryEmpty: "Rien dans cette catégorie pour l’instant.",
-    categoryLedes: {
-      anleitungen: "Comment fonctionne un événement et quoi faire pendant qu’il tourne.",
-      tips: "Priorités, raccourcis et ce qui vaut la peine d’être dépensé.",
-    },
     browseIndex: "Voir les guides d’événements",
     kindMain: "Événement principal",
     kindRoutine: "Événement régulier",

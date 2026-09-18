@@ -1,9 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { camelToKebab } from "../../lib/content/guides";
 import type { Dictionary } from "../../lib/i18n";
-import { sectionById, type EventCategoryId } from "../../lib/navigation";
 import { useDocumentTitle, useLocale } from "../components/LocaleProvider";
 import { BackLink } from "../components/Ui";
 
@@ -16,14 +14,6 @@ export function isEventGuideId(
   return Object.hasOwn(entries, id);
 }
 
-function categoryForGuide(id: EventGuideId): EventCategoryId {
-  const href = `/events/${camelToKebab(id)}/`;
-  const item = sectionById("events").items.find((entry) => entry.href === href);
-  const categoryId = item?.categoryId;
-  if (categoryId === "anleitungen" || categoryId === "tips") return categoryId;
-  return "tips";
-}
-
 /**
  * Simple event write-up: Events crumbs, title, intro, sections. Kept separate
  * from GuideArticle so Guides stay untouched.
@@ -31,17 +21,14 @@ function categoryForGuide(id: EventGuideId): EventCategoryId {
 export function EventArticle({ id }: { id: EventGuideId }) {
   const { t } = useLocale();
   const guide = t.eventGuideEntries[id];
-  const categoryId = categoryForGuide(id);
   useDocumentTitle(guide.title);
 
   return (
     <>
       <BackLink href="/events/" label={t.nav.events} />
-      <header className="guide-head" data-category={categoryId}>
+      <header className="guide-head">
         <nav className="guide-crumbs" aria-label={t.nav.events}>
           <Link href="/events/">{t.nav.events}</Link>
-          <span aria-hidden="true">/</span>
-          <Link href={`/events/#${categoryId}`}>{t.eventCategories[categoryId]}</Link>
         </nav>
         <h1>{guide.title}</h1>
         <p className="guide-head-lede">{guide.summary}</p>

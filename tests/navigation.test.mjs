@@ -3,8 +3,6 @@ import test from "node:test";
 
 import { getDictionary } from "../lib/i18n/index.ts";
 import {
-  EVENT_CATEGORY_IDS,
-  eventCategoryGroups,
   groupByBadge,
   guideCount,
   sectionById,
@@ -40,9 +38,7 @@ test("home counters match the published navigation tree", () => {
   assert.equal(guideCount(), 20);
 });
 
-test("Events index always exposes Anleitungen and Tips categories", () => {
-  const en = getDictionary("en");
-  assert.deepEqual([...EVENT_CATEGORY_IDS], ["anleitungen", "tips"]);
+test("Events index lists every published event write-up in one flat list", () => {
   assert.ok(sectionById("events").items.some((item) => item.href === "/events/atlantis/"));
   assert.ok(sectionById("events").items.some((item) => item.href === "/events/monument-of-eternity/"));
   assert.ok(sectionById("events").items.some((item) => item.href === "/events/supply-reform/"));
@@ -61,14 +57,8 @@ test("Events index always exposes Anleitungen and Tips categories", () => {
   assert.ok(sectionById("events").items.some((item) => item.href === "/events/global-regatta/"));
   assert.ok(sectionById("events").items.some((item) => item.href === "/events/heart-of-gold/"));
   assert.ok(sectionById("events").items.some((item) => item.href === "/events/spring-returns-planting/"));
-  const groups = eventCategoryGroups(en);
-  assert.deepEqual(
-    groups.map((group) => ({ id: group.id, category: group.category, count: group.items.length })),
-    [
-      { id: "anleitungen", category: en.eventCategories.anleitungen, count: 0 },
-      { id: "tips", category: en.eventCategories.tips, count: 20 },
-    ],
-  );
+  assert.equal(sectionById("events").items.length, 20);
+  assert.ok(sectionById("events").items.every((item) => !item.categoryId && !item.badge));
 });
 
 test("Atlantis is listed under Events Tips in every language", () => {
