@@ -185,6 +185,13 @@ export const SECTIONS: NavSection[] = [
         badge: (t) => t.eventCategories.tips,
         categoryId: "tips",
       },
+      {
+        href: "/events/spring-returns-planting/",
+        label: (t) => t.eventGuideEntries.springReturnsPlanting.title,
+        description: (t) => t.eventGuideEntries.springReturnsPlanting.summary,
+        badge: (t) => t.eventCategories.tips,
+        categoryId: "tips",
+      },
     ],
   },
   {

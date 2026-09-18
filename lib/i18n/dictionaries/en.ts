@@ -3716,6 +3716,35 @@ const en = {
       ],
       note: "Community tip for Heart of Gold — quiz answers from Esme (Creek, S13); dig pattern from Cherr (Earth, S2) and Admos (Woods, S5).",
     },
+    springReturnsPlanting: {
+      title: "Spring Returns — Planting",
+      summary: "Plant crops, clear Save the Farmer with Herbicide, unlock tiles fast, and plan long grows for offline time.",
+      intro:
+        "Beside the guild competition, Spring Returns has a planting loop: grow crops, fill orders, and use Herbicide in Save the Farmer for Manor items.",
+      sections: [
+        {
+          heading: "Planting",
+          body: [
+            "Use Herbicide to hit the plant in Save the Farmer for Manor items.",
+            "Plant crops, fill regular orders, and fill Goddess orders — check the bottom left of the crops field for those.",
+          ],
+        },
+        {
+          heading: "Efficiency",
+          body: [
+            "Buy the passes if you can. Unlocking every tile as fast as possible snowballs yield for the rest of the event.",
+            "When you unlock a new plant, level it immediately so yield and growth time improve right away.",
+            "If you will be offline for a long stretch, plant crops that take as long as possible so tiles are not idle while you are away.",
+            "Prioritize plants that match your orders to min-max EXP gain.",
+          ],
+        },
+        {
+          heading: "Titles",
+          body: ["The golden title goes to the guild leader of the winning guild."],
+        },
+      ],
+      note: "Community tip for Spring Returns planting, Save the Farmer Herbicide, and tile unlock pacing.",
+    },
   },
   events: {
     title: "Events",

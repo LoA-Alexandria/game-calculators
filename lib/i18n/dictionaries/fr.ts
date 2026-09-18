@@ -4277,6 +4277,35 @@ const fr: Dictionary = {
       ],
       note: "Astuce communautaire pour Heart of Gold — réponses quiz d’Esme (Creek, S13) ; motif de fouille de Cherr (Earth, S2) et Admos (Woods, S5).",
     },
+    springReturnsPlanting: {
+      title: "Spring Returns — Planting",
+      summary: "Plantez, nettoyez Save the Farmer au Herbicide, débloquez les tuiles vite, et planifiez les longues pousses hors ligne.",
+      intro:
+        "À côté de la compétition de guilde, Spring Returns a une boucle de plantation : cultiver, remplir les commandes, et utiliser l’Herbicide dans Save the Farmer pour des objets de Manor.",
+      sections: [
+        {
+          heading: "Plantation",
+          body: [
+            "Utilisez l’Herbicide sur la plante dans Save the Farmer pour obtenir des objets de Manor.",
+            "Plantez des cultures, remplissez les commandes normales et les commandes Goddess — regardez en bas à gauche du champ de cultures.",
+          ],
+        },
+        {
+          heading: "Efficacité",
+          body: [
+            "Achetez les passes si vous pouvez. Débloquer toutes les tuiles le plus vite possible snowballe le rendement pour le reste de l’event.",
+            "Dès qu’une plante est débloquée, montez-la tout de suite pour améliorer rendement et temps de croissance.",
+            "Si vous serez longtemps hors ligne, plantez des cultures qui mettent le plus longtemps à pousser pour éviter le temps mort.",
+            "Priorisez les plantes de vos commandes pour min-maxer l’EXP.",
+          ],
+        },
+        {
+          heading: "Titres",
+          body: ["Le titre doré va au chef de guilde de la guilde gagnante."],
+        },
+      ],
+      note: "Astuce communautaire pour Spring Returns planting, Herbicide dans Save the Farmer, et déblocage des tuiles.",
+    },
   },
   events: {
     title: "Événements",
