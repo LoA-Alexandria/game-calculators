@@ -3884,9 +3884,22 @@ button.pb-card:focus-visible { outline: none; box-shadow: var(--ring); }
 .article .pb-card-head h3 { margin: 0; font-size: 1rem; line-height: 1.25; }
 .pb-stars { display: inline-flex; gap: 1px; color: var(--line); font-size: .92rem; line-height: 1; letter-spacing: 0; }
 .pb-stars .is-on { color: var(--gold); text-shadow: 0 0 6px color-mix(in srgb, var(--gold) 45%, transparent); }
-.pb-facts { display: grid; gap: 6px; margin: 0; }
-.pb-facts > div { display: grid; grid-template-columns: 76px minmax(0, 1fr); align-items: center; gap: 8px; }
-.pb-facts dt { color: var(--ink-faint); font-size: .66rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; }
+.pb-facts { display: grid; gap: 0; margin: 2px 0 0; }
+.pb-facts > div {
+  display: grid;
+  gap: 5px;
+  padding: 8px 0;
+}
+.pb-facts > div + div {
+  border-top: 1px solid color-mix(in srgb, var(--line) 88%, var(--ink-faint));
+}
+.pb-facts dt {
+  color: var(--ink-faint);
+  font-size: .66rem;
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
 .pb-facts dd { margin: 0; }
 .pb-chips { display: flex; flex-wrap: wrap; gap: 4px; }
 .pb-chip {
@@ -3953,7 +3966,7 @@ button.pb-card:focus-visible { outline: none; box-shadow: var(--ring); }
 @media (max-width: 520px) {
   .pb-card { grid-template-columns: 84px minmax(0, 1fr); }
   .article .pb-card-art img { max-width: 76px; max-height: 76px; }
-  .pb-facts > div { grid-template-columns: minmax(0, 1fr); gap: 3px; }
+  .pb-facts > div { padding: 7px 0; gap: 4px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .pb-card, .pb-card-art img { transition: none; }
