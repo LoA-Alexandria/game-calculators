@@ -17,7 +17,6 @@ import { placementCaption } from "../../lib/content/hero-tiers";
 import { layoutTexts, type BuildZone } from "../../lib/content/hero-layouts";
 import type { PaintingTexts } from "../../lib/content/artwork";
 import {
-  HERO_ABILITY_KINDS,
   HERO_FRAGMENT_KEYS,
   HERO_RARITIES,
   HERO_STAR_COSTS,
@@ -157,13 +156,8 @@ export function HeroRoster({ guide }: { guide: Guide }) {
   const stepList = open && rows.some((hero) => hero.id === open.id) ? rows : HEROES;
 
   const openHero = (hero: Hero) => openHeroHash(hero.id);
-  // Everything starts closed, and which panels the reader opens stays open as
-  // they step through the roster.
-  const [panels, setPanels] = useState<PanelState>({});
-  const togglePanel = useCallback(
-    (id: string, open: boolean) => setPanels((current) => ({ ...current, [id]: open })),
-    [],
-  );
+  // The subject the reader picked stays picked as they step through the roster.
+  const [section, setSection] = useState("skills");
   const texts = useMemo(
     () => mergeHeroTexts(guide.heroTexts, heroLoreTexts(locale)),
     [guide.heroTexts, locale],
@@ -330,8 +324,8 @@ export function HeroRoster({ guide }: { guide: Guide }) {
           guide={guide}
           texts={texts}
           list={stepList}
-          panels={panels}
-          onPanel={togglePanel}
+          section={section}
+          onSection={setSection}
           onStep={(hero) => stepHeroHash(hero.id)}
           onClose={closeHeroHash}
         />
@@ -345,8 +339,8 @@ function HeroDialog({
   guide,
   texts,
   list,
-  panels,
-  onPanel,
+  section,
+  onSection,
   onStep,
   onClose,
 }: {
@@ -354,8 +348,8 @@ function HeroDialog({
   guide: Guide;
   texts: HeroTexts;
   list: readonly Hero[];
-  panels: PanelState;
-  onPanel: (id: string, open: boolean) => void;
+  section: string;
+  onSection: (id: string) => void;
   onStep: (hero: Hero) => void;
   onClose: () => void;
 }) {
@@ -403,48 +397,86 @@ function HeroDialog({
         hero={hero}
         guide={guide}
         texts={texts}
-        panels={panels}
-        onPanel={onPanel}
+        section={section}
+        onSection={onSection}
         nameId={`${id}-name`}
       />
     </dialog>
   );
 }
 
-type PanelState = Record<string, boolean>;
+type Section = { id: string; title: string; count?: number; body: ReactNode };
 
 /**
- * One section of the hero sheet. Closed it still says what is inside, so the
- * sheet reads as a short index card until the reader opens what they want.
+ * The subjects of a hero: the list on the left, the open one beside it. Only
+ * one is ever open, so the sheet stays the same shape whichever one it is.
+ * Picking a subject holds for the next hero as well; one they do not have
+ * falls back to the first without forgetting the choice.
  */
-function HeroPanel({
-  id,
-  title,
-  summary,
-  panels,
-  onPanel,
-  children,
+function HeroSections({
+  sections,
+  current,
+  label,
+  onPick,
 }: {
-  id: string;
-  title: string;
-  summary?: string;
-  panels: PanelState;
-  onPanel: (id: string, open: boolean) => void;
-  children: ReactNode;
+  sections: Section[];
+  current: string;
+  label: string;
+  onPick: (id: string) => void;
 }) {
+  const id = useId();
+  const active = sections.find((section) => section.id === current) ?? sections[0];
+  const tabId = (section: Section) => `${id}-tab-${section.id}`;
+  const panelId = (section: Section) => `${id}-panel-${section.id}`;
+
+  // Up and down walk the list, the way a tab list is expected to. Left and
+  // right stay with the dialog, which steps to the previous or next hero.
+  const onKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    const step = event.key === "ArrowDown" ? 1 : event.key === "ArrowUp" ? -1 : 0;
+    if (!step && event.key !== "Home" && event.key !== "End") return;
+    event.preventDefault();
+    event.stopPropagation();
+    const at = sections.findIndex((section) => section.id === active.id);
+    const next = event.key === "Home" ? 0
+      : event.key === "End" ? sections.length - 1
+      : (at + step + sections.length) % sections.length;
+    onPick(sections[next].id);
+    const list = event.currentTarget;
+    window.requestAnimationFrame(() => {
+      list.querySelectorAll<HTMLButtonElement>("[role=\"tab\"]")[next]?.focus();
+    });
+  };
+
   return (
-    <details
-      className="hero-panel"
-      open={panels[id] ?? false}
-      onToggle={(event) => onPanel(id, event.currentTarget.open)}
-    >
-      <summary>
-        <span className="hero-panel-title">{title}</span>
-        {summary ? <span className="hero-panel-summary">{summary}</span> : null}
-        <ChevronIcon className="icon icon-sm hero-panel-mark" />
-      </summary>
-      <div className="hero-panel-body">{children}</div>
-    </details>
+    <div className="hero-sections">
+      <div className="hero-tabs" role="tablist" aria-orientation="vertical" aria-label={label} onKeyDown={onKeyDown}>
+        {sections.map((section) => (
+          <button
+            key={section.id}
+            type="button"
+            role="tab"
+            id={tabId(section)}
+            className="hero-tab"
+            aria-selected={section.id === active.id}
+            aria-controls={panelId(section)}
+            tabIndex={section.id === active.id ? 0 : -1}
+            onClick={() => onPick(section.id)}
+          >
+            <span>{section.title}</span>
+            {section.count ? <small>{section.count}</small> : null}
+          </button>
+        ))}
+      </div>
+      <div
+        className="hero-section-body"
+        role="tabpanel"
+        id={panelId(active)}
+        aria-labelledby={tabId(active)}
+        tabIndex={0}
+      >
+        {active.body}
+      </div>
+    </div>
   );
 }
 
@@ -452,15 +484,15 @@ function HeroDetail({
   hero: row,
   guide,
   texts,
-  panels,
-  onPanel,
+  section,
+  onSection,
   nameId,
 }: {
   hero: Hero;
   guide: Guide;
   texts: HeroTexts;
-  panels: PanelState;
-  onPanel: (id: string, open: boolean) => void;
+  section: string;
+  onSection: (id: string) => void;
   nameId: string;
 }) {
   const { t, tf } = useLocale();
@@ -487,15 +519,107 @@ function HeroDetail({
   const listedSkins = skinsFor(HERO_SKINS, hero.name);
   const troopLabel = hero.troop ? guide.troops[hero.troop] : null;
   const ageLabel = hero.age ? guide.ages[hero.age] : null;
-  // What a closed panel says: the names inside it, so nobody has to open it to look.
-  const abilityNames = HERO_ABILITY_KINDS.map((kind) => hero[kind]?.name)
-    .filter((name): name is string => Boolean(name))
-    .join(" · ");
+  // How many guides name this hero, for the count beside the subject.
   const guidesFound = [
-    found.tiers.length ? guide.inTierList : "",
-    found.builds.length || found.roles.length ? guide.inLayouts : "",
-    found.paintings.length ? guide.inArtwork : "",
-  ].filter(Boolean).join(" · ");
+    found.tiers.length,
+    found.builds.length,
+    found.roles.length,
+    found.paintings.length,
+  ].filter(Boolean).length;
+
+  const sections: Section[] = [
+    {
+      id: "skills",
+      title: guide.skillsHeading,
+      count: abilityCount(hero) || undefined,
+      body: <HeroAbilities hero={hero} guide={guide} />,
+    },
+    ...(hero.artifact
+      ? [{
+          id: "artifact",
+          title: guide.artifactLabel,
+          body: <HeroArtifact artifact={hero.artifact} guide={guide} />,
+        }]
+      : []),
+    ...(listedSkins.length > 0
+      ? [{
+          id: "skins",
+          title: guide.skinsHeading,
+          count: listedSkins.length,
+          body: (
+            <SkinLines
+              skins={listedSkins}
+              texts={guide.skinTexts}
+              missableLabel={guide.missableLabel}
+              unconfirmedLabel={guide.unconfirmedLabel}
+            />
+          ),
+        }]
+      : []),
+    ...(hero.bio
+      ? [{ id: "story", title: guide.bioHeading, body: <p className="hero-bio">{hero.bio}</p> }]
+      : []),
+    {
+      id: "guides",
+      title: guide.appearsHeading,
+      count: guidesFound || undefined,
+      body: nothing ? (
+        <p className="hero-pending">{guide.appearsNone}</p>
+      ) : (
+        <ul className="hero-links">
+          {found.tiers.length > 0 ? (
+            <li>
+              <Link href="/guides/hero-tier-list/">{guide.inTierList}</Link>
+              <span className="hero-link-values">
+                {found.tiers.map((entry, position) => (
+                  <span className="hero-link-tier" data-tier={entry.tier} key={`${entry.tier}-${position}`}>
+                    <strong>{entry.tier}</strong>
+                    {entry.rarity || entry.variant ? <small>{placementCaption(tierGuide, entry)}</small> : null}
+                  </span>
+                ))}
+              </span>
+            </li>
+          ) : null}
+          {found.builds.length > 0 ? (
+            <li>
+              <Link href="/guides/hero-layouts/">{guide.inLayouts}</Link>
+              <span className="hero-link-values">
+                {found.builds.map((entry) => (
+                  <span className="hero-link-chip" key={entry.build}>
+                    {layouts.buildTexts[entry.build]?.name ?? entry.build}
+                    <small>{zoneLabel[entry.zone]}</small>
+                  </span>
+                ))}
+              </span>
+            </li>
+          ) : null}
+          {found.roles.length > 0 ? (
+            <li>
+              <Link href="/guides/hero-layouts/">{layoutGuide.utilityHeading}</Link>
+              <span className="hero-link-values">
+                {found.roles.map((role) => (
+                  <span className="hero-link-chip" key={role}>{layouts.roleNames[role] ?? role}</span>
+                ))}
+              </span>
+            </li>
+          ) : null}
+          {found.paintings.length > 0 ? (
+            <li>
+              <Link href="/guides/artwork/">{guide.inArtwork}</Link>
+              <span className="hero-link-values">
+                {found.paintings.map((entry) => (
+                  <span className="hero-link-chip" key={`${entry.setId}-${entry.paintingId}`}>
+                    {artworkTexts.paintings?.[entry.paintingId]?.name?.trim() || entry.painting}
+                    <small>{artworkTexts.sets?.[entry.setId]?.name?.trim() || entry.set}</small>
+                  </span>
+                ))}
+              </span>
+            </li>
+          ) : null}
+        </ul>
+      ),
+    },
+  ];
 
   return (
     <>
@@ -541,120 +665,7 @@ function HeroDetail({
       </header>
 
       <div className="hero-detail-body">
-        <HeroPanel
-          id="skills"
-          title={guide.skillsHeading}
-          summary={abilityNames || guide.abilityMissing}
-          panels={panels}
-          onPanel={onPanel}
-        >
-          <HeroAbilities hero={hero} guide={guide} />
-        </HeroPanel>
-
-        {hero.artifact ? (
-          <HeroPanel
-            id="artifact"
-            title={guide.artifactLabel}
-            summary={hero.artifact.name}
-            panels={panels}
-            onPanel={onPanel}
-          >
-            <HeroArtifact artifact={hero.artifact} guide={guide} />
-          </HeroPanel>
-        ) : null}
-
-        {listedSkins.length > 0 ? (
-          <HeroPanel
-            id="skins"
-            title={guide.skinsHeading}
-            summary={counted(listedSkins.length, guide.skinCountOne, guide.skinCount)}
-            panels={panels}
-            onPanel={onPanel}
-          >
-            <SkinLines
-              skins={listedSkins}
-              texts={guide.skinTexts}
-              missableLabel={guide.missableLabel}
-              unconfirmedLabel={guide.unconfirmedLabel}
-            />
-          </HeroPanel>
-        ) : null}
-
-        {hero.bio ? (
-          <HeroPanel
-            id="story"
-            title={guide.bioHeading}
-            summary={hero.bio}
-            panels={panels}
-            onPanel={onPanel}
-          >
-            <p className="hero-bio">{hero.bio}</p>
-          </HeroPanel>
-        ) : null}
-
-        <HeroPanel
-          id="guides"
-          title={guide.appearsHeading}
-          summary={guidesFound || guide.appearsNone}
-          panels={panels}
-          onPanel={onPanel}
-        >
-          {nothing ? (
-            <p className="hero-pending">{guide.appearsNone}</p>
-          ) : (
-            <ul className="hero-links">
-              {found.tiers.length > 0 ? (
-                <li>
-                  <Link href="/guides/hero-tier-list/">{guide.inTierList}</Link>
-                  <span className="hero-link-values">
-                    {found.tiers.map((entry, position) => (
-                      <span className="hero-link-tier" data-tier={entry.tier} key={`${entry.tier}-${position}`}>
-                        <strong>{entry.tier}</strong>
-                        {entry.rarity || entry.variant ? <small>{placementCaption(tierGuide, entry)}</small> : null}
-                      </span>
-                    ))}
-                  </span>
-                </li>
-              ) : null}
-              {found.builds.length > 0 ? (
-                <li>
-                  <Link href="/guides/hero-layouts/">{guide.inLayouts}</Link>
-                  <span className="hero-link-values">
-                    {found.builds.map((entry) => (
-                      <span className="hero-link-chip" key={entry.build}>
-                        {layouts.buildTexts[entry.build]?.name ?? entry.build}
-                        <small>{zoneLabel[entry.zone]}</small>
-                      </span>
-                    ))}
-                  </span>
-                </li>
-              ) : null}
-              {found.roles.length > 0 ? (
-                <li>
-                  <Link href="/guides/hero-layouts/">{layoutGuide.utilityHeading}</Link>
-                  <span className="hero-link-values">
-                    {found.roles.map((role) => (
-                      <span className="hero-link-chip" key={role}>{layouts.roleNames[role] ?? role}</span>
-                    ))}
-                  </span>
-                </li>
-              ) : null}
-              {found.paintings.length > 0 ? (
-                <li>
-                  <Link href="/guides/artwork/">{guide.inArtwork}</Link>
-                  <span className="hero-link-values">
-                    {found.paintings.map((entry) => (
-                      <span className="hero-link-chip" key={`${entry.setId}-${entry.paintingId}`}>
-                        {artworkTexts.paintings?.[entry.paintingId]?.name?.trim() || entry.painting}
-                        <small>{artworkTexts.sets?.[entry.setId]?.name?.trim() || entry.set}</small>
-                      </span>
-                    ))}
-                  </span>
-                </li>
-              ) : null}
-            </ul>
-          )}
-        </HeroPanel>
+        <HeroSections sections={sections} current={section} label={guide.sectionsLabel} onPick={onSection} />
       </div>
     </>
   );

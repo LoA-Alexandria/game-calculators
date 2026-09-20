@@ -449,6 +449,7 @@ const en = {
       imagesLabel: "Portrait and skins",
       portraitLabel: "Portrait",
       skinLabel: "Skin {number}",
+      sectionsLabel: "Sections",
       skillsHeading: "Skills",
       abilityKinds: { skill: "Skill", buff: "Buff", production: "Production" },
       abilityProgress: "{count}/3 skills",

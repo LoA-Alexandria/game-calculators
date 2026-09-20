@@ -4099,7 +4099,8 @@ button.pb-card:focus-visible { outline: none; box-shadow: var(--ring); }
 }
 
 .hero-detail {
-  width: min(1000px, calc(100vw - 24px));
+  /* The subject list sits beside the panel, so the sheet is a little wider now. */
+  width: min(1100px, calc(100vw - 24px));
   max-height: calc(100dvh - 32px);
   padding: 0;
   overflow: auto;
@@ -4272,54 +4273,71 @@ button.pb-card:focus-visible { outline: none; box-shadow: var(--ring); }
   filter: drop-shadow(0 8px 10px rgba(16, 12, 8, .35));
   pointer-events: none;
 }
-.hero-detail-body { display: grid; gap: 10px; }
-.hero-panel {
-  border: 1px solid var(--line);
-  border-radius: var(--r-lg);
-  background: var(--surface-2);
-}
-.hero-panel > summary {
+/* The subjects beside each other: the list picks one, the panel shows it. */
+.hero-sections {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 178px) minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+.hero-tabs {
+  position: sticky;
+  top: 12px;
+  display: grid;
+  gap: 4px;
+  padding-right: 14px;
+  border-right: 1px solid var(--line);
+}
+.hero-tab {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  gap: 10px;
-  padding: 11px 14px;
-  border-radius: inherit;
+  gap: 8px;
+  padding: 9px 11px;
+  border: 1px solid transparent;
+  border-radius: var(--r-md);
+  background: transparent;
+  color: var(--ink-soft);
+  font: inherit;
+  font-size: .85rem;
+  font-weight: 650;
+  text-align: left;
   cursor: pointer;
-  list-style: none;
 }
-.hero-panel > summary::-webkit-details-marker { display: none; }
-.hero-panel > summary:hover { background: color-mix(in srgb, var(--rarity) 8%, transparent); }
-.hero-panel > summary:focus-visible { outline: none; box-shadow: var(--ring); }
-.hero-panel-title {
-  color: var(--ink);
-  font-size: .76rem;
-  font-weight: 700;
-  letter-spacing: .07em;
-  text-transform: uppercase;
-}
-/* One line, whatever the length: a closed panel says what is inside, not everything. */
-.hero-panel-summary {
-  min-width: 0;
-  overflow: hidden;
+.hero-tab:hover { background: var(--surface-2); color: var(--ink); }
+.hero-tab:focus-visible { outline: none; box-shadow: var(--ring); }
+.hero-tab small {
   color: var(--ink-faint);
-  font-size: .84rem;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  font-size: .72rem;
+  font-variant-numeric: tabular-nums;
 }
-.hero-panel-mark { color: var(--ink-faint); transition: transform .15s ease; }
-.hero-panel[open] > summary { border-bottom: 1px solid var(--line); border-radius: var(--r-lg) var(--r-lg) 0 0; }
-/* Open, the panel shows the real thing, so the teaser would only say it twice. */
-.hero-panel[open] .hero-panel-summary { visibility: hidden; }
-.hero-panel[open] .hero-panel-mark { transform: rotate(90deg); }
-.hero-panel-body { padding: 14px; }
-.hero-panel-body > .ability-grid { margin: 0; }
+.hero-tab[aria-selected="true"] {
+  border-color: color-mix(in srgb, var(--rarity) 45%, var(--line));
+  background: color-mix(in srgb, var(--rarity) 13%, var(--surface-2));
+  color: var(--ink);
+}
+.hero-tab[aria-selected="true"] small { color: var(--ink-soft); }
+.hero-section-body { min-width: 0; }
+/* Beside the list the three ability cards get less room, so they may sit closer. */
+.hero-section-body .ability-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); }
+.hero-section-body:focus-visible { outline: none; border-radius: var(--r-md); box-shadow: var(--ring); }
 
 @media (max-width: 720px) {
   .hero-detail-figure { height: 112px; margin-bottom: -14px; }
 }
-@media (prefers-reduced-motion: reduce) {
-  .hero-panel-mark { transition: none; }
+/* Too narrow for two columns: the list becomes a row of chips above the panel. */
+@media (max-width: 640px) {
+  .hero-sections { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .hero-tabs {
+    position: static;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 0 0 12px;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .hero-tab { padding: 7px 12px; border-color: var(--line); border-radius: 999px; font-size: .82rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {

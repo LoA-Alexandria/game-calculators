@@ -450,6 +450,7 @@ const fr: Dictionary = {
       imagesLabel: "Portrait et skins",
       portraitLabel: "Portrait",
       skinLabel: "Skin {number}",
+      sectionsLabel: "Rubriques",
       skillsHeading: "Compétences",
       abilityKinds: { skill: "Compétence", buff: "Bonus", production: "Production" },
       abilityProgress: "{count}/3 compétences",
