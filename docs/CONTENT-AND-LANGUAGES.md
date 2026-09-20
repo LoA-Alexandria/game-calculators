@@ -420,11 +420,29 @@ for byte (`tests/hero-editor.test.mjs`). `tests/heroes.test.mjs` checks the
 roster against the folder — every listed file exists and no file is left over —
 and that each `heroTexts` key is a hero in the roster.
 
+Tapping a hero opens their sheet: a head with the portrait, the facts, and the
+hero's figure, then one panel per subject — Skills, Artifact, Skins, Story, and
+In other guides. A closed panel says what is inside, the ability names, the
+artifact, how many skins, so the sheet reads as a short card until a reader
+opens what they want. Every panel starts closed, and the ones a reader opens
+stay open as they step through the roster with the arrows. A panel whose hero has nothing
+to show is left out.
+
 The portraits in `public/heroes/` were saved from the Pop Epoch Wiki rarity
 pages on 14 September 2026. Cleopatra, Alexander the Great, and Augustus have
 none. The artwork belongs to the game's publisher. The roster credits it under
 the grid. To take the pictures down, delete the folder and empty the `images`
 lists.
+
+`public/heroes/chibi/<hero id>.webp` holds the small in-game figure of a hero,
+free of the pedestal it stands on and of the level badge under it.
+`scripts/cut-hero-figures.py` makes them from the local Heroes dump and
+explains how; `lib/content/hero-chibis.ts` lists the hero ids that have one, and
+`heroChibiUrl` returns `null` for the rest, so their sheet simply shows no
+figure. 52 of the 82 heroes have one. These pictures belong to the game's
+publisher as well; the roster credits them under the grid (`figureCredit`), and
+deleting the folder together with the list takes them out again.
+`tests/heroes.test.mjs` keeps list, folder, and roster in step.
 
 Skill, buff, and production tables for 37 heroes come from German client
 screenshots taken on 18 September 2026. English in `lib/data/heroes.json` is a

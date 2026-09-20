@@ -1,13 +1,23 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useId, useMemo, useRef, useState, useSyncExternalStore, type KeyboardEvent } from "react";
+import {
+  useCallback,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+  type KeyboardEvent,
+  type ReactNode,
+} from "react";
 import { guideHref, guideLayout } from "../../lib/content/guides";
 import { heroAppearances } from "../../lib/content/hero-links";
 import { placementCaption } from "../../lib/content/hero-tiers";
 import { layoutTexts, type BuildZone } from "../../lib/content/hero-layouts";
 import type { PaintingTexts } from "../../lib/content/artwork";
 import {
+  HERO_ABILITY_KINDS,
   HERO_FRAGMENT_KEYS,
   HERO_RARITIES,
   HERO_STAR_COSTS,
@@ -27,9 +37,10 @@ import { LOCALE_CODES, fill, getDictionary, type Dictionary } from "../../lib/i1
 import { exclusiveCollectionSearchText, type CollectionTexts } from "../../lib/content/collection";
 import { HERO_SKIN_GROUPS, HERO_SKINS, skinSearchText, skinsFor } from "../../lib/content/skins";
 import { ChevronIcon, CloseIcon } from "../components/Icons";
+import { heroChibiUrl } from "../../lib/content/hero-chibis";
 import { HeroPortrait } from "../components/HeroPortrait";
 import { useLocale } from "../components/LocaleProvider";
-import { HeroAbilities } from "./HeroAbilities";
+import { HeroAbilities, HeroArtifact } from "./HeroAbilities";
 import { SkinCatalog, SkinLines } from "./SkinCatalog";
 
 type Guide = Dictionary["guideEntries"]["heroes"];
@@ -146,6 +157,13 @@ export function HeroRoster({ guide }: { guide: Guide }) {
   const stepList = open && rows.some((hero) => hero.id === open.id) ? rows : HEROES;
 
   const openHero = (hero: Hero) => openHeroHash(hero.id);
+  // Everything starts closed, and which panels the reader opens stays open as
+  // they step through the roster.
+  const [panels, setPanels] = useState<PanelState>({});
+  const togglePanel = useCallback(
+    (id: string, open: boolean) => setPanels((current) => ({ ...current, [id]: open })),
+    [],
+  );
   const texts = useMemo(
     () => mergeHeroTexts(guide.heroTexts, heroLoreTexts(locale)),
     [guide.heroTexts, locale],
@@ -216,6 +234,7 @@ export function HeroRoster({ guide }: { guide: Guide }) {
         </ul>
       )}
       <p className="hero-credit">{guide.portraitCredit}</p>
+      <p className="hero-credit">{guide.figureCredit}</p>
 
       <h2>{guide.sourcesHeading}</h2>
       <div className="rule-grid">
@@ -311,6 +330,8 @@ export function HeroRoster({ guide }: { guide: Guide }) {
           guide={guide}
           texts={texts}
           list={stepList}
+          panels={panels}
+          onPanel={togglePanel}
           onStep={(hero) => stepHeroHash(hero.id)}
           onClose={closeHeroHash}
         />
@@ -324,6 +345,8 @@ function HeroDialog({
   guide,
   texts,
   list,
+  panels,
+  onPanel,
   onStep,
   onClose,
 }: {
@@ -331,6 +354,8 @@ function HeroDialog({
   guide: Guide;
   texts: HeroTexts;
   list: readonly Hero[];
+  panels: PanelState;
+  onPanel: (id: string, open: boolean) => void;
   onStep: (hero: Hero) => void;
   onClose: () => void;
 }) {
@@ -373,8 +398,53 @@ function HeroDialog({
           <CloseIcon className="icon icon-sm" />
         </button>
       </div>
-      <HeroDetail key={hero.id} hero={hero} guide={guide} texts={texts} nameId={`${id}-name`} />
+      <HeroDetail
+        key={hero.id}
+        hero={hero}
+        guide={guide}
+        texts={texts}
+        panels={panels}
+        onPanel={onPanel}
+        nameId={`${id}-name`}
+      />
     </dialog>
+  );
+}
+
+type PanelState = Record<string, boolean>;
+
+/**
+ * One section of the hero sheet. Closed it still says what is inside, so the
+ * sheet reads as a short index card until the reader opens what they want.
+ */
+function HeroPanel({
+  id,
+  title,
+  summary,
+  panels,
+  onPanel,
+  children,
+}: {
+  id: string;
+  title: string;
+  summary?: string;
+  panels: PanelState;
+  onPanel: (id: string, open: boolean) => void;
+  children: ReactNode;
+}) {
+  return (
+    <details
+      className="hero-panel"
+      open={panels[id] ?? false}
+      onToggle={(event) => onPanel(id, event.currentTarget.open)}
+    >
+      <summary>
+        <span className="hero-panel-title">{title}</span>
+        {summary ? <span className="hero-panel-summary">{summary}</span> : null}
+        <ChevronIcon className="icon icon-sm hero-panel-mark" />
+      </summary>
+      <div className="hero-panel-body">{children}</div>
+    </details>
   );
 }
 
@@ -382,11 +452,15 @@ function HeroDetail({
   hero: row,
   guide,
   texts,
+  panels,
+  onPanel,
   nameId,
 }: {
   hero: Hero;
   guide: Guide;
   texts: HeroTexts;
+  panels: PanelState;
+  onPanel: (id: string, open: boolean) => void;
   nameId: string;
 }) {
   const { t, tf } = useLocale();
@@ -397,6 +471,7 @@ function HeroDetail({
   // Exclusive collection names come from the Collection guide, not from heroTexts.
   const hero = localizedHero(row, texts, collectionTexts);
   const file = hero.images[shown] ?? hero.images[0];
+  const figure = heroChibiUrl(hero.id);
   const found = heroAppearances(hero.name);
   const layouts = layoutTexts(t.guideEntries.heroLayouts);
   const layoutGuide = t.guideEntries.heroLayouts;
@@ -412,6 +487,15 @@ function HeroDetail({
   const listedSkins = skinsFor(HERO_SKINS, hero.name);
   const troopLabel = hero.troop ? guide.troops[hero.troop] : null;
   const ageLabel = hero.age ? guide.ages[hero.age] : null;
+  // What a closed panel says: the names inside it, so nobody has to open it to look.
+  const abilityNames = HERO_ABILITY_KINDS.map((kind) => hero[kind]?.name)
+    .filter((name): name is string => Boolean(name))
+    .join(" · ");
+  const guidesFound = [
+    found.tiers.length ? guide.inTierList : "",
+    found.builds.length || found.roles.length ? guide.inLayouts : "",
+    found.paintings.length ? guide.inArtwork : "",
+  ].filter(Boolean).join(" · ");
 
   return (
     <>
@@ -425,6 +509,12 @@ function HeroDetail({
             {troopLabel ? <span className="hero-detail-fact">{troopLabel}</span> : null}
             {ageLabel ? <span className="hero-detail-fact">{ageLabel}</span> : null}
           </p>
+          {hero.obtain ? (
+            <p className="hero-detail-obtain">
+              <span>{guide.colObtain}</span>
+              {hero.obtain}
+            </p>
+          ) : null}
           {hero.images.length > 1 ? (
             <div className="hero-skins" role="group" aria-label={guide.imagesLabel}>
               {hero.images.map((image, position) => (
@@ -443,92 +533,128 @@ function HeroDetail({
             </div>
           ) : null}
         </div>
+        {figure ? (
+          // The in-game figure, free of its pedestal. Decoration next to the portrait.
+          /* eslint-disable-next-line @next/next/no-img-element */
+          <img className="hero-detail-figure" src={figure} alt="" loading="lazy" decoding="async" />
+        ) : null}
       </header>
 
       <div className="hero-detail-body">
-        {hero.bio ? (
-          <>
-            <h3>{guide.bioHeading}</h3>
-            <p className="hero-bio">{hero.bio}</p>
-          </>
+        <HeroPanel
+          id="skills"
+          title={guide.skillsHeading}
+          summary={abilityNames || guide.abilityMissing}
+          panels={panels}
+          onPanel={onPanel}
+        >
+          <HeroAbilities hero={hero} guide={guide} />
+        </HeroPanel>
+
+        {hero.artifact ? (
+          <HeroPanel
+            id="artifact"
+            title={guide.artifactLabel}
+            summary={hero.artifact.name}
+            panels={panels}
+            onPanel={onPanel}
+          >
+            <HeroArtifact artifact={hero.artifact} guide={guide} />
+          </HeroPanel>
         ) : null}
-        {hero.obtain ? (
-          <>
-            <h3>{guide.colObtain}</h3>
-            <p>{hero.obtain}</p>
-          </>
-        ) : null}
+
         {listedSkins.length > 0 ? (
-          <>
-            <h3>{guide.skinsHeading}</h3>
+          <HeroPanel
+            id="skins"
+            title={guide.skinsHeading}
+            summary={counted(listedSkins.length, guide.skinCountOne, guide.skinCount)}
+            panels={panels}
+            onPanel={onPanel}
+          >
             <SkinLines
               skins={listedSkins}
               texts={guide.skinTexts}
               missableLabel={guide.missableLabel}
               unconfirmedLabel={guide.unconfirmedLabel}
             />
-          </>
+          </HeroPanel>
         ) : null}
 
-        <h3>{guide.skillsHeading}</h3>
-        <HeroAbilities hero={hero} guide={guide} />
+        {hero.bio ? (
+          <HeroPanel
+            id="story"
+            title={guide.bioHeading}
+            summary={hero.bio}
+            panels={panels}
+            onPanel={onPanel}
+          >
+            <p className="hero-bio">{hero.bio}</p>
+          </HeroPanel>
+        ) : null}
 
-        <h3>{guide.appearsHeading}</h3>
-        {nothing ? (
-          <p className="hero-pending">{guide.appearsNone}</p>
-        ) : (
-          <ul className="hero-links">
-            {found.tiers.length > 0 ? (
-              <li>
-                <Link href="/guides/hero-tier-list/">{guide.inTierList}</Link>
-                <span className="hero-link-values">
-                  {found.tiers.map((entry, position) => (
-                    <span className="hero-link-tier" data-tier={entry.tier} key={`${entry.tier}-${position}`}>
-                      <strong>{entry.tier}</strong>
-                      {entry.rarity || entry.variant ? <small>{placementCaption(tierGuide, entry)}</small> : null}
-                    </span>
-                  ))}
-                </span>
-              </li>
-            ) : null}
-            {found.builds.length > 0 ? (
-              <li>
-                <Link href="/guides/hero-layouts/">{guide.inLayouts}</Link>
-                <span className="hero-link-values">
-                  {found.builds.map((entry) => (
-                    <span className="hero-link-chip" key={entry.build}>
-                      {layouts.buildTexts[entry.build]?.name ?? entry.build}
-                      <small>{zoneLabel[entry.zone]}</small>
-                    </span>
-                  ))}
-                </span>
-              </li>
-            ) : null}
-            {found.roles.length > 0 ? (
-              <li>
-                <Link href="/guides/hero-layouts/">{layoutGuide.utilityHeading}</Link>
-                <span className="hero-link-values">
-                  {found.roles.map((role) => (
-                    <span className="hero-link-chip" key={role}>{layouts.roleNames[role] ?? role}</span>
-                  ))}
-                </span>
-              </li>
-            ) : null}
-            {found.paintings.length > 0 ? (
-              <li>
-                <Link href="/guides/artwork/">{guide.inArtwork}</Link>
-                <span className="hero-link-values">
-                  {found.paintings.map((entry) => (
-                    <span className="hero-link-chip" key={`${entry.setId}-${entry.paintingId}`}>
-                      {artworkTexts.paintings?.[entry.paintingId]?.name?.trim() || entry.painting}
-                      <small>{artworkTexts.sets?.[entry.setId]?.name?.trim() || entry.set}</small>
-                    </span>
-                  ))}
-                </span>
-              </li>
-            ) : null}
-          </ul>
-        )}
+        <HeroPanel
+          id="guides"
+          title={guide.appearsHeading}
+          summary={guidesFound || guide.appearsNone}
+          panels={panels}
+          onPanel={onPanel}
+        >
+          {nothing ? (
+            <p className="hero-pending">{guide.appearsNone}</p>
+          ) : (
+            <ul className="hero-links">
+              {found.tiers.length > 0 ? (
+                <li>
+                  <Link href="/guides/hero-tier-list/">{guide.inTierList}</Link>
+                  <span className="hero-link-values">
+                    {found.tiers.map((entry, position) => (
+                      <span className="hero-link-tier" data-tier={entry.tier} key={`${entry.tier}-${position}`}>
+                        <strong>{entry.tier}</strong>
+                        {entry.rarity || entry.variant ? <small>{placementCaption(tierGuide, entry)}</small> : null}
+                      </span>
+                    ))}
+                  </span>
+                </li>
+              ) : null}
+              {found.builds.length > 0 ? (
+                <li>
+                  <Link href="/guides/hero-layouts/">{guide.inLayouts}</Link>
+                  <span className="hero-link-values">
+                    {found.builds.map((entry) => (
+                      <span className="hero-link-chip" key={entry.build}>
+                        {layouts.buildTexts[entry.build]?.name ?? entry.build}
+                        <small>{zoneLabel[entry.zone]}</small>
+                      </span>
+                    ))}
+                  </span>
+                </li>
+              ) : null}
+              {found.roles.length > 0 ? (
+                <li>
+                  <Link href="/guides/hero-layouts/">{layoutGuide.utilityHeading}</Link>
+                  <span className="hero-link-values">
+                    {found.roles.map((role) => (
+                      <span className="hero-link-chip" key={role}>{layouts.roleNames[role] ?? role}</span>
+                    ))}
+                  </span>
+                </li>
+              ) : null}
+              {found.paintings.length > 0 ? (
+                <li>
+                  <Link href="/guides/artwork/">{guide.inArtwork}</Link>
+                  <span className="hero-link-values">
+                    {found.paintings.map((entry) => (
+                      <span className="hero-link-chip" key={`${entry.setId}-${entry.paintingId}`}>
+                        {artworkTexts.paintings?.[entry.paintingId]?.name?.trim() || entry.painting}
+                        <small>{artworkTexts.sets?.[entry.setId]?.name?.trim() || entry.set}</small>
+                      </span>
+                    ))}
+                  </span>
+                </li>
+              ) : null}
+            </ul>
+          )}
+        </HeroPanel>
       </div>
     </>
   );

@@ -4204,6 +4204,7 @@ button.pb-card:focus-visible { outline: none; box-shadow: var(--ring); }
 .hero-skin[aria-pressed="true"] { border-color: var(--rarity); box-shadow: 0 0 0 2px color-mix(in srgb, var(--rarity) 30%, transparent); }
 .hero-skin:focus-visible { outline: none; box-shadow: var(--ring); }
 .hero-detail-body { padding: 16px 22px 22px; }
+
 .hero-detail-body h3 {
   margin: 20px 0 8px;
   color: var(--ink-faint);
@@ -4243,6 +4244,84 @@ button.pb-card:focus-visible { outline: none; box-shadow: var(--ring); }
 .hero-link-tier[data-tier="C"] { --tier: #2d6fa9; }
 .hero-link-tier[data-tier="D"] { --tier: #6c6760; }
 
+/* --- the hero sheet: a head, then one panel per subject --- */
+.hero-detail-obtain {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+  margin: 8px 0 0;
+  color: var(--ink-soft);
+  font-size: .84rem;
+}
+.hero-detail-obtain > span {
+  color: var(--ink-faint);
+  font-size: .7rem;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+/* The in-game figure, standing on the line between head and panels. */
+.hero-detail-figure {
+  align-self: flex-end;
+  flex: none;
+  width: auto;
+  height: 158px;
+  margin: 0 0 -18px auto;
+  object-fit: contain;
+  object-position: 50% 100%;
+  filter: drop-shadow(0 8px 10px rgba(16, 12, 8, .35));
+  pointer-events: none;
+}
+.hero-detail-body { display: grid; gap: 10px; }
+.hero-panel {
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--surface-2);
+}
+.hero-panel > summary {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 14px;
+  border-radius: inherit;
+  cursor: pointer;
+  list-style: none;
+}
+.hero-panel > summary::-webkit-details-marker { display: none; }
+.hero-panel > summary:hover { background: color-mix(in srgb, var(--rarity) 8%, transparent); }
+.hero-panel > summary:focus-visible { outline: none; box-shadow: var(--ring); }
+.hero-panel-title {
+  color: var(--ink);
+  font-size: .76rem;
+  font-weight: 700;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+/* One line, whatever the length: a closed panel says what is inside, not everything. */
+.hero-panel-summary {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--ink-faint);
+  font-size: .84rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.hero-panel-mark { color: var(--ink-faint); transition: transform .15s ease; }
+.hero-panel[open] > summary { border-bottom: 1px solid var(--line); border-radius: var(--r-lg) var(--r-lg) 0 0; }
+/* Open, the panel shows the real thing, so the teaser would only say it twice. */
+.hero-panel[open] .hero-panel-summary { visibility: hidden; }
+.hero-panel[open] .hero-panel-mark { transform: rotate(90deg); }
+.hero-panel-body { padding: 14px; }
+.hero-panel-body > .ability-grid { margin: 0; }
+
+@media (max-width: 720px) {
+  .hero-detail-figure { height: 112px; margin-bottom: -14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-panel-mark { transition: none; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hero-tile { transition: none; }
   .hero-tile:hover { transform: none; }
@@ -4259,7 +4338,15 @@ button.pb-card:focus-visible { outline: none; box-shadow: var(--ring); }
   .hero-tile { padding: 12px 6px 8px; }
   .hero-tile .hero-portrait { --size: 62px; }
   .hero-tile-skills { display: none; }
-  .hero-detail-head { flex-direction: column; align-items: flex-start; padding: 58px 16px 16px; }
+  /* portrait and figure side by side, the name and facts under both */
+  .hero-detail-head {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: end;
+    padding: 58px 16px 16px;
+  }
+  .hero-detail-title { grid-column: 1 / -1; }
+  .hero-detail-figure { grid-column: 2; grid-row: 1; height: 108px; margin: 0 0 -6px auto; }
   .hero-detail-body { padding: 14px 16px 18px; }
   .hero-links li { grid-template-columns: minmax(0, 1fr); }
   .ability-level { grid-template-columns: minmax(0, 1fr); }

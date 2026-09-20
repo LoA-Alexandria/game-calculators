@@ -1,7 +1,7 @@
 "use client";
 
 import { useId, useState, type CSSProperties, type ReactNode } from "react";
-import { HERO_ABILITY_KINDS, type Hero, type HeroAbility, type HeroAbilityKind } from "../../lib/content/heroes";
+import { HERO_ABILITY_KINDS, type Hero, type HeroAbility, type HeroAbilityKind, type HeroSkill } from "../../lib/content/heroes";
 import type { Dictionary } from "../../lib/i18n";
 import { ChevronIcon } from "../components/Icons";
 import { useLocale } from "../components/LocaleProvider";
@@ -133,22 +133,28 @@ function AbilityCard({ kind, ability, guide }: { kind: HeroAbilityKind; ability?
   );
 }
 
-/** The three abilities of a hero, plus the artifact when there is one. */
+/** The three abilities of a hero: battle skill, buff, and production. */
 export function HeroAbilities({ hero, guide }: { hero: Hero; guide: Guide }) {
   return (
     <div className="ability-grid">
       {HERO_ABILITY_KINDS.map((kind) => (
         <AbilityCard key={kind} kind={kind} ability={hero[kind]} guide={guide} />
       ))}
-      {hero.artifact ? (
-        <article className="ability-card" data-kind="artifact">
-          <header className="ability-head">
-            <span className="ability-kind">{guide.artifactLabel}</span>
-            <h4>{hero.artifact.name}</h4>
-          </header>
-          <p className="ability-text"><AbilityText text={hero.artifact.text} /></p>
-        </article>
-      ) : null}
+    </div>
+  );
+}
+
+/** The artifact, which has one effect and no levels. It has its own panel. */
+export function HeroArtifact({ artifact, guide }: { artifact: HeroSkill; guide: Guide }) {
+  return (
+    <div className="ability-grid">
+      <article className="ability-card" data-kind="artifact">
+        <header className="ability-head">
+          <span className="ability-kind">{guide.artifactLabel}</span>
+          <h4>{artifact.name}</h4>
+        </header>
+        <p className="ability-text"><AbilityText text={artifact.text} /></p>
+      </article>
     </div>
   );
 }

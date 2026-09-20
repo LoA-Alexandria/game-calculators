@@ -41,7 +41,10 @@ function bioOpensFor(hero, bio) {
 
 test("every portrait in the roster is a file in public/heroes and none is orphaned", () => {
   const folder = new URL("../public/heroes/", import.meta.url);
-  const files = readdirSync(folder);
+  // The figures live in their own folder next to the portraits.
+  const files = readdirSync(folder, { withFileTypes: true })
+    .filter((entry) => entry.isFile())
+    .map((entry) => entry.name);
   const referenced = HEROES.flatMap((hero) => hero.images);
   assert.equal(new Set(referenced).size, referenced.length, "no file is shared by two entries");
   assert.deepEqual([...referenced].sort(), [...files].sort());
@@ -52,6 +55,22 @@ test("every portrait in the roster is a file in public/heroes and none is orphan
   for (const hero of HEROES) assert.ok(HERO_RARITIES.includes(hero.rarity), `${hero.name} has a known rarity`);
   assert.equal(HEROES.filter((hero) => hero.images.length > 0).length, 82);
   assert.ok(heroNamed("Cleopatra")?.images[0]);
+});
+
+test("every figure belongs to a hero, and no hero file is orphaned", async () => {
+  const { HERO_CHIBIS, heroChibiUrl } = await import("../lib/content/hero-chibis.ts");
+  const folder = new URL("../public/heroes/chibi/", import.meta.url);
+  const files = readdirSync(folder).filter((file) => !file.startsWith("."));
+  assert.deepEqual([...HERO_CHIBIS].sort(), [...HERO_CHIBIS], "the list stays sorted");
+  assert.deepEqual(HERO_CHIBIS.map((id) => `${id}.webp`).sort(), [...files].sort());
+  const ids = new Set(HEROES.map((hero) => hero.id));
+  for (const id of HERO_CHIBIS) assert.ok(ids.has(id), `${id} is a hero in the roster`);
+  for (const file of files) {
+    const head = readFileSync(new URL(file, folder)).subarray(0, 12).toString("latin1");
+    assert.ok(head.startsWith("RIFF") && head.endsWith("WEBP"), `${file} is a WebP`);
+  }
+  assert.match(heroChibiUrl("hermes") ?? "", /\/heroes\/chibi\/hermes\.webp$/);
+  assert.equal(heroChibiUrl("guan-yu"), null);
 });
 
 test("portraits resolve the tier list and layouts spelling of a hero", () => {

@@ -379,6 +379,8 @@ const de: Dictionary = {
       skinCountOne: "1 Skin",
       portraitCredit:
         "Heldenporträts, Titel, Truppen, Zeitalter und Geschichten aus der Pop-Epoch-Wiki-Seite Hero (Fandom), zuletzt zusammengeführt am 18. September 2026. Die Grafiken gehören dem Publisher des Spiels und werden hier für kostenlose, nicht-kommerzielle Community-Guides gezeigt.",
+      figureCredit:
+        "Die kleinen Spielfiguren stammen aus Screenshots des deutschen Clients vom 18. September 2026 und sind ohne Podest und Stufenanzeige darunter freigestellt. Bei Helden, die noch niemand fotografiert hat, fehlt die Figur. Die Grafiken gehören wie die Porträts dem Publisher des Spiels.",
       sourcesHeading: "Woher sie kommen",
       sources: [
         {
