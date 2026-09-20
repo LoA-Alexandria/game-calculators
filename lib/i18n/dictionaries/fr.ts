@@ -379,6 +379,8 @@ const fr: Dictionary = {
       skinCountOne: "1 skin",
       portraitCredit:
         "Portraits, titres, troupes, âges et histoires des héros issus de la page Hero du Pop Epoch Wiki (Fandom), fusionnés le 18 septembre 2026. Les illustrations appartiennent à l’éditeur du jeu et sont montrées ici pour des guides communautaires gratuits et non commerciaux.",
+      figureCredit:
+        "Les petites figurines du jeu viennent de captures du client allemand du 18 septembre 2026, détourées sans leur socle ni le niveau affiché dessous. Un héros que personne n’a encore photographié n’en a pas. Comme les portraits, ces images appartiennent à l’éditeur du jeu.",
       sourcesHeading: "D’où ils viennent",
       sources: [
         {

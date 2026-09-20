@@ -378,6 +378,8 @@ const en = {
       skinCountOne: "1 skin",
       portraitCredit:
         "Hero portraits, titles, troops, ages, and stories from the Pop Epoch Wiki Hero page (Fandom), last merged on 18 September 2026. The artwork belongs to the game’s publisher and is shown here for free, non-commercial community guides.",
+      figureCredit:
+        "The small in-game figures come from screenshots of the German client on 18 September 2026, cut out without the pedestal and the level badge below them. A hero nobody has photographed yet shows no figure. Like the portraits, the artwork belongs to the game’s publisher.",
       sourcesHeading: "Where they come from",
       sources: [
         {
