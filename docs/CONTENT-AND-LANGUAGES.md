@@ -421,12 +421,17 @@ roster against the folder — every listed file exists and no file is left over 
 and that each `heroTexts` key is a hero in the roster.
 
 Tapping a hero opens their sheet: a head with the portrait, the facts, and the
-hero's figure, then one panel per subject — Skills, Artifact, Skins, Story, and
-In other guides. A closed panel says what is inside, the ability names, the
-artifact, how many skins, so the sheet reads as a short card until a reader
-opens what they want. Every panel starts closed, and the ones a reader opens
-stay open as they step through the roster with the arrows. A panel whose hero has nothing
-to show is left out.
+hero's figure, then the subjects — Skills, Artifact, Skins, Story, and In other
+guides — as a list beside the one that is open. Only one is ever open, so the
+sheet keeps its shape whichever subject that is, and the list carries a count
+where one helps: how many abilities are filled in, how many skins, how many
+guides name this hero. A subject the hero has nothing for is left out.
+
+The list is a tab list: up and down walk it, Home and End jump to its ends,
+while left and right still step to the previous or next hero. The subject a
+reader picks stays picked as they step through the roster; on a hero without it
+the sheet falls back to the first one without forgetting the choice. Below
+640 px the list becomes a row of chips above the panel.
 
 The portraits in `public/heroes/` were saved from the Pop Epoch Wiki rarity
 pages on 14 September 2026. Cleopatra, Alexander the Great, and Augustus have
