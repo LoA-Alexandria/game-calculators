@@ -243,10 +243,34 @@ test("every published dictionary keys its hero texts to a hero in the roster", a
   }
   assert.deepEqual(getDictionary("en").guideEntries.heroes.heroTexts, {}, "English is the roster JSON itself");
   const de = getDictionary("de").guideEntries.heroes.heroTexts;
-  assert.equal(Object.keys(de).length, 37);
+  assert.equal(Object.keys(de).length, 38);
   assert.equal(de.merlin?.skill?.name, "Eisiger Drachenatem");
   assert.match(de.merlin?.skill?.levels[0] ?? "", /Schildbruch/);
-  assert.deepEqual(getDictionary("fr").guideEntries.heroes.heroTexts, {}, "French falls back to English");
+  const fr = getDictionary("fr").guideEntries.heroes.heroTexts;
+  assert.equal(Object.keys(fr).length, 38, "French covers every hero with ability text");
+  assert.equal(fr.merlin?.skill?.name, "Souffle du dragon de glace");
+  assert.match(fr.merlin?.skill?.levels[0] ?? "", /Brise-bouclier/);
+});
+
+test("every French ability level carries exactly the numbers of the English one", async () => {
+  const { getDictionary } = await import("../lib/i18n/index.ts");
+  const fr = getDictionary("fr").guideEntries.heroes.heroTexts;
+  const numbers = (text) => (text.match(/\d+(?:[.,]\d+)?/g) ?? []).map((n) => n.replace(",", ".")).sort();
+  let checked = 0;
+  for (const hero of HEROES) {
+    for (const kind of ["skill", "buff", "production"]) {
+      const english = hero[kind];
+      if (!english) continue;
+      const french = fr[hero.id]?.[kind];
+      assert.ok(french?.name, `${hero.id} ${kind} has a French name`);
+      assert.equal(french.levels.length, english.levels.length, `${hero.id} ${kind} levels`);
+      english.levels.forEach((level, index) => {
+        assert.deepEqual(numbers(french.levels[index]), numbers(level), `${hero.id} ${kind} Lv. ${index + 1}`);
+        checked += 1;
+      });
+    }
+  }
+  assert.ok(checked > 1500, `${checked} levels`);
 });
 
 test("the heroes banner collage uses primary portraits that exist on disk", async () => {

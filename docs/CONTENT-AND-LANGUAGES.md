@@ -461,6 +461,15 @@ interpolated: UR/UR+ +4% per level, SSR 30% + 3% × (n−1), as noted in the
 source files. Joan of Arc had no skill tables in that dump, so her abilities
 stay empty. Billy the Kid is not in this roster (skin cards only).
 
+The French ability texts were written on 21 September 2026 from the English
+ones: every ability is one French sentence whose placeholders take the numbers
+of each level, with "S’active à N étoiles." in front where the English level
+says "Activates at N-Star." Event names stay in English, as on the French event
+pages. `tests/heroes.test.mjs` checks that every French level carries exactly
+the numbers of the English level. On the same day the German texts got their
+umlauts back — the screenshot import had written "fuegt", "Hoehe", "Koenig" and
+similar — and Morgana's skill, the one ability that had no German yet.
+
 The Goddesses guide uses the same tile grid. Rows live in
 `lib/data/goddesses.json` (id, name, rarity, English affinity and obtain,
 images, and the flags below); `guideEntries.goddesses.goddessTexts` translates
