@@ -6,7 +6,14 @@ import { can, isRole, type Permission, type Role } from "../../lib/auth/roles";
 import { getSupabaseBrowserClient } from "../../lib/supabase/client";
 import { BASE_PATH } from "../../lib/site";
 
-type Session = { userId: string; name: string; handle: string; role: Role | null };
+type Session = {
+  userId: string;
+  name: string;
+  handle: string;
+  role: Role | null;
+  /** Discord snowflake from `editor_access`; used for guild-master matching. */
+  discordUserId: string | null;
+};
 type AuthContextValue = {
   session: Session | null;
   loading: boolean;
@@ -39,13 +46,18 @@ async function functionErrorDetail(error: unknown): Promise<string> {
   }
 }
 
-function displaySession(session: SupabaseSession, role: Role | null): Session {
+function displaySession(
+  session: SupabaseSession,
+  role: Role | null,
+  discordUserId: string | null,
+): Session {
   const metadata = session.user.user_metadata;
   return {
     userId: session.user.id,
     name: metadata.full_name ?? metadata.name ?? metadata.preferred_username ?? "Discord member",
     handle: metadata.preferred_username ?? metadata.name ?? "discord-member",
     role,
+    discordUserId,
   };
 }
 
@@ -68,14 +80,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
     const { data, error: accessError } = await supabase
       .from("editor_access")
-      .select("role, can_edit")
+      .select("role, can_edit, discord_user_id")
       .eq("user_id", current.user.id)
       .maybeSingle();
     if (accessError) setError("Editor access could not be loaded.");
     // `role` is the real answer; `can_edit` is the older column, still read so
     // a session that predates the migration keeps working until it is dropped.
     const stored = isRole(data?.role) ? data.role : data?.can_edit === true ? "guide_writer" : null;
-    setSession(displaySession(current, stored));
+    const discordUserId =
+      typeof data?.discord_user_id === "string" && data.discord_user_id.length > 0
+        ? data.discord_user_id
+        : null;
+    setSession(displaySession(current, stored, discordUserId));
     setLoading(false);
   }, [supabase]);
 

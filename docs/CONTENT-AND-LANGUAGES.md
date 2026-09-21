@@ -1,6 +1,6 @@
 # Content and languages
 
-The site is organised into five sections — News, Events, Guides, Calculators,
+The site is organised into sections — News, Guilds, Events, Guides, Calculators,
 and Simulations — and speaks English, German, and French. Both the navigation
 and the translations are driven by data, so adding an entry or a language does
 not mean touching the layout.

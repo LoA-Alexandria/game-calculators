@@ -29,11 +29,11 @@ export type NavItem = {
 };
 
 export type NavSection = {
-  id: "news" | "events" | "guides" | "calculators" | "simulations";
+  id: "news" | "events" | "guides" | "calculators" | "simulations" | "guilds";
   href: string;
   label: (t: Dictionary) => string;
   description: (t: Dictionary) => string;
-  icon: "news" | "events" | "guides" | "calculators" | "simulations";
+  icon: "news" | "events" | "guides" | "calculators" | "simulations" | "guilds";
   items: NavItem[];
 };
 
@@ -56,6 +56,14 @@ export const SECTIONS: NavSection[] = [
     label: (t) => t.nav.news,
     description: (t) => t.navDescriptions.news,
     icon: "news",
+    items: [],
+  },
+  {
+    id: "guilds",
+    href: "/guilds/",
+    label: (t) => t.nav.guilds,
+    description: (t) => t.navDescriptions.guilds,
+    icon: "guilds",
     items: [],
   },
   {

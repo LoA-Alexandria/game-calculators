@@ -38,6 +38,13 @@ test("home counters match the published navigation tree", () => {
   assert.equal(guideCount(), 20);
 });
 
+test("guilds section is listed and has no static child routes", () => {
+  const guilds = sectionById("guilds");
+  assert.equal(guilds.href, "/guilds/");
+  assert.equal(guilds.items.length, 0);
+  assert.equal(sectionHasBrowsePanel(guilds), false);
+});
+
 test("Events index lists every published event write-up in one flat list", () => {
   assert.ok(sectionById("events").items.some((item) => item.href === "/events/atlantis/"));
   assert.ok(sectionById("events").items.some((item) => item.href === "/events/monument-of-eternity/"));

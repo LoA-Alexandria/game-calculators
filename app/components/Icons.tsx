@@ -345,10 +345,24 @@ export function EventsIcon({ className }: IconProps) {
   );
 }
 
+/** Three figures under a shared roof — a community guild hall. */
+export function GuildsIcon({ className }: IconProps) {
+  return (
+    <svg className={className} {...base}>
+      <path d="M4 19V10.5L12 5l8 5.5V19" />
+      <path d="M9.5 19v-4.2a2.5 2.5 0 0 1 5 0V19" />
+      <circle cx="8" cy="12.2" r="1.35" />
+      <circle cx="16" cy="12.2" r="1.35" />
+      <circle cx="12" cy="11.2" r="1.45" />
+    </svg>
+  );
+}
+
 export const SECTION_ICONS = {
   news: NewsIcon,
   events: EventsIcon,
   guides: GuidesIcon,
   calculators: CalculatorsIcon,
   simulations: SimulationsIcon,
+  guilds: GuildsIcon,
 } as const;

@@ -1,6 +1,12 @@
 "use client";
 
 import { useEffect, useId, useState } from "react";
+import {
+  isDiscordUserId,
+  isGuildSlug,
+  suggestGuildSlug,
+  type Guild,
+} from "../../lib/content/guilds";
 import { getSupabaseBrowserClient } from "../../lib/supabase/client";
 import { isRole, PERMISSIONS, ROLES, ROLE_PERMISSIONS, type Role } from "../../lib/auth/roles";
 import { useAuth } from "../components/AuthProvider";
@@ -30,6 +36,7 @@ function AdminPanel() {
 
   const [mappings, setMappings] = useState<Mapping[]>([]);
   const [members, setMembers] = useState<Member[]>([]);
+  const [guilds, setGuilds] = useState<Guild[]>([]);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
 
@@ -37,8 +44,14 @@ function AdminPanel() {
   const [discordId, setDiscordId] = useState("");
   const [role, setRole] = useState<Role>("guide_writer");
 
+  const [guildName, setGuildName] = useState("");
+  const [guildSlug, setGuildSlug] = useState("");
+  const [guildDescription, setGuildDescription] = useState("");
+  const [guildMasterId, setGuildMasterId] = useState("");
+  const [slugTouched, setSlugTouched] = useState(false);
+
   /**
-   * Both tables are read here rather than in a helper the effect calls, so the
+   * Tables are read here rather than in a helper the effect calls, so the
    * state updates sit plainly inside an async continuation. `gone` guards them:
    * without it a quick unmount lands a setState on a component that is no
    * longer mounted. A write bumps `reloadToken` to fetch again.
@@ -49,15 +62,18 @@ function AdminPanel() {
     if (!supabase) return;
     let gone = false;
     void (async () => {
-      const [mapped, team] = await Promise.all([
+      const [mapped, team, roster] = await Promise.all([
         supabase.from("role_mappings").select("id, discord_role_id, discord_role_name, role").order("role"),
         supabase.from("editor_access").select("user_id, discord_user_id, role, checked_at").order("checked_at", { ascending: false }),
+        supabase.from("guilds").select("id, slug, name, description, master_discord_user_id, created_at").order("name"),
       ]);
       if (gone) return;
       if (mapped.error) setError(mapped.error.message);
       else setMappings((mapped.data ?? []) as Mapping[]);
       if (team.error) setError(team.error.message);
       else setMembers((team.data ?? []) as Member[]);
+      if (roster.error) setError(roster.error.message);
+      else setGuilds((roster.data ?? []) as Guild[]);
     })();
     return () => { gone = true; };
   }, [supabase, reloadToken]);
@@ -90,6 +106,45 @@ function AdminPanel() {
     setBusy(false);
   };
 
+  const addGuild = async () => {
+    if (!supabase || !session) return;
+    const slug = guildSlug.trim().toLowerCase();
+    const master = guildMasterId.trim();
+    if (!guildName.trim() || !isGuildSlug(slug) || !isDiscordUserId(master)) {
+      setError("Guild name, slug, and master Discord ID must be valid.");
+      return;
+    }
+    setBusy(true);
+    setError("");
+    const { error: insertError } = await supabase.from("guilds").insert({
+      name: guildName.trim(),
+      slug,
+      description: guildDescription.trim(),
+      master_discord_user_id: master,
+      created_by: session.userId,
+    });
+    if (insertError) setError(insertError.message);
+    else {
+      setGuildName("");
+      setGuildSlug("");
+      setGuildDescription("");
+      setGuildMasterId("");
+      setSlugTouched(false);
+      reload();
+    }
+    setBusy(false);
+  };
+
+  const removeGuild = async (id: string) => {
+    if (!supabase) return;
+    setBusy(true);
+    setError("");
+    const { error: deleteError } = await supabase.from("guilds").delete().eq("id", id);
+    if (deleteError) setError(deleteError.message);
+    else reload();
+    setBusy(false);
+  };
+
   return (
     <>
       <div className="admin-head">
@@ -107,6 +162,108 @@ function AdminPanel() {
       </div>
 
       {error && <p className="result-error" role="alert">{error}</p>}
+
+      <section className="panel">
+        <h2>{t.admin.guildsTitle}</h2>
+        <p>{t.admin.guildsLede}</p>
+
+        <div className="table-scroll">
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th>{t.admin.guildsName}</th>
+                <th>{t.admin.guildsSlug}</th>
+                <th>{t.admin.guildsMasterId}</th>
+                <th>{t.admin.guildsCreated}</th>
+                <th />
+              </tr>
+            </thead>
+            <tbody>
+              {guilds.length === 0 && (
+                <tr><td colSpan={5}>{t.admin.guildsEmpty}</td></tr>
+              )}
+              {guilds.map((guild) => (
+                <tr key={guild.id}>
+                  <td data-label={t.admin.guildsName}>{guild.name}</td>
+                  <td data-label={t.admin.guildsSlug} className="mono">{guild.slug}</td>
+                  <td data-label={t.admin.guildsMasterId} className="mono">{guild.master_discord_user_id}</td>
+                  <td data-label={t.admin.guildsCreated} className="mono">
+                    {d(guild.created_at.slice(0, 10))}
+                  </td>
+                  <td className="actions">
+                    <button
+                      className="small-button button-danger"
+                      type="button"
+                      disabled={busy}
+                      aria-label={`${t.admin.guildsRemove}: ${guild.name}`}
+                      onClick={() => void removeGuild(guild.id)}
+                    >
+                      <TrashIcon className="icon icon-sm" />
+                      {t.admin.guildsRemove}
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <fieldset disabled={busy}>
+          <legend>{t.admin.guildsAdd}</legend>
+          <div className="guild-form">
+            <div className="field">
+              <label htmlFor={`${ids}-gname`}>{t.admin.guildsName}</label>
+              <input
+                id={`${ids}-gname`}
+                value={guildName}
+                onChange={(e) => {
+                  const next = e.target.value;
+                  setGuildName(next);
+                  if (!slugTouched) setGuildSlug(suggestGuildSlug(next));
+                }}
+              />
+            </div>
+            <div className="field">
+              <label htmlFor={`${ids}-gslug`}>{t.admin.guildsSlug}</label>
+              <input
+                id={`${ids}-gslug`}
+                value={guildSlug}
+                className="mono"
+                onChange={(e) => {
+                  setSlugTouched(true);
+                  setGuildSlug(e.target.value.toLowerCase());
+                }}
+              />
+            </div>
+            <div className="field">
+              <label htmlFor={`${ids}-gmaster`}>{t.admin.guildsMasterId}</label>
+              <input
+                id={`${ids}-gmaster`}
+                value={guildMasterId}
+                inputMode="numeric"
+                className="mono"
+                placeholder="1534890988588498944"
+                onChange={(e) => setGuildMasterId(e.target.value)}
+              />
+            </div>
+            <div className="field guild-form-desc">
+              <label htmlFor={`${ids}-gdesc`}>{t.admin.guildsDescription}</label>
+              <input
+                id={`${ids}-gdesc`}
+                value={guildDescription}
+                maxLength={500}
+                onChange={(e) => setGuildDescription(e.target.value)}
+              />
+            </div>
+            <button className="button button-primary" type="button" onClick={() => void addGuild()}>
+              <PlusIcon className="icon" />
+              {t.admin.guildsAdd}
+            </button>
+          </div>
+          <p className="assumption">{t.admin.guildsSlugNote}</p>
+          <p className="assumption">{t.admin.guildsMasterIdNote}</p>
+        </fieldset>
+      </section>
 
       <section className="panel">
         <h2>{t.admin.mappingTitle}</h2>

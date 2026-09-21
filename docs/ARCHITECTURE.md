@@ -38,11 +38,14 @@ tests/                         Calculation and output tests
 
 ## Navigation
 
-`lib/navigation.ts` is the single source of truth for the five sections and
+`lib/navigation.ts` is the single source of truth for the sections and
 their entries. The sidebar, the section index pages, and the sidebar filter all
 read it, so a new tool is added in one place. Labels are functions of the
 dictionary rather than literals. The sidebar can collapse to an icon rail on
 wide screens; `/` or Ctrl/Cmd+K focuses the filter.
+
+Guild rooms use `/guilds/room/…?guild=<slug>` because the site is a static
+export and cannot pre-render unknown admin-created slugs at build time.
 
 ## Languages
 
@@ -88,6 +91,11 @@ server-maintained and protected with RLS. `/admin/` is shown to members with
 print a snippet to commit into the dictionaries and navigation; shared wiki
 tables are still to be implemented. Read [`AUTH-AND-CMS.md`](AUTH-AND-CMS.md)
 before adding any write path.
+
+Community guilds live in Supabase (`guilds`, `guild_memberships`) with RLS.
+Admins create guilds and set the master by Discord user ID; signed-in members
+request to join; masters accept or decline. Room content pages are member-only
+shells in v1 (News / Planning).
 
 ## Vendored applications
 
