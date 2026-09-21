@@ -56,7 +56,7 @@ test("structured ranking guides skip the snippet Edit / Remove", () => {
   assert.equal(guideHasSnippetEditor("goddessLeveling"), false);
   assert.equal(guideHasSnippetEditor("collection"), false);
   assert.equal(guideHasSnippetEditor("collectionLayouts"), false);
-  assert.equal(guideHasSnippetEditor("adsBuy"), true);
+  assert.equal(guideHasSnippetEditor("adsBuy"), false);
 });
 
 test("artwork layouts levels SSR ATK first", () => {
@@ -86,6 +86,7 @@ test("each guide entry is claimed by exactly the renderer it was written for", (
     goddessLeveling: "goddessLeveling",
     collection: "collection",
     collectionLayouts: "collectionLayouts",
+    adsBuy: "adsBuy",
   };
   for (const [code, dictionary] of Object.entries(mapLocales(getDictionary))) {
     for (const [id, guide] of Object.entries(dictionary.guideEntries)) {

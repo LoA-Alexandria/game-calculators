@@ -114,8 +114,11 @@ filter. There is no second list to keep in step.
    pattern as news and events. Every guide listed with an `editor` in
    `lib/content/guide-meta.ts` skips those buttons: it has its own editor instead.
 2. Write or replace the text under `guideEntries.<id>` in all three dictionaries,
-   following the shape of `adsBuy`: `title`, `summary`, `intro`,
-   `sections[]`, `note`.
+   following the shape of a plain article guide: `title`, `summary`, `intro`,
+   `sections[]`, `note`. The Ads / Buy guide (`adsBuy`) also carries
+   `adsHeading`, `adsLede`, `spendHeading`, and `spendLede` for its vertical
+   priority layout — leave those off a new plain guide so it keeps the default
+   article renderer.
 3. Add or replace the item in the `guides` section in `lib/navigation.ts`,
    including a `badge` and `categoryId` from `guideCategories`. Reuse an existing
    category when the guide belongs next to one already there. Core systems

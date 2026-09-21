@@ -3593,6 +3593,10 @@ const de: Dictionary = {
         "Von Autumn. Ad-Free zu kaufen ist vermutlich vernünftiger — nutze diesen Guide, wenn das nicht geht, und wenn du klare Kauf-Prioritäten brauchst.",
       credit: "Werbung- und Kauf-Guide von Autumn (Ice, S12), geteilt auf Discord",
       creditDate: "August 2026",
+      adsHeading: "Werbung",
+      adsLede: "So laufen die täglichen Ads — und was zuerst drankommt, wenn die Zeit knapp ist.",
+      spendHeading: "Käufe",
+      spendLede: "Käufe nach Nutzen sortiert. Immer zuerst an dein eigenes Budget denken.",
       sections: [
         {
           heading: "Werbung — so laufen die Ads",

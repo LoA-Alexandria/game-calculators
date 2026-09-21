@@ -779,6 +779,10 @@ const en = {
         "Made by Autumn. Buying ad-free is probably more sane — use this when you are not in that position, and when you want a clear spend priority.",
       credit: "Ads and spending guide by Autumn (Ice, S12), shared on Discord",
       creditDate: "August 2026",
+      adsHeading: "Ads",
+      adsLede: "How to run the daily ads, then what to watch first when time is short.",
+      spendHeading: "Spending",
+      spendLede: "Purchases ranked by value. Always fit them to your own budget.",
       sections: [
         {
           heading: "Ads — how to run them",

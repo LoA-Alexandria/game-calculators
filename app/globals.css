@@ -1870,6 +1870,64 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
 .article .guide-section-card p + p { margin-top: 8px; }
 .guide-plain .callout { max-width: 75ch; }
 
+/* Ads / Buy: vertical phases like other tips guides, not a side-by-side card grid. */
+.ads-buy-guide .tier-lists-head { margin-top: 28px; }
+.ads-buy-guide .tier-lists-head:first-of-type { margin-top: 8px; }
+.ads-buy-phases { margin-top: 14px; }
+.ads-buy-phase { padding-bottom: 4px; }
+.ads-buy-alone {
+  margin: 0;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  color: var(--ink-soft);
+  font-size: .92rem;
+  line-height: 1.55;
+}
+.ads-buy-items {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: ads-buy-item;
+}
+.ads-buy-items > li {
+  position: relative;
+  margin: 0;
+  padding: 12px 14px 12px 16px;
+  border: 1px solid var(--line);
+  border-left: 3px solid color-mix(in srgb, var(--tone, var(--accent)) 55%, var(--line));
+  border-radius: var(--r-md);
+  background: var(--surface);
+  color: var(--ink-soft);
+  font-size: .9rem;
+  line-height: 1.55;
+}
+.ads-buy-items.is-ordered > li {
+  padding-left: 44px;
+  counter-increment: ads-buy-item;
+}
+.ads-buy-items.is-ordered > li::before {
+  content: counter(ads-buy-item);
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--tone, var(--accent)) 22%, var(--surface-2));
+  color: var(--ink);
+  font-size: .72rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+.ads-buy-addendum { margin-top: 28px; max-width: 75ch; }
+.ads-buy-guide .hero-credit { margin-top: 22px; }
+
 @media (prefers-reduced-motion: reduce) {
   .guide-card, .guide-card-art img { transition: none; }
   .guide-card:hover, .guide-card:focus-within { transform: none; }

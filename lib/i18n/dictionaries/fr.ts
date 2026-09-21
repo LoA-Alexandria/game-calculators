@@ -1314,6 +1314,10 @@ const fr: Dictionary = {
         "Par Autumn. Acheter l’ad-free est sans doute plus sain — utilisez ce guide si ce n’est pas possible, et pour des priorités d’achat claires.",
       credit: "Guide pubs et achats par Autumn (Ice, S12), partagé sur Discord",
       creditDate: "Août 2026",
+      adsHeading: "Pubs",
+      adsLede: "Comment enchaîner les pubs du jour, puis quoi regarder en premier quand le temps manque.",
+      spendHeading: "Achats",
+      spendLede: "Achats classés par valeur. Adaptez toujours à votre propre budget.",
       sections: [
         {
           heading: "Pubs — comment les enchaîner",

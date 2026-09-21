@@ -52,6 +52,7 @@ const SNIPPET_EDITOR_SKIP = new Set<string>([
   "goddessLeveling",
   "collection",
   "collectionLayouts",
+  "adsBuy",
 ]);
 
 export function guideHasSnippetEditor(id: string): boolean {
@@ -86,6 +87,7 @@ export type GuideLayout =
   | "goddessLeveling"
   | "collection"
   | "collectionLayouts"
+  | "adsBuy"
   | "article";
 
 /**
@@ -97,8 +99,8 @@ export type GuideLayout =
  * `setupTexts`, Goddess Theater is recognised by `playsHeading`
  * Hero linking by `linksHeading`, Anecdotes by `anecdoteTexts`, Server age
  * unlocks by `timelineHeading`, Museion by `buildingsHeading`, Hero leveling
- * by `focusHeading`, city buildings by `categoriesHeading`, and
- * Cryptides by `cryptidesHeading`.
+ * by `focusHeading`, city buildings by `categoriesHeading`,
+ * Cryptides by `cryptidesHeading`, and Ads / Buy by `adsHeading`.
  * `tests/guides.test.mjs` pins every entry.
  */
 export function guideLayout(guide: object): GuideLayout {
@@ -118,6 +120,7 @@ export function guideLayout(guide: object): GuideLayout {
   if ("focusHeading" in guide) return "heroLeveling";
   if ("categoriesHeading" in guide) return "buildings";
   if ("cryptidesHeading" in guide) return "cryptides";
+  if ("adsHeading" in guide) return "adsBuy";
   if ("filterAll" in guide) return "heroes";
   return "article";
 }
