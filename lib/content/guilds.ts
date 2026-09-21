@@ -138,3 +138,16 @@ export function guildIconPublicUrl(
   const base = supabaseUrl.replace(/\/$/, "");
   return `${base}/storage/v1/object/public/${GUILD_ICON_BUCKET}/${iconPath.split("/").map(encodeURIComponent).join("/")}`;
 }
+
+/** Case-insensitive match on server name (and name as fallback). */
+export function guildMatchesServerFilter(
+  guild: Pick<Guild, "name" | "server_name">,
+  query: string,
+): boolean {
+  const needle = query.trim().toLocaleLowerCase();
+  if (!needle) return true;
+  return (
+    guild.server_name.toLocaleLowerCase().includes(needle)
+    || guild.name.toLocaleLowerCase().includes(needle)
+  );
+}
