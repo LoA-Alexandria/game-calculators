@@ -910,6 +910,35 @@ Discord tips stay in the dictionaries.
    the wiki page and the merge date.
 4. Do not list event write-ups under `guides.items`.
 
+## Editing event guides and guides that are only text
+
+Every event guide, and every guide that is nothing but text without an editor
+of its own (Ads / Buy today), has an edit mode. Members with `guides.draft` see
+**Edit** in the page head; it opens the editor under the article, and while it
+is open the page itself shows the draft, in the language the page is in.
+
+- **Fields** are read from the English entry: every string it has (title,
+  summary, intro, credit, date, the Ads / Buy headings, note, …) in the order
+  the dictionary has them. A field that grows into an entry later needs no
+  change to the editor.
+- **Sections** each hold a heading and the paragraphs, one blank line between
+  paragraphs. They can be added, removed, and moved up or down; the order holds
+  for every language. A section's picture (Heart of Gold) stays as it is; only
+  its description is translated.
+- **Languages** work as in every other editor: English plus the page's language,
+  or all of them with **Edit all languages**. A field left empty in a language
+  takes the English text, which is what readers of that language get until
+  somebody translates it.
+- The draft stays in this browser (`popepoch-text-guide:<catalog>:<id>`) until
+  **Discard changes** or until it matches the published text again.
+
+**Export** gives one block per dictionary that changed. Each block replaces the
+whole entry — `eventGuideEntries.<id>` or `guideEntries.<id>` — in that
+dictionary. `lib/content/text-guide-editor.ts` holds the logic, and
+`tests/text-guide-editor.test.mjs` checks that an untouched draft gives back
+every event guide and every text-only guide in every language unchanged, key
+order included.
+
 ## Adding a news entry
 
 1. Open `/news/new/` signed in with `news.write`. The editor prints both the row

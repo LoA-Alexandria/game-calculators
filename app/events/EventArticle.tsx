@@ -1,14 +1,19 @@
 "use client";
 
 import Link from "next/link";
-import type { Dictionary } from "../../lib/i18n";
+import { useState } from "react";
+import { toLocale, type Dictionary } from "../../lib/i18n";
+import { textGuideEntry, type TextGuideDraft } from "../../lib/content/text-guide-editor";
 import {
   eventWiki,
   eventWikiHasHelp,
   eventWikiIconUrl,
 } from "../../lib/content/event-guides";
 import { asset } from "../../lib/site";
+import { useAuth } from "../components/AuthProvider";
+import { PenIcon } from "../components/Icons";
 import { useDocumentTitle, useLocale } from "../components/LocaleProvider";
+import { TextGuideEditor } from "../components/TextGuideEditor";
 import { BackLink } from "../components/Ui";
 
 export type EventGuideId = keyof Dictionary["eventGuideEntries"];
@@ -25,9 +30,24 @@ export function isEventGuideId(
  * Discord community tips. Kept separate from GuideArticle so Guides stay
  * untouched.
  */
+/** What the page shows of an event guide: the published entry, or the draft while it is edited. */
+type ShownGuide = {
+  title: string;
+  summary: string;
+  intro: string;
+  note: string;
+  sections: readonly { heading: string; body: readonly string[]; image?: { src: string; alt: string; width: number; height: number } }[];
+};
+
 export function EventArticle({ id }: { id: EventGuideId }) {
-  const { t } = useLocale();
-  const guide = t.eventGuideEntries[id];
+  const { t, locale } = useLocale();
+  const { allows } = useAuth();
+  const canEdit = allows("guides.draft");
+  const [editing, setEditing] = useState(false);
+  // While the editor is open the page shows the draft, so it is its own preview.
+  const [draft, setDraft] = useState<TextGuideDraft | null>(null);
+  const published: ShownGuide = t.eventGuideEntries[id];
+  const guide: ShownGuide = draft ? (textGuideEntry(draft, toLocale(locale)) as unknown as ShownGuide) : published;
   const wiki = eventWiki(id);
   const icon = eventWikiIconUrl(id);
   const showWiki = eventWikiHasHelp(id);
@@ -47,6 +67,23 @@ export function EventArticle({ id }: { id: EventGuideId }) {
           </nav>
           <h1>{guide.title}</h1>
           <p className="guide-head-lede">{guide.summary}</p>
+          {canEdit && !editing ? (
+            <div className="guide-head-meta">
+              <span className="guide-head-actions">
+                <button
+                  className="button"
+                  type="button"
+                  onClick={() => {
+                    setEditing(true);
+                    window.setTimeout(() => document.getElementById("text-guide-editor")?.scrollIntoView({ block: "start" }), 0);
+                  }}
+                >
+                  <PenIcon className="icon icon-sm" />
+                  {t.guides.edit}
+                </button>
+              </span>
+            </div>
+          ) : null}
         </div>
       </header>
       <article className="article">
@@ -114,6 +151,17 @@ export function EventArticle({ id }: { id: EventGuideId }) {
         ) : null}
         {guide.note ? <p className="callout">{guide.note}</p> : null}
       </article>
+      {canEdit && editing ? (
+        <TextGuideEditor
+          catalog="eventGuideEntries"
+          id={id}
+          onDraft={setDraft}
+          onClose={() => {
+            setEditing(false);
+            setDraft(null);
+          }}
+        />
+      ) : null}
     </>
   );
 }

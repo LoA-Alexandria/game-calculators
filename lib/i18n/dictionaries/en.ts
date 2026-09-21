@@ -849,7 +849,7 @@ const en = {
       note: "Manor costs and population gates will be added once they are checked against the current client.",
     },
     adsBuy: {
-      title: "Werbung / Buy",
+      title: "Ads / Buy",
       summary: "Daily ad priorities for efficiency, and what is worth buying with real money.",
       intro:
         "Made by Autumn. Buying ad-free is probably more sane — use this when you are not in that position, and when you want a clear spend priority.",
@@ -3299,6 +3299,32 @@ const en = {
       "Delete the guideEntries block from every dictionary, then the navigation row and the page folder for this slug.",
     removeOutput: "Removal notes",
     cancel: "Back",
+  },
+  textGuideEditor: {
+    title: "Edit this guide",
+    lede: "Change the text in any language. The page above shows your draft as you type.",
+    close: "Close the editor",
+    reset: "Discard changes",
+    changedIn: "Changed: {languages}",
+    unchanged: "No changes yet",
+    moveUp: "Move section up",
+    moveDown: "Move section down",
+    pictureAlt: "Picture description",
+    pictureNote: "the picture stays, only its description changes",
+    previewNote: "The site is static, so no server saves anything. Your draft stays in this browser; copy the blocks below and commit them to publish it.",
+    exportTitle: "Blocks to commit",
+    exportLede: "One block per language that changed. Replace {entry} in that file with it.",
+    exportEmpty: "Change a field and the blocks to commit appear here.",
+    files: "The dictionaries: {files}.",
+    fields: {
+      credit: "Credit",
+      creditDate: "Date",
+      status: "Status",
+      adsHeading: "Heading · ads",
+      adsLede: "Intro · ads",
+      spendHeading: "Heading · spending",
+      spendLede: "Intro · spending",
+    },
   },
   eventGuideEntries: {
     atlantis: {

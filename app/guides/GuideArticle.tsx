@@ -1,14 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { guideTitleBanner } from "../../lib/content/banners";
 import { guidePresentation } from "../../lib/content/guide-meta";
 import { guideCategoryId, guideHasSnippetEditor, guideHref, isGuideEntryId, type GuideEntryId } from "../../lib/content/guides";
-import type { Dictionary } from "../../lib/i18n";
+import { toLocale, type Dictionary } from "../../lib/i18n";
+import { isTextGuide, textGuideEntry, type TextGuideDraft } from "../../lib/content/text-guide-editor";
 import { useAuth } from "../components/AuthProvider";
 import { useDocumentTitle, useLocale } from "../components/LocaleProvider";
 import { PenIcon, TrashIcon } from "../components/Icons";
+import { TextGuideEditor } from "../components/TextGuideEditor";
 import { GuideEditor, type GuideEditorTarget } from "./GuideEditor";
 import { AdsBuyGuide, isAdsBuyGuide } from "./AdsBuyGuide";
 import { GoddessesGuide, isGoddessesGuide } from "./GoddessesGuide";
@@ -43,11 +45,14 @@ function GuideHeader({
   guide,
   canSnippet,
   onSnippet,
+  onTextEdit,
 }: {
   id: GuideEntryId;
   guide: AnyGuide;
   canSnippet: boolean;
   onSnippet: (action: GuideEditorTarget["action"]) => void;
+  /** Opens the text editor of a guide that is only text and has no editor of its own. */
+  onTextEdit?: () => void;
 }) {
   const { t } = useLocale();
   const { allows } = useAuth();
@@ -75,13 +80,19 @@ function GuideHeader({
         <h1>{guide.title}</h1>
       )}
       <p className="guide-head-lede">{guide.summary}</p>
-      {byline || canEdit || canSnippet ? (
+      {byline || canEdit || canSnippet || onTextEdit ? (
         <div className="guide-head-meta">
           {byline?.credit ? <span className="guide-chip is-credit">{byline.credit}</span> : null}
           {byline?.creditDate ? <span className="guide-chip">{byline.creditDate}</span> : null}
           {byline?.status ? <span className="guide-chip is-status">{byline.status}</span> : null}
-          {canEdit || canSnippet ? (
+          {canEdit || canSnippet || onTextEdit ? (
             <span className="guide-head-actions">
+              {onTextEdit ? (
+                <button className="button" type="button" onClick={onTextEdit}>
+                  <PenIcon className="icon icon-sm" />
+                  {t.guides.edit}
+                </button>
+              ) : null}
               {canEdit && editor ? (
                 <Link className="button button-primary" href={editor.href}>
                   <PenIcon className="icon icon-sm" />
@@ -109,10 +120,22 @@ function GuideHeader({
 }
 
 export function GuideArticle({ id }: { id: GuideEntryId }) {
-  const { t } = useLocale();
+  const { t, locale } = useLocale();
   const { allows } = useAuth();
-  const guide = t.guideEntries[id];
+  const published = t.guideEntries[id];
   const canWrite = allows("guides.draft") && guideHasSnippetEditor(id);
+  // A guide that is only text and has neither its own editor nor the snippet one
+  // (Ads / Buy) gets the text editor, with the page itself as the preview.
+  const textGuide = useMemo(
+    () => !guidePresentation(id).editor && !guideHasSnippetEditor(id) && isTextGuide("guideEntries", id),
+    [id],
+  );
+  const canTextEdit = allows("guides.draft") && textGuide;
+  const [textEditing, setTextEditing] = useState(false);
+  const [textDraft, setTextDraft] = useState<TextGuideDraft | null>(null);
+  const guide = textDraft
+    ? ({ ...published, ...textGuideEntry(textDraft, toLocale(locale)) } as typeof published)
+    : published;
   const [target, setTarget] = useState<GuideEditorTarget | null>(null);
   const heroesGuide = isHeroesGuide(guide);
   const goddessesGuide = isGoddessesGuide(guide);
@@ -128,7 +151,20 @@ export function GuideArticle({ id }: { id: GuideEntryId }) {
     <>
       {heroesGuide && !guideTitleBanner(id) ? <HeroBanner title={guide.title} /> : null}
       {goddessesGuide && !guideTitleBanner(id) ? <GoddessBanner title={guide.title} /> : null}
-      <GuideHeader id={id} guide={guide} canSnippet={canWrite} onSnippet={openEditor} />
+      <GuideHeader
+        id={id}
+        guide={guide}
+        canSnippet={canWrite}
+        onSnippet={openEditor}
+        onTextEdit={
+          canTextEdit && !textEditing
+            ? () => {
+                setTextEditing(true);
+                window.setTimeout(() => document.getElementById("text-guide-editor")?.scrollIntoView({ block: "start" }), 0);
+              }
+            : undefined
+        }
+      />
       <article className="article" data-category={category}>
         {goddessesGuide ? (
           <GoddessesGuide guide={guide} />
@@ -183,6 +219,17 @@ export function GuideArticle({ id }: { id: GuideEntryId }) {
           </div>
         )}
       </article>
+      {canTextEdit && textEditing ? (
+        <TextGuideEditor
+          catalog="guideEntries"
+          id={id}
+          onDraft={setTextDraft}
+          onClose={() => {
+            setTextEditing(false);
+            setTextDraft(null);
+          }}
+        />
+      ) : null}
       {canWrite && target && isGuideEntryId(target.id, t.guideEntries) && (
         <GuideEditor
           key={`${target.action}-${target.id}`}
