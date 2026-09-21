@@ -408,8 +408,9 @@ function HeroDialog({
 type Section = { id: string; title: string; count?: number; body: ReactNode };
 
 /**
- * The subjects of a hero: the list on the left, the open one beside it. Only
- * one is ever open, so the sheet stays the same shape whichever one it is.
+ * The subjects of a hero: the list on the left, every panel stacked in the
+ * same cell on the right. Only one is visible, but they all take space, so
+ * the sheet keeps the tallest subject’s height when you switch.
  * Picking a subject holds for the next hero as well; one they do not have
  * falls back to the first without forgetting the choice.
  */
@@ -467,14 +468,24 @@ function HeroSections({
           </button>
         ))}
       </div>
-      <div
-        className="hero-section-body"
-        role="tabpanel"
-        id={panelId(active)}
-        aria-labelledby={tabId(active)}
-        tabIndex={0}
-      >
-        {active.body}
+      <div className="hero-section-panels">
+        {sections.map((section) => {
+          const selected = section.id === active.id;
+          return (
+            <div
+              key={section.id}
+              className="hero-section-body"
+              role="tabpanel"
+              id={panelId(section)}
+              aria-labelledby={tabId(section)}
+              aria-hidden={!selected}
+              tabIndex={selected ? 0 : -1}
+              {...(!selected ? { inert: true } : {})}
+            >
+              {section.body}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

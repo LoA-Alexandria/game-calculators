@@ -422,10 +422,11 @@ and that each `heroTexts` key is a hero in the roster.
 
 Tapping a hero opens their sheet: a head with the portrait, the facts, and the
 hero's figure, then the subjects — Skills, Artifact, Skins, Story, and In other
-guides — as a list beside the one that is open. Only one is ever open, so the
-sheet keeps its shape whichever subject that is, and the list carries a count
-where one helps: how many abilities are filled in, how many skins, how many
-guides name this hero. A subject the hero has nothing for is left out.
+guides — as a list beside the open panel. Every subject is laid out in the same
+cell so the sheet keeps the tallest subject’s height when you switch; only the
+active one is visible. The list carries a count where one helps: how many
+abilities are filled in, how many skins, how many guides name this hero. A
+subject the hero has nothing for is left out.
 
 The list is a tab list: up and down walk it, Home and End jump to its ends,
 while left and right still step to the previous or next hero. The subject a

@@ -4317,6 +4317,19 @@ button.pb-card:focus-visible { outline: none; box-shadow: var(--ring); }
   color: var(--ink);
 }
 .hero-tab[aria-selected="true"] small { color: var(--ink-soft); }
+/* Stack every subject in one cell so the tallest sets the sheet height. */
+.hero-section-panels {
+  display: grid;
+  min-width: 0;
+}
+.hero-section-panels > .hero-section-body {
+  grid-area: 1 / 1;
+  min-width: 0;
+}
+.hero-section-panels > .hero-section-body[aria-hidden="true"] {
+  visibility: hidden;
+  pointer-events: none;
+}
 .hero-section-body { min-width: 0; }
 /* Beside the list the three ability cards get less room, so they may sit closer. */
 .hero-section-body .ability-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); }
