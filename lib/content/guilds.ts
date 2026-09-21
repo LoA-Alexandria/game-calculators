@@ -11,11 +11,17 @@ import { asset } from "../site.ts";
 export const GUILD_STATUSES = ["pending", "active", "rejected"] as const;
 export type GuildMembershipStatus = (typeof GUILD_STATUSES)[number];
 
+export const GUILD_ICON_BUCKET = "guild-icons";
+export const GUILD_ICON_MAX_BYTES = 512 * 1024;
+export const GUILD_ICON_TYPES = ["image/png", "image/jpeg", "image/webp"] as const;
+
 export type Guild = {
   id: string;
   slug: string;
   name: string;
   description: string;
+  server_name: string;
+  icon_path: string | null;
   master_discord_user_id: string;
   created_at: string;
 };
@@ -30,6 +36,17 @@ export type GuildMembership = {
 };
 
 export type GuildTab = "news" | "planung";
+
+export type GuildPost = {
+  id: string;
+  guild_id: string;
+  channel: GuildTab;
+  title: string;
+  body: string;
+  author_id: string;
+  created_at: string;
+  updated_at: string;
+};
 
 const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
@@ -81,4 +98,35 @@ export function isGuildMasterOf(
 ): boolean {
   if (!discordUserId) return false;
   return guild.master_discord_user_id === discordUserId;
+}
+
+export function guildIconExtension(mime: string): "png" | "jpg" | "webp" | null {
+  if (mime === "image/png") return "png";
+  if (mime === "image/jpeg") return "jpg";
+  if (mime === "image/webp") return "webp";
+  return null;
+}
+
+export function guildIconObjectPath(guildId: string, mime: string): string | null {
+  const ext = guildIconExtension(mime);
+  if (!ext) return null;
+  return `${guildId}/icon.${ext}`;
+}
+
+export function isGuildIconFile(file: File): boolean {
+  return (
+    GUILD_ICON_TYPES.includes(file.type as (typeof GUILD_ICON_TYPES)[number])
+    && file.size > 0
+    && file.size <= GUILD_ICON_MAX_BYTES
+  );
+}
+
+/** Public object URL for a stored icon path, or null when unset. */
+export function guildIconPublicUrl(
+  supabaseUrl: string | undefined,
+  iconPath: string | null | undefined,
+): string | null {
+  if (!supabaseUrl || !iconPath) return null;
+  const base = supabaseUrl.replace(/\/$/, "");
+  return `${base}/storage/v1/object/public/${GUILD_ICON_BUCKET}/${iconPath.split("/").map(encodeURIComponent).join("/")}`;
 }

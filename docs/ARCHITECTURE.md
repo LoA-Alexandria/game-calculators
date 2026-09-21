@@ -92,10 +92,11 @@ print a snippet to commit into the dictionaries and navigation; shared wiki
 tables are still to be implemented. Read [`AUTH-AND-CMS.md`](AUTH-AND-CMS.md)
 before adding any write path.
 
-Community guilds live in Supabase (`guilds`, `guild_memberships`) with RLS.
-Admins create guilds and set the master by Discord user ID; signed-in members
-request to join; masters accept or decline. Room content pages are member-only
-shells in v1 (News / Planning).
+Community guilds live in Supabase (`guilds`, `guild_memberships`, `guild_posts`)
+with RLS. Admins create guilds (name, server, optional icon in Storage bucket
+`guild-icons`, master Discord ID). Signed-in members request to join; masters
+accept or decline. Room News / Planning posts are readable by members and
+writable by master/admin.
 
 ## Vendored applications
 

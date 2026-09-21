@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
+  guildIconPublicUrl,
   guildRoomHref,
   isGuildMasterOf,
   type Guild,
@@ -15,6 +16,23 @@ import { DiscordIcon, GuildsIcon } from "../components/Icons";
 import { PageHead, SectionBanner } from "../components/Ui";
 
 type OwnMembership = Pick<GuildMembership, "guild_id" | "status">;
+
+function GuildMark({ guild }: { guild: Guild }) {
+  const iconUrl = guildIconPublicUrl(process.env.NEXT_PUBLIC_SUPABASE_URL, guild.icon_path);
+  if (iconUrl) {
+    return (
+      <div className="guild-card-mark has-image">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={iconUrl} alt="" />
+      </div>
+    );
+  }
+  return (
+    <div className="guild-card-mark" aria-hidden="true">
+      <GuildsIcon className="icon" />
+    </div>
+  );
+}
 
 export default function GuildsPage() {
   const { t } = useLocale();
@@ -36,7 +54,7 @@ export default function GuildsPage() {
     void (async () => {
       const listed = await supabase
         .from("guilds")
-        .select("id, slug, name, description, master_discord_user_id, created_at")
+        .select("id, slug, name, description, server_name, icon_path, master_discord_user_id, created_at")
         .order("name");
       if (gone) return;
       if (listed.error) setError(listed.error.message);
@@ -164,14 +182,18 @@ export default function GuildsPage() {
 
             return (
               <article className="guild-card" key={guild.id}>
-                <div className="guild-card-mark" aria-hidden="true">
-                  <GuildsIcon className="icon" />
-                </div>
+                <GuildMark guild={guild} />
                 <div className="guild-card-body">
                   <div className="guild-card-top">
                     <h2>{guild.name}</h2>
                     {statusLabel ? <span className={statusClass}>{statusLabel}</span> : null}
                   </div>
+                  {guild.server_name ? (
+                    <p className="guild-server">
+                      <span className="guild-server-label">{t.guilds.serverLabel}</span>
+                      {guild.server_name}
+                    </p>
+                  ) : null}
                   {guild.description ? <p className="guild-card-desc">{guild.description}</p> : null}
                   {isSiteAdmin ? (
                     <p className="guild-meta mono">

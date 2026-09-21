@@ -2,7 +2,11 @@
 
 import { useEffect, useId, useState } from "react";
 import {
+  GUILD_ICON_BUCKET,
+  guildIconObjectPath,
+  guildIconPublicUrl,
   isDiscordUserId,
+  isGuildIconFile,
   isGuildSlug,
   suggestGuildSlug,
   type Guild,
@@ -47,7 +51,9 @@ function AdminPanel() {
   const [guildName, setGuildName] = useState("");
   const [guildSlug, setGuildSlug] = useState("");
   const [guildDescription, setGuildDescription] = useState("");
+  const [guildServer, setGuildServer] = useState("");
   const [guildMasterId, setGuildMasterId] = useState("");
+  const [guildIcon, setGuildIcon] = useState<File | null>(null);
   const [slugTouched, setSlugTouched] = useState(false);
 
   /**
@@ -65,7 +71,7 @@ function AdminPanel() {
       const [mapped, team, roster] = await Promise.all([
         supabase.from("role_mappings").select("id, discord_role_id, discord_role_name, role").order("role"),
         supabase.from("editor_access").select("user_id, discord_user_id, role, checked_at").order("checked_at", { ascending: false }),
-        supabase.from("guilds").select("id, slug, name, description, master_discord_user_id, created_at").order("name"),
+        supabase.from("guilds").select("id, slug, name, description, server_name, icon_path, master_discord_user_id, created_at").order("name"),
       ]);
       if (gone) return;
       if (mapped.error) setError(mapped.error.message);
@@ -114,32 +120,77 @@ function AdminPanel() {
       setError("Guild name, slug, and master Discord ID must be valid.");
       return;
     }
+    if (guildIcon && !isGuildIconFile(guildIcon)) {
+      setError(t.admin.guildsIconInvalid);
+      return;
+    }
     setBusy(true);
     setError("");
-    const { error: insertError } = await supabase.from("guilds").insert({
-      name: guildName.trim(),
-      slug,
-      description: guildDescription.trim(),
-      master_discord_user_id: master,
-      created_by: session.userId,
-    });
-    if (insertError) setError(insertError.message);
-    else {
-      setGuildName("");
-      setGuildSlug("");
-      setGuildDescription("");
-      setGuildMasterId("");
-      setSlugTouched(false);
-      reload();
+    const { data: created, error: insertError } = await supabase
+      .from("guilds")
+      .insert({
+        name: guildName.trim(),
+        slug,
+        description: guildDescription.trim(),
+        server_name: guildServer.trim().slice(0, 80),
+        master_discord_user_id: master,
+        created_by: session.userId,
+      })
+      .select("id")
+      .single();
+    if (insertError) {
+      setError(insertError.message);
+      setBusy(false);
+      return;
     }
+
+    if (guildIcon && created?.id) {
+      const path = guildIconObjectPath(created.id, guildIcon.type);
+      if (!path) {
+        setError(t.admin.guildsIconInvalid);
+        setBusy(false);
+        return;
+      }
+      const { error: uploadError } = await supabase.storage
+        .from(GUILD_ICON_BUCKET)
+        .upload(path, guildIcon, { upsert: true, contentType: guildIcon.type });
+      if (uploadError) {
+        setError(uploadError.message);
+        setBusy(false);
+        reload();
+        return;
+      }
+      const { error: iconError } = await supabase
+        .from("guilds")
+        .update({ icon_path: path })
+        .eq("id", created.id);
+      if (iconError) {
+        setError(iconError.message);
+        setBusy(false);
+        reload();
+        return;
+      }
+    }
+
+    setGuildName("");
+    setGuildSlug("");
+    setGuildDescription("");
+    setGuildServer("");
+    setGuildMasterId("");
+    setGuildIcon(null);
+    setSlugTouched(false);
+    reload();
     setBusy(false);
   };
 
-  const removeGuild = async (id: string) => {
+  const removeGuild = async (guild: Guild) => {
     if (!supabase) return;
     setBusy(true);
     setError("");
-    const { error: deleteError } = await supabase.from("guilds").delete().eq("id", id);
+    if (guild.icon_path) {
+      await supabase.storage.from(GUILD_ICON_BUCKET).remove([guild.icon_path]);
+    }
+    const { error: deleteError } = await supabase.from("guilds").delete().eq("id", guild.id);
     if (deleteError) setError(deleteError.message);
     else reload();
     setBusy(false);
@@ -172,6 +223,7 @@ function AdminPanel() {
             <thead>
               <tr>
                 <th>{t.admin.guildsName}</th>
+                <th>{t.admin.guildsServer}</th>
                 <th>{t.admin.guildsSlug}</th>
                 <th>{t.admin.guildsMasterId}</th>
                 <th>{t.admin.guildsCreated}</th>
@@ -180,30 +232,45 @@ function AdminPanel() {
             </thead>
             <tbody>
               {guilds.length === 0 && (
-                <tr><td colSpan={5}>{t.admin.guildsEmpty}</td></tr>
+                <tr><td colSpan={6}>{t.admin.guildsEmpty}</td></tr>
               )}
-              {guilds.map((guild) => (
-                <tr key={guild.id}>
-                  <td data-label={t.admin.guildsName}>{guild.name}</td>
-                  <td data-label={t.admin.guildsSlug} className="mono">{guild.slug}</td>
-                  <td data-label={t.admin.guildsMasterId} className="mono">{guild.master_discord_user_id}</td>
-                  <td data-label={t.admin.guildsCreated} className="mono">
-                    {d(guild.created_at.slice(0, 10))}
-                  </td>
-                  <td className="actions">
-                    <button
-                      className="small-button button-danger"
-                      type="button"
-                      disabled={busy}
-                      aria-label={`${t.admin.guildsRemove}: ${guild.name}`}
-                      onClick={() => void removeGuild(guild.id)}
-                    >
-                      <TrashIcon className="icon icon-sm" />
-                      {t.admin.guildsRemove}
-                    </button>
-                  </td>
-                </tr>
-              ))}
+              {guilds.map((guild) => {
+                const iconUrl = guildIconPublicUrl(
+                  process.env.NEXT_PUBLIC_SUPABASE_URL,
+                  guild.icon_path,
+                );
+                return (
+                  <tr key={guild.id}>
+                    <td data-label={t.admin.guildsName}>
+                      <span className="guild-admin-name">
+                        {iconUrl ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img className="guild-admin-icon" src={iconUrl} alt="" />
+                        ) : null}
+                        {guild.name}
+                      </span>
+                    </td>
+                    <td data-label={t.admin.guildsServer}>{guild.server_name || "—"}</td>
+                    <td data-label={t.admin.guildsSlug} className="mono">{guild.slug}</td>
+                    <td data-label={t.admin.guildsMasterId} className="mono">{guild.master_discord_user_id}</td>
+                    <td data-label={t.admin.guildsCreated} className="mono">
+                      {d(guild.created_at.slice(0, 10))}
+                    </td>
+                    <td className="actions">
+                      <button
+                        className="small-button button-danger"
+                        type="button"
+                        disabled={busy}
+                        aria-label={`${t.admin.guildsRemove}: ${guild.name}`}
+                        onClick={() => void removeGuild(guild)}
+                      >
+                        <TrashIcon className="icon icon-sm" />
+                        {t.admin.guildsRemove}
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
@@ -236,6 +303,16 @@ function AdminPanel() {
               />
             </div>
             <div className="field">
+              <label htmlFor={`${ids}-gserver`}>{t.admin.guildsServer}</label>
+              <input
+                id={`${ids}-gserver`}
+                value={guildServer}
+                maxLength={80}
+                placeholder="S9 - Garden"
+                onChange={(e) => setGuildServer(e.target.value)}
+              />
+            </div>
+            <div className="field">
               <label htmlFor={`${ids}-gmaster`}>{t.admin.guildsMasterId}</label>
               <input
                 id={`${ids}-gmaster`}
@@ -255,12 +332,23 @@ function AdminPanel() {
                 onChange={(e) => setGuildDescription(e.target.value)}
               />
             </div>
+            <div className="field guild-form-icon">
+              <label htmlFor={`${ids}-gicon`}>{t.admin.guildsIcon}</label>
+              <input
+                id={`${ids}-gicon`}
+                type="file"
+                accept="image/png,image/jpeg,image/webp"
+                onChange={(e) => setGuildIcon(e.target.files?.[0] ?? null)}
+              />
+            </div>
             <button className="button button-primary" type="button" onClick={() => void addGuild()}>
               <PlusIcon className="icon" />
               {t.admin.guildsAdd}
             </button>
           </div>
           <p className="assumption">{t.admin.guildsSlugNote}</p>
+          <p className="assumption">{t.admin.guildsServerNote}</p>
+          <p className="assumption">{t.admin.guildsIconNote}</p>
           <p className="assumption">{t.admin.guildsMasterIdNote}</p>
         </fieldset>
       </section>
