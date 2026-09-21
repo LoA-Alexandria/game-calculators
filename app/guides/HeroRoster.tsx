@@ -374,7 +374,7 @@ function HeroDialog({
   return (
     <dialog
       ref={attach}
-      className="hero-detail"
+      className="hero-detail hero-sheet"
       data-rarity={hero.rarity}
       aria-labelledby={`${id}-name`}
       onClose={onClose}

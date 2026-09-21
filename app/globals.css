@@ -4156,16 +4156,12 @@ button.pb-card:focus-visible { outline: none; box-shadow: var(--ring); }
   .museion-edit-stats { grid-template-columns: 1fr; }
 }
 
+/* The frame that the hero, goddess, building and tier-list dialogs share. */
 .hero-detail {
-  /* The subject list sits beside the panel, so the sheet is a little wider now. */
-  width: min(1100px, calc(100vw - 24px));
-  /* One size for every hero and every subject. What does not fit scrolls inside
-     the panel, so the window never jumps as the reader moves around. */
-  height: min(840px, calc(100dvh - 32px));
-  display: flex;
-  flex-direction: column;
+  width: min(1000px, calc(100vw - 24px));
+  max-height: calc(100dvh - 32px);
   padding: 0;
-  overflow: hidden;
+  overflow: auto;
   border: 1px solid var(--line);
   border-radius: var(--r-xl);
   background: var(--surface);
@@ -4191,9 +4187,6 @@ button.pb-card:focus-visible { outline: none; box-shadow: var(--ring); }
 .hero-detail-position { padding: 0 4px; color: var(--ink-faint); font-size: .76rem; font-variant-numeric: tabular-nums; }
 .hero-detail-close { margin-left: 6px; }
 .hero-detail-head {
-  position: relative;
-  z-index: 1;
-  flex: none;
   display: flex;
   align-items: center;
   gap: 18px;
@@ -4269,7 +4262,20 @@ button.pb-card:focus-visible { outline: none; box-shadow: var(--ring); }
 .hero-skin img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .hero-skin[aria-pressed="true"] { border-color: var(--rarity); box-shadow: 0 0 0 2px color-mix(in srgb, var(--rarity) 30%, transparent); }
 .hero-skin:focus-visible { outline: none; box-shadow: var(--ring); }
-.hero-detail-body { flex: 1 1 auto; min-height: 0; overflow: hidden; padding: 16px 22px 22px; }
+.hero-detail-body { padding: 16px 22px 22px; }
+/* The hero sheet alone has subjects to switch and heroes to step through, so it
+   alone keeps one size: what does not fit scrolls inside its pane, and the
+   window never jumps as the reader moves around. The list sits beside the
+   pane, so the sheet is wider as well. */
+.hero-sheet {
+  display: flex;
+  flex-direction: column;
+  width: min(1100px, calc(100vw - 24px));
+  height: min(840px, calc(100dvh - 32px));
+  overflow: hidden;
+}
+.hero-sheet .hero-detail-head { position: relative; z-index: 1; flex: none; }
+.hero-sheet .hero-detail-body { flex: 1 1 auto; min-height: 0; overflow: hidden; }
 
 .hero-detail-body h3 {
   margin: 20px 0 8px;
@@ -4423,8 +4429,8 @@ button.pb-card:focus-visible { outline: none; box-shadow: var(--ring); }
   /* The sheet keeps its one size, but on a phone it scrolls as a whole: under
      the head and the chips the pane alone would be a letterbox. Only the open
      subject takes room, so nothing scrolls on into empty space. */
-  .hero-detail { overflow-y: auto; }
-  .hero-detail-body { flex: none; overflow: visible; }
+  .hero-sheet { overflow-y: auto; }
+  .hero-sheet .hero-detail-body { flex: none; overflow: visible; }
   .hero-sections { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto; height: auto; gap: 12px; }
   .hero-section-panels { grid-template-rows: auto; }
   .hero-section-panels > .hero-section-body[aria-hidden="true"] { display: none; }
