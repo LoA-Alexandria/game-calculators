@@ -96,8 +96,8 @@ Community guilds live in Supabase (`guilds`, `guild_memberships`, `guild_posts`)
 with RLS. Admins create guilds (name, server, optional icon in Storage bucket
 `guild-icons`, master Discord ID). Signed-in players request to join with an
 optional note; masters review requests and settings from icons on the room tab
-bar. Room News / Planning posts are readable by members and writable by
-master/admin.
+bar. Members set their own roster display name. Room News / Planning posts are
+readable by members and writable by master/admin.
 
 ## Vendored applications
 

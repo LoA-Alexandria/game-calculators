@@ -6,13 +6,16 @@ import { usePathname } from "next/navigation";
 import { GuildRichTextEditor, GuildRichTextView } from "./GuildRichText";
 import { guildPostHtml, sanitizeGuildHtml } from "../../lib/content/guild-rich-text";
 import {
+  GUILD_DISPLAY_NAME_MAX,
   GUILD_ICON_BUCKET,
   guildIconObjectPath,
   guildIconPublicUrl,
   guildListHref,
   guildRoomHref,
+  guildRosterLabel,
   isGuildIconFile,
   isGuildMasterOf,
+  normalizeGuildDisplayName,
   readGuildSlugParam,
   type Guild,
   type GuildMembership,
@@ -61,12 +64,6 @@ function GuildMark({ guild }: { guild: Guild }) {
   );
 }
 
-function formatDiscordId(id: string | null | undefined): string {
-  if (!id) return "—";
-  if (id.length <= 10) return id;
-  return `${id.slice(0, 4)}…${id.slice(-4)}`;
-}
-
 export function GuildRoom({ tab }: { tab: GuildTab }) {
   const { t, d } = useLocale();
   const { session, loading: authLoading } = useAuth();
@@ -96,6 +93,8 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
   const [editServer, setEditServer] = useState("");
   const [iconFile, setIconFile] = useState<File | null>(null);
   const [managePanel, setManagePanel] = useState<ManagePanel>(null);
+  const [editingDisplayName, setEditingDisplayName] = useState(false);
+  const [displayNameDraft, setDisplayNameDraft] = useState("");
 
   const reload = useCallback(() => setReloadToken((value) => value + 1), []);
 
@@ -337,6 +336,27 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
     else {
       setIconFile(null);
       setNotice(t.guilds.settingsSaved);
+      reload();
+    }
+    setBusy(false);
+  };
+
+  const startEditDisplayName = (entry: GuildRosterEntry) => {
+    setDisplayNameDraft(entry.display_name?.trim() || "");
+    setEditingDisplayName(true);
+  };
+
+  const saveDisplayName = async () => {
+    if (!supabase || !guild) return;
+    setBusy(true);
+    setError("");
+    const { error: rpcError } = await supabase.rpc("set_guild_display_name", {
+      p_guild_id: guild.id,
+      p_name: normalizeGuildDisplayName(displayNameDraft),
+    });
+    if (rpcError) setError(rpcError.message);
+    else {
+      setEditingDisplayName(false);
       reload();
     }
     setBusy(false);
@@ -688,14 +708,67 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
             <ul className="guild-roster-list">
               {roster.map((entry, index) => {
                 const key = entry.user_id ?? entry.discord_user_id ?? String(index);
-                const isYou = Boolean(entry.user_id && entry.user_id === session.userId);
+                const isYou = Boolean(
+                  (entry.user_id && entry.user_id === session.userId)
+                  || (!entry.user_id && entry.is_master && isDiscordMaster),
+                );
+                const editingYou = isYou && editingDisplayName;
                 return (
                   <li key={key}>
-                    <span className="guild-roster-id mono">{formatDiscordId(entry.discord_user_id)}</span>
-                    <span className="guild-roster-tags">
-                      {entry.is_master ? <span className="pill pill-gold">{t.guilds.master}</span> : null}
-                      {isYou ? <span className="pill">{t.guilds.membersYou}</span> : null}
-                    </span>
+                    {editingYou ? (
+                      <div className="guild-roster-edit">
+                        <label className="visually-hidden" htmlFor={`${ids}-display-name`}>
+                          {t.guilds.displayNameLabel}
+                        </label>
+                        <input
+                          id={`${ids}-display-name`}
+                          value={displayNameDraft}
+                          maxLength={GUILD_DISPLAY_NAME_MAX}
+                          placeholder={t.guilds.displayNamePlaceholder}
+                          autoComplete="nickname"
+                          onChange={(e) => setDisplayNameDraft(e.target.value)}
+                        />
+                        <div className="guild-roster-edit-actions">
+                          <button
+                            className="small-button button-primary"
+                            type="button"
+                            disabled={busy}
+                            onClick={() => void saveDisplayName()}
+                          >
+                            {t.guilds.displayNameSave}
+                          </button>
+                          <button
+                            className="small-button"
+                            type="button"
+                            disabled={busy}
+                            onClick={() => setEditingDisplayName(false)}
+                          >
+                            {t.guilds.postCancel}
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <>
+                        <span className={entry.display_name?.trim() ? "guild-roster-name" : "guild-roster-id mono"}>
+                          {guildRosterLabel(entry)}
+                        </span>
+                        <span className="guild-roster-tags">
+                          {entry.is_master ? <span className="pill pill-gold">{t.guilds.master}</span> : null}
+                          {isYou ? <span className="pill">{t.guilds.membersYou}</span> : null}
+                          {isYou ? (
+                            <button
+                              className="icon-button guild-roster-edit-btn"
+                              type="button"
+                              disabled={busy}
+                              aria-label={t.guilds.displayNameEdit}
+                              onClick={() => startEditDisplayName(entry)}
+                            >
+                              <PenIcon className="icon icon-sm" />
+                            </button>
+                          ) : null}
+                        </span>
+                      </>
+                    )}
                   </li>
                 );
               })}

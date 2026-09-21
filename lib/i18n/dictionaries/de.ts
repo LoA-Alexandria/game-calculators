@@ -175,6 +175,10 @@ const de: Dictionary = {
     requestNoteEmpty: "Keine Notiz",
     requestsOpen: "Beitrittsanträge",
     settingsOpen: "Gilden-Einstellungen",
+    displayNameLabel: "Dein Name",
+    displayNameSave: "Name speichern",
+    displayNameEdit: "Namen bearbeiten",
+    displayNamePlaceholder: "Name in dieser Gilde",
   },
   guides: {
     title: "Guides",

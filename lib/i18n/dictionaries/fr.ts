@@ -175,6 +175,10 @@ const fr: Dictionary = {
     requestNoteEmpty: "Aucune note",
     requestsOpen: "Demandes d’adhésion",
     settingsOpen: "Paramètres de la guilde",
+    displayNameLabel: "Votre nom",
+    displayNameSave: "Enregistrer le nom",
+    displayNameEdit: "Modifier votre nom",
+    displayNamePlaceholder: "Nom dans cette guilde",
   },
   guides: {
     title: "Guides",

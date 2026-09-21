@@ -177,6 +177,10 @@ const en = {
     requestNoteEmpty: "No note",
     requestsOpen: "Join requests",
     settingsOpen: "Guild settings",
+    displayNameLabel: "Your name",
+    displayNameSave: "Save name",
+    displayNameEdit: "Edit your name",
+    displayNamePlaceholder: "Name in this guild",
   },
   guides: {
     title: "Guides",

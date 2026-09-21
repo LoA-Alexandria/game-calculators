@@ -37,10 +37,29 @@ export type GuildMembership = {
 };
 
 export const GUILD_REQUEST_NOTE_MAX = 280;
+export const GUILD_DISPLAY_NAME_MAX = 40;
 
 /** Trim and clamp an applicant note for insert/update. */
 export function normalizeGuildRequestNote(value: string): string {
   return value.trim().slice(0, GUILD_REQUEST_NOTE_MAX);
+}
+
+/** Trim and clamp a roster display name. */
+export function normalizeGuildDisplayName(value: string): string {
+  return value.trim().slice(0, GUILD_DISPLAY_NAME_MAX);
+}
+
+/** Prefer the member's chosen name; fall back to a shortened Discord id. */
+export function guildRosterLabel(entry: {
+  display_name: string;
+  discord_user_id: string | null;
+}): string {
+  const name = entry.display_name?.trim();
+  if (name) return name;
+  const id = entry.discord_user_id;
+  if (!id) return "—";
+  if (id.length <= 10) return id;
+  return `${id.slice(0, 4)}…${id.slice(-4)}`;
 }
 
 export type GuildTab = "news" | "planung";
@@ -59,6 +78,7 @@ export type GuildPost = {
 export type GuildRosterEntry = {
   user_id: string | null;
   discord_user_id: string | null;
+  display_name: string;
   status: GuildMembershipStatus | "active";
   is_master: boolean;
   requested_at: string;
