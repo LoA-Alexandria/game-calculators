@@ -388,9 +388,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   }}
                 >
                   <Icon className="icon" />
-                  {section.items.length > 0 && (
-                    <span className="rail-count" aria-hidden="true">{section.items.length}</span>
-                  )}
                 </Link>
               );
             })}
