@@ -4420,7 +4420,15 @@ button.pb-card:focus-visible { outline: none; box-shadow: var(--ring); }
 }
 /* Too narrow for two columns: the list becomes a row of chips above the panel. */
 @media (max-width: 640px) {
-  .hero-sections { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr); gap: 12px; }
+  /* The sheet keeps its one size, but on a phone it scrolls as a whole: under
+     the head and the chips the pane alone would be a letterbox. Only the open
+     subject takes room, so nothing scrolls on into empty space. */
+  .hero-detail { overflow-y: auto; }
+  .hero-detail-body { flex: none; overflow: visible; }
+  .hero-sections { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto; height: auto; gap: 12px; }
+  .hero-section-panels { grid-template-rows: auto; }
+  .hero-section-panels > .hero-section-body[aria-hidden="true"] { display: none; }
+  .hero-section-body { overflow: visible; }
   .hero-tabs {
     position: static;
     display: flex;
