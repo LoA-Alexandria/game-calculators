@@ -4159,9 +4159,13 @@ button.pb-card:focus-visible { outline: none; box-shadow: var(--ring); }
 .hero-detail {
   /* The subject list sits beside the panel, so the sheet is a little wider now. */
   width: min(1100px, calc(100vw - 24px));
-  max-height: calc(100dvh - 32px);
+  /* One size for every hero and every subject. What does not fit scrolls inside
+     the panel, so the window never jumps as the reader moves around. */
+  height: min(840px, calc(100dvh - 32px));
+  display: flex;
+  flex-direction: column;
   padding: 0;
-  overflow: auto;
+  overflow: hidden;
   border: 1px solid var(--line);
   border-radius: var(--r-xl);
   background: var(--surface);
@@ -4187,6 +4191,9 @@ button.pb-card:focus-visible { outline: none; box-shadow: var(--ring); }
 .hero-detail-position { padding: 0 4px; color: var(--ink-faint); font-size: .76rem; font-variant-numeric: tabular-nums; }
 .hero-detail-close { margin-left: 6px; }
 .hero-detail-head {
+  position: relative;
+  z-index: 1;
+  flex: none;
   display: flex;
   align-items: center;
   gap: 18px;
@@ -4262,7 +4269,7 @@ button.pb-card:focus-visible { outline: none; box-shadow: var(--ring); }
 .hero-skin img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .hero-skin[aria-pressed="true"] { border-color: var(--rarity); box-shadow: 0 0 0 2px color-mix(in srgb, var(--rarity) 30%, transparent); }
 .hero-skin:focus-visible { outline: none; box-shadow: var(--ring); }
-.hero-detail-body { padding: 16px 22px 22px; }
+.hero-detail-body { flex: 1 1 auto; min-height: 0; overflow: hidden; padding: 16px 22px 22px; }
 
 .hero-detail-body h3 {
   margin: 20px 0 8px;
@@ -4325,7 +4332,7 @@ button.pb-card:focus-visible { outline: none; box-shadow: var(--ring); }
   flex: none;
   width: auto;
   height: 158px;
-  margin: 0 0 -18px auto;
+  margin: 0 0 -10px auto;
   object-fit: contain;
   object-position: 50% 100%;
   filter: drop-shadow(0 8px 10px rgba(16, 12, 8, .35));
@@ -4336,12 +4343,14 @@ button.pb-card:focus-visible { outline: none; box-shadow: var(--ring); }
   display: grid;
   grid-template-columns: minmax(0, 178px) minmax(0, 1fr);
   gap: 18px;
-  align-items: start;
+  grid-template-rows: minmax(0, 1fr);
+  align-items: stretch;
+  height: 100%;
 }
 .hero-tabs {
-  position: sticky;
-  top: 12px;
+  align-self: stretch;
   display: grid;
+  align-content: start;
   gap: 4px;
   padding-right: 14px;
   border-right: 1px solid var(--line);
@@ -4375,10 +4384,13 @@ button.pb-card:focus-visible { outline: none; box-shadow: var(--ring); }
   color: var(--ink);
 }
 .hero-tab[aria-selected="true"] small { color: var(--ink-soft); }
-/* Stack every subject in one cell so the tallest sets the sheet height. */
+/* Every subject sits in the same cell (#119), and the sheet has one fixed height,
+   so that cell is the pane: each subject fills it and scrolls on its own. */
 .hero-section-panels {
   display: grid;
+  grid-template-rows: minmax(0, 1fr);
   min-width: 0;
+  min-height: 0;
 }
 .hero-section-panels > .hero-section-body {
   grid-area: 1 / 1;
@@ -4388,7 +4400,17 @@ button.pb-card:focus-visible { outline: none; box-shadow: var(--ring); }
   visibility: hidden;
   pointer-events: none;
 }
-.hero-section-body { min-width: 0; }
+.hero-section-body {
+  min-width: 0;
+  min-height: 0;
+  /* A short subject leaves the pane visibly empty, which is better than a
+     window that jumps. */
+  overflow-y: auto;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: color-mix(in srgb, var(--surface-2) 60%, transparent);
+}
 /* Beside the list the three ability cards get less room, so they may sit closer. */
 .hero-section-body .ability-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); }
 .hero-section-body:focus-visible { outline: none; border-radius: var(--r-md); box-shadow: var(--ring); }
@@ -4398,7 +4420,15 @@ button.pb-card:focus-visible { outline: none; box-shadow: var(--ring); }
 }
 /* Too narrow for two columns: the list becomes a row of chips above the panel. */
 @media (max-width: 640px) {
-  .hero-sections { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  /* The sheet keeps its one size, but on a phone it scrolls as a whole: under
+     the head and the chips the pane alone would be a letterbox. Only the open
+     subject takes room, so nothing scrolls on into empty space. */
+  .hero-detail { overflow-y: auto; }
+  .hero-detail-body { flex: none; overflow: visible; }
+  .hero-sections { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto; height: auto; gap: 12px; }
+  .hero-section-panels { grid-template-rows: auto; }
+  .hero-section-panels > .hero-section-body[aria-hidden="true"] { display: none; }
+  .hero-section-body { overflow: visible; }
   .hero-tabs {
     position: static;
     display: flex;
