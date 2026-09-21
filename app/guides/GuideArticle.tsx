@@ -10,6 +10,7 @@ import { useAuth } from "../components/AuthProvider";
 import { useDocumentTitle, useLocale } from "../components/LocaleProvider";
 import { PenIcon, TrashIcon } from "../components/Icons";
 import { GuideEditor, type GuideEditorTarget } from "./GuideEditor";
+import { AdsBuyGuide, isAdsBuyGuide } from "./AdsBuyGuide";
 import { GoddessesGuide, isGoddessesGuide } from "./GoddessesGuide";
 import { ArtworkGuide, isArtworkGuide } from "./ArtworkGuide";
 import { ArtworkLayoutsGuide, isArtworkLayoutsGuide } from "./ArtworkLayoutsGuide";
@@ -153,6 +154,8 @@ export function GuideArticle({ id }: { id: GuideEntryId }) {
           <BuildingsGuide guide={guide} />
         ) : isCryptidesGuide(guide) ? (
           <CryptidesGuide guide={guide} />
+        ) : isAdsBuyGuide(guide) ? (
+          <AdsBuyGuide guide={guide} />
         ) : isArtworkLayoutsGuide(guide) ? (
           <ArtworkLayoutsGuide guide={guide} />
         ) : isArtworkGuide(guide) ? (
