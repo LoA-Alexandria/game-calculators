@@ -85,6 +85,9 @@ export const COLLECTION_DRAFT_STORAGE_KEY = "popepoch-collection-draft";
 /** Local draft of the goddess upgrade order editor. */
 export const GODDESS_LEVELING_DRAFT_STORAGE_KEY = "popepoch-goddess-leveling-draft";
 
+/** Local draft of the Cryptides editor, uploaded pictures included. */
+export const CRYPTIDES_DRAFT_STORAGE_KEY = "popepoch-cryptides-draft";
+
 /** Whether the desktop sidebar is collapsed to an icon rail. */
 export const NAV_COLLAPSED_STORAGE_KEY = "popepoch-nav-collapsed";
 
