@@ -48,6 +48,14 @@ export type GuildPost = {
   updated_at: string;
 };
 
+export type GuildRosterEntry = {
+  user_id: string | null;
+  discord_user_id: string | null;
+  status: GuildMembershipStatus | "active";
+  is_master: boolean;
+  requested_at: string;
+};
+
 const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 export function isGuildSlug(value: string): boolean {

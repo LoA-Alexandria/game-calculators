@@ -4,14 +4,18 @@ import { useCallback, useEffect, useId, useState, useSyncExternalStore } from "r
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  GUILD_ICON_BUCKET,
+  guildIconObjectPath,
   guildIconPublicUrl,
   guildListHref,
   guildRoomHref,
+  isGuildIconFile,
   isGuildMasterOf,
   readGuildSlugParam,
   type Guild,
   type GuildMembership,
   type GuildPost,
+  type GuildRosterEntry,
   type GuildTab,
 } from "../../lib/content/guilds";
 import { getSupabaseBrowserClient } from "../../lib/supabase/client";
@@ -54,6 +58,12 @@ function GuildMark({ guild }: { guild: Guild }) {
   );
 }
 
+function formatDiscordId(id: string | null | undefined): string {
+  if (!id) return "—";
+  if (id.length <= 10) return id;
+  return `${id.slice(0, 4)}…${id.slice(-4)}`;
+}
+
 export function GuildRoom({ tab }: { tab: GuildTab }) {
   const { t, d } = useLocale();
   const { session, loading: authLoading } = useAuth();
@@ -66,7 +76,9 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
   const [membership, setMembership] = useState<Pick<GuildMembership, "status"> | null>(null);
   const [pending, setPending] = useState<PendingRow[]>([]);
   const [posts, setPosts] = useState<GuildPost[]>([]);
+  const [roster, setRoster] = useState<GuildRosterEntry[]>([]);
   const [error, setError] = useState("");
+  const [notice, setNotice] = useState("");
   const [busy, setBusy] = useState(false);
   const [reloadToken, setReloadToken] = useState(0);
   const [fetchedSlug, setFetchedSlug] = useState<string | null>(null);
@@ -74,6 +86,10 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
+
+  const [editName, setEditName] = useState("");
+  const [editServer, setEditServer] = useState("");
+  const [iconFile, setIconFile] = useState<File | null>(null);
 
   const reload = useCallback(() => setReloadToken((value) => value + 1), []);
 
@@ -95,15 +111,21 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
         setMembership(null);
         setPending([]);
         setPosts([]);
+        setRoster([]);
         setFetchedSlug(slug);
         return;
       }
       const nextGuild = (listed.data as Guild | null) ?? null;
       setGuild(nextGuild);
+      if (nextGuild) {
+        setEditName(nextGuild.name);
+        setEditServer(nextGuild.server_name ?? "");
+      }
       if (!nextGuild || !session) {
         setMembership(null);
         setPending([]);
         setPosts([]);
+        setRoster([]);
         setFetchedSlug(slug);
         return;
       }
@@ -120,8 +142,7 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
 
       const canManage =
         isGuildMasterOf(nextGuild, session.discordUserId) || session.role === "admin";
-      const canEnter =
-        canManage || mine.data?.status === "active";
+      const canEnter = canManage || mine.data?.status === "active";
 
       if (canManage) {
         const queue = await supabase
@@ -138,17 +159,23 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
       }
 
       if (canEnter) {
-        const feed = await supabase
-          .from("guild_posts")
-          .select("id, guild_id, channel, title, body, author_id, created_at, updated_at")
-          .eq("guild_id", nextGuild.id)
-          .eq("channel", tab)
-          .order("created_at", { ascending: false });
+        const [feed, members] = await Promise.all([
+          supabase
+            .from("guild_posts")
+            .select("id, guild_id, channel, title, body, author_id, created_at, updated_at")
+            .eq("guild_id", nextGuild.id)
+            .eq("channel", tab)
+            .order("created_at", { ascending: false }),
+          supabase.rpc("guild_roster", { p_guild_id: nextGuild.id }),
+        ]);
         if (gone) return;
         if (feed.error) setError(feed.error.message);
         else setPosts((feed.data ?? []) as GuildPost[]);
+        if (members.error) setError(members.error.message);
+        else setRoster((members.data ?? []) as GuildRosterEntry[]);
       } else {
         setPosts([]);
+        setRoster([]);
       }
       setFetchedSlug(slug);
     })();
@@ -232,6 +259,75 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
     if (deleteError) setError(deleteError.message);
     else {
       if (editingId === postId) resetComposer();
+      reload();
+    }
+    setBusy(false);
+  };
+
+  const saveSettings = async () => {
+    if (!supabase || !guild) return;
+    const nextName = editName.trim();
+    if (nextName.length < 2) return;
+    if (iconFile && !isGuildIconFile(iconFile)) {
+      setError(t.admin.guildsIconInvalid);
+      return;
+    }
+    setBusy(true);
+    setError("");
+    setNotice("");
+
+    let nextIconPath = guild.icon_path;
+    if (iconFile) {
+      const path = guildIconObjectPath(guild.id, iconFile.type);
+      if (!path) {
+        setError(t.admin.guildsIconInvalid);
+        setBusy(false);
+        return;
+      }
+      if (guild.icon_path && guild.icon_path !== path) {
+        await supabase.storage.from(GUILD_ICON_BUCKET).remove([guild.icon_path]);
+      }
+      const { error: uploadError } = await supabase.storage
+        .from(GUILD_ICON_BUCKET)
+        .upload(path, iconFile, { upsert: true, contentType: iconFile.type });
+      if (uploadError) {
+        setError(uploadError.message);
+        setBusy(false);
+        return;
+      }
+      nextIconPath = path;
+    }
+
+    const { error: updateError } = await supabase
+      .from("guilds")
+      .update({
+        name: nextName,
+        server_name: editServer.trim().slice(0, 80),
+        icon_path: nextIconPath,
+      })
+      .eq("id", guild.id);
+    if (updateError) setError(updateError.message);
+    else {
+      setIconFile(null);
+      setNotice(t.guilds.settingsSaved);
+      reload();
+    }
+    setBusy(false);
+  };
+
+  const removeIcon = async () => {
+    if (!supabase || !guild?.icon_path) return;
+    setBusy(true);
+    setError("");
+    await supabase.storage.from(GUILD_ICON_BUCKET).remove([guild.icon_path]);
+    const { error: updateError } = await supabase
+      .from("guilds")
+      .update({ icon_path: null })
+      .eq("id", guild.id);
+    if (updateError) setError(updateError.message);
+    else {
+      setIconFile(null);
+      setNotice(t.guilds.settingsSaved);
       reload();
     }
     setBusy(false);
@@ -333,137 +429,230 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
           {error}
         </p>
       )}
-
-      {canManage && (
-        <section className="guild-panel guild-pending">
-          <header className="guild-panel-head">
-            <h2>{t.guilds.pendingTitle}</h2>
-            <span className="count">{pending.length}</span>
-          </header>
-          {pending.length === 0 ? (
-            <p className="guild-panel-empty">{t.guilds.pendingEmpty}</p>
-          ) : (
-            <ul className="guild-pending-list">
-              {pending.map((row) => (
-                <li key={row.user_id}>
-                  <span className="mono">{row.user_id.slice(0, 8)}…</span>
-                  <span className="guild-pending-actions">
-                    <button
-                      className="small-button button-primary"
-                      type="button"
-                      disabled={busy}
-                      onClick={() => void decide(row.user_id, "active")}
-                    >
-                      {t.guilds.approve}
-                    </button>
-                    <button
-                      className="small-button button-danger"
-                      type="button"
-                      disabled={busy}
-                      onClick={() => void decide(row.user_id, "rejected")}
-                    >
-                      {t.guilds.reject}
-                    </button>
-                  </span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </section>
+      {notice && !error && (
+        <p className="result-ok" role="status">
+          {notice}
+        </p>
       )}
 
-      {canManage && (
-        <section className="guild-panel">
-          <header className="guild-panel-head">
-            <h2>{editingId ? t.guilds.postEdit : tab === "news" ? t.guilds.composeNews : t.guilds.composePlanung}</h2>
-          </header>
-          <div className="guild-compose">
-            <div className="field">
-              <label htmlFor={`${ids}-title`}>{t.guilds.postTitle}</label>
-              <input
-                id={`${ids}-title`}
-                value={title}
-                maxLength={120}
-                onChange={(e) => setTitle(e.target.value)}
-              />
-            </div>
-            <div className="field">
-              <label htmlFor={`${ids}-body`}>{t.guilds.postBody}</label>
-              <textarea
-                id={`${ids}-body`}
-                value={body}
-                rows={5}
-                maxLength={8000}
-                onChange={(e) => setBody(e.target.value)}
-              />
-            </div>
-            <div className="guild-compose-actions">
-              <button
-                className="button button-primary"
-                type="button"
-                disabled={busy || !title.trim()}
-                onClick={() => void savePost()}
-              >
-                <PlusIcon className="icon" />
-                {editingId ? t.guilds.postEdit : t.guilds.postAdd}
-              </button>
-              {editingId ? (
-                <button className="small-button" type="button" disabled={busy} onClick={resetComposer}>
-                  {t.guilds.postCancel}
-                </button>
-              ) : null}
-            </div>
-          </div>
-        </section>
-      )}
-
-      <section className="guild-panel">
-        <header className="guild-panel-head">
-          <h2>{tab === "news" ? t.guilds.news : t.guilds.planung}</h2>
-          <span className="count">{posts.length}</span>
-        </header>
-        {posts.length === 0 ? (
-          <div className="guild-empty">
-            <GuildsIcon className="icon guild-empty-icon" />
-            <strong>{t.guilds.emptyTitle}</strong>
-            <p>{tab === "news" ? t.guilds.newsEmpty : t.guilds.planungEmpty}</p>
-          </div>
-        ) : (
-          <ul className="guild-post-list">
-            {posts.map((post) => (
-              <li className="guild-post" key={post.id}>
-                <div className="guild-post-head">
-                  <h3>{post.title}</h3>
-                  <time dateTime={post.created_at}>{d(post.created_at.slice(0, 10))}</time>
+      <div className="guild-room-layout">
+        <div className="guild-room-main">
+          {canManage && (
+            <section className="guild-panel">
+              <header className="guild-panel-head">
+                <h2>{t.guilds.settingsTitle}</h2>
+              </header>
+              <div className="guild-settings">
+                <div className="field">
+                  <label htmlFor={`${ids}-name`}>{t.guilds.nameLabel}</label>
+                  <input
+                    id={`${ids}-name`}
+                    value={editName}
+                    maxLength={80}
+                    onChange={(e) => setEditName(e.target.value)}
+                  />
                 </div>
-                {post.body ? <p className="guild-post-body">{post.body}</p> : null}
-                {canManage && (
-                  <div className="guild-post-actions">
+                <div className="field">
+                  <label htmlFor={`${ids}-server`}>{t.guilds.serverLabel}</label>
+                  <input
+                    id={`${ids}-server`}
+                    value={editServer}
+                    maxLength={80}
+                    placeholder="S9 - Garden"
+                    onChange={(e) => setEditServer(e.target.value)}
+                  />
+                </div>
+                <div className="field">
+                  <label htmlFor={`${ids}-icon`}>{t.guilds.iconChange}</label>
+                  <input
+                    id={`${ids}-icon`}
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp"
+                    onChange={(e) => setIconFile(e.target.files?.[0] ?? null)}
+                  />
+                </div>
+                <div className="guild-settings-actions">
+                  <button
+                    className="button button-primary"
+                    type="button"
+                    disabled={busy || editName.trim().length < 2}
+                    onClick={() => void saveSettings()}
+                  >
+                    {t.guilds.settingsSave}
+                  </button>
+                  {guild.icon_path ? (
                     <button
                       className="small-button"
                       type="button"
                       disabled={busy}
-                      onClick={() => startEdit(post)}
+                      onClick={() => void removeIcon()}
                     >
-                      <PenIcon className="icon icon-sm" />
-                      {t.guilds.postEdit}
+                      {t.guilds.iconRemove}
                     </button>
-                    <button
-                      className="small-button button-danger"
-                      type="button"
-                      disabled={busy}
-                      onClick={() => void removePost(post.id)}
-                    >
-                      <TrashIcon className="icon icon-sm" />
-                      {t.guilds.postRemove}
+                  ) : null}
+                </div>
+              </div>
+            </section>
+          )}
+
+          {canManage && (
+            <section className="guild-panel guild-pending">
+              <header className="guild-panel-head">
+                <h2>{t.guilds.pendingTitle}</h2>
+                <span className="count">{pending.length}</span>
+              </header>
+              {pending.length === 0 ? (
+                <p className="guild-panel-empty">{t.guilds.pendingEmpty}</p>
+              ) : (
+                <ul className="guild-pending-list">
+                  {pending.map((row) => (
+                    <li key={row.user_id}>
+                      <span className="mono">{row.user_id.slice(0, 8)}…</span>
+                      <span className="guild-pending-actions">
+                        <button
+                          className="small-button button-primary"
+                          type="button"
+                          disabled={busy}
+                          onClick={() => void decide(row.user_id, "active")}
+                        >
+                          {t.guilds.approve}
+                        </button>
+                        <button
+                          className="small-button button-danger"
+                          type="button"
+                          disabled={busy}
+                          onClick={() => void decide(row.user_id, "rejected")}
+                        >
+                          {t.guilds.reject}
+                        </button>
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </section>
+          )}
+
+          {canManage && (
+            <section className="guild-panel">
+              <header className="guild-panel-head">
+                <h2>{editingId ? t.guilds.postEdit : tab === "news" ? t.guilds.composeNews : t.guilds.composePlanung}</h2>
+              </header>
+              <div className="guild-compose">
+                <div className="field">
+                  <label htmlFor={`${ids}-title`}>{t.guilds.postTitle}</label>
+                  <input
+                    id={`${ids}-title`}
+                    value={title}
+                    maxLength={120}
+                    onChange={(e) => setTitle(e.target.value)}
+                  />
+                </div>
+                <div className="field">
+                  <label htmlFor={`${ids}-body`}>{t.guilds.postBody}</label>
+                  <textarea
+                    id={`${ids}-body`}
+                    value={body}
+                    rows={5}
+                    maxLength={8000}
+                    onChange={(e) => setBody(e.target.value)}
+                  />
+                </div>
+                <div className="guild-compose-actions">
+                  <button
+                    className="button button-primary"
+                    type="button"
+                    disabled={busy || !title.trim()}
+                    onClick={() => void savePost()}
+                  >
+                    <PlusIcon className="icon" />
+                    {editingId ? t.guilds.postEdit : t.guilds.postAdd}
+                  </button>
+                  {editingId ? (
+                    <button className="small-button" type="button" disabled={busy} onClick={resetComposer}>
+                      {t.guilds.postCancel}
                     </button>
-                  </div>
-                )}
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
+                  ) : null}
+                </div>
+              </div>
+            </section>
+          )}
+
+          <section className="guild-panel">
+            <header className="guild-panel-head">
+              <h2>{tab === "news" ? t.guilds.news : t.guilds.planung}</h2>
+              <span className="count">{posts.length}</span>
+            </header>
+            {posts.length === 0 ? (
+              <div className="guild-empty">
+                <GuildsIcon className="icon guild-empty-icon" />
+                <strong>{t.guilds.emptyTitle}</strong>
+                <p>{tab === "news" ? t.guilds.newsEmpty : t.guilds.planungEmpty}</p>
+              </div>
+            ) : (
+              <ul className="guild-post-list">
+                {posts.map((post) => (
+                  <li className="guild-post" key={post.id}>
+                    <div className="guild-post-head">
+                      <h3>{post.title}</h3>
+                      <time dateTime={post.created_at}>{d(post.created_at.slice(0, 10))}</time>
+                    </div>
+                    {post.body ? <p className="guild-post-body">{post.body}</p> : null}
+                    {canManage && (
+                      <div className="guild-post-actions">
+                        <button
+                          className="small-button"
+                          type="button"
+                          disabled={busy}
+                          onClick={() => startEdit(post)}
+                        >
+                          <PenIcon className="icon icon-sm" />
+                          {t.guilds.postEdit}
+                        </button>
+                        <button
+                          className="small-button button-danger"
+                          type="button"
+                          disabled={busy}
+                          onClick={() => void removePost(post.id)}
+                        >
+                          <TrashIcon className="icon icon-sm" />
+                          {t.guilds.postRemove}
+                        </button>
+                      </div>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+        </div>
+
+        <aside className="guild-roster" aria-label={t.guilds.membersTitle}>
+          <header className="guild-panel-head">
+            <h2>{t.guilds.membersTitle}</h2>
+            <span className="count">{roster.length}</span>
+          </header>
+          {roster.length === 0 ? (
+            <p className="guild-panel-empty">{t.guilds.membersEmpty}</p>
+          ) : (
+            <ul className="guild-roster-list">
+              {roster.map((entry, index) => {
+                const key = entry.user_id ?? entry.discord_user_id ?? String(index);
+                const isYou = Boolean(entry.user_id && entry.user_id === session.userId);
+                return (
+                  <li key={key}>
+                    <span className="guild-roster-id mono">{formatDiscordId(entry.discord_user_id)}</span>
+                    <span className="guild-roster-tags">
+                      {entry.is_master ? <span className="pill pill-gold">{t.guilds.master}</span> : null}
+                      {isYou ? <span className="pill">{t.guilds.membersYou}</span> : null}
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </aside>
+      </div>
 
       <Link className="guild-back" href={guildListHref()}>
         ← {t.guilds.backToList}

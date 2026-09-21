@@ -6551,6 +6551,7 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
 .result-note, .result-breakdown { color: var(--on-inverse-soft); font-size: .86rem; }
 .result-breakdown { display: grid; gap: 5px; font-family: var(--font-mono); font-size: .78rem; }
 .result-error { color: var(--bad); font-size: .86rem; font-weight: 550; }
+.result-ok { color: var(--good); font-size: .86rem; font-weight: 550; }
 
 .assumption { margin: 18px 2px 0; color: var(--ink-faint); font-size: .845rem; line-height: 1.62; }
 .assumption summary { cursor: pointer; min-height: 32px; color: var(--ink-soft); font-weight: 550; }
@@ -7032,6 +7033,60 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
 }
 .guild-pending-list li:first-child { border-top: 0; padding-top: 0; }
 .guild-pending-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.guild-settings {
+  display: grid;
+  gap: 12px;
+}
+.guild-settings-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+.guild-room-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 280px);
+  gap: 16px;
+  align-items: start;
+}
+.guild-room-main {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+.guild-roster {
+  position: sticky;
+  top: calc(var(--topbar) + 14px);
+  padding: 16px 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-1);
+}
+.guild-roster-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0;
+}
+.guild-roster-list li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 0;
+  border-top: 1px solid var(--line);
+}
+.guild-roster-list li:first-child { border-top: 0; padding-top: 0; }
+.guild-roster-id { font-size: .78rem; color: var(--ink-soft); }
+.guild-roster-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
 .guild-back {
   display: inline-flex;
   align-items: center;
@@ -7398,6 +7453,8 @@ button.calendar-day:hover { background: var(--surface-2); }
     justify-content: flex-start;
   }
   .guild-room-head { flex-direction: column; }
+  .guild-room-layout { grid-template-columns: 1fr; }
+  .guild-roster { position: static; }
 }
 
 @media (max-width: 1000px) {
