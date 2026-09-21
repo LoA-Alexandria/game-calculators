@@ -357,6 +357,13 @@ The pictures in `public/artwork/` were cut out of German client screenshots on
 checked against Wikipedia, Wikidata, and the holding museums. `tests/artwork.test.mjs`
 checks that every listed picture exists and none is left over.
 
+On 21 September 2026 the German names the screenshots did not cover, every
+French name, the set names, and the productivity labels in both languages were
+written through this editor's export. French original titles are the ones
+French museums and Wikipedia use (for example *Tres de mayo*, *Des glaneuses*);
+they are filled in exactly for the works whose dialog lists titles, so no row
+falls back to English. Productivity uses the resource words of the tier list.
+
 The draft is saved in that browser only
 (`localStorage['popepoch-artwork-catalogue-draft']`), pictures included.
 **Export** produces the complete `lib/data/paintings.json` in English, the new
@@ -605,7 +612,11 @@ The draft, pictures included, is saved in that browser only
    them.
 
 An untouched draft exports the published file byte for byte
-(`tests/goddess-theater-editor.test.mjs`). Play and role names stay in English.
+(`tests/goddess-theater-editor.test.mjs`). Play and role names stay in English
+in the JSON; German and French names live in `playTexts` and list only what
+differs from English (Hamlet stays Hamlet). The export gives each dictionary's
+`playTexts` block, and the test checks that `de.ts` and `fr.ts` hold exactly
+that block.
 
 ## Editing hero linking
 
@@ -1012,7 +1023,10 @@ Adding a new validation:
 Item, building, and city-group names in German and French were translated by
 hand and are **not** verified against the wording those game clients use. They
 are collected in `materials`, `cityTypes`, and `cityGroups` in each dictionary,
-so they can be corrected in one place.
+so they can be corrected in one place. The same goes for the German and French
+painting set names in `catalogTexts.sets` and the Goddess Theater role names in
+`playTexts`: plays and paintings use their usual published titles, but set
+names and roles such as "Support 1" were translated here.
 
 Hero and Collection names in the Hero layouts and tier list data are not
 translated at all: they live in the JSON files, and only qualifiers such as

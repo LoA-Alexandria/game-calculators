@@ -13,6 +13,7 @@ import {
   findProblems,
   fromTheaterData,
   movePlay,
+  PUBLISHED_THEATER,
   parseDraft,
   playByUid,
   playTextOf,
@@ -118,4 +119,14 @@ test("English names stay in the JSON; other languages export playTexts", () => {
   assert.equal(textBlocks(published).de, "      playTexts: {},");
   assert.match(textBlocks(named).de, /Der Graf von Monte Christo/);
   assert.equal(playTextOf(named, "fr", monte.uid).name, "");
+});
+
+test("each dictionary holds exactly the playTexts the editor exports", () => {
+  const blocks = textBlocks(PUBLISHED_THEATER);
+  assert.equal(blocks.en, "      playTexts: {},");
+  for (const code of ["de", "fr"]) {
+    const source = readFileSync(new URL(`../lib/i18n/dictionaries/${code}.ts`, import.meta.url), "utf8");
+    assert.notEqual(blocks[code], "      playTexts: {},");
+    assert.ok(source.includes(`\n${blocks[code]}\n`), `${code}.ts pastes back unchanged`);
+  }
 });

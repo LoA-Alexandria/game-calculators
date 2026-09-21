@@ -3085,231 +3085,470 @@ const fr: Dictionary = {
       catalogTexts: {
         sets: {
           "glory-and-shadow": {
+            name: "Gloire et ombre",
             effect: "Au début du combat, un bouclier égal à 10 % des PV max.",
           },
           "self-portrait": {
+            name: "Autoportrait",
             effect: "Chaque fois qu’un allié inflige des dégâts de compétence ou supplémentaires : bonus de dégâts supplémentaires +10 % pendant 1 tour.",
           },
           "nature-in-bloom": {
+            name: "Nature en fleurs",
             effect: "Sur un coup critique, les dégâts critiques des alliés augmentent de 5 à 50 % supplémentaires.",
           },
           "urban-proletariat": {
+            name: "Prolétariat urbain",
             effect: "Pendant les 3 premiers tours du combat : dégâts sur la durée +12 % jusqu’à la fin du combat.",
           },
           "rococo-curtain": {
+            name: "Rideau rococo",
             effect: "Les premiers dégâts de compétence subis par un allié à chaque tour sont réduits de 20 %.",
           },
           "chinese-landscape": {
+            name: "Paysage chinois",
             effect: "Tous les 2 tours (si non scellé), 15 % de chances de dissiper 1 debuff d’un allié.",
           },
           "ukiya-e-masterpieces": {
+            name: "Chefs-d’œuvre de l’ukiyo-e",
             effect: "Réduction des dégâts finaux des alliés +12 % jusqu’à la fin du combat.",
           },
           "tragic-maiden": {
+            name: "Demoiselle tragique",
             effect: "Bonus de dégâts finaux des alliés +12 % jusqu’à la fin du combat.",
           },
           "modernist-new-voice": {
+            name: "Nouvelle voix moderniste",
             effect: "Réduction des dégâts de collection et de Cryptide +12 % jusqu’à la fin du combat.",
           },
           "beyond-the-earth": {
+            name: "Au-delà de la Terre",
             effect: "Bonus de dégâts de collection et de Cryptide +12 % jusqu’à la fin du combat.",
           },
           "sheltered-by-night": {
+            name: "À l’abri de la nuit",
             effect: "Tous les 3 tours, quand un allié agit : réduction des dégâts supplémentaires +5 % pendant 2 tours.",
           },
           "impression-warmth": {
+            name: "Impression : chaleur",
             effect: "Tous les 3 tours, quand un allié agit : bonus de dégâts supplémentaires +5 % pendant 2 tours.",
           },
           "roar-of-steam": {
+            name: "Rugissement de la vapeur",
             effect: "Tous les 3 tours, quand un allié agit : réduction des dégâts sur la durée +5 % pendant 2 tours.",
           },
           "echoes-of-death": {
+            name: "Échos de la mort",
             effect: "Tous les 3 tours : bonus de dégâts sur la durée +5 % pendant 2 tours.",
           },
           "faithful-companion": {
+            name: "Compagnon fidèle",
             effect: "Tous les 3 tours si non scellé : réduction des dégâts +5 % pendant 2 tours.",
           },
           "heaven-and-earth-surge": {
+            name: "Élan du ciel et de la terre",
             effect: "Tous les 3 tours si non scellé : bonus de dégâts +5 % pendant 2 tours.",
           },
           "gaze-of-an-age": {
+            name: "Regard d’une époque",
             effect: "Tous les 3 tours si non scellé : bonus d’ATQ +5 % pendant 2 tours.",
           },
           "wall-of-mosaics": {
+            name: "Mur de mosaïques",
             effect: "Tous les 4 tours si non scellé : un bouclier égal à 5 % des PV max.",
           },
           "sacred-window-radiance": {
+            name: "Éclat des vitraux sacrés",
             effect: "Tous les 4 tours si non scellé : soigne 5 % des PV max.",
           },
           "master-s-sketch": {
+            name: "Esquisse du maître",
             effect: "Tous les 4 tours si non scellé : inflige des dégâts de compétence égaux à 80 % de l’ATQ à l’ennemi.",
           },
           "monkey-society": {
+            name: "Société des singes",
             effect: "Au tour 4, si non scellé : réduction des dégâts de compétence +5 % pendant 2 tours.",
           },
           "so-delicious": {
+            name: "Si délicieux",
             effect: "Au tour 4, si non scellé : bonus de dégâts de compétence +5 % pendant 2 tours.",
           },
           "hidden-face": {
+            name: "Visage caché",
             effect: "Au tour 4, si non scellé : bonus d’ATQ +5 % pendant 2 tours.",
           },
           "four-seasons-reborn": {
+            name: "Quatre saisons renaissantes",
             effect: "Au tour 6, si non scellé : soigne 5 % des PV max.",
           },
           "four-seasonal-beauties": {
+            name: "Beautés des quatre saisons",
             effect: "Au tour 6, si non scellé : inflige des dégâts de compétence égaux à 50 % de l’ATQ à l’ennemi.",
           },
         },
         paintings: {
           "the-coronation-of-napoleon": {
+            name: "Le Sacre de Napoléon",
             original: "Le Sacre de Napoléon",
+            productivity: "Verre",
           },
           "napoleon-crossing-the-alps": {
+            name: "Napoléon franchissant les Alpes",
             original: "Bonaparte franchissant le Grand-Saint-Bernard",
+            productivity: "Papeterie",
           },
           "the-third-of-may-1808": {
+            name: "Le 3 mai 1808",
             original: "Tres de mayo",
+            productivity: "Atelier d’art",
+          },
+          "self-portrait": {
+            name: "Autoportrait",
+            productivity: "Chevaux",
+          },
+          "self-portrait-with-fur-trimmed-robe": {
+            name: "Autoportrait à la fourrure",
+            original: "Autoportrait à la fourrure",
+            productivity: "Alcool",
           },
           "self-portrait-with-damaged-ear": {
+            name: "Autoportrait à l’oreille blessée",
             original: "Autoportrait à l’oreille bandée",
+            productivity: "Cuir",
+          },
+          "almond-bloom": {
+            name: "Amandier en fleurs",
+            original: "Amandier en fleurs",
+            productivity: "Cuivre",
           },
           irises: {
-            original: "Iris",
+            name: "Les Iris",
+            original: "Les Iris",
+            productivity: "Tissu",
           },
           "water-lilies": {
-            original: "Nymphéas",
+            name: "Les Nymphéas",
+            original: "Les Nymphéas",
+            productivity: "Fer",
           },
           "the-gleaners": {
+            name: "Les Glaneuses",
             original: "Des glaneuses",
+            productivity: "Bois",
           },
           "the-floor-scrapers": {
+            name: "Les Raboteurs de parquet",
             original: "Les Raboteurs de parquet",
+            productivity: "Nourriture",
           },
           "the-stone-breakers": {
+            name: "Les Casseurs de pierres",
             original: "Les Casseurs de pierres",
+            productivity: "Pierre",
+          },
+          "madame-de-pompadour": {
+            name: "Madame de Pompadour",
+            productivity: "Grains de café",
           },
           "the-swing": {
+            name: "L’Escarpolette",
             original: "Les Hasards heureux de l’escarpolette",
+            productivity: "Charbon",
           },
           "the-embarkation-for-cythera": {
-            original: "Le Pèlerinage à l’île de Cythère",
+            name: "L’Embarquement pour Cythère",
+            original: "Pèlerinage à l’île de Cythère",
+            productivity: "Pièces de précision",
+          },
+          "a-thousand-li-of-rivers-and-mountains": {
+            name: "Mille li de rivières et de montagnes",
+            productivity: "Acier",
           },
           "dwelling-in-the-fuchun-mountains": {
-            original: "Séjour dans les monts Fuchun",
+            name: "Séjour dans les monts Fuchun",
+            productivity: "Poudre à canon",
+          },
+          "travelers-among-mountains-and-streams": {
+            name: "Voyageurs parmi montagnes et ruisseaux",
+            productivity: "Citrons",
           },
           "the-great-wave-of-kanagawa": {
+            name: "La Grande Vague de Kanagawa",
             original: "La Grande Vague de Kanagawa",
+            productivity: "Verre",
+          },
+          "kabuki-actor": {
+            name: "Acteur de kabuki",
+            productivity: "Papier",
           },
           "three-beauties-of-the-present-day": {
-            original: "Trois beautés de notre temps",
+            name: "Trois beautés du temps présent",
+            productivity: "Atelier d’art",
+          },
+          ophelia: {
+            name: "Ophélie",
+            productivity: "Chevaux",
+          },
+          "the-lady-of-shalott": {
+            name: "La Dame de Shalott",
+            productivity: "Alcool",
           },
           "romeo-and-juliet": {
+            name: "Roméo et Juliette",
             original: "Roméo et Juliette",
+            productivity: "Cuir",
+          },
+          composition: {
+            name: "Composition",
+            productivity: "Cuivre",
           },
           dance: {
+            name: "La Danse",
             original: "La Danse",
+            productivity: "Tissu",
+          },
+          "composition-viii": {
+            name: "Composition VIII",
+            original: "Composition VIII",
+            productivity: "Fer",
+          },
+          "buzz-aldrin-on-the-moon": {
+            name: "Buzz Aldrin sur la Lune",
+            productivity: "Bois",
           },
           earthrise: {
-            original: "Lever de Terre",
+            name: "Lever de Terre",
+            productivity: "Nourriture",
           },
           "pale-blue-dot": {
-            original: "Un point bleu pâle",
+            name: "Point bleu pâle",
+            productivity: "Pierre",
+          },
+          nightshade: {
+            name: "Noctambules",
+            original: "Noctambules",
+            productivity: "Verre",
           },
           "cafe-terrace-at-night": {
+            name: "Terrasse de café la nuit",
             original: "Terrasse du café le soir",
           },
           "evening-on-karl-johan-st": {
+            name: "Soirée sur l’avenue Karl Johan",
             original: "Soirée sur l’avenue Karl Johan",
+            productivity: "Atelier d’art",
           },
           "the-umbrellas": {
-            original: "La Femme à l’ombrelle – Madame Monet et son fils",
+            name: "Les Parapluies",
+            original: "La Promenade, la femme à l’ombrelle",
+          },
+          "the-dance-class": {
+            name: "La Classe de danse",
+            productivity: "Alcool",
           },
           "luncheon-of-the-boating-party": {
+            name: "Le Déjeuner des canotiers",
             original: "Le Déjeuner des canotiers",
+            productivity: "Cuir",
           },
           "rain-steam-and-speed": {
-            original: "Pluie, Vapeur et Vitesse",
+            name: "Pluie, vapeur et vitesse",
+            original: "Pluie, vapeur et vitesse – Le Great Western Railway",
+            productivity: "Cuivre",
           },
           "the-gare-saint-lazare": {
+            name: "La Gare Saint-Lazare",
             original: "La Gare Saint-Lazare",
+            productivity: "Tissu",
           },
           "the-fighting-temeraire": {
-            original: "Le Dernier Voyage du Téméraire",
+            name: "Le Dernier Voyage du Téméraire",
+            productivity: "Fer",
           },
           "the-death-of-socrates": {
+            name: "La Mort de Socrate",
             original: "La Mort de Socrate",
+            productivity: "Bois",
           },
           "the-death-of-marat": {
+            name: "La Mort de Marat",
             original: "La Mort de Marat",
+            productivity: "Nourriture",
           },
           "the-anatomy-lesson": {
+            name: "La Leçon d’anatomie",
             original: "La Leçon d’anatomie du docteur Tulp",
+            productivity: "Pierre",
           },
           "young-hare": {
-            original: "Le Lièvre",
+            name: "Jeune Lièvre",
+            original: "Jeune Lièvre",
+            productivity: "Grains de café",
+          },
+          "friends-in-need": {
+            name: "Amis dans le besoin",
+            productivity: "Charbon",
           },
           "hall-of-the-bulls-lascaux": {
+            name: "Salle des Taureaux, Lascaux",
             original: "Salle des Taureaux",
+            productivity: "Pièces de précision",
           },
           "wanderer-above-the-sea-of-fog": {
+            name: "Le Voyageur contemplant une mer de nuages",
             original: "Le Voyageur contemplant une mer de nuages",
+            productivity: "Acier",
           },
           "the-hay-wain": {
-            original: "La Charrette de foin",
+            name: "La Charrette de foin",
+            productivity: "Poudre à canon",
+          },
+          "the-oxbow": {
+            name: "Le Méandre",
+            productivity: "Citrons",
+          },
+          "portrait-of-charles-darwin": {
+            name: "Portrait de Charles Darwin",
+            productivity: "Verre",
+          },
+          "portrait-of-oscar-wilde": {
+            name: "Portrait d’Oscar Wilde",
+            productivity: "Papier",
+          },
+          "portrait-of-abraham-lincoln": {
+            name: "Portrait d’Abraham Lincoln",
+            productivity: "Atelier d’art",
+          },
+          "empress-theodora-and-her-attendants": {
+            name: "L’Impératrice Théodora et sa suite",
+            productivity: "Chevaux",
           },
           "alexander-mosaic": {
+            name: "Mosaïque d’Alexandre",
             original: "Mosaïque d’Alexandre",
+            productivity: "Alcool",
           },
           "madaba-mosaic-map": {
+            name: "Carte en mosaïque de Madaba",
             original: "Carte de Madaba",
+            productivity: "Cuir",
+          },
+          "rose-windows-of-notre-dame": {
+            name: "Rosaces de Notre-Dame",
+            productivity: "Cuivre",
+          },
+          "king-s-college-chapel": {
+            name: "Chapelle du King’s College",
+            productivity: "Tissu",
+          },
+          "chartres-cathedral": {
+            name: "Cathédrale de Chartres",
+            productivity: "Fer",
           },
           "portrait-of-isabella-d-este": {
+            name: "Portrait d’Isabelle d’Este",
             original: "Portrait d’Isabelle d’Este",
+            productivity: "Bois",
+          },
+          lion: {
+            name: "Lion",
+            productivity: "Nourriture",
+          },
+          "the-resurrection": {
+            name: "La Résurrection",
+            productivity: "Pierre",
           },
           "the-monkey-painter": {
-            original: "Le Singe peintre",
+            name: "Le Singe peintre",
+            productivity: "Charbon",
+          },
+          "the-monkey-dentist": {
+            name: "Le Singe dentiste",
+            productivity: "Pièces de précision",
           },
           "the-monkey-antiquarian": {
-            original: "Le Singe antiquaire",
+            name: "Le Singe antiquaire",
+            productivity: "Nourriture",
+          },
+          "the-monkey-sculptor": {
+            name: "Le Singe sculpteur",
           },
           "the-ricotta-eaters": {
+            name: "Les Mangeurs de ricotta",
             original: "Les Mangeurs de ricotta",
+            productivity: "Acier",
           },
           "the-beaneater": {
+            name: "Le Mangeur de haricots",
             original: "Le Mangeur de haricots",
+            productivity: "Poudre à canon",
           },
           "the-fat-kitchen": {
+            name: "La Cuisine grasse",
             original: "La Cuisine grasse",
+            productivity: "Citrons",
           },
           "the-thin-kitchen": {
+            name: "La Cuisine maigre",
             original: "La Cuisine maigre",
+            productivity: "Grains de café",
+          },
+          "the-gardener": {
+            name: "Le Jardinier",
+            original: "Le Jardinier potager",
+            productivity: "Cuir",
           },
           "the-cook": {
+            name: "Le Cuisinier",
             original: "Le Cuisinier",
+            productivity: "Verre",
+          },
+          summer: {
+            name: "L’Été",
+            productivity: "Papier",
+          },
+          "landscape-shaped-like-a-face": {
+            name: "Paysage en forme de visage",
+            productivity: "Atelier d’art",
           },
           "the-four-seasons-ii-spring": {
-            original: "Les Quatre Saisons : Le Printemps",
+            name: "Les Quatre Saisons II : le Printemps",
+            original: "Les Quatre Saisons : le Printemps",
+            productivity: "Tissu",
           },
           "the-four-seasons-ii-summer": {
-            original: "Les Quatre Saisons : L’Été",
+            name: "Les Quatre Saisons II : l’Été",
+            original: "Les Quatre Saisons : l’Été",
+            productivity: "Fer",
           },
           "the-four-seasons-ii-autumn": {
-            original: "Les Quatre Saisons : L’Automne",
+            name: "Les Quatre Saisons II : l’Automne",
+            original: "Les Quatre Saisons : l’Automne",
+            productivity: "Chevaux",
           },
           "the-four-seasons-ii-winter": {
-            original: "Les Quatre Saisons : L’Hiver",
+            name: "Les Quatre Saisons II : l’Hiver",
+            original: "Les Quatre Saisons : l’Hiver",
+            productivity: "Alcool",
           },
           "the-four-seasons-i-spring": {
-            original: "Les Saisons : Le Printemps",
+            name: "Les Quatre Saisons I : le Printemps",
+            original: "Les Saisons : le Printemps",
+            productivity: "Bois",
           },
           "the-four-seasons-i-summer": {
-            original: "Les Saisons : L’Été",
+            name: "Les Quatre Saisons I : l’Été",
+            original: "Les Saisons : l’Été",
+            productivity: "Nourriture",
           },
           "the-four-seasons-i-autumn": {
-            original: "Les Saisons : L’Automne",
+            name: "Les Quatre Saisons I : l’Automne",
+            original: "Les Saisons : l’Automne",
+            productivity: "Pierre",
           },
           "the-four-seasons-i-winter": {
-            original: "Les Saisons : L’Hiver",
+            name: "Les Quatre Saisons I : l’Hiver",
+            original: "Les Saisons : l’Hiver",
+            productivity: "Cuivre",
           },
         },
       },
@@ -3992,7 +4231,166 @@ const fr: Dictionary = {
       countLabel: "{count} affichées",
       empty: "Aucune pièce ne correspond à cette recherche.",
       relevantLabel: "Pertinent",
-      playTexts: {},
+      playTexts: {
+        "oedipus-rex": {
+          name: "Œdipe roi",
+          roles: {
+            Vivian: "Jocaste",
+            Brunhild: "Le Berger",
+            Demeter: "Créon",
+            Hestia: "Tirésias",
+            Hera: "Œdipe",
+          },
+        },
+        "phantom-of-the-opera": {
+          name: "Le Fantôme de l’Opéra",
+          roles: {
+            Venus: "Le Fantôme",
+            Ixchel: "Directeur",
+          },
+        },
+        "alice-in-wonderland": {
+          name: "Alice au pays des merveilles",
+          roles: {
+            Demeter: "Chat du Cheshire",
+            Ixchel: "Chapelier fou",
+            Freya: "Lapin blanc",
+            Hestia: "Loir",
+          },
+        },
+        "count-of-monte-cristo": {
+          name: "Le Comte de Monte-Cristo",
+          roles: {
+            Brunhild: "Mercédès",
+          },
+        },
+        "robinson-crusoe": {
+          name: "Robinson Crusoé",
+          roles: {
+            Ixchel: "Robinson Crusoé",
+            Brunhild: "Vendredi",
+            Artemis: "Cannibale",
+            Freya: "Anglais",
+          },
+        },
+        frankenstein: {
+          roles: {
+            Eve: "Élisabeth",
+            Brunhild: "La Créature",
+          },
+        },
+        macbeth: {
+          roles: {
+            Nike: "Macduff",
+          },
+        },
+        hamlet: {
+          roles: {
+            Moirai: "Ophélie",
+            Hela: "Laërte",
+          },
+        },
+        "pride-and-prejudice": {
+          name: "Orgueil et Préjugés",
+          roles: {
+            Freya: "Jane",
+          },
+        },
+        "romeo-and-juliet": {
+          name: "Roméo et Juliette",
+          roles: {
+            Hela: "Juliette",
+            Venus: "Roméo",
+          },
+        },
+        "treasure-island": {
+          name: "L’Île au trésor",
+          roles: {
+            Athena: "Le chevalier Trelawney",
+            Medusa: "Capitaine Smollett",
+          },
+        },
+        "don-quixote": {
+          name: "Don Quichotte",
+          roles: {
+            Athena: "Second rôle 1",
+            Hestia: "Curé",
+            Brunhild: "Don Quichotte",
+          },
+        },
+        "peter-pan": {
+          roles: {
+            Hestia: "Fée Clochette",
+          },
+        },
+        "midsummer-nights-dream": {
+          name: "Le Songe d’une nuit d’été",
+          roles: {
+            Fortuna: "Obéron",
+          },
+        },
+        "sound-of-music": {
+          name: "La Mélodie du bonheur",
+          roles: {
+            Demeter: "Mère abbesse",
+            Hera: "Capitaine von Trapp",
+          },
+        },
+        "robin-hood": {
+          name: "Robin des Bois",
+          roles: {
+            Artemis: "Robin des Bois",
+            Hera: "Shérif",
+            Demeter: "Petit Jean",
+            Venus: "Lady Marianne",
+          },
+        },
+        "wizard-of-oz": {
+          name: "Le Magicien d’Oz",
+          roles: {
+            Hestia: "Épouvantail",
+            Demeter: "Homme de fer-blanc",
+          },
+        },
+        aladdin: {
+          roles: {
+            Fortuna: "Génie",
+          },
+        },
+        "sleeping-beauty": {
+          name: "La Belle au bois dormant",
+          roles: {
+            Venus: "Maléfique",
+            Demeter: "Fée",
+          },
+        },
+        "little-women": {
+          name: "Les Quatre Filles du docteur March",
+        },
+        "little-red-riding-hood": {
+          name: "Le Petit Chaperon rouge",
+          roles: {
+            Freya: "Grand-mère",
+            Eve: "Petit Chaperon rouge",
+            Artemis: "Chasseur",
+            Brunhild: "Grand Méchant Loup",
+          },
+        },
+        "happy-prince": {
+          name: "Le Prince heureux",
+          roles: {
+            Hestia: "Hirondelle",
+            Vivian: "Maire",
+            Venus: "Couturière",
+          },
+        },
+        "lion-king": {
+          name: "Le Roi lion",
+        },
+        "three-musketeers": {
+          name: "Les Trois Mousquetaires",
+        },
+      },
       tutorialNote: "Terminez le tutoriel. Cette pièce n’a pas de distribution de déesses.",
       credit: "Distributions et affiches issues de la page Goddess Theater du wiki Pop Epoch au 14 septembre 2026, avec les marques communautaires des rôles pertinents. Les affiches sont la première image de chaque carte du wiki (le cadre de rareté), pas les photos à côté. Les noms de déesses suivent le roster Core (Brunhilde du wiki est Brunhild ici). Les noms de pièces et de rôles suivent le wiki ; les autres langues peuvent les remplacer.",
       sections: [

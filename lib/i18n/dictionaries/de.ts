@@ -3085,144 +3085,248 @@ const de: Dictionary = {
       catalogTexts: {
         sets: {
           "glory-and-shadow": {
+            name: "Ruhm und Schatten",
             effect: "Zu Kampfbeginn einen Schild in Höhe von 10 % der maximalen LP.",
           },
           "self-portrait": {
+            name: "Selbstporträt",
             effect: "Jedes Mal, wenn ein Verbündeter Fähigkeits- oder Zusatzschaden verursacht: Zusatzschadensbonus +10 % für 1 Runde.",
           },
           "nature-in-bloom": {
+            name: "Blühende Natur",
             effect: "Bei einem kritischen Treffer steigt der kritische Schaden der Verbündeten um zusätzliche 5–50 %.",
           },
           "urban-proletariat": {
+            name: "Städtisches Proletariat",
             effect: "In den ersten 3 Kampfrunden: DoT-Schaden +12 % bis zum Kampfende.",
           },
           "rococo-curtain": {
+            name: "Rokoko-Vorhang",
             effect: "Der erste Fähigkeitsschaden, den ein Verbündeter pro Runde erleidet, wird um 20 % reduziert.",
           },
           "chinese-landscape": {
+            name: "Chinesische Landschaft",
             effect: "Alle 2 Runden (wenn nicht versiegelt) 15 % Chance, 1 Debuff von einem Verbündeten zu entfernen.",
           },
           "ukiya-e-masterpieces": {
+            name: "Meisterwerke des Ukiyo-e",
             effect: "Endschadensreduzierung der Verbündeten +12 % bis zum Kampfende.",
           },
           "tragic-maiden": {
+            name: "Tragische Jungfrau",
             effect: "Endschadensbonus der Verbündeten +12 % bis zum Kampfende.",
           },
           "modernist-new-voice": {
+            name: "Neue Stimme der Moderne",
             effect: "Collection- und Cryptid-Schadensreduzierung +12 % bis zum Kampfende.",
           },
           "beyond-the-earth": {
+            name: "Jenseits der Erde",
             effect: "Collection- und Cryptid-Schadensbonus +12 % bis zum Kampfende.",
           },
           "sheltered-by-night": {
+            name: "Im Schutz der Nacht",
             effect: "Alle 3 Runden, wenn ein Verbündeter handelt: Zusatzschadensreduzierung +5 % für 2 Runden.",
           },
           "impression-warmth": {
+            name: "Impression: Wärme",
             effect: "Alle 3 Runden, wenn ein Verbündeter handelt: Zusatzschadensbonus +5 % für 2 Runden.",
           },
           "roar-of-steam": {
+            name: "Tosender Dampf",
             effect: "Alle 3 Runden, wenn ein Verbündeter handelt: DoT-Schadensreduzierung +5 % für 2 Runden.",
           },
           "echoes-of-death": {
+            name: "Echos des Todes",
             effect: "Alle 3 Runden: DoT-Bonus +5 % für 2 Runden.",
           },
           "faithful-companion": {
+            name: "Treuer Gefährte",
             effect: "Alle 3 Runden, wenn nicht versiegelt: Schadensreduzierung +5 % für 2 Runden.",
           },
           "heaven-and-earth-surge": {
+            name: "Wogen von Himmel und Erde",
             effect: "Alle 3 Runden, wenn nicht versiegelt: Schadensbonus +5 % für 2 Runden.",
           },
           "gaze-of-an-age": {
+            name: "Blick einer Epoche",
             effect: "Alle 3 Runden, wenn nicht versiegelt: ANG-Bonus +5 % für 2 Runden.",
           },
           "wall-of-mosaics": {
+            name: "Mosaikwand",
             effect: "Alle 4 Runden, wenn nicht versiegelt: ein Schild in Höhe von 5 % der maximalen LP.",
           },
           "sacred-window-radiance": {
+            name: "Glanz der heiligen Fenster",
             effect: "Alle 4 Runden, wenn nicht versiegelt: Heilung von 5 % der maximalen LP.",
           },
           "master-s-sketch": {
+            name: "Skizze des Meisters",
             effect: "Alle 4 Runden, wenn nicht versiegelt: Fähigkeitsschaden in Höhe von 80 % des ANG am Gegner.",
           },
           "monkey-society": {
+            name: "Affengesellschaft",
             effect: "In Runde 4, wenn nicht versiegelt: Fähigkeitsschadensreduzierung +5 % für 2 Runden.",
           },
           "so-delicious": {
+            name: "So lecker",
             effect: "In Runde 4, wenn nicht versiegelt: Fähigkeitsschadensbonus +5 % für 2 Runden.",
           },
           "hidden-face": {
+            name: "Verborgenes Gesicht",
             effect: "In Runde 4, wenn nicht versiegelt: ANG-Bonus +5 % für 2 Runden.",
           },
           "four-seasons-reborn": {
+            name: "Wiedergeborene Jahreszeiten",
             effect: "In Runde 6, wenn nicht versiegelt: Heilung von 5 % der maximalen LP.",
           },
           "four-seasonal-beauties": {
+            name: "Schönheiten der vier Jahreszeiten",
             effect: "In Runde 6, wenn nicht versiegelt: Fähigkeitsschaden in Höhe von 50 % des ANG am Gegner.",
           },
         },
         paintings: {
           "the-coronation-of-napoleon": {
+            name: "Die Krönung Napoleons",
             original: "Le Sacre de Napoléon",
+            productivity: "Glas",
           },
           "napoleon-crossing-the-alps": {
+            name: "Napoleon überquert die Alpen",
             original: "Bonaparte beim Überschreiten der Alpen am Großen Sankt Bernhard",
+            productivity: "Papiermühle",
           },
           "the-third-of-may-1808": {
             name: "Der 3. Mai 1808",
             original: "Die Erschießung der Aufständischen",
+            productivity: "Kunstwerkstatt",
+          },
+          "self-portrait": {
+            name: "Selbstporträt",
+            productivity: "Pferde",
           },
           "self-portrait-with-fur-trimmed-robe": {
+            name: "Selbstbildnis im Pelzrock",
             original: "Selbstbildnis im Pelzrock",
+            productivity: "Alkohol",
           },
           "self-portrait-with-damaged-ear": {
             name: "Selbstporträt mit verbundenem Ohr",
             original: "Selbstporträt mit verbundenem Ohr",
+            productivity: "Leder",
+          },
+          "almond-bloom": {
+            name: "Mandelblüte",
+            original: "Mandelblüte",
+            productivity: "Kupfer",
           },
           irises: {
+            name: "Schwertlilien",
             original: "Schwertlilien",
+            productivity: "Stoff",
           },
           "water-lilies": {
+            name: "Seerosen",
             original: "Seerosen",
+            productivity: "Eisen",
           },
           "the-gleaners": {
+            name: "Die Ährenleserinnen",
             original: "Die Ährenleserinnen",
+            productivity: "Holz",
           },
           "the-floor-scrapers": {
             name: "Die Parketthobler",
             original: "Die Parkettschleifer",
+            productivity: "Nahrung",
           },
           "the-stone-breakers": {
+            name: "Die Steinklopfer",
             original: "Die Steinklopfer",
+            productivity: "Stein",
+          },
+          "madame-de-pompadour": {
+            name: "Madame de Pompadour",
+            productivity: "Kaffeebohnen",
           },
           "the-swing": {
             name: "Die Schaukel",
             original: "Die Schaukel",
+            productivity: "Kohle",
           },
           "the-embarkation-for-cythera": {
+            name: "Einschiffung nach Kythera",
             original: "Einschiffung nach Kythera",
+            productivity: "Präzisionsteile",
           },
           "a-thousand-li-of-rivers-and-mountains": {
             name: "Tausend Li von Flüssen und Bergen",
+            productivity: "Stahl",
+          },
+          "dwelling-in-the-fuchun-mountains": {
+            name: "Wohnen in den Fuchun-Bergen",
+            productivity: "Schießpulver",
           },
           "travelers-among-mountains-and-streams": {
             name: "Reisende zwischen Bergen und Bächen",
+            productivity: "Zitronen",
           },
           "the-great-wave-of-kanagawa": {
+            name: "Die große Welle vor Kanagawa",
             original: "Die große Welle vor Kanagawa",
+            productivity: "Glas",
+          },
+          "kabuki-actor": {
+            name: "Kabuki-Schauspieler",
+            productivity: "Papier",
+          },
+          "three-beauties-of-the-present-day": {
+            name: "Drei Schönheiten der Gegenwart",
+            productivity: "Kunstwerkstatt",
+          },
+          ophelia: {
+            name: "Ophelia",
+            productivity: "Pferde",
+          },
+          "the-lady-of-shalott": {
+            name: "Die Dame von Shalott",
+            productivity: "Alkohol",
           },
           "romeo-and-juliet": {
             name: "Romeo und Julia",
             original: "Romeo und Julia",
+            productivity: "Leder",
+          },
+          composition: {
+            name: "Komposition",
+            productivity: "Kupfer",
           },
           dance: {
+            name: "Der Tanz",
             original: "Der Tanz",
+            productivity: "Stoff",
           },
           "composition-viii": {
             name: "Komposition VIII",
             original: "Komposition VIII",
+            productivity: "Eisen",
+          },
+          "buzz-aldrin-on-the-moon": {
+            name: "Buzz Aldrin auf dem Mond",
+            productivity: "Holz",
+          },
+          earthrise: {
+            name: "Erdaufgang",
+            productivity: "Nahrung",
+          },
+          "pale-blue-dot": {
+            name: "Blasser blauer Punkt",
+            productivity: "Stein",
           },
           nightshade: {
             name: "Nachtschwärmer",
+            original: "Nachtschwärmer",
+            productivity: "Glas",
           },
           "cafe-terrace-at-night": {
             name: "Caféterrasse bei Nacht",
@@ -3231,82 +3335,139 @@ const de: Dictionary = {
           "evening-on-karl-johan-st": {
             name: "Abend auf der Karl-Johans-Straße",
             original: "Abend auf der Karl Johans gate",
+            productivity: "Kunstwerkstatt",
           },
           "the-umbrellas": {
             name: "Die Regenschirme",
             original: "Frau mit Sonnenschirm – Camille Monet und Sohn Jean auf dem Hügel",
           },
+          "the-dance-class": {
+            name: "Die Tanzstunde",
+            productivity: "Alkohol",
+          },
           "luncheon-of-the-boating-party": {
+            name: "Das Frühstück der Ruderer",
             original: "Das Frühstück der Ruderer",
+            productivity: "Leder",
+          },
+          "rain-steam-and-speed": {
+            name: "Regen, Dampf und Geschwindigkeit",
+            original: "Regen, Dampf und Geschwindigkeit – Die Great Western Railway",
+            productivity: "Kupfer",
           },
           "the-gare-saint-lazare": {
             name: "Der Bahnhof Saint-Lazare",
             original: "Der Bahnhof Saint-Lazare",
+            productivity: "Stoff",
           },
           "the-fighting-temeraire": {
             name: "Die kämpfende Temeraire",
+            productivity: "Eisen",
           },
           "the-death-of-socrates": {
             name: "Der Tod des Sokrates",
             original: "Der Tod des Sokrates",
+            productivity: "Holz",
           },
           "the-death-of-marat": {
             name: "Der Tod des Marat",
             original: "Der Tod des Marat",
+            productivity: "Nahrung",
           },
           "the-anatomy-lesson": {
+            name: "Die Anatomiestunde",
             original: "Die Anatomie des Dr. Tulp",
+            productivity: "Stein",
           },
           "young-hare": {
             name: "Feldhase",
             original: "Feldhase",
+            productivity: "Kaffeebohnen",
+          },
+          "friends-in-need": {
+            name: "Freunde in der Not",
+            productivity: "Kohle",
           },
           "hall-of-the-bulls-lascaux": {
+            name: "Saal der Stiere, Lascaux",
             original: "Saal der Stiere",
+            productivity: "Präzisionsteile",
           },
           "wanderer-above-the-sea-of-fog": {
             name: "Der Wanderer über dem Nebelmeer",
             original: "Der Wanderer über dem Nebelmeer",
+            productivity: "Stahl",
           },
           "the-hay-wain": {
             name: "Der Heuwagen",
+            productivity: "Schießpulver",
+          },
+          "the-oxbow": {
+            name: "Die Flussschleife",
+            productivity: "Zitronen",
           },
           "portrait-of-charles-darwin": {
             name: "Porträt von Charles Darwin",
+            productivity: "Glas",
+          },
+          "portrait-of-oscar-wilde": {
+            name: "Porträt von Oscar Wilde",
+            productivity: "Papier",
           },
           "portrait-of-abraham-lincoln": {
             name: "Porträt von Abraham Lincoln",
+            productivity: "Kunstwerkstatt",
           },
           "empress-theodora-and-her-attendants": {
             name: "Kaiserin Theodora und ihr Gefolge",
+            productivity: "Pferde",
           },
           "alexander-mosaic": {
+            name: "Alexandermosaik",
             original: "Alexandermosaik",
+            productivity: "Alkohol",
           },
           "madaba-mosaic-map": {
+            name: "Mosaikkarte von Madaba",
             original: "Mosaikkarte von Madaba",
+            productivity: "Leder",
+          },
+          "rose-windows-of-notre-dame": {
+            name: "Rosenfenster von Notre-Dame",
+            productivity: "Kupfer",
           },
           "king-s-college-chapel": {
             name: "Buntglasfenster der Kapelle des King’s College",
+            productivity: "Stoff",
+          },
+          "chartres-cathedral": {
+            name: "Kathedrale von Chartres",
+            productivity: "Eisen",
           },
           "portrait-of-isabella-d-este": {
             name: "Porträt der Isabella d’Este",
             original: "Bildnis der Isabella d’Este",
+            productivity: "Holz",
           },
           lion: {
             name: "Löwe",
+            productivity: "Nahrung",
           },
           "the-resurrection": {
             name: "Die Auferstehung",
+            productivity: "Stein",
           },
           "the-monkey-painter": {
             name: "Der Affenmaler",
+            productivity: "Kohle",
           },
           "the-monkey-dentist": {
             name: "Der Affenzahnarzt",
+            productivity: "Präzisionsteile",
           },
           "the-monkey-antiquarian": {
             name: "Der Affenantiquar",
+            productivity: "Nahrung",
           },
           "the-monkey-sculptor": {
             name: "Der Affenbildhauer",
@@ -3314,60 +3475,80 @@ const de: Dictionary = {
           "the-ricotta-eaters": {
             name: "Die Ricottaesser",
             original: "Die Ricottaesser",
+            productivity: "Stahl",
           },
           "the-beaneater": {
             name: "Der Bohnenesser",
             original: "Der Bohnenesser",
+            productivity: "Schießpulver",
           },
           "the-fat-kitchen": {
             name: "Die fette Küche",
             original: "Die fette Küche",
+            productivity: "Zitronen",
           },
           "the-thin-kitchen": {
             name: "Die magere Küche",
             original: "Die magere Küche",
+            productivity: "Kaffeebohnen",
           },
           "the-gardener": {
             name: "Der Gärtner",
+            original: "Der Gemüsegärtner",
+            productivity: "Leder",
           },
           "the-cook": {
             name: "Der Koch",
             original: "Der Koch",
+            productivity: "Glas",
+          },
+          summer: {
+            name: "Sommer",
+            productivity: "Papier",
           },
           "landscape-shaped-like-a-face": {
             name: "Landschaft in Form eines Gesichts",
+            productivity: "Kunstwerkstatt",
           },
           "the-four-seasons-ii-spring": {
             name: "Die Jahreszeiten II: Frühling",
             original: "Vier Jahreszeiten: Frühling",
+            productivity: "Stoff",
           },
           "the-four-seasons-ii-summer": {
             name: "Die Jahreszeiten II: Sommer",
             original: "Vier Jahreszeiten: Sommer",
+            productivity: "Eisen",
           },
           "the-four-seasons-ii-autumn": {
             name: "Die Jahreszeiten II: Herbst",
             original: "Vier Jahreszeiten: Herbst",
+            productivity: "Pferde",
           },
           "the-four-seasons-ii-winter": {
             name: "Die Jahreszeiten II: Winter",
             original: "Vier Jahreszeiten: Winter",
+            productivity: "Alkohol",
           },
           "the-four-seasons-i-spring": {
             name: "Die Jahreszeiten I: Frühling",
             original: "Die Jahreszeiten: Frühling",
+            productivity: "Holz",
           },
           "the-four-seasons-i-summer": {
             name: "Die Jahreszeiten I: Sommer",
             original: "Die Jahreszeiten: Sommer",
+            productivity: "Nahrung",
           },
           "the-four-seasons-i-autumn": {
             name: "Die Jahreszeiten I: Herbst",
             original: "Die Jahreszeiten: Herbst",
+            productivity: "Stein",
           },
           "the-four-seasons-i-winter": {
             name: "Die Jahreszeiten I: Winter",
             original: "Die Jahreszeiten: Winter",
+            productivity: "Kupfer",
           },
         },
       },
@@ -4050,7 +4231,147 @@ const de: Dictionary = {
       countLabel: "{count} angezeigt",
       empty: "Kein Stück passt zu dieser Suche.",
       relevantLabel: "Relevant",
-      playTexts: {},
+      playTexts: {
+        "oedipus-rex": {
+          name: "König Ödipus",
+          roles: {
+            Vivian: "Iokaste",
+            Brunhild: "Der Hirte",
+            Demeter: "Kreon",
+            Hestia: "Teiresias",
+            Hera: "Ödipus",
+          },
+        },
+        "phantom-of-the-opera": {
+          name: "Das Phantom der Oper",
+          roles: {
+            Ixchel: "Direktor",
+          },
+        },
+        "alice-in-wonderland": {
+          name: "Alice im Wunderland",
+          roles: {
+            Demeter: "Grinsekatze",
+            Ixchel: "Verrückter Hutmacher",
+            Freya: "Weißes Kaninchen",
+            Hestia: "Haselmaus",
+          },
+        },
+        "count-of-monte-cristo": {
+          name: "Der Graf von Monte Christo",
+        },
+        "robinson-crusoe": {
+          roles: {
+            Brunhild: "Freitag",
+            Artemis: "Kannibale",
+            Freya: "Engländer",
+          },
+        },
+        frankenstein: {
+          roles: {
+            Brunhild: "Die Kreatur",
+          },
+        },
+        macbeth: {
+          roles: {
+            Nike: "Macduff",
+          },
+        },
+        "pride-and-prejudice": {
+          name: "Stolz und Vorurteil",
+          roles: {
+            Freya: "Jane",
+          },
+        },
+        "romeo-and-juliet": {
+          name: "Romeo und Julia",
+          roles: {
+            Hela: "Julia",
+          },
+        },
+        "treasure-island": {
+          name: "Die Schatzinsel",
+          roles: {
+            Athena: "Gutsherr Trelawney",
+            Medusa: "Kapitän Smollett",
+          },
+        },
+        "don-quixote": {
+          name: "Don Quijote",
+          roles: {
+            Athena: "Nebenrolle 1",
+            Hestia: "Pfarrer",
+            Brunhild: "Don Quijote",
+          },
+        },
+        "midsummer-nights-dream": {
+          name: "Ein Sommernachtstraum",
+        },
+        "sound-of-music": {
+          name: "Meine Lieder – meine Träume",
+          roles: {
+            Demeter: "Äbtissin",
+            Hera: "Kapitän von Trapp",
+          },
+        },
+        "robin-hood": {
+          roles: {
+            Artemis: "Robin Hood",
+          },
+        },
+        "wizard-of-oz": {
+          name: "Der Zauberer von Oz",
+          roles: {
+            Hestia: "Vogelscheuche",
+            Demeter: "Blechmann",
+          },
+        },
+        aladdin: {
+          roles: {
+            Fortuna: "Dschinni",
+          },
+        },
+        "sleeping-beauty": {
+          name: "Dornröschen",
+          roles: {
+            Hestia: "Prinz",
+            Venus: "Malefiz",
+            Demeter: "Fee",
+          },
+        },
+        "little-women": {
+          name: "Kleine Frauen",
+        },
+        "little-red-riding-hood": {
+          name: "Rotkäppchen",
+          roles: {
+            Freya: "Großmutter",
+            Eve: "Rotkäppchen",
+            Artemis: "Jäger",
+            Brunhild: "Der böse Wolf",
+          },
+        },
+        "happy-prince": {
+          name: "Der glückliche Prinz",
+          roles: {
+            Medusa: "Prinz",
+            Hestia: "Schwalbe",
+            Vivian: "Bürgermeister",
+            Venus: "Näherin",
+          },
+        },
+        "lion-king": {
+          name: "Der König der Löwen",
+        },
+        mozart: {
+          roles: {
+            Fortuna: "Joseph II.",
+          },
+        },
+        "three-musketeers": {
+          name: "Die drei Musketiere",
+        },
+      },
       tutorialNote: "Tutorial abschließen. Dieses Stück hat keine Göttinnen-Besetzung.",
       credit: "Besetzungen und Stück-Cover von der Pop-Epoch-Wiki-Seite Goddess Theater vom 14. September 2026, dazu Community-Markierungen der relevanten Rollen. Cover sind das erste Bild jeder Wiki-Karte (der Seltenheitsrahmen), nicht die Stills daneben. Göttinnennamen folgen dem Kern-Roster (Wiki-Brunhilde ist hier Brunhild). Stück- und Rollennamen folgen der Wiki-Schreibweise; andere Sprachen können sie überschreiben.",
       sections: [

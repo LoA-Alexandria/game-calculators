@@ -87,7 +87,15 @@ test("play and role names fall back to English until a language overrides them",
   assert.equal(localizedRoleName(play, fortuna, {}), fortuna.role);
   assert.equal(localizedPlayName(play, { "count-of-monte-cristo": { name: "Der Graf von Monte Christo" } }), "Der Graf von Monte Christo");
   assert.equal(localizedRoleName(play, fortuna, { "count-of-monte-cristo": { roles: { Fortuna: "Edmond" } } }), "Edmond");
-  for (const dictionary of LOCALE_CODES.map(getDictionary)) {
-    assert.deepEqual(dictionary.guideEntries.goddessTheater.playTexts, {});
+  // English names live in the JSON; the other languages only name what differs.
+  assert.deepEqual(getDictionary("en").guideEntries.goddessTheater.playTexts, {});
+  for (const dictionary of LOCALE_CODES.filter((code) => code !== "en").map(getDictionary)) {
+    for (const [id, text] of Object.entries(dictionary.guideEntries.goddessTheater.playTexts)) {
+      const cast = THEATER_PLAYS.find((entry) => entry.id === id);
+      assert.ok(cast, `${id} is a play`);
+      for (const goddess of Object.keys(text.roles ?? {})) {
+        assert.ok(cast.roles.some((row) => row.goddess === goddess), `${goddess} plays in ${id}`);
+      }
+    }
   }
 });
