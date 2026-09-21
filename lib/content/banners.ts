@@ -18,6 +18,7 @@ export const SECTION_BANNER_SRC: Partial<Record<NavSection["id"], string>> = {
   guides: "/banners/guides-scene.webp",
   calculators: "/banners/guides-scene.webp",
   simulations: "/banners/guides-scene.webp",
+  guilds: "/banners/guides-scene.webp",
 };
 
 export const SECTION_BANNER_LOGO_SRC: Partial<Record<NavSection["id"], string>> = {
@@ -26,6 +27,8 @@ export const SECTION_BANNER_LOGO_SRC: Partial<Record<NavSection["id"], string>> 
   guides: "/banners/guides-logo.webp",
   calculators: "/banners/calculators-logo.webp",
   simulations: "/banners/simulations-logo.webp",
+  // Reuse guides mark until a dedicated guilds plaque exists.
+  guilds: "/banners/guides-logo.webp",
 };
 
 export function sectionBannerUrl(id: NavSection["id"]): string | null {
