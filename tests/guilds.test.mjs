@@ -46,3 +46,20 @@ test("Discord snowflake and master match helpers", () => {
     false,
   );
 });
+
+test("guild icon paths and public URLs", async () => {
+  const {
+    guildIconObjectPath,
+    guildIconPublicUrl,
+  } = await import("../lib/content/guilds.ts");
+  assert.equal(
+    guildIconObjectPath("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee", "image/webp"),
+    "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee/icon.webp",
+  );
+  assert.equal(guildIconObjectPath("id", "text/plain"), null);
+  assert.equal(
+    guildIconPublicUrl("https://example.supabase.co", "gid/icon.webp"),
+    "https://example.supabase.co/storage/v1/object/public/guild-icons/gid/icon.webp",
+  );
+  assert.equal(guildIconPublicUrl("https://example.supabase.co", null), null);
+});
