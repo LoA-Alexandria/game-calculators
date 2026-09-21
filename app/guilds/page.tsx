@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
   guildIconPublicUrl,
+  guildMatchesServerFilter,
   guildRoomHref,
   isGuildMasterOf,
   type Guild,
@@ -12,7 +13,7 @@ import {
 import { getSupabaseBrowserClient } from "../../lib/supabase/client";
 import { useAuth } from "../components/AuthProvider";
 import { useDocumentTitle, useLocale } from "../components/LocaleProvider";
-import { DiscordIcon, GuildsIcon } from "../components/Icons";
+import { DiscordIcon, GuildsIcon, SearchIcon } from "../components/Icons";
 import { PageHead, SectionBanner } from "../components/Ui";
 
 type OwnMembership = Pick<GuildMembership, "guild_id" | "status">;
@@ -42,6 +43,7 @@ export default function GuildsPage() {
 
   const [guilds, setGuilds] = useState<Guild[]>([]);
   const [memberships, setMemberships] = useState<OwnMembership[]>([]);
+  const [serverFilter, setServerFilter] = useState("");
   const [error, setError] = useState("");
   const [busyId, setBusyId] = useState<string | null>(null);
   const [reloadToken, setReloadToken] = useState(0);
@@ -87,6 +89,11 @@ export default function GuildsPage() {
     for (const row of memberships) map.set(row.guild_id, row);
     return map;
   }, [memberships]);
+
+  const visibleGuilds = useMemo(
+    () => guilds.filter((guild) => guildMatchesServerFilter(guild, serverFilter)),
+    [guilds, serverFilter],
+  );
 
   const requestJoin = async (guild: Guild) => {
     if (!supabase || !session) return;
@@ -150,11 +157,28 @@ export default function GuildsPage() {
         </div>
       )}
 
+      {supabase && guilds.length > 0 && (
+        <div className="guild-filter">
+          <SearchIcon className="icon" />
+          <input
+            type="search"
+            value={serverFilter}
+            autoComplete="off"
+            spellCheck={false}
+            aria-label={t.guilds.serverFilterLabel}
+            placeholder={t.guilds.serverFilterPlaceholder}
+            onChange={(e) => setServerFilter(e.target.value)}
+          />
+        </div>
+      )}
+
       {supabase && guilds.length === 0 ? (
         <div className="empty-state">{authLoading ? t.guilds.loading : t.guilds.empty}</div>
+      ) : visibleGuilds.length === 0 ? (
+        <div className="empty-state">{t.guilds.serverFilterEmpty}</div>
       ) : (
         <div className="guild-list">
-          {guilds.map((guild) => {
+          {visibleGuilds.map((guild) => {
             const membership = membershipByGuild.get(guild.id);
             const isDiscordMaster = isGuildMasterOf(guild, session?.discordUserId);
             const canManage = isDiscordMaster || isSiteAdmin;

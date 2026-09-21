@@ -3,6 +3,8 @@
 import { useCallback, useEffect, useId, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { GuildRichTextEditor, GuildRichTextView } from "./GuildRichText";
+import { guildPostHtml, sanitizeGuildHtml } from "../../lib/content/guild-rich-text";
 import {
   GUILD_ICON_BUCKET,
   guildIconObjectPath,
@@ -86,6 +88,8 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [composeFor, setComposeFor] = useState<GuildTab | null>(null);
+  const composing = composeFor === tab;
 
   const [editName, setEditName] = useState("");
   const [editServer, setEditServer] = useState("");
@@ -206,11 +210,13 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
     setTitle("");
     setBody("");
     setEditingId(null);
+    setComposeFor(null);
   };
 
   const savePost = async () => {
     if (!supabase || !session || !guild) return;
     const nextTitle = title.trim();
+    const nextBody = sanitizeGuildHtml(body);
     if (!nextTitle) return;
     setBusy(true);
     setError("");
@@ -219,7 +225,7 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
         .from("guild_posts")
         .update({
           title: nextTitle,
-          body: body.trim(),
+          body: nextBody,
           updated_at: new Date().toISOString(),
         })
         .eq("id", editingId);
@@ -233,7 +239,7 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
         guild_id: guild.id,
         channel: tab,
         title: nextTitle,
-        body: body.trim(),
+        body: nextBody,
         author_id: session.userId,
       });
       if (insertError) setError(insertError.message);
@@ -248,7 +254,8 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
   const startEdit = (post: GuildPost) => {
     setEditingId(post.id);
     setTitle(post.title);
-    setBody(post.body);
+    setBody(guildPostHtml(post.body));
+    setComposeFor(tab);
   };
 
   const removePost = async (postId: string) => {
@@ -533,10 +540,31 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
             </section>
           )}
 
-          {canManage && (
+          {canManage && !composing && (
+            <div className="guild-compose-trigger">
+              <button
+                className="button button-primary"
+                type="button"
+                onClick={() => {
+                  setComposeFor(tab);
+                  setEditingId(null);
+                  setTitle("");
+                  setBody("");
+                }}
+              >
+                <PlusIcon className="icon" />
+                {t.guilds.composeOpen}
+              </button>
+            </div>
+          )}
+
+          {canManage && composing && (
             <section className="guild-panel">
               <header className="guild-panel-head">
                 <h2>{editingId ? t.guilds.postEdit : tab === "news" ? t.guilds.composeNews : t.guilds.composePlanung}</h2>
+                <button className="small-button" type="button" disabled={busy} onClick={resetComposer}>
+                  {t.guilds.composeClose}
+                </button>
               </header>
               <div className="guild-compose">
                 <div className="field">
@@ -548,16 +576,13 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
                     onChange={(e) => setTitle(e.target.value)}
                   />
                 </div>
-                <div className="field">
-                  <label htmlFor={`${ids}-body`}>{t.guilds.postBody}</label>
-                  <textarea
-                    id={`${ids}-body`}
-                    value={body}
-                    rows={5}
-                    maxLength={8000}
-                    onChange={(e) => setBody(e.target.value)}
-                  />
-                </div>
+                <GuildRichTextEditor
+                  id={`${ids}-body`}
+                  label={t.guilds.postBody}
+                  value={body}
+                  onChange={setBody}
+                  disabled={busy}
+                />
                 <div className="guild-compose-actions">
                   <button
                     className="button button-primary"
@@ -568,11 +593,9 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
                     <PlusIcon className="icon" />
                     {editingId ? t.guilds.postEdit : t.guilds.postAdd}
                   </button>
-                  {editingId ? (
-                    <button className="small-button" type="button" disabled={busy} onClick={resetComposer}>
-                      {t.guilds.postCancel}
-                    </button>
-                  ) : null}
+                  <button className="small-button" type="button" disabled={busy} onClick={resetComposer}>
+                    {t.guilds.postCancel}
+                  </button>
                 </div>
               </div>
             </section>
@@ -597,7 +620,7 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
                       <h3>{post.title}</h3>
                       <time dateTime={post.created_at}>{d(post.created_at.slice(0, 10))}</time>
                     </div>
-                    {post.body ? <p className="guild-post-body">{post.body}</p> : null}
+                    <GuildRichTextView html={guildPostHtml(post.body)} />
                     {canManage && (
                       <div className="guild-post-actions">
                         <button

@@ -6779,6 +6779,100 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
   gap: 14px;
   margin-top: 6px;
 }
+.guild-filter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 4px 0 14px;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface);
+}
+.guild-filter .icon {
+  width: 18px;
+  height: 18px;
+  color: var(--ink-faint);
+  flex-shrink: 0;
+}
+.guild-filter input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  outline: none;
+}
+.guild-compose-trigger { margin-bottom: 2px; }
+
+.guild-rt { display: grid; gap: 8px; }
+.guild-rt-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  padding: 6px;
+  border: 1px solid var(--line);
+  border-bottom: 0;
+  border-radius: var(--r-md) var(--r-md) 0 0;
+  background: var(--surface-2);
+}
+.guild-rt-btn {
+  min-width: 32px;
+  min-height: 32px;
+  padding: 4px 8px;
+  border: 1px solid transparent;
+  border-radius: var(--r-xs);
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  font: inherit;
+  font-size: .86rem;
+}
+.guild-rt-btn:hover:not(:disabled) {
+  border-color: var(--line);
+  background: var(--surface);
+}
+.guild-rt-btn:disabled { opacity: .45; cursor: not-allowed; }
+.guild-rt-u { text-decoration: underline; }
+.guild-rt-sep {
+  width: 1px;
+  height: 20px;
+  margin: 0 4px;
+  background: var(--line);
+}
+.guild-rt-editor {
+  min-height: 140px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 0 0 var(--r-md) var(--r-md);
+  background: var(--surface);
+  color: var(--ink);
+  line-height: 1.6;
+  outline: none;
+}
+.guild-rt-editor:focus {
+  border-color: var(--accent-line);
+  box-shadow: var(--ring);
+}
+.guild-rt-editor .guild-rt-sm,
+.guild-rt-view .guild-rt-sm { font-size: .85em; }
+.guild-rt-editor .guild-rt-lg,
+.guild-rt-view .guild-rt-lg { font-size: 1.2em; }
+.guild-rt-view {
+  margin-top: 8px;
+  color: var(--ink-soft);
+  font-size: .92rem;
+  line-height: 1.65;
+}
+.guild-rt-view p { margin: 0 0 .7em; }
+.guild-rt-view p:last-child { margin-bottom: 0; }
+.guild-rt-view ul {
+  margin: 0 0 .7em;
+  padding-left: 1.3em;
+}
+
 .guild-card {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
