@@ -1,12 +1,14 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useId, useMemo, useState } from "react";
 import Link from "next/link";
 import {
+  GUILD_REQUEST_NOTE_MAX,
   guildIconPublicUrl,
   guildMatchesServerFilter,
   guildRoomHref,
   isGuildMasterOf,
+  normalizeGuildRequestNote,
   type Guild,
   type GuildMembership,
 } from "../../lib/content/guilds";
@@ -39,6 +41,7 @@ export default function GuildsPage() {
   const { t } = useLocale();
   const { session, loading: authLoading, signIn } = useAuth();
   const supabase = getSupabaseBrowserClient();
+  const ids = useId();
   useDocumentTitle(t.guilds.title);
 
   const [guilds, setGuilds] = useState<Guild[]>([]);
@@ -47,6 +50,8 @@ export default function GuildsPage() {
   const [error, setError] = useState("");
   const [busyId, setBusyId] = useState<string | null>(null);
   const [reloadToken, setReloadToken] = useState(0);
+  const [joinGuildId, setJoinGuildId] = useState<string | null>(null);
+  const [joinNote, setJoinNote] = useState("");
 
   const reload = useCallback(() => setReloadToken((value) => value + 1), []);
 
@@ -95,27 +100,52 @@ export default function GuildsPage() {
     [guilds, serverFilter],
   );
 
+  const beginJoin = (guild: Guild) => {
+    setJoinGuildId(guild.id);
+    setJoinNote("");
+    setError("");
+  };
+
+  const cancelJoin = () => {
+    setJoinGuildId(null);
+    setJoinNote("");
+  };
+
   const requestJoin = async (guild: Guild) => {
     if (!supabase || !session) return;
     setBusyId(guild.id);
     setError("");
+    const note = normalizeGuildRequestNote(joinNote);
     const existing = membershipByGuild.get(guild.id);
     if (existing?.status === "rejected") {
       const { error: updateError } = await supabase
         .from("guild_memberships")
-        .update({ status: "pending", requested_at: new Date().toISOString(), decided_at: null, decided_by: null })
+        .update({
+          status: "pending",
+          request_note: note,
+          requested_at: new Date().toISOString(),
+          decided_at: null,
+          decided_by: null,
+        })
         .eq("guild_id", guild.id)
         .eq("user_id", session.userId);
       if (updateError) setError(updateError.message);
-      else reload();
+      else {
+        cancelJoin();
+        reload();
+      }
     } else {
       const { error: insertError } = await supabase.from("guild_memberships").insert({
         guild_id: guild.id,
         user_id: session.userId,
         status: "pending",
+        request_note: note,
       });
       if (insertError) setError(insertError.message);
-      else reload();
+      else {
+        cancelJoin();
+        reload();
+      }
     }
     setBusyId(null);
   };
@@ -189,6 +219,8 @@ export default function GuildsPage() {
             const blockedByOther =
               Boolean(openMembership) && openMembership?.guild_id !== guild.id && !canManage;
             const busy = busyId === guild.id;
+            const drafting = joinGuildId === guild.id;
+            const noteId = `${ids}-note-${guild.id}`;
             const statusLabel = isDiscordMaster
               ? t.guilds.master
               : isSiteAdmin
@@ -223,6 +255,22 @@ export default function GuildsPage() {
                     <p className="guild-meta mono">
                       {t.guilds.masterIdLabel}: {guild.master_discord_user_id}
                     </p>
+                  ) : null}
+                  {drafting ? (
+                    <div className="guild-join-form">
+                      <div className="field">
+                        <label htmlFor={noteId}>{t.guilds.requestNoteLabel}</label>
+                        <textarea
+                          id={noteId}
+                          value={joinNote}
+                          maxLength={GUILD_REQUEST_NOTE_MAX}
+                          rows={3}
+                          placeholder={t.guilds.requestNotePlaceholder}
+                          onChange={(e) => setJoinNote(e.target.value)}
+                        />
+                        <p className="label-note">{t.guilds.requestNoteHint}</p>
+                      </div>
+                    </div>
                   ) : null}
                 </div>
                 <div className="guild-card-actions">
@@ -265,12 +313,27 @@ export default function GuildsPage() {
                       {t.auth.signIn}
                     </button>
                   )}
-                  {!canEnter && !isPending && !blockedByOther && session && (
+                  {!canEnter && !isPending && !blockedByOther && session && drafting && (
+                    <>
+                      <button
+                        className="button button-primary"
+                        type="button"
+                        disabled={busy}
+                        onClick={() => void requestJoin(guild)}
+                      >
+                        {t.guilds.requestSend}
+                      </button>
+                      <button className="small-button" type="button" disabled={busy} onClick={cancelJoin}>
+                        {t.guilds.requestCancel}
+                      </button>
+                    </>
+                  )}
+                  {!canEnter && !isPending && !blockedByOther && session && !drafting && (
                     <button
                       className="button button-primary"
                       type="button"
                       disabled={busy}
-                      onClick={() => void requestJoin(guild)}
+                      onClick={() => beginJoin(guild)}
                     >
                       {isRejected ? t.guilds.reapply : t.guilds.join}
                     </button>

@@ -6,13 +6,16 @@ import { usePathname } from "next/navigation";
 import { GuildRichTextEditor, GuildRichTextView } from "./GuildRichText";
 import { guildPostHtml, sanitizeGuildHtml } from "../../lib/content/guild-rich-text";
 import {
+  GUILD_DISPLAY_NAME_MAX,
   GUILD_ICON_BUCKET,
   guildIconObjectPath,
   guildIconPublicUrl,
   guildListHref,
   guildRoomHref,
+  guildRosterLabel,
   isGuildIconFile,
   isGuildMasterOf,
+  normalizeGuildDisplayName,
   readGuildSlugParam,
   type Guild,
   type GuildMembership,
@@ -23,11 +26,12 @@ import {
 import { getSupabaseBrowserClient } from "../../lib/supabase/client";
 import { useAuth } from "../components/AuthProvider";
 import { useDocumentTitle, useLocale } from "../components/LocaleProvider";
-import { GuildsIcon, PenIcon, PlusIcon, TrashIcon } from "../components/Icons";
+import { GearIcon, GuildsIcon, InboxIcon, PenIcon, PlusIcon, TrashIcon } from "../components/Icons";
 import { SignInCard } from "../components/SignInGate";
 import { PageHead, SectionBanner } from "../components/Ui";
 
-type PendingRow = Pick<GuildMembership, "guild_id" | "user_id" | "status" | "requested_at">;
+type PendingRow = Pick<GuildMembership, "guild_id" | "user_id" | "status" | "request_note" | "requested_at">;
+type ManagePanel = "requests" | "settings" | null;
 
 function subscribeSearch(onChange: () => void) {
   window.addEventListener("popstate", onChange);
@@ -60,12 +64,6 @@ function GuildMark({ guild }: { guild: Guild }) {
   );
 }
 
-function formatDiscordId(id: string | null | undefined): string {
-  if (!id) return "—";
-  if (id.length <= 10) return id;
-  return `${id.slice(0, 4)}…${id.slice(-4)}`;
-}
-
 export function GuildRoom({ tab }: { tab: GuildTab }) {
   const { t, d } = useLocale();
   const { session, loading: authLoading } = useAuth();
@@ -94,6 +92,9 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
   const [editName, setEditName] = useState("");
   const [editServer, setEditServer] = useState("");
   const [iconFile, setIconFile] = useState<File | null>(null);
+  const [managePanel, setManagePanel] = useState<ManagePanel>(null);
+  const [editingDisplayName, setEditingDisplayName] = useState(false);
+  const [displayNameDraft, setDisplayNameDraft] = useState("");
 
   const reload = useCallback(() => setReloadToken((value) => value + 1), []);
 
@@ -151,7 +152,7 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
       if (canManage) {
         const queue = await supabase
           .from("guild_memberships")
-          .select("guild_id, user_id, status, requested_at")
+          .select("guild_id, user_id, status, request_note, requested_at")
           .eq("guild_id", nextGuild.id)
           .eq("status", "pending")
           .order("requested_at");
@@ -340,6 +341,27 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
     setBusy(false);
   };
 
+  const startEditDisplayName = (entry: GuildRosterEntry) => {
+    setDisplayNameDraft(entry.display_name?.trim() || "");
+    setEditingDisplayName(true);
+  };
+
+  const saveDisplayName = async () => {
+    if (!supabase || !guild) return;
+    setBusy(true);
+    setError("");
+    const { error: rpcError } = await supabase.rpc("set_guild_display_name", {
+      p_guild_id: guild.id,
+      p_name: normalizeGuildDisplayName(displayNameDraft),
+    });
+    if (rpcError) setError(rpcError.message);
+    else {
+      setEditingDisplayName(false);
+      reload();
+    }
+    setBusy(false);
+  };
+
   if (!slug) {
     return (
       <>
@@ -424,11 +446,31 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
             {t.guilds.planung}
           </Link>
         </nav>
-        {(isDiscordMaster || isSiteAdmin) && (
-          <span className={isDiscordMaster ? "pill pill-gold" : "pill status"}>
-            {isDiscordMaster ? t.guilds.master : t.guilds.siteAdmin}
-          </span>
-        )}
+        {canManage ? (
+          <div className="guild-room-tools">
+            <button
+              type="button"
+              className={managePanel === "requests" ? "icon-button is-open" : "icon-button"}
+              aria-label={t.guilds.requestsOpen}
+              aria-expanded={managePanel === "requests"}
+              aria-controls={`${ids}-requests`}
+              onClick={() => setManagePanel((open) => (open === "requests" ? null : "requests"))}
+            >
+              <InboxIcon className="icon" />
+              {pending.length > 0 ? <span className="guild-action-dot" aria-hidden="true" /> : null}
+            </button>
+            <button
+              type="button"
+              className={managePanel === "settings" ? "icon-button is-open" : "icon-button"}
+              aria-label={t.guilds.settingsOpen}
+              aria-expanded={managePanel === "settings"}
+              aria-controls={`${ids}-settings`}
+              onClick={() => setManagePanel((open) => (open === "settings" ? null : "settings"))}
+            >
+              <GearIcon className="icon" />
+            </button>
+          </div>
+        ) : null}
       </div>
 
       {error && (
@@ -442,104 +484,109 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
         </p>
       )}
 
-      <div className="guild-room-layout">
-        <div className="guild-room-main">
-          {canManage && (
-            <section className="guild-panel">
-              <header className="guild-panel-head">
-                <h2>{t.guilds.settingsTitle}</h2>
-              </header>
-              <div className="guild-settings">
-                <div className="field">
-                  <label htmlFor={`${ids}-name`}>{t.guilds.nameLabel}</label>
-                  <input
-                    id={`${ids}-name`}
-                    value={editName}
-                    maxLength={80}
-                    onChange={(e) => setEditName(e.target.value)}
-                  />
-                </div>
-                <div className="field">
-                  <label htmlFor={`${ids}-server`}>{t.guilds.serverLabel}</label>
-                  <input
-                    id={`${ids}-server`}
-                    value={editServer}
-                    maxLength={80}
-                    placeholder="S9 - Garden"
-                    onChange={(e) => setEditServer(e.target.value)}
-                  />
-                </div>
-                <div className="field">
-                  <label htmlFor={`${ids}-icon`}>{t.guilds.iconChange}</label>
-                  <input
-                    id={`${ids}-icon`}
-                    type="file"
-                    accept="image/png,image/jpeg,image/webp"
-                    onChange={(e) => setIconFile(e.target.files?.[0] ?? null)}
-                  />
-                </div>
-                <div className="guild-settings-actions">
-                  <button
-                    className="button button-primary"
-                    type="button"
-                    disabled={busy || editName.trim().length < 2}
-                    onClick={() => void saveSettings()}
-                  >
-                    {t.guilds.settingsSave}
-                  </button>
-                  {guild.icon_path ? (
+      {canManage && managePanel === "requests" ? (
+        <section className="guild-panel guild-manage-panel" id={`${ids}-requests`}>
+          <header className="guild-panel-head">
+            <h2>{t.guilds.pendingTitle}</h2>
+            <span className="count">{pending.length}</span>
+          </header>
+          {pending.length === 0 ? (
+            <p className="guild-panel-empty">{t.guilds.pendingEmpty}</p>
+          ) : (
+            <ul className="guild-pending-list">
+              {pending.map((row) => (
+                <li key={row.user_id}>
+                  <div className="guild-pending-meta">
+                    <span className="mono">{row.user_id.slice(0, 8)}…</span>
+                    <p className="guild-pending-note">
+                      {row.request_note.trim() || t.guilds.requestNoteEmpty}
+                    </p>
+                  </div>
+                  <span className="guild-pending-actions">
                     <button
-                      className="small-button"
+                      className="small-button button-primary"
                       type="button"
                       disabled={busy}
-                      onClick={() => void removeIcon()}
+                      onClick={() => void decide(row.user_id, "active")}
                     >
-                      {t.guilds.iconRemove}
+                      {t.guilds.approve}
                     </button>
-                  ) : null}
-                </div>
-              </div>
-            </section>
+                    <button
+                      className="small-button button-danger"
+                      type="button"
+                      disabled={busy}
+                      onClick={() => void decide(row.user_id, "rejected")}
+                    >
+                      {t.guilds.reject}
+                    </button>
+                  </span>
+                </li>
+              ))}
+            </ul>
           )}
+        </section>
+      ) : null}
 
-          {canManage && (
-            <section className="guild-panel guild-pending">
-              <header className="guild-panel-head">
-                <h2>{t.guilds.pendingTitle}</h2>
-                <span className="count">{pending.length}</span>
-              </header>
-              {pending.length === 0 ? (
-                <p className="guild-panel-empty">{t.guilds.pendingEmpty}</p>
-              ) : (
-                <ul className="guild-pending-list">
-                  {pending.map((row) => (
-                    <li key={row.user_id}>
-                      <span className="mono">{row.user_id.slice(0, 8)}…</span>
-                      <span className="guild-pending-actions">
-                        <button
-                          className="small-button button-primary"
-                          type="button"
-                          disabled={busy}
-                          onClick={() => void decide(row.user_id, "active")}
-                        >
-                          {t.guilds.approve}
-                        </button>
-                        <button
-                          className="small-button button-danger"
-                          type="button"
-                          disabled={busy}
-                          onClick={() => void decide(row.user_id, "rejected")}
-                        >
-                          {t.guilds.reject}
-                        </button>
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </section>
-          )}
+      {canManage && managePanel === "settings" ? (
+        <section className="guild-panel guild-manage-panel" id={`${ids}-settings`}>
+          <header className="guild-panel-head">
+            <h2>{t.guilds.settingsTitle}</h2>
+          </header>
+          <div className="guild-settings">
+            <div className="field">
+              <label htmlFor={`${ids}-name`}>{t.guilds.nameLabel}</label>
+              <input
+                id={`${ids}-name`}
+                value={editName}
+                maxLength={80}
+                onChange={(e) => setEditName(e.target.value)}
+              />
+            </div>
+            <div className="field">
+              <label htmlFor={`${ids}-server`}>{t.guilds.serverLabel}</label>
+              <input
+                id={`${ids}-server`}
+                value={editServer}
+                maxLength={80}
+                placeholder="S9 - Garden"
+                onChange={(e) => setEditServer(e.target.value)}
+              />
+            </div>
+            <div className="field">
+              <label htmlFor={`${ids}-icon`}>{t.guilds.iconChange}</label>
+              <input
+                id={`${ids}-icon`}
+                type="file"
+                accept="image/png,image/jpeg,image/webp"
+                onChange={(e) => setIconFile(e.target.files?.[0] ?? null)}
+              />
+            </div>
+            <div className="guild-settings-actions">
+              <button
+                className="button button-primary"
+                type="button"
+                disabled={busy || editName.trim().length < 2}
+                onClick={() => void saveSettings()}
+              >
+                {t.guilds.settingsSave}
+              </button>
+              {guild.icon_path ? (
+                <button
+                  className="small-button"
+                  type="button"
+                  disabled={busy}
+                  onClick={() => void removeIcon()}
+                >
+                  {t.guilds.iconRemove}
+                </button>
+              ) : null}
+            </div>
+          </div>
+        </section>
+      ) : null}
 
+      <div className="guild-room-layout">
+        <div className="guild-room-main">
           {canManage && !composing && (
             <div className="guild-compose-trigger">
               <button
@@ -661,14 +708,67 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
             <ul className="guild-roster-list">
               {roster.map((entry, index) => {
                 const key = entry.user_id ?? entry.discord_user_id ?? String(index);
-                const isYou = Boolean(entry.user_id && entry.user_id === session.userId);
+                const isYou = Boolean(
+                  (entry.user_id && entry.user_id === session.userId)
+                  || (!entry.user_id && entry.is_master && isDiscordMaster),
+                );
+                const editingYou = isYou && editingDisplayName;
                 return (
                   <li key={key}>
-                    <span className="guild-roster-id mono">{formatDiscordId(entry.discord_user_id)}</span>
-                    <span className="guild-roster-tags">
-                      {entry.is_master ? <span className="pill pill-gold">{t.guilds.master}</span> : null}
-                      {isYou ? <span className="pill">{t.guilds.membersYou}</span> : null}
-                    </span>
+                    {editingYou ? (
+                      <div className="guild-roster-edit">
+                        <label className="visually-hidden" htmlFor={`${ids}-display-name`}>
+                          {t.guilds.displayNameLabel}
+                        </label>
+                        <input
+                          id={`${ids}-display-name`}
+                          value={displayNameDraft}
+                          maxLength={GUILD_DISPLAY_NAME_MAX}
+                          placeholder={t.guilds.displayNamePlaceholder}
+                          autoComplete="nickname"
+                          onChange={(e) => setDisplayNameDraft(e.target.value)}
+                        />
+                        <div className="guild-roster-edit-actions">
+                          <button
+                            className="small-button button-primary"
+                            type="button"
+                            disabled={busy}
+                            onClick={() => void saveDisplayName()}
+                          >
+                            {t.guilds.displayNameSave}
+                          </button>
+                          <button
+                            className="small-button"
+                            type="button"
+                            disabled={busy}
+                            onClick={() => setEditingDisplayName(false)}
+                          >
+                            {t.guilds.postCancel}
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <>
+                        <span className={entry.display_name?.trim() ? "guild-roster-name" : "guild-roster-id mono"}>
+                          {guildRosterLabel(entry)}
+                        </span>
+                        <span className="guild-roster-tags">
+                          {entry.is_master ? <span className="pill pill-gold">{t.guilds.master}</span> : null}
+                          {isYou ? <span className="pill">{t.guilds.membersYou}</span> : null}
+                          {isYou ? (
+                            <button
+                              className="icon-button guild-roster-edit-btn"
+                              type="button"
+                              disabled={busy}
+                              aria-label={t.guilds.displayNameEdit}
+                              onClick={() => startEditDisplayName(entry)}
+                            >
+                              <PenIcon className="icon icon-sm" />
+                            </button>
+                          ) : null}
+                        </span>
+                      </>
+                    )}
                   </li>
                 );
               })}
