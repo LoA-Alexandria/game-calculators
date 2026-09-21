@@ -15,6 +15,7 @@ import {
 import { getSupabaseBrowserClient } from "../../lib/supabase/client";
 import { useAuth } from "../components/AuthProvider";
 import { useDocumentTitle, useLocale } from "../components/LocaleProvider";
+import { GuildsIcon } from "../components/Icons";
 import { SignInCard } from "../components/SignInGate";
 import { PageHead, SectionBanner } from "../components/Ui";
 
@@ -91,9 +92,9 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
       if (mine.error) setError(mine.error.message);
       else setMembership(mine.data ? { status: mine.data.status as GuildMembership["status"] } : null);
 
-      const isMaster =
+      const canManage =
         isGuildMasterOf(nextGuild, session.discordUserId) || session.role === "admin";
-      if (isMaster) {
+      if (canManage) {
         const queue = await supabase
           .from("guild_memberships")
           .select("guild_id, user_id, status, requested_at")
@@ -136,8 +137,8 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
       <>
         <SectionBanner id="guilds" />
         <PageHead title={t.guilds.title} lede={t.guilds.noSlug} />
-        <Link className="small-button" href={guildListHref()}>
-          {t.guilds.backToList}
+        <Link className="guild-back" href={guildListHref()}>
+          ← {t.guilds.backToList}
         </Link>
       </>
     );
@@ -159,30 +160,32 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
       <>
         <SectionBanner id="guilds" />
         <PageHead title={t.guilds.title} lede={t.guilds.notFound} />
-        <Link className="small-button" href={guildListHref()}>
-          {t.guilds.backToList}
+        <Link className="guild-back" href={guildListHref()}>
+          ← {t.guilds.backToList}
         </Link>
       </>
     );
   }
 
-  const isMaster = isGuildMasterOf(guild, session.discordUserId) || session.role === "admin";
-  const canEnter = isMaster || membership?.status === "active";
+  const isDiscordMaster = isGuildMasterOf(guild, session.discordUserId);
+  const isSiteAdmin = session.role === "admin";
+  const canManage = isDiscordMaster || isSiteAdmin;
+  const canEnter = canManage || membership?.status === "active";
 
   if (!canEnter) {
     return (
       <>
         <SectionBanner id="guilds" />
         <PageHead eyebrow={guild.name} title={t.guilds.title} lede={t.guilds.roomGate} />
-        <Link className="small-button" href={guildListHref()}>
-          {t.guilds.backToList}
+        <Link className="guild-back" href={guildListHref()}>
+          ← {t.guilds.backToList}
         </Link>
       </>
     );
   }
 
   return (
-    <>
+    <div className="guild-room">
       <SectionBanner id="guilds" />
       <PageHead
         eyebrow={t.nav.guilds}
@@ -190,22 +193,29 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
         lede={guild.description || t.navDescriptions.guilds}
       />
 
-      <nav className="guild-tabs" aria-label={guild.name}>
-        <Link
-          className={tab === "news" ? "guild-tab is-active" : "guild-tab"}
-          href={guildRoomHref(guild.slug, "news")}
-          aria-current={tab === "news" ? "page" : undefined}
-        >
-          {t.guilds.news}
-        </Link>
-        <Link
-          className={tab === "planung" ? "guild-tab is-active" : "guild-tab"}
-          href={guildRoomHref(guild.slug, "planung")}
-          aria-current={tab === "planung" ? "page" : undefined}
-        >
-          {t.guilds.planung}
-        </Link>
-      </nav>
+      <div className="guild-room-toolbar">
+        <nav className="guild-tabs" aria-label={guild.name}>
+          <Link
+            className={tab === "news" ? "guild-tab is-active" : "guild-tab"}
+            href={guildRoomHref(guild.slug, "news")}
+            aria-current={tab === "news" ? "page" : undefined}
+          >
+            {t.guilds.news}
+          </Link>
+          <Link
+            className={tab === "planung" ? "guild-tab is-active" : "guild-tab"}
+            href={guildRoomHref(guild.slug, "planung")}
+            aria-current={tab === "planung" ? "page" : undefined}
+          >
+            {t.guilds.planung}
+          </Link>
+        </nav>
+        {(isDiscordMaster || isSiteAdmin) && (
+          <span className={isDiscordMaster ? "pill pill-gold" : "pill status"}>
+            {isDiscordMaster ? t.guilds.master : t.guilds.siteAdmin}
+          </span>
+        )}
+      </div>
 
       {error && (
         <p className="result-error" role="alert">
@@ -213,11 +223,14 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
         </p>
       )}
 
-      {isMaster && (
-        <section className="panel guild-pending">
-          <h2>{t.guilds.pendingTitle}</h2>
+      {canManage && (
+        <section className="guild-panel guild-pending">
+          <header className="guild-panel-head">
+            <h2>{t.guilds.pendingTitle}</h2>
+            <span className="count">{pending.length}</span>
+          </header>
           {pending.length === 0 ? (
-            <p className="muted">{t.guilds.pendingEmpty}</p>
+            <p className="guild-panel-empty">{t.guilds.pendingEmpty}</p>
           ) : (
             <ul className="guild-pending-list">
               {pending.map((row) => (
@@ -248,16 +261,20 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
         </section>
       )}
 
-      <section className="panel">
-        <h2>{tab === "news" ? t.guilds.news : t.guilds.planung}</h2>
-        <p>{tab === "news" ? t.guilds.newsEmpty : t.guilds.planungEmpty}</p>
+      <section className="guild-panel">
+        <header className="guild-panel-head">
+          <h2>{tab === "news" ? t.guilds.news : t.guilds.planung}</h2>
+        </header>
+        <div className="guild-empty">
+          <GuildsIcon className="icon guild-empty-icon" />
+          <strong>{t.guilds.emptyTitle}</strong>
+          <p>{tab === "news" ? t.guilds.newsEmpty : t.guilds.planungEmpty}</p>
+        </div>
       </section>
 
-      <p>
-        <Link className="small-button" href={guildListHref()}>
-          {t.guilds.backToList}
-        </Link>
-      </p>
-    </>
+      <Link className="guild-back" href={guildListHref()}>
+        ← {t.guilds.backToList}
+      </Link>
+    </div>
   );
 }

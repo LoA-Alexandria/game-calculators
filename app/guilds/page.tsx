@@ -11,7 +11,7 @@ import {
 import { getSupabaseBrowserClient } from "../../lib/supabase/client";
 import { useAuth } from "../components/AuthProvider";
 import { useDocumentTitle, useLocale } from "../components/LocaleProvider";
-import { DiscordIcon } from "../components/Icons";
+import { DiscordIcon, GuildsIcon } from "../components/Icons";
 import { PageHead, SectionBanner } from "../components/Ui";
 
 type OwnMembership = Pick<GuildMembership, "guild_id" | "status">;
@@ -113,6 +113,8 @@ export default function GuildsPage() {
     setBusyId(null);
   };
 
+  const isSiteAdmin = session?.role === "admin";
+
   return (
     <>
       <SectionBanner id="guilds" />
@@ -136,32 +138,54 @@ export default function GuildsPage() {
         <div className="guild-list">
           {guilds.map((guild) => {
             const membership = membershipByGuild.get(guild.id);
-            const isMaster =
-              isGuildMasterOf(guild, session?.discordUserId) || session?.role === "admin";
-            const isActive = membership?.status === "active" || isMaster;
+            const isDiscordMaster = isGuildMasterOf(guild, session?.discordUserId);
+            const canManage = isDiscordMaster || isSiteAdmin;
+            const isActiveMember = membership?.status === "active";
+            const canEnter = canManage || isActiveMember;
             const isPending = membership?.status === "pending";
             const isRejected = membership?.status === "rejected";
             const blockedByOther =
-              Boolean(openMembership) && openMembership?.guild_id !== guild.id && !isMaster;
+              Boolean(openMembership) && openMembership?.guild_id !== guild.id && !canManage;
             const busy = busyId === guild.id;
+            const statusLabel = isDiscordMaster
+              ? t.guilds.master
+              : isSiteAdmin
+                ? t.guilds.siteAdmin
+                : isActiveMember
+                  ? t.guilds.member
+                  : null;
+            const statusClass = isDiscordMaster
+              ? "pill pill-gold"
+              : isSiteAdmin
+                ? "pill status"
+                : isActiveMember
+                  ? "pill pill-good"
+                  : "";
 
             return (
               <article className="guild-card" key={guild.id}>
+                <div className="guild-card-mark" aria-hidden="true">
+                  <GuildsIcon className="icon" />
+                </div>
                 <div className="guild-card-body">
-                  <h2>{guild.name}</h2>
-                  {guild.description ? <p>{guild.description}</p> : null}
-                  <p className="guild-meta mono">
-                    {t.guilds.masterIdLabel}: {guild.master_discord_user_id}
-                  </p>
+                  <div className="guild-card-top">
+                    <h2>{guild.name}</h2>
+                    {statusLabel ? <span className={statusClass}>{statusLabel}</span> : null}
+                  </div>
+                  {guild.description ? <p className="guild-card-desc">{guild.description}</p> : null}
+                  {isSiteAdmin ? (
+                    <p className="guild-meta mono">
+                      {t.guilds.masterIdLabel}: {guild.master_discord_user_id}
+                    </p>
+                  ) : null}
                 </div>
                 <div className="guild-card-actions">
-                  {isActive && (
+                  {canEnter && (
                     <>
-                      <span className="pill">{isMaster ? t.guilds.master : t.guilds.member}</span>
                       <Link className="button button-primary" href={guildRoomHref(guild.slug)}>
                         {t.guilds.openRoom}
                       </Link>
-                      {membership?.status === "active" && !isMaster && (
+                      {isActiveMember && !canManage && (
                         <button
                           className="small-button"
                           type="button"
@@ -173,7 +197,7 @@ export default function GuildsPage() {
                       )}
                     </>
                   )}
-                  {!isActive && isPending && (
+                  {!canEnter && isPending && (
                     <>
                       <span className="pill">{t.guilds.pending}</span>
                       <button
@@ -186,16 +210,16 @@ export default function GuildsPage() {
                       </button>
                     </>
                   )}
-                  {!isActive && !isPending && blockedByOther && (
+                  {!canEnter && !isPending && blockedByOther && (
                     <span className="pill pill-warn">{t.guilds.otherGuild}</span>
                   )}
-                  {!isActive && !isPending && !blockedByOther && !session && (
+                  {!canEnter && !isPending && !blockedByOther && !session && (
                     <button className="button button-primary" type="button" onClick={() => void signIn()}>
                       <DiscordIcon className="icon" />
                       {t.auth.signIn}
                     </button>
                   )}
-                  {!isActive && !isPending && !blockedByOther && session && (
+                  {!canEnter && !isPending && !blockedByOther && session && (
                     <button
                       className="button button-primary"
                       type="button"
