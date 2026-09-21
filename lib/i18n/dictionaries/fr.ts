@@ -1384,7 +1384,7 @@ const fr: Dictionary = {
       note: "Les coûts du manoir et les seuils de population seront ajoutés une fois vérifiés contre le client actuel.",
     },
     adsBuy: {
-      title: "Werbung / Buy",
+      title: "Publicités / Achats",
       summary: "Priorités pubs quotidiennes, et ce qui vaut d’être acheté en argent réel.",
       intro:
         "Par Autumn. Acheter l’ad-free est sans doute plus sain — utilisez ce guide si ce n’est pas possible, et pour des priorités d’achat claires.",
@@ -3900,6 +3900,32 @@ const fr: Dictionary = {
       "Supprimez le bloc guideEntries de chaque dictionnaire, puis la ligne de navigation et le dossier de page de ce slug.",
     removeOutput: "Notes de retrait",
     cancel: "Retour",
+  },
+  textGuideEditor: {
+    title: "Modifier ce guide",
+    lede: "Modifiez le texte dans chaque langue. La page au-dessus montre votre brouillon pendant la saisie.",
+    close: "Fermer l’éditeur",
+    reset: "Annuler les modifications",
+    changedIn: "Modifié : {languages}",
+    unchanged: "Aucune modification pour l’instant",
+    moveUp: "Monter la section",
+    moveDown: "Descendre la section",
+    pictureAlt: "Description de l’image",
+    pictureNote: "l’image reste, seule sa description change",
+    previewNote: "Le site est statique : aucun serveur n’enregistre quoi que ce soit. Votre brouillon reste dans ce navigateur ; copiez les blocs ci-dessous et committez-les pour le publier.",
+    exportTitle: "Blocs à committer",
+    exportLede: "Un bloc par langue modifiée. Remplacez {entry} dans ce fichier par ce bloc.",
+    exportEmpty: "Modifiez un champ et les blocs à committer apparaissent ici.",
+    files: "Les dictionnaires : {files}.",
+    fields: {
+      credit: "Source",
+      creditDate: "Date",
+      status: "Statut",
+      adsHeading: "Titre · publicités",
+      adsLede: "Introduction · publicités",
+      spendHeading: "Titre · achats",
+      spendLede: "Introduction · achats",
+    },
   },
   eventGuideEntries: {
     atlantis: {
