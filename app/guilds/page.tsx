@@ -187,28 +187,29 @@ export default function GuildsPage() {
         </div>
       )}
 
-      {supabase && guilds.length > 0 && (
-        <div className="guild-filter">
-          <SearchIcon className="icon" />
-          <input
-            type="search"
-            value={serverFilter}
-            autoComplete="off"
-            spellCheck={false}
-            aria-label={t.guilds.serverFilterLabel}
-            placeholder={t.guilds.serverFilterPlaceholder}
-            onChange={(e) => setServerFilter(e.target.value)}
-          />
-        </div>
-      )}
+      <div className="guilds-browse">
+        {supabase && guilds.length > 0 && (
+          <div className="guild-filter">
+            <SearchIcon className="icon" />
+            <input
+              type="search"
+              value={serverFilter}
+              autoComplete="off"
+              spellCheck={false}
+              aria-label={t.guilds.serverFilterLabel}
+              placeholder={t.guilds.serverFilterPlaceholder}
+              onChange={(e) => setServerFilter(e.target.value)}
+            />
+          </div>
+        )}
 
-      {supabase && guilds.length === 0 ? (
-        <div className="empty-state">{authLoading ? t.guilds.loading : t.guilds.empty}</div>
-      ) : visibleGuilds.length === 0 ? (
-        <div className="empty-state">{t.guilds.serverFilterEmpty}</div>
-      ) : (
-        <div className="guild-list">
-          {visibleGuilds.map((guild) => {
+        {supabase && guilds.length === 0 ? (
+          <div className="empty-state">{authLoading ? t.guilds.loading : t.guilds.empty}</div>
+        ) : visibleGuilds.length === 0 && guilds.length > 0 ? (
+          <div className="empty-state">{t.guilds.serverFilterEmpty}</div>
+        ) : visibleGuilds.length > 0 ? (
+          <div className="guild-list">
+            {visibleGuilds.map((guild) => {
             const membership = membershipByGuild.get(guild.id);
             const isDiscordMaster = isGuildMasterOf(guild, session?.discordUserId);
             const canManage = isDiscordMaster || isSiteAdmin;
@@ -342,8 +343,9 @@ export default function GuildsPage() {
               </article>
             );
           })}
-        </div>
-      )}
+          </div>
+        ) : null}
+      </div>
 
       {supabase && !session && !authLoading && guilds.length > 0 && (
         <p className="assumption">{t.guilds.signInToJoin}</p>

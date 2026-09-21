@@ -588,22 +588,6 @@ p { margin: 0; }
   background: var(--gold-hi);
   transform: translateY(-50%);
 }
-.rail-count {
-  position: absolute;
-  top: 6px;
-  right: 6px;
-  min-width: 16px;
-  height: 16px;
-  padding: 0 4px;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--gold) 88%, #000);
-  color: #1a1208;
-  font-family: var(--font-mono);
-  font-size: .58rem;
-  font-weight: 700;
-  line-height: 16px;
-  text-align: center;
-}
 
 .rail-foot {
   display: flex;
@@ -6780,17 +6764,25 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
   border: 1px solid var(--line);
 }
 
+.guilds-browse {
+  width: 100%;
+  display: grid;
+  gap: 14px;
+}
 .guild-list {
   display: grid;
   gap: 14px;
-  margin-top: 6px;
+  width: 100%;
+  margin: 0;
 }
 .guild-filter {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin: 4px 0 14px;
+  width: 100%;
+  margin: 0;
   padding: 10px 14px;
+  box-sizing: border-box;
   border: 1px solid var(--line);
   border-radius: var(--r-md);
   background: var(--surface);
@@ -6810,7 +6802,6 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
   font: inherit;
   outline: none;
 }
-.guild-compose-trigger { margin-bottom: 2px; }
 
 .guild-rt { display: grid; gap: 8px; }
 .guild-rt-toolbar {
@@ -7011,7 +7002,32 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
   box-shadow: 0 0 0 2px var(--surface);
 }
 .guild-manage-panel {
-  margin-bottom: 4px;
+  margin-bottom: 16px;
+}
+.guild-compose-trigger {
+  margin-bottom: 16px;
+}
+.guild-room-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 280px);
+  gap: 16px;
+  align-items: start;
+}
+.guild-room-main {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+  align-content: start;
+}
+.guild-roster {
+  position: sticky;
+  top: calc(var(--topbar) + 14px);
+  align-self: start;
+  padding: 16px 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-1);
 }
 .guild-pending-meta {
   display: grid;
@@ -7190,26 +7206,6 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
   flex-wrap: wrap;
   gap: 8px;
   align-items: center;
-}
-.guild-room-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(220px, 280px);
-  gap: 16px;
-  align-items: start;
-}
-.guild-room-main {
-  display: grid;
-  gap: 16px;
-  min-width: 0;
-}
-.guild-roster {
-  position: sticky;
-  top: calc(var(--topbar) + 14px);
-  padding: 16px 16px 18px;
-  border: 1px solid var(--line);
-  border-radius: var(--r-lg);
-  background: var(--surface);
-  box-shadow: var(--shadow-1);
 }
 .guild-roster-list {
   list-style: none;

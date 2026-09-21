@@ -585,69 +585,69 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
         </section>
       ) : null}
 
-      <div className="guild-room-layout">
-        <div className="guild-room-main">
-          {canManage && !composing && (
-            <div className="guild-compose-trigger">
+      {canManage && !composing && (
+        <div className="guild-compose-trigger">
+          <button
+            className="button button-primary"
+            type="button"
+            onClick={() => {
+              setComposeFor(tab);
+              setEditingId(null);
+              setTitle("");
+              setBody("");
+            }}
+          >
+            <PlusIcon className="icon" />
+            {t.guilds.composeOpen}
+          </button>
+        </div>
+      )}
+
+      {canManage && composing && (
+        <section className="guild-panel guild-manage-panel">
+          <header className="guild-panel-head">
+            <h2>{editingId ? t.guilds.postEdit : tab === "news" ? t.guilds.composeNews : t.guilds.composePlanung}</h2>
+            <button className="small-button" type="button" disabled={busy} onClick={resetComposer}>
+              {t.guilds.composeClose}
+            </button>
+          </header>
+          <div className="guild-compose">
+            <div className="field">
+              <label htmlFor={`${ids}-title`}>{t.guilds.postTitle}</label>
+              <input
+                id={`${ids}-title`}
+                value={title}
+                maxLength={120}
+                onChange={(e) => setTitle(e.target.value)}
+              />
+            </div>
+            <GuildRichTextEditor
+              id={`${ids}-body`}
+              label={t.guilds.postBody}
+              value={body}
+              onChange={setBody}
+              disabled={busy}
+            />
+            <div className="guild-compose-actions">
               <button
                 className="button button-primary"
                 type="button"
-                onClick={() => {
-                  setComposeFor(tab);
-                  setEditingId(null);
-                  setTitle("");
-                  setBody("");
-                }}
+                disabled={busy || !title.trim()}
+                onClick={() => void savePost()}
               >
                 <PlusIcon className="icon" />
-                {t.guilds.composeOpen}
+                {editingId ? t.guilds.postEdit : t.guilds.postAdd}
+              </button>
+              <button className="small-button" type="button" disabled={busy} onClick={resetComposer}>
+                {t.guilds.postCancel}
               </button>
             </div>
-          )}
+          </div>
+        </section>
+      )}
 
-          {canManage && composing && (
-            <section className="guild-panel">
-              <header className="guild-panel-head">
-                <h2>{editingId ? t.guilds.postEdit : tab === "news" ? t.guilds.composeNews : t.guilds.composePlanung}</h2>
-                <button className="small-button" type="button" disabled={busy} onClick={resetComposer}>
-                  {t.guilds.composeClose}
-                </button>
-              </header>
-              <div className="guild-compose">
-                <div className="field">
-                  <label htmlFor={`${ids}-title`}>{t.guilds.postTitle}</label>
-                  <input
-                    id={`${ids}-title`}
-                    value={title}
-                    maxLength={120}
-                    onChange={(e) => setTitle(e.target.value)}
-                  />
-                </div>
-                <GuildRichTextEditor
-                  id={`${ids}-body`}
-                  label={t.guilds.postBody}
-                  value={body}
-                  onChange={setBody}
-                  disabled={busy}
-                />
-                <div className="guild-compose-actions">
-                  <button
-                    className="button button-primary"
-                    type="button"
-                    disabled={busy || !title.trim()}
-                    onClick={() => void savePost()}
-                  >
-                    <PlusIcon className="icon" />
-                    {editingId ? t.guilds.postEdit : t.guilds.postAdd}
-                  </button>
-                  <button className="small-button" type="button" disabled={busy} onClick={resetComposer}>
-                    {t.guilds.postCancel}
-                  </button>
-                </div>
-              </div>
-            </section>
-          )}
-
+      <div className="guild-room-layout">
+        <div className="guild-room-main">
           <section className="guild-panel">
             <header className="guild-panel-head">
               <h2>{tab === "news" ? t.guilds.news : t.guilds.planung}</h2>
