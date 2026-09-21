@@ -2257,6 +2257,26 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
 .collection-edit-preview[data-picture="icon"] img { width: 72px; height: 72px; border-radius: 50%; }
 .collection-edit-preview .hero-edit-badge { position: absolute; top: 4px; right: 4px; }
 
+/* --- Cryptides editor: talent numbers, then per Cryptide its skills and feed --- */
+.cryptide-edit-talent { margin: 0 0 14px; }
+.cryptide-edit-talent h2 { margin: 0 0 2px; font-size: 1rem; }
+.cryptide-edit-talent-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr)); gap: 10px; margin-top: 10px; }
+.cryptide-edit-rows { display: grid; gap: 10px; margin-top: 18px; }
+.cryptide-edit-rows > h3 { margin: 0; font-size: .95rem; }
+.cryptide-edit-rows .section-block + .section-block { margin-top: 0; }
+.cryptide-edit-row .section-block-head code { font-size: .72rem; }
+.cryptide-edit-row-body { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 14px; align-items: start; }
+.cryptide-edit-row-fields { display: grid; gap: 4px; min-width: 0; }
+.cryptide-edit-growth input { max-width: 140px; }
+.collection-edit-picture.is-compact { padding: 0; border: 0; background: none; }
+.collection-edit-picture.is-compact .collection-edit-picture-row { flex-direction: column; align-items: flex-start; gap: 8px; }
+.collection-edit-picture.is-compact .collection-edit-preview { width: 76px; height: 76px; }
+.collection-edit-picture.is-compact .collection-edit-preview img { width: 64px; height: 64px; border-radius: 12px; object-fit: contain; }
+.collection-edit-picture.is-compact .hero-edit-drop { padding: 6px 10px; }
+@media (max-width: 560px) {
+  .cryptide-edit-row-body { grid-template-columns: minmax(0, 1fr); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .collection-card, .collection-card-art img { transition: none; }
   .collection-card:hover, .collection-card:hover .collection-card-art img { transform: none; }

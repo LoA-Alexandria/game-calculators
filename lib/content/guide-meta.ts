@@ -47,7 +47,10 @@ export const GUIDE_PRESENTATION: Record<GuideEntryId, GuidePresentation> = {
     art: ["/goddesses/demeter.webp", "/goddesses/venus.webp", "/goddesses/medusa.webp"],
     editor: { href: "/guides/goddess-leveling/edit/", label: (t) => t.goddessLevelingEditor.openEditor },
   },
-  cryptides: { art: [] },
+  cryptides: {
+    art: ["/cryptides/nidhogg.webp", "/cryptides/caladrius.webp", "/cryptides/cerberus.webp", "/cryptides/sleipnir.webp"],
+    editor: { href: "/guides/cryptides/edit/", label: (t) => t.cryptidesEditor.openEditor },
+  },
   goddessTheater: {
     art: ["/goddess-theater/hamlet.webp", "/goddess-theater/aladdin.webp", "/goddess-theater/frankenstein.webp"],
     editor: { href: "/guides/goddess-theater/edit/", label: (t) => t.theaterEditor.openEditor },

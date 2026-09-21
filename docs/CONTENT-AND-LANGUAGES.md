@@ -820,6 +820,25 @@ Potion, Sleipnir → Horse / Grass.
 Source: in-game screenshots (16 September 2026); talent material map from the
 same pass.
 
+Members with `guides.draft` see **Edit Cryptides** in the guide head, which
+opens `/guides/cryptides/edit/`. The list on the left marks Cryptides that are
+**new** or **changed**; the form edits a Cryptide's names in every language,
+rarity, Tower, talent material and portrait, then its skills (icon, name,
+effect) and its feed (icon, name, growth), each of which can be added, removed
+and moved. The three talent numbers sit above the list, since they hold for
+every Cryptide. Names and texts can be written in every language; numbers and
+pictures are shared, and uploads are shrunk to WebP in the browser (480 px for
+a portrait, 160 px for an icon). The draft, pictures included, is saved in that
+browser only (`localStorage['popepoch-cryptides-draft']`).
+
+**Export** gives the complete `lib/data/cryptides.json`, the new pictures with
+the path each belongs at (`<id>.webp`, `skills/<id>-<n>.webp`,
+`foods/<id>-<n>.webp`), the files nothing uses any more, and a `cryptideTexts`
+block for each dictionary whose texts changed. A new Cryptide, skill or food
+takes its id from the English name. `tests/cryptides-editor.test.mjs` checks
+that an untouched draft exports the JSON byte for byte and every language's
+texts unchanged.
+
 
 ## Editing anecdotes
 
