@@ -30,10 +30,18 @@ export type GuildMembership = {
   guild_id: string;
   user_id: string;
   status: GuildMembershipStatus;
+  request_note: string;
   requested_at: string;
   decided_at: string | null;
   decided_by: string | null;
 };
+
+export const GUILD_REQUEST_NOTE_MAX = 280;
+
+/** Trim and clamp an applicant note for insert/update. */
+export function normalizeGuildRequestNote(value: string): string {
+  return value.trim().slice(0, GUILD_REQUEST_NOTE_MAX);
+}
 
 export type GuildTab = "news" | "planung";
 
