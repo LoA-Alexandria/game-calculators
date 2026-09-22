@@ -49,19 +49,32 @@ Deno.serve(async (request) => {
   const { providerToken } = await request.json();
   if (typeof providerToken !== "string" || !providerToken) return Response.json({ error: "Discord authorization needs refreshing" }, { status: 400, headers });
 
-  const discordResponse = await fetch(`https://discord.com/api/v10/users/@me/guilds/${GUILD_ID}/member`, {
+  const profileResponse = await fetch("https://discord.com/api/v10/users/@me", {
     headers: { Authorization: `Bearer ${providerToken}` },
   });
-  if (!discordResponse.ok) return Response.json({ error: "Could not verify Discord membership" }, { status: 403, headers });
+  if (!profileResponse.ok) return Response.json({ error: "Could not verify the Discord identity" }, { status: 403, headers });
+  const profile = await profileResponse.json() as { id?: string };
+  const discordUserId = profile.id;
 
-  const member = await discordResponse.json() as { roles: string[]; user?: { id: string } };
-  const discordUserId = member.user?.id;
   const identityIds = new Set([
     user.user_metadata?.provider_id,
     user.user_metadata?.sub,
     ...(user.identities ?? []).flatMap((identity) => [identity.identity_data?.provider_id, identity.identity_data?.sub]),
   ].filter((value): value is string => typeof value === "string"));
   if (!discordUserId || !identityIds.has(discordUserId)) return Response.json({ error: "Discord identity mismatch" }, { status: 403, headers });
+
+  // The site editor roles live in the Pop Epoch server. A member who signs in
+  // from another server can still use public features such as that server's
+  // Benben, but receives no editor role here.
+  const memberResponse = await fetch(`https://discord.com/api/v10/users/@me/guilds/${GUILD_ID}/member`, {
+    headers: { Authorization: `Bearer ${providerToken}` },
+  });
+  if (!memberResponse.ok && memberResponse.status !== 403 && memberResponse.status !== 404) {
+    return Response.json({ error: "Could not verify Discord membership" }, { status: 503, headers });
+  }
+  const member = memberResponse.ok
+    ? await memberResponse.json() as { roles: string[] }
+    : { roles: [] };
 
   const adminClient = createClient(supabaseUrl, serviceRoleKey);
 

@@ -7742,3 +7742,79 @@ button.calendar-day:hover { background: var(--surface-2); }
   .layout-root { transition: none; }
   .layout-root.is-nav-collapsed .nav-panel { transform: none; }
 }
+/* Benben, the communal pyramid */
+.benben-stage { display: grid; grid-template-columns: minmax(280px, .9fr) minmax(360px, 1.1fr); gap: 22px; align-items: stretch; }
+.benben-character-card, .benben-care-card { position: relative; overflow: hidden; border: 1px solid var(--line); border-radius: var(--r-xl); background: var(--surface); box-shadow: var(--shadow-2); }
+.benben-character-card { min-height: 520px; display: grid; place-items: end center; padding: 30px 26px 10px; isolation: isolate; background: linear-gradient(155deg, #ffdb9d 0%, #e99d79 46%, #665687 100%); }
+.benben-character-card::before { content: ""; position: absolute; z-index: -1; inset: auto -8% 0; height: 34%; background: linear-gradient(#cf9a69, #8c5d47); clip-path: polygon(0 44%, 14% 25%, 28% 42%, 44% 8%, 61% 38%, 76% 19%, 100% 43%, 100% 100%, 0 100%); }
+.benben-sun { position: absolute; z-index: -1; top: 32px; left: 36px; width: 120px; aspect-ratio: 1; border-radius: 50%; background: #ffe9ae; box-shadow: 0 0 70px rgba(255,238,181,.65); }
+.benben-sprite-wrap { position: relative; width: min(100%, 490px); }
+.benben-image { display: block; width: 100%; height: auto; filter: drop-shadow(0 24px 20px rgba(38,26,32,.32)); transform-origin: 50% 90%; }
+.benben-image.is-happy:not(.is-feed):not(.is-polish):not(.is-play):not(.is-rest) { animation: benben-happy-pop .48s ease-out; }
+@keyframes benben-happy-pop { 0% { transform: scale(.97); } 55% { transform: translateY(-7px) scale(1.015); } 100% { transform: scale(1); } }
+.benben-image.is-feed, .benben-image.is-polish { animation: benben-bop .75s ease-in-out; }
+.benben-image.is-play { animation: benben-bask 1.2s ease-in-out 2; filter: drop-shadow(0 24px 20px rgba(38,26,32,.32)) sepia(.16) saturate(1.16) brightness(1.06); }
+.benben-image.is-rest { animation: benben-breathe 1.3s ease-in-out 2; }
+@keyframes benben-bop { 30% { transform: translateY(-14px) rotate(-2deg); } 65% { transform: translateY(-6px) rotate(2deg); } }
+@keyframes benben-breathe { 0%, 100% { transform: translateY(2px) scaleX(1); } 50% { transform: translateY(-3px) scaleX(1.012) scaleY(1.006); } }
+@keyframes benben-bask { 0%, 100% { transform: rotate(-1deg) translateY(2px); } 50% { transform: rotate(1deg) translateY(-4px) scale(1.008); } }
+.benben-phoenix { position: absolute; z-index: 4; top: -18%; left: 39%; width: 34%; height: auto; filter: drop-shadow(0 8px 14px rgba(145,46,8,.42)); animation: benben-phoenix-perch 2.6s ease-in-out infinite; }
+.benben-phoenix.is-flying { top: -9%; left: 28%; width: 44%; animation: benben-phoenix-fly .72s ease-in-out infinite alternate; }
+@keyframes benben-phoenix-perch { 0%, 100% { transform: translateY(0) rotate(1deg); } 50% { transform: translateY(-4px) rotate(-1deg); } }
+@keyframes benben-phoenix-fly { 0% { transform: translateY(4px) rotate(-2deg); } 100% { transform: translateY(-16px) rotate(2deg) scale(1.025); } }
+.benben-effect { position: absolute; z-index: 3; inset: 0; pointer-events: none; overflow: hidden; }
+.benben-feed-effect span { --pebble-x: 1%; --pebble-y: 76%; position: absolute; z-index: 4; left: var(--pebble-x); top: var(--pebble-y); width: 6.5%; aspect-ratio: 1.15; border: 1px solid rgba(55,48,44,.45); border-radius: 48% 40% 52% 36%; background: linear-gradient(145deg, #ddd6c9 8%, #8e887e 56%, #57534e); box-shadow: inset 2px 2px 3px rgba(255,255,255,.5), 0 3px 5px rgba(42,31,27,.28); opacity: 0; animation: benben-pebble 1s cubic-bezier(.3,.05,.55,1) forwards; }
+.benben-feed-effect span:nth-child(2) { --pebble-x: 7%; --pebble-y: 84%; width: 4.8%; animation-delay: .12s; }
+.benben-feed-effect span:nth-child(3) { --pebble-x: -2%; --pebble-y: 66%; width: 4%; animation-delay: .24s; }
+@keyframes benben-pebble { 0% { left: var(--pebble-x); top: var(--pebble-y); opacity: 0; transform: rotate(-30deg) scale(.7); } 15% { opacity: 1; } 58% { left: 23%; top: 43%; opacity: 1; transform: rotate(160deg) scale(1); } 86% { left: 31%; top: 60%; opacity: 1; transform: rotate(250deg) scale(.66); } 100% { left: 33%; top: 63%; opacity: 0; transform: rotate(290deg) scale(.18); } }
+.benben-chew-mouth { position: absolute; z-index: 5; left: 28.6%; top: 55.7%; width: 10.2%; height: 18%; border-radius: 48%; background: radial-gradient(ellipse at 58% 68%, #454545 0 32%, #1e1e21 34% 72%, #101014 74%); box-shadow: -4px 2px 0 rgba(128,128,128,.55); transform-origin: 50% 50%; opacity: 0; animation: benben-chew .58s .48s ease-in-out forwards; }
+@keyframes benben-chew { 0% { opacity: 0; transform: scaleY(1); } 8% { opacity: 1; } 28% { opacity: 1; transform: scaleY(.45) scaleX(1.08); } 48% { opacity: 1; transform: scaleY(.9); } 68% { opacity: 1; transform: scaleY(.4) scaleX(1.1); } 88% { opacity: 1; transform: scaleY(.92); } 100% { opacity: 0; transform: scaleY(1); } }
+.benben-polish-effect span { position: absolute; color: #fff2a3; font-size: clamp(1.7rem, 4vw, 3rem); text-shadow: 0 0 16px #fff, 0 0 28px #ffd65a; opacity: 0; animation: benben-sparkle .9s ease-out forwards; }
+.benben-polish-effect span:nth-child(1) { top: 20%; left: 28%; }
+.benben-polish-effect span:nth-child(2) { top: 38%; right: 20%; animation-delay: .12s; }
+.benben-polish-effect span:nth-child(3) { bottom: 23%; left: 31%; animation-delay: .24s; }
+.benben-polish-effect span:nth-child(4) { top: 13%; right: 31%; animation-delay: .36s; }
+@keyframes benben-sparkle { 0% { opacity: 0; scale: .2; rotate: -25deg; } 45% { opacity: 1; scale: 1.25; } 100% { opacity: 0; scale: .65; rotate: 30deg; } }
+.benben-rest-effect span { position: absolute; right: 18%; top: 34%; color: #fff; font-family: var(--font-display); font-size: clamp(1.4rem, 4vw, 2.6rem); font-weight: 800; text-shadow: 0 2px 14px rgba(44,38,83,.65); opacity: 0; animation: benben-zzz 1.3s ease-out 2; }
+.benben-rest-effect span:nth-child(2) { right: 12%; top: 25%; font-size: 1.35rem; animation-delay: .2s; }
+.benben-rest-effect span:nth-child(3) { right: 8%; top: 18%; font-size: 1rem; animation-delay: .4s; }
+@keyframes benben-zzz { 0% { opacity: 0; translate: 0 12px; scale: .7; } 35% { opacity: 1; } 100% { opacity: 0; translate: 22px -28px; scale: 1.15; } }
+.benben-sunbath-effect span { position: absolute; top: 9%; left: -16%; width: 112%; height: 18%; border-radius: 50%; background: linear-gradient(90deg, transparent 0%, rgba(255,245,177,.68) 38%, rgba(255,239,137,.12) 76%, transparent 100%); filter: blur(7px); transform-origin: 0 50%; rotate: 53deg; opacity: 0; animation: benben-sun-ray 1.2s ease-in-out 2; }
+.benben-sunbath-effect span:nth-child(2) { top: 17%; left: -18%; width: 104%; height: 11%; rotate: 58deg; animation-delay: .12s; }
+.benben-sunbath-effect span:nth-child(3) { top: 3%; left: -12%; width: 98%; height: 8%; rotate: 47deg; animation-delay: .24s; }
+@keyframes benben-sun-ray { 0%, 100% { opacity: 0; scale: .88 1; } 45% { opacity: .72; } 55% { opacity: 1; scale: 1.04 1; } }
+.benben-phoenix-banner { position: absolute; z-index: 6; bottom: 18px; left: 20px; right: 20px; padding: 9px 12px; border: 1px solid rgba(255,239,163,.7); border-radius: 12px; background: linear-gradient(90deg, rgba(111,34,22,.86), rgba(185,80,23,.84)); color: #fff8d7; font-size: .8rem; font-weight: 750; text-align: center; box-shadow: 0 8px 24px rgba(77,28,20,.22); backdrop-filter: blur(8px); }
+.benben-mood { position: absolute; top: 20px; right: 20px; display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border: 1px solid rgba(255,255,255,.45); border-radius: 999px; background: rgba(20,17,28,.64); color: #fff; font-weight: 700; backdrop-filter: blur(8px); }
+.benben-mood span { color: #ffd76c; }
+.benben-care-card { display: flex; flex-direction: column; padding: clamp(20px, 4vw, 34px); }
+.benben-stats { display: grid; gap: 18px; }
+.benben-stat > div:first-child { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 7px; color: var(--ink-soft); font-size: .86rem; font-weight: 650; }
+.benben-stat strong { color: var(--ink); }
+.benben-meter { overflow: hidden; height: 10px; border-radius: 999px; background: var(--surface-3); }
+.benben-meter span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--gold-hi), var(--accent)); transition: width .35s ease; }
+.benben-community-numbers { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 26px 0 20px; }
+.benben-community-numbers > div { display: flex; flex-direction: column; gap: 3px; padding: 14px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface-2); }
+.benben-community-numbers strong { font-family: var(--font-display); font-size: 1.45rem; }
+.benben-community-numbers span { color: var(--ink-soft); font-size: .75rem; }
+.benben-action-note { min-height: 42px; color: var(--ink-soft); font-size: .86rem; }
+.benben-actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.benben-action { min-width: 0; flex-direction: column; height: 70px; gap: 4px; }
+.benben-action span { font-size: 1.2rem; }
+.benben-signin, .benben-share { width: 100%; margin-top: 10px; justify-content: center; }
+.benben-recent { margin-top: 22px; }
+.benben-recent ul { list-style: none; margin: 12px 0 0; padding: 0; }
+.benben-recent li { display: grid; grid-template-columns: 34px 1fr auto; align-items: center; gap: 8px; padding: 10px 0; border-top: 1px solid var(--line); color: var(--ink-soft); font-size: .84rem; }
+.benben-recent li strong { color: var(--ink); }
+.benben-recent time { color: var(--ink-faint); font-size: .74rem; }
+.benben-log-icon { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--gold-soft); }
+@media (max-width: 850px) { .benben-stage { grid-template-columns: 1fr; } .benben-character-card { min-height: 420px; } }
+@media (max-width: 520px) {
+  .benben-care-card .benben-action-note { order: 1; }
+  .benben-care-card .benben-actions { order: 2; grid-template-columns: 1fr 1fr; }
+  .benben-care-card .benben-stats { order: 3; margin-top: 18px; }
+  .benben-care-card .benben-signin { order: 4; }
+  .benben-care-card .benben-share { order: 5; }
+  .benben-care-card .notice { order: 6; }
+  .benben-recent li { grid-template-columns: 34px 1fr; }
+  .benben-recent time { grid-column: 2; }
+}
