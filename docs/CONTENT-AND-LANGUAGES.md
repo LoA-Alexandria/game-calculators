@@ -280,7 +280,12 @@ The draft is saved in that browser only (`localStorage['popepoch-tier-draft']`).
 2. for new text, one block per dictionary to paste under
    `guideEntries.heroTierList`.
 
-On the page, each tier is a coloured strip of portrait cards. A card opens the
+On the page, each tier is a card with its letter in a gradient badge (the same
+badge as in the detail dialog) on a strip tinted in the tier colour, followed
+by portrait cards. Rarity chips with counts and the search field are the Heroes
+roster's own, followed by an "N shown" line and a legend that spells out the
+grade letters, the linker and situational marks (only when the list has them),
+and that a card opens. A card opens the
 hero's placement, reason, and tiers in every list. The battle list splits into
 Damage, Sustain, Buffs, and Debuffs & control columns by each hero's first skill
 tag (`ROLE_GROUPS` in `lib/content/hero-tiers.ts`). A new role key needs a
