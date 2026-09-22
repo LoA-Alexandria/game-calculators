@@ -15,7 +15,7 @@ import {
 import { getSupabaseBrowserClient } from "../../lib/supabase/client";
 import { useAuth } from "../components/AuthProvider";
 import { useDocumentTitle, useLocale } from "../components/LocaleProvider";
-import { DiscordIcon, GuildsIcon, SearchIcon } from "../components/Icons";
+import { DiscordIcon, GlobeIcon, GuildsIcon, SearchIcon } from "../components/Icons";
 import { PageHead, SectionBanner } from "../components/Ui";
 
 type OwnMembership = Pick<GuildMembership, "guild_id" | "status">;
@@ -38,7 +38,7 @@ function GuildMark({ guild }: { guild: Guild }) {
 }
 
 export default function GuildsPage() {
-  const { t } = useLocale();
+  const { t, tf } = useLocale();
   const { session, loading: authLoading, signIn } = useAuth();
   const supabase = getSupabaseBrowserClient();
   const ids = useId();
@@ -95,10 +95,17 @@ export default function GuildsPage() {
     return map;
   }, [memberships]);
 
-  const visibleGuilds = useMemo(
-    () => guilds.filter((guild) => guildMatchesServerFilter(guild, serverFilter)),
-    [guilds, serverFilter],
-  );
+  // Your own guild (or the one you asked to join) comes first; the rest stay in name order.
+  const visibleGuilds = useMemo(() => {
+    const rank = (guild: Guild) => {
+      if (isGuildMasterOf(guild, session?.discordUserId)) return 0;
+      const status = membershipByGuild.get(guild.id)?.status;
+      return status === "active" ? 0 : status === "pending" ? 1 : 2;
+    };
+    return guilds
+      .filter((guild) => guildMatchesServerFilter(guild, serverFilter))
+      .sort((a, b) => rank(a) - rank(b));
+  }, [guilds, serverFilter, membershipByGuild, session?.discordUserId]);
 
   const beginJoin = (guild: Guild) => {
     setJoinGuildId(guild.id);
@@ -189,6 +196,7 @@ export default function GuildsPage() {
 
       <div className="guilds-browse">
         {supabase && guilds.length > 0 && (
+          <div className="guild-toolbar">
           <div className="guild-filter">
             <SearchIcon className="icon" />
             <input
@@ -200,6 +208,10 @@ export default function GuildsPage() {
               placeholder={t.guilds.serverFilterPlaceholder}
               onChange={(e) => setServerFilter(e.target.value)}
             />
+          </div>
+          <p className="guild-count" aria-live="polite">
+            {visibleGuilds.length === 1 ? t.guilds.listCountOne : tf(t.guilds.listCount, { count: visibleGuilds.length })}
+          </p>
           </div>
         )}
 
@@ -237,20 +249,25 @@ export default function GuildsPage() {
                   ? "pill pill-good"
                   : "";
 
+            const own = isDiscordMaster || isActiveMember;
             return (
-              <article className="guild-card" key={guild.id}>
-                <GuildMark guild={guild} />
-                <div className="guild-card-body">
+              <article className={own ? "guild-card is-own" : "guild-card"} key={guild.id}>
+                <div className="guild-card-head">
+                  <GuildMark guild={guild} />
                   <div className="guild-card-top">
+                    {own ? <p className="guild-card-eyebrow">{t.guilds.yourGuild}</p> : null}
                     <h2>{guild.name}</h2>
-                    {statusLabel ? <span className={statusClass}>{statusLabel}</span> : null}
+                    {guild.server_name ? (
+                      <p className="guild-chip">
+                        <GlobeIcon className="icon" />
+                        <span className="visually-hidden">{t.guilds.serverLabel}: </span>
+                        {guild.server_name}
+                      </p>
+                    ) : null}
                   </div>
-                  {guild.server_name ? (
-                    <p className="guild-server">
-                      <span className="guild-server-label">{t.guilds.serverLabel}</span>
-                      {guild.server_name}
-                    </p>
-                  ) : null}
+                  {statusLabel ? <span className={statusClass}>{statusLabel}</span> : null}
+                </div>
+                <div className="guild-card-body">
                   {guild.description ? <p className="guild-card-desc">{guild.description}</p> : null}
                   {isSiteAdmin ? (
                     <p className="guild-meta mono">

@@ -441,9 +441,9 @@ export function GuildEventBoard({ guildId, userId, canOfficer, roster, eventId }
           <ul className="guild-event-pledge-list">
             {pledges.map((row) => (
               <li key={row.user_id}>
-                <span>{rosterName(row.user_id)}</span>
-                <span className="mono">{row.amount.toLocaleString()}</span>
-                <span className="pill">
+                <span className="guild-pledge-name">{rosterName(row.user_id)}</span>
+                <span className="guild-pledge-amount mono">{row.amount.toLocaleString()}</span>
+                <span className="pill guild-pledge-status" data-status={row.status}>
                   {row.status === "ready"
                     ? t.guilds.eventPledgeStatusReady
                     : row.status === "spent"
