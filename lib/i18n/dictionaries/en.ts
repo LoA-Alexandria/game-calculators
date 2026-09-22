@@ -349,7 +349,7 @@ const en = {
     play: "Play",
     baseTicket: "Base ticket price",
     baseVisitors: "Base visitor flow",
-    baseNote: "The two numbers in the play’s preview before you start it. The numbers shown during the run are not the ones the income uses.",
+    baseNote: "The two numbers in the play’s preview. They are the same for everyone and never change, so a Magic Lantern shows them for any play; only the muse coin bonus depends on your goddesses. The numbers shown during the run are not the ones the income uses.",
     bonus: "Muse coin bonus",
     bonusFromGoddesses: "Your goddesses give {percent} %.",
     bonusAtLeast: "Your goddesses give at least {percent} %.",

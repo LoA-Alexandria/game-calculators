@@ -648,7 +648,11 @@ Everything the game fixes per play or goddess lives in
 - `aptitudes`: each aptitude and the resource it trains.
 
 On 22 September 2026 only Pride and Prejudice, Don Quixote, and Robinson Crusoe
-had base values and aptitudes, and nine goddesses had some aptitudes. Players
+had base values and aptitudes, and nine goddesses had some aptitudes. Autumn
+confirmed that a play's base ticket price and visitor flow never change and are
+the same for every player; only the muse coin bonus depends on the goddesses. A
+Magic Lantern shows any play's preview, so the base values can be read off for
+all plays once and stored in the JSON. Until then players
 type the other plays' preview numbers and bonus into the page; that stays in
 their browser (`localStorage['popepoch-theater-income']`). New values from a
 player or a spreadsheet go into the JSON; the tests check that every aptitude

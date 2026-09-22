@@ -348,7 +348,7 @@ const fr: Dictionary = {
     play: "Pièce",
     baseTicket: "Prix du billet de base",
     baseVisitors: "Affluence de base",
-    baseNote: "Les deux nombres de l’aperçu de la pièce, avant de la lancer. Ceux affichés pendant la représentation ne sont pas ceux qui comptent pour les recettes.",
+    baseNote: "Les deux nombres de l’aperçu de la pièce. Ils sont identiques pour tous et ne changent jamais, donc une Magic Lantern les montre pour n’importe quelle pièce ; seul le bonus de pièces des Muses dépend de vos déesses. Ceux affichés pendant la représentation ne sont pas ceux qui comptent pour les recettes.",
     bonus: "Bonus de pièces des Muses",
     bonusFromGoddesses: "Vos déesses donnent {percent} %.",
     bonusAtLeast: "Vos déesses donnent au moins {percent} %.",
