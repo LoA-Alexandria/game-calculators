@@ -92,12 +92,14 @@ print a snippet to commit into the dictionaries and navigation; shared wiki
 tables are still to be implemented. Read [`AUTH-AND-CMS.md`](AUTH-AND-CMS.md)
 before adding any write path.
 
-Community guilds live in Supabase (`guilds`, `guild_memberships`, `guild_posts`)
-with RLS. Admins create guilds (name, server, optional icon in Storage bucket
-`guild-icons`, master Discord ID). Signed-in players request to join with an
-optional note; masters review requests and settings from icons on the room tab
-bar. Members set their own roster display name. Room News / Planning posts are
-readable by members and writable by master/admin.
+Community guilds live in Supabase (`guilds`, `guild_memberships`, `guild_posts`,
+`guild_active_events`, `guild_event_days`, `guild_event_pledges`) with RLS. Admins
+create guilds (name, server, optional icon in Storage bucket `guild-icons`, master
+Discord ID). Signed-in players request to join with an optional note; masters and
+officers review requests. Masters promote officers and edit guild settings. Officers
+write News and run Planning events (activate catalog events, day scores, end-invest
+pledges, Berlin-midnight timer). Members set their own roster display name and
+pledge end-invest amounts.
 
 ## Vendored applications
 

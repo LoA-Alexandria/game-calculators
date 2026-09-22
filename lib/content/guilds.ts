@@ -30,6 +30,7 @@ export type GuildMembership = {
   guild_id: string;
   user_id: string;
   status: GuildMembershipStatus;
+  role: "member" | "officer";
   request_note: string;
   requested_at: string;
   decided_at: string | null;
@@ -81,6 +82,7 @@ export type GuildRosterEntry = {
   display_name: string;
   status: GuildMembershipStatus | "active";
   is_master: boolean;
+  is_officer: boolean;
   requested_at: string;
 };
 

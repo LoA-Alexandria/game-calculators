@@ -3,8 +3,14 @@
 import { useCallback, useEffect, useId, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { GuildEventBoard, GuildEventPicker } from "./GuildEventBoard";
 import { GuildRichTextEditor, GuildRichTextView } from "./GuildRichText";
 import { guildPostHtml, sanitizeGuildHtml } from "../../lib/content/guild-rich-text";
+import {
+  GUILD_PLAN_EVENTS,
+  isGuildPlanEventId,
+  type GuildPlanEventId,
+} from "../../lib/content/guild-events";
 import {
   GUILD_DISPLAY_NAME_MAX,
   GUILD_ICON_BUCKET,
@@ -32,6 +38,7 @@ import { PageHead, SectionBanner } from "../components/Ui";
 
 type PendingRow = Pick<GuildMembership, "guild_id" | "user_id" | "status" | "request_note" | "requested_at">;
 type ManagePanel = "requests" | "settings" | null;
+type MembershipState = Pick<GuildMembership, "status" | "role">;
 
 function subscribeSearch(onChange: () => void) {
   window.addEventListener("popstate", onChange);
@@ -73,10 +80,13 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
   const ids = useId();
 
   const [guild, setGuild] = useState<Guild | null>(null);
-  const [membership, setMembership] = useState<Pick<GuildMembership, "status"> | null>(null);
+  const [membership, setMembership] = useState<MembershipState | null>(null);
   const [pending, setPending] = useState<PendingRow[]>([]);
   const [posts, setPosts] = useState<GuildPost[]>([]);
   const [roster, setRoster] = useState<GuildRosterEntry[]>([]);
+  const [activeEventIds, setActiveEventIds] = useState<GuildPlanEventId[]>([]);
+  const [planEventId, setPlanEventId] = useState<GuildPlanEventId | null>(null);
+  const [eventPickerOpen, setEventPickerOpen] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const [busy, setBusy] = useState(false);
@@ -117,6 +127,7 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
         setPending([]);
         setPosts([]);
         setRoster([]);
+        setActiveEventIds([]);
         setFetchedSlug(slug);
         return;
       }
@@ -131,25 +142,37 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
         setPending([]);
         setPosts([]);
         setRoster([]);
+        setActiveEventIds([]);
         setFetchedSlug(slug);
         return;
       }
 
       const mine = await supabase
         .from("guild_memberships")
-        .select("status")
+        .select("status, role")
         .eq("guild_id", nextGuild.id)
         .eq("user_id", session.userId)
         .maybeSingle();
       if (gone) return;
       if (mine.error) setError(mine.error.message);
-      else setMembership(mine.data ? { status: mine.data.status as GuildMembership["status"] } : null);
+      else {
+        setMembership(
+          mine.data
+            ? {
+                status: mine.data.status as GuildMembership["status"],
+                role: (mine.data.role as GuildMembership["role"]) ?? "member",
+              }
+            : null,
+        );
+      }
 
-      const canManage =
+      const isMaster =
         isGuildMasterOf(nextGuild, session.discordUserId) || session.role === "admin";
-      const canEnter = canManage || mine.data?.status === "active";
+      const isOfficerMember = mine.data?.status === "active" && mine.data?.role === "officer";
+      const canOfficer = isMaster || Boolean(isOfficerMember);
+      const canEnter = isMaster || mine.data?.status === "active";
 
-      if (canManage) {
+      if (canOfficer) {
         const queue = await supabase
           .from("guild_memberships")
           .select("guild_id, user_id, status, request_note, requested_at")
@@ -164,7 +187,7 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
       }
 
       if (canEnter) {
-        const [feed, members] = await Promise.all([
+        const [feed, members, active] = await Promise.all([
           supabase
             .from("guild_posts")
             .select("id, guild_id, channel, title, body, author_id, created_at, updated_at")
@@ -172,15 +195,35 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
             .eq("channel", tab)
             .order("created_at", { ascending: false }),
           supabase.rpc("guild_roster", { p_guild_id: nextGuild.id }),
+          supabase.from("guild_active_events").select("event_id").eq("guild_id", nextGuild.id),
         ]);
         if (gone) return;
         if (feed.error) setError(feed.error.message);
         else setPosts((feed.data ?? []) as GuildPost[]);
         if (members.error) setError(members.error.message);
-        else setRoster((members.data ?? []) as GuildRosterEntry[]);
+        else {
+          setRoster(
+            ((members.data ?? []) as GuildRosterEntry[]).map((row) => ({
+              ...row,
+              is_officer: Boolean(row.is_officer),
+            })),
+          );
+        }
+        if (active.error) setError(active.error.message);
+        else {
+          const ids = (active.data ?? [])
+            .map((row) => row.event_id as string)
+            .filter(isGuildPlanEventId);
+          setActiveEventIds(ids);
+          setPlanEventId((current) => {
+            if (current && ids.includes(current)) return current;
+            return ids[0] ?? null;
+          });
+        }
       } else {
         setPosts([]);
         setRoster([]);
+        setActiveEventIds([]);
       }
       setFetchedSlug(slug);
     })();
@@ -362,6 +405,20 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
     setBusy(false);
   };
 
+  const setMemberRole = async (userId: string, role: "member" | "officer") => {
+    if (!supabase || !guild) return;
+    setBusy(true);
+    setError("");
+    const { error: rpcError } = await supabase.rpc("set_guild_member_role", {
+      p_guild_id: guild.id,
+      p_user_id: userId,
+      p_role: role,
+    });
+    if (rpcError) setError(rpcError.message);
+    else reload();
+    setBusy(false);
+  };
+
   if (!slug) {
     return (
       <>
@@ -399,8 +456,10 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
 
   const isDiscordMaster = isGuildMasterOf(guild, session.discordUserId);
   const isSiteAdmin = session.role === "admin";
-  const canManage = isDiscordMaster || isSiteAdmin;
-  const canEnter = canManage || membership?.status === "active";
+  const canManageSettings = isDiscordMaster || isSiteAdmin;
+  const canOfficer =
+    canManageSettings || (membership?.status === "active" && membership.role === "officer");
+  const canEnter = canManageSettings || membership?.status === "active";
 
   if (!canEnter) {
     return (
@@ -446,7 +505,7 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
             {t.guilds.planung}
           </Link>
         </nav>
-        {canManage ? (
+        {canOfficer ? (
           <div className="guild-room-tools">
             <button
               type="button"
@@ -459,16 +518,18 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
               <InboxIcon className="icon" />
               {pending.length > 0 ? <span className="guild-action-dot" aria-hidden="true" /> : null}
             </button>
-            <button
-              type="button"
-              className={managePanel === "settings" ? "icon-button is-open" : "icon-button"}
-              aria-label={t.guilds.settingsOpen}
-              aria-expanded={managePanel === "settings"}
-              aria-controls={`${ids}-settings`}
-              onClick={() => setManagePanel((open) => (open === "settings" ? null : "settings"))}
-            >
-              <GearIcon className="icon" />
-            </button>
+            {canManageSettings ? (
+              <button
+                type="button"
+                className={managePanel === "settings" ? "icon-button is-open" : "icon-button"}
+                aria-label={t.guilds.settingsOpen}
+                aria-expanded={managePanel === "settings"}
+                aria-controls={`${ids}-settings`}
+                onClick={() => setManagePanel((open) => (open === "settings" ? null : "settings"))}
+              >
+                <GearIcon className="icon" />
+              </button>
+            ) : null}
           </div>
         ) : null}
       </div>
@@ -484,7 +545,7 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
         </p>
       )}
 
-      {canManage && managePanel === "requests" ? (
+      {canOfficer && managePanel === "requests" ? (
         <section className="guild-panel guild-manage-panel" id={`${ids}-requests`}>
           <header className="guild-panel-head">
             <h2>{t.guilds.pendingTitle}</h2>
@@ -527,7 +588,7 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
         </section>
       ) : null}
 
-      {canManage && managePanel === "settings" ? (
+      {canManageSettings && managePanel === "settings" ? (
         <section className="guild-panel guild-manage-panel" id={`${ids}-settings`}>
           <header className="guild-panel-head">
             <h2>{t.guilds.settingsTitle}</h2>
@@ -585,13 +646,13 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
         </section>
       ) : null}
 
-      {canManage && !composing && (
+      {canOfficer && tab === "news" && !composing ? (
         <div className="guild-compose-trigger">
           <button
             className="button button-primary"
             type="button"
             onClick={() => {
-              setComposeFor(tab);
+              setComposeFor("news");
               setEditingId(null);
               setTitle("");
               setBody("");
@@ -601,12 +662,36 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
             {t.guilds.composeOpen}
           </button>
         </div>
-      )}
+      ) : null}
 
-      {canManage && composing && (
+      {canOfficer && tab === "planung" && !eventPickerOpen ? (
+        <div className="guild-compose-trigger">
+          <button
+            className="button button-primary"
+            type="button"
+            onClick={() => setEventPickerOpen(true)}
+          >
+            <PlusIcon className="icon" />
+            {t.guilds.eventsActivate}
+          </button>
+        </div>
+      ) : null}
+
+      {canOfficer && tab === "planung" ? (
+        <GuildEventPicker
+          guildId={guild.id}
+          activeIds={activeEventIds}
+          canOfficer={canOfficer}
+          open={eventPickerOpen}
+          onClose={() => setEventPickerOpen(false)}
+          onChanged={reload}
+        />
+      ) : null}
+
+      {canOfficer && tab === "news" && composing ? (
         <section className="guild-panel guild-manage-panel">
           <header className="guild-panel-head">
-            <h2>{editingId ? t.guilds.postEdit : tab === "news" ? t.guilds.composeNews : t.guilds.composePlanung}</h2>
+            <h2>{editingId ? t.guilds.postEdit : t.guilds.composeNews}</h2>
             <button className="small-button" type="button" disabled={busy} onClick={resetComposer}>
               {t.guilds.composeClose}
             </button>
@@ -644,57 +729,97 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
             </div>
           </div>
         </section>
-      )}
+      ) : null}
 
       <div className="guild-room-layout">
         <div className="guild-room-main">
-          <section className="guild-panel">
-            <header className="guild-panel-head">
-              <h2>{tab === "news" ? t.guilds.news : t.guilds.planung}</h2>
-              <span className="count">{posts.length}</span>
-            </header>
-            {posts.length === 0 ? (
-              <div className="guild-empty">
-                <GuildsIcon className="icon guild-empty-icon" />
-                <strong>{t.guilds.emptyTitle}</strong>
-                <p>{tab === "news" ? t.guilds.newsEmpty : t.guilds.planungEmpty}</p>
-              </div>
-            ) : (
-              <ul className="guild-post-list">
-                {posts.map((post) => (
-                  <li className="guild-post" key={post.id}>
-                    <div className="guild-post-head">
-                      <h3>{post.title}</h3>
-                      <time dateTime={post.created_at}>{d(post.created_at.slice(0, 10))}</time>
-                    </div>
-                    <GuildRichTextView html={guildPostHtml(post.body)} />
-                    {canManage && (
-                      <div className="guild-post-actions">
-                        <button
-                          className="small-button"
-                          type="button"
-                          disabled={busy}
-                          onClick={() => startEdit(post)}
-                        >
-                          <PenIcon className="icon icon-sm" />
-                          {t.guilds.postEdit}
-                        </button>
-                        <button
-                          className="small-button button-danger"
-                          type="button"
-                          disabled={busy}
-                          onClick={() => void removePost(post.id)}
-                        >
-                          <TrashIcon className="icon icon-sm" />
-                          {t.guilds.postRemove}
-                        </button>
+          {tab === "planung" ? (
+            <>
+              {activeEventIds.length > 0 ? (
+                <nav className="guild-event-tabs" aria-label={t.guilds.planung}>
+                  {activeEventIds.map((id) => {
+                    const def = GUILD_PLAN_EVENTS.find((e) => e.id === id);
+                    if (!def) return null;
+                    return (
+                      <button
+                        key={id}
+                        type="button"
+                        className={planEventId === id ? "guild-tab is-active" : "guild-tab"}
+                        onClick={() => setPlanEventId(id)}
+                      >
+                        {t.guilds.events[def.labelKey]}
+                      </button>
+                    );
+                  })}
+                </nav>
+              ) : null}
+              {planEventId ? (
+                <GuildEventBoard
+                  guildId={guild.id}
+                  userId={session.userId}
+                  canOfficer={canOfficer}
+                  roster={roster}
+                  eventId={planEventId}
+                />
+              ) : (
+                <section className="guild-panel">
+                  <div className="guild-empty">
+                    <GuildsIcon className="icon guild-empty-icon" />
+                    <strong>{t.guilds.emptyTitle}</strong>
+                    <p>{t.guilds.eventsActiveEmpty}</p>
+                  </div>
+                </section>
+              )}
+            </>
+          ) : (
+            <section className="guild-panel">
+              <header className="guild-panel-head">
+                <h2>{t.guilds.news}</h2>
+                <span className="count">{posts.length}</span>
+              </header>
+              {posts.length === 0 ? (
+                <div className="guild-empty">
+                  <GuildsIcon className="icon guild-empty-icon" />
+                  <strong>{t.guilds.emptyTitle}</strong>
+                  <p>{t.guilds.newsEmpty}</p>
+                </div>
+              ) : (
+                <ul className="guild-post-list">
+                  {posts.map((post) => (
+                    <li className="guild-post" key={post.id}>
+                      <div className="guild-post-head">
+                        <h3>{post.title}</h3>
+                        <time dateTime={post.created_at}>{d(post.created_at.slice(0, 10))}</time>
                       </div>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </section>
+                      <GuildRichTextView html={guildPostHtml(post.body)} />
+                      {canOfficer && (
+                        <div className="guild-post-actions">
+                          <button
+                            className="small-button"
+                            type="button"
+                            disabled={busy}
+                            onClick={() => startEdit(post)}
+                          >
+                            <PenIcon className="icon icon-sm" />
+                            {t.guilds.postEdit}
+                          </button>
+                          <button
+                            className="small-button button-danger"
+                            type="button"
+                            disabled={busy}
+                            onClick={() => void removePost(post.id)}
+                          >
+                            <TrashIcon className="icon icon-sm" />
+                            {t.guilds.postRemove}
+                          </button>
+                        </div>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </section>
+          )}
         </div>
 
         <aside className="guild-roster" aria-label={t.guilds.membersTitle}>
@@ -754,6 +879,9 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
                         </span>
                         <span className="guild-roster-tags">
                           {entry.is_master ? <span className="pill pill-gold">{t.guilds.master}</span> : null}
+                          {!entry.is_master && entry.is_officer ? (
+                            <span className="pill">{t.guilds.officer}</span>
+                          ) : null}
                           {isYou ? <span className="pill">{t.guilds.membersYou}</span> : null}
                           {isYou ? (
                             <button
@@ -764,6 +892,21 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
                               onClick={() => startEditDisplayName(entry)}
                             >
                               <PenIcon className="icon icon-sm" />
+                            </button>
+                          ) : null}
+                          {canManageSettings && entry.user_id && !entry.is_master ? (
+                            <button
+                              className="small-button"
+                              type="button"
+                              disabled={busy}
+                              onClick={() =>
+                                void setMemberRole(
+                                  entry.user_id!,
+                                  entry.is_officer ? "member" : "officer",
+                                )
+                              }
+                            >
+                              {entry.is_officer ? t.guilds.demoteOfficer : t.guilds.promoteOfficer}
                             </button>
                           ) : null}
                         </span>

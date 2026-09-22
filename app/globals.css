@@ -7030,6 +7030,116 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
 .guild-compose-trigger {
   margin-bottom: 16px;
 }
+.guild-event-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+.guild-event-picker {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 10px;
+}
+.guild-event-picker li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-top: 1px solid var(--line);
+}
+.guild-event-picker li:first-child { border-top: 0; padding-top: 0; }
+.guild-event-board { display: grid; gap: 14px; }
+.guild-event-hint {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: .9rem;
+  line-height: 1.5;
+}
+.guild-event-days {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.guild-event-day {
+  display: grid;
+  gap: 2px;
+  min-width: 88px;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  background: var(--surface-2);
+  color: var(--ink-soft);
+  text-align: left;
+  cursor: pointer;
+}
+.guild-event-day.is-active {
+  border-color: var(--accent-line);
+  background: var(--accent-soft);
+  color: var(--ink);
+}
+.guild-event-day small { font-size: .72rem; opacity: .85; }
+.guild-event-timer { margin: 0; font-size: .9rem; color: var(--ink-soft); }
+.guild-event-scores {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.guild-event-bar {
+  display: flex;
+  height: 10px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--bad) 55%, var(--surface-2));
+}
+.guild-event-bar-us {
+  background: color-mix(in srgb, var(--accent) 80%, white);
+  min-width: 0;
+  transition: width .2s ease;
+}
+.guild-event-coverage { margin: 0; font-size: .9rem; font-weight: 600; }
+.guild-event-officer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+.guild-event-my-pledge {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 1fr auto auto;
+  align-items: end;
+}
+.guild-event-pledge-list {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0;
+}
+.guild-event-pledge-list li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-top: 1px solid var(--line);
+}
+.guild-event-pledge-list li:first-child { border-top: 0; padding-top: 0; }
+.guild-event-board h3 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1rem;
+}
+@media (max-width: 720px) {
+  .guild-event-scores { grid-template-columns: 1fr; }
+  .guild-event-my-pledge { grid-template-columns: 1fr; }
+}
 .guild-room-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(220px, 280px);
