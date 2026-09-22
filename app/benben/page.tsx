@@ -15,6 +15,8 @@ type CareEntry = { id: number; caretaker_name: string; action: CareAction; creat
 const ICON: Record<CareAction, string> = { feed: "🍇", polish: "✨", play: "☀️", rest: "🌙" };
 const LOCAL_PREVIEW = process.env.NODE_ENV === "development";
 const LOCAL_KEY = "benben-local-preview";
+const DISCORD_LAUNCH_KEY = "benben-discord-launch";
+const WEB_INSTANCE = "web:community";
 const ACTION_ANIMATION_MS = 1100;
 const LOCAL_START: BenbenState = { fed: 72, happy: 76, polished: 68, rested: 80, total_actions: 0, community_streak: 1, actions_left: 3, phoenix_active: false, phoenix_leaves_at: null, solar_charge: 0, solar_goal: 5 };
 const phoenixDeparture = () => new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
@@ -28,6 +30,8 @@ export default function BenbenPage() {
   const [acting, setActing] = useState<CareAction | null>(null);
   const [copied, setCopied] = useState(false);
   const [celebrating, setCelebrating] = useState(false);
+  const discordLaunch = useRef<string | null>(null);
+  const instanceId = useRef(WEB_INSTANCE);
   const happyTimer = useRef<number | null>(null);
   const actionTimer = useRef<number | null>(null);
   useDocumentTitle(t.benben.title);
@@ -41,6 +45,31 @@ export default function BenbenPage() {
   useEffect(() => () => {
     if (happyTimer.current !== null) window.clearTimeout(happyTimer.current);
     if (actionTimer.current !== null) window.clearTimeout(actionTimer.current);
+  }, []);
+
+  useEffect(() => {
+    const readInstance = (token: string | null) => {
+      if (!token) return WEB_INSTANCE;
+      try {
+        const payload = token.split(".")[0].replaceAll("-", "+").replaceAll("_", "/");
+        const parsed = JSON.parse(window.atob(payload.padEnd(Math.ceil(payload.length / 4) * 4, "="))) as { guildId?: unknown; channelId?: unknown };
+        return typeof parsed.guildId === "string" && typeof parsed.channelId === "string"
+          ? `discord:${parsed.guildId}:${parsed.channelId}`
+          : WEB_INSTANCE;
+      } catch { return WEB_INSTANCE; }
+    };
+    const url = new URL(window.location.href);
+    const launch = url.searchParams.get("discord_launch");
+    if (launch) {
+      window.sessionStorage.setItem(DISCORD_LAUNCH_KEY, launch);
+      url.searchParams.delete("discord_launch");
+      window.history.replaceState({}, "", `${url.pathname}${url.search}${url.hash}`);
+      discordLaunch.current = launch;
+      instanceId.current = readInstance(launch);
+      return;
+    }
+    discordLaunch.current = window.sessionStorage.getItem(DISCORD_LAUNCH_KEY);
+    instanceId.current = readInstance(discordLaunch.current);
   }, []);
 
   const finishAction = (delay = ACTION_ANIMATION_MS, happy = true) => {
@@ -65,8 +94,8 @@ export default function BenbenPage() {
     const supabase = getSupabaseBrowserClient();
     if (!supabase) { setError(t.benben.unavailable); return; }
     const [stateResult, logResult] = await Promise.all([
-      supabase.rpc("get_benben_state"),
-      supabase.from("benben_actions").select("id, caretaker_name, action, created_at").order("created_at", { ascending: false }).limit(8),
+      supabase.rpc("get_benben_state", { p_instance_id: instanceId.current }),
+      supabase.from("benben_actions").select("id, caretaker_name, action, created_at").eq("instance_id", instanceId.current).order("created_at", { ascending: false }).limit(8),
     ]);
     if (stateResult.error || logResult.error) { setError(t.benben.unavailable); return; }
     setPet(stateResult.data as BenbenState);
@@ -80,8 +109,8 @@ export default function BenbenPage() {
     const supabase = getSupabaseBrowserClient();
     if (!supabase) return () => window.clearTimeout(initialRefresh);
     const channel = supabase.channel("benben-community")
-      .on("postgres_changes", { event: "*", schema: "public", table: "benben_state" }, () => void refresh())
-      .on("postgres_changes", { event: "INSERT", schema: "public", table: "benben_actions" }, () => void refresh())
+      .on("postgres_changes", { event: "*", schema: "public", table: "benben_state", filter: `instance_id=eq.${instanceId.current}` }, () => void refresh())
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "benben_actions", filter: `instance_id=eq.${instanceId.current}` }, () => void refresh())
       .subscribe();
     return () => { window.clearTimeout(initialRefresh); void supabase.removeChannel(channel); };
   }, [refresh]);
@@ -122,9 +151,25 @@ export default function BenbenPage() {
     const supabase = getSupabaseBrowserClient();
     if (!supabase || acting) return;
     setActing(action);
-    const result = await supabase.rpc("care_for_benben", { p_action: action });
-    if (result.error) setError(result.error.message.includes("Daily care limit") ? t.benben.noActions : result.error.message);
-    else { setPet(result.data as BenbenState); await refresh(); }
+    const result = discordLaunch.current
+      ? await supabase.functions.invoke("benben-discord", { body: { action, launchToken: discordLaunch.current } })
+      : await supabase.rpc("care_for_benben", { p_action: action });
+    if (result.error) {
+      let message = result.error.message;
+      const context = result.error.context as Response | undefined;
+      if (context) {
+        try { message = String((await context.clone().json() as { error?: string }).error ?? message); } catch { /* use the client error */ }
+      }
+      if (message.includes("expired")) window.sessionStorage.removeItem(DISCORD_LAUNCH_KEY);
+      setError(message.includes("Daily care limit") ? t.benben.noActions : message);
+    } else {
+      const data = result.data as BenbenState | { state: BenbenState; discordUpdated?: boolean };
+      const state = "state" in data ? data.state : data;
+      setPet(state);
+      if ("state" in data && data.discordUpdated === false) setError("Benben was cared for, but the Discord status could not be updated.");
+      else setError("");
+      await refresh();
+    }
     finishAction(animationDuration, !result.error);
   };
 

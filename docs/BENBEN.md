@@ -26,31 +26,108 @@ an account with the required project privileges before pushing migrations.
 
 ## Discord integration
 
-The recommended first Discord feature is a `/benben` application command that
-shows the communal state and four buttons: Feed, Polish, Sunbathe, and Rest.
-Button presses should update the same Supabase state as the web page.
+The browser-first integration lives in the `benben-discord` Supabase Edge
+Function:
 
-This requires a Supabase Edge Function because GitHub Pages cannot securely
-receive Discord interactions. The function should:
+1. A member runs `/benben` in Discord.
+2. Discord receives an ephemeral **Open Benben** link containing a signed,
+   six-hour launch token for that server channel. Each server channel has its
+   own Benben instance; a command in a new channel starts a fresh one.
+3. The page stores the token in `sessionStorage`, removes it from the visible
+   address, and otherwise behaves like a normal Benben page.
+4. A signed-in member's care action is sent to the Edge Function. The function
+   validates both the Supabase user session and launch token, then calls the
+   existing `care_for_benben` RPC as that user. PostgreSQL therefore remains
+   authoritative for action limits and state changes.
+5. The bot creates or edits one reusable Benben status message in the originating
+   Discord channel. The message includes a fresh **Open Benben** link, so another
+   member can continue from Discord without running the command again.
 
-1. Verify Discord's Ed25519 request signature before reading an interaction.
-2. Answer Discord's endpoint-verification ping.
-3. Render `/benben` as an ephemeral or channel-visible status message.
-4. Handle the four component button custom ids.
-5. Use the verified Discord user id to locate the user through
-   `editor_access.discord_user_id`.
-6. Call a service-role-only database function that applies the same daily limit
-   and state transition rules as `care_for_benben`.
-7. Return an updated embed and buttons within Discord's response deadline.
+The channel and reusable message id are stored service-role-only in
+`benben_discord_channels`. An invalid or expired launch token cannot choose a
+channel. Bot credentials and the Supabase service-role key never reach the
+browser. If Discord posting fails after a valid care action, the care remains
+saved and the page shows a warning.
 
-Do not accept a Discord user id supplied in an unverified request, expose the
-service-role key to the browser, or duplicate care rules only in TypeScript.
-Keep the authoritative transition and limit checks in PostgreSQL.
+The standard `/benben/` URL remains a separate, shared web-community Benben.
+Benben can be installed in additional Discord servers; the site's editor roles
+remain specific to the Pop Epoch server.
 
-The Discord application will need an interactions endpoint URL, application id,
-public key, and bot token stored as Edge Function secrets. The bot token is
-needed to register commands and for optional scheduled/channel posts; it is not
-needed merely to verify incoming signatures.
+### One-time setup
+
+Apply the migrations, then set these Edge Function secrets:
+
+```sh
+supabase db push
+supabase secrets set \
+  DISCORD_APPLICATION_PUBLIC_KEY="<Discord application's public key>" \
+  DISCORD_BOT_TOKEN="<Discord bot token>" \
+  BENBEN_LAUNCH_SECRET="<a long random secret>" \
+  BENBEN_SITE_URL="https://loa-alexandria.github.io/game-calculators/benben/"
+supabase functions deploy benben-discord --no-verify-jwt --use-api
+```
+
+`--no-verify-jwt` is required because Discord interactions do not carry a
+Supabase JWT. The function still verifies Discord's Ed25519 signature for
+interactions and explicitly validates Supabase sessions for browser requests.
+
+In the Discord Developer Portal, set the application's **Interactions Endpoint
+URL** to:
+
+```text
+https://puaggqclhyzckitetsfc.supabase.co/functions/v1/benben-discord
+```
+
+Invite the application's bot to the server with `bot` and
+`applications.commands` scopes. It needs **View Channel**, **Send Messages**,
+**Embed Links**, and **Read Message History** in channels where Benben is used.
+
+Register the server command from a terminal without saving credentials in a
+file:
+
+```sh
+DISCORD_APPLICATION_ID="<application id>" \
+DISCORD_BOT_TOKEN="<bot token>" \
+npm run discord:register-benben
+```
+
+Guild command registration is used so `/benben` appears immediately in the Pop
+Epoch server. To register it in another server, add
+`DISCORD_GUILD_ID="<that server id>"` before the command. Re-running the
+registration script updates/adds the command.
+
+### Launch checklist
+
+- [ ] Merge and publish the site branch so
+  `https://loa-alexandria.github.io/game-calculators/benben/` is live.
+- [ ] In the Supabase Dashboard, confirm that both Benben migrations are shown
+  as applied. If they are not, from the repository run `supabase db push`.
+- [ ] In the Discord Developer Portal for the same application used for Discord
+  sign-in, create/enable its bot. Copy the **Application ID** and **Public Key**
+  from **General Information**, then reset and copy the bot token from **Bot**.
+- [ ] Invite the bot to the Pop Epoch server with the `bot` and
+  `applications.commands` scopes. Give it **View Channel**, **Send Messages**,
+  **Embed Links**, and **Read Message History** in the test channel.
+- [ ] Generate a private launch secret, for example with
+  `openssl rand -base64 48`. Do not add it or the bot token to GitHub or
+  `.env.local`.
+- [ ] Set the four Edge Function settings (`DISCORD_APPLICATION_PUBLIC_KEY`,
+  `DISCORD_BOT_TOKEN`, `BENBEN_LAUNCH_SECRET`, and `BENBEN_SITE_URL`) and deploy
+  with `supabase functions deploy benben-discord --no-verify-jwt --use-api`.
+- [ ] Set the Discord application's **Interactions Endpoint URL** to the
+  `benben-discord` function URL shown above. Discord verifies it immediately;
+  do not save the setting until that check succeeds.
+- [ ] Run the registration command with the Application ID and bot token to add
+  `/benben` to the Pop Epoch server.
+- [ ] In a test channel, run `/benben`, click **Open Benben**, sign in, and make
+  one care action. Confirm that one Benben card appears in that channel and is
+  edited after another action.
+- [ ] Repeat in a second channel: it should begin at Benben's fresh default
+  stats and create a separate status card.
+
+For another server, invite the same bot there and register the command again
+with that server's id. Its channels automatically receive independent Benbens;
+no additional database setup is needed.
 
 Possible later additions:
 
@@ -59,4 +136,3 @@ Possible later additions:
 - Phoenix-arrival announcements.
 - A Discord Activity that embeds the full visual game. This is substantially
   more work than commands and buttons and is not needed for the first version.
-

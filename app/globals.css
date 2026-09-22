@@ -7786,7 +7786,7 @@ button.calendar-day:hover { background: var(--surface-2); }
 .benben-phoenix-banner { position: absolute; z-index: 6; bottom: 18px; left: 20px; right: 20px; padding: 9px 12px; border: 1px solid rgba(255,239,163,.7); border-radius: 12px; background: linear-gradient(90deg, rgba(111,34,22,.86), rgba(185,80,23,.84)); color: #fff8d7; font-size: .8rem; font-weight: 750; text-align: center; box-shadow: 0 8px 24px rgba(77,28,20,.22); backdrop-filter: blur(8px); }
 .benben-mood { position: absolute; top: 20px; right: 20px; display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border: 1px solid rgba(255,255,255,.45); border-radius: 999px; background: rgba(20,17,28,.64); color: #fff; font-weight: 700; backdrop-filter: blur(8px); }
 .benben-mood span { color: #ffd76c; }
-.benben-care-card { padding: clamp(20px, 4vw, 34px); }
+.benben-care-card { display: flex; flex-direction: column; padding: clamp(20px, 4vw, 34px); }
 .benben-stats { display: grid; gap: 18px; }
 .benben-stat > div:first-child { display: flex; justify-content: space-between; gap: 12px; margin-bottom: 7px; color: var(--ink-soft); font-size: .86rem; font-weight: 650; }
 .benben-stat strong { color: var(--ink); }
@@ -7808,4 +7808,13 @@ button.calendar-day:hover { background: var(--surface-2); }
 .benben-recent time { color: var(--ink-faint); font-size: .74rem; }
 .benben-log-icon { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; background: var(--gold-soft); }
 @media (max-width: 850px) { .benben-stage { grid-template-columns: 1fr; } .benben-character-card { min-height: 420px; } }
-@media (max-width: 520px) { .benben-actions { grid-template-columns: 1fr 1fr; } .benben-recent li { grid-template-columns: 34px 1fr; } .benben-recent time { grid-column: 2; } }
+@media (max-width: 520px) {
+  .benben-care-card .benben-action-note { order: 1; }
+  .benben-care-card .benben-actions { order: 2; grid-template-columns: 1fr 1fr; }
+  .benben-care-card .benben-stats { order: 3; margin-top: 18px; }
+  .benben-care-card .benben-signin { order: 4; }
+  .benben-care-card .benben-share { order: 5; }
+  .benben-care-card .notice { order: 6; }
+  .benben-recent li { grid-template-columns: 34px 1fr; }
+  .benben-recent time { grid-column: 2; }
+}

@@ -12,6 +12,7 @@
     "start": "next start",
     "test": "node --experimental-strip-types --test tests/*.test.mjs",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
+    "discord:register-benben": "node scripts/register-benben-command.mjs",
     "i18n:add": "node scripts/add-language.mjs",
     "i18n:report": "node --experimental-strip-types --no-warnings scripts/i18n-report.mjs"
   },
