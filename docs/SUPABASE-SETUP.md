@@ -35,9 +35,10 @@ Supabase automatically provides the function with its project URL, anon key, and
 The guild is `1534685294371274822` and stays in the function.
 
 `supabase db push` applies every checked-in migration, including
-`20260922190000_guild_event_camps.sql`, which adds the Trials of Odin siege
-board table. It only adds a table and its policies, so applying it changes
-nothing until officers fill a camp in.
+`20260922190000_guild_event_camps.sql` and `20260922210000_guild_event_orders.sql`,
+which add the Trials of Odin siege board: the camps, and the rings, horns and
+attacks each member brings. Both only add a table and its policies, so applying
+them changes nothing until a guild fills the board in.
 
 Which Discord role grants which site role is **no longer in the function**: it
 lives in the `role_mappings` table and is edited at `/admin/` by an admin. The

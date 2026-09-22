@@ -7741,13 +7741,22 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
   position: relative;
   aspect-ratio: 16 / 9;
   min-height: 290px;
+  overflow: hidden;
   padding: 4px;
   border: 1px solid var(--line);
   border-radius: var(--r-md);
-  background:
-    radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 46%),
-    radial-gradient(circle at 20% 80%, color-mix(in srgb, var(--good) 10%, transparent), transparent 40%),
-    var(--surface);
+  background: var(--surface);
+}
+/* Our own siege scenery: snow in the north, meadow around Asgard, sand and rivers in the south. */
+.guild-map-scene { position: absolute; inset: 0; width: 100%; height: 100%; }
+.guild-map-snow { fill: color-mix(in srgb, #8fbede 22%, transparent); }
+.guild-map-sand { fill: color-mix(in srgb, #d8a96a 20%, transparent); }
+.guild-map-grass { fill: color-mix(in srgb, #5fa871 22%, transparent); }
+.guild-map-river {
+  fill: none;
+  stroke: color-mix(in srgb, #4a90c4 45%, transparent);
+  stroke-width: 3.5;
+  stroke-linecap: round;
 }
 .guild-map-plot { position: absolute; inset: 8px clamp(56px, 9%, 92px); }
 .guild-map-lines { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
@@ -7825,23 +7834,9 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
   white-space: nowrap;
 }
 .guild-map-server { color: var(--ink-faint); font-family: var(--font-mono); font-size: .68rem; }
-.guild-map-bar {
-  display: block;
-  height: 5px;
-  overflow: hidden;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--bad) 45%, var(--surface-2));
-}
-.guild-map-bar span {
-  display: block;
-  height: 100%;
-  background: color-mix(in srgb, var(--good) 75%, white);
-  transition: width .2s ease;
-}
-.guild-map-camp[data-state="ours"] .guild-map-bar span { background: color-mix(in srgb, var(--accent) 80%, white); }
 .guild-map-numbers { display: flex; flex-wrap: wrap; gap: 2px 8px; color: var(--ink-soft); font-size: .7rem; }
-.guild-map-percent { font-family: var(--font-mono); }
-.guild-map-spend { font-family: var(--font-mono); color: var(--ink-faint); }
+.guild-map-spend { font-family: var(--font-mono); }
+.guild-map-attackers { color: var(--ink-faint); }
 
 .guild-camp-order { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0 0; padding: 0; list-style: none; }
 .guild-camp-chip {
@@ -7901,6 +7896,44 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
 .guild-camp-note-field { grid-column: 1 / -1; }
 .guild-camp-edit-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
 .guild-camp-edit-actions .small-button[aria-pressed="true"] { border-color: var(--accent-line); background: var(--accent-soft); color: var(--accent); }
+.guild-camp-assigned { margin-top: 10px; display: grid; gap: 4px; }
+
+.guild-orders { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); }
+.guild-orders .guild-panel-head h3 { margin: 0; font-family: var(--font-display); font-size: .95rem; }
+.guild-orders-mine {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+  gap: 10px 12px;
+  align-items: end;
+  margin-bottom: 12px;
+}
+.guild-orders-mine .field { margin: 0; }
+.guild-orders-list { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
+.guild-order {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 6px 12px;
+  align-items: center;
+  padding: 10px 0;
+  border-top: 1px solid var(--line);
+}
+.guild-order:first-child { border-top: 0; }
+.guild-order.is-you { margin: 0 -8px; padding: 10px 8px; border-radius: var(--r-sm); background: var(--accent-soft); }
+.guild-order-name { min-width: 0; font-size: .9rem; font-weight: 600; overflow-wrap: anywhere; }
+.guild-order-stock { color: var(--ink-soft); font-family: var(--font-mono); font-size: .82rem; white-space: nowrap; }
+.guild-order-targets,
+.guild-order-plan { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; }
+.guild-order-targets label { display: inline-flex; align-items: center; gap: 6px; margin: 0; color: var(--ink-faint); font-size: .74rem; font-weight: 600; }
+.guild-order-targets select { min-height: 32px; padding: 4px 8px; font-size: .82rem; }
+.guild-order-plan { color: var(--ink-soft); font-size: .8rem; }
+.guild-order-plan > * + *::before { content: "·"; margin-right: 8px; color: var(--ink-faint); }
+
+@media (max-width: 640px) {
+  .guild-orders-mine { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .guild-orders-mine .button { grid-column: 1 / -1; }
+  .guild-order-targets label { width: 100%; }
+  .guild-order-targets select { flex: 1; }
+}
 
 @media (max-width: 720px) {
   .guild-map { aspect-ratio: 3 / 4; min-height: 480px; }

@@ -406,6 +406,8 @@ export function GuildEventBoard({ guildId, userId, canOfficer, roster, eventId }
           dayIndex={dayIndex}
           count={def.camps}
           canOfficer={canOfficer}
+          userId={userId}
+          roster={roster}
         />
       ) : null}
 

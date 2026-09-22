@@ -94,14 +94,23 @@ export type GuildEventCampRow = {
   is_ours: boolean;
   /** 0 means no order yet; 1 is hit first. */
   priority: number;
-  /** What the map shows above the camp, in percent. */
-  progress: number;
-  /** Draupnir Rings to spend here. */
-  rings: number;
-  /** Military Tokens (Horns) to spend here. */
-  horns: number;
   note: string;
 };
+
+/**
+ * What a member brings to a siege and where an officer sends it.
+ * A target of 0 means every camp, or the member's own choice.
+ */
+export type GuildEventOrderRow = {
+  user_id: string;
+  rings: number;
+  horns: number;
+  rings_target: number;
+  horns_target: number;
+  attack_target: number;
+};
+
+export const GUILD_ORDER_TARGET_ALL = 0;
 
 export const GUILD_CAMP_NAME_MAX = 60;
 export const GUILD_CAMP_SERVER_MAX = 40;
@@ -109,7 +118,12 @@ export const GUILD_CAMP_NOTE_MAX = 200;
 
 /** An empty camp for a slot the guild has not filled in yet. */
 export function emptyCamp(slot: number): GuildEventCampRow {
-  return { slot, name: "", server_name: "", is_ours: false, priority: 0, progress: 100, rings: 0, horns: 0, note: "" };
+  return { slot, name: "", server_name: "", is_ours: false, priority: 0, note: "" };
+}
+
+/** An empty order row for a member who has not said what they have. */
+export function emptyOrder(userId: string): GuildEventOrderRow {
+  return { user_id: userId, rings: 0, horns: 0, rings_target: 0, horns_target: 0, attack_target: 0 };
 }
 
 /** Every slot of the map, filled from the stored rows, so a fresh siege still shows the board. */
@@ -122,16 +136,13 @@ export function campSlots(count: number, rows: readonly GuildEventCampRow[]): Gu
 
 /**
  * Targets in the order they should be hit: our own camp drops out, camps with
- * an order come first, then the rest by slot. A destroyed camp (0 %) sinks to
- * the bottom, so the list reads as what is still left to do.
+ * an order come first, then the rest by slot.
  */
 export function campTargets(camps: readonly GuildEventCampRow[]): GuildEventCampRow[] {
   return camps
     .filter((camp) => !camp.is_ours)
     .slice()
     .sort((a, b) => {
-      const done = Number(a.progress === 0) - Number(b.progress === 0);
-      if (done !== 0) return done;
       const ordered = Number(a.priority === 0) - Number(b.priority === 0);
       if (ordered !== 0) return ordered;
       if (a.priority !== b.priority) return a.priority - b.priority;
@@ -139,10 +150,39 @@ export function campTargets(camps: readonly GuildEventCampRow[]): GuildEventCamp
     });
 }
 
-/** Rings and horns the plan spends across every camp that is still standing. */
-export function campTotals(camps: readonly GuildEventCampRow[]): { rings: number; horns: number } {
-  return camps.reduce(
-    (sum, camp) => (camp.is_ours ? sum : { rings: sum.rings + camp.rings, horns: sum.horns + camp.horns }),
+/** Everything the guild has for this siege, whether it is pointed at a camp or not. */
+export function orderTotals(orders: readonly GuildEventOrderRow[]): { rings: number; horns: number } {
+  return orders.reduce(
+    (sum, order) => ({ rings: sum.rings + order.rings, horns: sum.horns + order.horns }),
+    { rings: 0, horns: 0 },
+  );
+}
+
+/**
+ * Rings, horns, and attackers an officer has pointed at one camp. Orders left
+ * on "every camp" are counted separately, so a camp never claims them.
+ */
+export function campAssignment(
+  slot: number,
+  orders: readonly GuildEventOrderRow[],
+): { rings: number; horns: number; attackers: string[] } {
+  return orders.reduce(
+    (sum, order) => ({
+      rings: sum.rings + (order.rings_target === slot ? order.rings : 0),
+      horns: sum.horns + (order.horns_target === slot ? order.horns : 0),
+      attackers: order.attack_target === slot ? [...sum.attackers, order.user_id] : sum.attackers,
+    }),
+    { rings: 0, horns: 0, attackers: [] as string[] },
+  );
+}
+
+/** Rings and horns nobody has been given a camp for yet. */
+export function unassignedTotals(orders: readonly GuildEventOrderRow[]): { rings: number; horns: number } {
+  return orders.reduce(
+    (sum, order) => ({
+      rings: sum.rings + (order.rings_target === GUILD_ORDER_TARGET_ALL ? order.rings : 0),
+      horns: sum.horns + (order.horns_target === GUILD_ORDER_TARGET_ALL ? order.horns : 0),
+    }),
     { rings: 0, horns: 0 },
   );
 }

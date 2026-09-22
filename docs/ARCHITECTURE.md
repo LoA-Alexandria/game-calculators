@@ -104,13 +104,16 @@ pledge end-invest amounts.
 
 Events whose def in `lib/content/guild-events.ts` carries a `camps` count also get
 a siege board, drawn as the map itself: the camps sit around Asgard the way the
-game places them, and tapping one opens its plan. Trials of Odin has five camps.
-Officers mark which one is the guild's own, put the other four in the order they
-should fall, and set each one's remaining percent plus the Draupnir Rings and
-Military Tokens (Horns) to spend there; members see the same map and read the plan
-of the camp they tap. Camp positions live in `GuildSiegeCamps.tsx`, with a second
-set for phones, where the wide ring does not fit. One row per camp and siege day in
-`guild_event_camps`; officers write, active members read, nothing crosses guilds.
+game places them, on scenery this site draws with CSS and SVG, and tapping one
+opens its plan. Trials of Odin has five camps. Officers mark which one is the
+guild's own and put the other four in the order they should fall
+(`guild_event_camps`, one row per camp and siege day). Members write down the
+Draupnir Rings and Military Tokens (Horns) they still have, and officers point
+those, and each member's normal attacks, at one camp or at every camp
+(`guild_event_orders`, one row per member and siege day). Each camp then shows what
+is aimed at it. Camp positions live in `GuildSiegeCamps.tsx`, with a second set for
+phones, where the wide ring does not fit. Officers write, active members read and
+keep their own row, and nothing crosses guilds.
 
 ## Vendored applications
 
