@@ -745,46 +745,45 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
         </section>
       ) : null}
 
+      {tab === "planung" && activeEventIds.length > 0 ? (
+        <nav className="guild-event-tabs" aria-label={t.guilds.planung}>
+          {activeEventIds.map((id) => {
+            const def = GUILD_PLAN_EVENTS.find((e) => e.id === id);
+            if (!def) return null;
+            return (
+              <button
+                key={id}
+                type="button"
+                className={planEventId === id ? "guild-tab is-active" : "guild-tab"}
+                onClick={() => setPlanEventId(id)}
+              >
+                {t.guilds.events[def.labelKey]}
+              </button>
+            );
+          })}
+        </nav>
+      ) : null}
+
       <div className="guild-room-layout">
         <div className="guild-room-main">
           {tab === "planung" ? (
-            <>
-              {activeEventIds.length > 0 ? (
-                <nav className="guild-event-tabs" aria-label={t.guilds.planung}>
-                  {activeEventIds.map((id) => {
-                    const def = GUILD_PLAN_EVENTS.find((e) => e.id === id);
-                    if (!def) return null;
-                    return (
-                      <button
-                        key={id}
-                        type="button"
-                        className={planEventId === id ? "guild-tab is-active" : "guild-tab"}
-                        onClick={() => setPlanEventId(id)}
-                      >
-                        {t.guilds.events[def.labelKey]}
-                      </button>
-                    );
-                  })}
-                </nav>
-              ) : null}
-              {planEventId ? (
-                <GuildEventBoard
-                  guildId={guild.id}
-                  userId={session.userId}
-                  canOfficer={canOfficer}
-                  roster={roster}
-                  eventId={planEventId}
-                />
-              ) : (
-                <section className="guild-panel">
-                  <div className="guild-empty">
-                    <GuildsIcon className="icon guild-empty-icon" />
-                    <strong>{t.guilds.emptyTitle}</strong>
-                    <p>{t.guilds.eventsActiveEmpty}</p>
-                  </div>
-                </section>
-              )}
-            </>
+            planEventId ? (
+              <GuildEventBoard
+                guildId={guild.id}
+                userId={session.userId}
+                canOfficer={canOfficer}
+                roster={roster}
+                eventId={planEventId}
+              />
+            ) : (
+              <section className="guild-panel">
+                <div className="guild-empty">
+                  <GuildsIcon className="icon guild-empty-icon" />
+                  <strong>{t.guilds.emptyTitle}</strong>
+                  <p>{t.guilds.eventsActiveEmpty}</p>
+                </div>
+              </section>
+            )
           ) : (
             <section className="guild-panel">
               <header className="guild-panel-head">
