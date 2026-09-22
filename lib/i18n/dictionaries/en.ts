@@ -204,6 +204,7 @@ const en = {
     requestedOn: "Requested {date}",
     applicant: "Applicant",
     eventsActivate: "Activate events",
+    eventsManage: "Manage events",
     eventsDeactivate: "Turn off",
     eventsActivateClose: "Close",
     eventsActiveEmpty: "No events active yet. Officers can turn events on for this match.",

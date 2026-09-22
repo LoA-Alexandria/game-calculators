@@ -202,6 +202,7 @@ const fr: Dictionary = {
     requestedOn: "Demande du {date}",
     applicant: "Candidature",
     eventsActivate: "Activer des événements",
+    eventsManage: "Gérer les événements",
     eventsDeactivate: "Désactiver",
     eventsActivateClose: "Fermer",
     eventsActiveEmpty: "Aucun événement actif. Les officiers peuvent en activer pour ce match.",

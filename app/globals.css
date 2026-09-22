@@ -7716,9 +7716,8 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
 .guild-member-manage { grid-column: 2 / -1; justify-self: start; min-height: 28px; padding: 0 10px; font-size: .76rem; }
 .guild-roster-head-actions .small-button[aria-pressed="true"] { border-color: var(--accent-line); background: var(--accent-soft); color: var(--accent); }
 
-.guild-event-bar-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
-.guild-event-bar-row .guild-event-tabs { margin: 0; }
-.guild-event-activate { margin-left: auto; }
+.guild-room-main > .guild-event-tabs { margin: 0; }
+.guild-event-manage { display: flex; justify-content: flex-end; }
 .guild-event-tabs .guild-tab { border: 1px solid var(--line); background: var(--surface); color: var(--ink-soft); cursor: pointer; }
 .guild-event-tabs .guild-tab.is-active { border-color: var(--accent-line); background: var(--accent-soft); box-shadow: none; color: var(--accent); }
 .guild-event-pledge-list li { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 12px; }
@@ -7741,7 +7740,6 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
   .guild-pending-list li { grid-template-columns: auto minmax(0, 1fr); }
   .guild-pending-actions { grid-column: 2; }
   .guild-settings { grid-template-columns: minmax(0, 1fr); }
-  .guild-event-activate { margin-left: 0; }
 }
 
 /* --- guide editor -------------------------------------------------------- */
