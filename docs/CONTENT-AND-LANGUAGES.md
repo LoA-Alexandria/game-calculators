@@ -639,8 +639,7 @@ Everything the game fixes per play or goddess lives in
 
 - `plays`: every play in `goddess-theater.json` with its rarity, and where
   known the base ticket price and visitor flow from the play's preview
-  (`ticket`, `visitors`), its three aptitudes, and Autumn's Royal Theater total
-  (`reference`, at 310 % / 310 % / 930). UR+ plays have `slots: 5` because
+  (`ticket`, `visitors`) and its three aptitudes. UR+ plays have `slots: 5` because
   their casts have five roles; that is an assumption until someone checks.
 - `goddesses`: the aptitudes known per goddess, and `lacks` for aptitudes a
   test showed she does not have. With `lacks` a play's bonus can be exact

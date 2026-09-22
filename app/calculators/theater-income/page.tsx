@@ -5,9 +5,9 @@ import { CalculatorHeader } from "../../components/CalculatorHeader";
 import { useLocale } from "../../components/LocaleProvider";
 import { createPersistentStore } from "../../components/persistentStore";
 import {
+  GODDESS_APTITUDES,
   INCOME_PLAYS,
   PLAY_RARITIES,
-  REFERENCE_STATS,
   REHEARSAL_EVENTS,
   deployment,
   incomePlay,
@@ -35,15 +35,14 @@ type Saved = {
   plays: Record<string, PlayInput>;
 };
 
-// The page opens on Autumn's test theater and her goddesses, so the first numbers mean something: she named
-// Medusa, Bastet, and Calypso as missing, and Lilith is not confirmed in the game yet.
+// The page opens on example values and every goddess whose aptitudes are recorded, so the first numbers mean something.
 const DEFAULTS: Saved = {
   ticketPercent: "270",
   visitorPercent: "268.5",
   merchandise: "810",
   event: "none",
   play: "robinson-crusoe",
-  owned: GODDESSES.map((goddess) => goddess.name).filter((name) => !["Medusa", "Bastet", "Calypso", "Lilith"].includes(name)),
+  owned: GODDESS_APTITUDES.map((goddess) => goddess.name),
   plays: {},
 };
 
@@ -368,18 +367,12 @@ export default function TheaterIncomePage() {
 
       <section className="surface theater-compare" aria-labelledby="theater-compare-heading">
         <h2 id="theater-compare-heading">{copy.compareHeading}</h2>
-        <p className="theater-lede">
-          {tf(copy.compareLede, {
-            ticket: n(REFERENCE_STATS.ticketPercent),
-            visitors: n(REFERENCE_STATS.visitorPercent),
-            merchandise: n(REFERENCE_STATS.merchandise),
-          })}
-        </p>
+        <p className="theater-lede">{copy.compareLede}</p>
         {PLAY_RARITIES.map((rarity) => {
           const group = rows
             .filter((row) => row.entry.rarity === rarity)
             .map((row) => ({ row, income: stats && row.numbers ? performance(row.numbers, stats).total : null }))
-            .sort((a, b) => (b.income ?? -1) - (a.income ?? -1) || (b.row.entry.reference ?? 0) - (a.row.entry.reference ?? 0));
+            .sort((a, b) => (b.income ?? -1) - (a.income ?? -1) || (b.row.bonusPercent ?? -1) - (a.row.bonusPercent ?? -1));
           const best = group[0]?.income ?? null;
           return (
             <div className="table-scroll theater-table" key={rarity}>
@@ -393,7 +386,6 @@ export default function TheaterIncomePage() {
                     <th scope="col" className="num">{copy.colBonus}</th>
                     <th scope="col" className="num">{copy.colIncome}</th>
                     <th scope="col" className="num">{copy.colRedCarpet}</th>
-                    <th scope="col" className="num">{copy.colReference}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -413,9 +405,6 @@ export default function TheaterIncomePage() {
                       <td className="num">{income !== null ? n(income) : <span className="theater-missing">{copy.needsValues}</span>}</td>
                       <td className="num">
                         {income !== null ? tf(copy.redCarpetRange, { low: n(redCarpetPoints(income)[0]), high: n(redCarpetPoints(income)[1]) }) : "—"}
-                      </td>
-                      <td className="num">
-                        {row.entry.reference ? n(row.entry.reference, { notation: "compact", maximumFractionDigits: 2 }) : "—"}
                       </td>
                     </tr>
                   ))}
