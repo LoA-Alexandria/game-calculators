@@ -7292,6 +7292,34 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
   background: var(--surface);
   box-shadow: var(--shadow-1);
 }
+.guild-roster-toggle {
+  display: none;
+  position: relative;
+}
+.guild-roster-toggle-count {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  font-size: .62rem;
+  font-weight: 700;
+  line-height: 16px;
+  text-align: center;
+}
+.guild-roster-drawer-close { display: none; }
+.guild-roster-head-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.guild-roster-scrim {
+  display: none;
+}
 .guild-pending-meta {
   display: grid;
   gap: 4px;
@@ -7908,14 +7936,80 @@ button.calendar-day:hover { background: var(--surface-2); }
   .guild-form > .button { grid-column: 1 / -1; }
   .guild-card {
     grid-template-columns: auto minmax(0, 1fr);
+    padding: 14px 16px;
+    gap: 12px;
   }
   .guild-card-actions {
     grid-column: 1 / -1;
     justify-content: flex-start;
   }
-  .guild-room-head { flex-direction: column; }
+  .guild-join-form textarea { min-height: 64px; }
+  .guild-room-head { flex-direction: column; align-items: stretch; }
+  .guild-room-toolbar { align-items: stretch; }
+  .guild-tabs {
+    width: 100%;
+  }
+  .guild-tab {
+    flex: 1;
+    text-align: center;
+    padding: 7px 10px;
+  }
+  .guild-room-tools {
+    margin-left: 0;
+    width: 100%;
+    justify-content: flex-end;
+  }
   .guild-room-layout { grid-template-columns: 1fr; }
-  .guild-roster { position: static; }
+  .guild-roster-toggle { display: inline-flex; }
+  .guild-roster-drawer-close { display: inline-flex; }
+  .guild-roster {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 80;
+    width: min(320px, 88vw);
+    margin: 0;
+    border-radius: 0;
+    border-right: 0;
+    border-top: 0;
+    border-bottom: 0;
+    transform: translateX(100%);
+    transition: transform .2s ease;
+    overflow: auto;
+    overscroll-behavior: contain;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, .28);
+  }
+  .guild-roster.is-open { transform: translateX(0); }
+  .guild-roster-scrim {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 70;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: rgba(8, 10, 14, .48);
+    cursor: pointer;
+  }
+  .guild-event-tabs {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 2px;
+  }
+  .guild-event-tabs .guild-tab {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+  .guild-manage-panel,
+  .guild-compose-trigger {
+    margin-bottom: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .guild-roster { transition: none; }
 }
 
 @media (max-width: 1000px) {

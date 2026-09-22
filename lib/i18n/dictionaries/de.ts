@@ -152,6 +152,8 @@ const de: Dictionary = {
     membersTitle: "Mitglieder",
     membersEmpty: "Noch keine Mitglieder.",
     membersYou: "Du",
+    membersOpen: "Mitglieder",
+    membersClose: "Mitglieder schließen",
     iconChange: "Icon ändern",
     iconRemove: "Icon entfernen",
     serverFilterLabel: "Nach Server filtern",
