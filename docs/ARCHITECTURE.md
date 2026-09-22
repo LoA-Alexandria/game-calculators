@@ -94,7 +94,7 @@ before adding any write path.
 
 Community guilds live in Supabase (`guilds`, `guild_memberships`, `guild_posts`,
 `guild_active_events`, `guild_event_days`, `guild_event_pledges`,
-`guild_event_camps`) with RLS. Admins
+`guild_event_camps`, `guild_event_orders`, `guild_alliances`) with RLS. Admins
 create guilds (name, server, optional icon in Storage bucket `guild-icons`, master
 Discord ID). Signed-in players request to join with an optional note; masters and
 officers review requests. Masters promote officers and edit guild settings. Officers
@@ -119,6 +119,16 @@ point those, and each member's normal attacks, at one camp or at every camp
 shows what is aimed at it. Officers write, active members read and keep their own
 row, and nothing crosses guilds. An event with a siege map plans its rings and
 horns there, so the end-invest block is hidden for it.
+
+Two guilds may plan one siege together. An officer offers an alliance for an
+event (`guild_alliances`, one live row per pair and event); an officer of the
+invited guild answers through `respond_to_guild_alliance`, so nobody accepts
+their own offer. While it stands, both guilds get a second board beside their
+own — the same map, but on `guild_alliance_camps` and `guild_alliance_orders`,
+where both allied camps count as friendly and `alliance_roster` names the
+members of both guilds. `is_alliance_member` and `is_alliance_officer` gate it,
+and each guild's own board stays private. Ending the alliance, from either
+side, deletes the shared plan with it.
 
 ## Vendored applications
 
