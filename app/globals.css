@@ -7142,7 +7142,7 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  margin-bottom: 4px;
+  margin-bottom: 16px;
 }
 .guild-event-picker {
   list-style: none;
@@ -7282,9 +7282,10 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
   min-width: 0;
   align-content: start;
 }
+/* Stay level with the main content box; sticky was jumping above Activate / event tabs. */
 .guild-roster {
-  position: sticky;
-  top: calc(var(--topbar) + 14px);
+  position: relative;
+  top: auto;
   align-self: start;
   padding: 16px 16px 18px;
   border: 1px solid var(--line);
