@@ -306,6 +306,16 @@ export function InfoIcon({ className }: IconProps) {
   );
 }
 
+/** Two chain links — a hero that links others. */
+export function LinkIcon({ className }: IconProps) {
+  return (
+    <svg className={className} {...base}>
+      <path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1.2 1.2" />
+      <path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1.2-1.2" />
+    </svg>
+  );
+}
+
 export function AlertIcon({ className }: IconProps) {
   return (
     <svg className={className} {...base}>

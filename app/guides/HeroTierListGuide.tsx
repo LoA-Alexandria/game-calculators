@@ -28,7 +28,7 @@ import {
 import { HERO_RARITIES, heroNamed, heroPortrait, type HeroRarity } from "../../lib/content/heroes";
 import type { Dictionary } from "../../lib/i18n";
 import { HeroPortrait } from "../components/HeroPortrait";
-import { CloseIcon, SearchIcon } from "../components/Icons";
+import { CloseIcon, LinkIcon } from "../components/Icons";
 import { useLocale } from "../components/LocaleProvider";
 
 type Guide = Dictionary["guideEntries"]["heroTierList"];
@@ -124,16 +124,14 @@ function TierCard({ card, guide, onOpen }: { card: Card; guide: Guide; onOpen: (
   const caption = placementCaption(guide, entry);
   const linker = (card.list === "overall" || card.list === "battle") && card.entry.linker;
   const situational = card.list === "utility" && card.entry.situational;
-  const hasMore = Boolean(entry.note || (card.list === "overall" && card.entry.reason));
   return (
     <li className="tl-card" data-rarity={rarity}>
       <button type="button" className="tl-card-button" aria-haspopup="dialog" onClick={() => onOpen(card)}>
         <span className="tl-card-art">
           <HeroPortrait name={entry.hero} rarity={rarity} src={heroPortrait(entry.hero)} className="tl-portrait" />
           {card.list === "overall" && card.rank ? <span className="tl-rank">{tf(guide.rank, { rank: card.rank })}</span> : null}
-          {linker ? <span className="tl-flag" title={guide.linker}>L</span> : null}
-          {situational ? <span className="tl-flag" title={guide.situational}>~</span> : null}
-          {hasMore ? <span className="tl-more" aria-hidden="true">i</span> : null}
+          {linker ? <span className="tl-flag" title={guide.linker} aria-hidden="true"><LinkIcon className="icon" /></span> : null}
+          {situational ? <span className="tl-flag" title={guide.situational} aria-hidden="true">~</span> : null}
         </span>
         <span className="tl-card-name">{entry.hero}</span>
         {caption ? <span className="tl-card-variant">{caption}</span> : null}
@@ -190,16 +188,22 @@ function rowsFor(list: TierListId, guide: Guide, filter: Filter): Row[] {
   }));
 }
 
-function listSize(list: TierListId): number {
-  const heroes = new Set<string>();
-  if (list === "overall") OVERALL_TIERS.forEach((row) => row.entries.forEach((entry) => heroes.add(entry.hero)));
-  if (list === "battle") BATTLE_TIERS.forEach((row) => row.entries.forEach((entry) => heroes.add(entry.hero)));
-  if (list === "utility") UTILITY_TIERS.forEach((row) => row.entries.forEach((entry) => heroes.add(entry.hero)));
-  if (list === "productivity") PRODUCTIVITY_TIERS.forEach((row) => row.groups.forEach((group) => group.entries.forEach((entry) => heroes.add(entry.hero))));
-  return heroes.size;
+function listEntries(list: TierListId): readonly { hero: string; rarity?: HeroRarity }[] {
+  if (list === "overall") return OVERALL_TIERS.flatMap((row) => row.entries);
+  if (list === "battle") return BATTLE_TIERS.flatMap((row) => row.entries);
+  if (list === "utility") return UTILITY_TIERS.flatMap((row) => row.entries);
+  return PRODUCTIVITY_TIERS.flatMap((row) => row.groups.flatMap((group) => group.entries));
 }
 
-const LIST_SIZES = Object.fromEntries(LISTS.map((list) => [list, listSize(list)])) as Record<TierListId, number>;
+/** Heroes in a list, once each however often they are placed, and per rarity for the filter chips. */
+function listSizes(list: TierListId): { all: number } & Record<HeroRarity, number> {
+  const entries = listEntries(list);
+  const count = (rarity?: HeroRarity) =>
+    new Set(entries.filter((entry) => !rarity || entryRarity(entry) === rarity).map((entry) => entry.hero)).size;
+  return { all: count(), ...(Object.fromEntries(HERO_RARITIES.map((rarity) => [rarity, count(rarity)])) as Record<HeroRarity, number>) };
+}
+
+const LIST_SIZES = Object.fromEntries(LISTS.map((list) => [list, listSizes(list)])) as Record<TierListId, ReturnType<typeof listSizes>>;
 
 function RowBody({ row, list, guide, onOpen }: { row: Row; list: TierListId; guide: Guide; onOpen: (card: Card) => void }) {
   if (list === "battle") {
@@ -265,6 +269,10 @@ function TierBoard({ guide }: { guide: Guide }) {
   // While filtering, empty tiers collapse; otherwise a described tier stays so D ("replaceable") still reads.
   const shown = rows.filter((row) => row.cards.length > 0 || (!filtering && row.description));
   const matches = rows.reduce((sum, row) => sum + row.cards.length, 0);
+  const heroesShown = new Set(rows.flatMap((row) => row.cards.map((card) => card.entry.hero))).size;
+  const sizes = LIST_SIZES[active];
+  const hasLinkers = rows.some((row) => row.cards.some((card) => (card.list === "overall" || card.list === "battle") && card.entry.linker));
+  const hasSituational = rows.some((row) => row.cards.some((card) => card.list === "utility" && card.entry.situational));
 
   const onKeyDown = (event: KeyboardEvent<HTMLButtonElement>, index: number) => {
     const last = LISTS.length - 1;
@@ -298,43 +306,77 @@ function TierBoard({ guide }: { guide: Guide }) {
             onKeyDown={(event) => onKeyDown(event, index)}
           >
             <span className="tl-mode-title">{labels[id]}</span>
-            <span className="tl-mode-count">{tf(guide.listCount, { count: LIST_SIZES[id] })}</span>
+            <span className="tl-mode-count">{tf(guide.listCount, { count: LIST_SIZES[id].all })}</span>
           </button>
         ))}
       </div>
 
-      <div className="tl-filters">
-        <div className="tier-filter">
-          <label className="visually-hidden" htmlFor={`${base}-filter`}>{guide.filterLabel}</label>
-          <SearchIcon className="icon icon-sm" />
-          <input
-            id={`${base}-filter`}
-            type="search"
-            value={query}
-            placeholder={guide.filterPlaceholder}
-            autoComplete="off"
-            onChange={(event) => setQuery(event.target.value)}
-          />
-          {query ? (
-            <button type="button" className="tier-filter-clear" aria-label={guide.filterClear} onClick={() => setQuery("")}>
-              <CloseIcon className="icon icon-sm" />
-            </button>
-          ) : null}
-        </div>
-        <div className="hero-filters" role="group" aria-label={guide.rarityLabel}>
-          <button type="button" className="hero-filter" aria-pressed={rarity === "all"} onClick={() => setRarity("all")}>
-            {guide.rarityAll}
-          </button>
-          {HERO_RARITIES.map((tier) => (
-            <button key={tier} type="button" className="hero-filter" data-rarity={tier} aria-pressed={rarity === tier} onClick={() => setRarity(tier)}>
-              {tier}
-            </button>
-          ))}
-        </div>
-      </div>
-
       <div className="tl-panel" id={`${base}-panel`} role="tabpanel" aria-labelledby={tabId(active)}>
         <p className="tier-lede">{ledes[active]}</p>
+
+        <div className="hero-toolbar">
+          <div className="hero-filters" role="group" aria-label={guide.rarityLabel}>
+            <button type="button" className="hero-filter" aria-pressed={rarity === "all"} onClick={() => setRarity("all")}>
+              {guide.rarityAll}
+              <span className="hero-filter-count">{sizes.all}</span>
+            </button>
+            {HERO_RARITIES.map((tier) => (
+              <button
+                key={tier}
+                type="button"
+                className="hero-filter"
+                data-rarity={tier}
+                aria-pressed={rarity === tier}
+                disabled={sizes[tier] === 0 && rarity !== tier}
+                onClick={() => setRarity(tier)}
+              >
+                {tier}
+                <span className="hero-filter-count">{sizes[tier]}</span>
+              </button>
+            ))}
+          </div>
+          <label className="hero-search">
+            <span className="visually-hidden">{guide.filterLabel}</span>
+            <input
+              type="search"
+              value={query}
+              placeholder={guide.filterPlaceholder}
+              autoComplete="off"
+              onChange={(event) => setQuery(event.target.value)}
+            />
+          </label>
+        </div>
+
+        <div className="tl-legend-bar">
+          <p className="hero-count" aria-live="polite">{tf(guide.countLabel, { count: heroesShown })}</p>
+          <ul className="tl-legend">
+            {active === "overall"
+              ? ([
+                  [guide.gradeBattleShort, guide.gradeBattle],
+                  [guide.gradeUtilityShort, guide.gradeUtility],
+                  [guide.gradeProductivityShort, guide.gradeProductivity],
+                ] as const).map(([short, label]) => (
+                  <li key={label}>
+                    <span className="tl-key" aria-hidden="true">{short.charAt(0)}</span>
+                    {label}
+                  </li>
+                ))
+              : null}
+            {hasLinkers ? (
+              <li>
+                <span className="tl-flag tl-flag-key" aria-hidden="true"><LinkIcon className="icon" /></span>
+                {guide.linker}
+              </li>
+            ) : null}
+            {hasSituational ? (
+              <li>
+                <span className="tl-flag tl-flag-key" aria-hidden="true">~</span>
+                {guide.situational}
+              </li>
+            ) : null}
+            <li className="tl-legend-hint">{guide.openHint}</li>
+          </ul>
+        </div>
         {active === "battle" ? (
           <details className="tier-types">
             <summary>{guide.battleTypesHeading}</summary>
