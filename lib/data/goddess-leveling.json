@@ -1,0 +1,49 @@
+{
+  "phases": [
+    {
+      "id": "core",
+      "subtitle": "Core fundamentals",
+      "lede": "",
+      "rows": [
+        { "goddess": "demeter", "target": "180", "withoutSsr": "90" },
+        { "goddess": "venus", "target": "180", "withoutSsr": "150" }
+      ]
+    },
+    {
+      "id": "first-milestones",
+      "subtitle": "First milestones",
+      "lede": "",
+      "rows": [
+        { "goddess": "calypso", "target": "90" },
+        { "goddess": "lady-liberty", "target": "90" },
+        { "goddess": "medusa", "target": "90" },
+        { "goddess": "hela", "target": "90" },
+        { "goddess": "athena", "target": "90" },
+        { "goddess": "fortuna", "target": "60" },
+        { "goddess": "bastet", "target": "60" }
+      ]
+    },
+    {
+      "id": "mid-game",
+      "subtitle": "Mid-game push",
+      "lede": "",
+      "rows": [
+        { "goddess": "calypso", "target": "180" },
+        { "goddess": "lady-liberty", "target": "180" },
+        { "goddess": "medusa", "target": "180" },
+        { "goddess": "athena", "target": "120" },
+        { "goddess": "hela", "target": "120" },
+        { "goddess": "fortuna", "target": "120" },
+        { "goddess": "bastet", "target": "120" }
+      ]
+    },
+    {
+      "id": "late-game",
+      "subtitle": "Late game",
+      "lede": "Finish maxing the goddesses above, then take every other goddess through the same milestones together.",
+      "rows": [
+        { "goddess": null, "target": "30 → 60 → 90 → max" }
+      ]
+    }
+  ]
+}

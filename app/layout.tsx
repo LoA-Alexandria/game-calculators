@@ -3,7 +3,7 @@ import { Inter, JetBrains_Mono, Sora } from "next/font/google";
 import { AppShell } from "./components/AppShell";
 import { AuthProvider } from "./components/AuthProvider";
 import { LocaleProvider } from "./components/LocaleProvider";
-import { THEME_STORAGE_KEY } from "../lib/site";
+import { SCHEME_STORAGE_KEY, THEME_STORAGE_KEY } from "../lib/site";
 import "./globals.css";
 
 /**
@@ -26,24 +26,24 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f6f7fa" },
-    { media: "(prefers-color-scheme: dark)", color: "#0a0c11" },
+    { media: "(prefers-color-scheme: light)", color: "#f3eee6" },
+    { media: "(prefers-color-scheme: dark)", color: "#12100d" },
   ],
 };
 
 /**
- * Applies the stored theme before first paint so a stored choice that differs
- * from the operating-system preference does not flash the wrong palette. The
+ * Applies the stored theme and colour scheme before first paint so a stored
+ * choice that differs from the defaults does not flash the wrong palette. The
  * language cannot be handled this way — the exported HTML carries the default
  * language and `LocaleProvider` swaps it as soon as React hydrates.
  */
-const themeBootstrap = `(function(){try{var t=localStorage.getItem(${JSON.stringify(THEME_STORAGE_KEY)});if(t==="light"||t==="dark"){document.documentElement.dataset.theme=t;}}catch(e){}})();`;
+const themeBootstrap = `(function(){try{var d=document.documentElement;var t=localStorage.getItem(${JSON.stringify(THEME_STORAGE_KEY)});if(t==="light"||t==="dark")d.dataset.theme=t;var s=localStorage.getItem(${JSON.stringify(SCHEME_STORAGE_KEY)});if(s==="stone"||s==="lapis"||s==="papyrus"||s==="steam")d.dataset.scheme=s;}catch(e){}})();`;
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     // suppressHydrationWarning: the script below sets `data-theme` and
-    // LocaleProvider sets `lang`, both before React hydrates. It only covers
-    // this element's own attributes, not the tree underneath.
+    // `data-scheme`, and LocaleProvider sets `lang`, all before React hydrates.
+    // It only covers this element's own attributes, not the tree underneath.
     <html
       lang="en"
       className={`${sora.variable} ${inter.variable} ${jetBrainsMono.variable}`}

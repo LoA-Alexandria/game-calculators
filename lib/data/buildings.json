@@ -1,0 +1,455 @@
+{
+  "buildings": [
+    {
+      "id": "tent",
+      "name": "Tent",
+      "category": "population",
+      "levelMax": 1750,
+      "image": "buildings/tent.webp"
+    },
+    {
+      "id": "longhouse",
+      "name": "Longhouse",
+      "category": "population",
+      "levelMax": 1735,
+      "image": "buildings/longhouse.webp"
+    },
+    {
+      "id": "country-villa",
+      "name": "Country Villa",
+      "category": "population",
+      "levelMax": 1712,
+      "image": "buildings/country-villa.webp"
+    },
+    {
+      "id": "castle",
+      "name": "Castle",
+      "category": "population",
+      "levelMax": 1663,
+      "image": "buildings/castle.webp"
+    },
+    {
+      "id": "noble-manor",
+      "name": "Noble Manor",
+      "category": "population",
+      "levelMax": 1628,
+      "image": "buildings/noble-manor.webp"
+    },
+    {
+      "id": "seafarers-home",
+      "name": "Seafarer's Home",
+      "category": "population",
+      "levelMax": 1588,
+      "image": "buildings/seafarers-home.webp"
+    },
+    {
+      "id": "inn",
+      "name": "Inn",
+      "category": "population",
+      "levelMax": 1484,
+      "image": "buildings/inn.webp"
+    },
+    {
+      "id": "worker-dormitory",
+      "name": "Worker Dormitory",
+      "category": "population",
+      "levelMax": 1275,
+      "image": "buildings/worker-dormitory.webp"
+    },
+    {
+      "id": "tram-apartment",
+      "name": "Tram Apartment",
+      "category": "population",
+      "levelMax": 1059,
+      "image": "buildings/tram-apartment.webp"
+    },
+    {
+      "id": "lumber-mill",
+      "name": "Lumber Mill",
+      "category": "production",
+      "levelMax": 1746,
+      "image": "production-buildings/lumber-mill.webp",
+      "group": "basic",
+      "produces": "wood",
+      "requires": [
+        "wood",
+        "stone"
+      ],
+      "priority": 2,
+      "tags": [
+        "pikemanBarracks"
+      ]
+    },
+    {
+      "id": "farm",
+      "name": "Farm",
+      "category": "production",
+      "levelMax": 1743,
+      "image": "production-buildings/farm.webp",
+      "group": "basic",
+      "produces": "food",
+      "requires": [
+        "wood",
+        "stone"
+      ],
+      "priority": 1,
+      "tags": []
+    },
+    {
+      "id": "quarry",
+      "name": "Quarry",
+      "category": "production",
+      "levelMax": 1740,
+      "image": "production-buildings/quarry.webp",
+      "group": "basic",
+      "produces": "stone",
+      "requires": [
+        "wood",
+        "stone"
+      ],
+      "priority": 2,
+      "tags": [
+        "archerBarracksExploration"
+      ]
+    },
+    {
+      "id": "copper-mine",
+      "name": "Copper Mine",
+      "category": "production",
+      "levelMax": 1737,
+      "image": "production-buildings/copper-mine.webp",
+      "group": "basic",
+      "produces": "copper",
+      "requires": [
+        "stone",
+        "copper"
+      ],
+      "priority": 2,
+      "tags": [
+        "shieldBarracks"
+      ]
+    },
+    {
+      "id": "blacksmith",
+      "name": "Blacksmith",
+      "category": "production",
+      "levelMax": 1722,
+      "image": "production-buildings/blacksmith.webp",
+      "group": "basic",
+      "produces": "iron",
+      "requires": [
+        "copper",
+        "iron"
+      ],
+      "priority": 3,
+      "tags": [
+        "allSoldiersExploration",
+        "replacesWoodExplorationPikemen"
+      ]
+    },
+    {
+      "id": "weavery",
+      "name": "Weavery",
+      "category": "production",
+      "levelMax": 1729,
+      "image": "production-buildings/weavery.webp",
+      "group": "advanced",
+      "produces": "cloth",
+      "requires": [
+        "wood",
+        "copper"
+      ],
+      "priority": 0,
+      "tags": [
+        "researchRenaissance",
+        "goldGeneration"
+      ]
+    },
+    {
+      "id": "pasture",
+      "name": "Pasture",
+      "category": "production",
+      "levelMax": 1718,
+      "image": "production-buildings/pasture.webp",
+      "group": "advanced",
+      "produces": "horses",
+      "requires": [
+        "food",
+        "copper"
+      ],
+      "priority": 1,
+      "tags": [
+        "cavalryBarracksExploration"
+      ]
+    },
+    {
+      "id": "brewery",
+      "name": "Brewery",
+      "category": "production",
+      "levelMax": 1703,
+      "image": "production-buildings/brewery.webp",
+      "group": "luxury",
+      "produces": "alcohol",
+      "requires": [
+        "wood",
+        "iron"
+      ],
+      "priority": 0,
+      "tags": [
+        "researchEarlyExploration"
+      ]
+    },
+    {
+      "id": "tannery",
+      "name": "Tannery",
+      "category": "production",
+      "levelMax": 1693,
+      "image": "production-buildings/tannery.webp",
+      "group": "luxury",
+      "produces": "leather",
+      "requires": [
+        "iron",
+        "leather"
+      ],
+      "priority": 2,
+      "tags": [
+        "luxuryExplorationBasis"
+      ]
+    },
+    {
+      "id": "glass-workshop",
+      "name": "Glass Workshop",
+      "category": "production",
+      "levelMax": 1674,
+      "image": "production-buildings/glass-workshop.webp",
+      "group": "luxury",
+      "produces": "glass",
+      "requires": [
+        "stone",
+        "leather"
+      ],
+      "priority": 0,
+      "tags": [
+        "researchEarlyExploration"
+      ]
+    },
+    {
+      "id": "paper-mill",
+      "name": "Paper Mill",
+      "category": "production",
+      "levelMax": 1650,
+      "image": "production-buildings/paper-mill.webp",
+      "group": "luxury",
+      "produces": "paper",
+      "requires": [
+        "leather",
+        "paper"
+      ],
+      "priority": 2,
+      "tags": [
+        "researchMidExploration"
+      ]
+    },
+    {
+      "id": "art-workshop",
+      "name": "Art Workshop",
+      "category": "production",
+      "levelMax": 1626,
+      "image": "production-buildings/art-workshop.webp",
+      "group": "luxury",
+      "produces": "creations",
+      "requires": [
+        "copper",
+        "paper"
+      ],
+      "priority": 0,
+      "tags": [
+        "researchLateExplorationEnlightenment"
+      ]
+    },
+    {
+      "id": "steel-plant",
+      "name": "Steel Plant",
+      "category": "production",
+      "levelMax": 1590,
+      "image": "production-buildings/steel-plant.webp",
+      "group": "exploration",
+      "produces": "steel",
+      "requires": [
+        "iron",
+        "leather"
+      ],
+      "priority": 3,
+      "tags": [
+        "soldiersAfterExploration",
+        "explorationResourcesBasis"
+      ]
+    },
+    {
+      "id": "firearm-workshop",
+      "name": "Firearm Workshop",
+      "category": "production",
+      "levelMax": 1583,
+      "image": "production-buildings/firearm-workshop.webp",
+      "group": "exploration",
+      "produces": "gunpowder",
+      "requires": [
+        "paper",
+        "steel"
+      ],
+      "priority": 1,
+      "tags": [
+        "explorationArchersCavalry"
+      ]
+    },
+    {
+      "id": "plantation",
+      "name": "Plantation",
+      "category": "production",
+      "levelMax": 1500,
+      "image": "production-buildings/plantation.webp",
+      "group": "enlightenment",
+      "produces": "lemons",
+      "requires": [
+        "paper",
+        "lemons"
+      ],
+      "priority": 1,
+      "tags": []
+    },
+    {
+      "id": "spice-workshop",
+      "name": "Spice Workshop",
+      "category": "production",
+      "levelMax": 1450,
+      "image": "buildings/stages/spice-workshop-5.webp",
+      "group": "enlightenment",
+      "produces": "coffee",
+      "requires": [
+        "steel",
+        "lemons"
+      ],
+      "priority": 0,
+      "tags": []
+    },
+    {
+      "id": "coal-plant",
+      "name": "Coal Plant",
+      "category": "production",
+      "levelMax": 1350,
+      "image": "buildings/coal-plant.webp",
+      "group": "steam",
+      "produces": "coal",
+      "requires": [
+        "paper",
+        "coal"
+      ],
+      "priority": 1,
+      "tags": [
+        "lignite"
+      ]
+    },
+    {
+      "id": "precision-parts-plant",
+      "name": "Precision Parts Plant",
+      "category": "production",
+      "levelMax": 1275,
+      "image": "buildings/precision-parts-plant.webp",
+      "group": "steam",
+      "produces": "precisionParts",
+      "requires": [
+        "iron",
+        "lemons",
+        "precisionParts"
+      ],
+      "priority": 0,
+      "tags": []
+    },
+    {
+      "id": "oil-plant",
+      "name": "Oil Plant",
+      "category": "production",
+      "levelMax": 1125,
+      "image": "buildings/oil-plant.webp",
+      "group": "steam",
+      "produces": "oil",
+      "requires": [
+        "steel",
+        "oil"
+      ],
+      "priority": 0,
+      "tags": []
+    },
+    {
+      "id": "communications-bureau",
+      "name": "Communications Bureau",
+      "category": "production",
+      "levelMax": 1025,
+      "image": "buildings/communications-bureau.webp",
+      "group": "steam",
+      "produces": "information",
+      "requires": [
+        "coal",
+        "information"
+      ],
+      "priority": 0,
+      "tags": []
+    },
+    {
+      "id": "pikeman-barracks",
+      "name": "Pikeman Barracks",
+      "category": "military",
+      "levelMax": 160,
+      "image": "buildings/pikeman-barracks.webp"
+    },
+    {
+      "id": "archer-barracks",
+      "name": "Archer Barracks",
+      "category": "military",
+      "levelMax": 160,
+      "image": "buildings/archer-barracks.webp"
+    },
+    {
+      "id": "shieldman-barracks",
+      "name": "Shieldman Barracks",
+      "category": "military",
+      "levelMax": 160,
+      "image": "buildings/shieldman-barracks.webp"
+    },
+    {
+      "id": "cavalry-barracks",
+      "name": "Cavalry Barracks",
+      "category": "military",
+      "levelMax": 160,
+      "image": "buildings/cavalry-barracks.webp"
+    },
+    {
+      "id": "guard-barracks",
+      "name": "Guard Barracks",
+      "category": "military",
+      "levelMax": 465,
+      "image": "buildings/guard-barracks.webp"
+    },
+    {
+      "id": "musket-barracks",
+      "name": "Musket Barracks",
+      "category": "military",
+      "levelMax": 465,
+      "image": "buildings/musket-barracks.webp"
+    },
+    {
+      "id": "iron-wall-barracks",
+      "name": "Iron Wall Barracks",
+      "category": "military",
+      "levelMax": 465,
+      "image": "buildings/iron-wall-barracks.webp"
+    },
+    {
+      "id": "mounted-police-station",
+      "name": "Mounted Police Station",
+      "category": "military",
+      "levelMax": 465,
+      "image": "buildings/mounted-police-station.webp"
+    }
+  ]
+}

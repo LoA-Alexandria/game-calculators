@@ -1,0 +1,197 @@
+import type { Dictionary } from "../i18n/index.ts";
+import tierData from "../data/hero-tiers.json" with { type: "json" };
+import { heroNamed, type HeroRarity } from "./heroes.ts";
+
+/**
+ * Types and helpers for the Hero tier list guide. The rows themselves (hero
+ * names, grades, resources, bonuses) are in `lib/data/hero-tiers.json`, which the
+ * tier list editor exports as a whole. Everything readable lives in
+ * `guideEntries.heroTierList` and is referenced from the rows by key, so a tier
+ * moves in one place for all three languages.
+ *
+ * Source: Autumn's (Ice, S12) tier lists on Discord, 8 September 2026. Names
+ * are spelled as in the Hero layouts guide, so both guides point at the same
+ * hero. All ratings are for a hero at 0 stars without items or skins unless an
+ * entry says otherwise.
+ *
+ * An entry's `rarity` is the quality the hero is rated at, for heroes whose
+ * rarity changes in the game: Joan of Arc is SS at UR+ and S at UR. It sets the
+ * portrait frame and a caption for that placement only. Without it, the frame
+ * follows the Heroes roster.
+ */
+
+type TierListText = Dictionary["guideEntries"]["heroTierList"];
+export type RoleKey = keyof TierListText["roles"];
+export type EffectKey = keyof TierListText["effects"];
+export type ResourceKey = keyof TierListText["resources"];
+export type NoteKey = keyof TierListText["notes"];
+export type VariantKey = keyof TierListText["variants"];
+export type ReasonKey = keyof TierListText["reasons"];
+
+export const TIER_IDS = ["SS", "S", "A", "B", "C", "D"] as const;
+export type TierId = (typeof TIER_IDS)[number];
+
+/**
+ * A grade as the source writes it: `A`, `A>S` (between the two), `SS(S+)`
+ * (with a finer grade in brackets), or `C*` (see the entry's note).
+ */
+export type Grade = string;
+
+const GRADE = /^(SS|S|A|B|C|D)(?:>(SS|S|A|B|C|D))?(?:\((SS\+|S\+)\))?(\*)?$/;
+
+export type ParsedGrade = { tier: TierId; to: TierId | null; fine: string; flagged: boolean };
+
+export function parseGrade(grade: Grade): ParsedGrade | null {
+  const match = GRADE.exec(grade);
+  if (!match) return null;
+  return {
+    tier: match[1] as TierId,
+    to: (match[2] as TierId | undefined) ?? null,
+    fine: match[3] ?? "",
+    flagged: Boolean(match[4]),
+  };
+}
+
+type Tagged = { hero: string; rarity?: HeroRarity; variant?: VariantKey; note?: NoteKey };
+
+/**
+ * The caption under a placed hero: the rarity it is rated at when the entry
+ * sets one ("at UR+"), then the variant ("with item").
+ */
+export function placementCaption(
+  text: Pick<TierListText, "atRarity" | "variants">,
+  entry: { rarity?: HeroRarity; variant?: VariantKey },
+): string {
+  return [entry.rarity ? text.atRarity.replace("{rarity}", entry.rarity) : "", entry.variant ? text.variants[entry.variant] : ""]
+    .filter(Boolean)
+    .join(" · ");
+}
+
+/** The rarity a placement is rated at: its own, or the roster's. */
+export function entryRarity(entry: { hero: string; rarity?: HeroRarity }): HeroRarity | undefined {
+  return entry.rarity ?? heroNamed(entry.hero)?.rarity;
+}
+
+export type OverallEntry = Tagged & {
+  battle?: Grade;
+  /** Missing for SR and R heroes, which have no utility skill. */
+  utility?: Grade;
+  productivity?: Grade;
+  linker?: boolean;
+  /** Autumn's explanation for the placement, shown behind a "Why?" toggle. */
+  reason?: ReasonKey;
+};
+export type BattleEntry = Tagged & { roles: readonly RoleKey[]; linker?: boolean };
+export type UtilityEntry = Tagged & { effect: EffectKey; situational?: boolean };
+export type ProductivityEntry = Tagged & { bonus: readonly number[] };
+export type ProductivityGroup = { resource: ResourceKey; entries: readonly ProductivityEntry[] };
+
+export type TierRow<Entry> = { tier: TierId; ordered?: boolean; entries: readonly Entry[] };
+
+export type ProductivityRow = { tier: TierId; groups: readonly ProductivityGroup[] };
+
+export type TierListData = {
+  overall: readonly TierRow<OverallEntry>[];
+  battle: readonly TierRow<BattleEntry>[];
+  utility: readonly TierRow<UtilityEntry>[];
+  productivity: readonly ProductivityRow[];
+};
+
+/**
+ * JSON has no string literal types, so the keys are only as good as the file.
+ * `tests/hero-tiers.test.mjs` checks every key against every dictionary.
+ */
+export const TIER_DATA = tierData as unknown as TierListData;
+export const OVERALL_TIERS = TIER_DATA.overall;
+export const BATTLE_TIERS = TIER_DATA.battle;
+export const UTILITY_TIERS = TIER_DATA.utility;
+export const PRODUCTIVITY_TIERS = TIER_DATA.productivity;
+
+
+/** Lower-case, accent-free text for the hero filter. */
+export function searchable(value: string): string {
+  return value.toLowerCase().normalize("NFKD").replace(/[̀-ͯ]/g, "").trim();
+}
+
+export function matchesHero(hero: string, query: string): boolean {
+  const needle = searchable(query);
+  return needle === "" || searchable(hero).includes(needle);
+}
+
+/**
+ * Columns for the battle list, like the role columns of a gacha tier list. A
+ * hero sits in the column of their first skill label; Autumn lists the main
+ * effect first. The two Ragnar rows have no label and deal damage.
+ */
+export const ROLE_GROUPS = ["damage", "sustain", "support", "control"] as const;
+export type RoleGroup = (typeof ROLE_GROUPS)[number];
+
+const GROUP_OF_ROLE: Record<RoleKey, RoleGroup> = {
+  crit: "damage",
+  dot: "damage",
+  pursuit: "damage",
+  execute: "damage",
+  thresholdExecute: "damage",
+  scalingAtk: "damage",
+  shieldBreak: "damage",
+  heal: "sustain",
+  dotHeal: "sustain",
+  healIfCrit: "sustain",
+  rngHeal: "sustain",
+  healBuff: "sustain",
+  shield: "sustain",
+  overflowShield: "sustain",
+  invincibilityBarrier: "sustain",
+  deathImmunity: "sustain",
+  rngDodge: "sustain",
+  rngDebuffImmunity: "sustain",
+  dmgReductionBuff: "sustain",
+  buff: "support",
+  atkBuff: "support",
+  defBuff: "support",
+  dotBuff: "support",
+  dotBuffDouble: "support",
+  rngDotBuff: "support",
+  critBuff: "support",
+  rngCritBuff: "support",
+  atkDebuff: "control",
+  defDebuff: "control",
+  debuffToDot: "control",
+  buffRemoval: "control",
+  rngBuffRemoval: "control",
+  noEnemyBuffs: "control",
+  healBlock: "control",
+  healReduction: "control",
+  silence: "control",
+  collectionDenial: "control",
+};
+
+export function roleGroup(roles: readonly RoleKey[]): RoleGroup {
+  return roles.length > 0 ? GROUP_OF_ROLE[roles[0]] ?? "damage" : "damage";
+}
+
+export type TierListId = "overall" | "battle" | "utility" | "productivity";
+
+export type TierPlacement = { list: TierListId; tier: TierId; rarity?: HeroRarity; variant?: VariantKey; resource?: ResourceKey };
+
+/** Every row a hero appears in across the four lists, in list order. */
+export function tierPlacements(hero: string): TierPlacement[] {
+  const found: TierPlacement[] = [];
+  const add = (list: TierListId, tier: TierId, entry: Tagged, resource?: ResourceKey) => {
+    if (entry.hero !== hero) return;
+    found.push({
+      list,
+      tier,
+      ...(entry.rarity ? { rarity: entry.rarity } : {}),
+      ...(entry.variant ? { variant: entry.variant } : {}),
+      ...(resource ? { resource } : {}),
+    });
+  };
+  for (const row of OVERALL_TIERS) for (const entry of row.entries) add("overall", row.tier, entry);
+  for (const row of BATTLE_TIERS) for (const entry of row.entries) add("battle", row.tier, entry);
+  for (const row of UTILITY_TIERS) for (const entry of row.entries) add("utility", row.tier, entry);
+  for (const row of PRODUCTIVITY_TIERS) {
+    for (const group of row.groups) for (const entry of group.entries) add("productivity", row.tier, entry, group.resource);
+  }
+  return found;
+}

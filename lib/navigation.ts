@@ -1,29 +1,53 @@
+import { eventWikiIcon } from "./content/event-guides.ts";
 import type { Dictionary } from "./i18n/index.ts";
 
 /**
- * The single source of truth for the sidebar, the section index pages, and the
- * home page. Every label is a lookup into the dictionary rather than a literal,
- * so a new language needs no change here.
+ * The single source of truth for the sidebar and the section index pages.
+ * Every label is a lookup into the dictionary rather than a literal, so a new
+ * language needs no change here.
  *
  * Adding a tool or guide: add one entry to the matching section's `items`. It
  * then appears in the sidebar, in the section index, and in the filter.
+ * Guides should also set `badge` so the Guides index can group them.
  */
 export type NavItem = {
   href: string;
   /** Resolves the item's title in the active language. */
   label: (t: Dictionary) => string;
   description?: (t: Dictionary) => string;
+  /**
+   * Optional picture next to the label in the Events sidebar and on Events
+   * index cards. Path under `public/`, such as `/events/atlantis.webp`.
+   */
+  icon?: string;
   badge?: (t: Dictionary) => string;
+  /**
+   * Stable grouping key for nested sidebar rows and the Guides index.
+   * `badge` is the translated label shown for that group.
+   */
+  categoryId?: string;
 };
 
 export type NavSection = {
-  id: "news" | "events" | "guides" | "calculators" | "simulations";
+  id: "news" | "events" | "guides" | "calculators" | "simulations" | "guilds";
   href: string;
   label: (t: Dictionary) => string;
   description: (t: Dictionary) => string;
-  icon: "news" | "events" | "guides" | "calculators" | "simulations";
+  icon: "news" | "events" | "guides" | "calculators" | "simulations" | "guilds";
   items: NavItem[];
 };
+
+function eventNav(
+  id: keyof Dictionary["eventGuideEntries"],
+  href: string,
+): NavItem {
+  return {
+    href,
+    label: (t) => t.eventGuideEntries[id].title,
+    description: (t) => t.eventGuideEntries[id].summary,
+    icon: eventWikiIcon(id),
+  };
+}
 
 export const SECTIONS: NavSection[] = [
   {
@@ -35,12 +59,54 @@ export const SECTIONS: NavSection[] = [
     items: [],
   },
   {
+    id: "guilds",
+    href: "/guilds/",
+    label: (t) => t.nav.guilds,
+    description: (t) => t.navDescriptions.guilds,
+    icon: "guilds",
+    items: [],
+  },
+  {
     id: "events",
     href: "/events/",
     label: (t) => t.nav.events,
-    description: (t) => t.events.lede,
+    description: (t) => t.navDescriptions.events,
     icon: "events",
-    items: [],
+    /**
+     * Event write-ups as a flat list. The schedule calendar lives on the
+     * overview, not in this section.
+     */
+    items: [
+      eventNav("holyGrail", "/events/holy-grail/"),
+      eventNav("trialsOfOdin", "/events/trials-of-odin/"),
+      eventNav("dawnOfRome", "/events/dawn-of-rome/"),
+      eventNav("atlantis", "/events/atlantis/"),
+      eventNav("heartOfGold", "/events/heart-of-gold/"),
+      eventNav("duelFestival", "/events/duel-festival/"),
+      eventNav("roadToWorldcup", "/events/road-to-worldcup/"),
+      eventNav("gloryPick", "/events/glory-pick/"),
+      eventNav("shoppingCartRace", "/events/shopping-cart-race/"),
+      eventNav("astralWonderland", "/events/astral-wonderland/"),
+      eventNav("genieWish", "/events/genie-wish/"),
+      eventNav("ringToss", "/events/ring-toss/"),
+      eventNav("springReturns", "/events/spring-returns/"),
+      eventNav("springReturnsPlanting", "/events/spring-returns-planting/"),
+      eventNav("grandVoyage", "/events/grand-voyage/"),
+      eventNav("globalRegatta", "/events/global-regatta/"),
+      eventNav("redCarpet", "/events/red-carpet/"),
+      eventNav("tourPerformance", "/events/tour-performance/"),
+      eventNav("monumentOfEternity", "/events/monument-of-eternity/"),
+      eventNav("goddessOfTime", "/events/goddess-of-time/"),
+      eventNav("peakOfEnlightenment", "/events/peak-of-enlightenment/"),
+      eventNav("legendOfSerenissima", "/events/legend-of-serenissima/"),
+      eventNav("mayanRuins", "/events/mayan-ruins/"),
+      eventNav("evolutionInstitute", "/events/evolution-institute/"),
+      eventNav("lifeIncubator", "/events/life-incubator/"),
+      eventNav("militarySupplies", "/events/military-supplies/"),
+      eventNav("mushroomAdventure", "/events/mushroom-adventure/"),
+      eventNav("supplyReform", "/events/supply-reform/"),
+      eventNav("greatFlood", "/events/great-flood/"),
+    ],
   },
   {
     id: "guides",
@@ -50,9 +116,144 @@ export const SECTIONS: NavSection[] = [
     icon: "guides",
     items: [
       {
-        href: "/guides/water-supply/",
-        label: (t) => t.guideEntries.waterSupply.title,
-        description: (t) => t.guideEntries.waterSupply.summary,
+        href: "/guides/heroes/",
+        label: (t) => t.guideEntries.heroes.title,
+        description: (t) => t.guideEntries.heroes.summary,
+        badge: (t) => t.guideCategories.coreElements,
+        categoryId: "coreElements",
+      },
+      {
+        href: "/guides/artwork/",
+        label: (t) => t.guideEntries.artwork.title,
+        description: (t) => t.guideEntries.artwork.summary,
+        badge: (t) => t.guideCategories.coreElements,
+        categoryId: "coreElements",
+      },
+      {
+        href: "/guides/technology/",
+        label: (t) => t.guideEntries.technology.title,
+        description: (t) => t.guideEntries.technology.summary,
+        badge: (t) => t.guideCategories.coreElements,
+        categoryId: "coreElements",
+      },
+      {
+        href: "/guides/collection/",
+        label: (t) => t.guideEntries.collection.title,
+        description: (t) => t.guideEntries.collection.summary,
+        badge: (t) => t.guideCategories.coreElements,
+        categoryId: "coreElements",
+      },
+      {
+        href: "/guides/manor/",
+        label: (t) => t.guideEntries.manor.title,
+        description: (t) => t.guideEntries.manor.summary,
+        badge: (t) => t.guideCategories.coreElements,
+        categoryId: "coreElements",
+      },
+      {
+        href: "/guides/goddesses/",
+        label: (t) => t.guideEntries.goddesses.title,
+        description: (t) => t.guideEntries.goddesses.summary,
+        badge: (t) => t.guideCategories.coreElements,
+        categoryId: "coreElements",
+      },
+      {
+        href: "/guides/cryptides/",
+        label: (t) => t.guideEntries.cryptides.title,
+        description: (t) => t.guideEntries.cryptides.summary,
+        badge: (t) => t.guideCategories.coreElements,
+        categoryId: "coreElements",
+      },
+      {
+        href: "/guides/buildings/",
+        label: (t) => t.guideEntries.buildings.title,
+        description: (t) => t.guideEntries.buildings.summary,
+        badge: (t) => t.guideCategories.coreElements,
+        categoryId: "coreElements",
+      },
+      {
+        href: "/guides/goddess-theater/",
+        label: (t) => t.guideEntries.goddessTheater.title,
+        description: (t) => t.guideEntries.goddessTheater.summary,
+        badge: (t) => t.guideCategories.buildings,
+        categoryId: "buildings",
+      },
+      {
+        href: "/guides/museion/",
+        label: (t) => t.guideEntries.museion.title,
+        description: (t) => t.guideEntries.museion.summary,
+        badge: (t) => t.guideCategories.buildings,
+        categoryId: "buildings",
+      },
+      {
+        href: "/guides/hero-layouts/",
+        label: (t) => t.guideEntries.heroLayouts.title,
+        description: (t) => t.guideEntries.heroLayouts.summary,
+        badge: (t) => t.guideCategories.layouts,
+        categoryId: "layouts",
+      },
+      {
+        href: "/guides/collection-layouts/",
+        label: (t) => t.guideEntries.collectionLayouts.title,
+        description: (t) => t.guideEntries.collectionLayouts.summary,
+        badge: (t) => t.guideCategories.layouts,
+        categoryId: "layouts",
+      },
+      {
+        href: "/guides/artwork-layouts/",
+        label: (t) => t.guideEntries.artworkLayouts.title,
+        description: (t) => t.guideEntries.artworkLayouts.summary,
+        badge: (t) => t.guideCategories.layouts,
+        categoryId: "layouts",
+      },
+      {
+        href: "/guides/hero-tier-list/",
+        label: (t) => t.guideEntries.heroTierList.title,
+        description: (t) => t.guideEntries.heroTierList.summary,
+        badge: (t) => t.guideCategories.tierLists,
+        categoryId: "tierLists",
+      },
+      {
+        href: "/guides/hero-linking/",
+        label: (t) => t.guideEntries.heroLinking.title,
+        description: (t) => t.guideEntries.heroLinking.summary,
+        badge: (t) => t.guideCategories.tips,
+        categoryId: "tips",
+      },
+      {
+        href: "/guides/hero-leveling/",
+        label: (t) => t.guideEntries.heroLeveling.title,
+        description: (t) => t.guideEntries.heroLeveling.summary,
+        badge: (t) => t.guideCategories.tips,
+        categoryId: "tips",
+      },
+      {
+        href: "/guides/goddess-leveling/",
+        label: (t) => t.guideEntries.goddessLeveling.title,
+        description: (t) => t.guideEntries.goddessLeveling.summary,
+        badge: (t) => t.guideCategories.tips,
+        categoryId: "tips",
+      },
+      {
+        href: "/guides/anecdotes/",
+        label: (t) => t.guideEntries.anecdotes.title,
+        description: (t) => t.guideEntries.anecdotes.summary,
+        badge: (t) => t.guideCategories.tips,
+        categoryId: "tips",
+      },
+      {
+        href: "/guides/server-age-unlocks/",
+        label: (t) => t.guideEntries.serverAgeUnlocks.title,
+        description: (t) => t.guideEntries.serverAgeUnlocks.summary,
+        badge: (t) => t.guideCategories.tips,
+        categoryId: "tips",
+      },
+      {
+        href: "/guides/ads-buy/",
+        label: (t) => t.guideEntries.adsBuy.title,
+        description: (t) => t.guideEntries.adsBuy.summary,
+        badge: (t) => t.guideCategories.tips,
+        categoryId: "tips",
       },
     ],
   },
@@ -121,4 +322,51 @@ export function sectionById(id: NavSection["id"]): NavSection {
 /** Total number of tools offered, used for the counter on the home page. */
 export function toolCount(): number {
   return sectionById("calculators").items.length + sectionById("simulations").items.length;
+}
+
+/** Published guides, used for the counter on the home page. */
+export function guideCount(): number {
+  return sectionById("guides").items.length;
+}
+
+/**
+ * Whether the sidebar browse panel should open for this section. Guides use
+ * nested categories, so they open even with no items yet. Events stay open so
+ * the index is reachable while the list is empty.
+ */
+export function sectionHasBrowsePanel(section: NavSection): boolean {
+  if (section.id === "guides" || section.id === "events") return true;
+  return section.items.length > 0;
+}
+
+export type NavGroup = {
+  id: string;
+  category: string;
+  items: NavItem[];
+};
+
+/**
+ * Groups items by `categoryId` when present, otherwise by the translated
+ * badge. Order follows first appearance. Items without either land in
+ * `uncategorized`.
+ */
+export function groupByBadge(
+  items: NavItem[],
+  t: Dictionary,
+  uncategorized: string,
+): NavGroup[] {
+  const order: string[] = [];
+  const groups = new Map<string, NavGroup>();
+  for (const item of items) {
+    const category = item.badge?.(t) ?? uncategorized;
+    const id = item.categoryId ?? category;
+    const existing = groups.get(id);
+    if (!existing) {
+      order.push(id);
+      groups.set(id, { id, category, items: [item] });
+      continue;
+    }
+    existing.items.push(item);
+  }
+  return order.map((id) => groups.get(id) ?? { id, category: uncategorized, items: [] });
 }

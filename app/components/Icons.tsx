@@ -122,6 +122,16 @@ export function CloseIcon({ className }: IconProps) {
   );
 }
 
+/** A panel with a left rail — collapse or expand the sidebar. */
+export function SidebarIcon({ className }: IconProps) {
+  return (
+    <svg className={className} {...base}>
+      <rect x="3.5" y="4" width="17" height="16" rx="2.5" />
+      <path d="M9 4v16" />
+    </svg>
+  );
+}
+
 export function SunIcon({ className }: IconProps) {
   return (
     <svg className={className} {...base}>
@@ -145,6 +155,17 @@ export function GlobeIcon({ className }: IconProps) {
       <circle cx="12" cy="12" r="9" />
       <path d="M3.5 9.5h17M3.5 14.5h17" />
       <path d="M12 3a14 14 0 0 1 0 18a14 14 0 0 1 0-18z" />
+    </svg>
+  );
+}
+
+/** Three overlapping discs — a palette, not a brand mark. */
+export function PaletteIcon({ className }: IconProps) {
+  return (
+    <svg className={className} {...base}>
+      <circle cx="9" cy="10" r="5" />
+      <circle cx="15" cy="10" r="5" />
+      <circle cx="12" cy="15" r="5" />
     </svg>
   );
 }
@@ -223,6 +244,28 @@ export function UploadIcon({ className }: IconProps) {
   );
 }
 
+/** Six dots: a drag handle. */
+export function GripIcon({ className }: IconProps) {
+  return (
+    <svg className={className} {...base}>
+      <circle cx="9" cy="6" r="1.2" />
+      <circle cx="15" cy="6" r="1.2" />
+      <circle cx="9" cy="12" r="1.2" />
+      <circle cx="15" cy="12" r="1.2" />
+      <circle cx="9" cy="18" r="1.2" />
+      <circle cx="15" cy="18" r="1.2" />
+    </svg>
+  );
+}
+
+export function DownloadIcon({ className }: IconProps) {
+  return (
+    <svg className={className} {...base}>
+      <path d="M12 4v11M7.5 10.5 12 15l4.5-4.5M5 19h14" />
+    </svg>
+  );
+}
+
 export function CopyIcon({ className }: IconProps) {
   return (
     <svg className={className} {...base}>
@@ -236,6 +279,19 @@ export function CheckIcon({ className }: IconProps) {
   return (
     <svg className={className} {...base}>
       <path d="M5 12.5 9.5 17 19 7" />
+    </svg>
+  );
+}
+
+/** Compact mark for a relevant theater role; sits next to the goddess name. */
+export function StarIcon({ className }: IconProps) {
+  return (
+    <svg className={className} {...base}>
+      <path
+        d="M12 3.8 14.2 9.1 20 9.7 15.7 13.5 16.9 19.2 12 16.2 7.1 19.2 8.3 13.5 4 9.7 9.8 9.1z"
+        fill="currentColor"
+        stroke="none"
+      />
     </svg>
   );
 }
@@ -289,10 +345,42 @@ export function EventsIcon({ className }: IconProps) {
   );
 }
 
+/** Three figures under a shared roof — a community guild hall. */
+export function GuildsIcon({ className }: IconProps) {
+  return (
+    <svg className={className} {...base}>
+      <path d="M4 19V10.5L12 5l8 5.5V19" />
+      <path d="M9.5 19v-4.2a2.5 2.5 0 0 1 5 0V19" />
+      <circle cx="8" cy="12.2" r="1.35" />
+      <circle cx="16" cy="12.2" r="1.35" />
+      <circle cx="12" cy="11.2" r="1.45" />
+    </svg>
+  );
+}
+
+export function GearIcon({ className }: IconProps) {
+  return (
+    <svg className={className} {...base}>
+      <circle cx="12" cy="12" r="3.2" />
+      <path d="M12 3.5v2.2M12 18.3v2.2M3.5 12h2.2M18.3 12h2.2M5.6 5.6l1.6 1.6M16.8 16.8l1.6 1.6M5.6 18.4l1.6-1.6M16.8 7.2l1.6-1.6" />
+    </svg>
+  );
+}
+
+export function InboxIcon({ className }: IconProps) {
+  return (
+    <svg className={className} {...base}>
+      <path d="M4 8.5 6.2 4h11.6L20 8.5v9.5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z" />
+      <path d="M4 9.5h4.2a2.8 2.8 0 0 0 5.6 0H20" />
+    </svg>
+  );
+}
+
 export const SECTION_ICONS = {
   news: NewsIcon,
   events: EventsIcon,
   guides: GuidesIcon,
   calculators: CalculatorsIcon,
   simulations: SimulationsIcon,
+  guilds: GuildsIcon,
 } as const;

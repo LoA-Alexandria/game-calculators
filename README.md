@@ -2,8 +2,9 @@
 
 A shared collection of focused game calculators and planners for Pop Epoch,
 maintained by LoA Alexandria. The site is a static Next.js application deployed
-through GitHub Pages. It follows the reader's light or dark preference and adds
-a toggle to override it.
+through GitHub Pages. It follows the reader's light or dark preference, adds a
+toggle to override it, and offers four colour schemes (stone, lapis, papyrus,
+steam) from the top bar.
 
 ## Start locally
 
@@ -34,8 +35,9 @@ entry or a language is described in
 ## Discord login and guide editor
 
 Discord login is handled by Supabase. Members with the configured Coders or
-Builders server role can open `/guides/new/`. Authentication and role checks are
-real; saving a guide to the shared wiki is the next backend phase. See
+Builders server role can open `/guides/new/` and Edit / Remove on existing
+guides. Authentication and role checks are real; the editor prints a snippet
+to commit. Saving a guide to a shared wiki is the next backend phase. See
 [`docs/SUPABASE-SETUP.md`](docs/SUPABASE-SETUP.md) for deployment setup and
 [`docs/AUTH-AND-CMS.md`](docs/AUTH-AND-CMS.md) for the current boundary.
 

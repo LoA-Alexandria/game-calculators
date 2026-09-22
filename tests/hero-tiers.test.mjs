@@ -1,0 +1,189 @@
+import assert from "node:assert/strict";
+import test from "node:test";
+
+import { LOCALE_CODES, getDictionary, mapLocales } from "../lib/i18n/index.ts";
+import en from "../lib/i18n/dictionaries/en.ts";
+import { LAYOUT_DATA, placedHeroes } from "../lib/content/hero-layouts.ts";
+import {
+  BATTLE_TIERS,
+  OVERALL_TIERS,
+  PRODUCTIVITY_TIERS,
+  TIER_IDS,
+  UTILITY_TIERS,
+  entryRarity,
+  matchesHero,
+  parseGrade,
+  placementCaption,
+} from "../lib/content/hero-tiers.ts";
+import { HERO_RARITIES } from "../lib/content/heroes.ts";
+
+// Every registered language, so a new dictionary is checked without editing this test.
+const LANGUAGES = mapLocales(getDictionary);
+const productivityEntries = PRODUCTIVITY_TIERS.flatMap((row) =>
+  row.groups.flatMap((group) => group.entries.map((entry) => ({ ...entry, tier: row.tier, resource: group.resource }))),
+);
+
+test("every grade in the overall list parses", () => {
+  for (const row of OVERALL_TIERS) {
+    for (const entry of row.entries) {
+      for (const grade of [entry.battle, entry.utility, entry.productivity]) {
+        if (grade !== undefined) assert.ok(parseGrade(grade), `${entry.hero}: ${grade}`);
+      }
+    }
+  }
+  assert.deepEqual(parseGrade("A>S"), { tier: "A", to: "S", fine: "", flagged: false });
+  assert.deepEqual(parseGrade("SS(S+)"), { tier: "SS", to: null, fine: "S+", flagged: false });
+  assert.deepEqual(parseGrade("C*"), { tier: "C", to: null, fine: "", flagged: true });
+  assert.equal(parseGrade("S+"), null);
+});
+
+test("the tier rows run from SS to D in order", () => {
+  for (const rows of [OVERALL_TIERS, BATTLE_TIERS, UTILITY_TIERS]) {
+    assert.deepEqual(rows.map((row) => row.tier), [...TIER_IDS]);
+  }
+  const productivity = PRODUCTIVITY_TIERS.map((row) => row.tier);
+  assert.deepEqual(productivity, TIER_IDS.filter((tier) => productivity.includes(tier)));
+});
+
+test("no hero is listed twice in the same form within one list", () => {
+  const check = (label, keys) => {
+    const seen = new Set();
+    for (const key of keys) {
+      assert.equal(seen.has(key), false, `${label}: ${key} appears twice`);
+      seen.add(key);
+    }
+  };
+  check("overall", OVERALL_TIERS.flatMap((row) => row.entries.map((entry) => `${entry.hero}|${entry.rarity ?? ""}|${entry.variant ?? ""}`)));
+  check("battle", BATTLE_TIERS.flatMap((row) => row.entries.map((entry) => `${entry.hero}|${entry.rarity ?? ""}|${entry.variant ?? ""}`)));
+  check("utility", UTILITY_TIERS.flatMap((row) => row.entries.map((entry) => `${entry.hero}|${entry.note ?? ""}`)));
+  check("productivity", productivityEntries.map((entry) => `${entry.hero}|${entry.resource}`));
+});
+
+test("heroes graded for utility or productivity overall appear in those lists", () => {
+  const utilityHeroes = new Set(UTILITY_TIERS.flatMap((row) => row.entries.map((entry) => entry.hero)));
+  const productivityHeroes = new Set(productivityEntries.map((entry) => entry.hero));
+  for (const row of OVERALL_TIERS) {
+    for (const entry of row.entries) {
+      if (entry.utility) assert.ok(utilityHeroes.has(entry.hero), `${entry.hero} has a utility grade but no utility entry`);
+      if (entry.productivity) assert.ok(productivityHeroes.has(entry.hero), `${entry.hero} has a productivity grade but no productivity entry`);
+    }
+  }
+});
+
+test("every key the data uses has text in every language", () => {
+  const used = {
+    variants: new Set(), roles: new Set(), effects: new Set(), resources: new Set(), notes: new Set(),
+  };
+  const tag = (entry) => {
+    if (entry.variant) used.variants.add(entry.variant);
+    if (entry.note) used.notes.add(entry.note);
+  };
+  OVERALL_TIERS.forEach((row) => row.entries.forEach(tag));
+  BATTLE_TIERS.forEach((row) => row.entries.forEach((entry) => { tag(entry); entry.roles.forEach((role) => used.roles.add(role)); }));
+  UTILITY_TIERS.forEach((row) => row.entries.forEach((entry) => { tag(entry); used.effects.add(entry.effect); }));
+  productivityEntries.forEach((entry) => { tag(entry); used.resources.add(entry.resource); });
+  for (const [code, dictionary] of Object.entries(LANGUAGES)) {
+    const text = dictionary.guideEntries.heroTierList;
+    for (const [group, keys] of Object.entries(used)) {
+      for (const key of keys) {
+        assert.equal(typeof text[group][key], "string", `${code}.${group}.${key}`);
+        assert.notEqual(text[group][key].trim(), "", `${code}.${group}.${key} is empty`);
+      }
+    }
+  }
+});
+
+test("hero names match the Hero layouts guide", () => {
+  const tierHeroes = new Set([
+    ...OVERALL_TIERS.flatMap((row) => row.entries.map((entry) => entry.hero)),
+    ...BATTLE_TIERS.flatMap((row) => row.entries.map((entry) => entry.hero)),
+    ...UTILITY_TIERS.flatMap((row) => row.entries.map((entry) => entry.hero)),
+    ...productivityEntries.map((entry) => entry.hero),
+  ]);
+  for (const name of placedHeroes(LAYOUT_DATA)) {
+    assert.ok(tierHeroes.has(name), `${name} from Hero layouts is missing or spelled differently in the tier list`);
+  }
+});
+
+test("the hero filter ignores case and accents", () => {
+  assert.equal(matchesHero("Joan of Arc", "joan"), true);
+  assert.equal(matchesHero("Cu Chulainn", "CÚ"), true);
+  assert.equal(matchesHero("Tesla", "arthur"), false);
+  assert.equal(matchesHero("Tesla", "   "), true);
+});
+
+test("every reason key has text in every language, and every reason is used once", () => {
+  const used = OVERALL_TIERS.flatMap((row) => row.entries.map((entry) => entry.reason).filter(Boolean));
+  assert.equal(new Set(used).size, used.length, "a reason is attached to two entries");
+  for (const [code, dictionary] of Object.entries(LANGUAGES)) {
+    const reasons = dictionary.guideEntries.heroTierList.reasons;
+    assert.deepEqual(Object.keys(reasons).sort(), [...used].sort(), `${code} reasons differ from the entries that use them`);
+    for (const key of used) assert.notEqual(reasons[key].trim(), "", `${code}.reasons.${key} is empty`);
+    for (const entry of dictionary.guideEntries.heroTierList.changelog) {
+      assert.match(entry.date, /^\d{4}-\d{2}-\d{2}$/, `${code} changelog date`);
+    }
+  }
+});
+
+test("every battle entry lands in a role column", async () => {
+  const { ROLE_GROUPS, roleGroup, tierPlacements } = await import("../lib/content/hero-tiers.ts");
+  const counts = Object.fromEntries(ROLE_GROUPS.map((group) => [group, 0]));
+  for (const row of BATTLE_TIERS) {
+    for (const entry of row.entries) {
+      for (const role of entry.roles) assert.ok(Object.hasOwn(en.guideEntries.heroTierList.roles, role), role);
+      counts[roleGroup(entry.roles)] += 1;
+    }
+  }
+  for (const group of ROLE_GROUPS) {
+    assert.ok(counts[group] > 0, `${group} has heroes`);
+    for (const dictionary of LOCALE_CODES.map(getDictionary)) assert.ok(dictionary.guideEntries.heroTierList.roleGroups[group], `${group} has a label`);
+  }
+  assert.equal(roleGroup(["heal", "crit"]), "sustain");
+  assert.equal(roleGroup(["crit", "healIfCrit"]), "damage");
+  assert.equal(roleGroup([]), "damage");
+
+  const joan = tierPlacements("Joan of Arc");
+  assert.deepEqual(joan[0], { list: "overall", tier: "SS", rarity: "UR+" });
+  assert.ok(joan.some((placement) => placement.list === "battle"));
+  assert.deepEqual(tierPlacements("Nobody"), []);
+});
+
+test("a placement can set the rarity it is rated at, and the frame follows it", () => {
+  const all = [
+    ...OVERALL_TIERS.flatMap((row) => row.entries),
+    ...BATTLE_TIERS.flatMap((row) => row.entries),
+    ...UTILITY_TIERS.flatMap((row) => row.entries),
+    ...productivityEntries,
+  ];
+  for (const entry of all) {
+    if (entry.rarity !== undefined) assert.ok(HERO_RARITIES.includes(entry.rarity), `${entry.hero}: ${entry.rarity}`);
+  }
+  const joan = OVERALL_TIERS.flatMap((row) => row.entries.filter((entry) => entry.hero === "Joan of Arc").map((entry) => [row.tier, entry.rarity]));
+  assert.deepEqual(joan, [["SS", "UR+"], ["S", "UR"]]);
+  assert.equal(entryRarity({ hero: "Joan of Arc", rarity: "UR+" }), "UR+");
+  assert.equal(entryRarity({ hero: "Joan of Arc" }), "SSR", "without its own rarity a placement follows the roster");
+  assert.equal(entryRarity({ hero: "Nobody" }), undefined);
+
+  for (const [code, dictionary] of Object.entries(LANGUAGES)) {
+    const text = dictionary.guideEntries.heroTierList;
+    assert.match(text.atRarity, /\{rarity\}/, `${code}.atRarity`);
+    assert.equal(placementCaption(text, {}), "");
+    assert.ok(placementCaption(text, { rarity: "UR+" }).includes("UR+"), code);
+  }
+  const english = en.guideEntries.heroTierList;
+  assert.equal(placementCaption(english, { rarity: "UR", variant: "withItem" }), `at UR · ${english.variants.withItem}`);
+});
+
+test("title banners point at a file of the size they declare", async () => {
+  const { readFileSync } = await import("node:fs");
+  const { GUIDE_TITLE_BANNERS } = await import("../lib/content/banners.ts");
+  assert.ok(GUIDE_TITLE_BANNERS.heroTierList, "the Hero tier list has its banner");
+  for (const [id, banner] of Object.entries(GUIDE_TITLE_BANNERS)) {
+    assert.ok(Object.hasOwn(en.guideEntries, id), `${id} is a guide`);
+    const file = readFileSync(new URL(`../public${banner.src}`, import.meta.url));
+    // A lossy WebP stores its size in the VP8 frame header: 14-bit width and height at bytes 26–29.
+    assert.equal(file.toString("ascii", 12, 16), "VP8 ", `${banner.src} is a lossy WebP`);
+    assert.equal(file.readUInt16LE(26) & 0x3fff, banner.width, `${banner.src} width`);
+    assert.equal(file.readUInt16LE(28) & 0x3fff, banner.height, `${banner.src} height`);
+  }
+});

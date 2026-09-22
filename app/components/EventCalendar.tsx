@@ -1,17 +1,22 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { EVENTS, type EventEntry } from "../../lib/content/events";
+import Link from "next/link";
+import { EVENTS, EVENTS_ARE_PLACEHOLDER, type EventEntry } from "../../lib/content/events";
 import {
+  activeAt,
   dayKey,
   daysCovered,
   monthGrid,
   occurrencesInRange,
+  upcomingAfter,
   type EventKind,
   type Occurrence,
 } from "../../lib/events";
+import { EventEditor, type EventEditorTarget } from "../events/EventEditor";
+import { useAuth } from "./AuthProvider";
 import { useLocale } from "./LocaleProvider";
-import { ChevronIcon } from "./Icons";
+import { AlertIcon, ChevronIcon, PenIcon, TrashIcon } from "./Icons";
 
 /** Stable stand-in used only until the real clock arrives. */
 const FALLBACK_MONTH = new Date(Date.UTC(2026, 8, 1));
@@ -43,8 +48,8 @@ export function useMonthOccurrences(days: Date[]) {
 /**
  * A month grid with a dot per event kind on each day.
  *
- * `compact` is the sidebar version: smaller cells, no day selection, no
- * weekday header beyond a single letter.
+ * `compact` is a denser grid: smaller cells, no day selection, no weekday
+ * header beyond a single letter.
  */
 export function MonthCalendar({
   today,
@@ -161,5 +166,141 @@ export function MonthCalendar({
         ))}
       </div>
     </div>
+  );
+}
+
+/**
+ * Live and upcoming events plus the month grid, for the overview under the
+ * site stats. Schedule editing for `events.write` lives here too — `/events/`
+ * is the category index for event guides, not the calendar.
+ */
+export function OverviewAgenda({ now }: { now: Date | null }) {
+  const { t, locale } = useLocale();
+  const { allows } = useAuth();
+  const [target, setTarget] = useState<EventEditorTarget | null>(null);
+  const live = now ? activeAt(EVENTS, now) : [];
+  const next = now ? upcomingAfter(EVENTS, now, 21, 5) : [];
+  const when = new Intl.DateTimeFormat(locale, { dateStyle: "medium", timeStyle: "short", timeZone: "UTC" });
+
+  return (
+    <section className="section overview-events" id="overview-events" aria-label={t.nav.events}>
+      <div className="section-heading">
+        <h2>{t.nav.events}</h2>
+        <Link href="/events/">
+          {t.events.browseIndex} <span aria-hidden="true">→</span>
+        </Link>
+      </div>
+
+      {EVENTS_ARE_PLACEHOLDER && (
+        <div className="notice notice-warn" style={{ marginBottom: 20 }}>
+          <AlertIcon className="icon" />
+          <div>
+            <strong>{t.events.placeholderTitle}</strong>
+            <p>{t.events.placeholderBody}</p>
+          </div>
+        </div>
+      )}
+
+      <div className="events-layout">
+        <section className="panel">
+          <h2>{t.events.upcoming}</h2>
+          {now === null ? (
+            <p className="assumption" style={{ margin: 0 }}>…</p>
+          ) : live.length === 0 && next.length === 0 ? (
+            <p className="assumption" style={{ margin: 0 }}>{t.events.sidebarEmpty}</p>
+          ) : (
+            <ul className="event-list">
+              {live.map((occurrence) => (
+                <li
+                  className={`event-row event-${occurrence.event.kind}`}
+                  key={`${occurrence.event.id}-${occurrence.start.toISOString()}-live`}
+                >
+                  <span className={`dot dot-${occurrence.event.kind}`} aria-hidden="true" />
+                  <div className="event-body">
+                    <strong>{occurrence.event.name(t)}</strong>
+                    <p>{occurrence.event.summary(t)}</p>
+                    <p className="mono">{t.events.liveNow}</p>
+                  </div>
+                </li>
+              ))}
+              {next.map((occurrence) => (
+                <li
+                  className={`event-row event-${occurrence.event.kind}`}
+                  key={`${occurrence.event.id}-${occurrence.start.toISOString()}`}
+                >
+                  <span className={`dot dot-${occurrence.event.kind}`} aria-hidden="true" />
+                  <div className="event-body">
+                    <strong>{occurrence.event.name(t)}</strong>
+                    <p>{occurrence.event.summary(t)}</p>
+                    <p className="mono">{when.format(occurrence.start)}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+        <section className="panel">
+          <h2>{t.events.calendar}</h2>
+          <MonthCalendar today={now} />
+          <p className="assumption">{t.events.timesAreUtc}</p>
+        </section>
+      </div>
+
+      {allows("events.write") && (
+        <>
+          <section className="panel" style={{ marginTop: 24 }}>
+            <h2>{t.events.scheduleTitle}</h2>
+            <p>{t.events.scheduleLede}</p>
+            {EVENTS.length === 0 ? (
+              <p className="assumption" style={{ margin: 0 }}>{t.common.empty}</p>
+            ) : (
+              <ul className="event-list">
+                {EVENTS.map((event) => (
+                  <li className={`event-row event-${event.kind}`} key={event.id}>
+                    <span className={`dot dot-${event.kind}`} aria-hidden="true" />
+                    <div className="event-body">
+                      <div className="event-title">
+                        <strong>{event.name(t)}</strong>
+                        <span className="pill">{kindLabel(event.kind, t)}</span>
+                      </div>
+                      <p>{event.summary(t)}</p>
+                      <div className="event-actions">
+                        <button
+                          className="small-button"
+                          type="button"
+                          onClick={() => {
+                            setTarget({ event, action: "edit" });
+                            window.setTimeout(() => document.getElementById("event-editor")?.scrollIntoView({ block: "start" }), 0);
+                          }}
+                        >
+                          <PenIcon className="icon icon-sm" />
+                          {t.events.editEvent}
+                        </button>
+                        <button
+                          className="small-button button-danger"
+                          type="button"
+                          onClick={() => {
+                            setTarget({ event, action: "remove" });
+                            window.setTimeout(() => document.getElementById("event-editor")?.scrollIntoView({ block: "start" }), 0);
+                          }}
+                        >
+                          <TrashIcon className="icon icon-sm" />
+                          {t.events.removeEvent}
+                        </button>
+                      </div>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+          <EventEditor
+            key={target ? `${target.action}-${target.event.id}` : "new"}
+            target={target}
+            onClose={() => setTarget(null)}
+          />
+        </>
+      )}
+    </section>
   );
 }

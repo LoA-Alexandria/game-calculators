@@ -8,8 +8,9 @@ The project is a statically exported Next.js site. GitHub Pages serves the gener
 
 ```text
 app/
-  page.tsx                     Home: hero, featured simulation, tools, news
+  page.tsx                     Home: news slide, site stats, event calendar + schedule editor
   news/                        News index
+  events/                      Event guides index (wiki icons + Discord tips)
   guides/<slug>/               Guides
   calculators/<slug>/          Calculators, plus their index
   simulations/<slug>/          Simulations, plus their index
@@ -21,8 +22,13 @@ lib/
   calculators/errors.ts        Validation errors with translatable codes
   i18n/                        Language registry and dictionaries
   content/news.ts              News entries
-  navigation.ts                Section tree driving sidebar, indexes, home
+  content/events.ts            Event schedule (overview calendar)
+  content/guides.ts            Guide slug and dictionary-id helpers
+  content/banners.ts           Optional section banner images
+  navigation.ts                Section tree driving sidebar and indexes
   site.ts                      Base path, Discord, repository, storage keys
+  theme.ts                     Colour-scheme ids and validation
+  events.ts                    Schedule recurrence math (UTC)
 docs/                          Human and agent guidance
 public/
   tools/irrigation-planner/    Vendored standalone planner (see below)
@@ -32,10 +38,14 @@ tests/                         Calculation and output tests
 
 ## Navigation
 
-`lib/navigation.ts` is the single source of truth for the four sections and
-their entries. The sidebar, the section index pages, the home page, and the
-sidebar filter all read it, so a new tool is added in one place. Labels are
-functions of the dictionary rather than literals.
+`lib/navigation.ts` is the single source of truth for the sections and
+their entries. The sidebar, the section index pages, and the sidebar filter all
+read it, so a new tool is added in one place. Labels are functions of the
+dictionary rather than literals. The sidebar can collapse to an icon rail on
+wide screens; `/` or Ctrl/Cmd+K focuses the filter.
+
+Guild rooms use `/guilds/room/…?guild=<slug>` because the site is a static
+export and cannot pre-render unknown admin-created slugs at build time.
 
 ## Languages
 
@@ -51,15 +61,17 @@ do not export `metadata`. Tab titles are set with `useDocumentTitle`.
 
 ## Theming
 
-`app/globals.css` defines the colour, spacing, and type tokens. The light
-palette sits on bare `:root`; the dark palette is repeated under
-`prefers-color-scheme: dark` and under `:root[data-theme="dark"]`, so an explicit
-choice wins in both directions. `app/components/ThemeToggle.tsx` writes that
-choice to `localStorage['popepoch-theme']`, and a small script in the root layout
-applies it before first paint.
+`app/globals.css` defines the colour, spacing, and type tokens. Light sits on
+bare `:root`; dark is repeated under `prefers-color-scheme: dark` and under
+`:root[data-theme="dark"]`, so an explicit brightness choice wins in both
+directions. Colour schemes sit on `[data-scheme]` (`stone`, `lapis`, `papyrus`,
+`steam`) and keep light/dark as a separate axis. `ThemeToggle` writes
+`localStorage['popepoch-theme']`; `SchemeMenu` writes
+`localStorage['popepoch-scheme']`. A small script in the root layout applies
+both before first paint.
 
-The palette is cool graphite neutrals with a lapis-blue primary and a warm gold
-secondary — the Egyptian pairing in saturated modern tones. Type is Sora for
+The default palette is warm stone neutrals with a teal primary (from the
+section-banner HUDs) and copper-gold from the plaques. Type is Sora for
 headings and Inter for text, both self-hosted by `next/font`.
 
 The visual identity is built from original CSS geometry and hand-drawn SVG in
@@ -75,10 +87,17 @@ membership and the `role_mappings` table. The resulting `editor_access` row is
 server-maintained and protected with RLS. `/admin/` is shown to members with
 `roles.assign`; writes are enforced by RLS.
 
-`/guides/new/` requires verified guide-writer access. It currently saves drafts
-only in the editor's browser; shared publishing and revision storage are still
-to be implemented. Read [`AUTH-AND-CMS.md`](AUTH-AND-CMS.md) before adding any
-write path.
+`/guides/new/` requires verified guide-writer access. New, edit, and remove
+print a snippet to commit into the dictionaries and navigation; shared wiki
+tables are still to be implemented. Read [`AUTH-AND-CMS.md`](AUTH-AND-CMS.md)
+before adding any write path.
+
+Community guilds live in Supabase (`guilds`, `guild_memberships`, `guild_posts`)
+with RLS. Admins create guilds (name, server, optional icon in Storage bucket
+`guild-icons`, master Discord ID). Signed-in players request to join with an
+optional note; masters review requests and settings from icons on the room tab
+bar. Members set their own roster display name. Room News / Planning posts are
+readable by members and writable by master/admin.
 
 ## Vendored applications
 

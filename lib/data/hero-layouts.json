@@ -1,0 +1,77 @@
+{
+  "builds": [
+    { "id": "crit",
+      "key": [{"hero":"Joan of Arc","note":"urMinimum"},{"hero":"Achilles"}],
+      "important": [{"hero":"Tutankhamen"},{"hero":"Blackbeard"},{"hero":"Spartacus"},{"hero":"Newton"},{"hero":"Charles Darwin"},{"hero":"Bjorn"},{"hero":"Lagertha"},{"hero":"Guan Yu"}],
+      "other": [{"hero":"Saladin"},{"hero":"Drake"},{"hero":"Catherine de Medici"}],
+      "collection": [{"hero":"Grenade"}],
+      "counters": [
+        { "id": "critDamageCapOrReduction", "picks": [{"hero":"Hammer"},{"hero":"Bicycle"},{"hero":"Pompey"}] },
+        { "id": "critStrongHealingOrShielding", "picks": [{"hero":"Odysseus","note":"item"}] },
+        { "id": "critDelay", "picks": [{"hero":"Wreath"},{"hero":"Horse"},{"hero":"Wings"}] },
+        { "id": "critAtkSteal", "picks": [{"hero":"Mask"}] },
+        { "id": "critDodge", "picks": [{"hero":"Hermes"}] },
+        { "id": "critDeathImmunity", "picks": [{"hero":"Tesla"}] }
+      ]
+    },
+    { "id": "dot",
+      "key": [{"hero":"King Arthur"},{"hero":"Odysseus"},{"hero":"Gawain"},{"hero":"Lancelot"}],
+      "important": [{"hero":"Guinevere"},{"hero":"Pompey"},{"hero":"Richard I"},{"hero":"Alfred I"},{"hero":"Hector"},{"hero":"Da Vinci"},{"hero":"Columbus"},{"hero":"Franklin"},{"hero":"Queen Victoria"},{"hero":"Tesla"},{"hero":"Sun-Sin"}],
+      "other": [{"hero":"Hannibal"},{"hero":"Archimedes"},{"hero":"Andersen"},{"hero":"Himiko"},{"hero":"Florence Nightingale"}],
+      "collection": [{"hero":"Dagger"},{"hero":"Wings"},{"hero":"David/Adam"}],
+      "counters": [
+        { "id": "dotDebuffImmunity", "picks": [{"hero":"Dante"},{"hero":"Homer"},{"hero":"Pompey"}] },
+        { "id": "dotDelay", "picks": [{"hero":"Wreath"},{"hero":"Horse"},{"hero":"Hammurabi"}] },
+        { "id": "dotHealBlockOrReduction", "picks": [{"hero":"Spartacus"},{"hero":"Livia"}] }
+      ]
+    },
+    { "id": "pursuit",
+      "key": [{"hero":"Caesar","note":"withNidhogg"},{"hero":"William Shakespeare"},{"hero":"Billy the Kid","note":"withItem"},{"hero":"Louis XIV"},{"hero":"Merlin"}],
+      "important": [{"hero":"Augustus"},{"hero":"Alexander the Great"},{"hero":"Napoleon"},{"hero":"Galileo Galilei"},{"hero":"Musashi"}],
+      "other": [{"hero":"Isabella I"},{"hero":"Mary I"},{"hero":"Elizabeth I"},{"hero":"Robin Hood"}],
+      "collection": [{"hero":"Replica"}],
+      "counters": [
+        { "id": "pursuitCollection", "picks": [{"hero":"Hammer"},{"hero":"Mask"},{"hero":"Pedal Car"}] }
+      ]
+    },
+    { "id": "execute",
+      "key": [{"hero":"Circe"},{"hero":"Billy the Kid","note":"withItem"},{"hero":"Guan Yu"},{"hero":"Musashi"},{"hero":"Lu Bu"},{"hero":"Joan of Arc","note":"urPlus"}],
+      "important": [{"hero":"Gawain"}],
+      "other": [],
+      "collection": [{"hero":"Noah’s Ark"}],
+      "counters": [
+        { "id": "executeDodge", "picks": [{"hero":"Hermes"}] },
+        { "id": "executeHeavyShieldsOrHeals", "picks": [] },
+        { "id": "executeDeathImmunity", "picks": [{"hero":"Tesla"}] }
+      ]
+    }
+  ],
+  "utility": [
+    { "id": "healers", "groups": [
+      { "id": "healersAll", "picks": [{"hero":"Odysseus"},{"hero":"Queen Victoria"},{"hero":"Pompey"},{"hero":"Franklin"},{"hero":"Confucius"},{"hero":"Wallace"},{"hero":"Noah"},{"hero":"Blackbeard"},{"hero":"William Shakespeare"},{"hero":"Eleanor of Aquitaine"},{"hero":"Victor Hugo"},{"hero":"Cervantes"}] }
+    ] },
+    { "id": "shielders", "groups": [
+      { "id": "shieldersAll", "picks": [{"hero":"Da Vinci"},{"hero":"Pompey"},{"hero":"Queen Victoria"},{"hero":"Michelangelo"}] }
+    ] },
+    { "id": "buffers", "groups": [
+      { "id": "buffersAtkBuff", "picks": [{"hero":"Prometheus"},{"hero":"Da Vinci"},{"hero":"Alexander Hamilton"},{"hero":"Anne Bonny"},{"hero":"Adam"}] },
+      { "id": "buffersDamageReduction", "picks": [{"hero":"Socrates"},{"hero":"Marco Polo"},{"hero":"King Arthur"}] },
+      { "id": "buffersDeathImmunity", "picks": [{"hero":"Tesla"}] },
+      { "id": "buffersDebuffRemovalOrImmunity", "picks": [{"hero":"Dante"},{"hero":"Thomas Edison"},{"hero":"Heracles","note":"withItem"}] },
+      { "id": "buffersDodge", "picks": [{"hero":"Hermes"}] },
+      { "id": "buffersShieldBreak", "picks": [{"hero":"Merlin"}] }
+    ] },
+    { "id": "debuffers", "groups": [
+      { "id": "debuffersEnemyBuffRemoval", "picks": [{"hero":"Tutankhamen"},{"hero":"Beethoven"},{"hero":"Homer"},{"hero":"Ragnar","note":"enlightenmentAgeAndLater"},{"hero":"Hatshepsut"},{"hero":"Heracles"}] },
+      { "id": "debuffersEnemyAtkOrSkill", "picks": [{"hero":"Charles the Great"},{"hero":"Chaucer"},{"hero":"Mary Shelley"},{"hero":"James Watt"}] },
+      { "id": "debuffersEnemyDamageTakenUp", "picks": [{"hero":"Gilgamesh"},{"hero":"Hypatia"},{"hero":"Dido"},{"hero":"Beethoven"}] },
+      { "id": "debuffersDelayOrSeal", "picks": [{"hero":"Hammurabi"},{"hero":"Cleopatra"}] },
+      { "id": "debuffersEnemySkillSteal", "picks": [{"hero":"Cleopatra","note":"withItem"}] },
+      { "id": "debuffersHealBlockOrReduction", "picks": [{"hero":"Livia"},{"hero":"Spartacus"}] },
+      { "id": "debuffersCollectionDenial", "picks": [{"hero":"Morgana"}] }
+    ] },
+    { "id": "execute", "groups": [
+      { "id": "executeAll", "picks": [{"hero":"Lu Bu"},{"hero":"Circe"}] }
+    ] }
+  ]
+}

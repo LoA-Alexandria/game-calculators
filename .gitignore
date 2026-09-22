@@ -37,7 +37,19 @@ yarn-error.log*
 
 # typescript
 next-env.d.ts
+*.tsbuildinfo
 /dist/
 /.wrangler/
 /outputs/
 /work/
+
+# Supabase CLI local project metadata
+/supabase/.temp/
+
+# local crop scratch
+.tmp-cryptid/
+
+# Hero client-data importer scratch
+scripts/__pycache__/
+scripts/_hero-daten.json
+lib/data/hero-texts-de.json

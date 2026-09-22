@@ -1,0 +1,720 @@
+"use client";
+
+import { useId, useMemo, useRef, useState, useSyncExternalStore, type DragEvent, type KeyboardEvent } from "react";
+import {
+  PAINTING_RARITIES,
+  PAINTING_SETS,
+  PAINTING_STATS,
+  artworkImageUrl,
+  type PaintingRarity,
+} from "../../lib/content/artwork";
+import {
+  PAINTING_IMAGE_MAX_EDGE,
+  addHero,
+  addPainting,
+  addSet,
+  catalogTextBlocks,
+  countCatalogTextChanges,
+  countChanges,
+  exportArtwork,
+  exportCatalogTexts,
+  findPainting,
+  findProblems,
+  findSet,
+  fromCatalogue,
+  movePainting,
+  parseDraft,
+  publishedCatalogTexts,
+  removeHero,
+  removePainting,
+  removePaintingImage,
+  removeSet,
+  serializePaintingData,
+  setPaintingImage,
+  setPaintingText,
+  setSetText,
+  toCatalogue,
+  toggleStat,
+  unusedHeroes,
+  updatePainting,
+  updateSet,
+  type EditorPainting,
+  type EditorSet,
+  type EditorState,
+  type Problem,
+} from "../../lib/content/artwork-editor";
+import { HERO_RARITIES } from "../../lib/content/heroes";
+import { DEFAULT_LOCALE, type Dictionary, type Locale } from "../../lib/i18n";
+import { AllLanguagesToggle, DictionaryBlocks, TranslatedField, useEditorLanguages } from "../components/EditorLanguages";
+import { ARTWORK_CATALOGUE_DRAFT_STORAGE_KEY } from "../../lib/site";
+import { HeroAvatar } from "../components/HeroAvatar";
+import { useLocale } from "../components/LocaleProvider";
+import { createPersistentStore } from "../components/persistentStore";
+import { BackLink, PageHead } from "../components/Ui";
+import { CheckIcon, CloseIcon, CopyIcon, DownloadIcon, TrashIcon, UploadIcon } from "../components/Icons";
+
+type Guide = Dictionary["guideEntries"]["artwork"];
+type EditorText = Dictionary["artworkEditor"];
+
+const PUBLISHED_TEXTS = publishedCatalogTexts();
+const PUBLISHED = fromCatalogue({ sets: PAINTING_SETS }, PUBLISHED_TEXTS);
+const PUBLISHED_DATA = toCatalogue(PUBLISHED);
+
+const draftStore = createPersistentStore<EditorState | null>({
+  key: ARTWORK_CATALOGUE_DRAFT_STORAGE_KEY,
+  serverValue: null,
+  parse: parseDraft,
+  fallback: () => null,
+  serialize: (value) => JSON.stringify(value),
+});
+
+const MAX_UPLOAD_BYTES = 10 * 1024 * 1024;
+
+/** Shrinks a picture to at most PAINTING_IMAGE_MAX_EDGE on its long side and re-encodes it as WebP. */
+async function shrinkImage(file: File): Promise<string> {
+  const bitmap = await createImageBitmap(file);
+  const scale = Math.min(1, PAINTING_IMAGE_MAX_EDGE / Math.max(bitmap.width, bitmap.height));
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+  canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+  const context = canvas.getContext("2d");
+  if (!context) throw new Error("Canvas unavailable");
+  context.imageSmoothingQuality = "high";
+  context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+  bitmap.close();
+  const webp = canvas.toDataURL("image/webp", 0.9);
+  // Older Safari cannot encode WebP and silently returns PNG instead.
+  return webp.startsWith("data:image/webp") ? webp : canvas.toDataURL("image/png");
+}
+
+/** False only when the browser refuses the draft for size; storage that is off entirely keeps it in memory. */
+function fitsStorage(next: EditorState): boolean {
+  try {
+    localStorage.setItem(ARTWORK_CATALOGUE_DRAFT_STORAGE_KEY, JSON.stringify(next));
+    return true;
+  } catch (error) {
+    return !(error instanceof DOMException && (error.name === "QuotaExceededError" || error.name === "NS_ERROR_DOM_QUOTA_REACHED"));
+  }
+}
+
+function saveFile(href: string, name: string) {
+  const link = document.createElement("a");
+  link.href = href;
+  link.download = name;
+  link.click();
+}
+
+type Ctx = {
+  state: EditorState;
+  commit: (next: EditorState) => void;
+  guide: Guide;
+  e: EditorText;
+  tf: (template: string, values: Record<string, string | number>) => string;
+  languages: readonly Locale[];
+};
+
+export function ArtworkEditor() {
+  const { t, tf } = useLocale();
+  const guide = t.guideEntries.artwork;
+  const e = t.artworkEditor;
+
+  const draft = useSyncExternalStore(draftStore.subscribe, draftStore.getSnapshot, draftStore.getServerSnapshot);
+  const state = draft ?? PUBLISHED;
+  const commit = (next: EditorState) => draftStore.set(next);
+  // paintings.json holds English, so English stays next to the reader's language.
+  const { languages } = useEditorLanguages({ withDefault: true });
+  const ctx: Ctx = { state, commit, guide, e, tf, languages };
+
+  const [rarity, setRarity] = useState<PaintingRarity>("SSR");
+  const [setUid, setSetUid] = useState<string | null>(null);
+  const [paintingUid, setPaintingUid] = useState<string | null>(null);
+  const [exportOpen, setExportOpen] = useState(false);
+  const base = useId();
+
+  const draftData = useMemo(() => toCatalogue(state), [state]);
+  const texts = useMemo(() => exportCatalogTexts(state), [state]);
+  const changes = useMemo(
+    () => countChanges(PUBLISHED_DATA, draftData) + countCatalogTextChanges(texts, PUBLISHED_TEXTS),
+    [draftData, texts],
+  );
+  const visible = state.sets.filter((set) => set.rarity === rarity);
+  const activeSet = setUid ? findSet(state, setUid) : undefined;
+  const activePainting = paintingUid ? findPainting(state, paintingUid) : null;
+
+  const reset = () => {
+    if (!window.confirm(e.resetConfirm)) return;
+    draftStore.clear();
+    setSetUid(null);
+    setPaintingUid(null);
+  };
+
+  const add = () => {
+    const result = addSet(state, rarity);
+    commit(result.state);
+    setSetUid(result.uid);
+    setPaintingUid(null);
+  };
+
+  const tabId = (id: PaintingRarity) => `${base}-tab-${id}`;
+  const onTabKey = (event: KeyboardEvent<HTMLButtonElement>, index: number) => {
+    const last = PAINTING_RARITIES.length - 1;
+    const next =
+      event.key === "ArrowRight" ? (index === last ? 0 : index + 1)
+      : event.key === "ArrowLeft" ? (index === 0 ? last : index - 1)
+      : null;
+    if (next === null) return;
+    event.preventDefault();
+    setRarity(PAINTING_RARITIES[next]);
+    document.getElementById(tabId(PAINTING_RARITIES[next]))?.focus();
+  };
+
+  return (
+    <div className="hero-tiers tier-editor artwork-layout-editor artwork-layouts">
+      <BackLink href="/guides/artwork/" label={e.back} />
+      <PageHead eyebrow={e.eyebrow} title={e.title} lede={e.lede} />
+
+      <div className="tier-toolbar tier-edit-toolbar">
+        <div className="build-tabs" role="tablist" aria-label={guide.setsHeading}>
+          {PAINTING_RARITIES.map((tier, index) => {
+            const selected = tier === rarity;
+            return (
+              <button
+                key={tier}
+                id={tabId(tier)}
+                type="button"
+                role="tab"
+                className="build-tab"
+                data-build={tier}
+                aria-selected={selected}
+                aria-controls={`${base}-panel`}
+                tabIndex={selected ? 0 : -1}
+                onClick={() => { setRarity(tier); setSetUid(null); setPaintingUid(null); }}
+                onKeyDown={(event) => onTabKey(event, index)}
+              >
+                <span className="build-dot" aria-hidden="true" />
+                {tier}
+              </button>
+            );
+          })}
+        </div>
+        <div className="tier-edit-actions">
+          <AllLanguagesToggle />
+          <span className="tier-edit-status" aria-live="polite">
+            {changes > 0 ? `${changes === 1 ? e.changeOne : tf(e.changes, { count: changes })} · ${e.savedNote}` : e.unchanged}
+          </span>
+          <button className="button" type="button" onClick={add}>{e.addSet}</button>
+          <button className="button" type="button" onClick={reset} disabled={!draft}>{e.reset}</button>
+          <button className="button button-primary" type="button" onClick={() => setExportOpen(true)}>{e.export}</button>
+        </div>
+      </div>
+
+      <div className="layout-edit-board artwork-cat-board" id={`${base}-panel`} role="tabpanel" aria-labelledby={tabId(rarity)} data-build={rarity}>
+        <ul className="artwork-cat-sets">
+          {visible.map((set) => (
+            <li key={set.uid}>
+              <button
+                type="button"
+                className={set.uid === activeSet?.uid ? "artwork-cat-set is-selected" : "artwork-cat-set"}
+                aria-pressed={set.uid === activeSet?.uid}
+                onClick={() => { setSetUid(set.uid); setPaintingUid(null); }}
+              >
+                <strong>{set.name.trim() || e.unnamedSet}</strong>
+                <span>{tf(e.paintingCount, { count: set.paintings.length })}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+        {visible.length === 0 ? <p className="tier-small">{e.emptyRarity}</p> : null}
+
+        {activeSet ? (
+          <SetForm
+            ctx={ctx}
+            set={activeSet}
+            paintingUid={activePainting?.set.uid === activeSet.uid ? paintingUid : null}
+            onSelectPainting={setPaintingUid}
+            onRemoved={() => { setSetUid(null); setPaintingUid(null); }}
+            onRarity={(next) => setRarity(next)}
+          />
+        ) : (
+          <p className="tier-small">{e.selectHint}</p>
+        )}
+      </div>
+
+      {exportOpen ? <ExportDialog ctx={ctx} data={draftData} texts={texts} onClose={() => setExportOpen(false)} /> : null}
+    </div>
+  );
+}
+
+function SetForm({
+  ctx,
+  set,
+  paintingUid,
+  onSelectPainting,
+  onRemoved,
+  onRarity,
+}: {
+  ctx: Ctx;
+  set: EditorSet;
+  paintingUid: string | null;
+  onSelectPainting: (uid: string | null) => void;
+  onRemoved: () => void;
+  onRarity: (rarity: PaintingRarity) => void;
+}) {
+  const id = useId();
+  const { state, commit, e, tf } = ctx;
+  const selected = paintingUid ? set.paintings.find((canvas) => canvas.uid === paintingUid) : undefined;
+
+  const remove = () => {
+    if (!window.confirm(tf(e.removeSetConfirm, { set: set.name.trim() || e.unnamedSet }))) return;
+    commit(removeSet(state, set.uid));
+    onRemoved();
+  };
+
+  const add = () => {
+    const result = addPainting(state, set.uid);
+    if (!result) return;
+    commit(result.state);
+    onSelectPainting(result.uid);
+  };
+
+  return (
+    <div className="layout-edit-newbuild artwork-cat-form">
+      <div className="tier-edit-form-head">
+        <h2>{e.inspectorSet}</h2>
+        <button type="button" className="small-button button-danger" onClick={remove} disabled={state.sets.length <= 1}>
+          <TrashIcon className="icon icon-sm" />
+          {e.removeSet}
+        </button>
+      </div>
+      <TranslatedField
+        label={e.fieldSetName}
+        languages={ctx.languages}
+        get={(locale) => (locale === DEFAULT_LOCALE ? set.name : set.texts[locale]?.name ?? "")}
+        set={(locale, value) =>
+          commit(locale === DEFAULT_LOCALE ? updateSet(state, set.uid, { name: value }) : setSetText(state, set.uid, locale, "name", value))
+        }
+      />
+      <div className="field">
+        <label htmlFor={`${id}-rarity`}>{e.fieldRarity}</label>
+        <select
+          id={`${id}-rarity`}
+          value={set.rarity}
+          onChange={(event) => {
+            const next = event.target.value as PaintingRarity;
+            commit(updateSet(state, set.uid, { rarity: next }));
+            onRarity(next);
+          }}
+        >
+          {PAINTING_RARITIES.map((tier) => <option key={tier} value={tier}>{tier}</option>)}
+        </select>
+      </div>
+      <TranslatedField
+        label={e.fieldEffect}
+        multiline
+        rows={3}
+        languages={ctx.languages}
+        get={(locale) => (locale === DEFAULT_LOCALE ? set.effect : set.texts[locale]?.effect ?? "")}
+        set={(locale, value) =>
+          commit(locale === DEFAULT_LOCALE ? updateSet(state, set.uid, { effect: value }) : setSetText(state, set.uid, locale, "effect", value))
+        }
+      />
+
+      <h3>{e.paintingsHeading}</h3>
+      <ol className="layout-edit-list">
+        {set.paintings.map((canvas, index) => (
+          <li key={canvas.uid} className="layout-edit-row artwork-cat-row">
+            <label className="layout-edit-rank">
+              <span className="visually-hidden">{e.fieldRank}</span>
+              <select
+                value={index}
+                aria-label={tf(e.rankOf, { name: canvas.name.trim() || e.unnamedPainting })}
+                onChange={(event) => commit(movePainting(state, canvas.uid, Number(event.target.value)))}
+              >
+                {set.paintings.map((_, rank) => <option key={rank} value={rank}>{rank + 1}</option>)}
+              </select>
+            </label>
+            <button
+              type="button"
+              className={canvas.uid === selected?.uid ? "artwork-cat-pick is-selected" : "artwork-cat-pick"}
+              aria-pressed={canvas.uid === selected?.uid}
+              onClick={() => onSelectPainting(canvas.uid)}
+            >
+              {canvas.name.trim() || e.unnamedPainting}
+            </button>
+          </li>
+        ))}
+      </ol>
+      {set.paintings.length === 0 ? <p className="tier-small">{e.emptySet}</p> : null}
+      <button className="button" type="button" onClick={add}>{e.addPainting}</button>
+
+      {selected ? <PaintingForm ctx={ctx} canvas={selected} onClose={() => onSelectPainting(null)} /> : null}
+    </div>
+  );
+}
+
+function PaintingForm({ ctx, canvas, onClose }: { ctx: Ctx; canvas: EditorPainting; onClose: () => void }) {
+  const id = useId();
+  const { state, commit, e, tf } = ctx;
+  const available = unusedHeroes(canvas);
+
+  const remove = () => {
+    if (!window.confirm(tf(e.removePaintingConfirm, { painting: canvas.name.trim() || e.unnamedPainting }))) return;
+    commit(removePainting(state, canvas.uid));
+    onClose();
+  };
+
+  return (
+    <div className="artwork-cat-painting">
+      <div className="tier-edit-form-head">
+        <h3>{e.inspectorPainting}</h3>
+        <button type="button" className="icon-button" aria-label={e.close} onClick={onClose}>
+          <CloseIcon className="icon icon-sm" />
+        </button>
+      </div>
+      <TranslatedField
+        label={e.fieldPaintingName}
+        languages={ctx.languages}
+        get={(locale) => (locale === DEFAULT_LOCALE ? canvas.name : canvas.texts[locale]?.name ?? "")}
+        set={(locale, value) =>
+          commit(locale === DEFAULT_LOCALE ? updatePainting(state, canvas.uid, { name: value }) : setPaintingText(state, canvas.uid, locale, "name", value))
+        }
+      />
+      <PaintingImageField ctx={ctx} canvas={canvas} />
+      <TranslatedField
+        label={e.fieldOriginal}
+        hint={e.fieldOriginalHint}
+        languages={ctx.languages}
+        get={(locale) => (locale === DEFAULT_LOCALE ? canvas.original : canvas.texts[locale]?.original ?? "")}
+        set={(locale, value) =>
+          commit(locale === DEFAULT_LOCALE
+            ? updatePainting(state, canvas.uid, { original: value })
+            : setPaintingText(state, canvas.uid, locale, "original", value))
+        }
+      />
+      <div className="field">
+        <label htmlFor={`${id}-artist`}>{e.fieldArtist}</label>
+        <input id={`${id}-artist`} value={canvas.artist} onChange={(event) => commit(updatePainting(state, canvas.uid, { artist: event.target.value }))} />
+      </div>
+      <div className="field">
+        <label htmlFor={`${id}-year`}>{e.fieldYear}</label>
+        <div className="artwork-year-row">
+          <input id={`${id}-year`} value={canvas.year} inputMode="numeric" onChange={(event) => commit(updatePainting(state, canvas.uid, { year: event.target.value }))} />
+          <label className="tier-edit-check">
+            <input type="checkbox" checked={canvas.circa} onChange={(event) => commit(updatePainting(state, canvas.uid, { circa: event.target.checked }))} />
+            {e.fieldCirca}
+          </label>
+        </div>
+      </div>
+      <TranslatedField
+        label={e.fieldProductivity}
+        languages={ctx.languages}
+        get={(locale) => (locale === DEFAULT_LOCALE ? canvas.productivity : canvas.texts[locale]?.productivity ?? "")}
+        set={(locale, value) =>
+          commit(locale === DEFAULT_LOCALE
+            ? updatePainting(state, canvas.uid, { productivity: value })
+            : setPaintingText(state, canvas.uid, locale, "productivity", value))
+        }
+      />
+      <StatField ctx={ctx} canvas={canvas} field="stats" label={e.fieldStats} />
+      <StatField ctx={ctx} canvas={canvas} field="starStats" label={e.fieldStarStats} />
+
+      <fieldset className="artwork-cat-heroes">
+        <legend>{e.fieldHeroes}</legend>
+        {canvas.heroes.length === 0 ? <p className="tier-small">{e.noHeroes}</p> : (
+          <ul className="pick-list">
+            {canvas.heroes.map((hero) => (
+              <li className="pick" key={hero}>
+                <HeroAvatar name={hero} />
+                <span className="pick-name">{hero}</span>
+                <button
+                  type="button"
+                  className="icon-button"
+                  aria-label={tf(e.removeHeroNamed, { hero })}
+                  onClick={() => commit(removeHero(state, canvas.uid, hero))}
+                >
+                  <CloseIcon className="icon icon-sm" />
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+        {available.length === 0 ? <p className="tier-small">{e.allHeroesUsed}</p> : (
+          <div className="field">
+            <label htmlFor={`${id}-hero`}>{e.addHero}</label>
+            <select
+              id={`${id}-hero`}
+              value=""
+              onChange={(event) => {
+                if (event.target.value) commit(addHero(state, canvas.uid, event.target.value));
+              }}
+            >
+              <option value="">{e.addHeroPlaceholder}</option>
+              {HERO_RARITIES.map((tier) => {
+                const heroes = available.filter((hero) => hero.rarity === tier);
+                if (heroes.length === 0) return null;
+                return (
+                  <optgroup key={tier} label={tier}>
+                    {heroes.map((hero) => (
+                      <option key={hero.id} value={hero.name}>{hero.name}</option>
+                    ))}
+                  </optgroup>
+                );
+              })}
+            </select>
+          </div>
+        )}
+      </fieldset>
+
+      <button type="button" className="small-button button-danger" onClick={remove}>
+        <TrashIcon className="icon icon-sm" />
+        {e.removePainting}
+      </button>
+    </div>
+  );
+}
+
+function PaintingImageField({ ctx, canvas }: { ctx: Ctx; canvas: EditorPainting }) {
+  const { e } = ctx;
+  const input = useRef<HTMLInputElement>(null);
+  const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [dragging, setDragging] = useState(false);
+  const src = canvas.image?.data ?? (canvas.image?.file ? artworkImageUrl(canvas.image.file) : null);
+
+  const addFile = async (files: FileList | null) => {
+    const file = files?.[0];
+    if (!file) return;
+    setError("");
+    setBusy(true);
+    try {
+      if (!file.type.startsWith("image/")) { setError(e.uploadNotImage); return; }
+      if (file.size > MAX_UPLOAD_BYTES) { setError(e.uploadTooBig); return; }
+      let data: string;
+      try {
+        data = await shrinkImage(file);
+      } catch {
+        setError(e.uploadNotImage);
+        return;
+      }
+      // Read the store again: the draft may have changed while the picture was encoding.
+      const next = setPaintingImage(draftStore.getSnapshot() ?? PUBLISHED, canvas.uid, data);
+      if (!fitsStorage(next)) {
+        setError(e.storageFull);
+        return;
+      }
+      draftStore.set(next);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const onDrop = (event: DragEvent<HTMLElement>) => {
+    event.preventDefault();
+    setDragging(false);
+    void addFile(event.dataTransfer.files);
+  };
+
+  return (
+    <fieldset
+      className={dragging ? "hero-edit-images is-dragging" : "hero-edit-images"}
+      onDragOver={(event) => { event.preventDefault(); setDragging(true); }}
+      onDragLeave={() => setDragging(false)}
+      onDrop={onDrop}
+    >
+      <legend>{e.imageHeading}</legend>
+      <div className="theater-edit-cover">
+        {src ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={src} alt="" />
+        ) : null}
+        <button type="button" className="hero-edit-drop" onClick={() => input.current?.click()} disabled={busy}>
+          <UploadIcon className="icon" />
+          <strong>{src ? e.replaceImage : e.uploadImage}</strong>
+          <small>{e.dropHint}</small>
+        </button>
+        {canvas.image ? (
+          <button type="button" className="small-button button-danger" onClick={() => ctx.commit(removePaintingImage(ctx.state, canvas.uid))}>
+            <TrashIcon className="icon icon-sm" />
+            {e.removeImage}
+          </button>
+        ) : null}
+        <input
+          ref={input}
+          type="file"
+          accept="image/png,image/jpeg,image/webp,image/gif,image/avif"
+          hidden
+          onChange={(event) => {
+            void addFile(event.target.files);
+            event.target.value = "";
+          }}
+        />
+      </div>
+      <p className="tier-small">{e.imageHint}</p>
+      {error ? <p className="notice notice-warn" role="alert">{error}</p> : null}
+    </fieldset>
+  );
+}
+
+function StatField({
+  ctx,
+  canvas,
+  field,
+  label,
+}: {
+  ctx: Ctx;
+  canvas: EditorPainting;
+  field: "stats" | "starStats";
+  label: string;
+}) {
+  const selected = canvas[field];
+  return (
+    <fieldset className="artwork-cat-stats">
+      <legend>{label}</legend>
+      <div className="tier-edit-role-grid">
+        {PAINTING_STATS.map((stat) => (
+          <label key={stat} className={selected.includes(stat) ? "tier-edit-role is-on" : "tier-edit-role"}>
+            <input
+              type="checkbox"
+              checked={selected.includes(stat)}
+              onChange={() => ctx.commit(toggleStat(ctx.state, canvas.uid, field, stat))}
+            />
+            {ctx.guide.stats[stat]}
+          </label>
+        ))}
+      </div>
+    </fieldset>
+  );
+}
+
+function problemText(ctx: Ctx, problem: Problem): string {
+  switch (problem.code) {
+    case "emptySetName": return ctx.tf(ctx.e.problemEmptySetName, { set: problem.id });
+    case "emptyPaintingName": return ctx.tf(ctx.e.problemEmptyPaintingName, { set: problem.set, painting: problem.id });
+    case "emptySet": return ctx.tf(ctx.e.problemEmptySet, { set: problem.id });
+    case "duplicateSet": return ctx.tf(ctx.e.problemDuplicateSet, { set: problem.id });
+    case "duplicatePainting": return ctx.tf(ctx.e.problemDuplicatePainting, { painting: problem.id });
+    case "urPlusHero": return ctx.tf(ctx.e.problemUrPlus, { set: problem.set, painting: problem.painting, hero: problem.hero });
+    case "duplicateHero": return ctx.tf(ctx.e.problemDuplicateHero, { set: problem.set, painting: problem.painting, hero: problem.hero });
+  }
+}
+
+function ExportDialog({
+  ctx,
+  data,
+  texts,
+  onClose,
+}: {
+  ctx: Ctx;
+  data: ReturnType<typeof toCatalogue>;
+  texts: ReturnType<typeof exportCatalogTexts>;
+  onClose: () => void;
+}) {
+  const { t } = useLocale();
+  const textBlocks = useMemo(() => catalogTextBlocks(texts, PUBLISHED_TEXTS), [texts]);
+  const id = useId();
+  const dialog = useRef<HTMLDialogElement>(null);
+  const [copied, setCopied] = useState("");
+  const json = useMemo(() => serializePaintingData(data), [data]);
+  const files = useMemo(() => exportArtwork(ctx.state), [ctx.state]);
+  const problems = useMemo(() => findProblems(ctx.state), [ctx.state]);
+
+  const copy = (value: string) =>
+    navigator.clipboard?.writeText(value).then(() => setCopied("json"), () => { /* clipboard blocked */ });
+  const download = () => {
+    const url = URL.createObjectURL(new Blob([json], { type: "application/json" }));
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "paintings.json";
+    link.click();
+    window.setTimeout(() => URL.revokeObjectURL(url), 0);
+  };
+
+  return (
+    <dialog
+      ref={(node) => {
+        dialog.current = node;
+        if (node && !node.open) node.showModal();
+      }}
+      className="tier-export"
+      aria-labelledby={`${id}-title`}
+      onClose={onClose}
+      onCancel={onClose}
+    >
+      <div className="tier-edit-form-head">
+        <h2 id={`${id}-title`}>{ctx.e.exportTitle}</h2>
+        <button type="button" className="icon-button" aria-label={ctx.e.close} onClick={() => dialog.current?.close()}>
+          <CloseIcon className="icon icon-sm" />
+        </button>
+      </div>
+      <p className="tier-small">{ctx.e.exportLede}</p>
+      {problems.length > 0 ? (
+        <div className="notice notice-warn tier-export-problems" role="alert">
+          <div>
+            <strong>{ctx.e.problemsTitle}</strong>
+            <ul>{problems.map((problem, index) => <li key={index}>{problemText(ctx, problem)}</li>)}</ul>
+          </div>
+        </div>
+      ) : null}
+      {files.uploads.length > 0 ? (
+        <div className="tier-export-block">
+          <div className="tier-export-head">
+            <strong>{ctx.tf(ctx.e.uploadsHeading, { count: files.uploads.length })}</strong>
+            <div className="tier-edit-row-actions">
+              <button
+                className="small-button"
+                type="button"
+                onClick={() => files.uploads.forEach((upload, index) => window.setTimeout(() => saveFile(upload.data, upload.file), index * 300))}
+              >
+                <DownloadIcon className="icon icon-sm" />
+                {ctx.e.downloadAll}
+              </button>
+            </div>
+          </div>
+          <ul className="hero-export-files">
+            {files.uploads.map((upload) => (
+              <li key={upload.file}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={upload.data} alt="" width={40} height={40} />
+                <span>
+                  <code>public/artwork/{upload.file}</code>
+                  <small>{upload.painting}</small>
+                </span>
+                <button className="small-button" type="button" onClick={() => saveFile(upload.data, upload.file)}>
+                  <DownloadIcon className="icon icon-sm" />
+                  {ctx.e.download}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+      {files.removedFiles.length > 0 ? (
+        <div className="tier-export-block">
+          <div className="tier-export-head">
+            <strong>{ctx.tf(ctx.e.removedHeading, { count: files.removedFiles.length })}</strong>
+          </div>
+          <ul className="hero-export-removed">
+            {files.removedFiles.map((file) => <li key={file}><code>public/artwork/{file}</code></li>)}
+          </ul>
+        </div>
+      ) : null}
+      <div className="tier-export-block">
+        <div className="tier-export-head">
+          <code>lib/data/paintings.json</code>
+          <div className="tier-edit-row-actions">
+            <button className="small-button" type="button" onClick={() => void copy(json)}>
+              {copied === "json" ? <CheckIcon className="icon icon-sm" /> : <CopyIcon className="icon icon-sm" />}
+              {copied === "json" ? ctx.e.copied : ctx.e.copy}
+            </button>
+            <button className="small-button" type="button" onClick={download}>
+              <DownloadIcon className="icon icon-sm" />
+              {ctx.e.download}
+            </button>
+          </div>
+        </div>
+        <textarea readOnly value={json} rows={12} spellCheck={false} aria-label="lib/data/paintings.json" />
+      </div>
+      <DictionaryBlocks blocks={textBlocks} title={t.editorLanguages.exportBlocks} lede={t.editorLanguages.exportBlocksLede} rows={6} />
+    </dialog>
+  );
+}

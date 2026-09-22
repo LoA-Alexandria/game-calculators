@@ -1,0 +1,1042 @@
+{
+  "anecdotes": [
+    {
+      "id": "river-gods-gift",
+      "group": "general",
+      "name": "River God's Gift",
+      "prerequisite": "Reach the Mid Classical Age",
+      "steps": [
+        {
+          "text": "Find the swirl beside the farm."
+        },
+        {
+          "text": "On the riverbank, you will see a frog."
+        },
+        {
+          "text": "Drag the frog into the pool."
+        },
+        {
+          "text": "Frogs and turtles then appear on the riverbank. Drag them into the pool as well."
+        }
+      ],
+      "image": "river-gods-gift.webp"
+    },
+    {
+      "id": "glory-supercedes-blood",
+      "group": "general",
+      "name": "Glory Supersedes Blood",
+      "prerequisite": "Build 9 Wonders",
+      "steps": [
+        {
+          "text": "Tap the Zzz above the training units on each of the 4 Barracks."
+        },
+        {
+          "text": "Open Wonders, go to the Classical Age, tap Spartacus twice, and build the Colosseum."
+        }
+      ],
+      "image": "glory-supercedes-blood.webp"
+    },
+    {
+      "id": "throne-of-the-lion",
+      "group": "general",
+      "name": "Throne of the Lion",
+      "prerequisite": "Reach the Renaissance Age",
+      "steps": [
+        {
+          "text": "Tap the footprints near the billboard where you watch the 5 daily ads."
+        },
+        {
+          "text": "Tap the scarecrow at the farm."
+        },
+        {
+          "text": "Archimedes appears. Tap him."
+        },
+        {
+          "text": "Complete the puzzle."
+        }
+      ],
+      "image": "throne-of-the-lion.webp"
+    },
+    {
+      "id": "rewrite-destiny",
+      "group": "general",
+      "name": "Rewrite Destiny",
+      "prerequisite": "Obtain Achilles and Hector and upgrade both to Lv. 50, and upgrade the Pikeman Barracks to Lv. 9",
+      "steps": [
+        {
+          "text": "Find Achilles and Hector arguing to the right of the Archer Barracks and tap the speech bubble."
+        },
+        {
+          "text": "Drag Homer (above them) onto them, then tap the speech bubble again."
+        },
+        {
+          "text": "A fight starts and Achilles disappears. Follow Hector as he hops around the screen, and tap him each time he stops."
+        },
+        {
+          "text": "The two return to where they started. Tap the speech bubble and go through the duel again."
+        }
+      ],
+      "image": "rewrite-destiny.webp"
+    },
+    {
+      "id": "conflict-of-tongues",
+      "group": "general",
+      "name": "Conflict of Tongues",
+      "prerequisite": "Switch the language once",
+      "steps": [
+        {
+          "text": "In front of the Lumber Mill, you will see 3 guys."
+        },
+        {
+          "text": "Tap them."
+        }
+      ],
+      "image": "conflict-of-tongues.webp"
+    },
+    {
+      "id": "femme-fatales-gift",
+      "group": "general",
+      "name": "Femme Fatale's Gift",
+      "prerequisite": "Obtain the goddess Medusa and tap the stone 30 times",
+      "steps": [
+        {
+          "text": "Stone gathering seems a little strange. Take a closer look!"
+        }
+      ],
+      "image": "femme-fatales-gift.webp"
+    },
+    {
+      "id": "scholar-from-the-east",
+      "group": "general",
+      "name": "Scholar from the East",
+      "prerequisite": "Obtain the hero Confucius and build 12 Wonders",
+      "steps": [
+        {
+          "text": "Go to Heroes and open Confucius."
+        },
+        {
+          "text": "Tap Marco Polo in the picture."
+        }
+      ],
+      "image": "scholar-from-the-east.webp"
+    },
+    {
+      "id": "leap-of-faith",
+      "group": "general",
+      "name": "Leap of Faith?",
+      "prerequisite": "Obtain Eve's Gourmet Thief skin",
+      "steps": [
+        {
+          "text": "Go to the Goddesses page."
+        },
+        {
+          "text": "Set Eve's alternate skin."
+        },
+        {
+          "text": "There is a spy in the background. Tap it."
+        }
+      ],
+      "image": "leap-of-faith.webp"
+    },
+    {
+      "id": "artistic-duel",
+      "group": "general",
+      "name": "Artistic Duel",
+      "prerequisite": "Upgrade the Museion to 5 stars",
+      "steps": [
+        {
+          "text": "Tap Da Vinci arguing with Michelangelo near the Museion fountain (below Plato Academy)."
+        },
+        {
+          "text": "Bet on one of them and watch the fight, then:",
+          "substeps": [
+            "Da Vinci: tap Da Vinci near the Iron Mine in your home base.",
+            "Michelangelo: go to the Astranook bedroom and complete Michelangelo's dialogue."
+          ]
+        },
+        {
+          "text": "Tap Da Vinci and Michelangelo near the Museion fountain again."
+        },
+        {
+          "text": "Watch the fight."
+        },
+        {
+          "text": "Wait 24 hours. Really."
+        },
+        {
+          "text": "Tap them again and collect the reward."
+        }
+      ],
+      "thanks": [
+        "Kraes"
+      ],
+      "image": "artistic-duel.webp"
+    },
+    {
+      "id": "conqueror-of-king",
+      "group": "general",
+      "name": "Conqueror of King",
+      "prerequisite": "Complete 5 External Expeditions",
+      "steps": [
+        {
+          "text": "Go to Expedition."
+        },
+        {
+          "text": "Open External."
+        },
+        {
+          "text": "Tap the 3 heroes outside the city."
+        }
+      ],
+      "image": "conqueror-of-king.webp"
+    },
+    {
+      "id": "king-of-conquest-ii",
+      "group": "general",
+      "name": "King of Conquest II",
+      "after": "conqueror-of-king",
+      "steps": [
+        {
+          "text": "Go to Expedition."
+        },
+        {
+          "text": "Open External."
+        },
+        {
+          "text": "Attack the 3 heroes, then tap them again."
+        }
+      ],
+      "image": "king-of-conquest-ii.webp"
+    },
+    {
+      "id": "invitation-to-creation",
+      "group": "general",
+      "name": "Invitation to Creation",
+      "prerequisite": "Send 10 messages",
+      "steps": [
+        {
+          "text": "Open the Collection tab and go to the Excavate page. Tap the large clay pot until it breaks."
+        },
+        {
+          "text": "Go to the Goddess Theater and talk to Shakespeare. Pick the play Hamlet and do not skip it. When it ends, Shakespeare appears in the crowd. Tap him there."
+        },
+        {
+          "text": "Find Cervantes: open his hero card and tap the dialogue bubble. You are then asked to find him again."
+        },
+        {
+          "text": "Cervantes appears to the left of the Farm on the main screen. Tap him there."
+        },
+        {
+          "text": "Go to the Bazaar. Dante is skipping along the path in the bottom-left area. Tap him there."
+        },
+        {
+          "text": "Find Dante again: he is hiding on Homer's hero card. Open Homer's card and tap Dante."
+        },
+        {
+          "text": "Return to the Goddess Theater. The characters from the anecdote are all on stage. Tap the group to close the scene and complete the anecdote."
+        }
+      ],
+      "image": "invitation-to-creation.webp"
+    },
+    {
+      "id": "i-create-the-mountain",
+      "group": "general",
+      "name": "I Create the Mountain",
+      "prerequisite": "Build 3 Wonders",
+      "steps": [
+        {
+          "text": "Open Wonders, go to the Stone Age, and talk to Da Vinci."
+        },
+        {
+          "text": "Back on the home screen, talk to Da Vinci next to the Quarry."
+        },
+        {
+          "text": "Open Wonders, go to the Stone Age, and talk to Da Vinci again."
+        },
+        {
+          "text": "Open your Bag and inspect the token."
+        },
+        {
+          "text": "Back in Wonders, build Devils Tower."
+        }
+      ],
+      "image": "i-create-the-mountain.webp"
+    },
+    {
+      "id": "black-widow",
+      "group": "general",
+      "name": "Black Widow",
+      "prerequisite": "Get Livia Drusilla's Elegy skin",
+      "steps": [
+        {
+          "text": "Talk to Drusilla outside the Brewery. She asks you to find her lost spiders:",
+          "substeps": [
+            "In the tree on the Blessing page",
+            "In the window of the Astranook room",
+            "Under the carpet in the Advisor room",
+            "On a pedestal in the Bazaar (right side)",
+            "On the billboard",
+            "Next to the guild development building",
+            "The spider tattoo on the belly of the girl in the welcome-back pop-up"
+          ]
+        }
+      ],
+      "image": "black-widow.webp"
+    },
+    {
+      "id": "secrets-of-immortality",
+      "group": "general",
+      "name": "Secrets of Immortality",
+      "prerequisite": "Reach the Exploration Era",
+      "steps": [
+        {
+          "text": "In the guild area, look in the fountain for the message in a bottle and complete the jigsaw puzzle."
+        },
+        {
+          "text": "Blackbeard is on the dock below the Pasture."
+        }
+      ],
+      "note": "Your settlement buildings change position when you reach the Exploration Era.",
+      "image": "secrets-of-immortality.webp"
+    },
+    {
+      "id": "wishing-well",
+      "group": "general",
+      "name": "Wishing Well",
+      "prerequisite": "Obtain the goddess Muse",
+      "steps": [
+        {
+          "text": "Tap the coin bubble above the fountain in the Museion."
+        },
+        {
+          "text": "When asked which coin you dropped (gold, silver, or iron), choose the Muse Coin."
+        }
+      ],
+      "image": "wishing-well.webp"
+    },
+    {
+      "id": "falling-meteor",
+      "group": "general",
+      "name": "Falling Meteor",
+      "prerequisite": "Excavate 30 times in the Genesis Collection",
+      "steps": [
+        {
+          "text": "Go to Excavation and keep tapping the vase next to the pickaxe until the story moves on."
+        },
+        {
+          "text": "Go to the Bazaar and tap the stall holder at the Quarry stall (left side). She talks about stones."
+        },
+        {
+          "text": "A Golden Pyramid appears in the middle of the shelf. Tap it to take it."
+        },
+        {
+          "text": "Open Wonders, go to the Bronze Age, and build the Great Pyramid."
+        }
+      ],
+      "image": "falling-meteor.webp"
+    },
+    {
+      "id": "philosophical-thesis",
+      "group": "general",
+      "name": "Philosophical Thesis",
+      "prerequisite": "Raise the total building level in Socrates' Rostrum to 20",
+      "steps": [
+        {
+          "text": "Go to the Academic Contest part of the Museion."
+        },
+        {
+          "text": "Tap the three eggs on top of the columns. The question of the chicken and the egg comes up."
+        },
+        {
+          "text": "Tap the trail of bird prints by the owl statue in the main courtyard."
+        },
+        {
+          "text": "Keep tapping Socrates in his golden chair at the Rostrum until his dialogue ends."
+        }
+      ],
+      "note": "The order of the eggs is not recorded yet.",
+      "image": "philosophical-thesis.webp"
+    },
+    {
+      "id": "the-dome-confinement",
+      "group": "general",
+      "name": "The Dome Confinement",
+      "prerequisite": "Upgrade the Art Workshop to Lv. 23",
+      "steps": [
+        {
+          "text": "Tap Michelangelo at the Art Workshop, then tap him again."
+        },
+        {
+          "text": "Tap the spaceship."
+        },
+        {
+          "text": "Tap the paint palette."
+        },
+        {
+          "text": "Choose the colours in the right order."
+        }
+      ],
+      "note": "The colour order is not recorded yet.",
+      "image": "the-dome-confinement.webp"
+    },
+    {
+      "id": "first-citizen-of-civ",
+      "group": "general",
+      "name": "First Citizen of Civ",
+      "prerequisite": "Watch ads 5 times",
+      "steps": [
+        {
+          "text": "On your village screen, tap the billboard."
+        },
+        {
+          "text": "Tap the billboard inside that screen."
+        },
+        {
+          "text": "Open the Astranook and go to the Genesis Tools screen."
+        },
+        {
+          "text": "Tap the group in the hot tub on the floor."
+        }
+      ],
+      "image": "first-citizen-of-civ.webp"
+    },
+    {
+      "id": "conquerors-approval",
+      "group": "general",
+      "name": "Conqueror's Approval",
+      "prerequisite": "Complete chapter 35 of the Campaign and upgrade the Archer Barracks to Lv. 22",
+      "reward": "Bloodstained Laurel Collection",
+      "steps": [
+        {
+          "text": "Tap the pigeon on the Barracks roof."
+        },
+        {
+          "text": "Open your mailbox and collect the letter."
+        }
+      ],
+      "image": "conquerors-approval.webp"
+    },
+    {
+      "id": "warriors-of-freedom",
+      "group": "general",
+      "name": "Warriors of Freedom",
+      "prerequisite": "Obtain the heroes Ragnar, William Wallace, and Robin Hood",
+      "reward": "3 Resource Selection Chest",
+      "steps": [
+        {
+          "text": "Find William, Ragnar, and Robin arguing outside the Copper Mine, and tap them to start the dialogue."
+        },
+        {
+          "text": "When the dialogue ends, press and hold one of them. A gold ring lights up outside the Quarry, the Copper Mine, or the Blacksmith."
+        },
+        {
+          "text": "Drag each hero onto the ring that lights up."
+        }
+      ],
+      "image": "warriors-of-freedom.webp"
+    },
+    {
+      "id": "rainbows-guidance",
+      "group": "general",
+      "name": "Rainbow's Guidance",
+      "prerequisite": "Reach the Enlightenment Age",
+      "steps": [
+        {
+          "text": "Find Lagertha in the Enlightenment Age wonders."
+        },
+        {
+          "text": "Solve the puzzle in the Glass Workshop."
+        },
+        {
+          "text": "Go back to the Enlightenment Age wonders."
+        }
+      ],
+      "thanks": [
+        "Popo"
+      ],
+      "image": "rainbows-guidance.webp"
+    },
+    {
+      "id": "ocean-voyage-blocks",
+      "group": "general",
+      "name": "Ocean Voyage Blocks",
+      "prerequisite": "Reach the Steam Age and unlock New York in the Grand Voyage",
+      "steps": [
+        {
+          "text": "Unlock New York."
+        },
+        {
+          "text": "Tap the giant ship at New York."
+        }
+      ],
+      "image": "ocean-voyage-blocks.webp"
+    },
+    {
+      "id": "undelivered-photos",
+      "group": "general",
+      "name": "Undelivered Photos",
+      "prerequisite": "Reach the Electrical Age",
+      "steps": [
+        {
+          "text": "Find the snowman on the train tracks in the Bazaar."
+        },
+        {
+          "text": "Solve the puzzle."
+        }
+      ],
+      "thanks": [
+        "Kraes"
+      ],
+      "image": "undelivered-photos.webp"
+    },
+    {
+      "id": "the-apple-is-innocent",
+      "group": "general",
+      "name": "The Apple is Innocent",
+      "prerequisite": "Civilization level reaches 18",
+      "steps": [
+        {
+          "text": "In Odin's milestone, a snake has stolen an apple."
+        },
+        {
+          "text": "An apple seems to have grown on the world tree."
+        }
+      ],
+      "image": "the-apple-is-innocent.webp"
+    },
+    {
+      "id": "da-vincis-palette",
+      "group": "general",
+      "name": "Da Vinci's Palette",
+      "prerequisite": "Advance to the Renaissance Age",
+      "steps": [
+        {
+          "text": "Open the aircraft that landed by the mountains and get ready for the colourful gas clouds."
+        }
+      ],
+      "image": "da-vincis-palette.webp"
+    },
+    {
+      "id": "pre-easter-trouble",
+      "group": "general",
+      "name": "Pre-Easter Trouble",
+      "prerequisite": "Participate in: Where is the Bunny?",
+      "steps": [
+        {
+          "text": "Look! Nike has come to town, and she's even changed into an Easter outfit."
+        }
+      ],
+      "image": "pre-easter-trouble.webp"
+    },
+    {
+      "id": "curse-of-tutankhamun",
+      "group": "egypt",
+      "name": "Curse of Tutankhamun",
+      "prerequisite": "Build the Sphinx",
+      "steps": [
+        {
+          "text": "Tap the person behind and above the Sphinx, the one with a shop icon."
+        },
+        {
+          "text": "Tap the person again."
+        },
+        {
+          "text": "Put the jars back in order by the number of rows on them: beige, blue, orange, tallest."
+        }
+      ]
+    },
+    {
+      "id": "the-great-void",
+      "group": "egypt",
+      "name": "The Great Void",
+      "prerequisite": "Build the Great Pyramid",
+      "steps": [
+        {
+          "text": "Find the (…) bubble next to the Great Pyramid."
+        },
+        {
+          "text": "Find the pile of stones with a flat rectangular stone lying down, in the far bottom-right corner of the map, on the same riverbank as the Sphinx."
+        },
+        {
+          "text": "Drag the flat stone sideways."
+        },
+        {
+          "text": "Tap the sleeping man."
+        }
+      ]
+    },
+    {
+      "id": "mummy-powder",
+      "group": "egypt",
+      "name": "Mummy Powder",
+      "prerequisite": "Build the Mummy Temple (Mummy Hall)",
+      "steps": [
+        {
+          "text": "Tap the small grey thing on the right side of the dock."
+        },
+        {
+          "text": "Tap the man with a blood-drop icon on the left side of the Cat Pyramid."
+        },
+        {
+          "text": "In Duat, tap the (…) icon at the bottom right of the map, across the river from the Sphinx."
+        }
+      ]
+    },
+    {
+      "id": "pyramid-thunder",
+      "group": "egypt",
+      "name": "Pyramid Thunder",
+      "prerequisite": "Build the Red Pyramid",
+      "steps": [
+        {
+          "text": "Talk to the villager with the (…) icon next to the Red Pyramid."
+        },
+        {
+          "text": "Complete the puzzle. The colours from left to right are red, green, yellow, blue, the same order as the tools above the rack of jars."
+        }
+      ]
+    },
+    {
+      "id": "book-of-thoth",
+      "group": "egypt",
+      "name": "Book of Thoth",
+      "prerequisite": "Research 100 technologies",
+      "steps": [
+        {
+          "text": "Tap the scroll on the rock at the far left of the living world map, below the left corner of the bottom-left quadrant."
+        },
+        {
+          "text": "In the Inner Hall of the Pray menu, tap the black cat."
+        }
+      ]
+    },
+    {
+      "id": "scorpion-king",
+      "group": "egypt",
+      "name": "Scorpion King",
+      "prerequisite": "Unlock 15 plots",
+      "steps": [
+        {
+          "text": "Tap the tumbleweed at the bottom centre of the map, below the bottom-right quadrant."
+        },
+        {
+          "text": "Tap the scorpions until all 3 are gone."
+        },
+        {
+          "text": "Tap the villagers."
+        },
+        {
+          "text": "Tap the villager with the floating scorpion icon."
+        }
+      ]
+    },
+    {
+      "id": "divine-lamp",
+      "group": "egypt",
+      "name": "Divine Lamp",
+      "prerequisite": "Build the Dock",
+      "steps": [
+        {
+          "text": "Tap the sparkling pile of stones just right of the right corner of the bottom-right quadrant."
+        },
+        {
+          "text": "Tap all the glowing fireflies."
+        },
+        {
+          "text": "In Duat, tap the mummy lying sprawled on the ground at the bottom right of the map."
+        }
+      ]
+    },
+    {
+      "id": "horn-of-war",
+      "group": "egypt",
+      "name": "Horn of War",
+      "prerequisite": "Upgrade the Fish Pond to Lv. 50",
+      "steps": [
+        {
+          "text": "Tap the villagers with the (…) icon at the bottom left of the map, beyond the bottom-left quadrant."
+        },
+        {
+          "text": "North-east of the Red Pyramid site, tap the horn in the sand 20 times until a villager appears."
+        },
+        {
+          "text": "Tap the villager."
+        }
+      ]
+    },
+    {
+      "id": "mystic-script",
+      "group": "egypt",
+      "name": "Mystic Script",
+      "prerequisite": "Build the Mudbrick Yard",
+      "steps": [
+        {
+          "text": "South of the bottom-right quadrant, a cat is sleeping on a brick."
+        },
+        {
+          "text": "Drag the cat off the brick onto the golden ring."
+        }
+      ]
+    },
+    {
+      "id": "cleopatras-stele",
+      "group": "egypt",
+      "name": "Cleopatra's Stele",
+      "prerequisite": "Build 6 Small Dwellings",
+      "steps": [
+        {
+          "text": "Find the standing stone slab with a face on it, south of the river and to the right of the bottom-right quadrant."
+        },
+        {
+          "text": "Tap the slab."
+        },
+        {
+          "text": "Brush the sand off by dragging."
+        }
+      ]
+    },
+    {
+      "id": "unlucky-mummy",
+      "group": "egypt",
+      "name": "Unlucky Mummy",
+      "prerequisite": "Enter Duat 20 times",
+      "steps": [
+        {
+          "text": "Tap the mummy floating in the river close to the dock (bottom right of the dock)."
+        },
+        {
+          "text": "In the Inner Hall of the Pray menu, tap Sobek, who has a (…) icon."
+        },
+        {
+          "text": "Talk to the floating mummy again."
+        }
+      ]
+    },
+    {
+      "id": "the-two-ways",
+      "group": "egypt",
+      "name": "The Two Ways",
+      "prerequisite": "Build the Meidum Pyramid",
+      "steps": [
+        {
+          "text": "Tap the pile of sand in front of the Cat (Meidum) Pyramid."
+        },
+        {
+          "text": "Brush the sand aside."
+        },
+        {
+          "text": "In Duat, tap the fishing boat."
+        },
+        {
+          "text": "Tap the clump of weeds for the man on the fishing boat."
+        },
+        {
+          "text": "Back where the sand was, tap the villager with the (…) icon on the right side of the Cat (Meidum) Pyramid."
+        }
+      ]
+    },
+    {
+      "id": "screaming-mummy",
+      "group": "egypt",
+      "name": "Screaming Mummy",
+      "prerequisite": "Enter Duat 10 times",
+      "steps": [
+        {
+          "text": "In the Mummy Hall, tap the mummy peeking out from behind a pillar at the top right."
+        },
+        {
+          "text": "In the Sphinx, tap any cat. Under the windowsill is a cat house with a small fish-shaped thing in it. Tap the fish."
+        },
+        {
+          "text": "Go back to the Mummy Hall and tap the peeking mummy again."
+        },
+        {
+          "text": "Put the fish on the scale."
+        },
+        {
+          "text": "Tap the screaming mummy."
+        }
+      ]
+    },
+    {
+      "id": "wooden-bird",
+      "group": "egypt",
+      "name": "Wooden Bird",
+      "prerequisite": "Research 50 technologies",
+      "steps": [
+        {
+          "text": "Tap the 3 floating bits of wood in the water just below the left side of the Red Pyramid."
+        },
+        {
+          "text": "Complete the puzzle. Tap a piece to rotate it; a piece in the right position can no longer move."
+        },
+        {
+          "text": "Tap the wooden bird on the mountain to the left of the Red Pyramid."
+        }
+      ]
+    },
+    {
+      "id": "jackals-vs-dog",
+      "group": "egypt",
+      "name": "Jackals vs Dog",
+      "prerequisite": "Enter Duat",
+      "steps": [
+        {
+          "text": "In Duat, tap the floating dog icon next to the Cat Pyramid."
+        },
+        {
+          "text": "At the top left of Duat, tap the jackal standing at the gate of the big mausoleum."
+        },
+        {
+          "text": "At the bottom left of Duat, tap the jackal next to the jackal statue with a staff."
+        },
+        {
+          "text": "Drag the bone next to him into the splashing pond."
+        },
+        {
+          "text": "Drag the disc next to him into the splashing pond."
+        },
+        {
+          "text": "Tap the floating dog icon next to the Cat Pyramid again."
+        }
+      ]
+    },
+    {
+      "id": "routine-inspection",
+      "group": "egypt",
+      "name": "Routine Inspection",
+      "after": "jackals-vs-dog",
+      "prerequisite": "Reach Egypt construction level 6",
+      "steps": [
+        {
+          "text": "Pet the three cats on three Duat buildings, in this order:",
+          "substeps": [
+            "Chubby Orange on a Dried Fish building: tap it, then swipe all over the cat on the petting screen.",
+            "Siamese in a Natron Pool: swipe all over the cat on the petting screen.",
+            "Little Baldy on a Ritual Water Court (only at construction level 6): swipe all over the cat."
+          ]
+        },
+        {
+          "text": "Tap the jackal between the Cat Pyramid and the Great Pyramid."
+        }
+      ]
+    },
+    {
+      "id": "cat-tax",
+      "group": "egypt",
+      "name": "Cat Tax",
+      "after": "routine-inspection",
+      "steps": [
+        {
+          "text": "In Duat, find the queue of mummies in front of Anubis at the entrance to the temple left of the Red Pyramid."
+        },
+        {
+          "text": "Choose the feather (the option furthest right)."
+        },
+        {
+          "text": "Do it again."
+        }
+      ]
+    },
+    {
+      "id": "express-pass",
+      "group": "egypt",
+      "name": "Express Pass",
+      "after": "cat-tax",
+      "steps": [
+        {
+          "text": "Find your Fish Pond in Duat."
+        },
+        {
+          "text": "Tap the cat placard on it."
+        },
+        {
+          "text": "Complete the puzzle."
+        }
+      ]
+    },
+    {
+      "id": "occupational-hazard",
+      "group": "egypt",
+      "name": "Occupational Hazard",
+      "after": "express-pass",
+      "steps": [
+        {
+          "text": "Find the Mummy Hall in Duat and tap its dialogue icon."
+        },
+        {
+          "text": "Complete the puzzle. A piece is in the right spot when it can no longer move."
+        },
+        {
+          "text": "Then mess the puzzle up again by moving everything out of the box."
+        }
+      ]
+    },
+    {
+      "id": "civet-coffee",
+      "group": "egypt",
+      "name": "Civet Coffee",
+      "after": "occupational-hazard",
+      "steps": [
+        {
+          "text": "Osiris lies collapsed at the top right of the temple west of the Red Pyramid in Duat. If he is not there, leave Duat and come back; if he is still missing, restart the game."
+        },
+        {
+          "text": "Collect three things, in any order:",
+          "substeps": [
+            "A vase of clean water: find the vase near the Red Pyramid in the living world and drag it into the river.",
+            "“Coffee beans”: the coconut tree in the bottom-right corner of the map, next to the river.",
+            "Salt: the sparkling Natron Pool."
+          ]
+        },
+        {
+          "text": "Find the Fish Pond in the living world and tap the “coffee bean” icon twice. If the cat is not on the pond, leave Egypt and come back; if it is still missing, restart the game."
+        },
+        {
+          "text": "Tap the coffee icon floating above one of your Large Dwellings."
+        },
+        {
+          "text": "Add the ingredients in this order: water, coffee, salt."
+        },
+        {
+          "text": "Find Osiris again in the temple west of the Red Pyramid in Duat."
+        },
+        {
+          "text": "Give him the coffee."
+        }
+      ]
+    },
+    {
+      "id": "osiris-is-all",
+      "group": "egypt",
+      "name": "Osiris Is All",
+      "after": "civet-coffee",
+      "steps": [
+        {
+          "text": "Go to the temple west of the Red Pyramid in Duat. Osiris is at the bottom centre. If nobody is there, leave Duat and come back; if still not, restart the game."
+        },
+        {
+          "text": "Clean up the organs by swiping."
+        },
+        {
+          "text": "Tap the icon on a Hieroglyph Press in Duat."
+        },
+        {
+          "text": "Sort the puzzle. A piece is in the right place when it can no longer move."
+        },
+        {
+          "text": "Osiris is holding court in front of the Sphinx in Duat. Answer:",
+          "substeps": [
+            "“Hail the Ferryman”",
+            "Portrait of Anubis (cute)",
+            "Give the Scarab its own stone ball"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "direct-hire",
+      "group": "egypt",
+      "name": "Direct Hire",
+      "after": "osiris-is-all",
+      "steps": [
+        {
+          "text": "Go to the temple west of the Red Pyramid in Duat. Osiris stands at the entrance next to a giant poster of his face."
+        },
+        {
+          "text": "Still in Duat, find the mummy to the right of the bottom-left quadrant, where the river forms a T. Answer:",
+          "substeps": [
+            "Get a bigger coffin",
+            "Lie inside to find the problem and fix it"
+          ]
+        },
+        {
+          "text": "Find the mummy hiding behind the stone slab in the bottom-right corner of Duat, where Cleopatra's Stele is. Answer:",
+          "substeps": [
+            "Have him carefully feel his own head",
+            "Have everyone on site raise both hands"
+          ]
+        },
+        {
+          "text": "The next mummy is on top of the Great Pyramid in Duat. Answer:",
+          "substeps": [
+            "Shove him back into place",
+            "Stand between them"
+          ]
+        },
+        {
+          "text": "Back at the temple west of the Red Pyramid in Duat, tap the queue."
+        }
+      ]
+    },
+    {
+      "id": "sit-ups",
+      "group": "egypt",
+      "name": "Sit-Ups",
+      "after": "direct-hire",
+      "steps": [
+        {
+          "text": "Talk to Osiris inside the temple west of the Red Pyramid in Duat."
+        },
+        {
+          "text": "Talk to Osiris on the roof of that temple."
+        },
+        {
+          "text": "Talk to Osiris in the cat house on top of the Great Pyramid in Duat."
+        },
+        {
+          "text": "Talk to Osiris at the Anubis statue at the far south of the map."
+        }
+      ]
+    },
+    {
+      "id": "sleep-guide",
+      "group": "egypt",
+      "name": "Sleep Guide",
+      "after": "sit-ups",
+      "steps": [
+        {
+          "text": "In Duat, tap the cat next to the fishing icon on the dock."
+        },
+        {
+          "text": "Tap Osiris next to that cat."
+        },
+        {
+          "text": "Complete the puzzle. Tap a piece to rotate it; a piece in the right position can no longer move."
+        }
+      ]
+    },
+    {
+      "id": "stone-pet",
+      "group": "egypt",
+      "name": "Stone Pet",
+      "after": "sleep-guide",
+      "steps": [
+        {
+          "text": "In Duat, tap the white stone in the river south of the Red Pyramid 15 times."
+        },
+        {
+          "text": "Tap Osiris inside the temple west of the Red Pyramid."
+        },
+        {
+          "text": "Tap the (…) icon next to Osiris."
+        },
+        {
+          "text": "Tap the icon on one of your Mortar Workshops in Duat."
+        },
+        {
+          "text": "Put the jars in order of the circles on them: 1, 2, 3, 4 from left to right."
+        },
+        {
+          "text": "Talk to Osiris in the temple again."
+        },
+        {
+          "text": "Tap the bone under the table."
+        },
+        {
+          "text": "Tap Osiris on the temple roof."
+        }
+      ]
+    }
+  ]
+}

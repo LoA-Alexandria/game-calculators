@@ -1,53 +1,119 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { SECTIONS, type NavItem, type NavSection } from "../../lib/navigation";
-import { DISCORD_CONFIGURED, DISCORD_URL, REPOSITORY_URL } from "../../lib/site";
+import { SECTIONS, groupByBadge, sectionHasBrowsePanel, type NavItem, type NavSection } from "../../lib/navigation";
+import { navCrumbs, pathIsCurrentOrNested, pathIsExact } from "../../lib/content/nav-shell";
+import { DISCORD_CONFIGURED, DISCORD_URL, NAV_COLLAPSED_STORAGE_KEY, REPOSITORY_URL, asset } from "../../lib/site";
 import { useAuth } from "./AuthProvider";
 import { useLocale } from "./LocaleProvider";
-import { MonthCalendar } from "./EventCalendar";
-import { useNow } from "./useNow";
+import { AccountMenu } from "./AccountMenu";
 import { LanguageMenu } from "./LanguageMenu";
+import { SchemeMenu } from "./SchemeMenu";
 import { ThemeToggle } from "./ThemeToggle";
 import {
   BrandMark,
-  ChevronIcon,
   CloseIcon,
   DiscordIcon,
   HomeIcon,
   MenuIcon,
-  PenIcon,
   SearchIcon,
   SECTION_ICONS,
-  ShieldIcon,
+  SidebarIcon,
 } from "./Icons";
 
 /**
  * How many entries a section shows before it offers its index page instead.
- * Collapsing alone is not enough: one open section with forty guides would
- * still be an endless list.
+ * Guides skip this because they are grouped by category.
  */
 const VISIBLE_ITEMS = 8;
+const DRAWER_QUERY = "(max-width: 1024px)";
 
 function matches(haystack: string, needle: string): boolean {
   return haystack.toLocaleLowerCase().includes(needle);
 }
 
+function isTypingTarget(target: EventTarget | null): boolean {
+  return Boolean(
+    (target as HTMLElement | null)?.closest("input, textarea, select, [contenteditable=true]"),
+  );
+}
+
+function focusableIn(root: HTMLElement): HTMLElement[] {
+  return [...root.querySelectorAll<HTMLElement>("a[href], button:not([disabled]), input, select, textarea")]
+    .filter((element) => !element.closest("[inert]") && element.tabIndex !== -1);
+}
+
+function sectionForPath(pathname: string): NavSection | null {
+  return SECTIONS.find((section) => pathIsCurrentOrNested(pathname, section.href)) ?? null;
+}
+
+const NAV_COLLAPSED_EVENT = "popepoch-nav-collapsed";
+
+function subscribeCollapsed(onChange: () => void) {
+  window.addEventListener("storage", onChange);
+  window.addEventListener(NAV_COLLAPSED_EVENT, onChange);
+  return () => {
+    window.removeEventListener("storage", onChange);
+    window.removeEventListener(NAV_COLLAPSED_EVENT, onChange);
+  };
+}
+
+function readCollapsed() {
+  try {
+    return localStorage.getItem(NAV_COLLAPSED_STORAGE_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+function writeCollapsed(next: boolean) {
+  try {
+    localStorage.setItem(NAV_COLLAPSED_STORAGE_KEY, next ? "1" : "0");
+  } catch { /* storage unavailable */ }
+  window.dispatchEvent(new Event(NAV_COLLAPSED_EVENT));
+}
+
+function subscribeDrawer(onChange: () => void) {
+  const media = window.matchMedia(DRAWER_QUERY);
+  media.addEventListener("change", onChange);
+  return () => media.removeEventListener("change", onChange);
+}
+
+function readDrawer() {
+  return window.matchMedia(DRAWER_QUERY).matches;
+}
+
 export function AppShell({ children }: { children: React.ReactNode }) {
   const { t, tf } = useLocale();
-  const { allows, session, loading, error: authError, signIn, signOut } = useAuth();
-  const now = useNow();
+  const { error: authError } = useAuth();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [filter, setFilter] = useState("");
+  const [hash, setHash] = useState("");
+  const [expandedSections, setExpandedSections] = useState<Record<string, true>>({});
+  const collapsed = useSyncExternalStore(subscribeCollapsed, readCollapsed, () => false);
+  const narrow = useSyncExternalStore(subscribeDrawer, readDrawer, () => false);
+  const wantFilterFocus = useRef(false);
+  const shellRef = useRef<HTMLElement>(null);
+  const filterRef = useRef<HTMLInputElement>(null);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+
+  const pathSection = sectionForPath(pathname);
+  const onOverview = pathIsExact(pathname, "/");
+  const pathHasPanel = Boolean(pathSection && sectionHasBrowsePanel(pathSection));
+  const query = filter.trim().toLocaleLowerCase();
+  const searching = query.length > 0;
   /**
-   * Which sections the reader opened or closed by hand. Anything absent falls
-   * back to "open if it contains the current page", so arriving on a guide
-   * shows its neighbours without every other section unfolding too.
+   * Overview is rail-only. The browse panel opens for sections with a nested
+   * list (Guides, Events, Calculators, Simulations), or while a search runs.
    */
-  const [toggled, setToggled] = useState<Record<string, boolean>>({});
+  const panelClosed = !narrow && !searching && (onOverview || !pathHasPanel || collapsed);
+  const panelVisible = narrow ? open : !panelClosed;
+  const browseSection = pathSection
+    ?? SECTIONS.find((section) => section.items.length > 0)
+    ?? SECTIONS[0];
 
   /**
    * On a phone the overlay covers the page, so following any link inside it
@@ -69,19 +135,98 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     };
   }, [open]);
 
-  const query = filter.trim().toLocaleLowerCase();
+  useEffect(() => {
+    const media = window.matchMedia(DRAWER_QUERY);
+    const onChange = () => { if (!media.matches) setOpen(false); };
+    media.addEventListener("change", onChange);
+    return () => media.removeEventListener("change", onChange);
+  }, []);
 
-  /** Sections keep their heading while filtering; only the items narrow. */
-  const sections = useMemo<{ section: NavSection; items: NavItem[] }[]>(() => {
+  useEffect(() => {
+    if (!open || !narrow) return;
+    const root = shellRef.current;
+    if (!root) return;
+    const menuButton = menuButtonRef.current;
+    const start = focusableIn(root)[0];
+    start?.focus();
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Tab") return;
+      const items = focusableIn(root);
+      if (items.length === 0) return;
+      const first = items[0];
+      const last = items[items.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      menuButton?.focus();
+    };
+  }, [open, narrow]);
+
+  useEffect(() => {
+    const apply = () => setHash(window.location.hash.replace(/^#/, ""));
+    apply();
+    window.addEventListener("hashchange", apply);
+    return () => window.removeEventListener("hashchange", apply);
+  }, [pathname]);
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      const chord = event.key.toLowerCase() === "k" && (event.metaKey || event.ctrlKey);
+      const slash = event.key === "/" && !event.metaKey && !event.ctrlKey && !event.altKey;
+      if (slash && isTypingTarget(event.target)) return;
+      if (!chord && !slash) return;
+      event.preventDefault();
+      if (narrow) {
+        if (open) filterRef.current?.focus();
+        else {
+          wantFilterFocus.current = true;
+          setOpen(true);
+        }
+        return;
+      }
+      if (collapsed) {
+        wantFilterFocus.current = true;
+        writeCollapsed(false);
+        return;
+      }
+      filterRef.current?.focus();
+    };
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [narrow, open, collapsed]);
+
+  useEffect(() => {
+    if (!wantFilterFocus.current) return;
+    if (narrow && !open) return;
+    if (!narrow && collapsed) return;
+    wantFilterFocus.current = false;
+    filterRef.current?.focus();
+  }, [narrow, open, collapsed]);
+
+  useEffect(() => {
+    if (!panelVisible) return;
+    const active = shellRef.current?.querySelector<HTMLElement>(".panel-link.is-active");
+    active?.scrollIntoView({ block: "nearest" });
+  }, [pathname, hash, panelVisible, browseSection.id]);
+
+  const filteredSections = useMemo<{ section: NavSection; items: NavItem[] }[]>(() => {
     if (!query) return SECTIONS.map((section) => ({ section, items: section.items }));
     return SECTIONS.map((section) => {
-      // A section whose own name matches keeps all of its entries.
       const sectionHit = matches(section.label(t), query);
       const items = section.items.filter(
         (item) =>
           sectionHit ||
           matches(item.label(t), query) ||
-          matches(item.description?.(t) ?? "", query),
+          matches(item.description?.(t) ?? "", query) ||
+          matches(item.badge?.(t) ?? "", query),
       );
       return { section, items, sectionHit };
     })
@@ -89,23 +234,104 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       .map(({ section, items }) => ({ section, items }));
   }, [query, t]);
 
-  const nothingFound = query.length > 0 && sections.length === 0;
+  const browseEntry = filteredSections.find((entry) => entry.section.id === browseSection.id)
+    ?? { section: browseSection, items: browseSection.items };
 
-  /** While filtering, every section with a match is revealed. */
-  const isOpen = (section: NavSection) => {
-    if (query) return true;
-    return toggled[section.id] ?? (pathname?.startsWith(section.href) ?? false);
+  const nothingFound = searching && filteredSections.length === 0;
+
+  const crumbs = useMemo(() => navCrumbs(pathname, t), [pathname, t]);
+
+  const renderItemList = (section: NavSection, items: NavItem[]) => {
+    const groups = section.id === "guides" ? groupByBadge(items, t, t.guides.other) : null;
+    const onIndex = pathIsExact(pathname, section.href);
+    const showAll = searching || Boolean(groups) || onIndex || Boolean(expandedSections[section.id]);
+    const shown = showAll ? items : items.slice(0, VISIBLE_ITEMS);
+    const hidden = showAll ? 0 : items.length - shown.length;
+    const sectionExact = onIndex;
+
+    if (groups) {
+      return (
+        <ul className="panel-list">
+          {groups.map((group) => {
+            const groupCurrent = group.items.some((item) => pathIsCurrentOrNested(pathname, item.href))
+              || (sectionExact && hash === group.id);
+            return (
+              <li key={group.id} className="panel-group">
+                <Link
+                  className={groupCurrent ? "panel-category is-current" : "panel-category"}
+                  href={`${section.href}#${group.id}`}
+                >
+                  {group.category}
+                </Link>
+                <ul className="panel-list panel-list-nested">
+                  {group.items.map((item) => {
+                    const active = pathIsCurrentOrNested(pathname, item.href);
+                    const exact = pathIsExact(pathname, item.href);
+                    return (
+                      <li key={item.href}>
+                        <Link
+                          className={active ? "panel-link is-active" : "panel-link"}
+                          href={item.href}
+                          title={item.description?.(t)}
+                          aria-current={exact ? "page" : undefined}
+                        >
+                          {item.icon ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img className="panel-link-icon" src={asset(item.icon)} alt="" width={28} height={28} />
+                          ) : null}
+                          <span className="panel-link-title">{item.label(t)}</span>
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </li>
+            );
+          })}
+        </ul>
+      );
+    }
+
+    return (
+      <ul className="panel-list">
+        {shown.map((item) => {
+          const active = pathIsCurrentOrNested(pathname, item.href);
+          const exact = pathIsExact(pathname, item.href);
+          const description = item.description?.(t);
+          return (
+            <li key={item.href}>
+              <Link
+                className={active ? "panel-link is-active" : "panel-link"}
+                href={item.href}
+                title={description}
+                aria-current={exact ? "page" : undefined}
+              >
+                {item.icon ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img className="panel-link-icon" src={asset(item.icon)} alt="" width={28} height={28} />
+                ) : null}
+                <span className="panel-link-title">{item.label(t)}</span>
+              </Link>
+            </li>
+          );
+        })}
+        {hidden > 0 && (
+          <li>
+            <button
+              type="button"
+              className="panel-link panel-more"
+              onClick={() => setExpandedSections((prev) => ({ ...prev, [section.id]: true }))}
+            >
+              {tf(t.shell.showAll, { count: items.length })}
+            </button>
+          </li>
+        )}
+      </ul>
+    );
   };
-  const activeSection = SECTIONS.find((section) => pathname?.startsWith(section.href));
-  // /guides/new/ and /admin/ are not browsable sections, so name them directly.
-  const context = pathname === "/guides/new/"
-      ? t.nav.newGuide
-      : pathname === "/admin/"
-        ? t.nav.admin
-        : (activeSection?.label(t) ?? t.nav.home);
 
   return (
-    <div className="layout-root">
+    <div className={panelClosed ? "layout-root is-nav-collapsed" : "layout-root"}>
       <a className="skip-link" href="#content">{t.shell.skipToContent}</a>
 
       <button
@@ -117,207 +343,218 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       />
 
       <aside
-        className={open ? "sidebar is-open" : "sidebar"}
+        ref={(node) => { shellRef.current = node; }}
+        className={open ? "nav-shell is-open" : "nav-shell"}
         aria-label={t.shell.sectionLabel}
         onClick={closeIfNavigating}
       >
-        <div className="sidebar-head">
-          <Link className="brand" href="/">
+        <div className="nav-rail">
+          <Link
+            className="rail-brand"
+            href="/"
+            title={t.shell.brand}
+            aria-label={t.shell.brand}
+            onClick={() => writeCollapsed(false)}
+          >
             <span className="brand-mark"><BrandMark className="icon" /></span>
-            <span className="brand-text">
+          </Link>
+
+          <nav className="rail-nav" aria-label={t.shell.sectionLabel}>
+            <Link
+              className={onOverview ? "rail-link is-active" : "rail-link"}
+              href="/"
+              title={t.nav.home}
+              aria-label={t.nav.home}
+              aria-current={onOverview ? "page" : undefined}
+              onClick={() => writeCollapsed(false)}
+            >
+              <HomeIcon className="icon" />
+            </Link>
+
+            {SECTIONS.map((section) => {
+              const Icon = SECTION_ICONS[section.icon];
+              const current = pathIsCurrentOrNested(pathname, section.href);
+              const label = section.label(t);
+              return (
+                <Link
+                  key={section.id}
+                  className={current ? "rail-link is-active" : "rail-link"}
+                  href={section.href}
+                  title={label}
+                  aria-label={label}
+                  aria-current={pathIsExact(pathname, section.href) ? "page" : undefined}
+                  onClick={() => {
+                    if (!narrow) writeCollapsed(!sectionHasBrowsePanel(section));
+                  }}
+                >
+                  <Icon className="icon" />
+                </Link>
+              );
+            })}
+          </nav>
+
+          <div className="rail-foot">
+            <a
+              className="rail-link"
+              href={DISCORD_URL}
+              title={t.shell.discordTitle}
+              aria-label={t.shell.discordTitle}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <DiscordIcon className="icon" />
+            </a>
+            <SchemeMenu />
+            <ThemeToggle />
+            <button
+              type="button"
+              className="rail-link rail-collapse"
+              aria-label={panelClosed ? t.shell.expandNav : t.shell.collapseNav}
+              title={panelClosed ? t.shell.expandNav : t.shell.collapseNav}
+              aria-pressed={panelClosed}
+              hidden={onOverview || (!pathHasPanel && !searching)}
+              onClick={() => writeCollapsed(!collapsed)}
+            >
+              <SidebarIcon className="icon" />
+            </button>
+            <button
+              type="button"
+              className="rail-link rail-close"
+              aria-label={t.shell.closeMenu}
+              onClick={() => setOpen(false)}
+            >
+              <CloseIcon className="icon" />
+            </button>
+          </div>
+        </div>
+
+        <div className="nav-panel" {...(panelVisible ? {} : { inert: true, "aria-hidden": true })}>
+          <div className="panel-head">
+            <div className="panel-brand-text">
               <strong>{t.shell.brand}</strong>
               <span>{t.shell.tagline}</span>
-            </span>
-          </Link>
-          <button
-            type="button"
-            className="icon-button sidebar-close"
-            aria-label={t.shell.closeMenu}
-            onClick={() => setOpen(false)}
-          >
-            <CloseIcon className="icon" />
-          </button>
-        </div>
+            </div>
+          </div>
 
-        <div className="nav-filter">
-          <SearchIcon className="icon" />
-          <input
-            type="search"
-            value={filter}
-            aria-label={t.shell.filterLabel}
-            placeholder={t.shell.filterPlaceholder}
-            onChange={(event) => setFilter(event.target.value)}
-          />
-        </div>
+          <div className="nav-filter">
+            <SearchIcon className="icon" />
+            <input
+              ref={filterRef}
+              type="search"
+              value={filter}
+              autoComplete="off"
+              spellCheck={false}
+              aria-label={t.shell.filterLabel}
+              title={`${t.shell.filterLabel} (${t.shell.filterShortcut})`}
+              aria-keyshortcuts="/ Control+k Meta+k"
+              placeholder={t.shell.filterPlaceholder}
+              onChange={(event) => setFilter(event.target.value)}
+            />
+            {filter ? (
+              <button
+                type="button"
+                className="nav-filter-clear"
+                aria-label={t.shell.clearFilter}
+                onClick={() => {
+                  setFilter("");
+                  filterRef.current?.focus();
+                }}
+              >
+                <CloseIcon className="icon icon-sm" />
+              </button>
+            ) : null}
+          </div>
 
-        <nav className="sidebar-nav" aria-label={t.shell.sectionLabel}>
-          <Link className={pathname === "/" ? "nav-link is-active" : "nav-link"} href="/">
-            <HomeIcon className="icon" />
-            <span>{t.nav.home}</span>
-          </Link>
-
-          {sections.map(({ section, items }) => {
-            const Icon = SECTION_ICONS[section.icon];
-            const sectionActive = pathname?.startsWith(section.href) ?? false;
-            const open = isOpen(section);
-            const label = section.label(t);
-            // A filtered list is already narrow, so show every match.
-            const shown = query ? items : items.slice(0, VISIBLE_ITEMS);
-            const hidden = items.length - shown.length;
-            return (
-              <div className="nav-group" key={section.id}>
-                <div className="nav-row">
-                  <Link
-                    className={sectionActive ? "nav-link is-active" : "nav-link"}
-                    href={section.href}
-                  >
-                    <Icon className="icon" />
-                    <span>{label}</span>
-                    {section.items.length > 0 && (
-                      <span className="nav-count">{section.items.length}</span>
-                    )}
+          <div className="panel-body">
+            {nothingFound ? (
+              <p className="nav-empty">{t.shell.filterEmpty}</p>
+            ) : searching ? (
+              filteredSections.map(({ section, items }) => (
+                <section className="panel-section" key={section.id}>
+                  <Link className="panel-section-title" href={section.href}>
+                    {section.label(t)}
                   </Link>
-                  {section.items.length > 0 && (
-                    <button
-                      type="button"
-                      className={open ? "nav-toggle is-open" : "nav-toggle"}
-                      aria-expanded={open}
-                      aria-controls={`nav-section-${section.id}`}
-                      aria-label={tf(
-                        open ? t.shell.collapseSection : t.shell.expandSection,
-                        { section: label },
-                      )}
-                      onClick={() => setToggled((current) => ({ ...current, [section.id]: !open }))}
-                    >
-                      <ChevronIcon className="icon icon-sm" />
-                    </button>
+                  {items.length > 0 ? (
+                    renderItemList(section, items)
+                  ) : (
+                    <p className="panel-section-hint">{section.description(t)}</p>
                   )}
-                </div>
-                {section.items.length > 0 && (
-                  <div
-                    className={open ? "nav-collapse is-open" : "nav-collapse"}
-                    id={`nav-section-${section.id}`}
-                  >
-                    <ul className="nav-sublist">
-                      {shown.map((item) => (
-                        <li key={item.href}>
-                          <Link
-                            className={pathname === item.href ? "nav-sublink is-active" : "nav-sublink"}
-                            href={item.href}
-                          >
-                            {item.label(t)}
-                          </Link>
-                        </li>
-                      ))}
-                      {hidden > 0 && (
-                        <li>
-                          <Link className="nav-sublink nav-more" href={section.href}>
-                            {tf(t.shell.showAll, { count: items.length })}
-                          </Link>
-                        </li>
-                      )}
-                    </ul>
-                  </div>
-                )}
-              </div>
-            );
-          })}
+                </section>
+              ))
+            ) : pathHasPanel ? (
+              <section className="panel-section">
+                <Link className="panel-section-title" href={browseEntry.section.href}>
+                  {browseEntry.section.label(t)}
+                </Link>
+                <p className="panel-section-hint">{browseEntry.section.description(t)}</p>
+                {renderItemList(browseEntry.section, browseEntry.items)}
+              </section>
+            ) : (
+              <section className="panel-section">
+                <p className="panel-section-hint">{t.shell.tagline}</p>
+                <ul className="panel-list">
+                  {SECTIONS.map((section) => {
+                    const active = pathIsCurrentOrNested(pathname, section.href);
+                    return (
+                      <li key={section.id}>
+                        <Link
+                          className={active ? "panel-link is-active" : "panel-link"}
+                          href={section.href}
+                          title={section.description(t)}
+                          onClick={() => {
+                            if (!narrow) writeCollapsed(!sectionHasBrowsePanel(section));
+                          }}
+                        >
+                          {section.label(t)}
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </section>
+            )}
+          </div>
 
-          {nothingFound && <p className="nav-empty">{t.shell.filterEmpty}</p>}
-        </nav>
-
-        <div className="sidebar-calendar">
-          <MonthCalendar today={now} compact />
-          <Link className="sidebar-calendar-link" href="/events/">
-            {t.events.openCalendar} <span aria-hidden="true">→</span>
-          </Link>
-        </div>
-
-        <div className="sidebar-foot">
-          {allows("events.write") && (
-            <Link
-              className={pathname === "/events/" ? "discord-link is-active" : "discord-link"}
-              href="/events/"
-            >
-              <PenIcon className="icon" />
-              <span>{t.nav.newEvent}</span>
-            </Link>
-          )}
-          {allows("news.write") && (
-            <Link
-              className={pathname === "/news/new/" ? "discord-link is-active" : "discord-link"}
-              href="/news/new/"
-            >
-              <PenIcon className="icon" />
-              <span>{t.nav.newNews}</span>
-            </Link>
-          )}
-          {allows("guides.draft") && (
-            <Link
-              className={pathname === "/guides/new/" ? "discord-link is-active" : "discord-link"}
-              href="/guides/new/"
-            >
-              <PenIcon className="icon" />
-              <span>{t.nav.newGuide}</span>
-            </Link>
-          )}
-          {allows("roles.assign") && (
-            <Link
-              className={pathname === "/admin/" ? "discord-link is-active" : "discord-link"}
-              href="/admin/"
-            >
-              <ShieldIcon className="icon" />
-              <span>{t.nav.admin}</span>
-            </Link>
-          )}
-          <a
-            className="discord-link"
-            href={DISCORD_URL}
-            title={t.shell.discordTitle}
-            target="_blank"
-            rel="noreferrer"
-          >
-            <DiscordIcon className="icon" />
-            <span>{t.shell.discord}</span>
-            {!DISCORD_CONFIGURED && <span className="pill pill-warn">TODO</span>}
-          </a>
-          <div className="sidebar-meta-row">
-            <a className="sidebar-meta" href={REPOSITORY_URL} target="_blank" rel="noreferrer">
+          <div className="panel-foot">
+            <a className="panel-meta" href={REPOSITORY_URL} target="_blank" rel="noreferrer">
               {t.shell.github}
             </a>
+            {!DISCORD_CONFIGURED && <span className="pill pill-warn">TODO</span>}
           </div>
         </div>
       </aside>
 
-      <div className="layout-main">
+      <div className="layout-main" {...(open && narrow ? { inert: true } : {})}>
         <header className="topbar">
-          <button
-            type="button"
-            className="icon-button topbar-menu"
-            aria-label={t.shell.openMenu}
-            aria-expanded={open}
-            onClick={() => setOpen(true)}
-          >
-            <MenuIcon className="icon" />
-          </button>
-          <div className="topbar-context">{context}</div>
+          {narrow ? (
+            <button
+              ref={menuButtonRef}
+              type="button"
+              className="icon-button topbar-menu"
+              aria-label={t.shell.openMenu}
+              aria-expanded={open}
+              onClick={() => setOpen(true)}
+            >
+              <MenuIcon className="icon" />
+            </button>
+          ) : null}
+          <nav className="topbar-crumbs" aria-label={t.shell.breadcrumb}>
+            <ol>
+              {crumbs.map((crumb, index) => (
+                <li key={`${crumb.href}:${index}`}>
+                  {index > 0 && <span className="topbar-sep" aria-hidden="true">/</span>}
+                  {crumb.current ? (
+                    <span className="topbar-crumb is-current" aria-current="page">{crumb.label}</span>
+                  ) : (
+                    <Link className="topbar-crumb" href={crumb.href}>{crumb.label}</Link>
+                  )}
+                </li>
+              ))}
+            </ol>
+          </nav>
           <span className="topbar-spacer" />
-          {!loading && (session
-            ? <div className="topbar-account"><span>{session.name}</span><button type="button" onClick={() => void signOut()}>{t.auth.signOut}</button></div>
-            : <button className="topbar-sign-in" type="button" onClick={() => void signIn()}>{t.auth.signIn}</button>
-          )}
-          <a
-            className="icon-button topbar-discord"
-            href={DISCORD_URL}
-            title={t.shell.discordTitle}
-            aria-label={t.shell.discordTitle}
-            target="_blank"
-            rel="noreferrer"
-          >
-            <DiscordIcon className="icon" />
-          </a>
+          <AccountMenu />
           <LanguageMenu />
-          <ThemeToggle />
         </header>
 
         {authError && (
