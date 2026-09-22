@@ -20,7 +20,20 @@ import { THEATER_PLAYS, type TheaterPlay } from "../content/goddess-theater.ts";
 export const PLAY_RARITIES = ["UR+", "UR", "SSR", "SR", "R"] as const;
 export type PlayRarity = (typeof PLAY_RARITIES)[number];
 
-export type AptitudeId = "adventure" | "artistry" | "idealism" | "instinct" | "love" | "satire" | "suspense";
+/** The twelve aptitudes; ids are English, the names the game shows are in each dictionary's `theaterIncome.aptitudes`. */
+export type AptitudeId =
+  | "adventure"
+  | "artistry"
+  | "darkness"
+  | "family"
+  | "idealism"
+  | "innocence"
+  | "instinct"
+  | "intrigue"
+  | "love"
+  | "revenge"
+  | "satire"
+  | "suspense";
 
 /** A rehearsal event nudges the base ticket price or visitor flow by 5 % for the whole run. */
 export const REHEARSAL_EVENTS = ["none", "ticketUp", "ticketDown", "visitorsUp", "visitorsDown"] as const;
@@ -79,7 +92,7 @@ type RawData = {
   bonusPerMatch: number;
   slots: number;
   reference: { ticketPercent: number; visitorPercent: number; merchandise: number };
-  aptitudes: { id: string; resource: string }[];
+  aptitudes: { id: string; resource?: string }[];
   plays: RawPlay[];
   goddesses: { name: string; aptitudes: string[]; lacks?: string[] }[];
 };
@@ -88,7 +101,8 @@ const RAW = data as RawData;
 
 export const BONUS_PER_MATCH = RAW.bonusPerMatch;
 export const REFERENCE_STATS = RAW.reference;
-export const APTITUDES = RAW.aptitudes as { id: AptitudeId; resource: string }[];
+/** Each aptitude and the Exploration-age resource its goddess training raises, where the game has shown it. */
+export const APTITUDES = RAW.aptitudes as { id: AptitudeId; resource?: string }[];
 export const GODDESS_APTITUDES = RAW.goddesses as GoddessAptitudes[];
 
 export const INCOME_PLAYS: IncomePlay[] = RAW.plays.map((raw) => {
@@ -137,12 +151,14 @@ export function performance(play: PlayNumbers, stats: TheaterStats): Performance
 
 /**
  * Red Carpet Night drops worth about 83–85 % of the income ÷ 1,000 in event
- * points (Autumn, 21 August 2026: 9.5M income gave 8,100 points).
+ * points (Autumn, 21 August 2026: 9.5M income gave 8,100 points). Every item
+ * is worth a multiple of 100, so both ends are rounded down to whole hundreds.
  */
 export const RED_CARPET_SHARE = [0.83, 0.85] as const;
 
 export function redCarpetPoints(total: number): [number, number] {
-  return [Math.round((total * RED_CARPET_SHARE[0]) / 1000), Math.round((total * RED_CARPET_SHARE[1]) / 1000)];
+  const hundreds = (share: number) => Math.floor((total * share) / 100_000) * 100;
+  return [hundreds(RED_CARPET_SHARE[0]), hundreds(RED_CARPET_SHARE[1])];
 }
 
 /** What one more upgrade step (+0.5 %) of ticket price or visitor flow adds to this play. */

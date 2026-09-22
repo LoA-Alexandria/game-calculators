@@ -381,10 +381,15 @@ const de: Dictionary = {
     unknownGoddesses: "Noch nicht erfasst, daher vielleicht mehr: {names}.",
     aptitudes: {
       adventure: "Abenteuer",
-      artistry: "Kunst",
+      artistry: "Kunstfertigkeit",
+      darkness: "Finsternis",
+      family: "Familie",
       idealism: "Idealismus",
+      innocence: "Unschuld",
       instinct: "Instinkt",
+      intrigue: "Intrige",
       love: "Liebe",
+      revenge: "Rache",
       satire: "Satire",
       suspense: "Spannung",
     },
@@ -405,7 +410,7 @@ const de: Dictionary = {
       "Jede Eignung, die eine eingesetzte Göttin mit dem Stück teilt, gibt 10 % Musenmünzen-Bonus. Stücke nehmen vier Göttinnen; bei den UR+-Stücken mit fünf Rollen gehen wir von fünf aus.",
       "Ein Proben-Bonus verschiebt Grund-Ticketpreis oder Grund-Besucherstrom um 5 % für die ganze Aufführung, egal wann er kommt. Das ändert selten, welches Stück einer Seltenheit das beste ist.",
       "Kritiken und die S-Note ändern die Einnahmen nicht; sie ergeben sich daraus.",
-      "Während der Red Carpet Night bringt eine Aufführung Jubelstäbe, Klatschpappen und Vintage-Kameras im Wert von etwa 83–85 % ihrer Musenmünzen ÷ 1.000 an Eventpunkten.",
+      "Während der Red Carpet Night bringt eine Aufführung Jubelstäbe, Klatschpappen und Vintage-Kameras im Wert von etwa 83–85 % ihrer Musenmünzen ÷ 1.000 an Eventpunkten, abgerundet auf volle Hundert, weil jedes Item ein Vielfaches von 100 wert ist.",
     ],
     levelingHeading: "Upgrade-Reihenfolge",
     leveling: [
@@ -415,7 +420,7 @@ const de: Dictionary = {
       "Art Theater: wieder Ticketpreis, weil der zusätzliche Upgrade-Platz die Ticket-Einnahmen stärker gewichtet. Royal Theater 1–7: wieder Besucherstrom.",
       "Göttinnen-Training ändert die Musenmünzen nicht; jede Stufe gibt 5 % Produktivität für die Ressource dieser Eignung.",
     ],
-    credit: "Formel, Test-Aufführungen und Rangliste von Autumn (Ice, S12), geteilt auf Discord am 20. August und 3. September 2026. Der Rechner trifft ihre drei Test-Aufführungen auf die Münze genau. Eignungen und Grundwerte sind nur erfasst, wo ihre Tests sie zeigen; weitere kommen dazu, sobald Spieler sie melden.",
+    credit: "Formel, Test-Aufführungen und Rangliste von Autumn (Ice, S12), geteilt auf Discord am 20. August und 3. September 2026. Der Rechner trifft ihre drei Test-Aufführungen auf die Münze genau. Die Eignungen aller Stücke und Göttinnen stammen aus Screenshots des deutschen Clients vom 22. September 2026. Grundwerte sind erfasst, wo ihre Tests sie zeigen; weitere kommen dazu, sobald Spieler sie melden.",
     storageNote: "Deine Zahlen und Göttinnen werden nur in diesem Browser gespeichert.",
   },
   calculator: {
@@ -4395,6 +4400,9 @@ const de: Dictionary = {
             Hestia: "Haselmaus",
           },
         },
+        "les-miserables": {
+          name: "Die Elenden",
+        },
         "count-of-monte-cristo": {
           name: "Der Graf von Monte Christo",
         },
@@ -4446,7 +4454,7 @@ const de: Dictionary = {
           name: "Ein Sommernachtstraum",
         },
         "sound-of-music": {
-          name: "Meine Lieder – meine Träume",
+          name: "Meine Lieder, meine Träume",
           roles: {
             Demeter: "Äbtissin",
             Hera: "Kapitän von Trapp",
@@ -4478,7 +4486,7 @@ const de: Dictionary = {
           },
         },
         "little-women": {
-          name: "Kleine Frauen",
+          name: "Betty und ihre Schwestern",
         },
         "little-red-riding-hood": {
           name: "Rotkäppchen",
@@ -4511,7 +4519,8 @@ const de: Dictionary = {
         },
       },
       tutorialNote: "Tutorial abschließen. Dieses Stück hat keine Göttinnen-Besetzung.",
-      credit: "Besetzungen und Stück-Cover von der Pop-Epoch-Wiki-Seite Goddess Theater vom 14. September 2026, dazu Community-Markierungen der relevanten Rollen. Cover sind das erste Bild jeder Wiki-Karte (der Seltenheitsrahmen), nicht die Stills daneben. Göttinnennamen folgen dem Kern-Roster (Wiki-Brunhilde ist hier Brunhild). Stück- und Rollennamen folgen der Wiki-Schreibweise; andere Sprachen können sie überschreiben.",
+      castUnknownNote: "Besetzung noch nicht erfasst.",
+      credit: "Besetzungen und Stück-Cover von der Pop-Epoch-Wiki-Seite Goddess Theater vom 14. September 2026, dazu Community-Markierungen der relevanten Rollen. Cover sind das erste Bild jeder Wiki-Karte (der Seltenheitsrahmen), nicht die Stills daneben. Göttinnennamen folgen dem Kern-Roster (Wiki-Brunhilde ist hier Brunhild). Stück- und Rollennamen folgen der Wiki-Schreibweise; andere Sprachen können sie überschreiben. Hamilton, Die Elenden und Notre-Dame de Paris stehen noch nicht im Wiki: Ihre Cover stammen aus Screenshots des deutschen Clients vom 22. September 2026, ihre Besetzungen sind noch offen.",
       sections: [
         {
           heading: "So läuft eine Aufführung",

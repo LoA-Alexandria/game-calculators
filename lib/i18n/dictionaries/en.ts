@@ -383,9 +383,14 @@ const en = {
     aptitudes: {
       adventure: "Adventure",
       artistry: "Artistry",
+      darkness: "Darkness",
+      family: "Family",
       idealism: "Idealism",
+      innocence: "Innocence",
       instinct: "Instinct",
+      intrigue: "Intrigue",
       love: "Love",
+      revenge: "Revenge",
       satire: "Satire",
       suspense: "Suspense",
     },
@@ -406,7 +411,7 @@ const en = {
       "Each aptitude a deployed goddess shares with the play adds 10 % muse coin bonus. Plays take four goddesses; the UR+ plays, which have five roles, are assumed to take five.",
       "A rehearsal bonus moves the base ticket price or visitor flow by 5 % for the whole run, whenever it happens. It is rarely enough to change which play of a rarity is best.",
       "Reviews and the S grade do not change the income; they follow from it.",
-      "During Red Carpet Night a performance drops Cheer Sticks, Clappers, and Vintage Cameras worth about 83–85 % of its Muse Coins ÷ 1,000 in event points.",
+      "During Red Carpet Night a performance drops Cheer Sticks, Clappers, and Vintage Cameras worth about 83–85 % of its Muse Coins ÷ 1,000 in event points, rounded down to whole hundreds because every item is worth a multiple of 100.",
     ],
     levelingHeading: "Upgrade order",
     leveling: [
@@ -416,7 +421,7 @@ const en = {
       "Art Theater: ticket price again, as its extra upgrade slot weighs ticket income up. Royal Theater 1–7: visitor flow again.",
       "Goddess training does not change Muse Coins; each level adds 5 % productivity to the resource of that aptitude.",
     ],
-    credit: "Formula, test performances, and ranking by Autumn (Ice, S12), shared on Discord on 20 August and 3 September 2026. The calculator reproduces her three test performances to the coin. Aptitudes and base values are recorded only where her tests show them; more are added as players report them.",
+    credit: "Formula, test performances, and ranking by Autumn (Ice, S12), shared on Discord on 20 August and 3 September 2026. The calculator reproduces her three test performances to the coin. The aptitudes of every play and goddess come from German client screenshots of 22 September 2026. Base values are recorded where her tests show them; more are added as players report them.",
     storageNote: "Your numbers and goddesses are saved in this browser only.",
   },
   calculator: {
@@ -1348,7 +1353,8 @@ const en = {
       relevantLabel: "Relevant",
       playTexts: {},
       tutorialNote: "Complete the tutorial. This play has no goddess cast.",
-      credit: "Casts and play covers from the Pop Epoch Wiki Goddess Theater page as of 14 September 2026, with community marks for the relevant roles. Covers are the first image on each wiki card (the rarity frame), not the stills beside it. Goddess names follow the Core roster (wiki Brunhilde is Brunhild here). Play and role names default to the wiki spelling; other languages can override them.",
+      castUnknownNote: "Cast not recorded yet.",
+      credit: "Casts and play covers from the Pop Epoch Wiki Goddess Theater page as of 14 September 2026, with community marks for the relevant roles. Covers are the first image on each wiki card (the rarity frame), not the stills beside it. Goddess names follow the Core roster (wiki Brunhilde is Brunhild here). Play and role names default to the wiki spelling; other languages can override them. Hamilton, Les Misérables, and Notre-Dame de Paris are not on the wiki yet: their covers were cut from German client screenshots of 22 September 2026, and their casts are still open.",
       sections: [
         {
           heading: "How a performance works",

@@ -62,6 +62,8 @@ function PlayCard({ play, guide }: { play: TheaterPlay; guide: Guide }) {
       </header>
       {play.unlock === "tutorial" ? (
         <p className="theater-unlock">{guide.tutorialNote}</p>
+      ) : play.roles.length === 0 ? (
+        <p className="theater-unlock">{guide.castUnknownNote}</p>
       ) : (
         <ul className="theater-roles">
           {play.roles.map((row) => (
