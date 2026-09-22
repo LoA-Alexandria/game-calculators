@@ -301,9 +301,10 @@ export function GuildEventBoard({ guildId, userId, canOfficer, roster, eventId }
       </div>
 
       <p className="guild-event-timer" aria-live="polite">
-        <strong>{t.guilds.eventTimerLabel}</strong>
-        {" · "}
-        {tf(t.guilds.eventTimerValue, { hours: timer.hours, minutes: timer.minutes })}
+        <span className="guild-event-timer-label">{t.guilds.eventTimerLabel}</span>
+        <strong className="guild-event-timer-value">
+          {tf(t.guilds.eventTimerValue, { hours: timer.hours, minutes: timer.minutes })}
+        </strong>
       </p>
 
       <div className="guild-event-scores">

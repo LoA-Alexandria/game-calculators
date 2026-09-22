@@ -203,7 +203,7 @@ const en = {
     eventCallLabel: "Call",
     eventCallPlaceholder: "Hold… / Go: +50k from Alex and Mira",
     eventCallSave: "Save call",
-    eventTimerLabel: "Until day end (Berlin midnight)",
+    eventTimerLabel: "Time left",
     eventTimerValue: "{hours}h {minutes}m",
     eventPledgesTitle: "End invest",
     eventPledgeAmount: "I can still dump",
@@ -216,7 +216,7 @@ const en = {
     eventCoverageLead: "We lead by {lead}",
     eventScoresSave: "Save scores",
     eventTacticsHint:
-      "Spend as little as possible. Dump near the end only when the gap is clear — whoever is ahead at Berlin midnight wins the day. Best of 3.",
+      "Spend as little as possible. Dump near the end only when the gap is clear — whoever is ahead when the day ends wins. Best of 3.",
     eventGenericHint: "Track the day score, bank end-invest, and call who dumps near the close.",
     events: {
       trialsOfOdin: "Trials of Odin",
