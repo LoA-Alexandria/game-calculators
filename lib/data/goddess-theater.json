@@ -37,6 +37,24 @@
       ]
     },
     {
+      "id": "hamilton",
+      "name": "Hamilton",
+      "image": "hamilton.webp",
+      "roles": []
+    },
+    {
+      "id": "les-miserables",
+      "name": "Les Misérables",
+      "image": "les-miserables.webp",
+      "roles": []
+    },
+    {
+      "id": "notre-dame-de-paris",
+      "name": "Notre-Dame de Paris",
+      "image": "notre-dame-de-paris.webp",
+      "roles": []
+    },
+    {
       "id": "count-of-monte-cristo",
       "name": "The Count of Monte Cristo",
       "image": "count-of-monte-cristo.webp",

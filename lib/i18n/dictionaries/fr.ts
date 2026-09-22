@@ -382,9 +382,14 @@ const fr: Dictionary = {
     aptitudes: {
       adventure: "Aventure",
       artistry: "Art",
+      darkness: "Ténèbres",
+      family: "Famille",
       idealism: "Idéalisme",
+      innocence: "Innocence",
       instinct: "Instinct",
+      intrigue: "Intrigue",
       love: "Amour",
+      revenge: "Vengeance",
       satire: "Satire",
       suspense: "Suspense",
     },
@@ -405,7 +410,7 @@ const fr: Dictionary = {
       "Chaque aptitude qu’une déesse déployée partage avec la pièce ajoute 10 % de bonus. Les pièces prennent quatre déesses ; pour les pièces UR+, qui ont cinq rôles, on en suppose cinq.",
       "Un bonus de répétition modifie le prix de base ou l’affluence de base de 5 % pour toute la représentation, quel que soit le moment. Cela change rarement la meilleure pièce d’une rareté.",
       "Les critiques et la note S ne changent pas les recettes ; elles en découlent.",
-      "Pendant la Red Carpet Night, une représentation rapporte des bâtons d’acclamation, claquoirs et caméras vintage valant environ 83–85 % de ses pièces des Muses ÷ 1 000 en points d’événement.",
+      "Pendant la Red Carpet Night, une représentation rapporte des bâtons d’acclamation, claquoirs et caméras vintage valant environ 83–85 % de ses pièces des Muses ÷ 1 000 en points d’événement, arrondis à la centaine inférieure, car chaque objet vaut un multiple de 100.",
     ],
     levelingHeading: "Ordre des améliorations",
     leveling: [
@@ -415,7 +420,7 @@ const fr: Dictionary = {
       "Art Theater : de nouveau le prix du billet, car son emplacement supplémentaire pèse sur les recettes des billets. Royal Theater 1–7 : de nouveau l’affluence.",
       "L’entraînement des déesses ne change pas les pièces des Muses ; chaque niveau ajoute 5 % de productivité à la ressource de l’aptitude.",
     ],
-    credit: "Formule, représentations de test et classement par Autumn (Ice, S12), partagés sur Discord les 20 août et 3 septembre 2026. Le calculateur reproduit ses trois représentations de test à la pièce près. Aptitudes et valeurs de base ne sont relevées que là où ses tests les montrent ; d’autres s’ajoutent au fil des retours des joueurs.",
+    credit: "Formule, représentations de test et classement par Autumn (Ice, S12), partagés sur Discord les 20 août et 3 septembre 2026. Le calculateur reproduit ses trois représentations de test à la pièce près. Les aptitudes de toutes les pièces et déesses viennent de captures du client allemand du 22 septembre 2026. Les valeurs de base sont relevées là où ses tests les montrent ; d’autres s’ajoutent au fil des retours des joueurs.",
     storageNote: "Vos nombres et vos déesses sont enregistrés uniquement dans ce navigateur.",
   },
   calculator: {
@@ -4530,7 +4535,8 @@ const fr: Dictionary = {
         },
       },
       tutorialNote: "Terminez le tutoriel. Cette pièce n’a pas de distribution de déesses.",
-      credit: "Distributions et affiches issues de la page Goddess Theater du wiki Pop Epoch au 14 septembre 2026, avec les marques communautaires des rôles pertinents. Les affiches sont la première image de chaque carte du wiki (le cadre de rareté), pas les photos à côté. Les noms de déesses suivent le roster Core (Brunhilde du wiki est Brunhild ici). Les noms de pièces et de rôles suivent le wiki ; les autres langues peuvent les remplacer.",
+      castUnknownNote: "Distribution pas encore relevée.",
+      credit: "Distributions et affiches issues de la page Goddess Theater du wiki Pop Epoch au 14 septembre 2026, avec les marques communautaires des rôles pertinents. Les affiches sont la première image de chaque carte du wiki (le cadre de rareté), pas les photos à côté. Les noms de déesses suivent le roster Core (Brunhilde du wiki est Brunhild ici). Les noms de pièces et de rôles suivent le wiki ; les autres langues peuvent les remplacer. Hamilton, Les Misérables et Notre-Dame de Paris ne sont pas encore sur le wiki : leurs affiches viennent de captures du client allemand du 22 septembre 2026, et leurs distributions restent à relever.",
       sections: [
         {
           heading: "Comment se joue une représentation",

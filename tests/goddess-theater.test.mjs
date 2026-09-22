@@ -11,7 +11,7 @@ import en from "../lib/i18n/dictionaries/en.ts";
 
 test("every theater cast names a roster goddess and no Brunhilde spelling remains", () => {
   const names = new Set(GODDESSES.map((goddess) => goddess.name));
-  assert.equal(THEATER_PLAYS.length, 27);
+  assert.equal(THEATER_PLAYS.length, 30);
   assert.equal(new Set(THEATER_PLAYS.map((play) => play.id)).size, THEATER_PLAYS.length);
   for (const play of THEATER_PLAYS) {
     for (const row of play.roles) {

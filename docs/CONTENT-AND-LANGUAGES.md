@@ -647,8 +647,22 @@ Everything the game fixes per play or goddess lives in
   before all three of her aptitudes are known.
 - `aptitudes`: each aptitude and the resource it trains.
 
-On 22 September 2026 only Pride and Prejudice, Don Quixote, and Robinson Crusoe
-had base values and aptitudes, and nine goddesses had some aptitudes. Autumn
+The aptitudes of all 30 plays and of 20 goddesses were read from German client
+screenshots on 22 September 2026: the Archive card of each play and each
+goddess's talent page, whose icons are the aptitudes (house Family, teddy bear
+Innocence, telescope Adventure, chess piece Intrigue, raven Darkness, scroll
+Suspense, harp Artistry, jester Satire, broken mask Revenge, dove Idealism,
+heart Love, hare Instinct). The talent page also names the resource an
+aptitude trains; Darkness and Revenge were not shown, so their `resource` is
+left out (Glass and Paper are the two left). Lilith has no screenshot and
+Artemis only the two aptitudes Autumn's test showed. The same screenshots
+added Hamilton, Les Misérables, and Notre-Dame de Paris to
+`goddess-theater.json`, with covers cut from the Archive cards and no cast
+yet; the Goddess Theater guide says the cast is not recorded, and the editor
+test pins their `noRoles` problems until someone adds them.
+
+Base values were known only for Pride and Prejudice, Don Quixote, and Robinson
+Crusoe on that day. Autumn
 confirmed that a play's base ticket price and visitor flow never change and are
 the same for every player; only the muse coin bonus depends on the goddesses. A
 Magic Lantern shows any play's preview, so the base values can be read off for
@@ -1069,8 +1083,11 @@ painting set names in `catalogTexts.sets` and the Goddess Theater role names in
 `playTexts`: plays and paintings use their usual published titles, but set
 names and roles such as "Support 1" were translated here.
 The Theater income calculator's German and French words for Muse Coins
-(Musenmünzen, pièces des Muses), the aptitudes, and the theater upgrades are
-ours too, in `theaterIncome` in each dictionary.
+(Musenmünzen, pièces des Muses) and the theater upgrades are ours too, in
+`theaterIncome` in each dictionary. The German aptitude names are the game's;
+the English ones for Family, Innocence, Intrigue, Darkness, and Revenge and
+all French ones are ours. Red Carpet points are shown rounded down to whole
+hundreds, because every Red Carpet item is worth a multiple of 100.
 
 Hero and Collection names in the Hero layouts and tier list data are not
 translated at all: they live in the JSON files, and only qualifiers such as

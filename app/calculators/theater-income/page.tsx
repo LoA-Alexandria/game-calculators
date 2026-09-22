@@ -5,7 +5,6 @@ import { CalculatorHeader } from "../../components/CalculatorHeader";
 import { useLocale } from "../../components/LocaleProvider";
 import { createPersistentStore } from "../../components/persistentStore";
 import {
-  GODDESS_APTITUDES,
   INCOME_PLAYS,
   PLAY_RARITIES,
   REFERENCE_STATS,
@@ -36,14 +35,15 @@ type Saved = {
   plays: Record<string, PlayInput>;
 };
 
-// The page opens on Autumn's test theater and the goddesses her tests recorded, so the first numbers mean something.
+// The page opens on Autumn's test theater and her goddesses, so the first numbers mean something: she named
+// Medusa, Bastet, and Calypso as missing, and Lilith is not confirmed in the game yet.
 const DEFAULTS: Saved = {
   ticketPercent: "270",
   visitorPercent: "268.5",
   merchandise: "810",
   event: "none",
   play: "robinson-crusoe",
-  owned: GODDESS_APTITUDES.map((goddess) => goddess.name),
+  owned: GODDESSES.map((goddess) => goddess.name).filter((name) => !["Medusa", "Bastet", "Calypso", "Lilith"].includes(name)),
   plays: {},
 };
 
@@ -88,6 +88,8 @@ type Resolved = {
   visitors: string;
   bonus: string;
   deploy: Deployment | null;
+  /** Typed bonus, else what auto deploy reaches; known even while the base values are missing. */
+  bonusPercent: number | null;
   numbers: PlayNumbers | null;
 };
 
@@ -103,7 +105,7 @@ function resolve(entry: IncomePlay, saved: Saved): Resolved {
     base.ticket !== null && base.visitors !== null && bonusPercent !== null
       ? { ticket: Math.floor(base.ticket), visitors: Math.floor(base.visitors), bonusPercent }
       : null;
-  return { entry, ticket, visitors, bonus, deploy, numbers };
+  return { entry, ticket, visitors, bonus, deploy, bonusPercent, numbers };
 }
 
 export default function TheaterIncomePage() {
@@ -404,8 +406,8 @@ export default function TheaterIncomePage() {
                         {income !== null && income === best ? <span className="theater-best">{copy.best}</span> : null}
                       </th>
                       <td className="num">
-                        {row.numbers
-                          ? `${row.bonus.trim() === "" && row.deploy && !row.deploy.exact ? "≥ " : ""}${n(row.numbers.bonusPercent)} %`
+                        {row.bonusPercent !== null
+                          ? `${row.bonus.trim() === "" && row.deploy && !row.deploy.exact ? "≥ " : ""}${n(row.bonusPercent)} %`
                           : "—"}
                       </td>
                       <td className="num">{income !== null ? n(income) : <span className="theater-missing">{copy.needsValues}</span>}</td>

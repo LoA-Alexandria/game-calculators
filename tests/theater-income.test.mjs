@@ -56,8 +56,10 @@ test("Autumn's Royal Theater ranking follows from the same formula", () => {
   assert.equal(millions(total("robinson-crusoe", 90)), 11.37);
 });
 
-test("Red Carpet points are 83–85 % of the income ÷ 1,000", () => {
-  assert.deepEqual(redCarpetPoints(9_500_000), [7885, 8075]);
+test("Red Carpet points are 83–85 % of the income ÷ 1,000, rounded down to whole hundreds", () => {
+  // Every item is worth a multiple of 100 (Cheer Stick 100, Clapper 200, Vintage Camera 500).
+  assert.deepEqual(redCarpetPoints(9_500_000), [7800, 8000]);
+  assert.deepEqual(redCarpetPoints(1_000_000), [800, 800]);
   assert.deepEqual(redCarpetPoints(0), [0, 0]);
 });
 
@@ -89,14 +91,32 @@ test("auto deploy takes the best goddesses up to the play's slots", () => {
 });
 
 test("a goddess whose aptitudes are not recorded makes the bonus a lower bound", () => {
-  const pride = deployment(incomePlay("pride-and-prejudice"), ["Venus", "Athena"]);
+  const pride = deployment(incomePlay("pride-and-prejudice"), ["Venus", "Lilith"]);
   assert.equal(pride.percent, 30);
   assert.equal(pride.exact, false);
-  assert.deepEqual(pride.unknown, ["Athena"]);
+  assert.deepEqual(pride.unknown, ["Lilith"]);
   // With four goddesses matching two or more, an unknown one could still match three.
-  const full = deployment(incomePlay("pride-and-prejudice"), ["Venus", "Vivian", "Fortuna", "Muse", "Athena"]);
+  const full = deployment(incomePlay("pride-and-prejudice"), ["Venus", "Vivian", "Fortuna", "Muse", "Lilith"]);
   assert.equal(full.exact, false);
-  assert.equal(deployment(incomePlay("hamlet"), ["Venus"]), null, "Hamlet's aptitudes are not recorded yet");
+  // Artemis lacks Suspense, so Robinson Crusoe is exact without her third aptitude; Peter Pan is not.
+  assert.equal(deployment(incomePlay("robinson-crusoe"), ["Artemis"]).exact, true);
+  assert.equal(deployment(incomePlay("peter-pan"), ["Artemis"]).exact, false);
+  assert.equal(deployment({ ...incomePlay("hamlet"), aptitudes: undefined }, ["Venus"]), null, "a play without aptitudes has no bonus to work out");
+});
+
+test("Bastet shares all three of Cats' aptitudes, as Autumn expected", () => {
+  const cats = deployment(incomePlay("cats"), ["Bastet"]);
+  assert.deepEqual(cats.goddesses, [{ name: "Bastet", matches: 3 }]);
+  assert.equal(cats.percent, 30);
+});
+
+test("every play and every goddess but Lilith and Artemis has three recorded aptitudes", () => {
+  for (const entry of INCOME_PLAYS) assert.equal(entry.aptitudes?.length, 3, entry.id);
+  const partial = GODDESS_APTITUDES.filter((goddess) => goddess.aptitudes.length < 3).map((goddess) => goddess.name);
+  assert.deepEqual(partial, ["Artemis"]);
+  const recorded = new Set(GODDESS_APTITUDES.map((goddess) => goddess.name));
+  assert.deepEqual(GODDESSES.filter((goddess) => !recorded.has(goddess.name)).map((goddess) => goddess.name), ["Lilith"]);
+  assert.equal(APTITUDES.length, 12);
 });
 
 test("the data names real plays and goddesses and stays consistent", () => {
