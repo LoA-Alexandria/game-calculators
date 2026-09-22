@@ -103,17 +103,22 @@ pledges, Berlin-midnight timer). Members set their own roster display name and
 pledge end-invest amounts.
 
 Events whose def in `lib/content/guild-events.ts` carries a `camps` count also get
-a siege board, drawn as the map itself: the camps sit around Asgard the way the
-game places them, on scenery this site draws with CSS and SVG, and tapping one
-opens its plan. Trials of Odin has five camps. Officers mark which one is the
-guild's own and put the other four in the order they should fall
-(`guild_event_camps`, one row per camp and siege day). Members write down the
-Draupnir Rings and Military Tokens (Horns) they still have, and officers point
-those, and each member's normal attacks, at one camp or at every camp
-(`guild_event_orders`, one row per member and siege day). Each camp then shows what
-is aimed at it. Camp positions live in `GuildSiegeCamps.tsx`, with a second set for
-phones, where the wide ring does not fit. Officers write, active members read and
-keep their own row, and nothing crosses guilds.
+a siege board: the game's own map with a marker on every village. The picture in
+`public/guilds/trials-of-odin.webp` was cut from a client screenshot, the burnt
+camps rebuilt from the intact one and the name plates taken off, so only the
+plan sits on top of it. `SIEGE_MAPS` in `GuildSiegeCamps.tsx` holds the picture,
+its shape, and where each camp stands, in percent; an event with camps but no
+picture falls back to a plain ring. The markers carry the whole plan, so the page
+around them stays almost wordless.
+
+Officers mark which camp is the guild's own and put the others in the order they
+should fall (`guild_event_camps`, one row per camp and siege day). Members write
+down the Draupnir Rings and Military Tokens (Horns) they still have, and officers
+point those, and each member's normal attacks, at one camp or at every camp
+(`guild_event_orders`, one row per member and siege day). Each camp marker then
+shows what is aimed at it. Officers write, active members read and keep their own
+row, and nothing crosses guilds. An event with a siege map plans its rings and
+horns there, so the end-invest block is hidden for it.
 
 ## Vendored applications
 

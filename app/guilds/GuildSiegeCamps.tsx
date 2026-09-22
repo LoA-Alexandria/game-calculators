@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useId, useState, useSyncExternalStore, type CSSProperties } from "react";
+import { useCallback, useEffect, useId, useState, type CSSProperties } from "react";
 import {
   GUILD_CAMP_NAME_MAX,
   GUILD_CAMP_NOTE_MAX,
@@ -10,63 +10,51 @@ import {
   campSlots,
   campTargets,
   emptyOrder,
-  orderTotals,
   unassignedTotals,
   type GuildEventCampRow,
   type GuildEventOrderRow,
   type GuildPlanEventId,
 } from "../../lib/content/guild-events";
 import { guildRosterLabel, type GuildRosterEntry } from "../../lib/content/guilds";
+import { asset } from "../../lib/site";
 import { getSupabaseBrowserClient } from "../../lib/supabase/client";
 import { useLocale } from "../components/LocaleProvider";
-import { GuildsIcon, PenIcon } from "../components/Icons";
+import { GuildsIcon, PenIcon, UsersIcon } from "../components/Icons";
 
 const CAMP_COLUMNS = "slot, name, server_name, is_ours, priority, note";
 const ORDER_COLUMNS = "user_id, rings, horns, rings_target, horns_target, attack_target";
 
 /**
- * Where each camp sits on the board, in percent. Trials of Odin puts five camps
- * around Asgard: one north, one on each side, two south.
+ * The siege map itself: the game's board with the camps rebuilt and its labels
+ * taken off, plus where each camp stands on it, in percent.
  */
-const CAMP_POSITIONS = [
-  { x: 50, y: 13 },
-  { x: 15, y: 41 },
-  { x: 85, y: 41 },
-  { x: 29, y: 81 },
-  { x: 71, y: 81 },
-  { x: 50, y: 95 },
-] as const;
+const SIEGE_MAPS: Partial<Record<GuildPlanEventId, { image: string; ratio: string; points: { x: number; y: number }[] }>> = {
+  "trials-of-odin": {
+    image: "/guilds/trials-of-odin.webp",
+    ratio: "900 / 1055",
+    points: [
+      { x: 67, y: 7 },
+      { x: 13, y: 33 },
+      { x: 87, y: 34 },
+      { x: 24, y: 77 },
+      { x: 84, y: 71 },
+    ],
+  },
+};
 
-/** A phone is too narrow for the wide ring, so the camps stand in pairs instead. */
-const CAMP_POSITIONS_NARROW = [
-  { x: 50, y: 8 },
-  { x: 22, y: 32 },
-  { x: 78, y: 32 },
-  { x: 22, y: 76 },
-  { x: 78, y: 76 },
-  { x: 50, y: 96 },
-] as const;
-
-const NARROW = "(max-width: 720px)";
-
-function subscribeNarrow(onChange: () => void) {
-  const query = window.matchMedia(NARROW);
-  query.addEventListener("change", onChange);
-  return () => query.removeEventListener("change", onChange);
-}
-
-function useNarrowMap(): boolean {
-  return useSyncExternalStore(
-    subscribeNarrow,
-    () => window.matchMedia(NARROW).matches,
-    () => false,
-  );
-}
-
-function position(slot: number, narrow: boolean) {
-  const ring = narrow ? CAMP_POSITIONS_NARROW : CAMP_POSITIONS;
-  return ring[(slot - 1) % ring.length];
-}
+/** A plain ring, for an event that has camps but no picture yet. */
+const FALLBACK = {
+  image: "",
+  ratio: "16 / 9",
+  points: [
+    { x: 50, y: 12 },
+    { x: 14, y: 40 },
+    { x: 86, y: 40 },
+    { x: 28, y: 82 },
+    { x: 72, y: 82 },
+    { x: 50, y: 95 },
+  ],
+};
 
 function whole(value: string, max: number): number {
   const parsed = Number(value.replace(/[^\d]/g, ""));
@@ -98,7 +86,7 @@ export function GuildSiegeCamps({
   const { t, tf, n } = useLocale();
   const supabase = getSupabaseBrowserClient();
   const ids = useId();
-  const narrow = useNarrowMap();
+  const map = SIEGE_MAPS[eventId] ?? FALLBACK;
 
   const [camps, setCamps] = useState<GuildEventCampRow[]>(() => campSlots(count, []));
   const [orders, setOrders] = useState<GuildEventOrderRow[]>([]);
@@ -215,7 +203,6 @@ export function GuildSiegeCamps({
   };
 
   const targets = campTargets(camps);
-  const totals = orderTotals(orders);
   const open = unassignedTotals(orders);
   const orderOf = (camp: GuildEventCampRow) => targets.findIndex((entry) => entry.slot === camp.slot) + 1;
   const campLabel = (camp: GuildEventCampRow) => camp.name.trim() || tf(t.guilds.campSlot, { n: camp.slot });
@@ -257,117 +244,70 @@ export function GuildSiegeCamps({
 
   return (
     <section className="guild-panel guild-camps">
-      <header className="guild-panel-head">
-        <h2>
-          {t.guilds.campsTitle}
-          <span className="count">{targets.length}</span>
-        </h2>
-        <span className="guild-camps-totals">
-          {tf(t.guilds.campsTotals, { rings: n(totals.rings), horns: n(totals.horns) })}
-        </span>
-      </header>
-
-      <p className="guild-event-hint">{canOfficer ? t.guilds.campsHint : t.guilds.campsHintMember}</p>
       {error ? (
         <p className="result-error" role="alert">
           {error}
         </p>
       ) : null}
 
-      <div className="guild-map" role="group" aria-label={t.guilds.campsMapLabel}>
-        {/* Our own take on the siege map: snow in the north, green around Asgard, sand and lava in the south. */}
-        <svg className="guild-map-scene" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-          <path className="guild-map-snow" d="M0 0 H100 V22 Q75 30 50 24 Q25 18 0 26 Z" />
-          <path className="guild-map-sand" d="M0 74 Q26 66 50 72 Q74 78 100 70 V100 H0 Z" />
-          <circle className="guild-map-grass" cx="50" cy="50" r="27" />
-          <path className="guild-map-river" d="M-2 34 Q22 44 30 60 Q38 78 24 102" />
-          <path className="guild-map-river" d="M102 30 Q78 42 72 58 Q66 76 80 102" />
-          <path className="guild-map-river" d="M-2 62 Q20 56 34 58" />
-        </svg>
-        {/* The camps sit in an inset plot, so a wide card never hangs over the edge on a phone. */}
-        <div className="guild-map-plot">
-          <svg className="guild-map-lines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-            {camps.map((camp) => {
-              const point = position(camp.slot, narrow);
-              return (
-                <line
-                  key={camp.slot}
-                  x1="50"
-                  y1="50"
-                  x2={point.x}
-                  y2={point.y}
-                  className={camp.is_ours ? "guild-map-line is-ours" : "guild-map-line"}
-                />
-              );
-            })}
-          </svg>
-          <p className="guild-map-centre">{t.guilds.campsCentre}</p>
-          {camps.map((camp) => {
-            const point = position(camp.slot, narrow);
-            const order = orderOf(camp);
-            const assigned = campAssignment(camp.slot, orders);
-            return (
-              <button
-                key={camp.slot}
-                type="button"
-                className="guild-map-camp"
-                data-state={camp.is_ours ? "ours" : camp.name.trim() || camp.priority > 0 ? "target" : "empty"}
-                aria-pressed={selected === camp.slot}
-                style={{ "--camp-x": `${point.x}%`, "--camp-y": `${point.y}%` } as CSSProperties}
-                onClick={() => pick(camp.slot, true)}
-              >
-                <span className="guild-map-camp-top">
-                  {camp.is_ours ? (
-                    <span className="guild-map-badge is-ours">
-                      <GuildsIcon className="icon" />
-                      <span className="visually-hidden">{t.guilds.campOurs}</span>
-                    </span>
-                  ) : order > 0 ? (
-                    <span className="guild-map-badge">
-                      {order}
-                      <span className="visually-hidden"> {tf(t.guilds.campTarget, { n: order })}</span>
+      <div
+        className="guild-map"
+        role="group"
+        aria-label={t.guilds.campsMapLabel}
+        style={{
+          aspectRatio: map.ratio,
+          ...(map.image ? { backgroundImage: `url("${asset(map.image)}")` } : {}),
+        }}
+      >
+        {camps.map((camp) => {
+          const point = map.points[(camp.slot - 1) % map.points.length];
+          const order = orderOf(camp);
+          const assigned = campAssignment(camp.slot, orders);
+          const quiet = assigned.rings === 0 && assigned.horns === 0 && assigned.attackers.length === 0;
+          return (
+            <button
+              key={camp.slot}
+              type="button"
+              className="guild-map-camp"
+              data-state={camp.is_ours ? "ours" : camp.name.trim() || camp.priority > 0 ? "target" : "empty"}
+              aria-pressed={selected === camp.slot}
+              style={{ "--camp-x": `${point.x}%`, "--camp-y": `${point.y}%` } as CSSProperties}
+              onClick={() => pick(camp.slot, true)}
+            >
+              <span className="guild-map-camp-top">
+                {camp.is_ours ? (
+                  <span className="guild-map-badge is-ours">
+                    <GuildsIcon className="icon" />
+                    <span className="visually-hidden">{t.guilds.campOurs}</span>
+                  </span>
+                ) : order > 0 ? (
+                  <span className="guild-map-badge">
+                    {order}
+                    <span className="visually-hidden"> {tf(t.guilds.campTarget, { n: order })}</span>
+                  </span>
+                ) : null}
+                <span className="guild-map-name">{campLabel(camp)}</span>
+              </span>
+              {camp.is_ours || quiet ? null : (
+                <span className="guild-map-numbers">
+                  {assigned.rings > 0 || assigned.horns > 0 ? (
+                    <span className="guild-map-spend">
+                      {tf(t.guilds.campSpendShort, { rings: n(assigned.rings), horns: n(assigned.horns) })}
                     </span>
                   ) : null}
-                  <span className="guild-map-name">{campLabel(camp)}</span>
+                  {assigned.attackers.length > 0 ? (
+                    <span className="guild-map-attackers">
+                      <UsersIcon className="icon" />
+                      {n(assigned.attackers.length)}
+                      <span className="visually-hidden"> {t.guilds.campAttackers}</span>
+                    </span>
+                  ) : null}
                 </span>
-                {camp.server_name ? <span className="guild-map-server">{camp.server_name}</span> : null}
-                {camp.is_ours || (assigned.rings === 0 && assigned.horns === 0 && assigned.attackers.length === 0) ? null : (
-                  <span className="guild-map-numbers">
-                    {assigned.rings > 0 || assigned.horns > 0 ? (
-                      <span className="guild-map-spend">
-                        {tf(t.guilds.campSpendShort, { rings: n(assigned.rings), horns: n(assigned.horns) })}
-                      </span>
-                    ) : null}
-                    {assigned.attackers.length > 0 ? (
-                      <span className="guild-map-attackers">
-                        {tf(t.guilds.campAttackersShort, { count: assigned.attackers.length })}
-                      </span>
-                    ) : null}
-                  </span>
-                )}
-              </button>
-            );
-          })}
-        </div>
+              )}
+            </button>
+          );
+        })}
       </div>
-
-      {targets.length > 0 ? (
-        <ol className="guild-camp-order" aria-label={t.guilds.campsOrderLabel}>
-          {targets.map((camp, index) => (
-            <li key={camp.slot}>
-              <button
-                type="button"
-                className="guild-camp-chip"
-                aria-pressed={selected === camp.slot}
-                onClick={() => pick(camp.slot)}
-              >
-                <span className="guild-camp-chip-order">{index + 1}</span>
-                {campLabel(camp)}
-              </button>
-            </li>
-          ))}
-        </ol>
-      ) : null}
 
       {row ? (
         <div className="guild-camp-detail">
@@ -475,9 +415,7 @@ export function GuildSiegeCamps({
             </div>
           )}
         </div>
-      ) : (
-        <p className="guild-camps-pick">{t.guilds.campsPick}</p>
-      )}
+      ) : null}
 
       <div className="guild-orders">
         <header className="guild-panel-head">
