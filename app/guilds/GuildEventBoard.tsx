@@ -13,6 +13,7 @@ import {
   type GuildPlanEventId,
 } from "../../lib/content/guild-events";
 import { guildRosterLabel, type GuildRosterEntry } from "../../lib/content/guilds";
+import { GuildSiegeCamps } from "./GuildSiegeCamps";
 import { getSupabaseBrowserClient } from "../../lib/supabase/client";
 import { useLocale } from "../components/LocaleProvider";
 
@@ -397,6 +398,16 @@ export function GuildEventBoard({ guildId, userId, canOfficer, roster, eventId }
           </button>
         ) : null}
       </div>
+
+      {def.camps ? (
+        <GuildSiegeCamps
+          guildId={guildId}
+          eventId={eventId}
+          dayIndex={dayIndex}
+          count={def.camps}
+          canOfficer={canOfficer}
+        />
+      ) : null}
 
       <div className="guild-event-pledges">
         <header className="guild-panel-head">

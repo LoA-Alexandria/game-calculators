@@ -93,13 +93,22 @@ tables are still to be implemented. Read [`AUTH-AND-CMS.md`](AUTH-AND-CMS.md)
 before adding any write path.
 
 Community guilds live in Supabase (`guilds`, `guild_memberships`, `guild_posts`,
-`guild_active_events`, `guild_event_days`, `guild_event_pledges`) with RLS. Admins
+`guild_active_events`, `guild_event_days`, `guild_event_pledges`,
+`guild_event_camps`) with RLS. Admins
 create guilds (name, server, optional icon in Storage bucket `guild-icons`, master
 Discord ID). Signed-in players request to join with an optional note; masters and
 officers review requests. Masters promote officers and edit guild settings. Officers
 write News and run Planning events (activate catalog events, day scores, end-invest
 pledges, Berlin-midnight timer). Members set their own roster display name and
 pledge end-invest amounts.
+
+Events whose def in `lib/content/guild-events.ts` carries a `camps` count also get
+a siege board. Trials of Odin has five camps around Asgard: officers mark which
+one is the guild's own, put the other four in the order they should fall, and set
+each one's remaining percent plus the Draupnir Rings and Military Tokens (Horns)
+to spend there. Members read the same list, ordered, with destroyed camps last.
+One row per camp and siege day in `guild_event_camps`; officers write, active
+members read, and nothing crosses guilds.
 
 ## Vendored applications
 

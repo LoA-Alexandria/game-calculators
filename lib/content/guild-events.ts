@@ -23,6 +23,11 @@ export type GuildPlanEventDef = {
   winDaysNeeded: number;
   /** Highlight Spring Returns tactics copy in the UI. */
   featured: boolean;
+  /**
+   * How many camps the siege map has, ours included. Trials of Odin puts five
+   * around Asgard; events without a map leave this out.
+   */
+  camps?: number;
 };
 
 export const GUILD_PLAN_EVENTS: readonly GuildPlanEventDef[] = [
@@ -32,6 +37,7 @@ export const GUILD_PLAN_EVENTS: readonly GuildPlanEventDef[] = [
     seriesDays: 3,
     winDaysNeeded: 2,
     featured: false,
+    camps: 5,
   },
   {
     id: "dawn-of-rome",
@@ -79,6 +85,73 @@ export type GuildEventPledgeRow = {
   amount: number;
   status: GuildEventPledgeStatus;
 };
+
+/** One camp on the siege map, as `guild_event_camps` stores it. */
+export type GuildEventCampRow = {
+  slot: number;
+  name: string;
+  server_name: string;
+  is_ours: boolean;
+  /** 0 means no order yet; 1 is hit first. */
+  priority: number;
+  /** What the map shows above the camp, in percent. */
+  progress: number;
+  /** Draupnir Rings to spend here. */
+  rings: number;
+  /** Military Tokens (Horns) to spend here. */
+  horns: number;
+  note: string;
+};
+
+export const GUILD_CAMP_NAME_MAX = 60;
+export const GUILD_CAMP_SERVER_MAX = 40;
+export const GUILD_CAMP_NOTE_MAX = 200;
+
+/** An empty camp for a slot the guild has not filled in yet. */
+export function emptyCamp(slot: number): GuildEventCampRow {
+  return { slot, name: "", server_name: "", is_ours: false, priority: 0, progress: 100, rings: 0, horns: 0, note: "" };
+}
+
+/** Every slot of the map, filled from the stored rows, so a fresh siege still shows the board. */
+export function campSlots(count: number, rows: readonly GuildEventCampRow[]): GuildEventCampRow[] {
+  return Array.from({ length: count }, (_, index) => {
+    const slot = index + 1;
+    return rows.find((row) => row.slot === slot) ?? emptyCamp(slot);
+  });
+}
+
+/**
+ * Targets in the order they should be hit: our own camp drops out, camps with
+ * an order come first, then the rest by slot. A destroyed camp (0 %) sinks to
+ * the bottom, so the list reads as what is still left to do.
+ */
+export function campTargets(camps: readonly GuildEventCampRow[]): GuildEventCampRow[] {
+  return camps
+    .filter((camp) => !camp.is_ours)
+    .slice()
+    .sort((a, b) => {
+      const done = Number(a.progress === 0) - Number(b.progress === 0);
+      if (done !== 0) return done;
+      const ordered = Number(a.priority === 0) - Number(b.priority === 0);
+      if (ordered !== 0) return ordered;
+      if (a.priority !== b.priority) return a.priority - b.priority;
+      return a.slot - b.slot;
+    });
+}
+
+/** Rings and horns the plan spends across every camp that is still standing. */
+export function campTotals(camps: readonly GuildEventCampRow[]): { rings: number; horns: number } {
+  return camps.reduce(
+    (sum, camp) => (camp.is_ours ? sum : { rings: sum.rings + camp.rings, horns: sum.horns + camp.horns }),
+    { rings: 0, horns: 0 },
+  );
+}
+
+/** The order number a newly prioritised camp should get. */
+export function nextCampPriority(camps: readonly GuildEventCampRow[]): number {
+  const used = camps.filter((camp) => !camp.is_ours && camp.priority > 0).length;
+  return Math.min(used + 1, 6);
+}
 
 type BerlinParts = {
   year: number;

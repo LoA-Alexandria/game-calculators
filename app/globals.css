@@ -7721,6 +7721,112 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
 .guild-event-tabs .guild-tab { border: 1px solid var(--line); background: var(--surface); color: var(--ink-soft); cursor: pointer; }
 .guild-event-tabs .guild-tab.is-active { border-color: var(--accent-line); background: var(--accent-soft); box-shadow: none; color: var(--accent); }
 .guild-event-pledge-list li { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 12px; }
+
+/* --- siege camps (Trials of Odin) ---------------------------------------- */
+
+.guild-event-board .guild-camps {
+  padding: 14px 16px 16px;
+  border-color: var(--line);
+  background: var(--surface-2);
+  box-shadow: none;
+}
+.guild-camps .guild-panel-head h2 { font-size: .95rem; }
+.guild-camps .guild-event-hint { margin-bottom: 10px; }
+.guild-camps-ours {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  margin: 0 0 8px;
+  font-size: .9rem;
+}
+.guild-camps-ours strong { font-weight: 650; }
+.guild-camps-server,
+.guild-camp-server {
+  color: var(--ink-faint);
+  font-family: var(--font-mono);
+  font-size: .76rem;
+}
+.guild-camps-totals { margin: 0 0 12px; color: var(--ink-soft); font-size: .84rem; font-weight: 600; }
+
+.guild-camp-list { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.guild-camp {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface);
+}
+.guild-camp.is-done { opacity: .62; }
+.guild-camp-rank {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--accent) 18%, var(--surface));
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: .8rem;
+  font-weight: 700;
+}
+.guild-camp.is-done .guild-camp-rank { background: var(--surface-2); color: var(--ink-faint); }
+.guild-camp-body { display: grid; gap: 6px; min-width: 0; }
+.guild-camp-name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 8px;
+  margin: 0;
+  font-size: .94rem;
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+.guild-camp-bar {
+  height: 6px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--bad) 45%, var(--surface-2));
+}
+.guild-camp-bar span {
+  display: block;
+  height: 100%;
+  background: color-mix(in srgb, var(--good) 75%, white);
+  transition: width .2s ease;
+}
+.guild-camp-spend { display: flex; flex-wrap: wrap; gap: 4px 6px; margin: 0; color: var(--ink-soft); font-size: .8rem; }
+.guild-camp-spend > * + *::before { content: "·"; margin-right: 6px; color: var(--ink-faint); }
+.guild-camp-progress { font-family: var(--font-mono); }
+.guild-camp-note { margin: 0; color: var(--ink-soft); font-size: .86rem; line-height: 1.45; white-space: pre-wrap; }
+
+.guild-camp-edit-list { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.guild-camp-edit {
+  padding: 12px 14px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface);
+}
+.guild-camp-edit.is-ours { border-color: var(--accent-line); background: color-mix(in srgb, var(--accent-soft) 60%, var(--surface)); }
+.guild-camp-edit-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+  margin-bottom: 10px;
+  font-family: var(--font-display);
+}
+.guild-camp-edit-head .field-inline { font-size: .84rem; font-weight: 600; }
+.guild-camp-edit-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); gap: 10px 12px; }
+.guild-camp-edit-grid .field { margin: 0; }
+.guild-camp-note-field { grid-column: 1 / -1; }
+.guild-camp-edit-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+
+@media (max-width: 640px) {
+  .guild-camp-edit-grid { grid-template-columns: minmax(0, 1fr); }
+}
 .guild-pledge-name { min-width: 0; overflow-wrap: anywhere; }
 .guild-pledge-amount { min-width: 4ch; color: var(--ink); font-weight: 700; text-align: right; }
 .guild-pledge-status[data-status="ready"] { border-color: color-mix(in srgb, var(--good) 40%, var(--line)); background: var(--good-soft); color: var(--good); }
