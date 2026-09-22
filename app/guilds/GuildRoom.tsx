@@ -32,7 +32,7 @@ import {
 import { getSupabaseBrowserClient } from "../../lib/supabase/client";
 import { useAuth } from "../components/AuthProvider";
 import { useDocumentTitle, useLocale } from "../components/LocaleProvider";
-import { GearIcon, GuildsIcon, InboxIcon, PenIcon, PlusIcon, TrashIcon } from "../components/Icons";
+import { CloseIcon, GearIcon, GuildsIcon, InboxIcon, PenIcon, PlusIcon, TrashIcon, UsersIcon } from "../components/Icons";
 import { SignInCard } from "../components/SignInGate";
 import { PageHead, SectionBanner } from "../components/Ui";
 
@@ -103,6 +103,7 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
   const [editServer, setEditServer] = useState("");
   const [iconFile, setIconFile] = useState<File | null>(null);
   const [managePanel, setManagePanel] = useState<ManagePanel>(null);
+  const [rosterOpen, setRosterOpen] = useState(false);
   const [editingDisplayName, setEditingDisplayName] = useState(false);
   const [displayNameDraft, setDisplayNameDraft] = useState("");
 
@@ -505,8 +506,21 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
             {t.guilds.planung}
           </Link>
         </nav>
-        {canOfficer ? (
-          <div className="guild-room-tools">
+        <div className="guild-room-tools">
+          <button
+            type="button"
+            className={rosterOpen ? "icon-button guild-roster-toggle is-open" : "icon-button guild-roster-toggle"}
+            aria-label={rosterOpen ? t.guilds.membersClose : t.guilds.membersOpen}
+            aria-expanded={rosterOpen}
+            aria-controls={`${ids}-roster`}
+            onClick={() => setRosterOpen((open) => !open)}
+          >
+            <UsersIcon className="icon" />
+            <span className="guild-roster-toggle-count" aria-hidden="true">
+              {roster.length}
+            </span>
+          </button>
+          {canOfficer ? (
             <button
               type="button"
               className={managePanel === "requests" ? "icon-button is-open" : "icon-button"}
@@ -518,20 +532,20 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
               <InboxIcon className="icon" />
               {pending.length > 0 ? <span className="guild-action-dot" aria-hidden="true" /> : null}
             </button>
-            {canManageSettings ? (
-              <button
-                type="button"
-                className={managePanel === "settings" ? "icon-button is-open" : "icon-button"}
-                aria-label={t.guilds.settingsOpen}
-                aria-expanded={managePanel === "settings"}
-                aria-controls={`${ids}-settings`}
-                onClick={() => setManagePanel((open) => (open === "settings" ? null : "settings"))}
-              >
-                <GearIcon className="icon" />
-              </button>
-            ) : null}
-          </div>
-        ) : null}
+          ) : null}
+          {canManageSettings ? (
+            <button
+              type="button"
+              className={managePanel === "settings" ? "icon-button is-open" : "icon-button"}
+              aria-label={t.guilds.settingsOpen}
+              aria-expanded={managePanel === "settings"}
+              aria-controls={`${ids}-settings`}
+              onClick={() => setManagePanel((open) => (open === "settings" ? null : "settings"))}
+            >
+              <GearIcon className="icon" />
+            </button>
+          ) : null}
+        </div>
       </div>
 
       {error && (
@@ -822,10 +836,24 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
           )}
         </div>
 
-        <aside className="guild-roster" aria-label={t.guilds.membersTitle}>
+        <aside
+          className={rosterOpen ? "guild-roster is-open" : "guild-roster"}
+          id={`${ids}-roster`}
+          aria-label={t.guilds.membersTitle}
+        >
           <header className="guild-panel-head">
             <h2>{t.guilds.membersTitle}</h2>
-            <span className="count">{roster.length}</span>
+            <span className="guild-roster-head-actions">
+              <span className="count">{roster.length}</span>
+              <button
+                type="button"
+                className="icon-button guild-roster-drawer-close"
+                aria-label={t.guilds.membersClose}
+                onClick={() => setRosterOpen(false)}
+              >
+                <CloseIcon className="icon" />
+              </button>
+            </span>
           </header>
           {roster.length === 0 ? (
             <p className="guild-panel-empty">{t.guilds.membersEmpty}</p>
@@ -919,6 +947,15 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
           )}
         </aside>
       </div>
+
+      {rosterOpen ? (
+        <button
+          type="button"
+          className="guild-roster-scrim"
+          aria-label={t.guilds.membersClose}
+          onClick={() => setRosterOpen(false)}
+        />
+      ) : null}
 
       <Link className="guild-back" href={guildListHref()}>
         ← {t.guilds.backToList}

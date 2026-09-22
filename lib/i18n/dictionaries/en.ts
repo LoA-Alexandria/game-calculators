@@ -154,6 +154,8 @@ const en = {
     membersTitle: "Members",
     membersEmpty: "No members yet.",
     membersYou: "You",
+    membersOpen: "Members",
+    membersClose: "Close members",
     iconChange: "Change icon",
     iconRemove: "Remove icon",
     serverFilterLabel: "Filter by server",
