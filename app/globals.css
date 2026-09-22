@@ -7730,149 +7730,76 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
   background: var(--surface-2);
   box-shadow: none;
 }
-.guild-camps .guild-panel-head { flex-wrap: wrap; }
-.guild-camps .guild-panel-head h2 { font-size: .95rem; }
-.guild-camps .guild-event-hint { margin-bottom: 12px; }
-.guild-camps-totals { color: var(--ink-soft); font-size: .82rem; font-weight: 600; }
 .guild-camps-server { color: var(--ink-faint); font-family: var(--font-mono); font-size: .74rem; }
-.guild-camps-pick { margin: 12px 0 0; color: var(--ink-faint); font-size: .86rem; }
 
+/* The picture is the board; every camp sits on its village. */
 .guild-map {
   position: relative;
-  aspect-ratio: 16 / 9;
-  min-height: 290px;
-  padding: 4px;
+  width: 100%;
+  /* A tall board: keep it card-sized on a desktop, full width on a phone. */
+  max-width: 560px;
+  margin-inline: auto;
+  overflow: hidden;
   border: 1px solid var(--line);
   border-radius: var(--r-md);
-  background:
-    radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 46%),
-    radial-gradient(circle at 20% 80%, color-mix(in srgb, var(--good) 10%, transparent), transparent 40%),
-    var(--surface);
+  background-color: var(--surface);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
-.guild-map-plot { position: absolute; inset: 8px clamp(56px, 9%, 92px); }
-.guild-map-lines { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
-.guild-map-line {
-  stroke: color-mix(in srgb, var(--ink-faint) 55%, transparent);
-  stroke-width: 1.5;
-  stroke-dasharray: 6 5;
-  vector-effect: non-scaling-stroke;
-}
-.guild-map-line.is-ours { stroke: color-mix(in srgb, var(--accent) 70%, transparent); stroke-dasharray: none; stroke-width: 2; }
-.guild-map-centre {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  margin: 0;
-  padding: 8px 14px;
-  transform: translate(-50%, -50%);
-  border: 1px solid var(--accent-line);
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--accent-soft) 70%, var(--surface));
-  color: var(--accent);
-  font-family: var(--font-display);
-  font-size: .9rem;
-  font-weight: 700;
-  letter-spacing: .04em;
-}
-
 .guild-map-camp {
   position: absolute;
   top: var(--camp-y);
   left: var(--camp-x);
   display: grid;
-  gap: 4px;
-  width: clamp(104px, 27%, 168px);
-  padding: 8px 10px 9px;
-  transform: translate(-50%, -50%);
-  border: 1px solid var(--line);
-  border-radius: var(--r-md);
-  background: var(--surface);
-  box-shadow: var(--shadow-1);
-  color: var(--ink);
+  gap: 2px;
+  width: clamp(78px, 21%, 124px);
+  padding: 4px 6px 5px;
+  /* Hangs just below its village, so the huts stay visible. */
+  transform: translate(-50%, 24%);
+  border: 1px solid rgba(255, 255, 255, .18);
+  border-radius: var(--r-sm);
+  background: rgba(12, 14, 20, .68);
+  backdrop-filter: blur(2px);
+  color: #fff;
   font: inherit;
   text-align: left;
   cursor: pointer;
   transition: border-color .14s ease, box-shadow .14s ease, transform .14s ease;
 }
-.guild-map-camp:hover { border-color: var(--line-strong); transform: translate(-50%, -50%) scale(1.03); }
+.guild-map-camp:hover { border-color: rgba(255, 255, 255, .5); transform: translate(-50%, 24%) scale(1.04); }
 .guild-map-camp:focus-visible { outline: none; box-shadow: var(--ring); }
-.guild-map-camp[aria-pressed="true"] { border-color: var(--accent); box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 45%, transparent); }
-.guild-map-camp[data-state="ours"] { border-color: var(--accent-line); background: color-mix(in srgb, var(--accent-soft) 55%, var(--surface)); }
-.guild-map-camp[data-state="done"] { opacity: .6; }
-.guild-map-camp[data-state="empty"] { border-style: dashed; background: color-mix(in srgb, var(--surface) 70%, transparent); }
-.guild-map-camp-top { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.guild-map-camp[aria-pressed="true"] { border-color: var(--accent); box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 60%, transparent); }
+.guild-map-camp[data-state="ours"] { background: color-mix(in srgb, var(--accent) 62%, rgba(12, 14, 20, .7)); }
+.guild-map-camp[data-state="empty"] { border-style: dashed; background: rgba(12, 14, 20, .45); }
+.guild-map-camp-top { display: flex; align-items: center; gap: 5px; min-width: 0; }
 .guild-map-badge {
   display: grid;
   place-items: center;
   flex: none;
-  width: 20px;
-  height: 20px;
+  width: 17px;
+  height: 17px;
   border-radius: 50%;
-  background: color-mix(in srgb, var(--accent) 20%, var(--surface));
-  color: var(--accent);
+  background: rgba(255, 255, 255, .92);
+  color: #14161d;
   font-family: var(--font-mono);
-  font-size: .72rem;
+  font-size: .68rem;
   font-weight: 700;
 }
-.guild-map-badge.is-ours { background: var(--accent); color: var(--accent-ink); }
-.guild-map-badge .icon { width: 12px; height: 12px; }
+.guild-map-badge.is-ours { background: #fff; color: var(--accent); }
+.guild-map-badge .icon { width: 11px; height: 11px; }
 .guild-map-name {
   min-width: 0;
   overflow: hidden;
-  font-size: .84rem;
+  font-size: .76rem;
   font-weight: 650;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.guild-map-server { color: var(--ink-faint); font-family: var(--font-mono); font-size: .68rem; }
-.guild-map-bar {
-  display: block;
-  height: 5px;
-  overflow: hidden;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--bad) 45%, var(--surface-2));
-}
-.guild-map-bar span {
-  display: block;
-  height: 100%;
-  background: color-mix(in srgb, var(--good) 75%, white);
-  transition: width .2s ease;
-}
-.guild-map-camp[data-state="ours"] .guild-map-bar span { background: color-mix(in srgb, var(--accent) 80%, white); }
-.guild-map-numbers { display: flex; flex-wrap: wrap; gap: 2px 8px; color: var(--ink-soft); font-size: .7rem; }
-.guild-map-percent { font-family: var(--font-mono); }
-.guild-map-spend { font-family: var(--font-mono); color: var(--ink-faint); }
-
-.guild-camp-order { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0 0; padding: 0; list-style: none; }
-.guild-camp-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  min-height: 30px;
-  padding: 0 10px 0 4px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: var(--surface);
-  color: var(--ink-soft);
-  font: inherit;
-  font-size: .8rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-.guild-camp-chip:hover { border-color: var(--line-strong); color: var(--ink); }
-.guild-camp-chip[aria-pressed="true"] { border-color: var(--accent-line); background: var(--accent-soft); color: var(--accent); }
-.guild-camp-chip.is-done { opacity: .6; }
-.guild-camp-chip-order {
-  display: grid;
-  place-items: center;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: var(--surface-2);
-  font-family: var(--font-mono);
-  font-size: .72rem;
-  font-weight: 700;
-}
+.guild-map-numbers { display: flex; flex-wrap: nowrap; gap: 0 7px; overflow: hidden; font-family: var(--font-mono); font-size: .64rem; white-space: nowrap; }
+.guild-map-spend { color: rgba(255, 255, 255, .92); }
+.guild-map-attackers { display: inline-flex; align-items: center; gap: 2px; color: rgba(255, 255, 255, .78); }
+.guild-map-attackers .icon { width: 11px; height: 11px; }
 
 .guild-camp-detail {
   margin-top: 12px;
@@ -7891,23 +7818,58 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
   font-size: 1rem;
 }
 .guild-camp-detail-head .guild-camps-server { margin-left: auto; font-family: var(--font-mono); }
-.guild-camp-detail-read { display: grid; gap: 6px; }
 .guild-camp-spend { display: flex; flex-wrap: wrap; gap: 4px 6px; margin: 0; color: var(--ink-soft); font-size: .84rem; }
 .guild-camp-spend > * + *::before { content: "·"; margin-right: 6px; color: var(--ink-faint); }
-.guild-camp-progress { font-family: var(--font-mono); }
 .guild-camp-note { margin: 0; color: var(--ink-soft); font-size: .88rem; line-height: 1.45; white-space: pre-wrap; }
 .guild-camp-edit-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); gap: 10px 12px; }
 .guild-camp-edit-grid .field { margin: 0; }
 .guild-camp-note-field { grid-column: 1 / -1; }
 .guild-camp-edit-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
 .guild-camp-edit-actions .small-button[aria-pressed="true"] { border-color: var(--accent-line); background: var(--accent-soft); color: var(--accent); }
+.guild-camp-assigned { margin-top: 10px; display: grid; gap: 4px; }
+
+.guild-orders { margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--line); }
+.guild-orders .guild-panel-head h3 { margin: 0; font-family: var(--font-display); font-size: .95rem; }
+.guild-orders-mine {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+  gap: 10px 12px;
+  align-items: end;
+  margin-bottom: 12px;
+}
+.guild-orders-mine .field { margin: 0; }
+.guild-orders-list { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
+.guild-order {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 6px 12px;
+  align-items: center;
+  padding: 10px 0;
+  border-top: 1px solid var(--line);
+}
+.guild-order:first-child { border-top: 0; }
+.guild-order.is-you { margin: 0 -8px; padding: 10px 8px; border-radius: var(--r-sm); background: var(--accent-soft); }
+.guild-order-name { min-width: 0; font-size: .9rem; font-weight: 600; overflow-wrap: anywhere; }
+.guild-order-stock { color: var(--ink-soft); font-family: var(--font-mono); font-size: .82rem; white-space: nowrap; }
+.guild-order-targets,
+.guild-order-plan { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; }
+.guild-order-targets label { display: inline-flex; align-items: center; gap: 6px; margin: 0; color: var(--ink-faint); font-size: .74rem; font-weight: 600; }
+.guild-order-targets select { min-height: 32px; padding: 4px 8px; font-size: .82rem; }
+.guild-order-plan { color: var(--ink-soft); font-size: .8rem; }
+.guild-order-plan > * + *::before { content: "·"; margin-right: 8px; color: var(--ink-faint); }
+
+@media (max-width: 640px) {
+  .guild-orders-mine { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .guild-orders-mine .button { grid-column: 1 / -1; }
+  .guild-order-targets label { width: 100%; }
+  .guild-order-targets select { flex: 1; }
+}
 
 @media (max-width: 720px) {
-  .guild-map { aspect-ratio: 3 / 4; min-height: 480px; }
-  .guild-map-plot { inset: 14px 56px; }
-  .guild-map-centre { padding: 6px 12px; font-size: .82rem; }
-  .guild-map-camp { width: clamp(86px, 46%, 132px); padding: 7px 8px 8px; }
-  .guild-map-name { font-size: .8rem; }
+  .guild-map-camp { width: clamp(74px, 31%, 116px); padding: 3px 5px 4px; }
+  .guild-map-name { font-size: .68rem; }
+  .guild-map-numbers { gap: 0 5px; font-size: .56rem; }
+  .guild-map-attackers .icon { width: 9px; height: 9px; }
   .guild-camp-edit-grid { grid-template-columns: minmax(0, 1fr); }
 }
 .guild-pledge-name { min-width: 0; overflow-wrap: anywhere; }

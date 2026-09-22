@@ -1,65 +1,60 @@
 "use client";
 
-import { useCallback, useEffect, useId, useState, useSyncExternalStore, type CSSProperties } from "react";
+import { useCallback, useEffect, useId, useState, type CSSProperties } from "react";
 import {
   GUILD_CAMP_NAME_MAX,
   GUILD_CAMP_NOTE_MAX,
   GUILD_CAMP_SERVER_MAX,
+  GUILD_ORDER_TARGET_ALL,
+  campAssignment,
   campSlots,
   campTargets,
-  campTotals,
+  emptyOrder,
+  unassignedTotals,
   type GuildEventCampRow,
+  type GuildEventOrderRow,
   type GuildPlanEventId,
 } from "../../lib/content/guild-events";
+import { guildRosterLabel, type GuildRosterEntry } from "../../lib/content/guilds";
+import { asset } from "../../lib/site";
 import { getSupabaseBrowserClient } from "../../lib/supabase/client";
 import { useLocale } from "../components/LocaleProvider";
-import { GuildsIcon, PenIcon } from "../components/Icons";
+import { GuildsIcon, PenIcon, UsersIcon } from "../components/Icons";
 
-const COLUMNS = "slot, name, server_name, is_ours, priority, progress, rings, horns, note";
+const CAMP_COLUMNS = "slot, name, server_name, is_ours, priority, note";
+const ORDER_COLUMNS = "user_id, rings, horns, rings_target, horns_target, attack_target";
 
 /**
- * Where each camp sits on the board, in percent. Trials of Odin puts five camps
- * around Asgard: one north, one on each side, two south.
+ * The siege map itself: the game's board with the camps rebuilt and its labels
+ * taken off, plus where each camp stands on it, in percent.
  */
-const CAMP_POSITIONS = [
-  { x: 50, y: 13 },
-  { x: 15, y: 41 },
-  { x: 85, y: 41 },
-  { x: 29, y: 81 },
-  { x: 71, y: 81 },
-  { x: 50, y: 95 },
-] as const;
+const SIEGE_MAPS: Partial<Record<GuildPlanEventId, { image: string; ratio: string; points: { x: number; y: number }[] }>> = {
+  "trials-of-odin": {
+    image: "/guilds/trials-of-odin.webp",
+    ratio: "900 / 1055",
+    points: [
+      { x: 67, y: 7 },
+      { x: 13, y: 33 },
+      { x: 87, y: 34 },
+      { x: 24, y: 77 },
+      { x: 84, y: 71 },
+    ],
+  },
+};
 
-/** A phone is too narrow for the wide ring, so the camps stand in pairs instead. */
-const CAMP_POSITIONS_NARROW = [
-  { x: 50, y: 8 },
-  { x: 22, y: 32 },
-  { x: 78, y: 32 },
-  { x: 22, y: 76 },
-  { x: 78, y: 76 },
-  { x: 50, y: 96 },
-] as const;
-
-const NARROW = "(max-width: 720px)";
-
-function subscribeNarrow(onChange: () => void) {
-  const query = window.matchMedia(NARROW);
-  query.addEventListener("change", onChange);
-  return () => query.removeEventListener("change", onChange);
-}
-
-function useNarrowMap(): boolean {
-  return useSyncExternalStore(
-    subscribeNarrow,
-    () => window.matchMedia(NARROW).matches,
-    () => false,
-  );
-}
-
-function position(slot: number, narrow: boolean) {
-  const ring = narrow ? CAMP_POSITIONS_NARROW : CAMP_POSITIONS;
-  return ring[(slot - 1) % ring.length];
-}
+/** A plain ring, for an event that has camps but no picture yet. */
+const FALLBACK = {
+  image: "",
+  ratio: "16 / 9",
+  points: [
+    { x: 50, y: 12 },
+    { x: 14, y: 40 },
+    { x: 86, y: 40 },
+    { x: 28, y: 82 },
+    { x: 72, y: 82 },
+    { x: 50, y: 95 },
+  ],
+};
 
 function whole(value: string, max: number): number {
   const parsed = Number(value.replace(/[^\d]/g, ""));
@@ -67,9 +62,9 @@ function whole(value: string, max: number): number {
 }
 
 /**
- * The siege map as a plan: which camp is ours, which enemy camp to hit first,
- * and how many Draupnir Rings and Horns to spend on each. Tap a camp to read
- * its plan; officers edit the camp they picked.
+ * The siege map as a plan. Officers mark our camp and the order the others fall
+ * in; members write down the Draupnir Rings and Horns they still have; officers
+ * point those, and each member's attacks, at one camp or at every camp.
  */
 export function GuildSiegeCamps({
   guildId,
@@ -77,22 +72,28 @@ export function GuildSiegeCamps({
   dayIndex,
   count,
   canOfficer,
+  userId,
+  roster,
 }: {
   guildId: string;
   eventId: GuildPlanEventId;
   dayIndex: number;
   count: number;
   canOfficer: boolean;
+  userId: string;
+  roster: GuildRosterEntry[];
 }) {
   const { t, tf, n } = useLocale();
   const supabase = getSupabaseBrowserClient();
   const ids = useId();
-  const narrow = useNarrowMap();
+  const map = SIEGE_MAPS[eventId] ?? FALLBACK;
 
   const [camps, setCamps] = useState<GuildEventCampRow[]>(() => campSlots(count, []));
+  const [orders, setOrders] = useState<GuildEventOrderRow[]>([]);
   // The pick and the unsaved edit belong to one siege, so switching days drops both without an effect.
   const [selection, setSelection] = useState<{ key: string; slot: number } | null>(null);
   const [draft, setDraft] = useState<{ key: string; row: GuildEventCampRow } | null>(null);
+  const [mine, setMine] = useState<{ key: string; rings: string; horns: string } | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [reloadToken, setReloadToken] = useState(0);
@@ -103,23 +104,35 @@ export function GuildSiegeCamps({
     if (!supabase) return;
     let gone = false;
     void (async () => {
-      const { data, error: loadError } = await supabase
-        .from("guild_event_camps")
-        .select(COLUMNS)
-        .eq("guild_id", guildId)
-        .eq("event_id", eventId)
-        .eq("day_index", dayIndex)
-        .order("slot");
+      const [campRes, orderRes] = await Promise.all([
+        supabase
+          .from("guild_event_camps")
+          .select(CAMP_COLUMNS)
+          .eq("guild_id", guildId)
+          .eq("event_id", eventId)
+          .eq("day_index", dayIndex)
+          .order("slot"),
+        supabase
+          .from("guild_event_orders")
+          .select(ORDER_COLUMNS)
+          .eq("guild_id", guildId)
+          .eq("event_id", eventId)
+          .eq("day_index", dayIndex),
+      ]);
       if (gone) return;
-      if (loadError) setError(loadError.message);
-      else setCamps(campSlots(count, (data ?? []) as GuildEventCampRow[]));
+      if (campRes.error) setError(campRes.error.message);
+      else setCamps(campSlots(count, (campRes.data ?? []) as GuildEventCampRow[]));
+      if (orderRes.error) setError(orderRes.error.message);
+      else setOrders((orderRes.data ?? []) as GuildEventOrderRow[]);
     })();
     return () => {
       gone = true;
     };
   }, [supabase, guildId, eventId, dayIndex, count, reloadToken]);
 
-  const save = async (camp: GuildEventCampRow, patch: Partial<GuildEventCampRow> = {}) => {
+  const siege = `${eventId}:${dayIndex}`;
+
+  const saveCamp = async (camp: GuildEventCampRow, patch: Partial<GuildEventCampRow> = {}) => {
     if (!supabase) return;
     setBusy(true);
     setError("");
@@ -134,9 +147,6 @@ export function GuildSiegeCamps({
         server_name: next.server_name.trim().slice(0, GUILD_CAMP_SERVER_MAX),
         is_ours: next.is_ours,
         priority: next.is_ours ? 0 : next.priority,
-        progress: next.progress,
-        rings: next.is_ours ? 0 : next.rings,
-        horns: next.is_ours ? 0 : next.horns,
         note: next.note.trim().slice(0, GUILD_CAMP_NOTE_MAX),
         updated_at: new Date().toISOString(),
       },
@@ -153,17 +163,50 @@ export function GuildSiegeCamps({
   /** Only one camp can be ours, so the one that held the flag gives it up. */
   const markOurs = async (camp: GuildEventCampRow, ours: boolean) => {
     const previous = camps.find((entry) => entry.is_ours && entry.slot !== camp.slot);
-    if (ours && previous) await save(previous, { is_ours: false });
-    await save(camp, { is_ours: ours });
+    if (ours && previous) await saveCamp(previous, { is_ours: false });
+    await saveCamp(camp, { is_ours: ours });
   };
 
-  const ours = camps.find((camp) => camp.is_ours) ?? null;
+  const saveOrder = async (order: GuildEventOrderRow, patch: Partial<GuildEventOrderRow> = {}) => {
+    if (!supabase) return;
+    setBusy(true);
+    setError("");
+    const next = { ...order, ...patch };
+    const { error: saveError } = await supabase.from("guild_event_orders").upsert(
+      {
+        guild_id: guildId,
+        event_id: eventId,
+        day_index: dayIndex,
+        user_id: next.user_id,
+        rings: next.rings,
+        horns: next.horns,
+        rings_target: next.rings_target,
+        horns_target: next.horns_target,
+        attack_target: next.attack_target,
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: "guild_id,event_id,day_index,user_id" },
+    );
+    if (saveError) setError(saveError.message);
+    else {
+      setMine(null);
+      reload();
+    }
+    setBusy(false);
+  };
+
+  const orderOfMember = (memberId: string) =>
+    orders.find((order) => order.user_id === memberId) ?? emptyOrder(memberId);
+  const memberName = (memberId: string) => {
+    const entry = roster.find((member) => member.user_id === memberId);
+    return entry ? guildRosterLabel(entry) : `${memberId.slice(0, 8)}…`;
+  };
+
   const targets = campTargets(camps);
-  const totals = campTotals(camps);
+  const open = unassignedTotals(orders);
   const orderOf = (camp: GuildEventCampRow) => targets.findIndex((entry) => entry.slot === camp.slot) + 1;
   const campLabel = (camp: GuildEventCampRow) => camp.name.trim() || tf(t.guilds.campSlot, { n: camp.slot });
 
-  const siege = `${eventId}:${dayIndex}`;
   const selected = selection && selection.key === siege ? selection.slot : null;
   const current = selected === null ? null : camps.find((camp) => camp.slot === selected) ?? null;
   const edited = draft && draft.key === siege && current && draft.row.slot === current.slot ? draft.row : null;
@@ -174,15 +217,6 @@ export function GuildSiegeCamps({
   };
   const field = (key: string) => `${ids}-${key}`;
 
-  const state = (camp: GuildEventCampRow) =>
-    camp.is_ours
-      ? "ours"
-      : camp.progress === 0
-        ? "done"
-        : camp.name.trim() || camp.priority > 0
-          ? "target"
-          : "empty";
-
   const pick = (slot: number, toggle = false) => {
     setSelection((value) =>
       toggle && value?.key === siege && value.slot === slot ? null : { key: siege, slot },
@@ -190,53 +224,52 @@ export function GuildSiegeCamps({
     setDraft(null);
   };
 
+  const myOrder = orderOfMember(userId);
+  const myRings = mine?.key === siege ? mine.rings : String(myOrder.rings);
+  const myHorns = mine?.key === siege ? mine.horns : String(myOrder.horns);
+  const myDirty = mine?.key === siege;
+
+  /** Every camp an officer can point something at, our own camp included for defence. */
+  const targetOptions = [
+    { value: GUILD_ORDER_TARGET_ALL, label: t.guilds.campTargetAll },
+    ...camps
+      .filter((camp) => !camp.is_ours)
+      .map((camp) => ({ value: camp.slot, label: campLabel(camp) })),
+  ];
+
+  const targetLabel = (value: number) =>
+    targetOptions.find((option) => option.value === value)?.label ?? t.guilds.campTargetAll;
+
+  const members = roster.filter((member) => member.user_id);
+
   return (
     <section className="guild-panel guild-camps">
-      <header className="guild-panel-head">
-        <h2>
-          {t.guilds.campsTitle}
-          <span className="count">{targets.length}</span>
-        </h2>
-        <span className="guild-camps-totals">
-          {tf(t.guilds.campsTotals, { rings: n(totals.rings), horns: n(totals.horns) })}
-        </span>
-      </header>
-
-      <p className="guild-event-hint">{canOfficer ? t.guilds.campsHint : t.guilds.campsHintMember}</p>
       {error ? (
         <p className="result-error" role="alert">
           {error}
         </p>
       ) : null}
 
-      <div className="guild-map" role="group" aria-label={t.guilds.campsMapLabel}>
-        {/* The camps sit in an inset plot, so a wide card never hangs over the edge on a phone. */}
-        <div className="guild-map-plot">
-        <svg className="guild-map-lines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-          {camps.map((camp) => {
-            const point = position(camp.slot, narrow);
-            return (
-              <line
-                key={camp.slot}
-                x1="50"
-                y1="50"
-                x2={point.x}
-                y2={point.y}
-                className={camp.is_ours ? "guild-map-line is-ours" : "guild-map-line"}
-              />
-            );
-          })}
-        </svg>
-        <p className="guild-map-centre">{t.guilds.campsCentre}</p>
+      <div
+        className="guild-map"
+        role="group"
+        aria-label={t.guilds.campsMapLabel}
+        style={{
+          aspectRatio: map.ratio,
+          ...(map.image ? { backgroundImage: `url("${asset(map.image)}")` } : {}),
+        }}
+      >
         {camps.map((camp) => {
-          const point = position(camp.slot, narrow);
+          const point = map.points[(camp.slot - 1) % map.points.length];
           const order = orderOf(camp);
+          const assigned = campAssignment(camp.slot, orders);
+          const quiet = assigned.rings === 0 && assigned.horns === 0 && assigned.attackers.length === 0;
           return (
             <button
               key={camp.slot}
               type="button"
               className="guild-map-camp"
-              data-state={state(camp)}
+              data-state={camp.is_ours ? "ours" : camp.name.trim() || camp.priority > 0 ? "target" : "empty"}
               aria-pressed={selected === camp.slot}
               style={{ "--camp-x": `${point.x}%`, "--camp-y": `${point.y}%` } as CSSProperties}
               onClick={() => pick(camp.slot, true)}
@@ -255,41 +288,26 @@ export function GuildSiegeCamps({
                 ) : null}
                 <span className="guild-map-name">{campLabel(camp)}</span>
               </span>
-              {camp.server_name ? <span className="guild-map-server">{camp.server_name}</span> : null}
-              <span className="guild-map-bar" aria-hidden="true">
-                <span style={{ width: `${camp.progress}%` }} />
-              </span>
-              <span className="guild-map-numbers">
-                <span className="guild-map-percent">{tf(t.guilds.campProgressValue, { percent: camp.progress })}</span>
-                {!camp.is_ours && (camp.rings > 0 || camp.horns > 0) ? (
-                  <span className="guild-map-spend">
-                    {tf(t.guilds.campSpendShort, { rings: n(camp.rings), horns: n(camp.horns) })}
-                  </span>
-                ) : null}
-              </span>
+              {camp.is_ours || quiet ? null : (
+                <span className="guild-map-numbers">
+                  {assigned.rings > 0 || assigned.horns > 0 ? (
+                    <span className="guild-map-spend">
+                      {tf(t.guilds.campSpendShort, { rings: n(assigned.rings), horns: n(assigned.horns) })}
+                    </span>
+                  ) : null}
+                  {assigned.attackers.length > 0 ? (
+                    <span className="guild-map-attackers">
+                      <UsersIcon className="icon" />
+                      {n(assigned.attackers.length)}
+                      <span className="visually-hidden"> {t.guilds.campAttackers}</span>
+                    </span>
+                  ) : null}
+                </span>
+              )}
             </button>
           );
         })}
-        </div>
       </div>
-
-      {targets.length > 0 ? (
-        <ol className="guild-camp-order" aria-label={t.guilds.campsOrderLabel}>
-          {targets.map((camp, index) => (
-            <li key={camp.slot}>
-              <button
-                type="button"
-                className={camp.progress === 0 ? "guild-camp-chip is-done" : "guild-camp-chip"}
-                aria-pressed={selected === camp.slot}
-                onClick={() => pick(camp.slot)}
-              >
-                <span className="guild-camp-chip-order">{index + 1}</span>
-                {campLabel(camp)}
-              </button>
-            </li>
-          ))}
-        </ol>
-      ) : null}
 
       {row ? (
         <div className="guild-camp-detail">
@@ -325,53 +343,22 @@ export function GuildSiegeCamps({
                     onChange={(e) => change({ server_name: e.target.value })}
                   />
                 </div>
-                <div className="field">
-                  <label htmlFor={field("progress")}>
-                    {t.guilds.campProgress} <span className="label-note">%</span>
-                  </label>
-                  <input
-                    id={field("progress")}
-                    inputMode="numeric"
-                    value={String(row.progress)}
-                    onChange={(e) => change({ progress: whole(e.target.value, 100) })}
-                  />
-                </div>
                 {row.is_ours ? null : (
-                  <>
-                    <div className="field">
-                      <label htmlFor={field("priority")}>{t.guilds.campPriority}</label>
-                      <select
-                        id={field("priority")}
-                        value={row.priority}
-                        onChange={(e) => change({ priority: Number(e.target.value) })}
-                      >
-                        <option value={0}>{t.guilds.campPriorityNone}</option>
-                        {Array.from({ length: Math.max(count - 1, 1) }, (_, i) => i + 1).map((order) => (
-                          <option key={order} value={order}>
-                            {tf(t.guilds.campTarget, { n: order })}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                    <div className="field">
-                      <label htmlFor={field("rings")}>{t.guilds.campRings}</label>
-                      <input
-                        id={field("rings")}
-                        inputMode="numeric"
-                        value={String(row.rings)}
-                        onChange={(e) => change({ rings: whole(e.target.value, 9999) })}
-                      />
-                    </div>
-                    <div className="field">
-                      <label htmlFor={field("horns")}>{t.guilds.campHorns}</label>
-                      <input
-                        id={field("horns")}
-                        inputMode="numeric"
-                        value={String(row.horns)}
-                        onChange={(e) => change({ horns: whole(e.target.value, 999_999) })}
-                      />
-                    </div>
-                  </>
+                  <div className="field">
+                    <label htmlFor={field("priority")}>{t.guilds.campPriority}</label>
+                    <select
+                      id={field("priority")}
+                      value={row.priority}
+                      onChange={(e) => change({ priority: Number(e.target.value) })}
+                    >
+                      <option value={0}>{t.guilds.campPriorityNone}</option>
+                      {Array.from({ length: Math.max(count - 1, 1) }, (_, i) => i + 1).map((order) => (
+                        <option key={order} value={order}>
+                          {tf(t.guilds.campTarget, { n: order })}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 )}
                 <div className="field guild-camp-note-field">
                   <label htmlFor={field("note")}>{t.guilds.campNote}</label>
@@ -389,7 +376,7 @@ export function GuildSiegeCamps({
                   className="small-button button-primary"
                   type="button"
                   disabled={busy || !dirty}
-                  onClick={() => void save(row)}
+                  onClick={() => void saveCamp(row)}
                 >
                   <PenIcon className="icon icon-sm" />
                   {t.guilds.campSave}
@@ -410,20 +397,142 @@ export function GuildSiegeCamps({
                 ) : null}
               </div>
             </>
-          ) : (
-            <div className="guild-camp-detail-read">
+          ) : row.note.trim() ? (
+            <p className="guild-camp-note">{row.note}</p>
+          ) : null}
+
+          {row.is_ours ? null : (
+            <div className="guild-camp-assigned">
               <p className="guild-camp-spend">
-                <span className="guild-camp-progress">{tf(t.guilds.campProgressValue, { percent: row.progress })}</span>
-                {row.rings > 0 ? <span>{tf(t.guilds.campRingsValue, { count: n(row.rings) })}</span> : null}
-                {row.horns > 0 ? <span>{tf(t.guilds.campHornsValue, { count: n(row.horns) })}</span> : null}
+                <span>{tf(t.guilds.campRingsValue, { count: n(campAssignment(row.slot, orders).rings) })}</span>
+                <span>{tf(t.guilds.campHornsValue, { count: n(campAssignment(row.slot, orders).horns) })}</span>
               </p>
-              {row.note.trim() ? <p className="guild-camp-note">{row.note}</p> : null}
+              {campAssignment(row.slot, orders).attackers.length > 0 ? (
+                <p className="guild-camp-note">
+                  {t.guilds.campAttackers}: {campAssignment(row.slot, orders).attackers.map(memberName).join(", ")}
+                </p>
+              ) : null}
             </div>
           )}
         </div>
-      ) : (
-        <p className="guild-camps-pick">{ours ? t.guilds.campsPick : t.guilds.campOursHint}</p>
-      )}
+      ) : null}
+
+      <div className="guild-orders">
+        <header className="guild-panel-head">
+          <h3>{t.guilds.ordersTitle}</h3>
+          <span className="guild-camps-totals">
+            {tf(t.guilds.ordersOpen, { rings: n(open.rings), horns: n(open.horns) })}
+          </span>
+        </header>
+
+        <div className="guild-orders-mine">
+          <div className="field">
+            <label htmlFor={field("my-rings")}>{t.guilds.ordersMyRings}</label>
+            <input
+              id={field("my-rings")}
+              inputMode="numeric"
+              value={myRings}
+              disabled={busy}
+              onChange={(e) => setMine({ key: siege, rings: e.target.value.replace(/[^\d]/g, ""), horns: myHorns })}
+            />
+          </div>
+          <div className="field">
+            <label htmlFor={field("my-horns")}>{t.guilds.ordersMyHorns}</label>
+            <input
+              id={field("my-horns")}
+              inputMode="numeric"
+              value={myHorns}
+              disabled={busy}
+              onChange={(e) => setMine({ key: siege, rings: myRings, horns: e.target.value.replace(/[^\d]/g, "") })}
+            />
+          </div>
+          <button
+            className="button button-primary"
+            type="button"
+            disabled={busy || !myDirty}
+            onClick={() =>
+              void saveOrder(myOrder, {
+                rings: whole(myRings, 9999),
+                horns: whole(myHorns, 999_999),
+              })
+            }
+          >
+            {t.guilds.ordersSaveMine}
+          </button>
+        </div>
+
+        {members.length === 0 ? (
+          <p className="guild-panel-empty">{t.guilds.membersEmpty}</p>
+        ) : (
+          <ul className="guild-orders-list">
+            {members.map((member) => {
+              const order = orderOfMember(member.user_id!);
+              const has = order.rings > 0 || order.horns > 0;
+              return (
+                <li key={member.user_id} className={member.user_id === userId ? "guild-order is-you" : "guild-order"}>
+                  <span className="guild-order-name">{guildRosterLabel(member)}</span>
+                  <span className="guild-order-stock">
+                    {tf(t.guilds.campSpendShort, { rings: n(order.rings), horns: n(order.horns) })}
+                  </span>
+                  {canOfficer ? (
+                    <span className="guild-order-targets">
+                      <label>
+                        <span className="visually-hidden">{t.guilds.ordersRingsTarget}</span>
+                        <span aria-hidden="true">{t.guilds.ordersRingsShort}</span>
+                        <select
+                          value={order.rings_target}
+                          disabled={busy || order.rings === 0}
+                          onChange={(e) => void saveOrder(order, { rings_target: Number(e.target.value) })}
+                        >
+                          {targetOptions.map((option) => (
+                            <option key={option.value} value={option.value}>{option.label}</option>
+                          ))}
+                        </select>
+                      </label>
+                      <label>
+                        <span className="visually-hidden">{t.guilds.ordersHornsTarget}</span>
+                        <span aria-hidden="true">{t.guilds.ordersHornsShort}</span>
+                        <select
+                          value={order.horns_target}
+                          disabled={busy || order.horns === 0}
+                          onChange={(e) => void saveOrder(order, { horns_target: Number(e.target.value) })}
+                        >
+                          {targetOptions.map((option) => (
+                            <option key={option.value} value={option.value}>{option.label}</option>
+                          ))}
+                        </select>
+                      </label>
+                      <label>
+                        <span className="visually-hidden">{t.guilds.ordersAttackTarget}</span>
+                        <span aria-hidden="true">{t.guilds.ordersAttackShort}</span>
+                        <select
+                          value={order.attack_target}
+                          disabled={busy}
+                          onChange={(e) => void saveOrder(order, { attack_target: Number(e.target.value) })}
+                        >
+                          {targetOptions.map((option) => (
+                            <option key={option.value} value={option.value}>{option.label}</option>
+                          ))}
+                        </select>
+                      </label>
+                    </span>
+                  ) : (
+                    <span className="guild-order-plan">
+                      {has ? (
+                        <>
+                          <span>{t.guilds.ordersRingsShort} {targetLabel(order.rings_target)}</span>
+                          <span>{t.guilds.ordersHornsShort} {targetLabel(order.horns_target)}</span>
+                        </>
+                      ) : null}
+                      <span>{t.guilds.ordersAttackShort} {targetLabel(order.attack_target)}</span>
+                    </span>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </div>
     </section>
   );
 }

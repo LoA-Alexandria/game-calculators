@@ -1,17 +1,20 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
+  campAssignment,
   campSlots,
   campTargets,
-  campTotals,
   currentEventDayIndex,
   emptyCamp,
+  emptyOrder,
   guildPlanEventDef,
   hoursUntilBerlinMidnight,
   nextCampPriority,
+  orderTotals,
   pledgeCoverage,
   seriesScore,
   scoreGap,
+  unassignedTotals,
 } from "../lib/content/guild-events.ts";
 
 describe("guild event planning helpers", () => {
@@ -74,32 +77,51 @@ describe("siege camps", () => {
     const slots = campSlots(5, [camp(3, { name: "AZE" })]);
     assert.deepEqual(slots.map((row) => row.slot), [1, 2, 3, 4, 5]);
     assert.equal(slots[2].name, "AZE");
-    assert.equal(slots[0].progress, 100, "an untouched camp still stands");
+    assert.equal(slots[0].priority, 0, "an untouched camp has no order yet");
   });
 
-  it("orders targets by the officers' order, leaves out our camp, and sinks destroyed ones", () => {
+  it("orders targets by the officers' order and leaves out our camp", () => {
     const targets = campTargets([
       camp(1, { name: "Dark Legion", is_ours: true, priority: 1 }),
       camp(2, { name: "ATLANTES", priority: 2 }),
       camp(3, { name: "Librarians" }),
       camp(4, { name: "AZE", priority: 1 }),
-      camp(5, { name: "al-Ula", priority: 3, progress: 0 }),
+      camp(5, { name: "al-Ula", priority: 3 }),
     ]);
-    assert.deepEqual(targets.map((row) => row.name), ["AZE", "ATLANTES", "Librarians", "al-Ula"]);
-  });
-
-  it("adds up the rings and horns the plan spends on enemy camps", () => {
-    const totals = campTotals([
-      camp(1, { is_ours: true, rings: 9, horns: 9 }),
-      camp(2, { rings: 2, horns: 40 }),
-      camp(3, { rings: 3, horns: 60 }),
-    ]);
-    assert.deepEqual(totals, { rings: 5, horns: 100 });
+    assert.deepEqual(targets.map((row) => row.name), ["AZE", "ATLANTES", "al-Ula", "Librarians"]);
   });
 
   it("hands out the next free order number", () => {
     const camps = [camp(1, { is_ours: true }), camp(2, { priority: 1 }), camp(3, {}), camp(4, { priority: 2 })];
     assert.equal(nextCampPriority(camps), 3);
     assert.equal(nextCampPriority([camp(1, {})]), 1);
+  });
+});
+
+describe("siege orders", () => {
+  const order = (userId, values) => ({ ...emptyOrder(userId), ...values });
+  const rows = [
+    order("u-1", { rings: 3, horns: 120, rings_target: 2, horns_target: 2, attack_target: 2 }),
+    order("u-2", { rings: 2, horns: 80, rings_target: 3, horns_target: 0, attack_target: 2 }),
+    order("u-3", { rings: 1, horns: 40 }),
+  ];
+
+  it("adds up everything the guild brings, pointed at a camp or not", () => {
+    assert.deepEqual(orderTotals(rows), { rings: 6, horns: 240 });
+    assert.deepEqual(orderTotals([]), { rings: 0, horns: 0 });
+  });
+
+  it("counts what an officer pointed at one camp, and who attacks it", () => {
+    const second = campAssignment(2, rows);
+    assert.equal(second.rings, 3);
+    assert.equal(second.horns, 120);
+    assert.deepEqual(second.attackers, ["u-1", "u-2"]);
+    const third = campAssignment(3, rows);
+    assert.equal(third.rings, 2);
+    assert.equal(third.horns, 0, "horns left on every camp do not belong to one camp");
+  });
+
+  it("keeps what nobody has been given a camp for", () => {
+    assert.deepEqual(unassignedTotals(rows), { rings: 1, horns: 120 });
   });
 });

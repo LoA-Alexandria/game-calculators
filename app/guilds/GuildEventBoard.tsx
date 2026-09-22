@@ -406,9 +406,12 @@ export function GuildEventBoard({ guildId, userId, canOfficer, roster, eventId }
           dayIndex={dayIndex}
           count={def.camps}
           canOfficer={canOfficer}
+          userId={userId}
+          roster={roster}
         />
       ) : null}
 
+      {def.camps ? null : (
       <div className="guild-event-pledges">
         <header className="guild-panel-head">
           <h3>{t.guilds.eventPledgesTitle}</h3>
@@ -466,6 +469,7 @@ export function GuildEventBoard({ guildId, userId, canOfficer, roster, eventId }
           </ul>
         )}
       </div>
+      )}
     </section>
   );
 }
