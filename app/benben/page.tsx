@@ -148,8 +148,8 @@ export default function BenbenPage() {
         <div className="benben-sun" aria-hidden="true" />
         {acting === "play" && <div className="benben-effect benben-sunbath-effect" aria-hidden="true"><span /><span /><span /></div>}
         <div className="benben-sprite-wrap">
-          <Image className={`${acting ? `benben-image is-${acting}` : "benben-image"}${celebrating ? " is-happy" : ""}`} src={asset(acting === "rest" || acting === "play" ? "/benben-sleeping.png" : celebrating ? "/benben-happy.png" : "/benben.png")} width={1240} height={1240} alt="Benben, the communal stone pyramid" priority />
-          {pet?.phoenix_active && <Image className={`benben-phoenix${acting ? " is-flying" : ""}`} src={asset(acting ? "/benben-phoenix-flying.png" : "/benben-phoenix.png")} width={1254} height={1254} alt={acting ? "A little phoenix flying over Benben" : "A little phoenix perched on Benben"} />}
+          <Image className={`${acting ? `benben-image is-${acting}` : "benben-image"}${celebrating ? " is-happy" : ""}`} src={asset(acting === "rest" || acting === "play" ? "/benben-sleeping.webp" : celebrating ? "/benben-happy.webp" : "/benben.webp")} width={1240} height={1240} alt="Benben, the communal stone pyramid" priority />
+          {pet?.phoenix_active && <Image className={`benben-phoenix${acting ? " is-flying" : ""}`} src={asset(acting ? "/benben-phoenix-flying.webp" : "/benben-phoenix.webp")} width={1254} height={1254} alt={acting ? "A little phoenix flying over Benben" : "A little phoenix perched on Benben"} />}
           {acting === "feed" && <div className="benben-effect benben-feed-effect" aria-hidden="true"><span /><span /><span /><i className="benben-chew-mouth" /></div>}
           {acting === "polish" && <div className="benben-effect benben-polish-effect" aria-hidden="true"><span>✦</span><span>✧</span><span>✦</span><span>✧</span></div>}
           {acting === "rest" && <div className="benben-effect benben-rest-effect" aria-hidden="true"><span>Z</span><span>z</span><span>z</span></div>}
