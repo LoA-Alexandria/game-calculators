@@ -790,44 +790,24 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
         <div className="guild-room-main">
           {tab === "planung" ? (
             <>
-              {activeEventIds.length > 0 || canOfficer ? (
-                <div className="guild-event-bar-row">
-                  {activeEventIds.length > 0 ? (
-                    <nav className="guild-event-tabs" aria-label={t.guilds.planung}>
-                      {activeEventIds.map((id) => {
-                        const def = GUILD_PLAN_EVENTS.find((e) => e.id === id);
-                        if (!def) return null;
-                        return (
-                          <button
-                            key={id}
-                            type="button"
-                            className={planEventId === id ? "guild-tab is-active" : "guild-tab"}
-                            aria-pressed={planEventId === id}
-                            onClick={() => setPlanEventId(id)}
-                          >
-                            {t.guilds.events[def.labelKey]}
-                          </button>
-                        );
-                      })}
-                    </nav>
-                  ) : null}
-                  {canOfficer && !eventPickerOpen ? (
-                    <button className="small-button guild-event-activate" type="button" onClick={() => setEventPickerOpen(true)}>
-                      <PlusIcon className="icon icon-sm" />
-                      {t.guilds.eventsActivate}
-                    </button>
-                  ) : null}
-                </div>
-              ) : null}
-              {canOfficer ? (
-                <GuildEventPicker
-                  guildId={guild.id}
-                  activeIds={activeEventIds}
-                  canOfficer={canOfficer}
-                  open={eventPickerOpen}
-                  onClose={() => setEventPickerOpen(false)}
-                  onChanged={reload}
-                />
+              {activeEventIds.length > 0 ? (
+                <nav className="guild-event-tabs" aria-label={t.guilds.planung}>
+                  {activeEventIds.map((id) => {
+                    const def = GUILD_PLAN_EVENTS.find((e) => e.id === id);
+                    if (!def) return null;
+                    return (
+                      <button
+                        key={id}
+                        type="button"
+                        className={planEventId === id ? "guild-tab is-active" : "guild-tab"}
+                        aria-pressed={planEventId === id}
+                        onClick={() => setPlanEventId(id)}
+                      >
+                        {t.guilds.events[def.labelKey]}
+                      </button>
+                    );
+                  })}
+                </nav>
               ) : null}
               {planEventId ? (
                 <GuildEventBoard
@@ -846,6 +826,25 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
                   </div>
                 </section>
               )}
+              {/* Below the board, so opening the list never pushes the board or the empty state down. */}
+              {canOfficer && !eventPickerOpen ? (
+                <div className="guild-event-manage">
+                  <button className="small-button" type="button" onClick={() => setEventPickerOpen(true)}>
+                    <PlusIcon className="icon icon-sm" />
+                    {activeEventIds.length > 0 ? t.guilds.eventsManage : t.guilds.eventsActivate}
+                  </button>
+                </div>
+              ) : null}
+              {canOfficer ? (
+                <GuildEventPicker
+                  guildId={guild.id}
+                  activeIds={activeEventIds}
+                  canOfficer={canOfficer}
+                  open={eventPickerOpen}
+                  onClose={() => setEventPickerOpen(false)}
+                  onChanged={reload}
+                />
+              ) : null}
             </>
           ) : (
             <>
