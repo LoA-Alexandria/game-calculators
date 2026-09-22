@@ -75,8 +75,6 @@ export type IncomePlay = {
   ticket?: number;
   visitors?: number;
   aptitudes?: AptitudeId[];
-  /** Autumn's total at 310 % / 310 % / 930 merchandise with her goddesses. */
-  reference?: number;
 };
 
 export type GoddessAptitudes = {
@@ -87,11 +85,10 @@ export type GoddessAptitudes = {
   lacks?: AptitudeId[];
 };
 
-type RawPlay = { id: string; rarity: string; slots?: number; ticket?: number; visitors?: number; aptitudes?: string[]; reference?: number };
+type RawPlay = { id: string; rarity: string; slots?: number; ticket?: number; visitors?: number; aptitudes?: string[] };
 type RawData = {
   bonusPerMatch: number;
   slots: number;
-  reference: { ticketPercent: number; visitorPercent: number; merchandise: number };
   aptitudes: { id: string; resource?: string }[];
   plays: RawPlay[];
   goddesses: { name: string; aptitudes: string[]; lacks?: string[] }[];
@@ -100,7 +97,6 @@ type RawData = {
 const RAW = data as RawData;
 
 export const BONUS_PER_MATCH = RAW.bonusPerMatch;
-export const REFERENCE_STATS = RAW.reference;
 /** Each aptitude and the Exploration-age resource its goddess training raises, where the game has shown it. */
 export const APTITUDES = RAW.aptitudes as { id: AptitudeId; resource?: string }[];
 export const GODDESS_APTITUDES = RAW.goddesses as GoddessAptitudes[];
@@ -116,7 +112,6 @@ export const INCOME_PLAYS: IncomePlay[] = RAW.plays.map((raw) => {
     ...(raw.ticket ? { ticket: raw.ticket } : {}),
     ...(raw.visitors ? { visitors: raw.visitors } : {}),
     ...(raw.aptitudes ? { aptitudes: raw.aptitudes as AptitudeId[] } : {}),
-    ...(raw.reference ? { reference: raw.reference } : {}),
   };
 });
 
