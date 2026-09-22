@@ -201,7 +201,7 @@ const fr: Dictionary = {
     eventCallLabel: "Consigne",
     eventCallPlaceholder: "Attendre… / Go : +50k d’Alex et Mira",
     eventCallSave: "Enregistrer la consigne",
-    eventTimerLabel: "Jusqu’à la fin du jour (minuit Berlin)",
+    eventTimerLabel: "Temps restant",
     eventTimerValue: "{hours}h {minutes}m",
     eventPledgesTitle: "Investissement final",
     eventPledgeAmount: "Je peux encore investir",
@@ -214,7 +214,7 @@ const fr: Dictionary = {
     eventCoverageLead: "Nous menons de {lead}",
     eventScoresSave: "Enregistrer les scores",
     eventTacticsHint:
-      "Dépenser le moins possible. N’investir qu’en fin de journée quand l’écart est clair — celui qui mène à minuit Berlin gagne le jour. Meilleur de 3.",
+      "Dépenser le moins possible. N’investir qu’en fin de journée quand l’écart est clair — celui qui mène à la fin du jour gagne. Meilleur de 3.",
     eventGenericHint: "Suivre le score du jour, banque d’investissement final, et appeler qui dump juste avant la fin.",
     events: {
       trialsOfOdin: "Trials of Odin",

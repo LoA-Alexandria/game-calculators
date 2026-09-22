@@ -201,7 +201,7 @@ const de: Dictionary = {
     eventCallLabel: "Aufruf",
     eventCallPlaceholder: "Halten… / Go: +50k von Alex und Mira",
     eventCallSave: "Aufruf speichern",
-    eventTimerLabel: "Bis Tagesende (0 Uhr Berlin)",
+    eventTimerLabel: "Noch",
     eventTimerValue: "{hours}h {minutes}m",
     eventPledgesTitle: "End-Invest",
     eventPledgeAmount: "Ich kann noch reinwerfen",
@@ -214,7 +214,7 @@ const de: Dictionary = {
     eventCoverageLead: "Wir führen mit {lead}",
     eventScoresSave: "Stand speichern",
     eventTacticsHint:
-      "So wenig wie möglich ausgeben. Erst kurz vor Schluss nachlegen, wenn die Lücke klar ist — wer um 0 Uhr Berlin vorne liegt, gewinnt den Tag. Best of 3.",
+      "So wenig wie möglich ausgeben. Erst kurz vor Schluss nachlegen, wenn die Lücke klar ist — wer am Tagesende vorne liegt, gewinnt den Tag. Best of 3.",
     eventGenericHint: "Tagesstand tracken, End-Invest banken und kurz vor Schluss aufrufen, wer noch abgibt.",
     events: {
       trialsOfOdin: "Trials of Odin",

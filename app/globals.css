@@ -7191,7 +7191,29 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
   color: var(--ink);
 }
 .guild-event-day small { font-size: .72rem; opacity: .85; }
-.guild-event-timer { margin: 0; font-size: .9rem; color: var(--ink-soft); }
+.guild-event-timer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 12px;
+  margin: 0;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  background: var(--surface-2);
+}
+.guild-event-timer-label {
+  font-size: .86rem;
+  color: var(--ink-soft);
+  font-weight: 600;
+}
+.guild-event-timer-value {
+  font-family: var(--font-mono);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: .02em;
+}
 .guild-event-scores {
   display: grid;
   grid-template-columns: 1fr 1fr;
