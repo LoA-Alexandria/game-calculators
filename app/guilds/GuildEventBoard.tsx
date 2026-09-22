@@ -13,6 +13,12 @@ import {
   type GuildPlanEventId,
 } from "../../lib/content/guild-events";
 import { guildRosterLabel, type GuildRosterEntry } from "../../lib/content/guilds";
+import {
+  acceptedAlliance,
+  type GuildAllianceRosterEntry,
+  type GuildAllianceRow,
+} from "../../lib/content/guild-alliances";
+import { GuildAlliance } from "./GuildAlliance";
 import { GuildSiegeCamps } from "./GuildSiegeCamps";
 import { getSupabaseBrowserClient } from "../../lib/supabase/client";
 import { useLocale } from "../components/LocaleProvider";
@@ -56,6 +62,10 @@ export function GuildEventBoard({ guildId, userId, canOfficer, roster, eventId }
 
   const [days, setDays] = useState<DayRow[]>([]);
   const [pledges, setPledges] = useState<PledgeRow[]>([]);
+  const [alliances, setAlliances] = useState<GuildAllianceRow[]>([]);
+  // Kept under the alliance it belongs to, so a new alliance never shows the old roster.
+  const [allyRoster, setAllyRoster] = useState<{ id: string; entries: GuildAllianceRosterEntry[] } | null>(null);
+  const [shared, setShared] = useState(false);
   const [dayIndex, setDayIndex] = useState(1);
   const [ourScore, setOurScore] = useState("0");
   const [enemyScore, setEnemyScore] = useState("0");
@@ -135,6 +145,43 @@ export function GuildEventBoard({ guildId, userId, canOfficer, roster, eventId }
       gone = true;
     };
   }, [supabase, guildId, eventId, dayIndex, userId, reloadToken]);
+
+  useEffect(() => {
+    if (!supabase) return;
+    let gone = false;
+    void (async () => {
+      const { data, error: allianceError } = await supabase
+        .from("guild_alliances")
+        .select("id, event_id, from_guild_id, to_guild_id, status, note, created_at")
+        .eq("event_id", eventId)
+        .or(`from_guild_id.eq.${guildId},to_guild_id.eq.${guildId}`);
+      if (gone) return;
+      if (allianceError) setError(allianceError.message);
+      else setAlliances((data ?? []) as GuildAllianceRow[]);
+    })();
+    return () => {
+      gone = true;
+    };
+  }, [supabase, guildId, eventId, reloadToken]);
+
+  const ally = acceptedAlliance(alliances, guildId);
+  const allianceId = ally?.id ?? null;
+
+  useEffect(() => {
+    if (!supabase || !allianceId) return;
+    let gone = false;
+    void (async () => {
+      const { data, error: rosterError } = await supabase.rpc("alliance_roster", {
+        p_alliance_id: allianceId,
+      });
+      if (gone) return;
+      if (rosterError) setError(rosterError.message);
+      else setAllyRoster({ id: allianceId, entries: (data ?? []) as GuildAllianceRosterEntry[] });
+    })();
+    return () => {
+      gone = true;
+    };
+  }, [supabase, allianceId, reloadToken]);
 
   const series = seriesScore(days);
   const our = Number(ourScore) || 0;
@@ -251,6 +298,8 @@ export function GuildEventBoard({ guildId, userId, canOfficer, roster, eventId }
     setCallNote(row?.call_note ?? "");
   };
 
+  const onShared = shared && ally !== null;
+  const sharedRoster = allyRoster && allyRoster.id === allianceId ? allyRoster.entries : [];
   const currentResult = days.find((d) => d.day_index === dayIndex)?.result ?? "pending";
   const lead = our - enemy;
 
@@ -400,14 +449,49 @@ export function GuildEventBoard({ guildId, userId, canOfficer, roster, eventId }
       </div>
 
       {def.camps ? (
-        <GuildSiegeCamps
+        <GuildAlliance
           guildId={guildId}
+          userId={userId}
+          eventId={eventId}
+          canOfficer={canOfficer}
+          rows={alliances}
+          accepted={ally}
+          onChanged={reload}
+        />
+      ) : null}
+
+      {def.camps && ally ? (
+        <div className="guild-board-switch" role="tablist" aria-label={t.guilds.allianceLabel}>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={!onShared}
+            className={onShared ? "guild-tab" : "guild-tab is-active"}
+            onClick={() => setShared(false)}
+          >
+            {t.guilds.allianceOwnBoard}
+          </button>
+          <button
+            type="button"
+            role="tab"
+            aria-selected={onShared}
+            className={onShared ? "guild-tab is-active" : "guild-tab"}
+            onClick={() => setShared(true)}
+          >
+            {t.guilds.allianceSharedBoard}
+          </button>
+        </div>
+      ) : null}
+
+      {def.camps ? (
+        <GuildSiegeCamps
+          scope={onShared && ally ? { kind: "alliance", allianceId: ally.id } : { kind: "guild", guildId }}
           eventId={eventId}
           dayIndex={dayIndex}
           count={def.camps}
           canOfficer={canOfficer}
           userId={userId}
-          roster={roster}
+          roster={onShared && ally ? sharedRoster : roster}
         />
       ) : null}
 

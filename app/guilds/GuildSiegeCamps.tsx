@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useId, useState, type CSSProperties } from "react";
+import { useCallback, useEffect, useId, useMemo, useState, type CSSProperties } from "react";
 import {
   GUILD_CAMP_NAME_MAX,
   GUILD_CAMP_NOTE_MAX,
@@ -25,6 +25,17 @@ const CAMP_COLUMNS = "slot, name, server_name, is_ours, priority, note";
 const ORDER_COLUMNS = "user_id, rings, horns, rings_target, horns_target, attack_target";
 
 /**
+ * Whose board this is. A guild plans on its own tables, two allied guilds on
+ * the shared ones; only the keys differ, so both draw the same map.
+ */
+export type SiegeScope =
+  | { kind: "guild"; guildId: string }
+  | { kind: "alliance"; allianceId: string };
+
+/** A roster entry, plus the guild it comes from on a shared board. */
+export type SiegeMember = GuildRosterEntry & { guild_name?: string };
+
+/**
  * The siege map itself: the game's board with the camps rebuilt and its labels
  * taken off, plus where each camp stands on it, in percent.
  */
@@ -34,10 +45,10 @@ const SIEGE_MAPS: Partial<Record<GuildPlanEventId, { image: string; ratio: strin
     ratio: "900 / 1055",
     points: [
       { x: 67, y: 7 },
-      { x: 13, y: 33 },
-      { x: 87, y: 34 },
+      { x: 18, y: 33 },
+      { x: 82, y: 34 },
       { x: 24, y: 77 },
-      { x: 84, y: 71 },
+      { x: 81, y: 71 },
     ],
   },
 };
@@ -67,7 +78,7 @@ function whole(value: string, max: number): number {
  * point those, and each member's attacks, at one camp or at every camp.
  */
 export function GuildSiegeCamps({
-  guildId,
+  scope,
   eventId,
   dayIndex,
   count,
@@ -75,18 +86,42 @@ export function GuildSiegeCamps({
   userId,
   roster,
 }: {
-  guildId: string;
+  scope: SiegeScope;
   eventId: GuildPlanEventId;
   dayIndex: number;
   count: number;
   canOfficer: boolean;
   userId: string;
-  roster: GuildRosterEntry[];
+  roster: SiegeMember[];
 }) {
   const { t, tf, n } = useLocale();
   const supabase = getSupabaseBrowserClient();
   const ids = useId();
   const map = SIEGE_MAPS[eventId] ?? FALLBACK;
+  const owner = scope.kind === "alliance" ? scope.allianceId : scope.guildId;
+  // Where the rows live, and how they are keyed. Allies both keep a camp, so
+  // marking one friendly does not take the flag off the other.
+  const source = useMemo(
+    () =>
+      scope.kind === "alliance"
+        ? {
+            campTable: "guild_alliance_camps",
+            orderTable: "guild_alliance_orders",
+            key: { alliance_id: owner } as Record<string, string>,
+            campConflict: "alliance_id,day_index,slot",
+            orderConflict: "alliance_id,day_index,user_id",
+            singleOurs: false,
+          }
+        : {
+            campTable: "guild_event_camps",
+            orderTable: "guild_event_orders",
+            key: { guild_id: owner, event_id: eventId } as Record<string, string>,
+            campConflict: "guild_id,event_id,day_index,slot",
+            orderConflict: "guild_id,event_id,day_index,user_id",
+            singleOurs: true,
+          },
+    [scope.kind, owner, eventId],
+  );
 
   const [camps, setCamps] = useState<GuildEventCampRow[]>(() => campSlots(count, []));
   const [orders, setOrders] = useState<GuildEventOrderRow[]>([]);
@@ -106,18 +141,14 @@ export function GuildSiegeCamps({
     void (async () => {
       const [campRes, orderRes] = await Promise.all([
         supabase
-          .from("guild_event_camps")
+          .from(source.campTable)
           .select(CAMP_COLUMNS)
-          .eq("guild_id", guildId)
-          .eq("event_id", eventId)
-          .eq("day_index", dayIndex)
+          .match({ ...source.key, day_index: dayIndex })
           .order("slot"),
         supabase
-          .from("guild_event_orders")
+          .from(source.orderTable)
           .select(ORDER_COLUMNS)
-          .eq("guild_id", guildId)
-          .eq("event_id", eventId)
-          .eq("day_index", dayIndex),
+          .match({ ...source.key, day_index: dayIndex }),
       ]);
       if (gone) return;
       if (campRes.error) setError(campRes.error.message);
@@ -128,19 +159,18 @@ export function GuildSiegeCamps({
     return () => {
       gone = true;
     };
-  }, [supabase, guildId, eventId, dayIndex, count, reloadToken]);
+  }, [supabase, source, dayIndex, count, reloadToken]);
 
-  const siege = `${eventId}:${dayIndex}`;
+  const siege = `${owner}:${eventId}:${dayIndex}`;
 
   const saveCamp = async (camp: GuildEventCampRow, patch: Partial<GuildEventCampRow> = {}) => {
     if (!supabase) return;
     setBusy(true);
     setError("");
     const next = { ...camp, ...patch };
-    const { error: saveError } = await supabase.from("guild_event_camps").upsert(
+    const { error: saveError } = await supabase.from(source.campTable).upsert(
       {
-        guild_id: guildId,
-        event_id: eventId,
+        ...source.key,
         day_index: dayIndex,
         slot: next.slot,
         name: next.name.trim().slice(0, GUILD_CAMP_NAME_MAX),
@@ -150,7 +180,7 @@ export function GuildSiegeCamps({
         note: next.note.trim().slice(0, GUILD_CAMP_NOTE_MAX),
         updated_at: new Date().toISOString(),
       },
-      { onConflict: "guild_id,event_id,day_index,slot" },
+      { onConflict: source.campConflict },
     );
     if (saveError) setError(saveError.message);
     else {
@@ -160,10 +190,10 @@ export function GuildSiegeCamps({
     setBusy(false);
   };
 
-  /** Only one camp can be ours, so the one that held the flag gives it up. */
+  /** A guild holds one camp, so the old one gives up the flag; allies keep both. */
   const markOurs = async (camp: GuildEventCampRow, ours: boolean) => {
     const previous = camps.find((entry) => entry.is_ours && entry.slot !== camp.slot);
-    if (ours && previous) await saveCamp(previous, { is_ours: false });
+    if (ours && previous && source.singleOurs) await saveCamp(previous, { is_ours: false });
     await saveCamp(camp, { is_ours: ours });
   };
 
@@ -172,10 +202,9 @@ export function GuildSiegeCamps({
     setBusy(true);
     setError("");
     const next = { ...order, ...patch };
-    const { error: saveError } = await supabase.from("guild_event_orders").upsert(
+    const { error: saveError } = await supabase.from(source.orderTable).upsert(
       {
-        guild_id: guildId,
-        event_id: eventId,
+        ...source.key,
         day_index: dayIndex,
         user_id: next.user_id,
         rings: next.rings,
@@ -185,7 +214,7 @@ export function GuildSiegeCamps({
         attack_target: next.attack_target,
         updated_at: new Date().toISOString(),
       },
-      { onConflict: "guild_id,event_id,day_index,user_id" },
+      { onConflict: source.orderConflict },
     );
     if (saveError) setError(saveError.message);
     else {
@@ -470,7 +499,10 @@ export function GuildSiegeCamps({
               const has = order.rings > 0 || order.horns > 0;
               return (
                 <li key={member.user_id} className={member.user_id === userId ? "guild-order is-you" : "guild-order"}>
-                  <span className="guild-order-name">{guildRosterLabel(member)}</span>
+                  <span className="guild-order-name">
+                    {guildRosterLabel(member)}
+                    {member.guild_name ? <small className="guild-order-guild">{member.guild_name}</small> : null}
+                  </span>
                   <span className="guild-order-stock">
                     {tf(t.guilds.campSpendShort, { rings: n(order.rings), horns: n(order.horns) })}
                   </span>

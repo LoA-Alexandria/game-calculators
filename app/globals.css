@@ -7754,6 +7754,8 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
   display: grid;
   gap: 2px;
   width: clamp(78px, 21%, 124px);
+  /* Never wider than the room left to the map edge, so a corner camp stays whole. */
+  max-width: min(calc(var(--camp-x) * 2 - 4px), calc((100% - var(--camp-x)) * 2 - 4px));
   padding: 4px 6px 5px;
   /* Hangs just below its village, so the huts stay visible. */
   transform: translate(-50%, 24%);
@@ -7865,10 +7867,46 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
   .guild-order-targets select { flex: 1; }
 }
 
+/* --- alliance between two guilds ----------------------------------------- */
+
+.guild-order-guild { display: block; color: var(--ink-faint); font-size: .74rem; font-weight: 500; }
+
+.guild-alliance { display: grid; gap: 8px; margin-top: 16px; }
+.guild-alliance-line { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; }
+.guild-alliance-offer { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; }
+.guild-alliance-note,
+.guild-alliance-confirm { color: var(--ink-soft); font-size: .84rem; }
+.guild-alliance-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr));
+  gap: 10px 12px;
+  padding: 12px 14px 14px;
+  border: 1px solid var(--accent-line);
+  border-radius: var(--r-md);
+  background: var(--surface);
+}
+.guild-alliance-form .field { margin: 0; }
+.guild-alliance-note-field { grid-column: 1 / -1; }
+.guild-alliance-actions { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+
+.guild-board-switch { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+.guild-board-switch .guild-tab {
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+.guild-board-switch .guild-tab.is-active {
+  border-color: var(--accent-line);
+  background: var(--accent-soft);
+  box-shadow: none;
+  color: var(--accent);
+}
+
 @media (max-width: 720px) {
-  .guild-map-camp { width: clamp(74px, 31%, 116px); padding: 3px 5px 4px; }
+  .guild-map-camp { width: clamp(74px, 31%, 116px); padding: 3px 3px 4px; }
   .guild-map-name { font-size: .68rem; }
-  .guild-map-numbers { gap: 0 5px; font-size: .56rem; }
+  .guild-map-numbers { gap: 0 4px; font-size: .56rem; }
   .guild-map-attackers .icon { width: 9px; height: 9px; }
   .guild-camp-edit-grid { grid-template-columns: minmax(0, 1fr); }
 }
