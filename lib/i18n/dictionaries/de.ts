@@ -348,7 +348,7 @@ const de: Dictionary = {
     play: "Stück",
     baseTicket: "Grund-Ticketpreis",
     baseVisitors: "Grund-Besucherstrom",
-    baseNote: "Die beiden Zahlen in der Vorschau des Stücks, bevor du es startest. Die Zahlen während der Aufführung sind nicht die, mit denen die Einnahmen rechnen.",
+    baseNote: "Die beiden Zahlen in der Vorschau des Stücks. Sie sind für alle gleich und ändern sich nie, also zeigt eine Magic Lantern sie für jedes Stück; nur der Musenmünzen-Bonus hängt von deinen Göttinnen ab. Die Zahlen während der Aufführung sind nicht die, mit denen die Einnahmen rechnen.",
     bonus: "Musenmünzen-Bonus",
     bonusFromGoddesses: "Deine Göttinnen geben {percent} %.",
     bonusAtLeast: "Deine Göttinnen geben mindestens {percent} %.",
