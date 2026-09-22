@@ -6612,6 +6612,114 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
 }
 .leg-list div span:last-child { color: var(--on-inverse-soft); font-family: var(--font-mono); white-space: nowrap; }
 
+
+/* --- theater income calculator ------------------------------------------- */
+
+.theater-heading { margin: 0 0 12px; font-size: 1rem; }
+.calculator-form .theater-heading:not(:first-child) { margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--line); }
+.theater-note { margin: -6px 0 14px; color: var(--ink-faint); font-size: .8rem; line-height: 1.5; }
+.theater-note:last-child { margin-bottom: 0; }
+.theater-panel .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.theater-panel .metric-grid > :last-child { grid-column: 1 / -1; }
+.theater-panel .result-breakdown { margin-top: 2px; }
+.theater-upgrade { margin: 16px 0 0; line-height: 1.5; }
+.theater-upgrade strong { color: var(--on-inverse); }
+
+.theater-goddesses, .theater-compare { margin-top: 18px; padding: clamp(18px, 3vw, 26px); }
+.theater-compare h2 { margin: 0 0 8px; font-size: 1.15rem; }
+.theater-lede { max-width: 78ch; margin: 0 0 14px; color: var(--ink-soft); font-size: .88rem; line-height: 1.55; }
+.theater-goddess-actions { display: flex; gap: 8px; }
+.theater-goddess-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+  gap: 8px;
+  margin: 0 0 14px;
+  padding: 0;
+  list-style: none;
+}
+.theater-goddess {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 52px;
+  padding: 5px 10px 5px 5px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  color: var(--ink-faint);
+  font: inherit;
+  font-size: .82rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color .14s ease, background-color .14s ease, color .14s ease;
+}
+.theater-goddess img, .theater-goddess-blank {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--surface-2);
+  object-fit: cover;
+  filter: grayscale(.85);
+  opacity: .6;
+  transition: filter .14s ease, opacity .14s ease;
+}
+.theater-goddess:hover { border-color: var(--line-strong); color: var(--ink-soft); }
+.theater-goddess:focus-visible { outline: none; box-shadow: var(--ring); }
+.theater-goddess[aria-pressed="true"] { border-color: var(--accent-line); background: var(--accent-soft); color: var(--ink); }
+.theater-goddess[aria-pressed="true"] img { filter: none; opacity: 1; }
+.theater-goddess-text { display: grid; gap: 1px; min-width: 0; }
+.theater-goddess-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.theater-goddess-sent { color: var(--good); font-family: var(--font-mono); font-size: .7rem; font-weight: 600; }
+
+.theater-table + .theater-table { margin-top: 16px; }
+/* Fixed columns, so the five rarity tables line up under each other. */
+.theater-table table { min-width: 600px; table-layout: fixed; }
+.theater-table th:first-child { width: 34%; }
+.theater-table caption { padding: 0 0 8px; text-align: left; }
+.theater-table th.num, .theater-table td.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.theater-table td.num { font-family: var(--font-mono); font-size: .82rem; }
+.theater-table tbody th {
+  padding: 11px 10px;
+  color: var(--ink);
+  font-size: .88rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.theater-table tbody tr:last-child th { border-bottom: 0; }
+.theater-table tr[aria-current="true"] > * { background: var(--accent-soft); }
+.theater-row-play {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.theater-row-play:hover { color: var(--accent); }
+.theater-row-play:focus-visible { outline: none; border-radius: 4px; box-shadow: var(--ring); }
+.theater-best {
+  margin-left: 8px;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: var(--good-soft);
+  color: var(--good);
+  font-size: .68rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.theater-missing { color: var(--ink-faint); font-family: var(--font-ui); font-size: .76rem; }
+
+@media (max-width: 640px) {
+  .theater-goddess-list { grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); }
+  .theater-panel .input-row { grid-template-columns: minmax(0, 1fr); gap: 15px; margin-bottom: 15px; }
+  .theater-panel .input-row .field { margin-bottom: 0; }
+}
+
 /* --- planner ------------------------------------------------------------- */
 
 .planner-page { max-width: none; }

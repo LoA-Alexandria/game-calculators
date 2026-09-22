@@ -277,6 +277,12 @@ export const SECTIONS: NavSection[] = [
         badge: (t) => t.tools.goddessXp.category,
       },
       {
+        href: "/calculators/theater-income/",
+        label: (t) => t.tools.theaterIncome.name,
+        description: (t) => t.tools.theaterIncome.description,
+        badge: (t) => t.tools.theaterIncome.category,
+      },
+      {
         href: "/calculators/red-carpet-materials/",
         label: (t) => t.tools.redCarpet.name,
         description: (t) => t.tools.redCarpet.description,
