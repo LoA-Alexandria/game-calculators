@@ -98,18 +98,18 @@ test("set and painting wording is edited per language and exported per dictionar
   const canvas = set.paintings[0];
 
   assert.deepEqual(catalogTextBlocks(exportCatalogTexts(state), texts), {}, "an untouched draft has nothing to paste");
-  state = setSetText(state, set.uid, "de", "name", "  Ruhm und Schatten ");
+  state = setSetText(state, set.uid, "de", "name", "  Glanz und Schatten ");
   state = setSetText(state, set.uid, "de", "effect", "");
   state = setPaintingText(state, canvas.uid, "de", "productivity", "Glashütte");
   state = setSetText(state, set.uid, "en", "name", "ignored");
   assert.equal(findSet(state, set.uid).name, set.name, "English is edited with updateSet, not as a translation");
 
   const exported = exportCatalogTexts(state);
-  // The German catalogue already translates every set skill; this edit adds a name and clears one effect.
-  assert.deepEqual(exported.de.sets[set.id], { name: "Ruhm und Schatten" });
+  // The German catalogue already translates every set; this edit renames one and clears its effect.
+  assert.deepEqual(exported.de.sets[set.id], { name: "Glanz und Schatten" });
   const otherSets = (catalog) => Object.fromEntries(Object.entries(catalog ?? {}).filter(([id]) => id !== set.id));
   assert.deepEqual(otherSets(exported.de.sets), otherSets(texts.de.sets));
-  // The German catalogue already holds original titles; the edit only adds the productivity.
+  // The German catalogue already holds names and titles; the edit only changes the productivity.
   assert.deepEqual(exported.de.paintings[canvas.id], { ...texts.de.paintings?.[canvas.id], productivity: "Glashütte" });
   const others = (catalog) => Object.fromEntries(Object.entries(catalog ?? {}).filter(([id]) => id !== canvas.id));
   assert.deepEqual(others(exported.de.paintings), others(texts.de.paintings));
@@ -117,13 +117,13 @@ test("set and painting wording is edited per language and exported per dictionar
   assert.equal(countCatalogTextChanges(exported, texts), 2);
   const blocks = catalogTextBlocks(exported, texts);
   assert.deepEqual(Object.keys(blocks), ["de"]);
-  assert.match(blocks.de, /catalogTexts: \{\n        sets: \{\n          "glory-and-shadow": \{\n            name: "Ruhm und Schatten",/);
+  assert.match(blocks.de, /catalogTexts: \{\n        sets: \{\n          "glory-and-shadow": \{\n            name: "Glanz und Schatten",/);
 
   const german = localizedSet(PAINTING_SETS[0], exported.de);
-  assert.equal(german.name, "Ruhm und Schatten");
+  assert.equal(german.name, "Glanz und Schatten");
   assert.equal(german.effect, PAINTING_SETS[0].effect, "an empty translation keeps the English set skill");
   assert.equal(german.paintings[0].productivity, "Glashütte");
-  assert.equal(german.paintings[0].name, PAINTING_SETS[0].paintings[0].name);
+  assert.equal(german.paintings[0].name, texts.de.paintings[canvas.id].name);
 
   const restored = parseDraft(JSON.stringify(state));
   assert.deepEqual(exportCatalogTexts(restored), exported);
