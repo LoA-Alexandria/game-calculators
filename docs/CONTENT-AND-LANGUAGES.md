@@ -623,6 +623,38 @@ differs from English (Hamlet stays Hamlet). The export gives each dictionary's
 `playTexts` block, and the test checks that `de.ts` and `fr.ts` hold exactly
 that block.
 
+### Theater income calculator
+
+`/calculators/theater-income/` works out the Muse Coins of a play from the
+player's ticket price and visitor flow upgrades, merchandise, rehearsal bonus,
+and goddesses (`lib/calculators/theater-income.ts`). The formula is Autumn's
+(Ice, S12, 20 August 2026): ticket price and audience are each rounded down,
+then ticket income = price × audience × (1 + bonus) and merchandise income =
+merchandise × audience × (1 + bonus). `tests/theater-income.test.mjs` replays
+her three test performances to the coin, so a change to the rounding shows up
+there first.
+
+Everything the game fixes per play or goddess lives in
+`lib/data/theater-income.json`:
+
+- `plays`: every play in `goddess-theater.json` with its rarity, and where
+  known the base ticket price and visitor flow from the play's preview
+  (`ticket`, `visitors`), its three aptitudes, and Autumn's Royal Theater total
+  (`reference`, at 310 % / 310 % / 930). UR+ plays have `slots: 5` because
+  their casts have five roles; that is an assumption until someone checks.
+- `goddesses`: the aptitudes known per goddess, and `lacks` for aptitudes a
+  test showed she does not have. With `lacks` a play's bonus can be exact
+  before all three of her aptitudes are known.
+- `aptitudes`: each aptitude and the resource it trains.
+
+On 22 September 2026 only Pride and Prejudice, Don Quixote, and Robinson Crusoe
+had base values and aptitudes, and nine goddesses had some aptitudes. Players
+type the other plays' preview numbers and bonus into the page; that stays in
+their browser (`localStorage['popepoch-theater-income']`). New values from a
+player or a spreadsheet go into the JSON; the tests check that every aptitude
+exists, every play has both base values or neither, and every goddess is in the
+roster.
+
 ## Editing hero linking
 
 Hero linking sits under the **Tips and tricks** category and keeps two lists:
@@ -1032,6 +1064,9 @@ so they can be corrected in one place. The same goes for the German and French
 painting set names in `catalogTexts.sets` and the Goddess Theater role names in
 `playTexts`: plays and paintings use their usual published titles, but set
 names and roles such as "Support 1" were translated here.
+The Theater income calculator's German and French words for Muse Coins
+(Musenmünzen, pièces des Muses), the aptitudes, and the theater upgrades are
+ours too, in `theaterIncome` in each dictionary.
 
 Hero and Collection names in the Hero layouts and tier list data are not
 translated at all: they live in the JSON files, and only qualifiers such as
