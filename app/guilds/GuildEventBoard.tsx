@@ -15,11 +15,15 @@ import {
 import { guildRosterLabel, type GuildRosterEntry } from "../../lib/content/guilds";
 import {
   acceptedAlliance,
+  allianceNeedsBase,
+  allianceOwnBase,
+  alliancePartnerBase,
+  alliancePartnerId,
   type GuildAllianceRosterEntry,
   type GuildAllianceRow,
 } from "../../lib/content/guild-alliances";
-import { GuildAlliance } from "./GuildAlliance";
-import { GuildSiegeCamps } from "./GuildSiegeCamps";
+import { GuildAlliance, type AllianceGuild } from "./GuildAlliance";
+import { GuildSiegeCamps, type SiegeBase } from "./GuildSiegeCamps";
 import { getSupabaseBrowserClient } from "../../lib/supabase/client";
 import { useLocale } from "../components/LocaleProvider";
 
@@ -40,6 +44,7 @@ type PledgeRow = {
 
 type Props = {
   guildId: string;
+  guildName: string;
   userId: string;
   canOfficer: boolean;
   roster: GuildRosterEntry[];
@@ -54,7 +59,7 @@ function eventLabel(
   return t.guilds.events[def.labelKey];
 }
 
-export function GuildEventBoard({ guildId, userId, canOfficer, roster, eventId }: Props) {
+export function GuildEventBoard({ guildId, guildName, userId, canOfficer, roster, eventId }: Props) {
   const { t, tf } = useLocale();
   const supabase = getSupabaseBrowserClient();
   const ids = useId();
@@ -63,6 +68,9 @@ export function GuildEventBoard({ guildId, userId, canOfficer, roster, eventId }
   const [days, setDays] = useState<DayRow[]>([]);
   const [pledges, setPledges] = useState<PledgeRow[]>([]);
   const [alliances, setAlliances] = useState<GuildAllianceRow[]>([]);
+  const [guilds, setGuilds] = useState<AllianceGuild[]>([]);
+  // The village our guild holds on its own board; an alliance offer carries it.
+  const [ownBase, setOwnBase] = useState<{ key: string; slot: number | null }>({ key: "", slot: null });
   // Kept under the alliance it belongs to, so a new alliance never shows the old roster.
   const [allyRoster, setAllyRoster] = useState<{ id: string; entries: GuildAllianceRosterEntry[] } | null>(null);
   const [shared, setShared] = useState(false);
@@ -152,7 +160,7 @@ export function GuildEventBoard({ guildId, userId, canOfficer, roster, eventId }
     void (async () => {
       const { data, error: allianceError } = await supabase
         .from("guild_alliances")
-        .select("id, event_id, from_guild_id, to_guild_id, status, note, created_at")
+        .select("id, event_id, from_guild_id, to_guild_id, status, note, created_at, from_slot, to_slot")
         .eq("event_id", eventId)
         .or(`from_guild_id.eq.${guildId},to_guild_id.eq.${guildId}`);
       if (gone) return;
@@ -163,6 +171,41 @@ export function GuildEventBoard({ guildId, userId, canOfficer, roster, eventId }
       gone = true;
     };
   }, [supabase, guildId, eventId, reloadToken]);
+
+  useEffect(() => {
+    if (!supabase || !def.camps) return;
+    let gone = false;
+    void (async () => {
+      const { data, error: listError } = await supabase
+        .from("guilds")
+        .select("id, name, server_name")
+        .order("name");
+      if (gone) return;
+      if (listError) setError(listError.message);
+      else setGuilds((data ?? []) as AllianceGuild[]);
+    })();
+    return () => {
+      gone = true;
+    };
+  }, [supabase, def.camps]);
+
+  useEffect(() => {
+    if (!supabase || !def.camps) return;
+    let gone = false;
+    void (async () => {
+      const { data, error: baseError } = await supabase
+        .from("guild_event_camps")
+        .select("slot")
+        .match({ guild_id: guildId, event_id: eventId, day_index: dayIndex, is_ours: true })
+        .maybeSingle();
+      if (gone) return;
+      if (baseError) setError(baseError.message);
+      else setOwnBase({ key: `${eventId}:${dayIndex}`, slot: (data?.slot as number | undefined) ?? null });
+    })();
+    return () => {
+      gone = true;
+    };
+  }, [supabase, def.camps, guildId, eventId, dayIndex, reloadToken]);
 
   const ally = acceptedAlliance(alliances, guildId);
   const allianceId = ally?.id ?? null;
@@ -300,6 +343,36 @@ export function GuildEventBoard({ guildId, userId, canOfficer, roster, eventId }
 
   const onShared = shared && ally !== null;
   const sharedRoster = allyRoster && allyRoster.id === allianceId ? allyRoster.entries : [];
+  const guildLabel = (id: string) => guilds.find((entry) => entry.id === id)?.name ?? "";
+  const sharedBases: SiegeBase[] = ally
+    ? [
+        ...(allianceOwnBase(ally, guildId) === null
+          ? []
+          : [{ slot: allianceOwnBase(ally, guildId)!, label: guildName, own: true }]),
+        ...(alliancePartnerBase(ally, guildId) === null
+          ? []
+          : [
+              {
+                slot: alliancePartnerBase(ally, guildId)!,
+                label: guildLabel(alliancePartnerId(ally, guildId)),
+                own: false,
+              },
+            ]),
+      ]
+    : [];
+
+  const pickSharedBase = async (slot: number) => {
+    if (!supabase || !ally) return;
+    setBusy(true);
+    setError("");
+    const { error: rpcError } = await supabase.rpc("set_alliance_base", {
+      p_alliance_id: ally.id,
+      p_slot: slot,
+    });
+    if (rpcError) setError(rpcError.message);
+    else reload();
+    setBusy(false);
+  };
   const currentResult = days.find((d) => d.day_index === dayIndex)?.result ?? "pending";
   const lead = our - enemy;
 
@@ -312,9 +385,11 @@ export function GuildEventBoard({ guildId, userId, canOfficer, roster, eventId }
         </span>
       </header>
 
-      <p className="guild-event-hint">
-        {def.featured ? t.guilds.eventTacticsHint : t.guilds.eventGenericHint}
-      </p>
+      {def.camps ? null : (
+        <p className="guild-event-hint">
+          {def.featured ? t.guilds.eventTacticsHint : t.guilds.eventGenericHint}
+        </p>
+      )}
 
       {error ? (
         <p className="result-error" role="alert">
@@ -390,13 +465,15 @@ export function GuildEventBoard({ guildId, userId, canOfficer, roster, eventId }
       <p className="guild-event-coverage" role="status">
         {lead > 0
           ? tf(t.guilds.eventCoverageLead, { lead })
-          : coverage.covers
-            ? tf(t.guilds.eventCoverageOk, { available: coverage.available, gap: coverage.gap })
-            : tf(t.guilds.eventCoverageShort, {
-                short: Math.max(0, coverage.gap - coverage.available),
-                available: coverage.available,
-                gap: coverage.gap,
-              })}
+          : def.camps
+            ? tf(t.guilds.eventBehind, { gap: coverage.gap })
+            : coverage.covers
+              ? tf(t.guilds.eventCoverageOk, { available: coverage.available, gap: coverage.gap })
+              : tf(t.guilds.eventCoverageShort, {
+                  short: Math.max(0, coverage.gap - coverage.available),
+                  available: coverage.available,
+                  gap: coverage.gap,
+                })}
       </p>
 
       {canOfficer ? (
@@ -456,6 +533,8 @@ export function GuildEventBoard({ guildId, userId, canOfficer, roster, eventId }
           canOfficer={canOfficer}
           rows={alliances}
           accepted={ally}
+          guilds={guilds}
+          ownBaseSlot={ownBase.key === `${eventId}:${dayIndex}` ? ownBase.slot : null}
           onChanged={reload}
         />
       ) : null}
@@ -492,6 +571,10 @@ export function GuildEventBoard({ guildId, userId, canOfficer, roster, eventId }
           canOfficer={canOfficer}
           userId={userId}
           roster={onShared && ally ? sharedRoster : roster}
+          ownLabel={guildName}
+          bases={onShared ? sharedBases : []}
+          needsBase={onShared && ally !== null && allianceNeedsBase(ally, guildId) && canOfficer}
+          onPickBase={pickSharedBase}
         />
       ) : null}
 

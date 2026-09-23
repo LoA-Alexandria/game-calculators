@@ -103,32 +103,40 @@ pledges, Berlin-midnight timer). Members set their own roster display name and
 pledge end-invest amounts.
 
 Events whose def in `lib/content/guild-events.ts` carries a `camps` count also get
-a siege board: the game's own map with a marker on every village. The picture in
-`public/guilds/trials-of-odin.webp` was cut from a client screenshot, the burnt
-camps rebuilt from the intact one and the name plates taken off, so only the
-plan sits on top of it. `SIEGE_MAPS` in `GuildSiegeCamps.tsx` holds the picture,
-its shape, and where each camp stands, in percent; an event with camps but no
-picture falls back to a plain ring. The markers carry the whole plan, so the page
-around them stays almost wordless.
+a siege board: a drawn map of the villages, with the plan sitting on top of it.
+`SIEGE_MAPS` in `GuildSiegeCamps.tsx` holds the picture, its shape, and where
+each village stands, in percent; an event with villages but no picture falls back
+to a plain ring. Everything is done on the map, so the page around it stays
+almost wordless: tapping a village names it right where it stands, marks it as
+the guild's base, or gives it a number in the target order, and the marker then
+carries that number, the rings and horns pointed at it and how many members
+attack it.
 
-Officers mark which camp is the guild's own and put the others in the order they
-should fall (`guild_event_camps`, one row per camp and siege day). Members write
-down the Draupnir Rings and Military Tokens (Horns) they still have, and officers
-point those, and each member's normal attacks, at one camp or at every camp
-(`guild_event_orders`, one row per member and siege day). Each camp marker then
-shows what is aimed at it. Officers write, active members read and keep their own
-row, and nothing crosses guilds. An event with a siege map plans its rings and
-horns there, so the end-invest block is hidden for it.
+Under the map, one panel belongs to the village that was tapped: its call, and
+a row per member with three toggles that send that member's rings, horns and
+normal attacks to this village or back to “every village”. Members with stock
+sort to the top. Below that, everyone writes down the Draupnir Rings and
+Military Tokens (Horns) they hold and sees where their own are pointed.
 
-Two guilds may plan one siege together. An officer offers an alliance for an
-event (`guild_alliances`, one live row per pair and event); an officer of the
-invited guild answers through `respond_to_guild_alliance`, so nobody accepts
-their own offer. While it stands, both guilds get a second board beside their
-own — the same map, but on `guild_alliance_camps` and `guild_alliance_orders`,
-where both allied camps count as friendly and `alliance_roster` names the
-members of both guilds. `is_alliance_member` and `is_alliance_officer` gate it,
-and each guild's own board stays private. Ending the alliance, from either
-side, deletes the shared plan with it.
+Villages and the order live in `guild_event_camps`, the stock and its targets in
+`guild_event_orders`, both one row per siege day. `setCampPriority` keeps the
+order contiguous when a village moves into it, swaps with it, or leaves it.
+Officers write, active members read and keep their own row, and nothing crosses
+guilds. An event with a siege map plans its rings and horns there, so the
+end-invest block and its bank line are hidden for it.
+
+Two guilds may plan one siege together, and each holds one village. A guild can
+only offer an alliance once it has marked its own base: the offer carries that
+village as `guild_alliances.from_slot`, and the policy refuses an offer without
+one. The invited guild answers through `respond_to_guild_alliance`, so nobody
+accepts their own offer, and then has to pick its own village through
+`set_alliance_base` — until `to_slot` is set the shared board only offers that
+one step. With both villages held, the guilds get a second board beside their own
+— the same map, but on `guild_alliance_camps` and `guild_alliance_orders`, with
+the two bases drawn from the alliance and `alliance_roster` naming the members of
+both guilds. `is_alliance_member` and `is_alliance_officer` gate it, a village a
+guild holds can never be a target, and each guild's own board stays private.
+Ending the alliance, from either side, deletes the shared plan with it.
 
 ## Vendored applications
 

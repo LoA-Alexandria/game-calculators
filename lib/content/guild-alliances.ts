@@ -22,6 +22,10 @@ export type GuildAllianceRow = {
   status: GuildAllianceStatus;
   note: string;
   created_at: string;
+  /** Village the asking guild holds; it is set before the offer goes out. */
+  from_slot: number | null;
+  /** Village the invited guild holds; null until it has picked one. */
+  to_slot: number | null;
 };
 
 /** A member of either allied guild, with the guild they belong to. */
@@ -69,6 +73,24 @@ export function openOffers(
     )
     .slice()
     .sort((a, b) => b.created_at.localeCompare(a.created_at));
+}
+
+/** The village our guild holds in this alliance, if it has picked one. */
+export function allianceOwnBase(row: GuildAllianceRow, guildId: string): number | null {
+  return row.from_guild_id === guildId ? row.from_slot : row.to_slot;
+}
+
+/** The village the other guild holds. */
+export function alliancePartnerBase(row: GuildAllianceRow, guildId: string): number | null {
+  return row.from_guild_id === guildId ? row.to_slot : row.from_slot;
+}
+
+/**
+ * Picking a village is the first thing the invited guild does: until both
+ * guilds hold one, the shared board has nothing to plan around.
+ */
+export function allianceNeedsBase(row: GuildAllianceRow, guildId: string): boolean {
+  return row.status === "accepted" && allianceOwnBase(row, guildId) === null;
 }
 
 /** Only the invited guild answers an offer, and only while it is pending. */

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useState } from "react";
+import { useId, useState } from "react";
 import {
   GUILD_ALLIANCE_NOTE_MAX,
   alliancePartnerId,
@@ -14,11 +14,12 @@ import { getSupabaseBrowserClient } from "../../lib/supabase/client";
 import { useLocale } from "../components/LocaleProvider";
 import { GuildsIcon, PlusIcon } from "../components/Icons";
 
-type PickerGuild = Pick<Guild, "id" | "name" | "server_name">;
+export type AllianceGuild = Pick<Guild, "id" | "name" | "server_name">;
 
 /**
- * The alliance line above the siege map: who we are allied with for this event,
- * the offer waiting for an answer, or the button an officer uses to ask.
+ * The alliance line above the map: who we are allied with for this event, an
+ * offer waiting for an answer, or the button an officer uses to ask. A guild
+ * can only ask once it holds a village of its own.
  */
 export function GuildAlliance({
   guildId,
@@ -27,6 +28,8 @@ export function GuildAlliance({
   canOfficer,
   rows,
   accepted,
+  guilds,
+  ownBaseSlot,
   onChanged,
 }: {
   guildId: string;
@@ -35,13 +38,14 @@ export function GuildAlliance({
   canOfficer: boolean;
   rows: GuildAllianceRow[];
   accepted: GuildAllianceRow | null;
+  guilds: AllianceGuild[];
+  ownBaseSlot: number | null;
   onChanged: () => void;
 }) {
   const { t, tf } = useLocale();
   const supabase = getSupabaseBrowserClient();
   const ids = useId();
 
-  const [guilds, setGuilds] = useState<PickerGuild[]>([]);
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [pick, setPick] = useState("");
@@ -50,27 +54,10 @@ export function GuildAlliance({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    if (!supabase) return;
-    let gone = false;
-    void (async () => {
-      const { data, error: listError } = await supabase
-        .from("guilds")
-        .select("id, name, server_name")
-        .order("name");
-      if (gone) return;
-      if (listError) setError(listError.message);
-      else setGuilds((data ?? []) as PickerGuild[]);
-    })();
-    return () => {
-      gone = true;
-    };
-  }, [supabase]);
-
   const guildName = (id: string) => guilds.find((guild) => guild.id === id)?.name ?? "…";
 
   const offer = async () => {
-    if (!supabase || !pick) return;
+    if (!supabase || !pick || ownBaseSlot === null) return;
     setBusy(true);
     setError("");
     const { error: insertError } = await supabase.from("guild_alliances").insert({
@@ -78,6 +65,7 @@ export function GuildAlliance({
       from_guild_id: guildId,
       to_guild_id: pick,
       created_by: userId,
+      from_slot: ownBaseSlot,
       note: note.trim().slice(0, GUILD_ALLIANCE_NOTE_MAX),
     });
     if (insertError) setError(insertError.message);
@@ -122,6 +110,7 @@ export function GuildAlliance({
   const choices = offerableGuilds(guilds, guildId, rows).filter((guild) =>
     guildMatchesServerFilter(guild, query),
   );
+  const canOffer = canOfficer && ownBaseSlot !== null;
 
   return (
     <div className="guild-alliance">
@@ -141,7 +130,7 @@ export function GuildAlliance({
             {canOfficer ? (
               confirmEnd ? (
                 <>
-                  <span className="guild-alliance-confirm">{t.guilds.allianceEndConfirm}</span>
+                  <span className="guild-alliance-note">{t.guilds.allianceEndConfirm}</span>
                   <button
                     className="small-button button-danger"
                     type="button"
@@ -202,10 +191,19 @@ export function GuildAlliance({
         )}
 
         {!accepted && pending.length === 0 && canOfficer && !open ? (
-          <button className="small-button" type="button" onClick={() => setOpen(true)}>
-            <PlusIcon className="icon icon-sm" />
-            {t.guilds.allianceOffer}
-          </button>
+          <>
+            <button
+              className="small-button"
+              type="button"
+              disabled={!canOffer}
+              title={canOffer ? undefined : t.guilds.baseNeededForOffer}
+              onClick={() => setOpen(true)}
+            >
+              <PlusIcon className="icon icon-sm" />
+              {t.guilds.allianceOffer}
+            </button>
+            {canOffer ? null : <span className="guild-alliance-note">{t.guilds.baseNeededForOffer}</span>}
+          </>
         ) : null}
       </div>
 
@@ -248,7 +246,7 @@ export function GuildAlliance({
             <button
               className="small-button button-primary"
               type="button"
-              disabled={busy || !pick}
+              disabled={busy || !pick || !canOffer}
               onClick={() => void offer()}
             >
               {t.guilds.allianceSend}
