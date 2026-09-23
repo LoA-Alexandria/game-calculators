@@ -5,6 +5,7 @@ import { getDictionary } from "../lib/i18n/index.ts";
 import {
   groupByBadge,
   guideCount,
+  SECTIONS,
   sectionById,
   sectionHasBrowsePanel,
   toolCount,
@@ -43,6 +44,11 @@ test("guilds section is listed and has no static child routes", () => {
   assert.equal(guilds.href, "/guilds/");
   assert.equal(guilds.items.length, 0);
   assert.equal(sectionHasBrowsePanel(guilds), false);
+});
+
+test("Mail is a top-bar shortcut, not a left-rail section", () => {
+  assert.equal(SECTIONS.some((section) => section.href === "/post/"), false);
+  assert.equal(SECTIONS.some((section) => section.id === "post"), false);
 });
 
 test("Events index lists every published event write-up in one flat list", () => {

@@ -158,11 +158,12 @@ both guilds. `is_alliance_member` and `is_alliance_officer` gate it, a village a
 guild holds can never be a target, and each guild's own board stays private.
 Ending the alliance, from either side, deletes the shared plan with it.
 
-Players write to each other at `/post/`. One table, `messages`, holds all three
-kinds and tells them apart by `kind`: direct mail between two players, the chat
-of one guild, and the chat the two guilds of an alliance share. RLS decides who
-reads what — sender or recipient for mail, `is_guild_member` for a guild chat,
-`is_alliance_member` for an alliance chat — and the two chats are plain inserts.
+Players write to each other at `/post/` (top-bar Mail shortcut; not a left-rail
+section). One table, `messages`, holds all three kinds and tells them apart by
+`kind`: direct mail between two players, the chat of one guild, and the chat the
+two guilds of an alliance share. RLS decides who reads what — sender or recipient
+for mail, `is_guild_member` for a guild chat, `is_alliance_member` for an alliance
+chat — and the two chats are plain inserts.
 
 Direct mail goes through `send_direct_message`, which refuses a recipient who
 blocked the sender (`message_blocks`, a list only its owner can read) and stops

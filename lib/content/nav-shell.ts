@@ -43,6 +43,7 @@ const CREATE_PAGES: { href: string; parent: string; label: (t: Dictionary) => st
   { href: "/guides/new/", parent: "/guides/", label: (t) => t.nav.newGuide },
   { href: "/news/new/", parent: "/news/", label: (t) => t.nav.newNews },
   { href: "/admin/", parent: "/", label: (t) => t.nav.admin },
+  { href: "/post/", parent: "/", label: (t) => t.nav.post },
 ];
 
 /**

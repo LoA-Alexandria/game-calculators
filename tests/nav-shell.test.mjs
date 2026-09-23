@@ -49,4 +49,13 @@ test("nav crumbs name the published page under a nested editor URL", () => {
   assert.equal(create.at(-1)?.label, "New guide");
   assert.equal(create.at(-1)?.current, true);
   assert.equal(create[1]?.href, "/guides/");
+
+  const mail = navCrumbs("/post/", en);
+  assert.deepEqual(
+    mail.map((crumb) => ({ href: crumb.href, label: crumb.label, current: crumb.current })),
+    [
+      { href: "/", label: "Overview", current: undefined },
+      { href: "/post/", label: "Mail", current: true },
+    ],
+  );
 });
