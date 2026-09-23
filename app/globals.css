@@ -7328,6 +7328,22 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
   gap: 8px;
   align-items: center;
 }
+.guild-compose-translations {
+  display: grid;
+  gap: 16px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+}
+.guild-compose-translations h3 { margin: 0; font-size: 1rem; }
+.guild-compose-locale {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  background: color-mix(in srgb, var(--panel) 92%, var(--line));
+}
+.guild-compose-locale h4 { margin: 0; font-size: .92rem; color: var(--ink-soft); }
 .guild-empty {
   display: grid;
   justify-items: center;

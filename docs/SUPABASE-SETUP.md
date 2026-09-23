@@ -90,6 +90,14 @@ merging:
 ```sh
 supabase db push
 supabase functions deploy verify-discord-role --use-api
+supabase functions deploy translate-guild-post --use-api
+```
+
+Optional: set a contact email so MyMemory raises the free daily character quota
+for guild-news translation:
+
+```sh
+supabase secrets set MYMEMORY_EMAIL=you@example.com
 ```
 
 `--use-api` bundles the function on Supabase's side, so Docker is not needed.

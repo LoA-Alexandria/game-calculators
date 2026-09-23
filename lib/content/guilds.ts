@@ -71,6 +71,9 @@ export type GuildPost = {
   channel: GuildTab;
   title: string;
   body: string;
+  source_locale?: string;
+  title_i18n?: Record<string, string> | null;
+  body_i18n?: Record<string, string> | null;
   author_id: string;
   created_at: string;
   updated_at: string;

@@ -7,6 +7,16 @@ import { GuildEventBoard, GuildEventPicker } from "./GuildEventBoard";
 import { GuildRichTextEditor, GuildRichTextView } from "./GuildRichText";
 import { guildPostHtml, sanitizeGuildHtml } from "../../lib/content/guild-rich-text";
 import {
+  guildPostBodyForLocale,
+  guildPostTitleForLocale,
+  htmlToPlainText,
+  isGuildPostLocale,
+  otherLocales,
+  parseLocaleMap,
+} from "../../lib/content/guild-post-i18n";
+import { LOCALES, type Locale } from "../../lib/i18n";
+import { blankTranslations, type Translations } from "../../lib/i18n/translations";
+import {
   GUILD_PLAN_EVENTS,
   isGuildPlanEventId,
   guildPlanEventDef,
@@ -108,8 +118,20 @@ type AllianceOffer = {
   name: string;
 };
 
+async function functionErrorDetail(error: unknown): Promise<string> {
+  const context = (error as { context?: unknown } | null)?.context;
+  if (!(context instanceof Response)) return "";
+  try {
+    const body: unknown = await context.clone().json();
+    const reported = (body as { error?: unknown })?.error;
+    return typeof reported === "string" ? reported : "";
+  } catch {
+    return "";
+  }
+}
+
 export function GuildRoom({ tab }: { tab: GuildTab }) {
-  const { t, tf, d } = useLocale();
+  const { t, tf, d, locale } = useLocale();
   const { session, loading: authLoading } = useAuth();
   const supabase = getSupabaseBrowserClient();
   const pathname = usePathname() ?? "";
@@ -133,6 +155,11 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
 
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
+  const [sourceLocale, setSourceLocale] = useState<Locale>(locale);
+  const [titleI18n, setTitleI18n] = useState<Translations>(blankTranslations);
+  const [bodyI18n, setBodyI18n] = useState<Translations>(blankTranslations);
+  const [hasTranslations, setHasTranslations] = useState(false);
+  const [translating, setTranslating] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [composeFor, setComposeFor] = useState<GuildTab | null>(null);
   const composing = composeFor === tab;
@@ -232,7 +259,7 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
         const [feed, members, active] = await Promise.all([
           supabase
             .from("guild_posts")
-            .select("id, guild_id, channel, title, body, author_id, created_at, updated_at")
+            .select("id, guild_id, channel, title, body, source_locale, title_i18n, body_i18n, author_id, created_at, updated_at")
             .eq("guild_id", nextGuild.id)
             .eq("channel", tab)
             .order("created_at", { ascending: false }),
@@ -363,8 +390,40 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
   const resetComposer = () => {
     setTitle("");
     setBody("");
+    setSourceLocale(locale);
+    setTitleI18n(blankTranslations());
+    setBodyI18n(blankTranslations());
+    setHasTranslations(false);
     setEditingId(null);
     setComposeFor(null);
+  };
+
+  const translatePost = async () => {
+    if (!supabase || !guild || !title.trim()) return;
+    setTranslating(true);
+    setError("");
+    const { data, error: translateError } = await supabase.functions.invoke("translate-guild-post", {
+      body: {
+        guildId: guild.id,
+        sourceLocale,
+        title: title.trim(),
+        body: sanitizeGuildHtml(body) || body,
+      },
+    });
+    if (translateError) {
+      const detail = await functionErrorDetail(translateError);
+      setError(detail || t.guilds.translateFailed);
+      setTranslating(false);
+      return;
+    }
+    const titles = parseLocaleMap((data as { title_i18n?: unknown } | null)?.title_i18n);
+    const bodies = parseLocaleMap((data as { body_i18n?: unknown } | null)?.body_i18n);
+    titles[sourceLocale] = title.trim();
+    bodies[sourceLocale] = sanitizeGuildHtml(body) || body;
+    setTitleI18n(titles);
+    setBodyI18n(bodies);
+    setHasTranslations(true);
+    setTranslating(false);
   };
 
   const savePost = async () => {
@@ -372,6 +431,8 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
     const nextTitle = title.trim();
     const nextBody = sanitizeGuildHtml(body);
     if (!nextTitle) return;
+    const nextTitles = { ...titleI18n, [sourceLocale]: nextTitle };
+    const nextBodies = { ...bodyI18n, [sourceLocale]: nextBody };
     setBusy(true);
     setError("");
     if (editingId) {
@@ -380,6 +441,9 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
         .update({
           title: nextTitle,
           body: nextBody,
+          source_locale: sourceLocale,
+          title_i18n: nextTitles,
+          body_i18n: nextBodies,
           updated_at: new Date().toISOString(),
         })
         .eq("id", editingId);
@@ -394,6 +458,9 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
         channel: tab,
         title: nextTitle,
         body: nextBody,
+        source_locale: sourceLocale,
+        title_i18n: nextTitles,
+        body_i18n: nextBodies,
         author_id: session.userId,
       });
       if (insertError) setError(insertError.message);
@@ -406,9 +473,18 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
   };
 
   const startEdit = (post: GuildPost) => {
+    const source = isGuildPostLocale(post.source_locale) ? post.source_locale : locale;
+    const titles = parseLocaleMap(post.title_i18n);
+    const bodies = parseLocaleMap(post.body_i18n);
+    if (!titles[source]?.trim()) titles[source] = post.title;
+    if (!bodies[source]?.trim()) bodies[source] = guildPostHtml(post.body);
     setEditingId(post.id);
-    setTitle(post.title);
-    setBody(guildPostHtml(post.body));
+    setSourceLocale(source);
+    setTitle(titles[source] || post.title);
+    setBody(bodies[source] || guildPostHtml(post.body));
+    setTitleI18n(titles);
+    setBodyI18n(bodies);
+    setHasTranslations(otherLocales(source).some((code) => Boolean(titles[code]?.trim() || bodies[code]?.trim())));
     setComposeFor(tab);
   };
 
@@ -607,6 +683,10 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
     setEditingId(null);
     setTitle("");
     setBody("");
+    setSourceLocale(locale);
+    setTitleI18n(blankTranslations());
+    setBodyI18n(blankTranslations());
+    setHasTranslations(false);
   };
 
   const composer = (
@@ -617,13 +697,26 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
           className="icon-button"
           type="button"
           aria-label={t.guilds.composeClose}
-          disabled={busy}
+          disabled={busy || translating}
           onClick={resetComposer}
         >
           <CloseIcon className="icon icon-sm" />
         </button>
       </header>
       <div className="guild-compose">
+        <div className="field">
+          <label htmlFor={`${ids}-source`}>{t.guilds.translateSource}</label>
+          <select
+            id={`${ids}-source`}
+            value={sourceLocale}
+            disabled={busy || translating}
+            onChange={(e) => setSourceLocale(e.target.value as Locale)}
+          >
+            {LOCALES.map((entry) => (
+              <option key={entry.code} value={entry.code}>{entry.label}</option>
+            ))}
+          </select>
+        </div>
         <div className="field">
           <label htmlFor={`${ids}-title`}>{t.guilds.postTitle}</label>
           <input
@@ -638,21 +731,66 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
           label={t.guilds.postBody}
           value={body}
           onChange={setBody}
-          disabled={busy}
+          disabled={busy || translating}
         />
+        <p className="hint">{t.guilds.translateHint}</p>
         <div className="guild-compose-actions">
+          <button
+            className="small-button"
+            type="button"
+            disabled={busy || translating || !title.trim()}
+            onClick={() => void translatePost()}
+          >
+            {translating ? t.guilds.translateBusy : t.guilds.translateAll}
+          </button>
           <button
             className="button button-primary"
             type="button"
-            disabled={busy || !title.trim()}
+            disabled={busy || translating || !title.trim()}
             onClick={() => void savePost()}
           >
             {editingId ? t.guilds.postEdit : t.guilds.postAdd}
           </button>
-          <button className="small-button" type="button" disabled={busy} onClick={resetComposer}>
+          <button className="small-button" type="button" disabled={busy || translating} onClick={resetComposer}>
             {t.guilds.postCancel}
           </button>
         </div>
+        {hasTranslations ? (
+          <div className="guild-compose-translations">
+            <h3>{t.guilds.translationsHeading}</h3>
+            {otherLocales(sourceLocale).map((code) => {
+              const meta = LOCALES.find((entry) => entry.code === code);
+              return (
+                <div className="guild-compose-locale" key={code}>
+                  <h4>{meta?.label ?? code}</h4>
+                  <div className="field">
+                    <label htmlFor={`${ids}-title-${code}`}>{t.guilds.postTitle}</label>
+                    <input
+                      id={`${ids}-title-${code}`}
+                      value={titleI18n[code]}
+                      maxLength={120}
+                      disabled={busy || translating}
+                      onChange={(e) => setTitleI18n((current) => ({ ...current, [code]: e.target.value }))}
+                    />
+                  </div>
+                  <div className="field">
+                    <label htmlFor={`${ids}-body-${code}`}>{t.guilds.postBody}</label>
+                    <textarea
+                      id={`${ids}-body-${code}`}
+                      rows={5}
+                      value={htmlToPlainText(bodyI18n[code])}
+                      disabled={busy || translating}
+                      onChange={(e) => setBodyI18n((current) => ({
+                        ...current,
+                        [code]: e.target.value,
+                      }))}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : null}
       </div>
     </section>
   );
@@ -993,7 +1131,7 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
                         <li className="guild-post" key={post.id}>
                           <header className="guild-post-head">
                             <div className="guild-post-title">
-                              <h3>{post.title}</h3>
+                              <h3>{guildPostTitleForLocale(post, locale)}</h3>
                               <p className="guild-post-meta">
                                 {author ? <span>{author}</span> : null}
                                 <time dateTime={post.created_at}>{d(post.created_at.slice(0, 10))}</time>
@@ -1045,7 +1183,7 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
                               </button>
                             </div>
                           ) : null}
-                          <GuildRichTextView html={guildPostHtml(post.body)} />
+                          <GuildRichTextView html={guildPostBodyForLocale(post, locale)} />
                         </li>
                       );
                     })}
