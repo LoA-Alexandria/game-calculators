@@ -28,6 +28,13 @@ export type GuildPlanEventDef = {
    * around Asgard; events without a map leave this out.
    */
   camps?: number;
+  /**
+   * When false, the siege pop hides Draupnir Rings and Military Tokens (Horns).
+   * Dawn of Rome plans bases and territory without that stock.
+   */
+  stock?: boolean;
+  /** Paintable hex layer + capturable neutral settlements (Dawn of Rome). */
+  hexTerritory?: boolean;
 };
 
 export const GUILD_PLAN_EVENTS: readonly GuildPlanEventDef[] = [
@@ -45,6 +52,9 @@ export const GUILD_PLAN_EVENTS: readonly GuildPlanEventDef[] = [
     seriesDays: 3,
     winDaysNeeded: 2,
     featured: false,
+    camps: 6,
+    stock: false,
+    hexTerritory: true,
   },
   {
     id: "heart-of-gold",

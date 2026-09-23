@@ -44,6 +44,8 @@ The guild is `1534685294371274822` and stays in the function.
 - `20260923210000_end_guild_event.sql` — `end_guild_event` clears an event.
 - `20260924110000_camp_horn_share.sql` — a camp's horn share and ring spread.
 - `20260924150000_messages.sql` — mail, the two chats, blocks and read marks.
+- `20260925120000_guild_posts_i18n.sql` — guild news source + i18n columns.
+- `20260925200000_guild_rome_territory.sql` — Dawn of Rome hex paint and settlements.
 
 They only add tables, columns, functions and policies, so applying them changes
 nothing until a guild fills a board in, offers an alliance, ends an event or

@@ -7779,10 +7779,132 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
   background-size: cover;
 }
 
+.siege-map[data-wide="true"] {
+  max-width: min(920px, 100%);
+}
+
+.siege-brush {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+  max-width: min(920px, 100%);
+  margin-inline: auto;
+}
+
+.siege-brush-chip {
+  appearance: none;
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  color: var(--ink-soft);
+  font: inherit;
+  font-size: .78rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  cursor: pointer;
+}
+
+.siege-brush-chip:hover { border-color: var(--accent-line); color: var(--ink); }
+.siege-brush-chip[aria-pressed="true"][data-owner="ours"] {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+  color: var(--accent);
+}
+.siege-brush-chip[aria-pressed="true"][data-owner="ally"] {
+  border-color: var(--good);
+  background: color-mix(in srgb, var(--good) 22%, transparent);
+  color: var(--good);
+}
+.siege-brush-chip[aria-pressed="true"][data-owner="clear"] {
+  border-color: var(--ink-faint);
+  background: var(--surface-2, var(--surface));
+  color: var(--ink);
+}
+
+.siege-brush-hint {
+  color: var(--ink-faint);
+  font-size: .76rem;
+}
+
+.siege-hex-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.siege-hex {
+  fill: color-mix(in srgb, var(--accent) 28%, transparent);
+  stroke: color-mix(in srgb, var(--accent) 55%, transparent);
+  stroke-width: 1.2;
+  pointer-events: none;
+}
+
+.siege-hex[data-owner="ally"] {
+  fill: color-mix(in srgb, var(--good) 28%, transparent);
+  stroke: color-mix(in srgb, var(--good) 55%, transparent);
+}
+
+.siege-settlement {
+  position: absolute;
+  top: var(--village-y);
+  left: var(--village-x);
+  z-index: 2;
+  transform: translate(-50%, -50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 28%;
+  padding: 2px 6px 2px 4px;
+  border: 1px solid rgba(255, 255, 255, .35);
+  border-radius: 999px;
+  background: rgba(10, 12, 18, .55);
+  color: #fff;
+  font: inherit;
+  font-size: clamp(.58rem, 1.6vw, .72rem);
+  font-weight: 600;
+  line-height: 1.2;
+  cursor: pointer;
+}
+
+.siege-settlement:disabled { cursor: default; opacity: .92; }
+.siege-settlement:not(:disabled):hover { border-color: rgba(255, 255, 255, .7); }
+.siege-settlement:focus-visible { outline: none; box-shadow: var(--ring); }
+.siege-settlement[data-owner="ours"] {
+  border-color: color-mix(in srgb, var(--accent) 70%, #fff);
+  background: color-mix(in srgb, var(--accent) 55%, rgba(10, 12, 18, .75));
+}
+.siege-settlement[data-owner="ally"] {
+  border-color: color-mix(in srgb, var(--good) 70%, #fff);
+  background: color-mix(in srgb, var(--good) 55%, rgba(10, 12, 18, .75));
+}
+.siege-settlement[data-owner="neutral"] { border-style: dashed; }
+
+.siege-settlement-dot {
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .85);
+}
+.siege-settlement[data-owner="ours"] .siege-settlement-dot { background: #fff; }
+.siege-settlement[data-owner="ally"] .siege-settlement-dot { background: #fff; }
+
+.siege-settlement-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.siege-hex-error { margin: 0 0 8px; }
+
 .siege-village {
   position: absolute;
   top: var(--village-y);
   left: var(--village-x);
+  z-index: 3;
   width: clamp(84px, 25%, 130px);
   /* Never wider than the room left to the map edge, so a corner village stays whole. */
   max-width: min(calc(var(--village-x) * 2 - 6px), calc((100% - var(--village-x)) * 2 - 6px));

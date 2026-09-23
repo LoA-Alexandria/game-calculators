@@ -74,6 +74,13 @@ describe("siege camps", () => {
     assert.equal(guildPlanEventDef("heart-of-gold").camps, undefined);
   });
 
+  it("gives Dawn of Rome six bases without stock, with hex territory", () => {
+    const rome = guildPlanEventDef("dawn-of-rome");
+    assert.equal(rome.camps, 6);
+    assert.equal(rome.stock, false);
+    assert.equal(rome.hexTerritory, true);
+  });
+
   it("fills every slot, so a fresh siege still shows the whole map", () => {
     const slots = campSlots(5, [camp(3, { name: "AZE" })]);
     assert.deepEqual(slots.map((row) => row.slot), [1, 2, 3, 4, 5]);
