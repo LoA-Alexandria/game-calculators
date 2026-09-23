@@ -7996,6 +7996,142 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
 .siege-stock-sum { color: var(--ink-soft); font-family: var(--font-mono); }
 .siege-stock-mine { display: flex; flex-wrap: wrap; gap: 4px 14px; color: var(--ink-faint); }
 
+/* --- the post room: mail, guild chat, alliance chat ----------------------- */
+
+.mail-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 14px; }
+.mail-tabs .guild-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+.mail-tabs .guild-tab.is-active {
+  border-color: var(--accent-line);
+  background: var(--accent-soft);
+  box-shadow: none;
+  color: var(--accent);
+}
+.mail-tabs .guild-tab:disabled { opacity: .45; cursor: default; }
+
+.mail-count {
+  display: inline-grid;
+  place-items: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: .68rem;
+  font-weight: 700;
+}
+
+.mail-panel { display: grid; gap: 12px; }
+.mail-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; }
+.mail-head strong { flex: 1; min-width: 0; font-family: var(--font-display); font-size: 1rem; }
+.mail-note { margin: 0; color: var(--warn); font-size: .86rem; }
+
+.mail-list { display: grid; margin: 0; padding: 0; list-style: none; }
+.mail-list li + li { border-top: 1px solid var(--line); }
+.mail-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2px 12px;
+  width: 100%;
+  padding: 10px 2px;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.mail-row:hover { background: var(--surface-2); }
+.mail-row-name { display: inline-flex; align-items: center; gap: 8px; font-weight: 650; }
+.mail-row-last {
+  grid-column: 1;
+  overflow: hidden;
+  color: var(--ink-soft);
+  font-size: .86rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mail-row-date { grid-row: 1; grid-column: 2; color: var(--ink-faint); font-size: .78rem; }
+
+.mail-people { display: grid; gap: 0; margin: 0; padding: 0; list-style: none; }
+.mail-people li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 0;
+  border-top: 1px solid var(--line);
+}
+.mail-people li:first-child { border-top: 0; }
+.mail-search { margin: 0; }
+.mail-search-field { position: relative; display: block; }
+.mail-search-field .icon { position: absolute; top: 50%; left: 10px; color: var(--ink-faint); transform: translateY(-50%); }
+.mail-search-field input { padding-left: 32px; }
+
+.mail-thread {
+  display: grid;
+  gap: 8px;
+  max-height: 52vh;
+  overflow: auto;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.mail-bubble {
+  max-width: min(520px, 88%);
+  padding: 8px 12px 10px;
+  border: 1px solid var(--line);
+  border-radius: 14px 14px 14px 4px;
+  background: var(--surface-2);
+}
+.mail-bubble.is-mine {
+  justify-self: end;
+  border-color: var(--accent-line);
+  border-radius: 14px 14px 4px;
+  background: var(--accent-soft);
+}
+.mail-bubble-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0 0 2px;
+  font-size: .78rem;
+}
+.mail-bubble-head strong { font-weight: 650; }
+.mail-bubble-head span { color: var(--ink-faint); }
+.mail-bubble-body { margin: 0; font-size: .92rem; line-height: 1.45; overflow-wrap: anywhere; white-space: pre-wrap; }
+
+.mail-composer { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; align-items: end; }
+.mail-composer textarea {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  background: var(--surface-2);
+  color: var(--ink);
+  font: inherit;
+  font-size: .92rem;
+  resize: vertical;
+}
+.mail-composer textarea:focus-visible { outline: none; border-color: var(--accent); }
+
+@media (max-width: 640px) {
+  .mail-thread { max-height: 60vh; }
+  .mail-bubble { max-width: 94%; }
+  .mail-composer { grid-template-columns: minmax(0, 1fr); }
+}
+
 /* --- a dialog over the page ---------------------------------------------- */
 
 .guild-modal-layer { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; padding: 16px; }
