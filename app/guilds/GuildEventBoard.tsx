@@ -365,9 +365,12 @@ export function GuildEventBoard({ guildId, guildName, userId, canOfficer, roster
     if (!supabase || !ally) return;
     setBusy(true);
     setError("");
+    // Our own guild, not “whichever side the caller is an officer of”: a site
+    // admin is an officer of both, and the guess put the village on the wrong one.
     const { error: rpcError } = await supabase.rpc("set_alliance_base", {
       p_alliance_id: ally.id,
       p_slot: slot,
+      p_guild_id: guildId,
     });
     if (rpcError) setError(rpcError.message);
     else reload();

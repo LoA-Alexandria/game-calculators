@@ -20,7 +20,7 @@ import { guildRosterLabel, type GuildRosterEntry } from "../../lib/content/guild
 import { asset } from "../../lib/site";
 import { getSupabaseBrowserClient } from "../../lib/supabase/client";
 import { useLocale } from "../components/LocaleProvider";
-import { CheckIcon, GuildsIcon, UsersIcon } from "../components/Icons";
+import { CheckIcon, CloseIcon, GuildsIcon, UsersIcon } from "../components/Icons";
 
 const CAMP_COLUMNS = "slot, name, server_name, is_ours, priority, note";
 const ORDER_COLUMNS = "user_id, rings, horns, rings_target, horns_target, attack_target";
@@ -262,6 +262,12 @@ export function GuildSiegeCamps({
       ? nameDraft.value
       : null;
 
+  // The card sits under its village, and flips when the village is near an edge.
+  const anchor = current ? map.points[(current.slot - 1) % map.points.length] : null;
+  const popAlign = !anchor ? "center" : anchor.x < 30 ? "start" : anchor.x > 70 ? "end" : "center";
+  const popSide = anchor && anchor.y > 50 ? "up" : "down";
+  const close = () => setSelection(null);
+
   const pick = (slot: number) => {
     setSelection((value) => (value?.key === siege && value.slot === slot ? null : { key: siege, slot }));
     setNameDraft(null);
@@ -315,42 +321,11 @@ export function GuildSiegeCamps({
       >
         {Array.from({ length: count }, (_, index) => index + 1).map((slot) => {
           const point = map.points[(slot - 1) % map.points.length];
-          const position = { "--village-x": `${point.x}%`, "--village-y": `${point.y}%` } as CSSProperties;
           const base = baseAt(slot);
           const camp = campAt(slot);
           const order = orderOf(slot);
           const assigned = campAssignment(slot, orders);
-          const isSelected = selected === slot;
           const quiet = assigned.rings === 0 && assigned.horns === 0 && assigned.attackers.length === 0;
-
-          // A selected village is named right where it stands.
-          if (isSelected && plans && !base) {
-            return (
-              <div key={slot} className="siege-village is-naming" style={position}>
-                <input
-                  aria-label={t.guilds.campName}
-                  value={naming ?? camp.name}
-                  maxLength={GUILD_CAMP_NAME_MAX}
-                  placeholder={tf(t.guilds.campSlot, { n: slot })}
-                  disabled={busy}
-                  onChange={(e) => setNameDraft({ key: siege, slot, value: e.target.value })}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && naming !== null) void saveCamp(camp, { name: naming });
-                    if (e.key === "Escape") setNameDraft(null);
-                  }}
-                />
-                <button
-                  type="button"
-                  className="siege-village-ok"
-                  aria-label={t.guilds.campSave}
-                  disabled={busy || naming === null}
-                  onClick={() => naming !== null && void saveCamp(camp, { name: naming })}
-                >
-                  <CheckIcon className="icon icon-sm" />
-                </button>
-              </div>
-            );
-          }
 
           return (
             <button
@@ -358,8 +333,8 @@ export function GuildSiegeCamps({
               type="button"
               className="siege-village"
               data-state={base ? (base.own ? "ours" : "ally") : order > 0 ? "target" : "free"}
-              aria-pressed={isSelected}
-              style={position}
+              aria-pressed={selected === slot}
+              style={{ "--village-x": `${point.x}%`, "--village-y": `${point.y}%` } as CSSProperties}
               onClick={() => pick(slot)}
             >
               <span className="siege-village-head">
@@ -386,173 +361,211 @@ export function GuildSiegeCamps({
             </button>
           );
         })}
-      </div>
 
-      {current ? (
-        <div className="siege-panel">
-          <header className="siege-panel-head">
-            <strong>{selectedBase ? selectedBase.label : campLabel(current)}</strong>
-            {selectedBase ? (
-              <span className={selectedBase.own ? "pill pill-good" : "pill"}>
-                {selectedBase.own ? t.guilds.baseOur : t.guilds.baseAlly}
-              </span>
-            ) : orderOf(current.slot) > 0 ? (
-              <span className="pill">{tf(t.guilds.campTarget, { n: orderOf(current.slot) })}</span>
-            ) : null}
-          </header>
+        {current ? (
+          <>
+            <button type="button" className="siege-pop-backdrop" aria-label={t.guilds.popClose} onClick={close} />
+            <div
+              className="siege-pop"
+              data-align={popAlign}
+              data-side={popSide}
+              style={
+                anchor
+                  ? ({ "--village-x": `${anchor.x}%`, "--village-y": `${anchor.y}%` } as CSSProperties)
+                  : undefined
+              }
+              onKeyDown={(e) => {
+                if (e.key === "Escape") close();
+              }}
+            >
+              <header className="siege-pop-head">
+                {plans && !selectedBase ? (
+                  <>
+                    <input
+                      className="siege-pop-name"
+                      aria-label={t.guilds.campName}
+                      value={naming ?? current.name}
+                      maxLength={GUILD_CAMP_NAME_MAX}
+                      placeholder={tf(t.guilds.campSlot, { n: current.slot })}
+                      disabled={busy}
+                      onChange={(e) => setNameDraft({ key: siege, slot: current.slot, value: e.target.value })}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" && naming !== null) void saveCamp(current, { name: naming });
+                      }}
+                    />
+                    <button
+                      type="button"
+                      className="siege-pop-ok"
+                      aria-label={t.guilds.campSave}
+                      disabled={busy || naming === null}
+                      onClick={() => naming !== null && void saveCamp(current, { name: naming })}
+                    >
+                      <CheckIcon className="icon icon-sm" />
+                    </button>
+                  </>
+                ) : (
+                  <strong>{selectedBase ? selectedBase.label : campLabel(current)}</strong>
+                )}
+                <button type="button" className="siege-pop-close" aria-label={t.guilds.popClose} onClick={close}>
+                  <CloseIcon className="icon icon-sm" />
+                </button>
+              </header>
 
-          {canOfficer ? (
-            <div className="siege-panel-actions">
               {selectedBase ? (
-                selectedBase.own && !shared ? (
-                  <button className="small-button" type="button" disabled={busy} onClick={() => void markBase(current, false)}>
-                    {t.guilds.baseRemove}
-                  </button>
-                ) : null
+                <div className="siege-pop-row">
+                  <span className={selectedBase.own ? "pill pill-good" : "pill"}>
+                    {selectedBase.own ? t.guilds.baseOur : t.guilds.baseAlly}
+                  </span>
+                  {canOfficer && selectedBase.own && !shared ? (
+                    <button className="small-button" type="button" disabled={busy} onClick={() => void markBase(current, false)}>
+                      {t.guilds.baseRemove}
+                    </button>
+                  ) : null}
+                </div>
               ) : (
                 <>
-                  {shared ? (
-                    needsBase && onPickBase ? (
-                      <button
-                        className="small-button button-primary"
-                        type="button"
-                        disabled={busy}
-                        onClick={() => void onPickBase(current.slot)}
-                      >
-                        {t.guilds.baseSet}
-                      </button>
-                    ) : null
-                  ) : (
-                    <button className="small-button" type="button" disabled={busy} onClick={() => void markBase(current, true)}>
-                      {t.guilds.baseSet}
-                    </button>
-                  )}
+                  {canOfficer ? (
+                    <div className="siege-pop-row">
+                      {shared ? (
+                        needsBase && onPickBase ? (
+                          <button
+                            className="small-button button-primary"
+                            type="button"
+                            disabled={busy}
+                            onClick={() => void onPickBase(current.slot)}
+                          >
+                            {t.guilds.baseSet}
+                          </button>
+                        ) : null
+                      ) : (
+                        <button className="small-button" type="button" disabled={busy} onClick={() => void markBase(current, true)}>
+                          {t.guilds.baseSet}
+                        </button>
+                      )}
+                    </div>
+                  ) : null}
+
                   {plans ? (
-                    <span className="siege-order-pick">
+                    <div className="siege-pop-row siege-pop-order">
                       <span className="siege-order-label">{t.guilds.targetOrder}</span>
                       {Array.from({ length: Math.max(count - allBases.length, 1) }, (_, i) => i + 1).map((value) => (
-                        <button
-                          key={value}
-                          type="button"
-                          className="siege-order-chip"
-                          aria-pressed={orderOf(current.slot) === value}
-                          disabled={busy}
-                          onClick={() =>
-                            void saveCamps(
-                              setCampPriority(attackable, current.slot, orderOf(current.slot) === value ? 0 : value),
-                            )
-                          }
-                        >
-                          {value}
+                            <button
+                              key={value}
+                              type="button"
+                              className="siege-order-chip"
+                              aria-label={tf(t.guilds.campTarget, { n: value })}
+                              aria-pressed={orderOf(current.slot) === value}
+                              disabled={busy}
+                              onClick={() =>
+                                void saveCamps(
+                                  setCampPriority(attackable, current.slot, orderOf(current.slot) === value ? 0 : value),
+                                )
+                              }
+                            >
+                              {value}
                         </button>
                       ))}
-                    </span>
+                    </div>
                   ) : null}
+
+                  {plans ? (
+                    <input
+                      className="siege-pop-note"
+                      key={`${siege}:${current.slot}:note`}
+                      aria-label={t.guilds.campNote}
+                      defaultValue={current.note}
+                      maxLength={GUILD_CAMP_NOTE_MAX}
+                      placeholder={t.guilds.campNotePlaceholder}
+                      disabled={busy}
+                      onBlur={(e) => {
+                        if (e.target.value !== current.note) void saveCamp(current, { note: e.target.value });
+                      }}
+                    />
+                  ) : current.note.trim() ? (
+                    <p className="siege-note-text">{current.note}</p>
+                  ) : null}
+
+                  {plans ? (
+                    <ul className="siege-assign">
+                      {members.map((member) => {
+                        const order = orderOfMember(member.user_id!);
+                        const slot = current.slot;
+                        return (
+                          <li key={member.user_id}>
+                            <span className="siege-assign-name">
+                              {guildRosterLabel(member)}
+                              {member.guild_name ? <small>{member.guild_name}</small> : null}
+                            </span>
+                            <span className="siege-assign-stock mono">
+                              {tf(t.guilds.campSpendShort, { rings: n(order.rings), horns: n(order.horns) })}
+                            </span>
+                            <span className="siege-assign-buttons">
+                              <button
+                                type="button"
+                                className="siege-assign-button"
+                                aria-pressed={order.rings_target === slot}
+                                disabled={busy || order.rings === 0}
+                                onClick={() =>
+                                  void saveOrder(order, {
+                                    rings_target: order.rings_target === slot ? GUILD_ORDER_TARGET_ALL : slot,
+                                  })
+                                }
+                              >
+                                {t.guilds.campRings}
+                              </button>
+                              <button
+                                type="button"
+                                className="siege-assign-button"
+                                aria-pressed={order.horns_target === slot}
+                                disabled={busy || order.horns === 0}
+                                onClick={() =>
+                                  void saveOrder(order, {
+                                    horns_target: order.horns_target === slot ? GUILD_ORDER_TARGET_ALL : slot,
+                                  })
+                                }
+                              >
+                                {t.guilds.campHorns}
+                              </button>
+                              <button
+                                type="button"
+                                className="siege-assign-button"
+                                aria-pressed={order.attack_target === slot}
+                                disabled={busy}
+                                onClick={() =>
+                                  void saveOrder(order, {
+                                    attack_target: order.attack_target === slot ? GUILD_ORDER_TARGET_ALL : slot,
+                                  })
+                                }
+                              >
+                                {t.guilds.campAttackers}
+                              </button>
+                            </span>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  ) : (
+                    <p className="siege-panel-line">
+                      <span>
+                        {tf(t.guilds.campSpendShort, {
+                          rings: n(campAssignment(current.slot, orders).rings),
+                          horns: n(campAssignment(current.slot, orders).horns),
+                        })}
+                      </span>
+                      {campAssignment(current.slot, orders).attackers.length > 0 ? (
+                        <span>
+                          {t.guilds.campAttackers}:{" "}
+                          {campAssignment(current.slot, orders).attackers.map(memberName).join(", ")}
+                        </span>
+                      ) : null}
+                    </p>
+                  )}
                 </>
               )}
             </div>
-          ) : null}
-
-          {selectedBase ? null : (
-            <>
-              {plans ? (
-                <div className="field siege-note">
-                  <label htmlFor={field("note")}>{t.guilds.campNote}</label>
-                  <input
-                    id={field("note")}
-                    key={`${siege}:${current.slot}:note`}
-                    defaultValue={current.note}
-                    maxLength={GUILD_CAMP_NOTE_MAX}
-                    placeholder={t.guilds.campNotePlaceholder}
-                    disabled={busy}
-                    onBlur={(e) => {
-                      if (e.target.value !== current.note) void saveCamp(current, { note: e.target.value });
-                    }}
-                  />
-                </div>
-              ) : current.note.trim() ? (
-                <p className="siege-note-text">{current.note}</p>
-              ) : null}
-
-              {plans ? (
-                <ul className="siege-assign">
-                  {members.map((member) => {
-                    const order = orderOfMember(member.user_id!);
-                    const slot = current.slot;
-                    return (
-                      <li key={member.user_id}>
-                        <span className="siege-assign-name">
-                          {guildRosterLabel(member)}
-                          {member.guild_name ? <small>{member.guild_name}</small> : null}
-                        </span>
-                        <span className="siege-assign-stock mono">
-                          {tf(t.guilds.campSpendShort, { rings: n(order.rings), horns: n(order.horns) })}
-                        </span>
-                        <span className="siege-assign-buttons">
-                          <button
-                            type="button"
-                            className="siege-assign-button"
-                            aria-pressed={order.rings_target === slot}
-                            disabled={busy || order.rings === 0}
-                            onClick={() =>
-                              void saveOrder(order, {
-                                rings_target: order.rings_target === slot ? GUILD_ORDER_TARGET_ALL : slot,
-                              })
-                            }
-                          >
-                            {t.guilds.campRings}
-                          </button>
-                          <button
-                            type="button"
-                            className="siege-assign-button"
-                            aria-pressed={order.horns_target === slot}
-                            disabled={busy || order.horns === 0}
-                            onClick={() =>
-                              void saveOrder(order, {
-                                horns_target: order.horns_target === slot ? GUILD_ORDER_TARGET_ALL : slot,
-                              })
-                            }
-                          >
-                            {t.guilds.campHorns}
-                          </button>
-                          <button
-                            type="button"
-                            className="siege-assign-button"
-                            aria-pressed={order.attack_target === slot}
-                            disabled={busy}
-                            onClick={() =>
-                              void saveOrder(order, {
-                                attack_target: order.attack_target === slot ? GUILD_ORDER_TARGET_ALL : slot,
-                              })
-                            }
-                          >
-                            {t.guilds.campAttackers}
-                          </button>
-                        </span>
-                      </li>
-                    );
-                  })}
-                </ul>
-              ) : (
-                <p className="siege-panel-line">
-                  <span>
-                    {tf(t.guilds.campSpendShort, {
-                      rings: n(campAssignment(current.slot, orders).rings),
-                      horns: n(campAssignment(current.slot, orders).horns),
-                    })}
-                  </span>
-                  {campAssignment(current.slot, orders).attackers.length > 0 ? (
-                    <span>
-                      {t.guilds.campAttackers}:{" "}
-                      {campAssignment(current.slot, orders).attackers.map(memberName).join(", ")}
-                    </span>
-                  ) : null}
-                </p>
-              )}
-            </>
-          )}
-        </div>
-      ) : null}
+          </>
+        ) : null}
+      </div>
 
       <div className="siege-stock">
         <div className="field">
