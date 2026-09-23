@@ -413,5 +413,4 @@ export const SECTION_ICONS = {
   calculators: CalculatorsIcon,
   simulations: SimulationsIcon,
   guilds: GuildsIcon,
-  post: InboxIcon,
 } as const;
