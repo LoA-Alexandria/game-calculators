@@ -41,9 +41,10 @@ attacks each member brings, and `20260922230000_guild_alliances.sql`, which adds
 alliances between two guilds and the board they share, plus
 `20260923120000_guild_alliance_bases.sql`, which records the village each allied
 guild holds, and `20260923180000_alliance_base_side.sql`, which makes that
-function take the guild it is setting. They only add tables, columns, functions
-and policies, so applying them changes nothing until a guild fills a board in or
-offers an alliance.
+function take the guild it is setting, and `20260923210000_end_guild_event.sql`,
+which adds `end_guild_event` for clearing an event. They only add tables,
+columns, functions and policies, so applying them changes nothing until a guild
+fills a board in, offers an alliance or ends an event.
 
 Which Discord role grants which site role is **no longer in the function**: it
 lives in the `role_mappings` table and is edited at `/admin/` by an admin. The

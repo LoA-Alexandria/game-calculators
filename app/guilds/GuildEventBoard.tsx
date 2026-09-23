@@ -26,6 +26,7 @@ import { GuildAlliance, type AllianceGuild } from "./GuildAlliance";
 import { GuildSiegeCamps, type SiegeBase } from "./GuildSiegeCamps";
 import { getSupabaseBrowserClient } from "../../lib/supabase/client";
 import { useLocale } from "../components/LocaleProvider";
+import { CloseIcon, PlusIcon } from "../components/Icons";
 
 type DayRow = {
   id?: string;
@@ -45,6 +46,7 @@ type PledgeRow = {
 type Props = {
   guildId: string;
   guildName: string;
+  onManageEvents?: () => void;
   userId: string;
   canOfficer: boolean;
   roster: GuildRosterEntry[];
@@ -59,7 +61,15 @@ function eventLabel(
   return t.guilds.events[def.labelKey];
 }
 
-export function GuildEventBoard({ guildId, guildName, userId, canOfficer, roster, eventId }: Props) {
+export function GuildEventBoard({
+  guildId,
+  guildName,
+  userId,
+  canOfficer,
+  roster,
+  eventId,
+  onManageEvents,
+}: Props) {
   const { t, tf } = useLocale();
   const supabase = getSupabaseBrowserClient();
   const ids = useId();
@@ -386,6 +396,12 @@ export function GuildEventBoard({ guildId, guildName, userId, canOfficer, roster
         <span className="count">
           {t.guilds.eventSeries}: {series.won} : {series.lost}
         </span>
+        {canOfficer && onManageEvents ? (
+          <button className="small-button" type="button" onClick={onManageEvents}>
+            <PlusIcon className="icon icon-sm" />
+            {t.guilds.eventsManage}
+          </button>
+        ) : null}
       </header>
 
       {def.camps ? null : (
@@ -578,6 +594,7 @@ export function GuildEventBoard({ guildId, guildName, userId, canOfficer, roster
           bases={onShared ? sharedBases : []}
           needsBase={onShared && ally !== null && allianceNeedsBase(ally, guildId) && canOfficer}
           onPickBase={pickSharedBase}
+          onChanged={reload}
         />
       ) : null}
 
@@ -663,64 +680,100 @@ export function GuildEventPicker({
   const supabase = getSupabaseBrowserClient();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [confirmEnd, setConfirmEnd] = useState<GuildPlanEventId | null>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open, onClose]);
 
   if (!open || !canOfficer) return null;
 
-  const toggle = async (eventId: GuildPlanEventId, on: boolean) => {
+  const activate = async (eventId: GuildPlanEventId) => {
     if (!supabase) return;
     setBusy(true);
     setError("");
-    if (on) {
-      const { error: insertError } = await supabase.from("guild_active_events").insert({
-        guild_id: guildId,
-        event_id: eventId,
-      });
-      if (insertError) setError(insertError.message);
-      else onChanged();
-    } else {
-      const { error: deleteError } = await supabase
-        .from("guild_active_events")
-        .delete()
-        .eq("guild_id", guildId)
-        .eq("event_id", eventId);
-      if (deleteError) setError(deleteError.message);
-      else onChanged();
+    const { error: insertError } = await supabase.from("guild_active_events").insert({
+      guild_id: guildId,
+      event_id: eventId,
+    });
+    if (insertError) setError(insertError.message);
+    else onChanged();
+    setBusy(false);
+  };
+
+  /** Ending an event takes its villages, stock, scores and alliance with it. */
+  const end = async (eventId: GuildPlanEventId) => {
+    if (!supabase) return;
+    setBusy(true);
+    setError("");
+    const { error: rpcError } = await supabase.rpc("end_guild_event", {
+      p_guild_id: guildId,
+      p_event_id: eventId,
+    });
+    if (rpcError) setError(rpcError.message);
+    else {
+      setConfirmEnd(null);
+      onChanged();
     }
     setBusy(false);
   };
 
   return (
-    <section className="guild-panel guild-manage-panel">
-      <header className="guild-panel-head">
-        <h2>{t.guilds.eventsActivate}</h2>
-        <button className="small-button" type="button" onClick={onClose}>
-          {t.guilds.eventsActivateClose}
-        </button>
-      </header>
-      {error ? (
-        <p className="result-error" role="alert">
-          {error}
-        </p>
-      ) : null}
-      <ul className="guild-event-picker">
-        {GUILD_PLAN_EVENTS.map((event) => {
-          const on = activeIds.includes(event.id);
-          return (
-            <li key={event.id}>
-              <span>{t.guilds.events[event.labelKey]}</span>
-              <button
-                className={on ? "small-button button-primary" : "small-button"}
-                type="button"
-                disabled={busy}
-                aria-pressed={on}
-                onClick={() => void toggle(event.id, !on)}
-              >
-                {on ? t.guilds.eventsDeactivate : t.guilds.eventsActivate}
-              </button>
-            </li>
-          );
-        })}
-      </ul>
-    </section>
+    <div className="guild-modal-layer">
+      <button type="button" className="guild-modal-backdrop" aria-label={t.guilds.eventsActivateClose} onClick={onClose} />
+      <div className="guild-modal" role="dialog" aria-modal="true" aria-label={t.guilds.eventsActivate}>
+        <header className="guild-modal-head">
+          <h2>{t.guilds.eventsActivate}</h2>
+          <button type="button" className="icon-button" aria-label={t.guilds.eventsActivateClose} onClick={onClose}>
+            <CloseIcon className="icon" />
+          </button>
+        </header>
+        {error ? (
+          <p className="result-error" role="alert">
+            {error}
+          </p>
+        ) : null}
+        <ul className="guild-event-picker">
+          {GUILD_PLAN_EVENTS.map((event) => {
+            const on = activeIds.includes(event.id);
+            return (
+              <li key={event.id}>
+                <span>{t.guilds.events[event.labelKey]}</span>
+                {on && confirmEnd === event.id ? (
+                  <span className="guild-event-picker-confirm">
+                    <span>{t.guilds.eventEndConfirm}</span>
+                    <button
+                      className="small-button button-danger"
+                      type="button"
+                      disabled={busy}
+                      onClick={() => void end(event.id)}
+                    >
+                      {t.guilds.eventEnd}
+                    </button>
+                    <button className="small-button" type="button" disabled={busy} onClick={() => setConfirmEnd(null)}>
+                      {t.guilds.postCancel}
+                    </button>
+                  </span>
+                ) : (
+                  <button
+                    className={on ? "small-button button-danger" : "small-button button-primary"}
+                    type="button"
+                    disabled={busy}
+                    onClick={() => (on ? setConfirmEnd(event.id) : void activate(event.id))}
+                  >
+                    {on ? t.guilds.eventEnd : t.guilds.eventActivate}
+                  </button>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    </div>
   );
 }

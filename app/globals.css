@@ -7804,6 +7804,29 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
   font-weight: 700;
 }
 .siege-badge .icon { width: 11px; height: 11px; }
+
+/* How soon a village falls has a colour: first is red, last is quiet blue. */
+.siege-village[data-prio="1"],
+.siege-badge[data-prio="1"],
+.siege-order-chip[data-prio="1"] { --prio: var(--bad); }
+.siege-village[data-prio="2"],
+.siege-badge[data-prio="2"],
+.siege-order-chip[data-prio="2"] { --prio: var(--warn); }
+.siege-village[data-prio="3"],
+.siege-badge[data-prio="3"],
+.siege-order-chip[data-prio="3"] { --prio: var(--accent); }
+.siege-village[data-prio="4"],
+.siege-badge[data-prio="4"],
+.siege-order-chip[data-prio="4"] { --prio: color-mix(in srgb, var(--accent) 45%, var(--ink-faint)); }
+.siege-badge[data-prio] {
+  width: 20px;
+  height: 20px;
+  background: var(--prio);
+  color: #fff;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, .35);
+}
+.siege-village[data-state="target"] { box-shadow: inset 3px 0 0 var(--prio); }
+.siege-village[data-state="target"][aria-pressed="true"] { box-shadow: inset 3px 0 0 var(--prio), 0 0 0 2px rgba(255, 255, 255, .4); }
 .siege-village-name {
   min-width: 0;
   overflow: hidden;
@@ -7916,7 +7939,16 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
   transition: border-color .14s ease, background .14s ease, color .14s ease;
 }
 .siege-order-chip:hover { border-color: var(--accent-line); color: var(--ink); }
-.siege-order-chip[aria-pressed="true"] { border-color: var(--accent); background: var(--accent); color: #fff; }
+.siege-order-chip[data-prio] {
+  border-color: color-mix(in srgb, var(--prio) 45%, var(--line));
+  color: color-mix(in srgb, var(--prio) 75%, var(--ink));
+}
+.siege-order-chip[data-prio][aria-pressed="true"] {
+  border-color: var(--prio);
+  background: var(--prio);
+  color: #fff;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--prio) 28%, transparent);
+}
 .siege-note-text { margin: 0; color: var(--ink-soft); font-size: .9rem; line-height: 1.45; white-space: pre-wrap; }
 .siege-panel-line { display: flex; flex-wrap: wrap; gap: 4px 14px; margin: 0; color: var(--ink-soft); font-size: .86rem; }
 
@@ -7963,6 +7995,36 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
 .siege-stock-mine { grid-column: 1 / -1; margin: 0; font-size: .82rem; }
 .siege-stock-sum { color: var(--ink-soft); font-family: var(--font-mono); }
 .siege-stock-mine { display: flex; flex-wrap: wrap; gap: 4px 14px; color: var(--ink-faint); }
+
+/* --- a dialog over the page ---------------------------------------------- */
+
+.guild-modal-layer { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; padding: 16px; }
+.guild-modal-backdrop { position: absolute; inset: 0; border: 0; background: rgba(6, 8, 12, .6); cursor: default; }
+.guild-modal {
+  position: relative;
+  display: grid;
+  gap: 12px;
+  width: min(420px, 100%);
+  max-height: 82vh;
+  overflow: auto;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, .5);
+}
+.guild-modal-head { display: flex; align-items: center; gap: 10px; }
+.guild-modal-head h2 { flex: 1; margin: 0; font-family: var(--font-display); font-size: 1.05rem; }
+.guild-event-picker-confirm {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  color: var(--ink-soft);
+  font-size: .82rem;
+}
+.guild-offer-list .guild-avatar { display: grid; place-items: center; background: var(--accent-soft); color: var(--accent); }
 
 /* --- alliance between two guilds ----------------------------------------- */
 

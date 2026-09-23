@@ -112,12 +112,20 @@ the guild's base, or gives it a number in the target order, and the marker then
 carries that number, the rings and horns pointed at it and how many members
 attack it.
 
+Officers turn events on and off from a dialog that the board's own header opens.
+Ending an event calls `end_guild_event`, which deletes its villages, stock, day
+scores, pledges and any alliance for it, so the next match starts empty; the
+dialog asks first.
+
 Tapping a village opens a small card on the village itself, inside the map: the
 name field, the base button, the target order, the call, and a row per member
 with three toggles that send that member's rings, horns and normal attacks to
 this village or back to “every village”. Members with stock sort to the top. The
 card flips to the side of the village that has room and scrolls inside it; on a
-phone it becomes a sheet at the bottom edge. Under the map, everyone writes down
+phone it becomes a sheet at the bottom edge. Marking a village as the guild's
+base names it after the guild unless someone typed another name. How soon a
+village should fall has a colour — first red, then amber, then the accent — worn
+by its number on the map, the edge of its marker and the order chips in the card. Under the map, everyone writes down
 the Draupnir Rings and Military Tokens (Horns) they hold and sees where their
 own are pointed.
 
@@ -131,8 +139,11 @@ end-invest block and its bank line are hidden for it.
 Two guilds may plan one siege together, and each holds one village. A guild can
 only offer an alliance once it has marked its own base: the offer carries that
 village as `guild_alliances.from_slot`, and the policy refuses an offer without
-one. The invited guild answers through `respond_to_guild_alliance`, so nobody
-accepts their own offer, and then has to pick its own village through
+one. The invited guild sees the offer in its own inbox, beside the join requests and
+counted in the same badge, so nobody has to open an event to find it. Answering
+goes through `respond_to_guild_alliance`, so nobody accepts their own offer;
+accepting turns the event on and opens it. The guild then has to pick its own
+village through
 `set_alliance_base` — until `to_slot` is set the shared board only offers that
 one step. That function takes the guild as an argument rather than reading it
 from the caller: `is_guild_master` is true for a site admin at every guild, so
