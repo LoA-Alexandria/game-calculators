@@ -277,6 +277,7 @@ const en = {
     baseRemove: "Remove base",
     basePickHint: "Pick your village on the map — then you can plan together.",
     baseNeededForOffer: "Set your own base on the map first.",
+    popClose: "Close",
     targetOrder: "Order",
     stockSum: "Stock: R {rings} · H {horns} — free: R {openRings} · H {openHorns}",
     allianceLabel: "Alliance",

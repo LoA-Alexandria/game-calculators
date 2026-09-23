@@ -275,6 +275,7 @@ const fr: Dictionary = {
     baseRemove: "Retirer la base",
     basePickHint: "Choisissez votre village sur la carte — vous pourrez planifier ensuite.",
     baseNeededForOffer: "Définissez d’abord votre base sur la carte.",
+    popClose: "Fermer",
     targetOrder: "Ordre",
     stockSum: "Réserve : A {rings} · C {horns} — libre : A {openRings} · C {openHorns}",
     allianceLabel: "Alliance",

@@ -40,9 +40,10 @@ which add the Trials of Odin siege board: the camps, and the rings, horns and
 attacks each member brings, and `20260922230000_guild_alliances.sql`, which adds
 alliances between two guilds and the board they share, plus
 `20260923120000_guild_alliance_bases.sql`, which records the village each allied
-guild holds. All four only add tables, columns, functions and policies, so
-applying them changes nothing until a guild fills a board in or offers an
-alliance.
+guild holds, and `20260923180000_alliance_base_side.sql`, which makes that
+function take the guild it is setting. They only add tables, columns, functions
+and policies, so applying them changes nothing until a guild fills a board in or
+offers an alliance.
 
 Which Discord role grants which site role is **no longer in the function**: it
 lives in the `role_mappings` table and is edited at `/admin/` by an admin. The

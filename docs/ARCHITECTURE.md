@@ -112,11 +112,14 @@ the guild's base, or gives it a number in the target order, and the marker then
 carries that number, the rings and horns pointed at it and how many members
 attack it.
 
-Under the map, one panel belongs to the village that was tapped: its call, and
-a row per member with three toggles that send that member's rings, horns and
-normal attacks to this village or back to “every village”. Members with stock
-sort to the top. Below that, everyone writes down the Draupnir Rings and
-Military Tokens (Horns) they hold and sees where their own are pointed.
+Tapping a village opens a small card on the village itself, inside the map: the
+name field, the base button, the target order, the call, and a row per member
+with three toggles that send that member's rings, horns and normal attacks to
+this village or back to “every village”. Members with stock sort to the top. The
+card flips to the side of the village that has room and scrolls inside it; on a
+phone it becomes a sheet at the bottom edge. Under the map, everyone writes down
+the Draupnir Rings and Military Tokens (Horns) they hold and sees where their
+own are pointed.
 
 Villages and the order live in `guild_event_camps`, the stock and its targets in
 `guild_event_orders`, both one row per siege day. `setCampPriority` keeps the
@@ -131,7 +134,9 @@ village as `guild_alliances.from_slot`, and the policy refuses an offer without
 one. The invited guild answers through `respond_to_guild_alliance`, so nobody
 accepts their own offer, and then has to pick its own village through
 `set_alliance_base` — until `to_slot` is set the shared board only offers that
-one step. With both villages held, the guilds get a second board beside their own
+one step. That function takes the guild as an argument rather than reading it
+from the caller: `is_guild_master` is true for a site admin at every guild, so
+guessing the side put the village on the wrong guild. With both villages held, the guilds get a second board beside their own
 — the same map, but on `guild_alliance_camps` and `guild_alliance_orders`, with
 the two bases drawn from the alliance and `alliance_roster` naming the members of
 both guilds. `is_alliance_member` and `is_alliance_officer` gate it, a village a
