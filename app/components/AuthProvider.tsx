@@ -4,7 +4,6 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import type { Session as SupabaseSession } from "@supabase/supabase-js";
 import { can, isRole, type Permission, type Role } from "../../lib/auth/roles";
 import { getSupabaseBrowserClient } from "../../lib/supabase/client";
-import { BASE_PATH } from "../../lib/site";
 
 type Session = {
   userId: string;
@@ -113,7 +112,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setError("");
     const { error: signInError } = await supabase.auth.signInWithOAuth({
       provider: "discord",
-      options: { redirectTo: new URL(`${BASE_PATH}/`, window.location.origin).toString(), scopes: "identify guilds.members.read" },
+      // Return a reader to the page where they started. This matters for Benben:
+      // its signed Discord launch token is kept in sessionStorage during OAuth,
+      // so returning to /benben/ lets the care action continue in that channel.
+      options: { redirectTo: window.location.href, scopes: "identify guilds.members.read" },
     });
     if (signInError) setError(signInError.message);
   }, [supabase]);
