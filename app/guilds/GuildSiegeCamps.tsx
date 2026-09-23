@@ -10,6 +10,7 @@ import {
   campSlots,
   campTargets,
   emptyOrder,
+  guildPlanEventDef,
   ringSpread,
   hornShareTotal,
   setCampPriority,
@@ -17,17 +18,21 @@ import {
   type GuildEventOrderRow,
   type GuildPlanEventId,
 } from "../../lib/content/guild-events";
+import { DAWN_OF_ROME_BASES, DAWN_OF_ROME_MAP } from "../../lib/content/dawn-of-rome-map";
 import { guildRosterLabel, type GuildRosterEntry } from "../../lib/content/guilds";
 import { asset } from "../../lib/site";
 import { getSupabaseBrowserClient } from "../../lib/supabase/client";
 import { useLocale } from "../components/LocaleProvider";
 import { CheckIcon, CloseIcon, GuildsIcon, HornIcon, RingIcon, UsersIcon } from "../components/Icons";
+import { GuildRomeTerritory, type HexBrush } from "./GuildRomeTerritory";
 
 const CAMP_COLUMNS = "slot, name, server_name, is_ours, priority, note, horn_share, ring_focus";
 const ORDER_COLUMNS = "user_id, attack_target";
 
 /** The event's map, and where each village stands on it, in percent. */
-const SIEGE_MAPS: Partial<Record<GuildPlanEventId, { image: string; ratio: string; points: { x: number; y: number }[] }>> = {
+const SIEGE_MAPS: Partial<
+  Record<GuildPlanEventId, { image: string; ratio: string; points: { x: number; y: number }[]; wide?: boolean }>
+> = {
   "trials-of-odin": {
     image: "/guilds/trials-of-odin.webp",
     ratio: "485 / 766",
@@ -39,10 +44,16 @@ const SIEGE_MAPS: Partial<Record<GuildPlanEventId, { image: string; ratio: strin
       { x: 28, y: 75 },
     ],
   },
+  "dawn-of-rome": {
+    image: DAWN_OF_ROME_MAP.image,
+    ratio: DAWN_OF_ROME_MAP.ratio,
+    points: [...DAWN_OF_ROME_BASES],
+    wide: true,
+  },
 };
 
 /** A plain ring, for an event that has villages but no picture yet. */
-const FALLBACK = {
+const FALLBACK: { image: string; ratio: string; points: { x: number; y: number }[]; wide?: boolean } = {
   image: "",
   ratio: "16 / 9",
   points: [
@@ -85,6 +96,8 @@ export function GuildSiegeCamps({
   onPickBase,
   onChanged,
   ownLabel = "",
+  guildId,
+  partnerGuildId = null,
 }: {
   scope: SiegeScope;
   eventId: GuildPlanEventId;
@@ -98,12 +111,20 @@ export function GuildSiegeCamps({
   onPickBase?: (slot: number) => Promise<void> | void;
   onChanged?: () => void;
   ownLabel?: string;
+  /** Viewing guild — used to colour hex / settlement ownership. */
+  guildId: string;
+  /** Allied partner on a shared board, if any. */
+  partnerGuildId?: string | null;
 }) {
   const { t, tf, n } = useLocale();
   const supabase = getSupabaseBrowserClient();
   const map = SIEGE_MAPS[eventId] ?? FALLBACK;
+  const eventDef = guildPlanEventDef(eventId);
+  const showStock = eventDef.stock !== false;
+  const showHex = eventDef.hexTerritory === true;
   const shared = scope.kind === "alliance";
   const owner = shared ? scope.allianceId : scope.guildId;
+  const [brush, setBrush] = useState<HexBrush>("ours");
 
   const source = useMemo(
     () =>
@@ -306,8 +327,47 @@ export function GuildSiegeCamps({
         </p>
       ) : null}
 
+      {showHex && plans ? (
+        <div className="siege-brush" role="group" aria-label={t.guilds.hexBrushLabel}>
+          <button
+            type="button"
+            className="siege-brush-chip"
+            data-owner="ours"
+            aria-pressed={brush === "ours"}
+            disabled={busy}
+            onClick={() => setBrush("ours")}
+          >
+            {t.guilds.hexBrushOurs}
+          </button>
+          {partnerGuildId ? (
+            <button
+              type="button"
+              className="siege-brush-chip"
+              data-owner="ally"
+              aria-pressed={brush === "ally"}
+              disabled={busy}
+              onClick={() => setBrush("ally")}
+            >
+              {t.guilds.hexBrushAlly}
+            </button>
+          ) : null}
+          <button
+            type="button"
+            className="siege-brush-chip"
+            data-owner="clear"
+            aria-pressed={brush === "clear"}
+            disabled={busy}
+            onClick={() => setBrush("clear")}
+          >
+            {t.guilds.hexBrushClear}
+          </button>
+          <span className="siege-brush-hint">{t.guilds.hexBrushHint}</span>
+        </div>
+      ) : null}
+
       <div
         className="siege-map"
+        data-wide={map.wide ? "true" : undefined}
         role="group"
         aria-label={t.guilds.campsMapLabel}
         style={{
@@ -315,6 +375,18 @@ export function GuildSiegeCamps({
           ...(map.image ? { backgroundImage: `url("${asset(map.image)}")` } : {}),
         }}
       >
+        {showHex ? (
+          <GuildRomeTerritory
+            scope={scope}
+            dayIndex={dayIndex}
+            canOfficer={canOfficer}
+            guildId={guildId}
+            partnerGuildId={partnerGuildId}
+            brush={brush}
+            locked={locked}
+          />
+        ) : null}
+
         {Array.from({ length: count }, (_, index) => index + 1).map((slot) => {
           const point = map.points[(slot - 1) % map.points.length];
           const base = baseAt(slot);
@@ -346,7 +418,7 @@ export function GuildSiegeCamps({
                 ) : null}
                 <span className="siege-village-name">{base ? base.label : campLabel(camp)}</span>
               </span>
-              {base || quiet ? null : (
+              {base || quiet || !showStock ? null : (
                 <span className="siege-village-numbers">
                   {camp.horn_share > 0 ? (
                     <span className="siege-village-horns">
@@ -367,6 +439,14 @@ export function GuildSiegeCamps({
                   ) : null}
                 </span>
               )}
+              {!showStock && !base && attackers.length > 0 ? (
+                <span className="siege-village-numbers">
+                  <span className="siege-village-attackers">
+                    <UsersIcon className="icon" />
+                    {n(attackers.length)}
+                  </span>
+                </span>
+              ) : null}
             </button>
           );
         })}
@@ -478,7 +558,7 @@ export function GuildSiegeCamps({
                     </div>
                   ) : null}
 
-                  {plans ? (
+                  {plans && showStock ? (
                     <div className="siege-pop-row siege-pop-horns">
                       <HornIcon className="icon icon-sm" />
                       {GUILD_HORN_STEPS.map((step) => (
@@ -497,7 +577,7 @@ export function GuildSiegeCamps({
                     </div>
                   ) : null}
 
-                  {plans ? (
+                  {plans && showStock ? (
                     <div className="siege-pop-row siege-pop-rings">
                       <RingIcon className="icon icon-sm" />
                       <button
@@ -583,15 +663,23 @@ export function GuildSiegeCamps({
         ) : null}
       </div>
 
-      <div className="siege-stock">
-        <p className="siege-stock-sum" data-full={hornShareTotal(camps) === 100 ? "yes" : "no"}>
-          <HornIcon className="icon icon-sm" />
-          {tf(t.guilds.hornsPlanned, { percent: n(hornShareTotal(camps)) })}
-        </p>
-        <p className="siege-stock-mine">
-          {t.guilds.ordersAttackShort} {targetLabel(myOrder.attack_target)}
-        </p>
-      </div>
+      {showStock ? (
+        <div className="siege-stock">
+          <p className="siege-stock-sum" data-full={hornShareTotal(camps) === 100 ? "yes" : "no"}>
+            <HornIcon className="icon icon-sm" />
+            {tf(t.guilds.hornsPlanned, { percent: n(hornShareTotal(camps)) })}
+          </p>
+          <p className="siege-stock-mine">
+            {t.guilds.ordersAttackShort} {targetLabel(myOrder.attack_target)}
+          </p>
+        </div>
+      ) : (
+        <div className="siege-stock">
+          <p className="siege-stock-mine">
+            {t.guilds.ordersAttackShort} {targetLabel(myOrder.attack_target)}
+          </p>
+        </div>
+      )}
     </section>
   );
 }

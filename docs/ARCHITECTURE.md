@@ -112,10 +112,18 @@ the guild's base, or gives it a number in the target order, and the marker then
 carries that number, the rings and horns pointed at it and how many members
 attack it.
 
+Dawn of Rome / Crown of the Nile uses six outer bases (same Set-home / priority
+flow as Trials of Odin) on `public/guilds/dawn-of-rome.webp`, without rings or
+horns (`stock: false`). Officers also paint a sparse hex layer
+(`guild_event_hexes` / `guild_alliance_hexes`) and claim the white-label cities
+and villages as neutral settlements (`guild_event_settlements` /
+`guild_alliance_settlements`) — not foreign guilds. Hex size and settlement
+anchors live in `lib/content/dawn-of-rome-map.ts`.
+
 Officers turn events on and off from a dialog that the board's own header opens.
 Ending an event calls `end_guild_event`, which deletes its villages, stock, day
-scores, pledges and any alliance for it, so the next match starts empty; the
-dialog asks first.
+scores, pledges, painted hexes, settlements and any alliance for it, so the next
+match starts empty; the dialog asks first.
 
 Tapping a village opens a small card on the village itself, inside the map: the
 name field, the base button, the target order, the horn share, the ring spread,
