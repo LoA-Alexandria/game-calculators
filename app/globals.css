@@ -8028,7 +8028,8 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
 
 /* --- the post room: mail, guild chat, alliance chat ----------------------- */
 
-.mail-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 14px; }
+/* `auto` on the sides, because .content centres every child in the measure. */
+.mail-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 auto 14px; }
 .mail-tabs .guild-tab {
   display: inline-flex;
   align-items: center;
