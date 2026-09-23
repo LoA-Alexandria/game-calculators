@@ -938,6 +938,12 @@ a.topbar-crumb:hover { color: var(--accent); }
 .icon-button:hover,
 .topbar-account-trigger:hover,
 .topbar-sign-in:hover { color: var(--accent); border-color: var(--accent-line); background: var(--accent-soft); }
+a.icon-button { text-decoration: none; color: inherit; }
+.icon-button.topbar-mail.is-current {
+  color: var(--accent);
+  border-color: var(--accent-line);
+  background: var(--accent-soft);
+}
 .topbar-account-trigger .icon-sm { transform: rotate(90deg); }
 .topbar-account-trigger.is-open .icon-sm { transform: rotate(-90deg); }
 

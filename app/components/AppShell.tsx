@@ -17,6 +17,7 @@ import {
   CloseIcon,
   DiscordIcon,
   HomeIcon,
+  InboxIcon,
   MenuIcon,
   SearchIcon,
   SECTION_ICONS,
@@ -554,6 +555,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </nav>
           <span className="topbar-spacer" />
           <AccountMenu />
+          <Link
+            href="/post/"
+            className={pathIsCurrentOrNested(pathname, "/post/") ? "icon-button topbar-mail is-current" : "icon-button topbar-mail"}
+            aria-label={t.nav.post}
+            title={t.nav.post}
+            aria-current={pathIsCurrentOrNested(pathname, "/post/") ? "page" : undefined}
+          >
+            <InboxIcon className="icon" />
+          </Link>
           <LanguageMenu />
         </header>
 
