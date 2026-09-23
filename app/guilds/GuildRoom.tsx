@@ -812,6 +812,7 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
               {planEventId ? (
                 <GuildEventBoard
                   guildId={guild.id}
+                  guildName={guild.name}
                   userId={session.userId}
                   canOfficer={canOfficer}
                   roster={roster}

@@ -2,6 +2,9 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
   acceptedAlliance,
+  allianceNeedsBase,
+  allianceOwnBase,
+  alliancePartnerBase,
   alliancePartnerId,
   allianceSide,
   canAnswerAlliance,
@@ -22,6 +25,8 @@ function row(overrides = {}) {
     status: "pending",
     note: "",
     created_at: "2026-09-22T10:00:00Z",
+    from_slot: 1,
+    to_slot: null,
     ...overrides,
   };
 }
@@ -64,5 +69,23 @@ describe("guild alliance helpers", () => {
       offerableGuilds(guilds, OURS, [row({ status: "declined" })]).map((g) => g.id),
       [THEIRS, THIRD],
     );
+  });
+});
+
+describe("the village each allied guild holds", () => {
+  it("reads our own village from whichever side we are on", () => {
+    const live = row({ status: "accepted", from_slot: 2, to_slot: 5 });
+    assert.equal(allianceOwnBase(live, OURS), 2);
+    assert.equal(allianceOwnBase(live, THEIRS), 5);
+    assert.equal(alliancePartnerBase(live, OURS), 5);
+    assert.equal(alliancePartnerBase(live, THEIRS), 2);
+  });
+
+  it("asks the guild that accepted for its village", () => {
+    const fresh = row({ status: "accepted", from_slot: 2, to_slot: null });
+    assert.equal(allianceNeedsBase(fresh, THEIRS), true);
+    assert.equal(allianceNeedsBase(fresh, OURS), false);
+    // An offer nobody has answered yet asks for nothing.
+    assert.equal(allianceNeedsBase(row(), THEIRS), false);
   });
 });

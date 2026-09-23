@@ -193,6 +193,51 @@ export function nextCampPriority(camps: readonly GuildEventCampRow[]): number {
   return Math.min(used + 1, 6);
 }
 
+/**
+ * Put one camp at a place in the target order and keep the order whole.
+ *
+ * A camp that already had a number swaps with whoever sits on the new one; a
+ * camp that had none pushes the rest down; order 0 takes it out and closes the
+ * gap. Returns only the camps whose number actually changed, ready to save.
+ */
+export function setCampPriority(
+  camps: readonly GuildEventCampRow[],
+  slot: number,
+  priority: number,
+): GuildEventCampRow[] {
+  const target = camps.find((camp) => camp.slot === slot);
+  if (!target || target.is_ours) return [];
+
+  const changed: GuildEventCampRow[] = [];
+  const move = (camp: GuildEventCampRow, value: number) => {
+    if (camp.priority !== value) changed.push({ ...camp, priority: value });
+  };
+
+  const others = camps.filter((camp) => camp.slot !== slot && !camp.is_ours && camp.priority > 0);
+
+  if (priority <= 0) {
+    move(target, 0);
+    if (target.priority > 0) {
+      for (const camp of others) {
+        if (camp.priority > target.priority) move(camp, camp.priority - 1);
+      }
+    }
+    return changed;
+  }
+
+  const wanted = Math.min(Math.max(1, Math.floor(priority)), others.length + 1);
+  move(target, wanted);
+  if (target.priority > 0) {
+    const sitting = others.find((camp) => camp.priority === wanted);
+    if (sitting) move(sitting, target.priority);
+  } else {
+    for (const camp of others) {
+      if (camp.priority >= wanted) move(camp, camp.priority + 1);
+    }
+  }
+  return changed;
+}
+
 type BerlinParts = {
   year: number;
   month: number;

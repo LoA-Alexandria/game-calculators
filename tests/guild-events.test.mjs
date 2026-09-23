@@ -11,6 +11,7 @@ import {
   hoursUntilBerlinMidnight,
   nextCampPriority,
   orderTotals,
+  setCampPriority,
   pledgeCoverage,
   seriesScore,
   scoreGap,
@@ -123,5 +124,47 @@ describe("siege orders", () => {
 
   it("keeps what nobody has been given a camp for", () => {
     assert.deepEqual(unassignedTotals(rows), { rings: 1, horns: 120 });
+  });
+});
+
+describe("setting the target order on the map", () => {
+  const board = (...priorities) =>
+    priorities.map((priority, index) => ({
+      slot: index + 1,
+      name: `Camp ${index + 1}`,
+      server_name: "",
+      is_ours: false,
+      priority,
+      note: "",
+    }));
+
+  it("gives an unnumbered camp a place and pushes the rest down", () => {
+    const changed = setCampPriority(board(1, 2, 0), 3, 1);
+    assert.deepEqual(
+      changed.map((camp) => [camp.slot, camp.priority]).sort(),
+      [[1, 2], [2, 3], [3, 1]],
+    );
+  });
+
+  it("swaps two camps that both have a number", () => {
+    const changed = setCampPriority(board(1, 2, 3), 3, 1);
+    assert.deepEqual(
+      changed.map((camp) => [camp.slot, camp.priority]).sort(),
+      [[1, 3], [3, 1]],
+    );
+  });
+
+  it("closes the gap when a camp leaves the order", () => {
+    const changed = setCampPriority(board(1, 2, 3), 1, 0);
+    assert.deepEqual(
+      changed.map((camp) => [camp.slot, camp.priority]).sort(),
+      [[1, 0], [2, 1], [3, 2]],
+    );
+  });
+
+  it("never numbers past the end of the list, and leaves our own camp alone", () => {
+    assert.deepEqual(setCampPriority(board(1, 0, 0), 2, 6).find((c) => c.slot === 2).priority, 2);
+    const ours = [{ slot: 1, name: "", server_name: "", is_ours: true, priority: 0, note: "" }];
+    assert.deepEqual(setCampPriority(ours, 1, 1), []);
   });
 });
