@@ -165,6 +165,12 @@ two guilds of an alliance share. RLS decides who reads what — sender or recipi
 for mail, `is_guild_member` for a guild chat, `is_alliance_member` for an alliance
 chat — and the two chats are plain inserts.
 
+Guild news posts on `guild_posts` keep a source `title`/`body` plus optional
+`title_i18n` / `body_i18n` maps (en/de/fr). Officers tap **Translate to all
+languages** in the composer; the `translate-guild-post` Edge Function calls the
+free MyMemory API (optional `MYMEMORY_EMAIL` secret for a higher daily quota),
+fills the other locales, and the room shows text for the reader's site locale.
+
 Direct mail goes through `send_direct_message`, which refuses a recipient who
 blocked the sender (`message_blocks`, a list only its owner can read) and stops
 after thirty letters an hour. `find_people` searches everybody by the name
