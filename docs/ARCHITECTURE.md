@@ -118,19 +118,23 @@ scores, pledges and any alliance for it, so the next match starts empty; the
 dialog asks first.
 
 Tapping a village opens a small card on the village itself, inside the map: the
-name field, the base button, the target order, the call, and a row per member
-with three toggles that send that member's rings, horns and normal attacks to
-this village or back to “every village”. Members with stock sort to the top. The
+name field, the base button, the target order, the horn share, the ring spread,
+the call, and a row per member with one toggle that sends that member's attacks
+to this village or back to “every village”. Nobody types how much they carry:
+Military Tokens (Horns) are handed out as a share per target (0 to 100 percent in
+quarters, `horn_share`) and Draupnir Rings either hit one camp or the whole field
+(`ring_focus`, set on every target). Each marker shows its share, a ring when the
+rings land there, and how many members attack it; the line under the map adds the
+shares up and turns amber when they do not make 100 percent. The
 card flips to the side of the village that has room and scrolls inside it; on a
 phone it becomes a sheet at the bottom edge. Marking a village as the guild's
 base names it after the guild unless someone typed another name. How soon a
 village should fall has a colour — first red, then amber, then the accent — worn
-by its number on the map, the edge of its marker and the order chips in the card. Under the map, everyone writes down
-the Draupnir Rings and Military Tokens (Horns) they hold and sees where their
-own are pointed.
+by its number on the map, the edge of its marker and the order chips in the card.
 
-Villages and the order live in `guild_event_camps`, the stock and its targets in
-`guild_event_orders`, both one row per siege day. `setCampPriority` keeps the
+Villages, the order, the horn share and the ring spread live in
+`guild_event_camps`, and who attacks what in `guild_event_orders`, both one row
+per siege day. `setCampPriority` keeps the
 order contiguous when a village moves into it, swaps with it, or leaves it.
 Officers write, active members read and keep their own row, and nothing crosses
 guilds. An event with a siege map plans its rings and horns there, so the

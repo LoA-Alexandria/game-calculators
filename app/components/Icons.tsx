@@ -296,6 +296,26 @@ export function StarIcon({ className }: IconProps) {
   );
 }
 
+/** Draupnir Ring: a ring with its stone, for the ring share on a camp. */
+export function RingIcon({ className }: IconProps) {
+  return (
+    <svg className={className} {...base}>
+      <circle cx="12" cy="14" r="6.2" />
+      <path d="M9.8 8.4 12 4.2l2.2 4.2" />
+    </svg>
+  );
+}
+
+/** Military Token: a war horn, for the horns pointed at a camp. */
+export function HornIcon({ className }: IconProps) {
+  return (
+    <svg className={className} {...base}>
+      <path d="M4 15.5c4.4 1.6 8.4 1.2 12-1.2 2.6-1.7 3.9-4 4-6.8-3.1 1.5-5.6 1.6-7.6.4" />
+      <path d="M4 15.5 6.6 19c2.6-.2 4.6-1 6-2.3" />
+    </svg>
+  );
+}
+
 export function InfoIcon({ className }: IconProps) {
   return (
     <svg className={className} {...base}>

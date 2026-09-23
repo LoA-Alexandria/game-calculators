@@ -7981,20 +7981,50 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
 .siege-assign-button[aria-pressed="true"] { border-color: var(--accent-line); background: var(--accent-soft); color: var(--accent); }
 .siege-assign-button:disabled { opacity: .45; cursor: default; }
 
-/* What I hold, what the guild holds, and where mine is pointed. */
+/* How much of the horns is planned, and where I am sent. */
 .siege-stock {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
-  gap: 10px 12px;
-  align-items: end;
-  padding-top: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px 14px;
+  padding-top: 12px;
   border-top: 1px solid var(--line);
 }
-.siege-stock .field { margin: 0; }
 .siege-stock-sum,
-.siege-stock-mine { grid-column: 1 / -1; margin: 0; font-size: .82rem; }
-.siege-stock-sum { color: var(--ink-soft); font-family: var(--font-mono); }
-.siege-stock-mine { display: flex; flex-wrap: wrap; gap: 4px 14px; color: var(--ink-faint); }
+.siege-stock-mine { margin: 0; font-size: .82rem; }
+.siege-stock-sum {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ink-soft);
+  font-family: var(--font-mono);
+}
+.siege-stock-sum[data-full="no"] { color: var(--warn); }
+.siege-stock-sum .icon { color: var(--ink-faint); }
+.siege-stock-mine { color: var(--ink-faint); }
+
+/* Horn shares sit next to their icon; rings pick one camp or the whole field. */
+.siege-pop-horns .icon,
+.siege-pop-rings .icon { flex: none; color: var(--ink-faint); }
+.siege-share-chip {
+  padding: 3px 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--ink-soft);
+  font-family: var(--font-mono);
+  font-size: .74rem;
+  cursor: pointer;
+  transition: border-color .14s ease, background .14s ease, color .14s ease;
+}
+.siege-share-chip:hover { border-color: var(--accent-line); color: var(--ink); }
+.siege-share-chip[aria-pressed="true"] { border-color: var(--accent); background: var(--accent); color: #fff; }
+
+.siege-village-horns,
+.siege-village-rings { display: inline-flex; align-items: center; gap: 2px; }
+.siege-village-horns .icon,
+.siege-village-rings .icon { width: 11px; height: 11px; }
 
 /* --- the post room: mail, guild chat, alliance chat ----------------------- */
 
@@ -8213,13 +8243,14 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
     width: auto;
     max-height: 66vh;
     transform: none;
+    /* A full-width sheet needs no side borders, and they would round to a scrollbar. */
+    border-right: 0;
+    border-left: 0;
     border-radius: 16px 16px 0 0;
   }
   .siege-village-name { font-size: .7rem; }
   .siege-village-numbers { gap: 0 4px; font-size: .58rem; }
   .siege-village-attackers .icon { width: 9px; height: 9px; }
-  .siege-stock { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
-  .siege-stock .button { grid-column: 1 / -1; }
 }
 
 .guild-pledge-name { min-width: 0; overflow-wrap: anywhere; }

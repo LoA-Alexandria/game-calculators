@@ -95,20 +95,23 @@ export type GuildEventCampRow = {
   /** 0 means no order yet; 1 is hit first. */
   priority: number;
   note: string;
+  /** Share of the guild's Military Tokens (Horns) to spend here, in percent. */
+  horn_share: number;
+  /** Draupnir Rings go here; set on every target, they hit the whole field. */
+  ring_focus: boolean;
 };
 
 /**
- * What a member brings to a siege and where an officer sends it.
- * A target of 0 means every camp, or the member's own choice.
+ * Where an officer sends a member. A target of 0 means every camp, or the
+ * member's own choice. Rings and horns are planned per camp, not per member.
  */
 export type GuildEventOrderRow = {
   user_id: string;
-  rings: number;
-  horns: number;
-  rings_target: number;
-  horns_target: number;
   attack_target: number;
 };
+
+/** The horn shares an officer can hand a camp, in percent. */
+export const GUILD_HORN_STEPS = [0, 25, 50, 75, 100] as const;
 
 export const GUILD_ORDER_TARGET_ALL = 0;
 
@@ -118,12 +121,21 @@ export const GUILD_CAMP_NOTE_MAX = 200;
 
 /** An empty camp for a slot the guild has not filled in yet. */
 export function emptyCamp(slot: number): GuildEventCampRow {
-  return { slot, name: "", server_name: "", is_ours: false, priority: 0, note: "" };
+  return {
+    slot,
+    name: "",
+    server_name: "",
+    is_ours: false,
+    priority: 0,
+    note: "",
+    horn_share: 0,
+    ring_focus: false,
+  };
 }
 
-/** An empty order row for a member who has not said what they have. */
+/** An empty order row for a member nobody has sent anywhere yet. */
 export function emptyOrder(userId: string): GuildEventOrderRow {
-  return { user_id: userId, rings: 0, horns: 0, rings_target: 0, horns_target: 0, attack_target: 0 };
+  return { user_id: userId, attack_target: GUILD_ORDER_TARGET_ALL };
 }
 
 /** Every slot of the map, filled from the stored rows, so a fresh siege still shows the board. */
@@ -150,41 +162,28 @@ export function campTargets(camps: readonly GuildEventCampRow[]): GuildEventCamp
     });
 }
 
-/** Everything the guild has for this siege, whether it is pointed at a camp or not. */
-export function orderTotals(orders: readonly GuildEventOrderRow[]): { rings: number; horns: number } {
-  return orders.reduce(
-    (sum, order) => ({ rings: sum.rings + order.rings, horns: sum.horns + order.horns }),
-    { rings: 0, horns: 0 },
-  );
+/** The members an officer sent to one camp. */
+export function campAttackers(slot: number, orders: readonly GuildEventOrderRow[]): string[] {
+  return orders.filter((order) => order.attack_target === slot).map((order) => order.user_id);
+}
+
+/** How much of the guild's horns the targets carry between them, in percent. */
+export function hornShareTotal(camps: readonly GuildEventCampRow[]): number {
+  return camps
+    .filter((camp) => !camp.is_ours)
+    .reduce((sum, camp) => sum + Math.max(0, Math.min(100, Math.floor(camp.horn_share))), 0);
 }
 
 /**
- * Rings, horns, and attackers an officer has pointed at one camp. Orders left
- * on "every camp" are counted separately, so a camp never claims them.
+ * Where the rings go: nowhere yet, on one camp, or over the whole field.
+ * "Every target" is simply every target carrying the flag.
  */
-export function campAssignment(
-  slot: number,
-  orders: readonly GuildEventOrderRow[],
-): { rings: number; horns: number; attackers: string[] } {
-  return orders.reduce(
-    (sum, order) => ({
-      rings: sum.rings + (order.rings_target === slot ? order.rings : 0),
-      horns: sum.horns + (order.horns_target === slot ? order.horns : 0),
-      attackers: order.attack_target === slot ? [...sum.attackers, order.user_id] : sum.attackers,
-    }),
-    { rings: 0, horns: 0, attackers: [] as string[] },
-  );
-}
-
-/** Rings and horns nobody has been given a camp for yet. */
-export function unassignedTotals(orders: readonly GuildEventOrderRow[]): { rings: number; horns: number } {
-  return orders.reduce(
-    (sum, order) => ({
-      rings: sum.rings + (order.rings_target === GUILD_ORDER_TARGET_ALL ? order.rings : 0),
-      horns: sum.horns + (order.horns_target === GUILD_ORDER_TARGET_ALL ? order.horns : 0),
-    }),
-    { rings: 0, horns: 0 },
-  );
+export function ringSpread(camps: readonly GuildEventCampRow[]): "none" | "one" | "all" {
+  const targets = camps.filter((camp) => !camp.is_ours);
+  const flagged = targets.filter((camp) => camp.ring_focus);
+  if (flagged.length === 0) return "none";
+  if (flagged.length === targets.length && targets.length > 1) return "all";
+  return "one";
 }
 
 /** The order number a newly prioritised camp should get. */

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
-  campAssignment,
+  campAttackers,
   campSlots,
   campTargets,
   currentEventDayIndex,
@@ -10,12 +10,12 @@ import {
   guildPlanEventDef,
   hoursUntilBerlinMidnight,
   nextCampPriority,
-  orderTotals,
+  hornShareTotal,
   setCampPriority,
   pledgeCoverage,
   seriesScore,
   scoreGap,
-  unassignedTotals,
+  ringSpread,
 } from "../lib/content/guild-events.ts";
 
 describe("guild event planning helpers", () => {
@@ -102,28 +102,40 @@ describe("siege camps", () => {
 describe("siege orders", () => {
   const order = (userId, values) => ({ ...emptyOrder(userId), ...values });
   const rows = [
-    order("u-1", { rings: 3, horns: 120, rings_target: 2, horns_target: 2, attack_target: 2 }),
-    order("u-2", { rings: 2, horns: 80, rings_target: 3, horns_target: 0, attack_target: 2 }),
-    order("u-3", { rings: 1, horns: 40 }),
+    order("u-1", { attack_target: 2 }),
+    order("u-2", { attack_target: 2 }),
+    order("u-3", {}),
   ];
 
-  it("adds up everything the guild brings, pointed at a camp or not", () => {
-    assert.deepEqual(orderTotals(rows), { rings: 6, horns: 240 });
-    assert.deepEqual(orderTotals([]), { rings: 0, horns: 0 });
+  it("lists who an officer sent to a camp", () => {
+    assert.deepEqual(campAttackers(2, rows), ["u-1", "u-2"]);
+    assert.deepEqual(campAttackers(3, rows), [], "nobody is sent to a camp by default");
+  });
+});
+
+describe("horn shares and ring spread", () => {
+  const target = (slot, values) => ({ ...emptyCamp(slot), ...values });
+
+  it("adds up the horn shares of the targets only", () => {
+    const camps = [
+      target(1, { is_ours: true, horn_share: 100 }),
+      target(2, { horn_share: 50 }),
+      target(3, { horn_share: 25 }),
+    ];
+    assert.equal(hornShareTotal(camps), 75);
+    assert.equal(hornShareTotal([]), 0);
   });
 
-  it("counts what an officer pointed at one camp, and who attacks it", () => {
-    const second = campAssignment(2, rows);
-    assert.equal(second.rings, 3);
-    assert.equal(second.horns, 120);
-    assert.deepEqual(second.attackers, ["u-1", "u-2"]);
-    const third = campAssignment(3, rows);
-    assert.equal(third.rings, 2);
-    assert.equal(third.horns, 0, "horns left on every camp do not belong to one camp");
+  it("clamps a share that was stored out of range", () => {
+    assert.equal(hornShareTotal([target(1, { horn_share: 140 }), target(2, { horn_share: -20 })]), 100);
   });
 
-  it("keeps what nobody has been given a camp for", () => {
-    assert.deepEqual(unassignedTotals(rows), { rings: 1, horns: 120 });
+  it("tells one camp from the whole field", () => {
+    const one = [target(1, { ring_focus: true }), target(2, {}), target(3, {})];
+    const all = [target(1, { ring_focus: true }), target(2, { ring_focus: true })];
+    assert.equal(ringSpread([target(1, {}), target(2, {})]), "none");
+    assert.equal(ringSpread(one), "one");
+    assert.equal(ringSpread(all), "all");
   });
 });
 

@@ -34,19 +34,20 @@ Supabase automatically provides the function with its project URL, anon key, and
 
 The guild is `1534685294371274822` and stays in the function.
 
-`supabase db push` applies every checked-in migration, including
-`20260922190000_guild_event_camps.sql` and `20260922210000_guild_event_orders.sql`,
-which add the Trials of Odin siege board: the camps, and the rings, horns and
-attacks each member brings, and `20260922230000_guild_alliances.sql`, which adds
-alliances between two guilds and the board they share, plus
-`20260923120000_guild_alliance_bases.sql`, which records the village each allied
-guild holds, and `20260923180000_alliance_base_side.sql`, which makes that
-function take the guild it is setting, and `20260923210000_end_guild_event.sql`,
-which adds `end_guild_event` for clearing an event, and
-`20260924150000_messages.sql`, which adds direct mail, the guild chat, the
-alliance chat, the block list and the read marks behind `/post/`. They only add
-tables, columns, functions and policies, so applying them changes nothing until
-a guild fills a board in, offers an alliance, ends an event or writes a message.
+`supabase db push` applies every checked-in migration. The guild ones, in order:
+
+- `20260922190000_guild_event_camps.sql` — the villages of a siege day.
+- `20260922210000_guild_event_orders.sql` — who an officer sends where.
+- `20260922230000_guild_alliances.sql` — alliances and the board two guilds share.
+- `20260923120000_guild_alliance_bases.sql` — the village each allied guild holds.
+- `20260923180000_alliance_base_side.sql` — that function takes the guild it sets.
+- `20260923210000_end_guild_event.sql` — `end_guild_event` clears an event.
+- `20260924110000_camp_horn_share.sql` — a camp's horn share and ring spread.
+- `20260924150000_messages.sql` — mail, the two chats, blocks and read marks.
+
+They only add tables, columns, functions and policies, so applying them changes
+nothing until a guild fills a board in, offers an alliance, ends an event or
+writes a message.
 
 Which Discord role grants which site role is **no longer in the function**: it
 lives in the `role_mappings` table and is edited at `/admin/` by an admin. The
