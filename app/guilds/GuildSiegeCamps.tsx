@@ -87,6 +87,7 @@ export function GuildSiegeCamps({
   bases = [],
   needsBase = false,
   onPickBase,
+  onChanged,
   ownLabel = "",
 }: {
   scope: SiegeScope;
@@ -99,6 +100,7 @@ export function GuildSiegeCamps({
   bases?: SiegeBase[];
   needsBase?: boolean;
   onPickBase?: (slot: number) => Promise<void> | void;
+  onChanged?: () => void;
   ownLabel?: string;
 }) {
   const { t, tf, n } = useLocale();
@@ -189,6 +191,7 @@ export function GuildSiegeCamps({
     else {
       setNameDraft(null);
       reload();
+      onChanged?.();
     }
     setBusy(false);
   };
@@ -200,7 +203,9 @@ export function GuildSiegeCamps({
   const markBase = async (camp: GuildEventCampRow, isBase: boolean) => {
     const previous = camps.find((entry) => entry.is_ours && entry.slot !== camp.slot);
     const rows = previous && isBase ? [{ ...previous, is_ours: false }] : [];
-    await saveCamps([...rows, { ...camp, is_ours: isBase, priority: 0 }]);
+    // Our own village carries our guild's name unless someone typed another one.
+    const name = isBase && !camp.name.trim() ? ownLabel : camp.name;
+    await saveCamps([...rows, { ...camp, name, is_ours: isBase, priority: 0 }]);
   };
 
   const saveOrder = async (order: GuildEventOrderRow, patch: Partial<GuildEventOrderRow> = {}) => {
@@ -333,6 +338,7 @@ export function GuildSiegeCamps({
               type="button"
               className="siege-village"
               data-state={base ? (base.own ? "ours" : "ally") : order > 0 ? "target" : "free"}
+              data-prio={order > 0 ? Math.min(order, 4) : undefined}
               aria-pressed={selected === slot}
               style={{ "--village-x": `${point.x}%`, "--village-y": `${point.y}%` } as CSSProperties}
               onClick={() => pick(slot)}
@@ -343,7 +349,9 @@ export function GuildSiegeCamps({
                     <GuildsIcon className="icon" />
                   </span>
                 ) : order > 0 ? (
-                  <span className="siege-badge">{order}</span>
+                  <span className="siege-badge" data-prio={Math.min(order, 4)}>
+                    {order}
+                  </span>
                 ) : null}
                 <span className="siege-village-name">{base ? base.label : campLabel(camp)}</span>
               </span>
@@ -453,6 +461,7 @@ export function GuildSiegeCamps({
                               key={value}
                               type="button"
                               className="siege-order-chip"
+                              data-prio={Math.min(value, 4)}
                               aria-label={tf(t.guilds.campTarget, { n: value })}
                               aria-pressed={orderOf(current.slot) === value}
                               disabled={busy}

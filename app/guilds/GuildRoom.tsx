@@ -2,13 +2,14 @@
 
 import { useCallback, useEffect, useId, useState, useSyncExternalStore, type CSSProperties } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { GuildEventBoard, GuildEventPicker } from "./GuildEventBoard";
 import { GuildRichTextEditor, GuildRichTextView } from "./GuildRichText";
 import { guildPostHtml, sanitizeGuildHtml } from "../../lib/content/guild-rich-text";
 import {
   GUILD_PLAN_EVENTS,
   isGuildPlanEventId,
+  guildPlanEventDef,
   type GuildPlanEventId,
 } from "../../lib/content/guild-events";
 import {
@@ -99,11 +100,20 @@ function GuildMark({ guild }: { guild: Guild }) {
   );
 }
 
+type AllianceOffer = {
+  id: string;
+  event_id: GuildPlanEventId;
+  from_guild_id: string;
+  note: string;
+  name: string;
+};
+
 export function GuildRoom({ tab }: { tab: GuildTab }) {
   const { t, tf, d } = useLocale();
   const { session, loading: authLoading } = useAuth();
   const supabase = getSupabaseBrowserClient();
   const pathname = usePathname() ?? "";
+  const router = useRouter();
   const slug = useGuildSlug(pathname);
   const ids = useId();
 
@@ -136,6 +146,7 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
   const [displayNameDraft, setDisplayNameDraft] = useState("");
   const [managingRoster, setManagingRoster] = useState(false);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const [offers, setOffers] = useState<AllianceOffer[]>([]);
 
   const reload = useCallback(() => setReloadToken((value) => value + 1), []);
 
@@ -262,6 +273,74 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
       gone = true;
     };
   }, [supabase, slug, session, reloadToken, tab]);
+
+  // Alliance offers reach the guild through the same inbox as join requests,
+  // so nobody has to open an event to find out somebody asked.
+  useEffect(() => {
+    if (!supabase || !guild) return;
+    let gone = false;
+    void (async () => {
+      const { data, error: offerError } = await supabase
+        .from("guild_alliances")
+        .select("id, event_id, from_guild_id, note, created_at")
+        .eq("to_guild_id", guild.id)
+        .eq("status", "pending");
+      if (gone) return;
+      if (offerError) {
+        setOffers([]);
+        return;
+      }
+      const rows = (data ?? []).filter((row) => isGuildPlanEventId(row.event_id as string));
+      const ids = [...new Set(rows.map((row) => row.from_guild_id as string))];
+      let names: Record<string, string> = {};
+      if (ids.length > 0) {
+        const listed = await supabase.from("guilds").select("id, name").in("id", ids);
+        if (gone) return;
+        names = Object.fromEntries(((listed.data ?? []) as { id: string; name: string }[]).map((g) => [g.id, g.name]));
+      }
+      setOffers(
+        rows.map((row) => ({
+          id: row.id as string,
+          event_id: row.event_id as GuildPlanEventId,
+          from_guild_id: row.from_guild_id as string,
+          note: (row.note as string) ?? "",
+          name: names[row.from_guild_id as string] ?? "",
+        })),
+      );
+    })();
+    return () => {
+      gone = true;
+    };
+  }, [supabase, guild, reloadToken]);
+
+  /** Taking an offer turns the event on and opens it straight away. */
+  const answerOffer = async (offer: AllianceOffer, status: "accepted" | "declined") => {
+    if (!supabase || !guild) return;
+    setBusy(true);
+    setError("");
+    const { error: rpcError } = await supabase.rpc("respond_to_guild_alliance", {
+      p_alliance_id: offer.id,
+      p_status: status,
+    });
+    if (rpcError) {
+      setError(rpcError.message);
+      setBusy(false);
+      return;
+    }
+    if (status === "accepted") {
+      if (!activeEventIds.includes(offer.event_id)) {
+        const { error: activateError } = await supabase
+          .from("guild_active_events")
+          .insert({ guild_id: guild.id, event_id: offer.event_id });
+        if (activateError && !/duplicate|unique/i.test(activateError.message)) setError(activateError.message);
+      }
+      setPlanEventId(offer.event_id);
+      setManagePanel(null);
+      if (tab !== "planung") router.push(guildRoomHref(guild.slug, "planung"));
+    }
+    reload();
+    setBusy(false);
+  };
 
   const decide = async (userId: string, status: "active" | "rejected") => {
     if (!supabase || !session || !guild) return;
@@ -629,8 +708,8 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
                 onClick={() => setManagePanel((open) => (open === "requests" ? null : "requests"))}
               >
                 <InboxIcon className="icon" />
-                {pending.length > 0 ? (
-                  <span className="guild-tool-badge" aria-hidden="true">{pending.length}</span>
+                {pending.length + offers.length > 0 ? (
+                  <span className="guild-tool-badge" aria-hidden="true">{pending.length + offers.length}</span>
                 ) : null}
               </button>
             ) : null}
@@ -683,10 +762,48 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
       {canOfficer && managePanel === "requests" ? (
         <section className="guild-panel guild-manage-panel" id={`${ids}-requests`}>
           <header className="guild-panel-head">
-            <h2>{t.guilds.pendingTitle}</h2>
-            <span className="count">{pending.length}</span>
+            <h2>{t.guilds.inboxTitle}</h2>
+            <span className="count">{pending.length + offers.length}</span>
           </header>
-          {pending.length === 0 ? (
+          {offers.length > 0 ? (
+            <ul className="guild-pending-list guild-offer-list">
+              {offers.map((offer) => (
+                <li key={offer.id}>
+                  <span className="guild-avatar" aria-hidden="true">
+                    <GuildsIcon className="icon icon-sm" />
+                  </span>
+                  <div className="guild-pending-meta">
+                    <p className="guild-pending-who">
+                      <strong>{tf(t.guilds.allianceIncoming, { guild: offer.name })}</strong>
+                      <span>{t.guilds.events[guildPlanEventDef(offer.event_id).labelKey]}</span>
+                    </p>
+                    <p className={offer.note.trim() ? "guild-pending-note" : "guild-pending-note is-empty"}>
+                      {offer.note.trim() || t.guilds.requestNoteEmpty}
+                    </p>
+                  </div>
+                  <span className="guild-pending-actions">
+                    <button
+                      className="small-button button-primary"
+                      type="button"
+                      disabled={busy}
+                      onClick={() => void answerOffer(offer, "accepted")}
+                    >
+                      {t.guilds.allianceAccept}
+                    </button>
+                    <button
+                      className="small-button"
+                      type="button"
+                      disabled={busy}
+                      onClick={() => void answerOffer(offer, "declined")}
+                    >
+                      {t.guilds.allianceDecline}
+                    </button>
+                  </span>
+                </li>
+              ))}
+            </ul>
+          ) : null}
+          {pending.length === 0 && offers.length === 0 ? (
             <p className="guild-panel-empty">{t.guilds.pendingEmpty}</p>
           ) : (
             <ul className="guild-pending-list">
@@ -817,6 +934,7 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
                   canOfficer={canOfficer}
                   roster={roster}
                   eventId={planEventId}
+                  onManageEvents={() => setEventPickerOpen(true)}
                 />
               ) : (
                 <section className="guild-panel">
@@ -824,18 +942,15 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
                     <EventsIcon className="icon guild-empty-icon" />
                     <strong>{t.guilds.emptyTitle}</strong>
                     <p>{t.guilds.eventsActiveEmpty}</p>
+                    {canOfficer ? (
+                      <button className="small-button button-primary" type="button" onClick={() => setEventPickerOpen(true)}>
+                        <PlusIcon className="icon icon-sm" />
+                        {t.guilds.eventsActivate}
+                      </button>
+                    ) : null}
                   </div>
                 </section>
               )}
-              {/* Below the board, so opening the list never pushes the board or the empty state down. */}
-              {canOfficer && !eventPickerOpen ? (
-                <div className="guild-event-manage">
-                  <button className="small-button" type="button" onClick={() => setEventPickerOpen(true)}>
-                    <PlusIcon className="icon icon-sm" />
-                    {activeEventIds.length > 0 ? t.guilds.eventsManage : t.guilds.eventsActivate}
-                  </button>
-                </div>
-              ) : null}
               {canOfficer ? (
                 <GuildEventPicker
                   guildId={guild.id}
