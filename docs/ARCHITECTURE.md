@@ -117,10 +117,11 @@ calls those cities something different in every language, so a guild writes its
 own name on the outposts it plans around.
 
 Over the picture lies the territory layer. `lib/content/dawn-of-rome-map.ts`
-holds the grid, measured off the printed hexes rather than guessed — the lattice
-repeats every 74.5 px across and 59.5 px down with every second row shifted half
-a column, the first row of centres sits at y = 93, and the drawn hexes are
-slightly squashed, so the height comes from the row pitch. All 270 tiles are in
+holds the grid, measured off the printed hexes rather than guessed. They are
+flat-top — a flat edge above and below, a point left and right — 74.5 px wide
+and 57 px tall, which makes them a little squashed; columns sit 0.75 of a width
+apart with every second column half a row lower, and tile (0, 0) is centred at
+(21, 27). All 360 tiles are in
 the DOM as transparent polygons, which is what makes each one hover and click;
 only painted ones are stored (`guild_event_hexes` / `guild_alliance_hexes`),
 so an untouched board costs nothing. A tile carries a `tone`: 1 for the guild
