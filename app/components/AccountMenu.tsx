@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "./AuthProvider";
 import { useLocale } from "./LocaleProvider";
+import { SignInPanel } from "./SignInPanel";
 import { ChevronIcon, PenIcon, ShieldIcon } from "./Icons";
 
 /**
@@ -13,10 +14,11 @@ import { ChevronIcon, PenIcon, ShieldIcon } from "./Icons";
  * live next to the account control instead, matching the language menu.
  */
 export function AccountMenu() {
-  const { t } = useLocale();
-  const { allows, session, loading, signIn, signOut } = useAuth();
+  const { t, d } = useLocale();
+  const { allows, session, loading, signOut } = useAuth();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [signInOpen, setSignInOpen] = useState(false);
   const root = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -39,9 +41,12 @@ export function AccountMenu() {
 
   if (!session) {
     return (
-      <button className="topbar-sign-in" type="button" onClick={() => void signIn()}>
-        {t.auth.signIn}
-      </button>
+      <div className="lang topbar-account" ref={root}>
+        <button className="topbar-sign-in" type="button" onClick={() => setSignInOpen((value) => !value)}>
+          {t.auth.signIn}
+        </button>
+        <SignInPanel open={signInOpen} onClose={() => setSignInOpen(false)} />
+      </div>
     );
   }
 
@@ -63,10 +68,22 @@ export function AccountMenu() {
         onClick={() => setOpen((value) => !value)}
       >
         <span className="topbar-account-name">{session.name}</span>
+        {session.premium ? <span className="pill topbar-premium-pill">{t.premium.badge}</span> : null}
         <ChevronIcon className="icon icon-sm" />
       </button>
       {open && (
         <ul className="menu-pop" role="menu" aria-label={t.auth.accountMenu}>
+          {session.premium && session.premiumExpiresAt ? (
+            <li className="menu-meta" role="presentation">
+              {t.premium.activeUntil.replace("{when}", d(session.premiumExpiresAt.slice(0, 10)))}
+            </li>
+          ) : (
+            <li>
+              <Link className="lang-option" href="/premium/" role="menuitem" onClick={() => setOpen(false)}>
+                {t.shell.buyPremium}
+              </Link>
+            </li>
+          )}
           {actions.map((action) => {
             const Icon = action.icon;
             return (
@@ -83,7 +100,7 @@ export function AccountMenu() {
               </li>
             );
           })}
-          {actions.length > 0 && <li className="menu-sep" role="separator" />}
+          {(actions.length > 0 || !session.premium) && <li className="menu-sep" role="separator" />}
           <li>
             <button
               type="button"

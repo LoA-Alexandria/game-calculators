@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { sectionBannerLogoUrl, sectionBannerUrl } from "../../lib/content/banners";
 import type { NavItem, NavSection } from "../../lib/navigation";
+import { useAuth } from "./AuthProvider";
 import { SECTION_ICONS } from "./Icons";
 import { useLocale } from "./LocaleProvider";
 
@@ -70,14 +71,23 @@ export function BackLink({ href, label }: { href: string; label: string }) {
 
 export function ToolCard({ item }: { item: NavItem }) {
   const { t } = useLocale();
+  const { session } = useAuth();
+  const locked = Boolean(item.premium && !session?.premium);
+  const href = locked ? "/premium/" : item.href;
   return (
-    <Link className="tool-card" href={item.href}>
+    <Link className={locked ? "tool-card tool-card-premium-locked" : "tool-card"} href={href}>
       <div className="card-topline">
-        {item.badge && <span className="status">{item.badge(t)}</span>}
+        <div className="card-topline-badges">
+          {item.premium ? <span className="status status-premium">{t.premium.badge}</span> : null}
+          {item.badge && <span className="status">{item.badge(t)}</span>}
+        </div>
         <span aria-hidden="true" className="arrow">↗</span>
       </div>
-      <h3>{item.label(t)}</h3>
-      {item.description && <p>{item.description(t)}</p>}
+      <div className={locked ? "tool-card-body is-blurred" : "tool-card-body"}>
+        <h3>{item.label(t)}</h3>
+        {item.description && <p>{item.description(t)}</p>}
+      </div>
+      {locked ? <span className="tool-card-lock">{t.premium.unlockHint}</span> : null}
     </Link>
   );
 }

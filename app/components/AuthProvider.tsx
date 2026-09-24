@@ -3,6 +3,8 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import type { Session as SupabaseSession } from "@supabase/supabase-js";
 import { can, isRole, type Permission, type Role } from "../../lib/auth/roles";
+import { isPasswordUsername, passwordAccountEmail } from "../../lib/auth/password-account";
+import { isPremiumActive, type PremiumEntitlement } from "../../lib/content/premium";
 import { getSupabaseBrowserClient } from "../../lib/supabase/client";
 
 type Session = {
@@ -12,14 +14,21 @@ type Session = {
   role: Role | null;
   /** Discord snowflake from `editor_access`; used for guild-master matching. */
   discordUserId: string | null;
+  premium: boolean;
+  premiumExpiresAt: string | null;
 };
+
 type AuthContextValue = {
   session: Session | null;
   loading: boolean;
   error: string;
   allows: (permission: Permission) => boolean;
-  signIn: () => Promise<void>;
+  /** Discord OAuth; optional redirect after return. */
+  signIn: (redirectTo?: string) => Promise<void>;
+  signInWithPassword: (username: string, password: string) => Promise<boolean>;
+  signUpWithPassword: (username: string, password: string) => Promise<boolean>;
   signOut: () => Promise<void>;
+  refreshSession: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -49,14 +58,21 @@ function displaySession(
   session: SupabaseSession,
   role: Role | null,
   discordUserId: string | null,
+  username: string | null,
+  premium: PremiumEntitlement | null,
 ): Session {
   const metadata = session.user.user_metadata;
+  const fromDiscord = metadata.full_name ?? metadata.name ?? metadata.preferred_username;
+  const name = username || fromDiscord || session.user.email?.split("@")[0] || "Member";
+  const handle = username || metadata.preferred_username || metadata.name || session.user.email?.split("@")[0] || "member";
   return {
     userId: session.user.id,
-    name: metadata.full_name ?? metadata.name ?? metadata.preferred_username ?? "Discord member",
-    handle: metadata.preferred_username ?? metadata.name ?? "discord-member",
+    name,
+    handle,
     role,
     discordUserId,
+    premium: isPremiumActive(premium),
+    premiumExpiresAt: premium && isPremiumActive(premium) ? premium.expires_at : null,
   };
 }
 
@@ -71,26 +87,48 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setLoading(true);
     setError("");
     if (current.provider_token) {
-      const { error: verificationError } = await supabase.functions.invoke("verify-discord-role", { body: { providerToken: current.provider_token } });
+      const { error: verificationError } = await supabase.functions.invoke("verify-discord-role", {
+        body: { providerToken: current.provider_token },
+      });
       if (verificationError) {
         const detail = await functionErrorDetail(verificationError);
         setError(detail || "Discord role verification is temporarily unavailable.");
       }
     }
-    const { data, error: accessError } = await supabase
-      .from("editor_access")
-      .select("role, can_edit, discord_user_id")
-      .eq("user_id", current.user.id)
-      .maybeSingle();
-    if (accessError) setError("Editor access could not be loaded.");
+    const [access, profile, premium] = await Promise.all([
+      supabase.from("editor_access").select("role, can_edit, discord_user_id").eq("user_id", current.user.id).maybeSingle(),
+      supabase.from("profiles").select("username").eq("user_id", current.user.id).maybeSingle(),
+      supabase
+        .from("premium_entitlements")
+        .select("user_id, status, starts_at, expires_at, source, paypal_txn_id, note")
+        .eq("user_id", current.user.id)
+        .maybeSingle(),
+    ]);
+    if (access.error) setError("Editor access could not be loaded.");
     // `role` is the real answer; `can_edit` is the older column, still read so
     // a session that predates the migration keeps working until it is dropped.
-    const stored = isRole(data?.role) ? data.role : data?.can_edit === true ? "guide_writer" : null;
-    const discordUserId =
-      typeof data?.discord_user_id === "string" && data.discord_user_id.length > 0
-        ? data.discord_user_id
+    const stored = isRole(access.data?.role)
+      ? access.data.role
+      : access.data?.can_edit === true
+        ? "guide_writer"
         : null;
-    setSession(displaySession(current, stored, discordUserId));
+    const discordUserId =
+      typeof access.data?.discord_user_id === "string" && access.data.discord_user_id.length > 0
+        ? access.data.discord_user_id
+        : null;
+    const username =
+      typeof profile.data?.username === "string" && profile.data.username.length > 0
+        ? profile.data.username
+        : null;
+    setSession(
+      displaySession(
+        current,
+        stored,
+        discordUserId,
+        username,
+        (premium.data as PremiumEntitlement | null) ?? null,
+      ),
+    );
     setLoading(false);
   }, [supabase]);
 
@@ -102,30 +140,119 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
     const { data: listener } = supabase.auth.onAuthStateChange((_event, next) => {
       if (next) window.setTimeout(() => void refreshAccess(next), 0);
-      else { setSession(null); setLoading(false); }
+      else {
+        setSession(null);
+        setLoading(false);
+      }
     });
     return () => listener.subscription.unsubscribe();
   }, [refreshAccess, supabase]);
 
-  const signIn = useCallback(async () => {
-    if (!supabase) { setError("Supabase has not been configured for this deployment."); return; }
-    setError("");
-    const { error: signInError } = await supabase.auth.signInWithOAuth({
-      provider: "discord",
-      // Return a reader to the page where they started. This matters for Benben:
-      // its signed Discord launch token is kept in sessionStorage during OAuth,
-      // so returning to /benben/ lets the care action continue in that channel.
-      options: { redirectTo: window.location.href, scopes: "identify guilds.members.read" },
-    });
-    if (signInError) setError(signInError.message);
-  }, [supabase]);
+  const signIn = useCallback(
+    async (redirectTo?: string) => {
+      if (!supabase) {
+        setError("Supabase has not been configured for this deployment.");
+        return;
+      }
+      setError("");
+      const { error: signInError } = await supabase.auth.signInWithOAuth({
+        provider: "discord",
+        options: {
+          redirectTo: redirectTo ?? window.location.href,
+          scopes: "identify guilds.members.read",
+        },
+      });
+      if (signInError) setError(signInError.message);
+    },
+    [supabase],
+  );
+
+  const signInWithPassword = useCallback(
+    async (username: string, password: string) => {
+      if (!supabase) {
+        setError("Supabase has not been configured for this deployment.");
+        return false;
+      }
+      setError("");
+      if (!isPasswordUsername(username)) {
+        setError("Username must be 3–24 letters, numbers, or underscores.");
+        return false;
+      }
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: passwordAccountEmail(username),
+        password,
+      });
+      if (signInError) {
+        setError(signInError.message);
+        return false;
+      }
+      return true;
+    },
+    [supabase],
+  );
+
+  const signUpWithPassword = useCallback(
+    async (username: string, password: string) => {
+      if (!supabase) {
+        setError("Supabase has not been configured for this deployment.");
+        return false;
+      }
+      setError("");
+      const clean = username.trim();
+      if (!isPasswordUsername(clean)) {
+        setError("Username must be 3–24 letters, numbers, or underscores.");
+        return false;
+      }
+      const { data, error: signUpError } = await supabase.auth.signUp({
+        email: passwordAccountEmail(clean),
+        password,
+        options: { data: { username: clean, full_name: clean } },
+      });
+      if (signUpError) {
+        setError(signUpError.message);
+        return false;
+      }
+      if (data.user) {
+        const { error: profileError } = await supabase.from("profiles").upsert({
+          user_id: data.user.id,
+          username: clean,
+          updated_at: new Date().toISOString(),
+        });
+        if (profileError) {
+          setError(profileError.message);
+          return false;
+        }
+      }
+      return true;
+    },
+    [supabase],
+  );
 
   const signOut = useCallback(async () => {
     if (supabase) await supabase.auth.signOut();
     setSession(null);
   }, [supabase]);
 
-  const value = useMemo<AuthContextValue>(() => ({ session, loading, error, allows: (permission) => can(session?.role, permission), signIn, signOut }), [error, loading, session, signIn, signOut]);
+  const refreshSession = useCallback(async () => {
+    if (!supabase) return;
+    const { data } = await supabase.auth.getSession();
+    if (data.session) await refreshAccess(data.session);
+  }, [refreshAccess, supabase]);
+
+  const value = useMemo<AuthContextValue>(
+    () => ({
+      session,
+      loading,
+      error,
+      allows: (permission) => can(session?.role, permission),
+      signIn,
+      signInWithPassword,
+      signUpWithPassword,
+      signOut,
+      refreshSession,
+    }),
+    [error, loading, refreshSession, session, signIn, signInWithPassword, signOut, signUpWithPassword],
+  );
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 

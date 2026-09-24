@@ -16,6 +16,7 @@ import { isRole, PERMISSIONS, ROLES, ROLE_PERMISSIONS, type Role } from "../../l
 import { useAuth } from "../components/AuthProvider";
 import { useDocumentTitle, useLocale } from "../components/LocaleProvider";
 import { PermissionGate } from "../components/SignInGate";
+import { AdminPremiumQueues } from "../components/AdminPremiumQueues";
 import { PageHead } from "../components/Ui";
 import { InfoIcon, PlusIcon, TrashIcon } from "../components/Icons";
 
@@ -213,6 +214,8 @@ function AdminPanel() {
       </div>
 
       {error && <p className="result-error" role="alert">{error}</p>}
+
+      <AdminPremiumQueues reloadToken={reloadToken} onChanged={reload} />
 
       <section className="panel">
         <h2>{t.admin.guildsTitle}</h2>

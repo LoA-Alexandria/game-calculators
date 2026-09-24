@@ -3,6 +3,7 @@
 import { useMemo, useSyncExternalStore } from "react";
 import { CalculatorHeader } from "../../components/CalculatorHeader";
 import { useLocale } from "../../components/LocaleProvider";
+import { PremiumGate } from "../../components/PremiumGate";
 import { createPersistentStore } from "../../components/persistentStore";
 import {
   GODDESS_APTITUDES,
@@ -142,7 +143,7 @@ export default function TheaterIncomePage() {
   const matchText = (count: number) => (count === 1 ? copy.matchOne : tf(copy.matchMany, { count }));
 
   return (
-    <>
+    <PremiumGate>
       <CalculatorHeader eyebrow={copy.eyebrow} title={t.tools.theaterIncome.name} description={copy.intro} />
 
       <section className="calculator-panel theater-panel" aria-label={t.tools.theaterIncome.name}>
@@ -427,6 +428,6 @@ export default function TheaterIncomePage() {
         <p>{copy.credit}</p>
       </details>
       <p className="assumption">{copy.storageNote}</p>
-    </>
+    </PremiumGate>
   );
 }

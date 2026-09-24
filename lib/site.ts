@@ -24,12 +24,12 @@ export const DISCORD_URL = "https://discord.gg/dNdQB6MVW8";
 export const DISCORD_CONFIGURED = !DISCORD_URL.includes("REPLACE-ME");
 
 /**
- * Checkout or landing page for site Premium. Empty until a payment link exists;
- * the topbar button then falls back to Discord.
+ * Checkout for site Premium (PayPal No Code payment link).
+ * Landing and claims live at `/premium/`.
  */
-export const PREMIUM_URL = "";
+export const PREMIUM_URL = "https://www.paypal.com/ncp/payment/JY7KCGPWN263A";
 
-/** Resolved Premium link shown in the topbar. */
+/** Resolved Premium checkout link shown on the Premium page and topbar CTA. */
 export const PREMIUM_HREF = PREMIUM_URL || DISCORD_URL;
 
 /** Key shared with the vendored Irrigation Planner for its theme override. */

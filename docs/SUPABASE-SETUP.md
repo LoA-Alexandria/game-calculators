@@ -1,6 +1,8 @@
-# Supabase and Discord setup
+# Supabase and authentication setup
 
-The frontend uses Discord login through Supabase. A Supabase Edge Function checks membership in the Pop Epoch server and grants wiki-editor access to members with either the Coders or Builders role.
+The frontend uses Supabase Auth (Discord OAuth and username/password). A Supabase Edge Function checks Discord membership in the Pop Epoch server and grants wiki-editor access to members with either the Coders or Builders role.
+
+Enable the **Email** provider under Authentication → Providers so password accounts can sign up (Supabase still stores a synthetic address; members only see username and password). Turn **Confirm email** off, or sign-up will hang waiting for a confirmation that never arrives. Discord remains the path for site roles and guild-master matching.
 
 ## Public site configuration
 

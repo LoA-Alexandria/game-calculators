@@ -16,6 +16,7 @@ import { getSupabaseBrowserClient } from "../../lib/supabase/client";
 import { useAuth } from "../components/AuthProvider";
 import { useDocumentTitle, useLocale } from "../components/LocaleProvider";
 import { DiscordIcon, GlobeIcon, GuildsIcon, SearchIcon } from "../components/Icons";
+import { GuildCreateRequestPanel } from "../components/GuildCreateRequestPanel";
 import { PageHead, SectionBanner } from "../components/Ui";
 
 type OwnMembership = Pick<GuildMembership, "guild_id" | "status">;
@@ -181,6 +182,8 @@ export default function GuildsPage() {
     <>
       <SectionBanner id="guilds" />
       <PageHead eyebrow={t.navDescriptions.guilds} title={t.guilds.title} lede={t.guilds.lede} />
+
+      <GuildCreateRequestPanel />
 
       {error && (
         <p className="result-error" role="alert">
