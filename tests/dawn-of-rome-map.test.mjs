@@ -110,6 +110,10 @@ describe("dawn of rome map", () => {
   it("keeps red and outside tiles from accepting paint", () => {
     assert.ok(ROME_BLOCKED_TILES.length > 0);
     assert.ok(ROME_OUTSIDE_TILES.length > 0);
+    assert.ok(
+      ROME_BLOCKED_TILES.length >= 200,
+      "purple mountain coverage should block a large set of hexes",
+    );
     for (const [col, row] of ROME_BLOCKED_TILES) {
       assert.equal(romeTileKind(col, row), "blocked");
       assert.equal(isRomeClickable(col, row), false);

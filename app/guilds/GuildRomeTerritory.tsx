@@ -160,7 +160,8 @@ export function GuildRomeTerritory({
       >
         {romeTiles().map(({ col, row }) => {
           const kind = romeTileKind(col, row);
-          if (kind === "outside") return null;
+          // Outside the yellow border and purple/blocked tiles never get a hit target.
+          if (kind === "outside" || kind === "blocked") return null;
           const worn = toneAt(col, row);
           const clickable = kind === "plain" || kind === "structure";
           return (
