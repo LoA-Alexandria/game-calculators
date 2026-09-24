@@ -46,6 +46,8 @@ The guild is `1534685294371274822` and stays in the function.
 - `20260924150000_messages.sql` — mail, the two chats, blocks and read marks.
 - `20260925120000_guild_posts_i18n.sql` — guild news source + i18n columns.
 - `20260925200000_guild_rome_territory.sql` — Dawn of Rome hex paint and settlements.
+- `20260926120000_rome_tile_tones.sql` — a painted tile carries a colour; clears
+  the tiles painted on the old grid.
 
 They only add tables, columns, functions and policies, so applying them changes
 nothing until a guild fills a board in, offers an alliance, ends an event or

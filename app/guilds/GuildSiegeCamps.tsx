@@ -18,13 +18,18 @@ import {
   type GuildEventOrderRow,
   type GuildPlanEventId,
 } from "../../lib/content/guild-events";
-import { DAWN_OF_ROME_BASES, DAWN_OF_ROME_MAP } from "../../lib/content/dawn-of-rome-map";
+import {
+  DAWN_OF_ROME_BASES,
+  DAWN_OF_ROME_MAP,
+  DAWN_TONES,
+  type DawnTone,
+} from "../../lib/content/dawn-of-rome-map";
 import { guildRosterLabel, type GuildRosterEntry } from "../../lib/content/guilds";
 import { asset } from "../../lib/site";
 import { getSupabaseBrowserClient } from "../../lib/supabase/client";
 import { useLocale } from "../components/LocaleProvider";
 import { CheckIcon, CloseIcon, GuildsIcon, HornIcon, RingIcon, UsersIcon } from "../components/Icons";
-import { GuildRomeTerritory, type HexBrush } from "./GuildRomeTerritory";
+import { GuildRomeTerritory } from "./GuildRomeTerritory";
 
 const CAMP_COLUMNS = "slot, name, server_name, is_ours, priority, note, horn_share, ring_focus";
 const ORDER_COLUMNS = "user_id, attack_target";
@@ -96,8 +101,7 @@ export function GuildSiegeCamps({
   onPickBase,
   onChanged,
   ownLabel = "",
-  guildId,
-  partnerGuildId = null,
+  partnerName = "",
 }: {
   scope: SiegeScope;
   eventId: GuildPlanEventId;
@@ -112,9 +116,9 @@ export function GuildSiegeCamps({
   onChanged?: () => void;
   ownLabel?: string;
   /** Viewing guild — used to colour hex / settlement ownership. */
-  guildId: string;
   /** Allied partner on a shared board, if any. */
-  partnerGuildId?: string | null;
+  /** The allied guild's name, for the territory palette. */
+  partnerName?: string;
 }) {
   const { t, tf, n } = useLocale();
   const supabase = getSupabaseBrowserClient();
@@ -124,7 +128,9 @@ export function GuildSiegeCamps({
   const showHex = eventDef.hexTerritory === true;
   const shared = scope.kind === "alliance";
   const owner = shared ? scope.allianceId : scope.guildId;
-  const [brush, setBrush] = useState<HexBrush>("ours");
+  // Which colour the next tap paints with, and whether it wipes instead.
+  const [tone, setTone] = useState<DawnTone>(1);
+  const [erasing, setErasing] = useState(false);
 
   const source = useMemo(
     () =>
@@ -329,35 +335,38 @@ export function GuildSiegeCamps({
 
       {showHex && plans ? (
         <div className="siege-brush" role="group" aria-label={t.guilds.hexBrushLabel}>
+          {DAWN_TONES.map((value) => {
+            const label =
+              value === 1
+                ? ownLabel || t.guilds.hexBrushOurs
+                : value === 2
+                  ? partnerName || t.guilds.hexBrushAlly
+                  : tf(t.guilds.hexBrushOther, { n: value - 2 });
+            return (
+              <button
+                key={value}
+                type="button"
+                className="siege-brush-chip"
+                data-tone={value}
+                aria-pressed={!erasing && tone === value}
+                disabled={busy || (value === 2 && !partnerName)}
+                onClick={() => {
+                  setTone(value);
+                  setErasing(false);
+                }}
+              >
+                <span className="siege-brush-dot" aria-hidden="true" />
+                {label}
+              </button>
+            );
+          })}
           <button
             type="button"
             className="siege-brush-chip"
-            data-owner="ours"
-            aria-pressed={brush === "ours"}
+            data-tone="clear"
+            aria-pressed={erasing}
             disabled={busy}
-            onClick={() => setBrush("ours")}
-          >
-            {t.guilds.hexBrushOurs}
-          </button>
-          {partnerGuildId ? (
-            <button
-              type="button"
-              className="siege-brush-chip"
-              data-owner="ally"
-              aria-pressed={brush === "ally"}
-              disabled={busy}
-              onClick={() => setBrush("ally")}
-            >
-              {t.guilds.hexBrushAlly}
-            </button>
-          ) : null}
-          <button
-            type="button"
-            className="siege-brush-chip"
-            data-owner="clear"
-            aria-pressed={brush === "clear"}
-            disabled={busy}
-            onClick={() => setBrush("clear")}
+            onClick={() => setErasing(true)}
           >
             {t.guilds.hexBrushClear}
           </button>
@@ -379,11 +388,9 @@ export function GuildSiegeCamps({
           <GuildRomeTerritory
             scope={scope}
             dayIndex={dayIndex}
-            canOfficer={canOfficer}
-            guildId={guildId}
-            partnerGuildId={partnerGuildId}
-            brush={brush}
-            locked={locked}
+            canPaint={plans}
+            tone={tone}
+            erasing={erasing}
           />
         ) : null}
 

@@ -591,8 +591,7 @@ export function GuildEventBoard({
           userId={userId}
           roster={onShared && ally ? sharedRoster : roster}
           ownLabel={guildName}
-          guildId={guildId}
-          partnerGuildId={onShared && ally ? alliancePartnerId(ally, guildId) : null}
+          partnerName={ally ? guildLabel(alliancePartnerId(ally, guildId)) : ""}
           bases={onShared ? sharedBases : []}
           needsBase={onShared && ally !== null && allianceNeedsBase(ally, guildId) && canOfficer}
           onPickBase={pickSharedBase}
