@@ -2,7 +2,7 @@
 
 import { useId, useState } from "react";
 import Link from "next/link";
-import { PREMIUM_PERIOD_DAYS } from "../../lib/content/premium";
+import { PREMIUM_PERIOD_DAYS, PREMIUM_PRICE_EUR } from "../../lib/content/premium";
 import { PREMIUM_HREF } from "../../lib/site";
 import { getSupabaseBrowserClient } from "../../lib/supabase/client";
 import { useAuth } from "../components/AuthProvider";
@@ -10,7 +10,7 @@ import { useDocumentTitle, useLocale } from "../components/LocaleProvider";
 import { PageHead } from "../components/Ui";
 
 export default function PremiumPage() {
-  const { t, d } = useLocale();
+  const { t, tf, d } = useLocale();
   const { session, loading, refreshSession, signIn } = useAuth();
   const supabase = getSupabaseBrowserClient();
   const ids = useId();
@@ -21,6 +21,8 @@ export default function PremiumPage() {
   const [error, setError] = useState("");
 
   useDocumentTitle(t.premium.title);
+
+  const priceVars = { price: PREMIUM_PRICE_EUR, days: PREMIUM_PERIOD_DAYS };
 
   const submitClaim = async () => {
     if (!supabase || !session) return;
@@ -51,14 +53,18 @@ export default function PremiumPage() {
 
   return (
     <>
-      <PageHead eyebrow={t.premium.badge} title={t.premium.title} lede={t.premium.lede} />
+      <PageHead
+        eyebrow={t.premium.badge}
+        title={t.premium.title}
+        lede={tf(t.premium.lede, priceVars)}
+      />
 
       <section className="panel premium-benefits">
         <h2>{t.premium.benefitsTitle}</h2>
         <ul className="premium-benefit-list">
           <li>{t.premium.benefitTools}</li>
           <li>{t.premium.benefitGuild}</li>
-          <li>{t.premium.benefitMonthly.replace("{days}", String(PREMIUM_PERIOD_DAYS))}</li>
+          <li>{tf(t.premium.benefitMonthly, priceVars)}</li>
         </ul>
       </section>
 
@@ -67,32 +73,32 @@ export default function PremiumPage() {
           <h2>{t.premium.activeTitle}</h2>
           <p>
             {session.premiumExpiresAt
-              ? t.premium.activeUntil.replace("{when}", d(session.premiumExpiresAt.slice(0, 10)))
+              ? tf(t.premium.activeUntil, { when: d(session.premiumExpiresAt.slice(0, 10)) })
               : t.premium.badge}
           </p>
-          <p className="assumption">{t.premium.renewHint}</p>
+          <p className="assumption">{tf(t.premium.renewHint, priceVars)}</p>
           <a className="button button-primary" href={PREMIUM_HREF} target="_blank" rel="noreferrer">
-            {t.premium.payAgain}
+            {tf(t.premium.payAgain, priceVars)}
           </a>
         </section>
       ) : (
         <section className="panel" style={{ marginTop: 16 }}>
-          <h2>{t.premium.payTitle}</h2>
-          <p>{t.premium.payLede}</p>
+          <h2>{tf(t.premium.payTitle, priceVars)}</h2>
+          <p>{tf(t.premium.payLede, priceVars)}</p>
           <ol className="premium-steps">
-            <li>{t.premium.stepPay}</li>
+            <li>{tf(t.premium.stepPay, priceVars)}</li>
             <li>{t.premium.stepSignIn}</li>
             <li>{t.premium.stepClaim}</li>
           </ol>
           <a className="button button-primary" href={PREMIUM_HREF} target="_blank" rel="noreferrer">
-            {t.shell.buyPremium}
+            {tf(t.premium.payCta, priceVars)}
           </a>
         </section>
       )}
 
       <section className="panel" style={{ marginTop: 16 }} id="claim">
         <h2>{t.premium.claimTitle}</h2>
-        <p>{t.premium.claimLede}</p>
+        <p>{tf(t.premium.claimLede, priceVars)}</p>
         {loading ? (
           <p className="assumption">…</p>
         ) : !session ? (

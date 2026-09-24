@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import Link from "next/link";
+import { PREMIUM_PERIOD_DAYS, PREMIUM_PRICE_EUR } from "../../lib/content/premium";
 import { useAuth } from "./AuthProvider";
 import { useLocale } from "./LocaleProvider";
 
@@ -10,7 +11,7 @@ import { useLocale } from "./LocaleProvider";
  * see the tool; everyone else gets a blurred shell and a buy link.
  */
 export function PremiumGate({ children }: { children: ReactNode }) {
-  const { t } = useLocale();
+  const { t, tf } = useLocale();
   const { session, loading } = useAuth();
 
   if (loading) {
@@ -27,9 +28,9 @@ export function PremiumGate({ children }: { children: ReactNode }) {
       <div className="premium-gate-overlay">
         <p className="pill">{t.premium.badge}</p>
         <h2>{t.premium.lockedTitle}</h2>
-        <p>{t.premium.lockedLede}</p>
+        <p>{tf(t.premium.lockedLede, { price: PREMIUM_PRICE_EUR, days: PREMIUM_PERIOD_DAYS })}</p>
         <Link className="button button-primary" href="/premium/">
-          {t.shell.buyPremium}
+          {tf(t.shell.buyPremium, { price: PREMIUM_PRICE_EUR })}
         </Link>
       </div>
     </div>
