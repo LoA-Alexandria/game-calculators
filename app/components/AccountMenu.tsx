@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { PREMIUM_PRICE_EUR } from "../../lib/content/premium";
 import { useAuth } from "./AuthProvider";
 import { useLocale } from "./LocaleProvider";
 import { SignInPanel } from "./SignInPanel";
@@ -14,7 +15,7 @@ import { ChevronIcon, PenIcon, ShieldIcon } from "./Icons";
  * live next to the account control instead, matching the language menu.
  */
 export function AccountMenu() {
-  const { t, d } = useLocale();
+  const { t, d, tf } = useLocale();
   const { allows, session, loading, signOut } = useAuth();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
@@ -80,7 +81,7 @@ export function AccountMenu() {
           ) : (
             <li>
               <Link className="lang-option" href="/premium/" role="menuitem" onClick={() => setOpen(false)}>
-                {t.shell.buyPremium}
+                {tf(t.shell.buyPremium, { price: PREMIUM_PRICE_EUR })}
               </Link>
             </li>
           )}

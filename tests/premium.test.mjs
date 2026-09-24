@@ -1,7 +1,12 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { isPremiumActive, nextPremiumExpiry, PREMIUM_PERIOD_DAYS } from "../lib/content/premium.ts";
+import { isPremiumActive, nextPremiumExpiry, PREMIUM_PERIOD_DAYS, PREMIUM_PRICE_EUR } from "../lib/content/premium.ts";
+
+test("listed Premium price is five euro for thirty days", () => {
+  assert.equal(PREMIUM_PRICE_EUR, 5);
+  assert.equal(PREMIUM_PERIOD_DAYS, 30);
+});
 
 test("active premium needs status active and a future expiry", () => {
   const now = new Date("2026-09-28T12:00:00Z");
