@@ -41,6 +41,7 @@ const en = {
     breadcrumb: "You are here",
     filterShortcut: "/",
     buyPremium: "Buy Premium — €{price}",
+    buyPremiumShort: "€{price}",
     buyPremiumTitle: "Buy Premium for €{price}",
   },
   nav: {

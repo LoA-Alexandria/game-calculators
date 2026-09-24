@@ -955,6 +955,7 @@ a.icon-button { text-decoration: none; color: inherit; }
   white-space: nowrap;
   text-decoration: none;
 }
+.topbar-premium-short { display: none; }
 
 .lang { position: relative; }
 .scheme { position: relative; }
@@ -1541,6 +1542,13 @@ a.lang-option { color: inherit; text-decoration: none; }
   color: var(--ink);
   padding: 8px 10px;
   font: inherit;
+}
+.premium-page .panel { overflow-wrap: anywhere; }
+.premium-page .button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 100%;
 }
 
 .featured {
@@ -8820,11 +8828,68 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
   .stat-row { grid-template-columns: 1fr; }
   .topbar-crumbs li:not(:last-child) { display: none; }
   .topbar-crumbs li:last-child .topbar-sep { display: none; }
-  .topbar-premium { padding: 0 10px; font-size: .78rem; }
+  .topbar-premium { padding: 0 10px; font-size: .78rem; min-width: 44px; }
+  .topbar-premium-full { display: none; }
+  .topbar-premium-short { display: inline; }
+  .topbar-account-name { max-width: 8ch; }
+  .topbar-premium-pill { display: none; }
   .admin-head { flex-direction: column; align-items: stretch; }
   .planner-frame { height: clamp(520px, calc(100dvh - 210px), 1200px); }
   .mapping-form { grid-template-columns: 1fr; }
   .guild-form { grid-template-columns: 1fr; }
+
+  .sign-in-panel {
+    position: fixed;
+    top: auto;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    border-radius: var(--r-lg) var(--r-lg) 0 0;
+    padding: 16px 16px calc(16px + env(safe-area-inset-bottom, 0px));
+    box-shadow: var(--shadow-3);
+  }
+  .sign-in-tabs button,
+  .sign-in-discord,
+  .sign-in-form .button {
+    min-height: 44px;
+  }
+  .sign-in-form input,
+  .premium-claim-form input {
+    min-height: 44px;
+    font-size: 16px;
+  }
+  .premium-gate {
+    min-height: 0;
+    display: grid;
+    gap: 12px;
+  }
+  .premium-gate-blur { display: none; }
+  .premium-gate-overlay {
+    position: relative;
+    inset: auto;
+    place-content: start center;
+    padding: 18px 16px;
+  }
+  .premium-gate-overlay .button {
+    width: 100%;
+    max-width: 280px;
+    min-height: 44px;
+    justify-self: center;
+  }
+  .premium-claim-form {
+    max-width: none;
+  }
+  .premium-page .button {
+    width: 100%;
+    min-height: 44px;
+  }
+  .tool-card-lock {
+    inset: auto 14px 12px;
+    font-size: .72rem;
+  }
 
   /* tables become stacked cards: each row a block, each cell labelled */
   .data-table:not(.data-table-wide),

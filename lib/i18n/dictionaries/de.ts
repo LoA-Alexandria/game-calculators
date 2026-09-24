@@ -39,6 +39,7 @@ const de: Dictionary = {
     breadcrumb: "Du bist hier",
     filterShortcut: "/",
     buyPremium: "Premium kaufen — {price} €",
+    buyPremiumShort: "{price} €",
     buyPremiumTitle: "Premium für {price} € kaufen",
   },
   nav: {
