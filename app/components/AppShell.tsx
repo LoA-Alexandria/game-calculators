@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SECTIONS, groupByBadge, sectionHasBrowsePanel, type NavItem, type NavSection } from "../../lib/navigation";
 import { navCrumbs, pathIsCurrentOrNested, pathIsExact } from "../../lib/content/nav-shell";
-import { DISCORD_CONFIGURED, DISCORD_URL, NAV_COLLAPSED_STORAGE_KEY, REPOSITORY_URL, asset } from "../../lib/site";
+import { DISCORD_CONFIGURED, DISCORD_URL, NAV_COLLAPSED_STORAGE_KEY, PREMIUM_HREF, REPOSITORY_URL, asset } from "../../lib/site";
 import { useAuth } from "./AuthProvider";
 import { useLocale } from "./LocaleProvider";
 import { AccountMenu } from "./AccountMenu";
@@ -565,6 +565,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <InboxIcon className="icon" />
           </Link>
           <LanguageMenu />
+          <a
+            className="button button-primary topbar-premium"
+            href={PREMIUM_HREF}
+            target="_blank"
+            rel="noreferrer"
+            title={t.shell.buyPremiumTitle}
+          >
+            {t.shell.buyPremium}
+          </a>
         </header>
 
         {authError && (

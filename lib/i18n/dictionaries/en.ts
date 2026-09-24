@@ -40,6 +40,8 @@ const en = {
     clearFilter: "Clear search",
     breadcrumb: "You are here",
     filterShortcut: "/",
+    buyPremium: "Buy Premium",
+    buyPremiumTitle: "Buy Premium",
   },
   nav: {
     home: "Overview",
