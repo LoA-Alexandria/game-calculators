@@ -7,12 +7,20 @@ import {
   DAWN_ROW_PITCH,
   DAWN_TONES,
   isDawnTone,
+  isRomeClickable,
   isRomeTile,
   romeHexCenter,
   romeHexPolygon,
+  romePaintTargets,
   romePixelToHex,
+  romeTileKind,
   romeTiles,
 } from "../lib/content/dawn-of-rome-map.ts";
+import {
+  ROME_BLOCKED_TILES,
+  ROME_OUTSIDE_TILES,
+  ROME_STRUCTURE_GROUPS,
+} from "../lib/content/dawn-of-rome-tile-data.ts";
 
 describe("dawn of rome map", () => {
   it("keeps the six outposts inside the picture", () => {
@@ -97,5 +105,43 @@ describe("dawn of rome map", () => {
     assert.equal(DAWN_TONES.length, 6);
     assert.equal(isDawnTone(1), true);
     assert.equal(isDawnTone(7), false);
+  });
+
+  it("keeps red and outside tiles from accepting paint", () => {
+    assert.ok(ROME_BLOCKED_TILES.length > 0);
+    assert.ok(ROME_OUTSIDE_TILES.length > 0);
+    for (const [col, row] of ROME_BLOCKED_TILES) {
+      assert.equal(romeTileKind(col, row), "blocked");
+      assert.equal(isRomeClickable(col, row), false);
+      assert.deepEqual(romePaintTargets(col, row), []);
+    }
+    for (const [col, row] of ROME_OUTSIDE_TILES) {
+      assert.equal(romeTileKind(col, row), "outside");
+      assert.equal(isRomeClickable(col, row), false);
+    }
+  });
+
+  it("treats each blue structure as one paint target", () => {
+    assert.ok(ROME_STRUCTURE_GROUPS.length > 0);
+    for (const group of ROME_STRUCTURE_GROUPS) {
+      assert.ok(group.length >= 1);
+      const [col, row] = group[0];
+      assert.equal(romeTileKind(col, row), "structure");
+      assert.equal(isRomeClickable(col, row), true);
+      const targets = romePaintTargets(col, row);
+      assert.equal(targets.length, group.length);
+      for (const [c, r] of group) {
+        assert.ok(targets.some((tile) => tile.col === c && tile.row === r));
+      }
+    }
+  });
+
+  it("paints a plain board tile alone", () => {
+    const plain = romeTiles().find(
+      (tile) => romeTileKind(tile.col, tile.row) === "plain",
+    );
+    assert.ok(plain);
+    assert.equal(isRomeClickable(plain.col, plain.row), true);
+    assert.deepEqual(romePaintTargets(plain.col, plain.row), [plain]);
   });
 });
