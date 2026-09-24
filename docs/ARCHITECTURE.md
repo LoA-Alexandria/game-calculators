@@ -2,7 +2,7 @@
 
 ## Overview
 
-The project is a statically exported Next.js site. GitHub Pages serves the generated `out/` directory. Supabase provides Discord authentication, persistent wiki data, row-level authorization, and the small server-side functions needed for Discord role checks.
+The project is a statically exported Next.js site. GitHub Pages serves the generated `out/` directory. Supabase provides Discord and username/password authentication, Premium entitlements, persistent wiki data, row-level authorization, and the small server-side functions needed for Discord role checks.
 
 ## Structure
 

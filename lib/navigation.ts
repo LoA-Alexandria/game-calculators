@@ -26,6 +26,8 @@ export type NavItem = {
    * `badge` is the translated label shown for that group.
    */
   categoryId?: string;
+  /** When true, non-Premium members see a blurred card and a gated tool page. */
+  premium?: boolean;
 };
 
 export type NavSection = {
@@ -278,6 +280,7 @@ export const SECTIONS: NavSection[] = [
         label: (t) => t.tools.theaterIncome.name,
         description: (t) => t.tools.theaterIncome.description,
         badge: (t) => t.tools.theaterIncome.category,
+        premium: true,
       },
       {
         href: "/calculators/red-carpet-materials/",
@@ -311,6 +314,7 @@ export const SECTIONS: NavSection[] = [
         label: (t) => t.tools.irrigation.name,
         description: (t) => t.tools.irrigation.description,
         badge: (t) => t.tools.irrigation.category,
+        premium: true,
       },
     ],
   },

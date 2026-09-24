@@ -1,15 +1,20 @@
-# Discord authentication and guide publishing
+# Authentication and guide publishing
 
 ## Current implementation
 
 The site remains a static GitHub Pages export, while Supabase provides the
 trusted server-side boundary:
 
-- Supabase Auth performs Discord OAuth.
-- The frontend requests `identify` and `guilds.members.read`.
-- `verify-discord-role` checks the member against guild `1534685294371274822`.
-- The function then reads `role_mappings` and writes the highest matching site
-  role to `editor_access.role`. Rank is `guide_writer < manager < admin`.
+- Supabase Auth supports Discord OAuth and username/password accounts.
+- Discord sign-in requests `identify` and `guilds.members.read`.
+- Password sign-up stores a username in `profiles` (3–24 letters,
+  numbers, or underscores). Members never enter an email; the client maps
+  the username to a private synthetic address for Supabase Auth only.
+- `verify-discord-role` checks Discord members against guild
+  `1534685294371274822`, reads `role_mappings`, and writes the highest
+  matching site role to `editor_access.role`. Rank is
+  `guide_writer < manager < admin`. Password-only accounts do not get a
+  Discord role check unless they later link Discord.
 - Coders (`1534890988588498944`) and Builders (`1534693394692178161`) are
   seeded as `guide_writer`. Admins change the mapping at `/admin/`; those Discord
   role ids are not hardcoded in the function.
@@ -18,6 +23,16 @@ trusted server-side boundary:
 - Row Level Security lets each member read only their own access record;
   admins can read every row. Signed-in members can read `role_mappings`; only
   admins can change it.
+
+### Premium
+
+Premium is a 30-day entitlement in `premium_entitlements`, not a PayPal
+subscription webhook. Members pay via the PayPal NCP link on `/premium/`,
+submit a claim with their transaction id (`premium_claims`), and an admin
+approves the claim to extend `expires_at` by 30 days. Active Premium unlocks
+tools marked `premium: true` in `lib/navigation.ts` and allows one
+`guild_create_requests` row (pending or approved). Rejected guild requests
+free the slot.
 
 Site roles and UI permissions live in `lib/auth/roles.ts`. The Edge Function
 keeps the same rank table. The browser uses the stored role to show or hide
@@ -31,8 +46,8 @@ present) so older frontends keep working. New code should read `role`.
 The admin panel at `/admin/` is gated in the interface by `roles.assign`.
 Writes are enforced by RLS, not by that gate.
 
-Never add passwords, Discord access tokens, service-role keys, or database
-credentials to the static application.
+Never commit passwords, Discord access tokens, service-role keys, or database
+credentials into the static application.
 
 Setup, the first-admin mapping, and deploy order are in
 [`SUPABASE-SETUP.md`](SUPABASE-SETUP.md).
