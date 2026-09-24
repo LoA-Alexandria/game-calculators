@@ -50,6 +50,8 @@ The guild is `1534685294371274822` and stays in the function.
   the tiles painted on the old grid.
 - `20260926180000_rome_flat_top_grid.sql` — clears the paint again after the
   tiles turned out to be flat-top.
+- `20260927120000_rome_tile_size.sql` — and once more, after the tiles were
+  measured properly.
 
 They only add tables, columns, functions and policies, so applying them changes
 nothing until a guild fills a board in, offers an alliance, ends an event or

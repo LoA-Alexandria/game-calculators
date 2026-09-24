@@ -19,17 +19,17 @@ export const DAWN_OF_ROME_MAP = {
   height: 935,
   ratio: "1024 / 935",
   /** Point to point across a tile, in source pixels. */
-  hexWidth: 74.5,
+  hexWidth: 48,
   /** Flat edge to flat edge, top to bottom. The art squashes them a little. */
-  hexHeight: 57,
+  hexHeight: 35.5,
   /** Centre of tile (0, 0). */
-  originX: 21,
-  originY: 27,
+  originX: 9,
+  originY: 16,
   /** The tiles that cover the picture; odd columns sit half a row lower. */
-  minCol: -1,
-  maxCol: 18,
+  minCol: 0,
+  maxCol: 28,
   minRow: -1,
-  maxRow: 16,
+  maxRow: 26,
 } as const;
 
 /** Distance between two columns: a flat-top tile overlaps its neighbour by a quarter. */
@@ -41,6 +41,12 @@ export type RomeTile = { col: number; row: number };
 
 function round(value: number): number {
   return Math.round(value * 10) / 10;
+}
+
+/** Math.round hands back -0 just left of the origin, and -0 keys a tile wrong. */
+function whole(value: number): number {
+  const rounded = Math.round(value);
+  return Object.is(rounded, -0) ? 0 : rounded;
 }
 
 /** Source-pixel centre of one tile. */
@@ -78,12 +84,12 @@ export function romeHexPolygon(col: number, row: number): string {
  * drawn shape rather than a circle.
  */
 export function romePixelToHex(px: number, py: number): RomeTile {
-  const guess = Math.round((px - DAWN_OF_ROME_MAP.originX) / DAWN_COL_PITCH);
+  const guess = whole((px - DAWN_OF_ROME_MAP.originX) / DAWN_COL_PITCH);
   let best: RomeTile = { col: guess, row: 0 };
   let bestDistance = Infinity;
   for (const col of [guess - 1, guess, guess + 1]) {
     const columnTop = romeHexCenter(col, 0).y;
-    const near = Math.round((py - columnTop) / DAWN_ROW_PITCH);
+    const near = whole((py - columnTop) / DAWN_ROW_PITCH);
     for (const row of [near - 1, near, near + 1]) {
       const centre = romeHexCenter(col, row);
       const dx = px - centre.x;

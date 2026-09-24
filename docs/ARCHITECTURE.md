@@ -118,10 +118,10 @@ own name on the outposts it plans around.
 
 Over the picture lies the territory layer. `lib/content/dawn-of-rome-map.ts`
 holds the grid, measured off the printed hexes rather than guessed. They are
-flat-top — a flat edge above and below, a point left and right — 74.5 px wide
-and 57 px tall, which makes them a little squashed; columns sit 0.75 of a width
+flat-top — a flat edge above and below, a point left and right — 48 px wide and
+35.5 px tall, which makes them a little squashed; columns sit 0.75 of a width
 apart with every second column half a row lower, and tile (0, 0) is centred at
-(21, 27). All 360 tiles are in
+(9, 16). All 812 tiles are in
 the DOM as transparent polygons, which is what makes each one hover and click;
 only painted ones are stored (`guild_event_hexes` / `guild_alliance_hexes`),
 so an untouched board costs nothing. A tile carries a `tone`: 1 for the guild

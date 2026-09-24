@@ -36,12 +36,16 @@ describe("dawn of rome map", () => {
   });
 
   it("finds the tile under a point, including near the slanted edges", () => {
-    for (const [col, row] of [[0, 0], [3, 4], [-1, 7], [13, 15], [6, -2]]) {
+    for (const [col, row] of [[0, 0], [3, 4], [7, 12], [28, 26], [6, 1]]) {
       const centre = romeHexCenter(col, row);
       assert.deepEqual(romePixelToHex(centre.x, centre.y), { col, row });
       // Well inside the tile, towards each side.
-      assert.deepEqual(romePixelToHex(centre.x + 20, centre.y), { col, row });
-      assert.deepEqual(romePixelToHex(centre.x, centre.y + 20), { col, row });
+      const inX = DAWN_OF_ROME_MAP.hexWidth * 0.3;
+      const inY = DAWN_OF_ROME_MAP.hexHeight * 0.4;
+      assert.deepEqual(romePixelToHex(centre.x + inX, centre.y), { col, row });
+      assert.deepEqual(romePixelToHex(centre.x - inX, centre.y), { col, row });
+      assert.deepEqual(romePixelToHex(centre.x, centre.y + inY), { col, row });
+      assert.deepEqual(romePixelToHex(centre.x, centre.y - inY), { col, row });
     }
   });
 
@@ -55,7 +59,7 @@ describe("dawn of rome map", () => {
 
   it("covers the picture with a few hundred tiles", () => {
     const tiles = romeTiles();
-    assert.equal(tiles.length, 20 * 18);
+    assert.equal(tiles.length, 29 * 28);
     assert.ok(tiles.every((tile) => isRomeTile(tile.col, tile.row)));
     assert.equal(isRomeTile(99, 0), false);
     // The board reaches past both edges, so no strip of map is unclickable.
@@ -80,6 +84,13 @@ describe("dawn of rome map", () => {
     // Pointed left and right: one corner each.
     assert.equal(xs.filter((x) => x === Math.min(...xs)).length, 1);
     assert.equal(xs.filter((x) => x === Math.max(...xs)).length, 1);
+  });
+
+  it("never hands back a tile keyed on minus zero", () => {
+    const left = romePixelToHex(DAWN_OF_ROME_MAP.originX - 1, DAWN_OF_ROME_MAP.originY - 1);
+    assert.ok(Object.is(left.col, 0) || left.col !== 0, "col is 0, never -0");
+    assert.ok(Object.is(left.row, 0) || left.row !== 0, "row is 0, never -0");
+    assert.equal(`${left.col},${left.row}`, "0,0");
   });
 
   it("knows its six territory colours", () => {
