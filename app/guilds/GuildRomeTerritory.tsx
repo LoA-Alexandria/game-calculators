@@ -1,13 +1,12 @@
 "use client";
 
-import { useEffect, useMemo, useState, type CSSProperties, type MouseEvent } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   DAWN_OF_ROME_MAP,
-  DAWN_OF_ROME_SETTLEMENTS,
-  dawnHexPolygon,
-  dawnOwnerKind,
-  dawnPixelToHex,
-  type DawnOwnerKind,
+  isRomeTile,
+  romeHexPolygon,
+  romeTiles,
+  type DawnTone,
 } from "../../lib/content/dawn-of-rome-map";
 import { getSupabaseBrowserClient } from "../../lib/supabase/client";
 import { useLocale } from "../components/LocaleProvider";
@@ -16,59 +15,51 @@ type SiegeScope =
   | { kind: "guild"; guildId: string }
   | { kind: "alliance"; allianceId: string };
 
-type HexRow = { q: number; r: number; owner_guild_id: string };
-type SettlementRow = { settlement_id: string; owner_guild_id: string | null };
-
-export type HexBrush = "ours" | "ally" | "clear";
+type HexRow = { q: number; r: number; tone: number };
 
 /**
- * Paintable hex layer and capturable white-label settlements for Dawn of Rome.
- * Lives under the village markers; officers paint with the brush toolbar.
+ * The territory layer of the Dawn of Rome map: every printed hex is a tile an
+ * officer can colour. Painted tiles are the only ones stored, so a board that
+ * nobody has touched costs nothing.
+ *
+ * Tapping a tile that already wears the chosen colour clears it, which is the
+ * quickest way to correct a stroke.
  */
 export function GuildRomeTerritory({
   scope,
   dayIndex,
-  canOfficer,
-  guildId,
-  partnerGuildId = null,
-  brush,
-  locked = false,
+  canPaint,
+  tone,
+  erasing,
 }: {
   scope: SiegeScope;
   dayIndex: number;
-  canOfficer: boolean;
-  guildId: string;
-  partnerGuildId?: string | null;
-  brush: HexBrush;
-  locked?: boolean;
+  canPaint: boolean;
+  tone: DawnTone;
+  erasing: boolean;
 }) {
-  const { t, tf } = useLocale();
+  const { t } = useLocale();
   const supabase = getSupabaseBrowserClient();
   const shared = scope.kind === "alliance";
   const owner = shared ? scope.allianceId : scope.guildId;
 
-  const tables = useMemo(
+  const source = useMemo(
     () =>
       shared
         ? {
-            hex: "guild_alliance_hexes",
-            settlement: "guild_alliance_settlements",
+            table: "guild_alliance_hexes",
             key: { alliance_id: owner } as Record<string, string>,
-            hexConflict: "alliance_id,day_index,q,r",
-            settlementConflict: "alliance_id,day_index,settlement_id",
+            conflict: "alliance_id,day_index,q,r",
           }
         : {
-            hex: "guild_event_hexes",
-            settlement: "guild_event_settlements",
+            table: "guild_event_hexes",
             key: { guild_id: owner, event_id: "dawn-of-rome" } as Record<string, string>,
-            hexConflict: "guild_id,event_id,day_index,q,r",
-            settlementConflict: "guild_id,event_id,day_index,settlement_id",
+            conflict: "guild_id,event_id,day_index,q,r",
           },
     [shared, owner],
   );
 
-  const [hexes, setHexes] = useState<HexRow[]>([]);
-  const [settlements, setSettlements] = useState<SettlementRow[]>([]);
+  const [painted, setPainted] = useState<HexRow[]>([]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
@@ -76,126 +67,61 @@ export function GuildRomeTerritory({
     if (!supabase) return;
     let gone = false;
     void (async () => {
-      const [hexRes, setRes] = await Promise.all([
-        supabase.from(tables.hex).select("q, r, owner_guild_id").match({ ...tables.key, day_index: dayIndex }),
-        supabase
-          .from(tables.settlement)
-          .select("settlement_id, owner_guild_id")
-          .match({ ...tables.key, day_index: dayIndex }),
-      ]);
+      const { data, error: loadError } = await supabase
+        .from(source.table)
+        .select("q, r, tone")
+        .match({ ...source.key, day_index: dayIndex });
       if (gone) return;
-      if (hexRes.error) setError(hexRes.error.message);
-      else setHexes((hexRes.data ?? []) as HexRow[]);
-      if (setRes.error) setError(setRes.error.message);
-      else setSettlements((setRes.data ?? []) as SettlementRow[]);
+      if (loadError) setError(loadError.message);
+      else setPainted(((data ?? []) as HexRow[]).filter((row) => isRomeTile(row.q, row.r)));
     })();
     return () => {
       gone = true;
     };
-  }, [supabase, tables, dayIndex]);
+  }, [supabase, source, dayIndex]);
 
-  const paint = canOfficer && !locked && !busy;
+  const toneAt = (col: number, row: number) =>
+    painted.find((entry) => entry.q === col && entry.r === row)?.tone ?? 0;
 
-  const ownerForBrush = (): string | null => {
-    if (brush === "clear") return null;
-    if (brush === "ours") return guildId;
-    return partnerGuildId;
-  };
-
-  const paintHex = async (q: number, r: number) => {
-    if (!supabase || !paint) return;
-    const nextOwner = ownerForBrush();
+  const paint = async (col: number, row: number) => {
+    if (!supabase || !canPaint || busy) return;
+    const current = toneAt(col, row);
+    const clear = erasing || current === tone;
     setBusy(true);
     setError("");
-    if (nextOwner === null) {
-      const { error: delError } = await supabase
-        .from(tables.hex)
-        .delete()
-        .match({ ...tables.key, day_index: dayIndex, q, r });
-      if (delError) setError(delError.message);
-      else {
-        setHexes((rows) => rows.filter((row) => !(row.q === q && row.r === r)));
+    if (clear) {
+      if (current === 0) {
+        setBusy(false);
+        return;
       }
+      const { error: deleteError } = await supabase
+        .from(source.table)
+        .delete()
+        .match({ ...source.key, day_index: dayIndex, q: col, r: row });
+      if (deleteError) setError(deleteError.message);
+      else setPainted((rows) => rows.filter((entry) => !(entry.q === col && entry.r === row)));
     } else {
-      const { error: upError } = await supabase.from(tables.hex).upsert(
+      const { error: saveError } = await supabase.from(source.table).upsert(
         {
-          ...tables.key,
+          ...source.key,
           day_index: dayIndex,
-          q,
-          r,
-          owner_guild_id: nextOwner,
+          q: col,
+          r: row,
+          tone,
           updated_at: new Date().toISOString(),
         },
-        { onConflict: tables.hexConflict },
+        { onConflict: source.conflict },
       );
-      if (upError) setError(upError.message);
+      if (saveError) setError(saveError.message);
       else {
-        setHexes((rows) => {
-          const rest = rows.filter((row) => !(row.q === q && row.r === r));
-          return [...rest, { q, r, owner_guild_id: nextOwner }];
-        });
+        setPainted((rows) => [
+          ...rows.filter((entry) => !(entry.q === col && entry.r === row)),
+          { q: col, r: row, tone },
+        ]);
       }
     }
     setBusy(false);
   };
-
-  const claimSettlement = async (settlementId: string) => {
-    if (!supabase || !paint) return;
-    const current = settlements.find((row) => row.settlement_id === settlementId)?.owner_guild_id ?? null;
-    const kind = dawnOwnerKind(current, guildId, partnerGuildId);
-    // Cycle: neutral → ours → ally (if any) → neutral.
-    let next: string | null = guildId;
-    if (kind === "ours") next = partnerGuildId ?? null;
-    else if (kind === "ally") next = null;
-
-    setBusy(true);
-    setError("");
-    if (next === null && current === null) {
-      setBusy(false);
-      return;
-    }
-    if (next === null) {
-      const { error: delError } = await supabase
-        .from(tables.settlement)
-        .delete()
-        .match({ ...tables.key, day_index: dayIndex, settlement_id: settlementId });
-      if (delError) setError(delError.message);
-      else setSettlements((rows) => rows.filter((row) => row.settlement_id !== settlementId));
-    } else {
-      const { error: upError } = await supabase.from(tables.settlement).upsert(
-        {
-          ...tables.key,
-          day_index: dayIndex,
-          settlement_id: settlementId,
-          owner_guild_id: next,
-          updated_at: new Date().toISOString(),
-        },
-        { onConflict: tables.settlementConflict },
-      );
-      if (upError) setError(upError.message);
-      else {
-        setSettlements((rows) => {
-          const rest = rows.filter((row) => row.settlement_id !== settlementId);
-          return [...rest, { settlement_id: settlementId, owner_guild_id: next }];
-        });
-      }
-    }
-    setBusy(false);
-  };
-
-  const onSvgClick = (event: MouseEvent<SVGSVGElement>) => {
-    if (!paint) return;
-    // Ignore clicks that started on a settlement button (they stopPropagation).
-    const svg = event.currentTarget;
-    const rect = svg.getBoundingClientRect();
-    const px = ((event.clientX - rect.left) / rect.width) * DAWN_OF_ROME_MAP.width;
-    const py = ((event.clientY - rect.top) / rect.height) * DAWN_OF_ROME_MAP.height;
-    const { q, r } = dawnPixelToHex(px, py);
-    void paintHex(q, r);
-  };
-
-  const stateOf = (ownerGuildId: string | null | undefined): DawnOwnerKind =>
-    dawnOwnerKind(ownerGuildId, guildId, partnerGuildId);
 
   return (
     <>
@@ -209,50 +135,23 @@ export function GuildRomeTerritory({
         className="siege-hex-layer"
         viewBox={`0 0 ${DAWN_OF_ROME_MAP.width} ${DAWN_OF_ROME_MAP.height}`}
         preserveAspectRatio="none"
-        aria-hidden={paint ? undefined : true}
-        role={paint ? "img" : undefined}
-        aria-label={paint ? t.guilds.hexLayerLabel : undefined}
-        onClick={onSvgClick}
-        style={{ pointerEvents: paint ? "auto" : "none", cursor: paint ? "crosshair" : undefined }}
+        role="group"
+        aria-label={t.guilds.hexLayerLabel}
+        data-paint={canPaint ? "on" : "off"}
       >
-        {hexes.map((row) => (
-          <polygon
-            key={`${row.q},${row.r}`}
-            points={dawnHexPolygon(row.q, row.r)}
-            className="siege-hex"
-            data-owner={stateOf(row.owner_guild_id)}
-          />
-        ))}
+        {romeTiles().map(({ col, row }) => {
+          const worn = toneAt(col, row);
+          return (
+            <polygon
+              key={`${col},${row}`}
+              className="siege-hex"
+              points={romeHexPolygon(col, row)}
+              data-tone={worn || undefined}
+              onClick={canPaint ? () => void paint(col, row) : undefined}
+            />
+          );
+        })}
       </svg>
-
-      {DAWN_OF_ROME_SETTLEMENTS.map((place) => {
-        const ownerId = settlements.find((row) => row.settlement_id === place.id)?.owner_guild_id ?? null;
-        const state = stateOf(ownerId);
-        return (
-          <button
-            key={place.id}
-            type="button"
-            className="siege-settlement"
-            data-owner={state}
-            style={{ "--village-x": `${place.x}%`, "--village-y": `${place.y}%` } as CSSProperties}
-            disabled={!paint}
-            aria-label={
-              state === "neutral"
-                ? tf(t.guilds.settlementNeutral, { name: place.label })
-                : state === "ours"
-                  ? tf(t.guilds.settlementOurs, { name: place.label })
-                  : tf(t.guilds.settlementAlly, { name: place.label })
-            }
-            onClick={(event) => {
-              event.stopPropagation();
-              void claimSettlement(place.id);
-            }}
-          >
-            <span className="siege-settlement-dot" />
-            <span className="siege-settlement-name">{place.label}</span>
-          </button>
-        );
-      })}
     </>
   );
 }

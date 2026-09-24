@@ -112,17 +112,27 @@ the guild's base, or gives it a number in the target order, and the marker then
 carries that number, the rings and horns pointed at it and how many members
 attack it.
 
-Dawn of Rome / Crown of the Nile uses six outer bases (same Set-home / priority
-flow as Trials of Odin) on `public/guilds/dawn-of-rome.webp`, without rings or
-horns (`stock: false`). Officers also paint a sparse hex layer
-(`guild_event_hexes` / `guild_alliance_hexes`) and claim the white-label cities
-and villages as neutral settlements (`guild_event_settlements` /
-`guild_alliance_settlements`) — not foreign guilds. Hex size and settlement
-anchors live in `lib/content/dawn-of-rome-map.ts`.
+Dawn of Rome / Crown of the Nile uses six outer outposts as bases (same
+set-home and priority flow as Trials of Odin) on `public/guilds/dawn-of-rome.webp`,
+without rings or horns (`stock: false`). The picture carries no names: the game
+calls those cities something different in every language, so a guild writes its
+own name on the outposts it plans around.
+
+Over the picture lies the territory layer. `lib/content/dawn-of-rome-map.ts`
+holds the grid, measured off the printed hexes rather than guessed — the lattice
+repeats every 74.5 px across and 59.5 px down with every second row shifted half
+a column, the first row of centres sits at y = 93, and the drawn hexes are
+slightly squashed, so the height comes from the row pitch. All 270 tiles are in
+the DOM as transparent polygons, which is what makes each one hover and click;
+only painted ones are stored (`guild_event_hexes` / `guild_alliance_hexes`),
+so an untouched board costs nothing. A tile carries a `tone`: 1 for the guild
+whose board it is, 2 for the guild it is allied with, 3 to 6 for the other side,
+so one map can show who holds what. Tapping a tile that already wears the chosen
+colour clears it.
 
 Officers turn events on and off from a dialog that the board's own header opens.
 Ending an event calls `end_guild_event`, which deletes its villages, stock, day
-scores, pledges, painted hexes, settlements and any alliance for it, so the next
+scores, pledges, painted hexes and any alliance for it, so the next
 match starts empty; the dialog asks first.
 
 Tapping a village opens a small card on the village itself, inside the map: the
