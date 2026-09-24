@@ -52,7 +52,7 @@ export default function PremiumPage() {
   };
 
   return (
-    <>
+    <div className="premium-page">
       <PageHead
         eyebrow={t.premium.badge}
         title={t.premium.title}
@@ -147,6 +147,6 @@ export default function PremiumPage() {
         {" · "}
         <Link href="/simulations/">{t.nav.simulations}</Link>
       </p>
-    </>
+    </div>
   );
 }

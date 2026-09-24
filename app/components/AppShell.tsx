@@ -576,7 +576,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               href="/premium/"
               title={tf(t.shell.buyPremiumTitle, { price: PREMIUM_PRICE_EUR })}
             >
-              {tf(t.shell.buyPremium, { price: PREMIUM_PRICE_EUR })}
+              <span className="topbar-premium-full">
+                {tf(t.shell.buyPremium, { price: PREMIUM_PRICE_EUR })}
+              </span>
+              <span className="topbar-premium-short">
+                {tf(t.shell.buyPremiumShort, { price: PREMIUM_PRICE_EUR })}
+              </span>
             </Link>
           )}
         </header>
