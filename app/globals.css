@@ -946,6 +946,15 @@ a.icon-button { text-decoration: none; color: inherit; }
 }
 .topbar-account-trigger .icon-sm { transform: rotate(90deg); }
 .topbar-account-trigger.is-open .icon-sm { transform: rotate(-90deg); }
+.topbar-premium {
+  flex: none;
+  min-height: 38px;
+  height: 38px;
+  padding: 0 14px;
+  font-size: .82rem;
+  white-space: nowrap;
+  text-decoration: none;
+}
 
 .lang { position: relative; }
 .scheme { position: relative; }
@@ -8701,6 +8710,7 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
   .stat-row { grid-template-columns: 1fr; }
   .topbar-crumbs li:not(:last-child) { display: none; }
   .topbar-crumbs li:last-child .topbar-sep { display: none; }
+  .topbar-premium { padding: 0 10px; font-size: .78rem; }
   .admin-head { flex-direction: column; align-items: stretch; }
   .planner-frame { height: clamp(520px, calc(100dvh - 210px), 1200px); }
   .mapping-form { grid-template-columns: 1fr; }

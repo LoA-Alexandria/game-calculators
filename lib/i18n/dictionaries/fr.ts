@@ -38,6 +38,8 @@ const fr: Dictionary = {
     clearFilter: "Effacer la recherche",
     breadcrumb: "Vous êtes ici",
     filterShortcut: "/",
+    buyPremium: "Acheter Premium",
+    buyPremiumTitle: "Acheter Premium",
   },
   nav: {
     home: "Aperçu",

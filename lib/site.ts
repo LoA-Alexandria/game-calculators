@@ -23,6 +23,15 @@ export const DISCORD_URL = "https://discord.gg/dNdQB6MVW8";
 /** True while `DISCORD_URL` is still the placeholder above. */
 export const DISCORD_CONFIGURED = !DISCORD_URL.includes("REPLACE-ME");
 
+/**
+ * Checkout or landing page for site Premium. Empty until a payment link exists;
+ * the topbar button then falls back to Discord.
+ */
+export const PREMIUM_URL = "";
+
+/** Resolved Premium link shown in the topbar. */
+export const PREMIUM_HREF = PREMIUM_URL || DISCORD_URL;
+
 /** Key shared with the vendored Irrigation Planner for its theme override. */
 export const THEME_STORAGE_KEY = "popepoch-theme";
 
