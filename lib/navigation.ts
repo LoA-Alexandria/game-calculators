@@ -72,10 +72,7 @@ export const SECTIONS: NavSection[] = [
     label: (t) => t.nav.events,
     description: (t) => t.navDescriptions.events,
     icon: "events",
-    /**
-     * Event write-ups as a flat list. The schedule calendar lives on the
-     * overview, not in this section.
-     */
+    /** Event write-ups as a flat list. */
     items: [
       eventNav("holyGrail", "/events/holy-grail/"),
       eventNav("trialsOfOdin", "/events/trials-of-odin/"),

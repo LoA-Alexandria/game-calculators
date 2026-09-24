@@ -46,7 +46,6 @@ export function AccountMenu() {
   }
 
   const actions = [
-    allows("events.write") ? { href: "/#overview-events", label: t.nav.newEvent, icon: PenIcon } : null,
     allows("news.write") ? { href: "/news/new/", label: t.nav.newNews, icon: PenIcon } : null,
     allows("guides.draft") ? { href: "/guides/new/", label: t.nav.newGuide, icon: PenIcon } : null,
     allows("roles.assign") ? { href: "/admin/", label: t.nav.admin, icon: ShieldIcon } : null,
