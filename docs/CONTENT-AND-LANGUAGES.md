@@ -961,34 +961,9 @@ Guides describe game mechanics, so treat their numbers the way the repository
 treats any other game data: say where they came from, and correct them in the
 same change as the tool that relies on them.
 
-## Adding an event (schedule)
-
-The live calendar and schedule editor sit on the overview (`/`), not on
-`/events/`. `/events/` is the category index for event guides and tips.
-
-Schedule rows are versioned data, not database rows — the same reason news is.
-An entry typed into a browser on a static site would exist only in that browser,
-so committing it is what makes it visible.
-
-1. Open `/` (overview) signed in with `events.write`. Scroll to the events
-   schedule. The list can load an existing row into the editor or produce the
-   notes for removing it. A blank form still prints a new row and the
-   dictionary keys. Account menu **New event** jumps there.
-2. Paste or replace the row in `EVENTS` in `lib/content/events.ts`.
-3. Add, update, or delete `eventEntries.<id>` with `name` and `summary` in all
-   three dictionaries.
-4. Delete `EVENTS_ARE_PLACEHOLDER` once the example schedule is gone.
-
-The recurrence rules live in `lib/events.ts` and are covered by
-`tests/events.test.mjs`: weekly with an interval and a set of weekdays, monthly
-on a day that clamps to the end of shorter months, or a one-off. Everything is
-computed in UTC, because a game event starts at the same moment for everyone and
-deriving it from each reader's clock would show different answers.
-
 ## Adding an event guide
 
-Event guides are a flat list in the Events section (the schedule calendar
-stays on the overview). In-game help and square icons come from the Pop Epoch
+Event guides are a flat list in the Events section. In-game help and square icons come from the Pop Epoch
 wiki Events hub (`lib/data/event-wiki.json`, last merged 18 September 2026);
 Discord tips stay in the dictionaries.
 

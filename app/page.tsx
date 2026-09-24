@@ -5,14 +5,11 @@ import Link from "next/link";
 import { NEWS } from "../lib/content/news";
 import { guideCount, toolCount } from "../lib/navigation";
 import { asset } from "../lib/site";
-import { OverviewAgenda } from "./components/EventCalendar";
 import { useDocumentTitle, useLocale } from "./components/LocaleProvider";
-import { useNow } from "./components/useNow";
 import { ChevronIcon } from "./components/Icons";
 
 export default function Home() {
   const { t, n } = useLocale();
-  const now = useNow();
   useDocumentTitle(t.nav.home);
   return (
     <>
@@ -33,15 +30,11 @@ export default function Home() {
           </div>
         </dl>
       </section>
-      <OverviewAgenda now={now} />
     </>
   );
 }
 
-/**
- * The overview leads with the news slide, then the site counts, then the
- * event calendar that used to sit in the sidebar.
- */
+/** The overview leads with the news slide, then the site counts. */
 function NewsHero() {
   const { t, tf, d } = useLocale();
   const entries = NEWS.slice(0, 4);
@@ -73,7 +66,7 @@ function NewsHero() {
           <span className="eyebrow">{t.home.latestNews}</span>
           <div className="news-slide-controls">
             <button type="button" aria-label={t.home.newsPrevious} onClick={() => move(-1)}>
-              <ChevronIcon className="icon icon-sm calendar-prev" />
+              <ChevronIcon className="icon icon-sm chevron-prev" />
             </button>
             <span className="mono">{tf(t.home.newsPosition, { n: index + 1, total: entries.length })}</span>
             <button type="button" aria-label={t.home.newsNext} onClick={() => move(1)}>
