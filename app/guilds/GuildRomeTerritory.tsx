@@ -3,8 +3,11 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   DAWN_OF_ROME_MAP,
+  isRomeClickable,
   isRomeTile,
   romeHexPolygon,
+  romePaintTargets,
+  romeTileKind,
   romeTiles,
   type DawnTone,
 } from "../../lib/content/dawn-of-rome-map";
@@ -18,12 +21,9 @@ type SiegeScope =
 type HexRow = { q: number; r: number; tone: number };
 
 /**
- * The territory layer of the Dawn of Rome map: every printed hex is a tile an
- * officer can colour. Painted tiles are the only ones stored, so a board that
- * nobody has touched costs nothing.
- *
- * Tapping a tile that already wears the chosen colour clears it, which is the
- * quickest way to correct a stroke.
+ * The territory layer of the Dawn of Rome map. Officers colour clickable tiles:
+ * plain hexes one at a time, blue structures as a whole group. Red and anything
+ * past the yellow board edge ignore taps. Only painted tiles are stored.
  */
 export function GuildRomeTerritory({
   scope,
@@ -73,7 +73,12 @@ export function GuildRomeTerritory({
         .match({ ...source.key, day_index: dayIndex });
       if (gone) return;
       if (loadError) setError(loadError.message);
-      else setPainted(((data ?? []) as HexRow[]).filter((row) => isRomeTile(row.q, row.r)));
+      else
+        setPainted(
+          ((data ?? []) as HexRow[]).filter(
+            (row) => isRomeTile(row.q, row.r) && isRomeClickable(row.q, row.r),
+          ),
+        );
     })();
     return () => {
       gone = true;
@@ -84,7 +89,9 @@ export function GuildRomeTerritory({
     painted.find((entry) => entry.q === col && entry.r === row)?.tone ?? 0;
 
   const paint = async (col: number, row: number) => {
-    if (!supabase || !canPaint || busy) return;
+    if (!supabase || !canPaint || busy || !isRomeClickable(col, row)) return;
+    const targets = romePaintTargets(col, row);
+    if (targets.length === 0) return;
     const current = toneAt(col, row);
     const clear = erasing || current === tone;
     setBusy(true);
@@ -94,29 +101,41 @@ export function GuildRomeTerritory({
         setBusy(false);
         return;
       }
-      const { error: deleteError } = await supabase
-        .from(source.table)
-        .delete()
-        .match({ ...source.key, day_index: dayIndex, q: col, r: row });
+      // Delete each target hex; `.or` filter syntax varies by client version.
+      let deleteError: { message: string } | null = null;
+      for (const tile of targets) {
+        const { error: err } = await supabase
+          .from(source.table)
+          .delete()
+          .match({ ...source.key, day_index: dayIndex, q: tile.col, r: tile.row });
+        if (err) {
+          deleteError = err;
+          break;
+        }
+      }
       if (deleteError) setError(deleteError.message);
-      else setPainted((rows) => rows.filter((entry) => !(entry.q === col && entry.r === row)));
+      else {
+        const drop = new Set(targets.map((tile) => `${tile.col},${tile.row}`));
+        setPainted((rows) => rows.filter((entry) => !drop.has(`${entry.q},${entry.r}`)));
+      }
     } else {
-      const { error: saveError } = await supabase.from(source.table).upsert(
-        {
-          ...source.key,
-          day_index: dayIndex,
-          q: col,
-          r: row,
-          tone,
-          updated_at: new Date().toISOString(),
-        },
-        { onConflict: source.conflict },
-      );
+      const rows = targets.map((tile) => ({
+        ...source.key,
+        day_index: dayIndex,
+        q: tile.col,
+        r: tile.row,
+        tone,
+        updated_at: new Date().toISOString(),
+      }));
+      const { error: saveError } = await supabase.from(source.table).upsert(rows, {
+        onConflict: source.conflict,
+      });
       if (saveError) setError(saveError.message);
       else {
-        setPainted((rows) => [
-          ...rows.filter((entry) => !(entry.q === col && entry.r === row)),
-          { q: col, r: row, tone },
+        const drop = new Set(targets.map((tile) => `${tile.col},${tile.row}`));
+        setPainted((existing) => [
+          ...existing.filter((entry) => !drop.has(`${entry.q},${entry.r}`)),
+          ...targets.map((tile) => ({ q: tile.col, r: tile.row, tone })),
         ]);
       }
     }
@@ -140,14 +159,18 @@ export function GuildRomeTerritory({
         data-paint={canPaint ? "on" : "off"}
       >
         {romeTiles().map(({ col, row }) => {
+          const kind = romeTileKind(col, row);
+          if (kind === "outside") return null;
           const worn = toneAt(col, row);
+          const clickable = kind === "plain" || kind === "structure";
           return (
             <polygon
               key={`${col},${row}`}
               className="siege-hex"
               points={romeHexPolygon(col, row)}
               data-tone={worn || undefined}
-              onClick={canPaint ? () => void paint(col, row) : undefined}
+              data-kind={kind}
+              onClick={canPaint && clickable ? () => void paint(col, row) : undefined}
             />
           );
         })}

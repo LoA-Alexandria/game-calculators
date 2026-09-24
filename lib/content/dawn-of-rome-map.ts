@@ -11,7 +11,19 @@
  * a column, with the first row of centres at y = 93. The drawn hexes are
  * slightly squashed, so the height comes from the row pitch rather than from a
  * regular hexagon.
+ *
+ * Guild-planning colour key (see `dawn-of-rome-tile-data.ts`):
+ * - yellow board — tiles outside it are not clickable
+ * - red — on the board but not clickable (mountains / blocked)
+ * - blue — contiguous hexes act as one paint target (a structure)
  */
+
+import {
+  ROME_BLOCKED_TILES,
+  ROME_OUTSIDE_TILES,
+  ROME_STRUCTURE_GROUPS,
+  type RomeTileRef,
+} from "./dawn-of-rome-tile-data.ts";
 
 export const DAWN_OF_ROME_MAP = {
   image: "/guilds/dawn-of-rome.webp",
@@ -115,10 +127,56 @@ export function romeTiles(): RomeTile[] {
   return tiles;
 }
 
-/** Whether a tile belongs to the board at all. */
+/** Whether a tile belongs to the lattice at all. */
 export function isRomeTile(col: number, row: number): boolean {
   const { minCol, maxCol, minRow, maxRow } = DAWN_OF_ROME_MAP;
   return col >= minCol && col <= maxCol && row >= minRow && row <= maxRow;
+}
+
+export type RomeTileKind = "outside" | "blocked" | "plain" | "structure";
+
+function tileKey(col: number, row: number): string {
+  return `${col},${row}`;
+}
+
+function refKey([col, row]: RomeTileRef): string {
+  return tileKey(col, row);
+}
+
+const OUTSIDE = new Set(ROME_OUTSIDE_TILES.map(refKey));
+const BLOCKED = new Set(ROME_BLOCKED_TILES.map(refKey));
+const STRUCTURE_OF = new Map<string, number>();
+for (let i = 0; i < ROME_STRUCTURE_GROUPS.length; i++) {
+  for (const ref of ROME_STRUCTURE_GROUPS[i]) {
+    STRUCTURE_OF.set(refKey(ref), i);
+  }
+}
+
+/** Planning-key role of one lattice tile. */
+export function romeTileKind(col: number, row: number): RomeTileKind {
+  if (!isRomeTile(col, row)) return "outside";
+  const key = tileKey(col, row);
+  if (OUTSIDE.has(key)) return "outside";
+  if (BLOCKED.has(key)) return "blocked";
+  if (STRUCTURE_OF.has(key)) return "structure";
+  return "plain";
+}
+
+/** Officers may paint this tile (plain hex or any hex of a blue structure). */
+export function isRomeClickable(col: number, row: number): boolean {
+  const kind = romeTileKind(col, row);
+  return kind === "plain" || kind === "structure";
+}
+
+/**
+ * Every hex that should change when this one is painted. Blue structures share
+ * one tone across the whole group; plain tiles only touch themselves.
+ */
+export function romePaintTargets(col: number, row: number): RomeTile[] {
+  if (!isRomeClickable(col, row)) return [];
+  const group = STRUCTURE_OF.get(tileKey(col, row));
+  if (group === undefined) return [{ col, row }];
+  return ROME_STRUCTURE_GROUPS[group].map(([c, r]) => ({ col: c, row: r }));
 }
 
 /**

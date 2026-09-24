@@ -7990,8 +7990,17 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
   pointer-events: none;
   transition: fill .12s ease;
 }
-.siege-hex-layer[data-paint="on"] .siege-hex { pointer-events: auto; cursor: pointer; }
-.siege-hex-layer[data-paint="on"] .siege-hex:hover {
+.siege-hex-layer[data-paint="on"] .siege-hex[data-kind="plain"],
+.siege-hex-layer[data-paint="on"] .siege-hex[data-kind="structure"] {
+  pointer-events: auto;
+  cursor: pointer;
+}
+.siege-hex-layer[data-paint="on"] .siege-hex[data-kind="blocked"] {
+  pointer-events: none;
+  cursor: default;
+}
+.siege-hex-layer[data-paint="on"] .siege-hex[data-kind="plain"]:hover,
+.siege-hex-layer[data-paint="on"] .siege-hex[data-kind="structure"]:hover {
   fill: rgba(255, 255, 255, .18);
   stroke: rgba(255, 255, 255, .55);
 }
@@ -7999,7 +8008,8 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
   fill: color-mix(in srgb, var(--tone) 32%, transparent);
   stroke: color-mix(in srgb, var(--tone) 65%, transparent);
 }
-.siege-hex-layer[data-paint="on"] .siege-hex[data-tone]:hover {
+.siege-hex-layer[data-paint="on"] .siege-hex[data-tone][data-kind="plain"]:hover,
+.siege-hex-layer[data-paint="on"] .siege-hex[data-tone][data-kind="structure"]:hover {
   fill: color-mix(in srgb, var(--tone) 48%, transparent);
 }
 
