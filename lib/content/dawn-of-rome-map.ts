@@ -18,22 +18,24 @@ export const DAWN_OF_ROME_MAP = {
   width: 1024,
   height: 935,
   ratio: "1024 / 935",
-  /** Distance between two centres in the same row, in source pixels. */
-  pitchX: 74.5,
-  /** Distance between two rows, in source pixels. */
-  pitchY: 59.5,
+  /** Point to point across a tile, in source pixels. */
+  hexWidth: 74.5,
+  /** Flat edge to flat edge, top to bottom. The art squashes them a little. */
+  hexHeight: 57,
   /** Centre of tile (0, 0). */
-  originX: 6.5,
-  originY: 93,
-  /** The tiles that cover the picture; odd rows start half a column left. */
+  originX: 21,
+  originY: 27,
+  /** The tiles that cover the picture; odd columns sit half a row lower. */
   minCol: -1,
-  maxCol: 13,
-  minRow: -2,
-  maxRow: 15,
+  maxCol: 18,
+  minRow: -1,
+  maxRow: 16,
 } as const;
 
-/** Point to point, top to bottom. Rows overlap by a quarter, as hexes do. */
-export const DAWN_HEX_HEIGHT = DAWN_OF_ROME_MAP.pitchY / 0.75;
+/** Distance between two columns: a flat-top tile overlaps its neighbour by a quarter. */
+export const DAWN_COL_PITCH = DAWN_OF_ROME_MAP.hexWidth * 0.75;
+/** Distance between two tiles in the same column. */
+export const DAWN_ROW_PITCH = DAWN_OF_ROME_MAP.hexHeight;
 
 export type RomeTile = { col: number; row: number };
 
@@ -43,44 +45,49 @@ function round(value: number): number {
 
 /** Source-pixel centre of one tile. */
 export function romeHexCenter(col: number, row: number): { x: number; y: number } {
-  const { pitchX, pitchY, originX, originY } = DAWN_OF_ROME_MAP;
-  const shift = Math.abs(row % 2) === 1 ? pitchX / 2 : 0;
-  return { x: originX + shift + col * pitchX, y: originY + row * pitchY };
+  const { originX, originY } = DAWN_OF_ROME_MAP;
+  const drop = Math.abs(col % 2) === 1 ? DAWN_ROW_PITCH / 2 : 0;
+  return { x: originX + col * DAWN_COL_PITCH, y: originY + drop + row * DAWN_ROW_PITCH };
 }
 
-/** The six corners of one tile, ready for an SVG `points` attribute. */
+/**
+ * The six corners of one tile, ready for an SVG `points` attribute. The tiles
+ * are flat-top, like the ones printed on the map: a flat edge above and below,
+ * a point left and right.
+ */
 export function romeHexPolygon(col: number, row: number): string {
   const { x, y } = romeHexCenter(col, row);
-  const w = DAWN_OF_ROME_MAP.pitchX / 2;
-  const h = DAWN_HEX_HEIGHT;
+  const w = DAWN_OF_ROME_MAP.hexWidth;
+  const h = DAWN_OF_ROME_MAP.hexHeight;
   return [
-    [x, y - h / 2],
-    [x + w, y - h / 4],
-    [x + w, y + h / 4],
-    [x, y + h / 2],
-    [x - w, y + h / 4],
-    [x - w, y - h / 4],
+    [x - w / 4, y - h / 2],
+    [x + w / 4, y - h / 2],
+    [x + w / 2, y],
+    [x + w / 4, y + h / 2],
+    [x - w / 4, y + h / 2],
+    [x - w / 2, y],
   ]
     .map(([px, py]) => `${round(px)},${round(py)}`)
     .join(" ");
 }
 
 /**
- * The tile under a point. The nearest row is not always the right one, because
- * of the slanted edges, so the neighbours are tried too and the closest centre
- * wins — with the vertical axis squashed to match the drawn shape.
+ * The tile under a point. The nearest column is not always the right one,
+ * because of the slanted corners, so the neighbours are tried too and the
+ * closest centre wins — with the axes scaled so the comparison matches the
+ * drawn shape rather than a circle.
  */
 export function romePixelToHex(px: number, py: number): RomeTile {
-  const guess = Math.round((py - DAWN_OF_ROME_MAP.originY) / DAWN_OF_ROME_MAP.pitchY);
-  let best: RomeTile = { col: 0, row: guess };
+  const guess = Math.round((px - DAWN_OF_ROME_MAP.originX) / DAWN_COL_PITCH);
+  let best: RomeTile = { col: guess, row: 0 };
   let bestDistance = Infinity;
-  for (const row of [guess - 1, guess, guess + 1]) {
-    const rowStart = romeHexCenter(0, row).x;
-    const near = Math.round((px - rowStart) / DAWN_OF_ROME_MAP.pitchX);
-    for (const col of [near - 1, near, near + 1]) {
+  for (const col of [guess - 1, guess, guess + 1]) {
+    const columnTop = romeHexCenter(col, 0).y;
+    const near = Math.round((py - columnTop) / DAWN_ROW_PITCH);
+    for (const row of [near - 1, near, near + 1]) {
       const centre = romeHexCenter(col, row);
       const dx = px - centre.x;
-      const dy = ((py - centre.y) * DAWN_OF_ROME_MAP.pitchX) / DAWN_HEX_HEIGHT;
+      const dy = ((py - centre.y) * DAWN_OF_ROME_MAP.hexWidth) / DAWN_OF_ROME_MAP.hexHeight;
       const distance = dx * dx + dy * dy;
       if (distance < bestDistance) {
         bestDistance = distance;
