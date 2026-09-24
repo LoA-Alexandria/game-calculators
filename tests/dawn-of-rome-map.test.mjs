@@ -107,8 +107,8 @@ describe("dawn of rome map", () => {
     assert.equal(isDawnTone(7), false);
   });
 
-  it("keeps purple and outside tiles from accepting paint", () => {
-    assert.equal(ROME_BLOCKED_TILES.length, 3, "only the three purple hexes stay blocked");
+  it("keeps blue and outside tiles from accepting paint", () => {
+    assert.ok(ROME_BLOCKED_TILES.length > 50, "blue hexes form the non-clickable set");
     assert.ok(ROME_OUTSIDE_TILES.length > 0);
     for (const [col, row] of ROME_BLOCKED_TILES) {
       assert.equal(romeTileKind(col, row), "blocked");
@@ -119,12 +119,13 @@ describe("dawn of rome map", () => {
       assert.equal(romeTileKind(col, row), "outside");
       assert.equal(isRomeClickable(col, row), false);
     }
-    // Over-blocking regression: most of the lattice must stay paintable.
+    // Red hexes stay paintable; blue mountains/coast/volcano do not.
     const clickable = romeTiles().filter((tile) => isRomeClickable(tile.col, tile.row));
-    assert.ok(clickable.length > 400, "playable board must stay clickable");
+    assert.ok(clickable.length > 350, "red board must stay clickable");
+    assert.ok(clickable.length < 600, "blue hexes must remove a real share of the lattice");
   });
 
-  it("treats each blue structure as one paint target", () => {
+  it("treats each structure group as one paint target", () => {
     assert.ok(ROME_STRUCTURE_GROUPS.length > 0);
     for (const group of ROME_STRUCTURE_GROUPS) {
       assert.ok(group.length >= 1);

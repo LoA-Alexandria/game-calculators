@@ -13,9 +13,9 @@
  * regular hexagon.
  *
  * Guild-planning colour key (see `dawn-of-rome-tile-data.ts`):
- * - yellow board — tiles outside it are not clickable
- * - red — on the board but not clickable (mountains / blocked)
- * - blue — contiguous hexes act as one paint target (a structure)
+ * - blue hexes — not clickable (coast, mountains, volcano, impassable)
+ * - red hexes — clickable plains; structure groups on red share one paint target
+ * - outside the painted board — not clickable
  */
 
 import {
