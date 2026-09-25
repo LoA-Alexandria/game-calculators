@@ -3,6 +3,7 @@ import test from "node:test";
 
 import { getDictionary } from "../lib/i18n/index.ts";
 import {
+  eventCount,
   groupByBadge,
   guideCount,
   SECTIONS,
@@ -37,6 +38,7 @@ test("groups nav items by category id, then badge, and keeps first-seen order", 
 test("home counters match the published navigation tree", () => {
   assert.equal(toolCount(), 7);
   assert.equal(guideCount(), 20);
+  assert.equal(eventCount(), 29);
 });
 
 test("guilds section is listed and has no static child routes", () => {

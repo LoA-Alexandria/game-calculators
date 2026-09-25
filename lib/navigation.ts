@@ -336,6 +336,11 @@ export function guideCount(): number {
   return sectionById("guides").items.length;
 }
 
+/** Published event write-ups, used for the counter on the home page. */
+export function eventCount(): number {
+  return sectionById("events").items.length;
+}
+
 /**
  * Whether the sidebar browse panel should open for this section. Guides use
  * nested categories, so they open even with no items yet. Events stay open so
