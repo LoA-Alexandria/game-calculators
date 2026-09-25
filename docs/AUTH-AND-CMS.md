@@ -39,8 +39,10 @@ writes the same table with `source: 'manual'`, `note: 'lifetime'`, and
 `expires_at` set to `2099-01-01` (see `lifetimePremiumExpiry` in
 `lib/content/premium.ts`). No schema flag is required: `isPremiumActive` and
 RLS `has_active_premium` already treat any active row with a future expiry as
-Premium. The member sees Premium after the next session reload
-(`refreshSession` / page refresh); a full re-login is not required.
+Premium. Admins can revoke Lifetime from the same tab; that sets
+`status: 'revoked'` and clears the lifetime note. The member sees the change
+after the next session reload (`refreshSession` / page refresh); a full
+re-login is not required.
 
 `authenticated` needs table grants for `select, insert, update, delete` on
 `premium_entitlements`; RLS still blocks non-admin writes. If claim approval

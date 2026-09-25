@@ -6795,6 +6795,9 @@ const de: Dictionary = {
     adminLifetimeLede:
       "Lifetime Premium als Berechtigung vergeben (keine Site-Rolle). Gespeichert als manueller Eintrag mit Notiz „lifetime“ und Ablauf 2099-01-01.",
     adminLifetimeGrant: "Lifetime Premium vergeben",
+    adminLifetimeRevoke: "Lifetime entfernen",
+    adminLifetimeRevoked:
+      "Lifetime Premium entfernt. Das Mitglied verliert Premium nach dem nächsten Session-Reload (Seitenaktualisierung).",
     adminLifetimeGranted:
       "Lifetime Premium vergeben. Das Mitglied sieht es nach dem nächsten Session-Reload (Seitenaktualisierung); erneutes Anmelden ist nicht nötig.",
     adminLifetimeReloadNote:
@@ -6811,6 +6814,7 @@ const de: Dictionary = {
     adminActiveEmpty: "Keine aktiven Premium-Berechtigungen.",
     adminActiveStatus: "Status",
     adminExpires: "Läuft ab",
+    adminActions: "Aktionen",
     guildRequestTitle: "Gilde beantragen",
     guildRequestLede: "Premium-Mitglieder können eine Gilden-Listung beantragen. Ein Admin prüft und legt die Gilde an.",
     guildRequestName: "Gildenname",
