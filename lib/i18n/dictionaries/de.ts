@@ -6784,8 +6784,6 @@ const de: Dictionary = {
     renewHint: "Zum Verlängern erneut {price} $ auf PayPal zahlen und einen weiteren Claim vor oder nach Ablauf absenden.",
     payAgain: "Erneut {price} $ auf PayPal zahlen",
     payCta: "{price} $ auf PayPal zahlen",
-    payQrAlt: "QR-Code zur Bezahlung von Pop Epoch Premium über PayPal",
-    payQrHint: "Mit dem Handy scannen, um den PayPal-Checkout zu öffnen.",
     adminClaims: "Premium-Claims",
     adminApprove: "Freigeben (+30 Tage)",
     adminReject: "Ablehnen",

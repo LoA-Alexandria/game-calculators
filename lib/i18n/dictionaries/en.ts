@@ -3574,8 +3574,6 @@ const en = {
     renewHint: "To renew, pay ${price} again on PayPal and submit another claim before or after expiry.",
     payAgain: "Pay ${price} again on PayPal",
     payCta: "Pay ${price} on PayPal",
-    payQrAlt: "QR code to pay for Pop Epoch Premium via PayPal",
-    payQrHint: "Scan with your phone to open PayPal checkout.",
     adminClaims: "Premium claims",
     adminApprove: "Approve (+30 days)",
     adminReject: "Reject",
