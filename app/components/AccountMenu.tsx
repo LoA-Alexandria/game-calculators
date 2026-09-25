@@ -7,7 +7,7 @@ import { PREMIUM_PRICE_EUR } from "../../lib/content/premium";
 import { useAuth } from "./AuthProvider";
 import { useLocale } from "./LocaleProvider";
 import { SignInPanel } from "./SignInPanel";
-import { ChevronIcon, PenIcon, ShieldIcon } from "./Icons";
+import { ChevronIcon, PenIcon, ShieldIcon, StarIcon } from "./Icons";
 
 /**
  * Signed-in create and admin links used to sit in the sidebar footer, which
@@ -69,7 +69,12 @@ export function AccountMenu() {
         onClick={() => setOpen((value) => !value)}
       >
         <span className="topbar-account-name">{session.name}</span>
-        {session.premium ? <span className="pill topbar-premium-pill">{t.premium.badge}</span> : null}
+        {session.premium ? (
+          <span className="topbar-premium-mark" title={t.premium.badge}>
+            <StarIcon className="icon" />
+            <span>{t.premium.badge}</span>
+          </span>
+        ) : null}
         <ChevronIcon className="icon icon-sm" />
       </button>
       {open && (

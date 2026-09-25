@@ -88,7 +88,7 @@ function readDrawer() {
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const { t, tf } = useLocale();
-  const { error: authError, session } = useAuth();
+  const { error: authError } = useAuth();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [filter, setFilter] = useState("");
@@ -565,11 +565,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <InboxIcon className="icon" />
           </Link>
           <LanguageMenu />
-          {session?.premium ? (
-            <Link className="button button-secondary topbar-premium" href="/premium/" title={t.premium.badge}>
-              {t.premium.badge}
-            </Link>
-          ) : null}
         </header>
 
         {authError && (
