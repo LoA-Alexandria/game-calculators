@@ -103,6 +103,15 @@ const en = {
     newsPrevious: "Previous entry",
     newsNext: "Next entry",
     newsPosition: "Entry {n} of {total}",
+    premiumTitle: "Go Premium",
+    premiumLede:
+      "Unlock selected calculators and simulations, and request one guild listing while Premium is active. €{price} for {days} days — and you help keep LoA Alexandria running.",
+    premiumPerkTools: "Premium calculators and simulations",
+    premiumPerkGuild: "One guild-create request while active",
+    premiumPerkSupport: "Direct support for this community site",
+    premiumLearnMore: "See what's included",
+    premiumActiveLede: "Your Premium is active. Open the Premium page to renew or manage your claim.",
+    premiumManage: "Open Premium",
   },
   news: {
     title: "News",

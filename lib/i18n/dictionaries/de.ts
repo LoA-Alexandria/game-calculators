@@ -101,6 +101,15 @@ const de: Dictionary = {
     newsPrevious: "Voriger Eintrag",
     newsNext: "Nächster Eintrag",
     newsPosition: "Eintrag {n} von {total}",
+    premiumTitle: "Premium holen",
+    premiumLede:
+      "Freigeschaltete Rechner und Simulationen plus ein Gilden-Antrag, solange Premium aktiv ist. {price} € für {days} Tage — und du unterstützt LoA Alexandria.",
+    premiumPerkTools: "Premium-Rechner und -Simulationen",
+    premiumPerkGuild: "Ein Gilden-Antrag solange aktiv",
+    premiumPerkSupport: "Direkte Unterstützung für diese Community-Seite",
+    premiumLearnMore: "Was enthalten ist",
+    premiumActiveLede: "Dein Premium ist aktiv. Öffne die Premium-Seite zum Verlängern oder Verwalten.",
+    premiumManage: "Premium öffnen",
   },
   news: {
     title: "News",

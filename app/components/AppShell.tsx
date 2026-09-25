@@ -5,7 +5,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SECTIONS, groupByBadge, sectionHasBrowsePanel, type NavItem, type NavSection } from "../../lib/navigation";
 import { navCrumbs, pathIsCurrentOrNested, pathIsExact } from "../../lib/content/nav-shell";
-import { PREMIUM_PRICE_EUR } from "../../lib/content/premium";
 import { DISCORD_CONFIGURED, DISCORD_URL, NAV_COLLAPSED_STORAGE_KEY, REPOSITORY_URL, asset } from "../../lib/site";
 import { useAuth } from "./AuthProvider";
 import { useLocale } from "./LocaleProvider";
@@ -570,20 +569,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             <Link className="button button-secondary topbar-premium" href="/premium/" title={t.premium.badge}>
               {t.premium.badge}
             </Link>
-          ) : (
-            <Link
-              className="button button-primary topbar-premium"
-              href="/premium/"
-              title={tf(t.shell.buyPremiumTitle, { price: PREMIUM_PRICE_EUR })}
-            >
-              <span className="topbar-premium-full">
-                {tf(t.shell.buyPremium, { price: PREMIUM_PRICE_EUR })}
-              </span>
-              <span className="topbar-premium-short">
-                {tf(t.shell.buyPremiumShort, { price: PREMIUM_PRICE_EUR })}
-              </span>
-            </Link>
-          )}
+          ) : null}
         </header>
 
         {authError && (

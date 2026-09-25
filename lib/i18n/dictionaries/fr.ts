@@ -101,6 +101,15 @@ const fr: Dictionary = {
     newsPrevious: "Entrée précédente",
     newsNext: "Entrée suivante",
     newsPosition: "Entrée {n} sur {total}",
+    premiumTitle: "Passer en Premium",
+    premiumLede:
+      "Débloquez des calculateurs et simulations sélectionnés, et demandez une guilde tant que le Premium est actif. {price} € pour {days} jours — et vous aidez LoA Alexandria.",
+    premiumPerkTools: "Calculateurs et simulations Premium",
+    premiumPerkGuild: "Une demande de création de guilde tant qu’actif",
+    premiumPerkSupport: "Soutien direct à ce site communautaire",
+    premiumLearnMore: "Voir ce qui est inclus",
+    premiumActiveLede: "Votre Premium est actif. Ouvrez la page Premium pour renouveler ou gérer votre demande.",
+    premiumManage: "Ouvrir Premium",
   },
   news: {
     title: "Actualités",
