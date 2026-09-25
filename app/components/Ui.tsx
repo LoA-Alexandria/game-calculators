@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { sectionBannerLogoUrl, sectionBannerUrl } from "../../lib/content/banners";
-import { PREMIUM_PRICE_EUR } from "../../lib/content/premium";
 import type { NavItem, NavSection } from "../../lib/navigation";
 import { useAuth } from "./AuthProvider";
 import { SECTION_ICONS } from "./Icons";
@@ -71,7 +70,7 @@ export function BackLink({ href, label }: { href: string; label: string }) {
 }
 
 export function ToolCard({ item }: { item: NavItem }) {
-  const { t, tf } = useLocale();
+  const { t } = useLocale();
   const { session } = useAuth();
   const locked = Boolean(item.premium && !session?.premium);
   const href = locked ? "/premium/" : item.href;
@@ -93,7 +92,7 @@ export function ToolCard({ item }: { item: NavItem }) {
       {locked ? (
         <span className="premium-price-tag">
           <span className="premium-price-tag-brand">{t.premium.badge}</span>
-          <span className="premium-price-tag-meta">{tf(t.premium.unlockHint, { price: PREMIUM_PRICE_EUR })}</span>
+          <span className="premium-price-tag-meta">{t.premium.unlockHint}</span>
         </span>
       ) : null}
     </Link>

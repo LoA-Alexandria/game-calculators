@@ -3568,7 +3568,7 @@ const en = {
     claimSubmitted: "Claim submitted. An admin will review it shortly.",
     lockedTitle: "Premium tool",
     lockedLede: "This calculator or simulation is included with Premium (€{price} / {days} days). Buy Premium, then claim your payment to unlock it.",
-    unlockHint: "€{price} · tap to unlock",
+    unlockHint: "USD · tap to unlock",
     activeTitle: "You have Premium",
     activeUntil: "Active until {when}",
     renewHint: "To renew, pay €{price} again on PayPal and submit another claim before or after expiry.",
