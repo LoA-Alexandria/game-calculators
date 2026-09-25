@@ -6794,7 +6794,7 @@ const fr: Dictionary = {
     claimSubmitted: "Demande envoyée. Un admin l’examinera bientôt.",
     lockedTitle: "Outil Premium",
     lockedLede: "Ce calculateur ou cette simulation est inclus avec Premium ({price} € / {days} jours). Achetez Premium, puis réclamez votre paiement pour le débloquer.",
-    unlockHint: "Premium — appuyer pour débloquer",
+    unlockHint: "{price} € · appuyer pour débloquer",
     activeTitle: "Vous avez Premium",
     activeUntil: "Actif jusqu’au {when}",
     renewHint: "Pour renouveler, payez à nouveau {price} € sur PayPal et envoyez une autre demande avant ou après l’expiration.",
