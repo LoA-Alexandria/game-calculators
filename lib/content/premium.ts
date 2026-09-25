@@ -8,7 +8,7 @@
 
 export const PREMIUM_PERIOD_DAYS = 30;
 
-/** Listed Premium price in euro. Must match the PayPal NCP amount. */
+/** Listed Premium price (displayed as $). Must match the PayPal NCP amount. */
 export const PREMIUM_PRICE_EUR = 5;
 
 /** Marker stored in `premium_entitlements.note` for admin lifetime grants. */

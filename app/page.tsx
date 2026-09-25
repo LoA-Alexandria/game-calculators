@@ -142,7 +142,7 @@ function PremiumPromo() {
           </div>
         </div>
         <p className="home-premium-price mono" aria-hidden="true">
-          €{PREMIUM_PRICE_EUR}
+          ${PREMIUM_PRICE_EUR}
         </p>
       </div>
     </section>
