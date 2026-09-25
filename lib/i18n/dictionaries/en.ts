@@ -3585,6 +3585,9 @@ const en = {
     adminLifetimeLede:
       "Grant Lifetime Premium as an entitlement (not a site role). Stored as a manual row with note “lifetime” and expiry 2099-01-01.",
     adminLifetimeGrant: "Grant Lifetime Premium",
+    adminLifetimeRevoke: "Revoke Lifetime",
+    adminLifetimeRevoked:
+      "Lifetime Premium revoked. The member loses Premium after their next session reload (page refresh).",
     adminLifetimeGranted: "Lifetime Premium granted. The member sees it after their next session reload (page refresh); re-login is not required.",
     adminLifetimeReloadNote:
       "The recipient must reload the page (or call refreshSession) to see Premium. A full sign-out is not needed.",
@@ -3600,6 +3603,7 @@ const en = {
     adminActiveEmpty: "No active Premium entitlements.",
     adminActiveStatus: "Status",
     adminExpires: "Expires",
+    adminActions: "Actions",
     guildRequestTitle: "Request a guild",
     guildRequestLede: "Premium members may request one guild listing. An admin reviews the request and creates the guild.",
     guildRequestName: "Guild name",

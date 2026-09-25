@@ -51,7 +51,7 @@ type EntitlementRow = Pick<
 /**
  * Admin queue for PayPal Premium claims and guild-create requests.
  * Approving a claim extends `premium_entitlements` by 30 days.
- * Admins can also grant Lifetime Premium (far-future expiry + note).
+ * Admins can also grant or revoke Lifetime Premium (far-future expiry + note).
  */
 export function AdminPremiumQueues({ reloadToken, onChanged }: { reloadToken: number; onChanged: () => void }) {
   const { t, d } = useLocale();
@@ -69,6 +69,7 @@ export function AdminPremiumQueues({ reloadToken, onChanged }: { reloadToken: nu
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [granted, setGranted] = useState(false);
+  const [revoked, setRevoked] = useState(false);
 
   useEffect(() => {
     if (!supabase) return;
@@ -168,6 +169,7 @@ export function AdminPremiumQueues({ reloadToken, onChanged }: { reloadToken: nu
     setBusy(true);
     setError("");
     setGranted(false);
+    setRevoked(false);
     const reviewedAt = new Date().toISOString();
     if (approve) {
       const existing = await supabase
@@ -229,6 +231,7 @@ export function AdminPremiumQueues({ reloadToken, onChanged }: { reloadToken: nu
     setBusy(true);
     setError("");
     setGranted(false);
+    setRevoked(false);
     const reviewedAt = new Date().toISOString();
     let createdGuildId: string | null = null;
     if (approve) {
@@ -278,6 +281,7 @@ export function AdminPremiumQueues({ reloadToken, onChanged }: { reloadToken: nu
     setBusy(true);
     setError("");
     setGranted(false);
+    setRevoked(false);
     const now = new Date().toISOString();
     const existing = await supabase
       .from("premium_entitlements")
@@ -309,10 +313,37 @@ export function AdminPremiumQueues({ reloadToken, onChanged }: { reloadToken: nu
     setBusy(false);
   };
 
+  const revokeLifetime = async (userId: string) => {
+    if (!supabase || !userId) return;
+    setBusy(true);
+    setError("");
+    setGranted(false);
+    setRevoked(false);
+    const now = new Date().toISOString();
+    const { error: updateError } = await supabase
+      .from("premium_entitlements")
+      .update({
+        status: "revoked",
+        note: null,
+        updated_at: now,
+      })
+      .eq("user_id", userId);
+    if (updateError) {
+      setError(updateError.message);
+      setBusy(false);
+      return;
+    }
+    setRevoked(true);
+    onChanged();
+    setBusy(false);
+  };
+
   const memberLabel = (userId: string) => {
     const member = members.find((entry) => entry.userId === userId);
     return member?.label ?? `${userId.slice(0, 8)}…`;
   };
+
+  const selectedIsLifetime = isLifetimePremium(entitlementByUser.get(grantTargetId));
 
   return (
     <>
@@ -323,6 +354,11 @@ export function AdminPremiumQueues({ reloadToken, onChanged }: { reloadToken: nu
         {granted ? (
           <p className="assumption" role="status">
             {t.premium.adminLifetimeGranted}
+          </p>
+        ) : null}
+        {revoked ? (
+          <p className="assumption" role="status">
+            {t.premium.adminLifetimeRevoked}
           </p>
         ) : null}
 
@@ -347,6 +383,7 @@ export function AdminPremiumQueues({ reloadToken, onChanged }: { reloadToken: nu
                   setSelectedUserId(event.target.value);
                   setManualUserId("");
                   setGranted(false);
+                  setRevoked(false);
                 }}
               >
                 <option value="">{t.premium.adminLifetimePick}</option>
@@ -378,6 +415,7 @@ export function AdminPremiumQueues({ reloadToken, onChanged }: { reloadToken: nu
                 onChange={(event) => {
                   setManualUserId(event.target.value);
                   setGranted(false);
+                  setRevoked(false);
                 }}
               />
             </div>
@@ -389,6 +427,16 @@ export function AdminPremiumQueues({ reloadToken, onChanged }: { reloadToken: nu
             >
               {t.premium.adminLifetimeGrant}
             </button>
+            {selectedIsLifetime ? (
+              <button
+                className="button button-danger"
+                type="button"
+                disabled={!grantTargetId || busy}
+                onClick={() => void revokeLifetime(grantTargetId)}
+              >
+                {t.premium.adminLifetimeRevoke}
+              </button>
+            ) : null}
           </div>
           <p className="assumption">{t.premium.adminLifetimeReloadNote}</p>
         </fieldset>
@@ -404,6 +452,7 @@ export function AdminPremiumQueues({ reloadToken, onChanged }: { reloadToken: nu
                   <th>{t.premium.adminLifetimeUser}</th>
                   <th>{t.premium.adminActiveStatus}</th>
                   <th>{t.premium.adminExpires}</th>
+                  <th>{t.premium.adminActions}</th>
                 </tr>
               </thead>
               <tbody>
@@ -421,6 +470,20 @@ export function AdminPremiumQueues({ reloadToken, onChanged }: { reloadToken: nu
                       {isLifetimePremium(row)
                         ? t.premium.adminLifetimeBadge
                         : d(row.expires_at.slice(0, 10))}
+                    </td>
+                    <td className="actions" data-label={t.premium.adminActions}>
+                      {isLifetimePremium(row) ? (
+                        <button
+                          className="small-button button-danger"
+                          type="button"
+                          disabled={busy}
+                          onClick={() => void revokeLifetime(row.user_id)}
+                        >
+                          {t.premium.adminLifetimeRevoke}
+                        </button>
+                      ) : (
+                        "—"
+                      )}
                     </td>
                   </tr>
                 ))}

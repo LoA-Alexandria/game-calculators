@@ -6811,6 +6811,9 @@ const fr: Dictionary = {
     adminLifetimeLede:
       "Accorder le Premium à vie comme droit (pas un rôle du site). Enregistré comme ligne manuelle avec la note « lifetime » et l’expiration 2099-01-01.",
     adminLifetimeGrant: "Accorder le Premium à vie",
+    adminLifetimeRevoke: "Retirer le Premium à vie",
+    adminLifetimeRevoked:
+      "Premium à vie retiré. Le membre perd Premium après le prochain rechargement de session (rafraîchir la page).",
     adminLifetimeGranted:
       "Premium à vie accordé. Le membre le voit après le prochain rechargement de session (rafraîchir la page) ; une reconnexion n’est pas nécessaire.",
     adminLifetimeReloadNote:
@@ -6827,6 +6830,7 @@ const fr: Dictionary = {
     adminActiveEmpty: "Aucun droit Premium actif.",
     adminActiveStatus: "Statut",
     adminExpires: "Expire",
+    adminActions: "Actions",
     guildRequestTitle: "Demander une guilde",
     guildRequestLede: "Les membres Premium peuvent demander une fiche de guilde. Un admin examine et crée la guilde.",
     guildRequestName: "Nom de la guilde",
