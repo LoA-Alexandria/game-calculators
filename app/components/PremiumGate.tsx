@@ -29,9 +29,7 @@ export function PremiumGate({ children }: { children: ReactNode }) {
       <div className="premium-gate-overlay">
         <div className="premium-price-tag premium-price-tag-lg">
           <span className="premium-price-tag-brand">{t.premium.badge}</span>
-          <span className="premium-price-tag-meta">
-            {tf(t.premium.unlockHint, { price: PREMIUM_PRICE_EUR })}
-          </span>
+          <span className="premium-price-tag-meta">{t.premium.unlockHint}</span>
         </div>
         <h2>{t.premium.lockedTitle}</h2>
         <p>{tf(t.premium.lockedLede, { price: PREMIUM_PRICE_EUR, days: PREMIUM_PERIOD_DAYS })}</p>

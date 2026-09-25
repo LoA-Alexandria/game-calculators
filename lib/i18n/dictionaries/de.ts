@@ -6778,7 +6778,7 @@ const de: Dictionary = {
     claimSubmitted: "Claim gesendet. Ein Admin prüft ihn in Kürze.",
     lockedTitle: "Premium-Tool",
     lockedLede: "Dieser Rechner oder diese Simulation gehört zu Premium ({price} € / {days} Tage). Premium kaufen und Zahlung claimen, um freizuschalten.",
-    unlockHint: "{price} € · tippen zum Freischalten",
+    unlockHint: "USD · tippen zum Freischalten",
     activeTitle: "Du hast Premium",
     activeUntil: "Aktiv bis {when}",
     renewHint: "Zum Verlängern erneut {price} € auf PayPal zahlen und einen weiteren Claim vor oder nach Ablauf absenden.",
