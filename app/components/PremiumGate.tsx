@@ -8,7 +8,8 @@ import { useLocale } from "./LocaleProvider";
 
 /**
  * Soft-locks Premium calculators and simulations: signed-in Premium members
- * see the tool; everyone else gets a blurred shell and a buy link.
+ * see the tool; everyone else gets a dimmed body preview and a price-tag unlock.
+ * Keep page titles / headers outside this gate so they stay readable.
  */
 export function PremiumGate({ children }: { children: ReactNode }) {
   const { t, tf } = useLocale();
@@ -26,7 +27,12 @@ export function PremiumGate({ children }: { children: ReactNode }) {
         {children}
       </div>
       <div className="premium-gate-overlay">
-        <p className="pill">{t.premium.badge}</p>
+        <div className="premium-price-tag premium-price-tag-lg">
+          <span className="premium-price-tag-brand">{t.premium.badge}</span>
+          <span className="premium-price-tag-meta">
+            {tf(t.premium.unlockHint, { price: PREMIUM_PRICE_EUR })}
+          </span>
+        </div>
         <h2>{t.premium.lockedTitle}</h2>
         <p>{tf(t.premium.lockedLede, { price: PREMIUM_PRICE_EUR, days: PREMIUM_PERIOD_DAYS })}</p>
         <Link className="button button-primary" href="/premium/">

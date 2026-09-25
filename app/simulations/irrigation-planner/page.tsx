@@ -12,22 +12,22 @@ export default function IrrigationPlannerPage() {
   useDocumentTitle(t.tools.irrigation.name);
 
   return (
-    <PremiumGate>
-      <div className="planner-page">
-        <div className="planner-bar">
-          <Link className="back-link" href="/simulations/">
-            <span aria-hidden="true">←</span> {t.nav.simulations}
-          </Link>
-          <div className="planner-title">
-            <h1>{t.tools.irrigation.name}</h1>
-            <span className="pill">{t.irrigation.eyebrow}</span>
-          </div>
-          <span className="spacer" />
-          <a className="small-button" href={asset(PLANNER_PATH)} target="_blank" rel="noreferrer">
-            {t.irrigation.openFullScreen} <span aria-hidden="true">↗</span>
-          </a>
+    <div className="planner-page">
+      <div className="planner-bar">
+        <Link className="back-link" href="/simulations/">
+          <span aria-hidden="true">←</span> {t.nav.simulations}
+        </Link>
+        <div className="planner-title">
+          <h1>{t.tools.irrigation.name}</h1>
+          <span className="pill">{t.irrigation.eyebrow}</span>
         </div>
+        <span className="spacer" />
+        <a className="small-button" href={asset(PLANNER_PATH)} target="_blank" rel="noreferrer">
+          {t.irrigation.openFullScreen} <span aria-hidden="true">↗</span>
+        </a>
+      </div>
 
+      <PremiumGate>
         <iframe
           className="planner-frame"
           src={asset(`${PLANNER_PATH}?embed=1`)}
@@ -40,7 +40,7 @@ export default function IrrigationPlannerPage() {
           <p className="assumption">{t.irrigation.storage}</p>
           <p className="assumption">{t.irrigation.languageNote}</p>
         </div>
-      </div>
-    </PremiumGate>
+      </PremiumGate>
+    </div>
   );
 }
