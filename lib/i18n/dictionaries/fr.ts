@@ -6791,6 +6791,8 @@ const fr: Dictionary = {
     renewHint: "Pour renouveler, payez à nouveau {price} € sur PayPal et envoyez une autre demande avant ou après l’expiration.",
     payAgain: "Payer à nouveau {price} € sur PayPal",
     payCta: "Payer {price} € sur PayPal",
+    payQrAlt: "Code QR pour payer Pop Epoch Premium via PayPal",
+    payQrHint: "Scannez avec votre téléphone pour ouvrir le paiement PayPal.",
     adminClaims: "Demandes Premium",
     adminApprove: "Approuver (+30 jours)",
     adminReject: "Refuser",
