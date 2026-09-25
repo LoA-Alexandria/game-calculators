@@ -1550,6 +1550,35 @@ a.lang-option { color: inherit; text-decoration: none; }
   justify-content: center;
   max-width: 100%;
 }
+.premium-pay-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 20px;
+  margin-top: 16px;
+}
+.premium-pay-qr {
+  margin: 0;
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+  text-align: center;
+  max-width: 200px;
+}
+.premium-pay-qr img {
+  width: min(180px, 55vw);
+  height: auto;
+  aspect-ratio: 1;
+  border-radius: var(--r-md);
+  background: #f2f2f2;
+  image-rendering: pixelated;
+}
+.premium-pay-qr figcaption {
+  margin: 0;
+  font-size: .82rem;
+  color: var(--ink-soft);
+  line-height: 1.35;
+}
 
 .featured {
   display: grid;
@@ -8895,6 +8924,18 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
   .premium-page .button {
     width: 100%;
     min-height: 44px;
+  }
+  .premium-pay-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .premium-pay-qr {
+    max-width: none;
+    justify-self: center;
+    width: 100%;
+  }
+  .premium-pay-qr img {
+    width: min(200px, 70vw);
   }
   .tool-card-lock {
     inset: auto 14px 12px;
