@@ -59,7 +59,10 @@ comment on table public.premium_entitlements is
 
 alter table public.premium_entitlements enable row level security;
 revoke all on table public.premium_entitlements from anon, authenticated;
-grant select on table public.premium_entitlements to authenticated;
+-- SELECT for every member (own row / admin list). INSERT/UPDATE/DELETE are
+-- still limited to admins by RLS; without these grants admin upserts fail with
+-- "permission denied for table" before policies run.
+grant select, insert, update, delete on table public.premium_entitlements to authenticated;
 
 create policy "Members can read their own premium row"
   on public.premium_entitlements for select to authenticated

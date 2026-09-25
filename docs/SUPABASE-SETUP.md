@@ -54,6 +54,10 @@ The guild is `1534685294371274822` and stays in the function.
   tiles turned out to be flat-top.
 - `20260927120000_rome_tile_size.sql` — and once more, after the tiles were
   measured properly.
+- `20260928120000_premium_and_profiles.sql` — profiles, Premium entitlements,
+  claims, and guild-create requests.
+- `20260929120000_premium_entitlements_write_grants.sql` — grants admin
+  INSERT/UPDATE/DELETE on `premium_entitlements` (RLS still admin-only).
 
 They only add tables, columns, functions and policies, so applying them changes
 nothing until a guild fills a board in, offers an alliance, ends an event or
