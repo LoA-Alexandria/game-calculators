@@ -6989,6 +6989,16 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
 }
 .tabs button:hover { color: var(--ink); }
 .tabs button[aria-selected="true"] { background: var(--surface); color: var(--accent); box-shadow: var(--shadow-1); }
+.tabs button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.admin-subhead {
+  margin: 22px 0 10px;
+  font-size: .95rem;
+  font-weight: 650;
+}
 
 .panel { padding: clamp(18px, 3vw, 24px); }
 .panel + .panel { margin-top: 12px; }
