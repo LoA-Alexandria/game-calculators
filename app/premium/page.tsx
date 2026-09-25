@@ -77,17 +77,11 @@ export default function PremiumPage() {
               : t.premium.badge}
           </p>
           <p className="assumption">{tf(t.premium.renewHint, priceVars)}</p>
-          <div className="premium-pay-row">
+          <p>
             <a className="button button-primary" href={PREMIUM_HREF} target="_blank" rel="noreferrer">
               {tf(t.premium.payAgain, priceVars)}
             </a>
-            <figure className="premium-pay-qr">
-              <a href={PREMIUM_HREF} target="_blank" rel="noreferrer">
-                <img src="/premium/paypal-qr.png" alt={t.premium.payQrAlt} width={180} height={180} />
-              </a>
-              <figcaption>{t.premium.payQrHint}</figcaption>
-            </figure>
-          </div>
+          </p>
         </section>
       ) : (
         <section className="panel" style={{ marginTop: 16 }}>
@@ -98,17 +92,11 @@ export default function PremiumPage() {
             <li>{t.premium.stepSignIn}</li>
             <li>{t.premium.stepClaim}</li>
           </ol>
-          <div className="premium-pay-row">
+          <p>
             <a className="button button-primary" href={PREMIUM_HREF} target="_blank" rel="noreferrer">
               {tf(t.premium.payCta, priceVars)}
             </a>
-            <figure className="premium-pay-qr">
-              <a href={PREMIUM_HREF} target="_blank" rel="noreferrer">
-                <img src="/premium/paypal-qr.png" alt={t.premium.payQrAlt} width={180} height={180} />
-              </a>
-              <figcaption>{t.premium.payQrHint}</figcaption>
-            </figure>
-          </div>
+          </p>
         </section>
       )}
 
