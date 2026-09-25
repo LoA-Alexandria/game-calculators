@@ -34,6 +34,21 @@ tools marked `premium: true` in `lib/navigation.ts` and allows one
 `guild_create_requests` row (pending or approved). Rejected guild requests
 free the slot.
 
+`/account/` is where a member sees both. It reads their own
+`premium_entitlements` row (days left, and a reminder in the last five) and the
+guild their request created. `premium_entitlements.auto_renew` is a preference,
+not a mandate: nothing is charged automatically, because payment is still the
+PayPal button plus an admin approving the claim. Members set it through
+`set_premium_auto_renew`, since the table itself is admin-write only.
+
+`guilds.owner_user_id` is the account whose Premium slot holds a listing (null
+for admin-created guilds, backfilled from approved requests). That account, and
+site admins, may call `set_guild_master` to hand the guild-master Discord id to
+somebody else, or `delete_own_guild` to take the listing down — which marks the
+request rejected first, so the slot is free for another guild. Both are
+security-definer functions guarded by `owns_guild_listing`; the `guilds` table
+stays admin-write.
+
 Admins can also grant Lifetime Premium from the Premium tab on `/admin/`. That
 writes the same table with `source: 'manual'`, `note: 'lifetime'`, and
 `expires_at` set to `2099-01-01` (see `lifetimePremiumExpiry` in
