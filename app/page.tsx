@@ -4,7 +4,7 @@ import { useState, type CSSProperties } from "react";
 import Link from "next/link";
 import { PREMIUM_PERIOD_DAYS, PREMIUM_PRICE_EUR } from "../lib/content/premium";
 import { NEWS } from "../lib/content/news";
-import { guideCount, toolCount } from "../lib/navigation";
+import { eventCount, guideCount, toolCount } from "../lib/navigation";
 import { asset } from "../lib/site";
 import { useAuth } from "./components/AuthProvider";
 import { useDocumentTitle, useLocale } from "./components/LocaleProvider";
@@ -28,8 +28,8 @@ export default function Home() {
             <dd>{n(guideCount())}</dd>
           </div>
           <div>
-            <dt>{t.home.statCost}</dt>
-            <dd>{t.home.statCostValue}</dd>
+            <dt>{t.home.statEvents}</dt>
+            <dd>{n(eventCount())}</dd>
           </div>
         </dl>
       </section>
