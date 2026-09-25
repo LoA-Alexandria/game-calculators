@@ -27,7 +27,7 @@ export const DISCORD_CONFIGURED = !DISCORD_URL.includes("REPLACE-ME");
  * Checkout for site Premium (PayPal No Code payment link).
  * Landing and claims live at `/premium/`.
  */
-export const PREMIUM_URL = "https://www.paypal.com/ncp/payment/JY7KCGPWN263A";
+export const PREMIUM_URL = "https://www.paypal.com/ncp/payment/7KVNS7JHVFL6C";
 
 /** Resolved Premium checkout link shown on the Premium page and topbar CTA. */
 export const PREMIUM_HREF = PREMIUM_URL || DISCORD_URL;
