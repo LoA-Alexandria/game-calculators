@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useState } from "react";
+import { useEffect, useId, useState, type KeyboardEvent } from "react";
 import {
   GUILD_ICON_BUCKET,
   guildIconObjectPath,
@@ -23,6 +23,13 @@ import { InfoIcon, PlusIcon, TrashIcon } from "../components/Icons";
 type Mapping = { id: string; discord_role_id: string; discord_role_name: string; role: Role };
 type Member = { user_id: string; discord_user_id: string; role: Role | null; checked_at: string | null };
 
+const ADMIN_TABS = ["premium", "guilds", "members", "roles", "permissions"] as const;
+type AdminTab = (typeof ADMIN_TABS)[number];
+
+function isAdminTab(value: string): value is AdminTab {
+  return (ADMIN_TABS as readonly string[]).includes(value);
+}
+
 export default function AdminPage() {
   const { t } = useLocale();
   useDocumentTitle(t.admin.title);
@@ -39,6 +46,11 @@ function AdminPanel() {
   const supabase = getSupabaseBrowserClient();
   const ids = useId();
 
+  const [tab, setTab] = useState<AdminTab>(() => {
+    if (typeof window === "undefined") return "premium";
+    const fromHash = window.location.hash.replace(/^#/, "");
+    return isAdminTab(fromHash) ? fromHash : "premium";
+  });
   const [mappings, setMappings] = useState<Mapping[]>([]);
   const [members, setMembers] = useState<Member[]>([]);
   const [guilds, setGuilds] = useState<Guild[]>([]);
@@ -86,6 +98,44 @@ function AdminPanel() {
   }, [supabase, reloadToken]);
 
   const reload = () => setReloadToken((value) => value + 1);
+
+  const selectTab = (next: AdminTab) => {
+    setTab(next);
+    window.history.replaceState(null, "", `#${next}`);
+  };
+
+  const tabLabel = (id: AdminTab) => {
+    switch (id) {
+      case "premium":
+        return t.admin.tabPremium;
+      case "guilds":
+        return t.admin.tabGuilds;
+      case "members":
+        return t.admin.tabTeam;
+      case "roles":
+        return t.admin.tabRoles;
+      case "permissions":
+        return t.admin.tabPermissions;
+    }
+  };
+
+  const tabButtonId = (id: AdminTab) => `${ids}-tab-${id}`;
+  const panelId = `${ids}-panel`;
+
+  const onTabKeyDown = (event: KeyboardEvent<HTMLButtonElement>, index: number) => {
+    const last = ADMIN_TABS.length - 1;
+    const nextIndex =
+      event.key === "ArrowRight" || event.key === "ArrowDown" ? (index === last ? 0 : index + 1)
+      : event.key === "ArrowLeft" || event.key === "ArrowUp" ? (index === 0 ? last : index - 1)
+      : event.key === "Home" ? 0
+      : event.key === "End" ? last
+      : null;
+    if (nextIndex === null) return;
+    event.preventDefault();
+    const next = ADMIN_TABS[nextIndex];
+    selectTab(next);
+    document.getElementById(tabButtonId(next))?.focus();
+  };
 
   const add = async () => {
     if (!supabase || !name.trim() || !discordId.trim()) return;
@@ -215,281 +265,314 @@ function AdminPanel() {
 
       {error && <p className="result-error" role="alert">{error}</p>}
 
-      <AdminPremiumQueues reloadToken={reloadToken} onChanged={reload} />
+      <div className="tabs" role="tablist" aria-label={t.admin.tabNavLabel}>
+        {ADMIN_TABS.map((id, index) => {
+          const selected = tab === id;
+          return (
+            <button
+              key={id}
+              id={tabButtonId(id)}
+              type="button"
+              role="tab"
+              aria-selected={selected}
+              aria-controls={panelId}
+              tabIndex={selected ? 0 : -1}
+              onClick={() => selectTab(id)}
+              onKeyDown={(event) => onTabKeyDown(event, index)}
+            >
+              {tabLabel(id)}
+            </button>
+          );
+        })}
+      </div>
 
-      <section className="panel">
-        <h2>{t.admin.guildsTitle}</h2>
-        <p>{t.admin.guildsLede}</p>
+      <div id={panelId} role="tabpanel" aria-labelledby={tabButtonId(tab)}>
+        {tab === "premium" && (
+          <AdminPremiumQueues reloadToken={reloadToken} onChanged={reload} />
+        )}
 
-        <div className="table-scroll">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>{t.admin.guildsName}</th>
-                <th>{t.admin.guildsServer}</th>
-                <th>{t.admin.guildsSlug}</th>
-                <th>{t.admin.guildsMasterId}</th>
-                <th>{t.admin.guildsCreated}</th>
-                <th />
-              </tr>
-            </thead>
-            <tbody>
-              {guilds.length === 0 && (
-                <tr><td colSpan={6}>{t.admin.guildsEmpty}</td></tr>
-              )}
-              {guilds.map((guild) => {
-                const iconUrl = guildIconPublicUrl(
-                  process.env.NEXT_PUBLIC_SUPABASE_URL,
-                  guild.icon_path,
-                );
-                return (
-                  <tr key={guild.id}>
-                    <td data-label={t.admin.guildsName}>
-                      <span className="guild-admin-name">
-                        {iconUrl ? (
-                          // eslint-disable-next-line @next/next/no-img-element
-                          <img className="guild-admin-icon" src={iconUrl} alt="" />
-                        ) : null}
-                        {guild.name}
-                      </span>
-                    </td>
-                    <td data-label={t.admin.guildsServer}>{guild.server_name || "—"}</td>
-                    <td data-label={t.admin.guildsSlug} className="mono">{guild.slug}</td>
-                    <td data-label={t.admin.guildsMasterId} className="mono">{guild.master_discord_user_id}</td>
-                    <td data-label={t.admin.guildsCreated} className="mono">
-                      {d(guild.created_at.slice(0, 10))}
-                    </td>
-                    <td className="actions">
-                      <button
-                        className="small-button button-danger"
-                        type="button"
-                        disabled={busy}
-                        aria-label={`${t.admin.guildsRemove}: ${guild.name}`}
-                        onClick={() => void removeGuild(guild)}
-                      >
-                        <TrashIcon className="icon icon-sm" />
-                        {t.admin.guildsRemove}
-                      </button>
-                    </td>
+        {tab === "guilds" && (
+          <section className="panel">
+            <h2>{t.admin.guildsTitle}</h2>
+            <p>{t.admin.guildsLede}</p>
+
+            <div className="table-scroll">
+              <table className="data-table">
+                <thead>
+                  <tr>
+                    <th>{t.admin.guildsName}</th>
+                    <th>{t.admin.guildsServer}</th>
+                    <th>{t.admin.guildsSlug}</th>
+                    <th>{t.admin.guildsMasterId}</th>
+                    <th>{t.admin.guildsCreated}</th>
+                    <th />
                   </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-
-        <fieldset disabled={busy}>
-          <legend>{t.admin.guildsAdd}</legend>
-          <div className="guild-form">
-            <div className="field">
-              <label htmlFor={`${ids}-gname`}>{t.admin.guildsName}</label>
-              <input
-                id={`${ids}-gname`}
-                value={guildName}
-                onChange={(e) => {
-                  const next = e.target.value;
-                  setGuildName(next);
-                  if (!slugTouched) setGuildSlug(suggestGuildSlug(next));
-                }}
-              />
-            </div>
-            <div className="field">
-              <label htmlFor={`${ids}-gslug`}>{t.admin.guildsSlug}</label>
-              <input
-                id={`${ids}-gslug`}
-                value={guildSlug}
-                className="mono"
-                onChange={(e) => {
-                  setSlugTouched(true);
-                  setGuildSlug(e.target.value.toLowerCase());
-                }}
-              />
-            </div>
-            <div className="field">
-              <label htmlFor={`${ids}-gserver`}>{t.admin.guildsServer}</label>
-              <input
-                id={`${ids}-gserver`}
-                value={guildServer}
-                maxLength={80}
-                placeholder="S9 - Garden"
-                onChange={(e) => setGuildServer(e.target.value)}
-              />
-            </div>
-            <div className="field">
-              <label htmlFor={`${ids}-gmaster`}>{t.admin.guildsMasterId}</label>
-              <input
-                id={`${ids}-gmaster`}
-                value={guildMasterId}
-                inputMode="numeric"
-                className="mono"
-                placeholder="1534890988588498944"
-                onChange={(e) => setGuildMasterId(e.target.value)}
-              />
-            </div>
-            <div className="field guild-form-desc">
-              <label htmlFor={`${ids}-gdesc`}>{t.admin.guildsDescription}</label>
-              <input
-                id={`${ids}-gdesc`}
-                value={guildDescription}
-                maxLength={500}
-                onChange={(e) => setGuildDescription(e.target.value)}
-              />
-            </div>
-            <div className="field guild-form-icon">
-              <label htmlFor={`${ids}-gicon`}>{t.admin.guildsIcon}</label>
-              <input
-                id={`${ids}-gicon`}
-                type="file"
-                accept="image/png,image/jpeg,image/webp"
-                onChange={(e) => setGuildIcon(e.target.files?.[0] ?? null)}
-              />
-            </div>
-            <button className="button button-primary" type="button" onClick={() => void addGuild()}>
-              <PlusIcon className="icon" />
-              {t.admin.guildsAdd}
-            </button>
-          </div>
-          <p className="assumption">{t.admin.guildsSlugNote}</p>
-          <p className="assumption">{t.admin.guildsServerNote}</p>
-          <p className="assumption">{t.admin.guildsIconNote}</p>
-          <p className="assumption">{t.admin.guildsMasterIdNote}</p>
-        </fieldset>
-      </section>
-
-      <section className="panel">
-        <h2>{t.admin.mappingTitle}</h2>
-        <p>{t.admin.mappingLede}</p>
-
-        <div className="table-scroll">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>{t.admin.mappingRoleName}</th>
-                <th>{t.admin.mappingRoleId}</th>
-                <th>{t.admin.mappingSiteRole}</th>
-                <th />
-              </tr>
-            </thead>
-            <tbody>
-              {mappings.length === 0 && (
-                <tr><td colSpan={4}>{t.admin.mappingEmpty}</td></tr>
-              )}
-              {mappings.map((entry) => (
-                <tr key={entry.id}>
-                  <td data-label={t.admin.mappingRoleName}>{entry.discord_role_name}</td>
-                  <td data-label={t.admin.mappingRoleId} className="mono">{entry.discord_role_id}</td>
-                  <td data-label={t.admin.mappingSiteRole}>
-                    <span className={`role-badge role-${entry.role}`}>{entry.role}</span>
-                  </td>
-                  <td className="actions">
-                    <button
-                      className="small-button button-danger"
-                      type="button"
-                      disabled={busy}
-                      aria-label={`${t.admin.mappingRemove}: ${entry.discord_role_name}`}
-                      onClick={() => void remove(entry.id)}
-                    >
-                      <TrashIcon className="icon icon-sm" />
-                      {t.admin.mappingRemove}
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        <fieldset disabled={busy}>
-          <legend>{t.admin.mappingAdd}</legend>
-          <div className="mapping-form">
-            <div className="field">
-              <label htmlFor={`${ids}-name`}>{t.admin.mappingRoleName}</label>
-              <input id={`${ids}-name`} value={name} placeholder="Guide Team" onChange={(e) => setName(e.target.value)} />
-            </div>
-            <div className="field">
-              <label htmlFor={`${ids}-id`}>{t.admin.mappingRoleId}</label>
-              <input id={`${ids}-id`} value={discordId} inputMode="numeric" placeholder="1534890988588498944" onChange={(e) => setDiscordId(e.target.value)} />
-            </div>
-            <div className="field">
-              <label htmlFor={`${ids}-role`}>{t.admin.mappingSiteRole}</label>
-              <select id={`${ids}-role`} value={role} onChange={(e) => { if (isRole(e.target.value)) setRole(e.target.value); }}>
-                {ROLES.map((option) => <option key={option} value={option}>{option}</option>)}
-              </select>
-            </div>
-            <button className="button button-primary" type="button" onClick={() => void add()}>
-              <PlusIcon className="icon" />
-              {t.admin.mappingAdd}
-            </button>
-          </div>
-          <p className="assumption">{t.admin.mappingIdNote}</p>
-        </fieldset>
-      </section>
-
-      <section className="panel">
-        <h2>{t.admin.teamTitle}</h2>
-        <p>{t.admin.teamLede}</p>
-        <div className="table-scroll">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>{t.admin.teamDiscord}</th>
-                <th>{t.admin.teamRole}</th>
-                <th>{t.admin.teamLastSeen}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {members.length === 0 && <tr><td colSpan={3}>{t.common.empty}</td></tr>}
-              {members.map((member) => (
-                <tr key={member.user_id}>
-                  <td data-label={t.admin.teamDiscord} className="mono">{member.discord_user_id}</td>
-                  <td data-label={t.admin.teamRole}>
-                    {member.role
-                      ? <span className={`role-badge role-${member.role}`}>{member.role}</span>
-                      : <span className="muted">—</span>}
-                  </td>
-                  <td data-label={t.admin.teamLastSeen} className="mono">
-                    {member.checked_at ? d(member.checked_at.slice(0, 10)) : t.admin.teamNever}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <div className="notice notice-info" style={{ marginTop: 14 }}>
-          <InfoIcon className="icon" />
-          <div><p>{t.admin.roleRefreshNote}</p></div>
-        </div>
-      </section>
-
-      <section className="panel">
-        <h2>{t.admin.permissionsTitle}</h2>
-        <p>{t.admin.permissionsLede}</p>
-        <div className="table-scroll">
-          <table className="data-table matrix">
-            <thead>
-              <tr>
-                <th>{t.admin.permissionColumn}</th>
-                {ROLES.map((entry) => <th key={entry}>{entry}</th>)}
-              </tr>
-            </thead>
-            <tbody>
-              {PERMISSIONS.map((permission) => (
-                <tr key={permission}>
-                  <td data-label={t.admin.permissionColumn} className="mono">{permission}</td>
-                  {ROLES.map((entry) => {
-                    const granted = ROLE_PERMISSIONS[entry].includes(permission);
+                </thead>
+                <tbody>
+                  {guilds.length === 0 && (
+                    <tr><td colSpan={6}>{t.admin.guildsEmpty}</td></tr>
+                  )}
+                  {guilds.map((guild) => {
+                    const iconUrl = guildIconPublicUrl(
+                      process.env.NEXT_PUBLIC_SUPABASE_URL,
+                      guild.icon_path,
+                    );
                     return (
-                      <td key={entry} data-label={entry} className={granted ? "yes" : "no"}>
-                        {granted ? "✓" : "—"}
-                      </td>
+                      <tr key={guild.id}>
+                        <td data-label={t.admin.guildsName}>
+                          <span className="guild-admin-name">
+                            {iconUrl ? (
+                              // eslint-disable-next-line @next/next/no-img-element
+                              <img className="guild-admin-icon" src={iconUrl} alt="" />
+                            ) : null}
+                            {guild.name}
+                          </span>
+                        </td>
+                        <td data-label={t.admin.guildsServer}>{guild.server_name || "—"}</td>
+                        <td data-label={t.admin.guildsSlug} className="mono">{guild.slug}</td>
+                        <td data-label={t.admin.guildsMasterId} className="mono">{guild.master_discord_user_id}</td>
+                        <td data-label={t.admin.guildsCreated} className="mono">
+                          {d(guild.created_at.slice(0, 10))}
+                        </td>
+                        <td className="actions">
+                          <button
+                            className="small-button button-danger"
+                            type="button"
+                            disabled={busy}
+                            aria-label={`${t.admin.guildsRemove}: ${guild.name}`}
+                            onClick={() => void removeGuild(guild)}
+                          >
+                            <TrashIcon className="icon icon-sm" />
+                            {t.admin.guildsRemove}
+                          </button>
+                        </td>
+                      </tr>
                     );
                   })}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
+                </tbody>
+              </table>
+            </div>
+
+            <fieldset disabled={busy}>
+              <legend>{t.admin.guildsAdd}</legend>
+              <div className="guild-form">
+                <div className="field">
+                  <label htmlFor={`${ids}-gname`}>{t.admin.guildsName}</label>
+                  <input
+                    id={`${ids}-gname`}
+                    value={guildName}
+                    onChange={(e) => {
+                      const next = e.target.value;
+                      setGuildName(next);
+                      if (!slugTouched) setGuildSlug(suggestGuildSlug(next));
+                    }}
+                  />
+                </div>
+                <div className="field">
+                  <label htmlFor={`${ids}-gslug`}>{t.admin.guildsSlug}</label>
+                  <input
+                    id={`${ids}-gslug`}
+                    value={guildSlug}
+                    className="mono"
+                    onChange={(e) => {
+                      setSlugTouched(true);
+                      setGuildSlug(e.target.value.toLowerCase());
+                    }}
+                  />
+                </div>
+                <div className="field">
+                  <label htmlFor={`${ids}-gserver`}>{t.admin.guildsServer}</label>
+                  <input
+                    id={`${ids}-gserver`}
+                    value={guildServer}
+                    maxLength={80}
+                    placeholder="S9 - Garden"
+                    onChange={(e) => setGuildServer(e.target.value)}
+                  />
+                </div>
+                <div className="field">
+                  <label htmlFor={`${ids}-gmaster`}>{t.admin.guildsMasterId}</label>
+                  <input
+                    id={`${ids}-gmaster`}
+                    value={guildMasterId}
+                    inputMode="numeric"
+                    className="mono"
+                    placeholder="1534890988588498944"
+                    onChange={(e) => setGuildMasterId(e.target.value)}
+                  />
+                </div>
+                <div className="field guild-form-desc">
+                  <label htmlFor={`${ids}-gdesc`}>{t.admin.guildsDescription}</label>
+                  <input
+                    id={`${ids}-gdesc`}
+                    value={guildDescription}
+                    maxLength={500}
+                    onChange={(e) => setGuildDescription(e.target.value)}
+                  />
+                </div>
+                <div className="field guild-form-icon">
+                  <label htmlFor={`${ids}-gicon`}>{t.admin.guildsIcon}</label>
+                  <input
+                    id={`${ids}-gicon`}
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp"
+                    onChange={(e) => setGuildIcon(e.target.files?.[0] ?? null)}
+                  />
+                </div>
+                <button className="button button-primary" type="button" onClick={() => void addGuild()}>
+                  <PlusIcon className="icon" />
+                  {t.admin.guildsAdd}
+                </button>
+              </div>
+              <p className="assumption">{t.admin.guildsSlugNote}</p>
+              <p className="assumption">{t.admin.guildsServerNote}</p>
+              <p className="assumption">{t.admin.guildsIconNote}</p>
+              <p className="assumption">{t.admin.guildsMasterIdNote}</p>
+            </fieldset>
+          </section>
+        )}
+
+        {tab === "roles" && (
+          <section className="panel">
+            <h2>{t.admin.mappingTitle}</h2>
+            <p>{t.admin.mappingLede}</p>
+
+            <div className="table-scroll">
+              <table className="data-table">
+                <thead>
+                  <tr>
+                    <th>{t.admin.mappingRoleName}</th>
+                    <th>{t.admin.mappingRoleId}</th>
+                    <th>{t.admin.mappingSiteRole}</th>
+                    <th />
+                  </tr>
+                </thead>
+                <tbody>
+                  {mappings.length === 0 && (
+                    <tr><td colSpan={4}>{t.admin.mappingEmpty}</td></tr>
+                  )}
+                  {mappings.map((entry) => (
+                    <tr key={entry.id}>
+                      <td data-label={t.admin.mappingRoleName}>{entry.discord_role_name}</td>
+                      <td data-label={t.admin.mappingRoleId} className="mono">{entry.discord_role_id}</td>
+                      <td data-label={t.admin.mappingSiteRole}>
+                        <span className={`role-badge role-${entry.role}`}>{entry.role}</span>
+                      </td>
+                      <td className="actions">
+                        <button
+                          className="small-button button-danger"
+                          type="button"
+                          disabled={busy}
+                          aria-label={`${t.admin.mappingRemove}: ${entry.discord_role_name}`}
+                          onClick={() => void remove(entry.id)}
+                        >
+                          <TrashIcon className="icon icon-sm" />
+                          {t.admin.mappingRemove}
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <fieldset disabled={busy}>
+              <legend>{t.admin.mappingAdd}</legend>
+              <div className="mapping-form">
+                <div className="field">
+                  <label htmlFor={`${ids}-name`}>{t.admin.mappingRoleName}</label>
+                  <input id={`${ids}-name`} value={name} placeholder="Guide Team" onChange={(e) => setName(e.target.value)} />
+                </div>
+                <div className="field">
+                  <label htmlFor={`${ids}-id`}>{t.admin.mappingRoleId}</label>
+                  <input id={`${ids}-id`} value={discordId} inputMode="numeric" placeholder="1534890988588498944" onChange={(e) => setDiscordId(e.target.value)} />
+                </div>
+                <div className="field">
+                  <label htmlFor={`${ids}-role`}>{t.admin.mappingSiteRole}</label>
+                  <select id={`${ids}-role`} value={role} onChange={(e) => { if (isRole(e.target.value)) setRole(e.target.value); }}>
+                    {ROLES.map((option) => <option key={option} value={option}>{option}</option>)}
+                  </select>
+                </div>
+                <button className="button button-primary" type="button" onClick={() => void add()}>
+                  <PlusIcon className="icon" />
+                  {t.admin.mappingAdd}
+                </button>
+              </div>
+              <p className="assumption">{t.admin.mappingIdNote}</p>
+            </fieldset>
+          </section>
+        )}
+
+        {tab === "members" && (
+          <section className="panel">
+            <h2>{t.admin.teamTitle}</h2>
+            <p>{t.admin.teamLede}</p>
+            <div className="table-scroll">
+              <table className="data-table">
+                <thead>
+                  <tr>
+                    <th>{t.admin.teamDiscord}</th>
+                    <th>{t.admin.teamRole}</th>
+                    <th>{t.admin.teamLastSeen}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {members.length === 0 && <tr><td colSpan={3}>{t.common.empty}</td></tr>}
+                  {members.map((member) => (
+                    <tr key={member.user_id}>
+                      <td data-label={t.admin.teamDiscord} className="mono">{member.discord_user_id}</td>
+                      <td data-label={t.admin.teamRole}>
+                        {member.role
+                          ? <span className={`role-badge role-${member.role}`}>{member.role}</span>
+                          : <span className="muted">—</span>}
+                      </td>
+                      <td data-label={t.admin.teamLastSeen} className="mono">
+                        {member.checked_at ? d(member.checked_at.slice(0, 10)) : t.admin.teamNever}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="notice notice-info" style={{ marginTop: 14 }}>
+              <InfoIcon className="icon" />
+              <div><p>{t.admin.roleRefreshNote}</p></div>
+            </div>
+          </section>
+        )}
+
+        {tab === "permissions" && (
+          <section className="panel">
+            <h2>{t.admin.permissionsTitle}</h2>
+            <p>{t.admin.permissionsLede}</p>
+            <div className="table-scroll">
+              <table className="data-table matrix">
+                <thead>
+                  <tr>
+                    <th>{t.admin.permissionColumn}</th>
+                    {ROLES.map((entry) => <th key={entry}>{entry}</th>)}
+                  </tr>
+                </thead>
+                <tbody>
+                  {PERMISSIONS.map((permission) => (
+                    <tr key={permission}>
+                      <td data-label={t.admin.permissionColumn} className="mono">{permission}</td>
+                      {ROLES.map((entry) => {
+                        const granted = ROLE_PERMISSIONS[entry].includes(permission);
+                        return (
+                          <td key={entry} data-label={entry} className={granted ? "yes" : "no"}>
+                            {granted ? "✓" : "—"}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        )}
+      </div>
     </>
   );
 }

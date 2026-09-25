@@ -26,13 +26,21 @@ trusted server-side boundary:
 
 ### Premium
 
-Premium is a 30-day entitlement in `premium_entitlements`, not a PayPal
-subscription webhook. Members pay via the PayPal NCP link on `/premium/`,
+Premium is an entitlement in `premium_entitlements`, not a site role and not a
+PayPal subscription webhook. Members pay via the PayPal NCP link on `/premium/`,
 submit a claim with their transaction id (`premium_claims`), and an admin
 approves the claim to extend `expires_at` by 30 days. Active Premium unlocks
 tools marked `premium: true` in `lib/navigation.ts` and allows one
 `guild_create_requests` row (pending or approved). Rejected guild requests
 free the slot.
+
+Admins can also grant Lifetime Premium from the Premium tab on `/admin/`. That
+writes the same table with `source: 'manual'`, `note: 'lifetime'`, and
+`expires_at` set to `2099-01-01` (see `lifetimePremiumExpiry` in
+`lib/content/premium.ts`). No schema flag is required: `isPremiumActive` and
+RLS `has_active_premium` already treat any active row with a future expiry as
+Premium. The member sees Premium after the next session reload
+(`refreshSession` / page refresh); a full re-login is not required.
 
 Site roles and UI permissions live in `lib/auth/roles.ts`. The Edge Function
 keeps the same rank table. The browser uses the stored role to show or hide
