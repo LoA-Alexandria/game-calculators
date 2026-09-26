@@ -1,90 +1,37 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { HEROES } from "../lib/content/heroes.ts";
-import { LAYOUT_DATA } from "../lib/content/hero-layouts.ts";
-import { COLLECTION_ITEMS } from "../lib/content/collection.ts";
-import { planHeroTeams, productionValue, resolveLayoutHero, LAYOUT_COLLECTION } from "../lib/calculators/hero-team.ts";
-
-const base = { heroes: [], items: [], collection: [], size: 5, mode: "combat", building: "Coal Plant" };
-const combat = (patch) => planHeroTeams({ ...base, ...patch });
-const profile = (rows, id) => rows.find((row) => row.id === id);
-test("all modeled guide hero names and Collection aliases resolve", () => {
-  for (const build of LAYOUT_DATA.builds) {
-    for (const pick of [...build.key, ...build.important, ...build.other]) assert.ok(resolveLayoutHero(pick.hero), pick.hero);
-    for (const pick of build.collection) {
-      assert.ok(LAYOUT_COLLECTION[pick.hero]?.length, pick.hero);
-      for (const id of LAYOUT_COLLECTION[pick.hero]) assert.ok(COLLECTION_ITEMS.some((item) => item.id === id));
-    }
-  }
-  for (const role of LAYOUT_DATA.utility) for (const group of role.groups) for (const pick of group.picks) assert.ok(resolveLayoutHero(pick.hero), pick.hero);
+import { productionValue, simulateProduction } from "../lib/calculators/hero-team.ts";
+const hero = (id, patch = {}) => ({ id, productionLevel: 1, stars: 0, ...patch });
+test("global building allocation reserves a universal hero for the unmatched building", () => {
+  const result = simulateProduction([hero("hermes"), hero("heracles")], [{ building: "Coal Plant", baseRate: 100 }, { building: "Farm", baseRate: 200 }], 2);
+  assert.deepEqual(result.assignments.map((slot) => slot.hero), ["heracles", "hermes"]);
+  assert.equal(result.total, 840);
+  assert.equal(result.baseline, 600);
+  assert.deepEqual(result.timeline.map((row) => row.total), [0, 420, 840]);
 });
-test("empty inventory cannot earn a team or Collection score", () => {
-  for (const result of combat({ collection: ["holy-hand-grenade"] })) {
-    assert.equal(result.members.length, 0);
-    assert.equal(result.score, 0);
-  }
+test("production gates and missing source text do not invent bonuses", () => {
+  const slots = [{ building: "Coal Plant", baseRate: 100 }];
+  assert.equal(simulateProduction([hero("heracles", { productionLevel: 5, stars: 5 })], slots, 1).rate, 100);
+  assert.equal(simulateProduction([hero("heracles", { productionLevel: 5, stars: 6 })], slots, 1).rate, 156);
+  assert.equal(productionValue(HEROES.find((entry) => entry.id === "billy-the-kid")), null);
 });
-test("invalid team sizes, progression and buildings are rejected", () => {
-  for (const size of [0, -1, 26, 1.5, NaN, Infinity]) assert.throws(() => combat({ size }), RangeError);
-  for (const patch of [{ level: 0 }, { stars: -1 }, { stars: 1.5 }, { productionLevel: 999 }]) assert.throws(() => combat({ heroes: [{ id: "achilles", ...patch }] }), RangeError);
-  assert.throws(() => combat({ mode: "production", building: "Unknown" }), RangeError);
+test("zero time and empty inventory preserve base output with no invented assignments", () => {
+  const slots = [{ building: "Farm", baseRate: 100 }];
+  assert.equal(simulateProduction([], slots, 0).total, 0);
+  const result = simulateProduction([], slots, 1.5);
+  assert.equal(result.total, 150);
+  assert.equal(result.assignments[0].hero, null);
+  assert.deepEqual(result.timeline.map((row) => row.hour), [0, 1, 1.5]);
 });
-test("team size boundaries and duplicates never create unowned heroes", () => {
-  const heroes = HEROES.map((hero) => ({ id: hero.id }));
-  for (const size of [1, 25]) for (const result of combat({ size, heroes: [...heroes, heroes[0], { id: "unknown" }] })) {
-    assert.ok(result.members.length <= size);
-    assert.equal(new Set(result.members.map((member) => member.id)).size, result.members.length);
-    assert.ok(result.members.every((member) => heroes.some((hero) => hero.id === member.id)));
-  }
+test("one hero cannot staff two slots and input order does not change the optimum", () => {
+  const slots = [{ building: "Farm", baseRate: 100 }, { building: "Coal Plant", baseRate: 100 }];
+  assert.equal(simulateProduction([hero("hermes")], slots, 1).assignments.filter((slot) => slot.hero).length, 1);
+  const pool = [hero("hermes"), hero("heracles")];
+  assert.deepEqual(simulateProduction(pool, slots, 1), simulateProduction([...pool].reverse(), slots, 1));
 });
-test("exclusive item requirements affect Billy only when owned or equipped", () => {
-  const heroes = [{ id: "billy-the-kid" }];
-  assert.equal(profile(combat({ heroes }), "pursuit").members.length, 0);
-  for (const patch of [{ items: ["sin-and-redemption"] }, { collection: ["sin-and-redemption"] }]) {
-    const result = profile(combat({ heroes, ...patch }), "pursuit");
-    assert.equal(result.members[0].zone, "key");
-    assert.equal(result.score, 12);
-  }
-  assert.equal(profile(combat({ heroes, items: ["divine-greaves"] }), "pursuit").score, 0);
-});
-test("unknown conditions are not assumed and duplicate Collections count once", () => {
-  const heroes = [{ id: "joan-of-arc" }, { id: "achilles" }];
-  const result = profile(combat({ heroes, collection: ["holy-hand-grenade", "holy-hand-grenade"] }), "crit");
-  assert.deepEqual(result.members.map((member) => member.id), ["achilles"]);
-  assert.equal(result.score, 15);
-  assert.ok(result.missing.includes("Joan of Arc"));
-});
-test("hero level and stars do not invent stats or change guide ranking", () => {
-  assert.deepEqual(combat({ heroes: [{ id: "achilles" }] }), combat({ heroes: [{ id: "achilles", level: 999, stars: 5 }] }));
-});
-test("production matches target or universal buildings; unknown values remain unknown", () => {
-  const heroes = ["heracles", "hermes", "achilles", "billy-the-kid"].map((id) => ({ id }));
-  const [result] = combat({ heroes, mode: "production" });
-  assert.deepEqual(result.members.map((member) => member.id), ["heracles", "hermes"]);
-  assert.ok(result.members.every((member) => member.production === 40));
-  assert.deepEqual(result.unmodeled, ["billy-the-kid"]);
-  assert.equal(result.score, 0);
-  assert.equal(productionValue(HEROES.find((hero) => hero.id === "heracles"), 999), null);
-});
-test("production ability levels are separate from hero level and do not sum", () => {
-  const hero = HEROES.find((hero) => hero.id === "heracles");
-  const level = hero.production.levels.length;
-  const value = productionValue(hero, level);
-  assert.ok(value.percent > 40);
-  const [result] = combat({ mode: "production", heroes: [{ id: hero.id, productionLevel: level }, { id: "hermes" }] });
-  assert.equal(result.members[0].production, value.percent);
-  assert.equal(result.score, 0);
-});
-test("input order does not affect tie breaking and input remains unchanged", () => {
-  const heroes = HEROES.map((hero) => ({ id: hero.id }));
-  const snapshot = structuredClone(heroes);
-  assert.deepEqual(combat({ heroes }), combat({ heroes: [...heroes].reverse() }));
-  assert.deepEqual(heroes, snapshot);
-});
-test("explicit production star gates respect below, exact and unknown boundaries", () => {
-  const run = (stars) => combat({ mode: "production", heroes: [{ id: "heracles", productionLevel: 5, stars }] })[0];
-  assert.equal(run(5).members.length, 0);
-  assert.equal(run(6).members[0].production, 56);
-  assert.equal(run(undefined).members[0].requiredStars, 6);
-  assert.equal(run(6).members[0].requiredStars, undefined);
+test("production rejects invalid numbers, duplicate heroes and unknown buildings", () => {
+  for (const hours of [-1, 169, NaN]) assert.throws(() => simulateProduction([], [{ building: "Farm", baseRate: 100 }], hours), RangeError);
+  assert.throws(() => simulateProduction([], [{ building: "unknown", baseRate: 100 }], 1), RangeError);
+  assert.throws(() => simulateProduction([hero("hermes"), hero("hermes")], [{ building: "Farm", baseRate: 100 }], 1), RangeError);
 });

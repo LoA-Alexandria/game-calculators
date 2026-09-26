@@ -1,30 +1,4 @@
-import { HEROES, heroNamed, type Hero } from "../content/heroes.ts";
-import { LAYOUT_DATA, type LayoutPick } from "../content/hero-layouts.ts";
-import { COLLECTION_ITEMS, exclusiveCollectionForHero } from "../content/collection.ts";
-
-/** Planning metadata only: no invented star unlocks or stat scaling. */
-export type OwnedHero = { id: string; level?: number; stars?: number; productionLevel?: number };
-export type TeamInput = {
-  heroes: OwnedHero[];
-  items: string[];
-  collection: string[];
-  size: number;
-  mode: "combat" | "production";
-  building: string;
-};
-export type Member = { id: string; points: number; zone?: string; roles: string[]; conditions: string[]; production?: number; requiredStars?: number };
-export type TeamResult = { id: string; members: Member[]; score: number; collection: string[]; missing: string[]; unmodeled: string[] };
-
-// Guide aliases, deliberately explicit rather than fuzzy text matching.
-export const LAYOUT_COLLECTION: Readonly<Record<string, readonly string[]>> = {
-  Grenade: ["holy-hand-grenade"], Dagger: ["brutus-dagger"], Wings: ["wings-of-icarus"],
-  "David/Adam": ["david", "the-creation-of-adam"], Replica: ["notre-dame-de-paris-replica"],
-  "Noah’s Ark": ["model-of-noahs-ark"],
-};
-export function resolveLayoutHero(name: string): Hero | undefined {
-  const aliases: Record<string, string> = { Gawain: "garwain", "Sun-Sin": "yi-sun-sin", Drake: "francis-drake", Andersen: "hans-christian-andersen" };
-  return HEROES.find((hero) => hero.id === aliases[name]) ?? heroNamed(name);
-}
+import { HEROES, type Hero } from "../content/heroes.ts";
 
 export function productionValue(hero: Hero, level = 1): { building: string; percent: number; requiredStars?: number } | null {
   if (!Number.isInteger(level) || level < 1) return null;
@@ -36,69 +10,49 @@ export const PRODUCTION_BUILDINGS = [...new Set(HEROES.flatMap((hero) => {
   const value = productionValue(hero);
   return value && value.building !== "*" ? [value.building] : [];
 }))].sort();
+export type Producer = { id: string; stars: number; productionLevel: number };
+export type ProductionSlot = { building: string; baseRate: number };
 
-function conditions(pick: LayoutPick, hero: Hero, items: Set<string>): string[] {
-  if (!pick.note) return [];
-  if (pick.note === "withItem" || pick.note === "item") {
-    const item = exclusiveCollectionForHero(hero.id);
-    return item && items.has(item.id) ? [] : [pick.note];
-  }
-  // Rarity, age and Nidhogg are not inferred from unknown player progression.
-  return [pick.note];
-}
-
-/** Exact top-N for each additive guide profile; no combat outcome prediction. */
-export function planHeroTeams(input: TeamInput): TeamResult[] {
-  if (!Number.isInteger(input.size) || input.size < 1 || input.size > 25) throw new RangeError("size");
-  if (input.mode !== "combat" && input.mode !== "production") throw new RangeError("mode");
-  if (input.mode === "production" && !PRODUCTION_BUILDINGS.includes(input.building)) throw new RangeError("building");
-  const byId = new Map(HEROES.map((hero) => [hero.id, hero]));
-  const owned = [...new Map(input.heroes.map((hero) => [hero.id, hero])).values()].filter((hero) => byId.has(hero.id)).sort((a, b) => a.id.localeCompare(b.id, "en"));
-  for (const hero of owned) {
-    if (hero.level !== undefined && (!Number.isInteger(hero.level) || hero.level < 1)) throw new RangeError("level");
-    if (hero.stars !== undefined && (!Number.isInteger(hero.stars) || hero.stars < 0)) throw new RangeError("stars");
-    if (hero.productionLevel !== undefined && (!Number.isInteger(hero.productionLevel) || hero.productionLevel < 1 || hero.productionLevel > (byId.get(hero.id)?.production?.levels.length ?? 0))) throw new RangeError("productionLevel");
-  }
-  const knownItems = new Set(COLLECTION_ITEMS.map((item) => item.id));
-  const items = new Set([...input.items, ...input.collection].filter((id) => knownItems.has(id)));
-  const selected = [...new Set(input.collection)].filter((id) => knownItems.has(id));
-  const rank = (members: Member[]) => members.sort((a, b) => b.points - a.points || a.id.localeCompare(b.id, "en")).slice(0, input.size);
-  if (input.mode === "production") {
-    const members: Member[] = [];
-    const unmodeled: string[] = [];
-    for (const own of owned) {
-      const value = productionValue(byId.get(own.id)!, own.productionLevel ?? 1);
-      if (!value) { unmodeled.push(own.id); continue; }
-      if (value.building !== "*" && value.building !== input.building) continue;
-      if (value.requiredStars !== undefined && own.stars !== undefined && own.stars < value.requiredStars) { unmodeled.push(own.id); continue; }
-      members.push({ id: own.id, points: value.percent, production: value.percent, roles: [], conditions: [], requiredStars: own.stars === undefined ? value.requiredStars : undefined });
-    }
-    // Individual bonuses are comparable; their sum is NOT a stacking formula.
-    return [{ id: "production", members: rank(members), score: 0, collection: [], missing: [], unmodeled }];
-  }
-  return LAYOUT_DATA.builds.map((build): TeamResult => {
-    const members: Member[] = owned.map((own) => {
-      const hero = byId.get(own.id)!;
-      let points = 0;
-      let zone: string | undefined;
-      const pending: string[] = [];
-      for (const [name, weight] of [["key", 12], ["important", 6], ["other", 2]] as const) {
-        const pick = build[name].find((entry) => resolveLayoutHero(entry.hero)?.id === hero.id);
-        if (pick) {
-          const needs = conditions(pick, hero, items);
-          pending.push(...needs);
-          if (!needs.length) { points = weight; zone = name; }
-          break;
-        }
+/** Maximum-weight one-to-one assignment; dummy columns leave a building unstaffed. */
+export function simulateProduction(heroes: Producer[], slots: ProductionSlot[], hours: number) {
+  if (!slots.length || slots.length > 25 || !Number.isFinite(hours) || hours < 0 || hours > 168 || new Set(heroes.map((hero) => hero.id)).size !== heroes.length) throw new RangeError("production");
+  if (slots.some((slot) => !PRODUCTION_BUILDINGS.includes(slot.building) || !Number.isFinite(slot.baseRate) || slot.baseRate < 0 || slot.baseRate > 1e12)) throw new RangeError("production");
+  const pool = [...heroes].sort((a, b) => a.id.localeCompare(b.id, "en"));
+  const values = pool.map((own) => {
+    const hero = HEROES.find((entry) => entry.id === own.id);
+    if (!hero || !Number.isInteger(own.stars) || own.stars < 0 || !Number.isInteger(own.productionLevel) || own.productionLevel < 1 || own.productionLevel > (hero.production?.levels.length ?? 0)) throw new RangeError("production");
+    const value = productionValue(hero, own.productionLevel);
+    return value && (value.requiredStars ?? 0) <= own.stars ? value : null;
+  });
+  const n = slots.length, m = pool.length + n;
+  const gain = slots.map((slot) => Array.from({ length: m }, (_, j) => j >= pool.length ? 0 : values[j] && (values[j]!.building === "*" || values[j]!.building === slot.building) ? slot.baseRate * values[j]!.percent / 100 : -1e15));
+  const u = Array(n + 1).fill(0), v = Array(m + 1).fill(0), match = Array(m + 1).fill(0), way = Array(m + 1).fill(0);
+  for (let i = 1; i <= n; i++) {
+    match[0] = i;
+    let j0 = 0;
+    const min = Array(m + 1).fill(Infinity), used = Array(m + 1).fill(false);
+    do {
+      used[j0] = true;
+      const i0 = match[j0];
+      let delta = Infinity, j1 = 0;
+      for (let j = 1; j <= m; j++) if (!used[j]) {
+        const current = -gain[i0 - 1][j - 1] - u[i0] - v[j];
+        if (current < min[j]) { min[j] = current; way[j] = j0; }
+        if (min[j] < delta) { delta = min[j]; j1 = j; }
       }
-      const roles = LAYOUT_DATA.utility.filter((role) => role.groups.some((group) => group.picks.some((pick) => resolveLayoutHero(pick.hero)?.id === hero.id && !conditions(pick, hero, items).length))).map((role) => role.id);
-      const utility = build.id === "dot" ? 3 : build.id === "crit" ? 1 : 2;
-      points += roles.length * utility;
-      return { id: hero.id, points, zone, roles, conditions: pending };
-    });
-    const team = rank(members.filter((member) => member.points > 0));
-    const matches = selected.filter((id) => build.collection.some((pick) => LAYOUT_COLLECTION[pick.hero]?.includes(id)));
-    const missing = build.key.filter((pick) => !team.some((member) => member.id === resolveLayoutHero(pick.hero)?.id && member.zone === "key")).map((pick) => pick.hero);
-    return { id: build.id, members: team, score: team.length ? team.reduce((sum, hero) => sum + hero.points, 0) + matches.length * 3 : 0, collection: matches, missing, unmodeled: members.filter((member) => member.points === 0).map((member) => member.id) };
-  }).sort((a, b) => b.score - a.score || a.id.localeCompare(b.id, "en"));
+      for (let j = 0; j <= m; j++) { if (used[j]) { u[match[j]] += delta; v[j] -= delta; } else min[j] -= delta; }
+      j0 = j1;
+    } while (match[j0] !== 0);
+    do { const j1 = way[j0]; match[j0] = match[j1]; j0 = j1; } while (j0);
+  }
+  const assigned = Array(n).fill(-1);
+  for (let j = 1; j <= m; j++) if (match[j]) assigned[match[j] - 1] = j - 1;
+  const assignments = slots.map((slot, i) => {
+    const j = assigned[i], valid = j >= 0 && j < pool.length && gain[i][j] > 0;
+    return { ...slot, hero: valid ? pool[j].id : null, bonus: valid ? values[j]!.percent : 0, rate: slot.baseRate + (valid ? gain[i][j] : 0) };
+  });
+  const rate = assignments.reduce((sum, slot) => sum + slot.rate, 0);
+  const baseline = slots.reduce((sum, slot) => sum + slot.baseRate, 0);
+  const timeline = Array.from({ length: Math.ceil(hours) + 1 }, (_, i) => ({ hour: Math.min(i, hours), total: Math.min(i, hours) * rate, baseline: Math.min(i, hours) * baseline }));
+  return { assignments, rate, total: hours * rate, baseline: hours * baseline, timeline };
 }

@@ -311,8 +311,8 @@ export const SECTIONS: NavSection[] = [
     items: [
       {
         href: "/simulations/hero-team-planner/",
-        label: (t) => t.heroTeamPlanner.title,
-        description: (t) => t.heroTeamPlanner.intro,
+        label: (t) => t.heroBattle.title,
+        description: (t) => t.heroBattle.intro,
       },
       {
         href: "/simulations/irrigation-planner/",

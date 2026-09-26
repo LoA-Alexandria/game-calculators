@@ -1,4 +1,14 @@
 .planner { display: grid; gap: 24px; min-width: 0; }
+.chart { display: block; width: 100%; max-height: 250px; color: var(--ink-soft); }
+.chart text { fill: currentColor; font-size: 12px; }
+.runbar { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; position: sticky; bottom: 12px; padding: 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); z-index: 2; }
+.metric { font-size: 2.4rem; color: var(--accent); }
+.log { max-height: 440px; overflow: auto; }
+.log table { width: 100%; border-collapse: collapse; }
+.log :is(td,th) { padding: 10px; border-bottom: 1px solid var(--line); text-align: left; }
+.results dl { display: grid; grid-template-columns: 1fr auto; gap: 8px; }
+.results dd { margin: 0; }
+.planner label:has(input:disabled) { opacity: .6; }
 .notice { border-left: 3px solid var(--accent); padding: 4px 20px; background: var(--surface); border-radius: 8px; }
 .notice p { line-height: 1.65; }
 .controls { display: flex; flex-wrap: wrap; gap: 14px; align-items: end; margin-block: 16px; }
