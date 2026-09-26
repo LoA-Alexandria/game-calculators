@@ -52,6 +52,7 @@ export function AccountMenu() {
   }
 
   const actions = [
+    { href: "/account/", label: t.account.title, icon: StarIcon },
     allows("news.write") ? { href: "/news/new/", label: t.nav.newNews, icon: PenIcon } : null,
     allows("guides.draft") ? { href: "/guides/new/", label: t.nav.newGuide, icon: PenIcon } : null,
     allows("roles.assign") ? { href: "/admin/", label: t.nav.admin, icon: ShieldIcon } : null,
@@ -106,7 +107,7 @@ export function AccountMenu() {
               </li>
             );
           })}
-          {(actions.length > 0 || !session.premium) && <li className="menu-sep" role="separator" />}
+          <li className="menu-sep" role="separator" />
           <li>
             <button
               type="button"
