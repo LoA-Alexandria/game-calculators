@@ -1,10 +1,11 @@
 # Irrigation Planner
 
-The Irrigation Planner is a complete, self-contained application that ships with
-the site as a static file instead of being rewritten as React pages.
+The Irrigation Planner is a complete, self-contained application delivered
+through a Premium-gated Supabase Edge Function instead of being rewritten as
+React pages. Its source is kept outside the exported site.
 
 ```text
-public/tools/irrigation-planner/index.html   the application (HTML + CSS + JS)
+supabase/private-assets/irrigation-planner/index.html  the application (HTML + CSS + JS)
 app/simulations/irrigation-planner/page.tsx  the wrapper page that embeds it
 ```
 
@@ -27,7 +28,7 @@ whole, with its origin recorded, and changed only deliberately.
 
 Copied from `irrigation-planner_33.html` (revision 33), which used to sit in
 the repository root and is no longer there — the vendored copy under
-`public/` is now the only one, and it is complete. Only the changes listed
+`supabase/private-assets/` is now the only one, and it is complete. Only the changes listed
 below were made to it; the solver and the layout rules are untouched. The game
 data has grown since (change 4): the research list and the level tables. The
 stored formats only gained fields, so an older saved setup still loads.
@@ -70,11 +71,11 @@ stored formats only gained fields, so an older saved setup still loads.
    already had matched the sheet exactly.
 5. **Theme and scheme bridge** — a small script in `<head>` reads
    `localStorage['popepoch-theme']` and `localStorage['popepoch-scheme']` and
-   applies them as `data-theme` and `data-scheme` on `<html>`. Because the iframe
-   is same-origin, a later change from the site arrives as a `storage` event and
-   the planner follows it live. With no stored theme the planner falls back to
-   `prefers-color-scheme`; with no stored scheme it keeps the default stone
-   palette.
+   applies them as `data-theme` and `data-scheme` on `<html>`. The private
+   iframe is cross-origin, so the wrapper transfers these values using a
+   restricted `postMessage` handshake and refreshes them on planner updates.
+   With no stored theme the planner falls back to `prefers-color-scheme`; with
+   no stored scheme it keeps the default stone palette.
 
 ## Updating the level tables
 
@@ -95,16 +96,20 @@ caps, the maxima and the cost sums all read the table.
 | `?embed=1` | set by the wrapper page only |
 | `irrigation_planner_*`, `irrigation_prod_v1`, `irrigation_tab_v1` | the planner alone |
 
-The wrapper page builds the iframe URL with `asset()` from `lib/site.ts`, because
-Next.js does not apply `basePath` to plain string URLs. If the GitHub Pages base
-path changes, change it in `next.config.ts` only.
+The wrapper page receives a ten-minute Edge Function URL after the user's
+session and Premium status pass server-side checks. The function proxies only
+the signed private asset because Supabase Storage sends HTML as plain text.
+The iframe remains on the Supabase origin and exchanges its known storage
+keys with the site using a source-checked `postMessage` handshake.
 
 ## Updating the planner
 
-1. Replace `public/tools/irrigation-planner/index.html` with the new revision.
+1. Replace `supabase/private-assets/irrigation-planner/index.html` with the new revision.
 2. Re-apply the five changes above.
 3. Record the new revision number in the **Origin** section.
-4. Open `/simulations/irrigation-planner/`, switch the site theme and colour
+4. Upload the private asset as described in
+   [PREMIUM-IRRIGATION-DEPLOYMENT.md](PREMIUM-IRRIGATION-DEPLOYMENT.md).
+5. Open `/simulations/irrigation-planner/`, switch the site theme and colour
    scheme, and check that the heading is not duplicated and the palette follows.
 
 ## Assumptions shown to players
