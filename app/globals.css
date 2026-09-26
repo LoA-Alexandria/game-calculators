@@ -6935,6 +6935,25 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
   letter-spacing: -.02em;
 }
 .route-results h3 { font-size: 1rem; line-height: 1.45; }
+.voyage-sim-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 18px; align-items: start; }
+.voyage-sim-panel { padding: clamp(18px, 3vw, 28px); }
+.voyage-sim-panel h2 { margin: 0 0 18px; font-size: 1.3rem; }
+.voyage-sim-panel h3 { margin: 24px 0 8px; font-size: 1.04rem; }
+.voyage-sim-panel p { color: var(--ink-faint); font-size: .88rem; line-height: 1.55; }
+.voyage-sim-field { display: grid; gap: 6px; margin: 12px 0; font-size: .87rem; font-weight: 550; }
+.voyage-sim-field input, .voyage-sim-field select { width: 100%; min-height: 44px; }
+.voyage-sim-checks, .voyage-sim-four { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 16px; }
+.voyage-sim-checks label { display: flex; align-items: center; gap: 8px; min-height: 40px; font-size: .86rem; }
+.voyage-sim-checks input { flex: none; }
+.voyage-sim-panel details { margin: 12px 0 24px; }
+.voyage-sim-panel summary { cursor: pointer; min-height: 44px; }
+.voyage-sim-routes { padding-left: 1.5rem; }
+.voyage-sim-routes li { padding: 12px 0; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }
+.voyage-sim-routes strong { display: block; margin-bottom: 7px; }
+.voyage-sim-metrics { display: flex; flex-wrap: wrap; gap: 5px 16px; color: var(--ink-faint); font-size: .83rem; }
+.voyage-sim-metrics b { color: var(--ink); font-variant-numeric: tabular-nums; }
+@media (max-width: 850px) { .voyage-sim-layout { grid-template-columns: 1fr; } }
+@media (max-width: 520px) { .voyage-sim-four, .voyage-sim-checks { grid-template-columns: 1fr; } }
 .leg-list { display: grid; margin-top: 4px; }
 .leg-list div {
   display: flex;

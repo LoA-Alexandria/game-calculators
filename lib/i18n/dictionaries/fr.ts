@@ -516,6 +516,11 @@ const fr: Dictionary = {
       description: "Comparer durée, profit et efficacité d’une boucle de deux à six villes.",
       category: "Grand Voyage",
     },
+    voyageSimulator: {
+      name: "Simulation Grand Voyage",
+      description: "Chercher des boucles accessibles avec votre profil navire, cryptides et ports.",
+      category: "Grand Voyage",
+    },
     irrigation: {
       name: "Planificateur d’irrigation",
       description:
@@ -693,6 +698,23 @@ const fr: Dictionary = {
     exampleNote: "{items} objets × {value} points",
   },
   units: { hour: "h", minute: "min" },
+  voyageSimulator: {
+    title: "Simulation Grand Voyage", intro: "Cherchez automatiquement les boucles accessibles et conservez votre navire et vos ports pour les futures données.",
+    profile: "Votre équipement", player: "Niveau du joueur", regions: "Régions accessibles", regionNote: "Les déblocages par niveau sont inconnus. Sélectionnez vous-même les régions.",
+    ship: "Niveaux du navire", sails: "Voiles", nails: "Clous de quille", cabin: "Cabine", figurehead: "Figure de proue",
+    cryptids: "Cryptides", vanguard: "Avant-garde", logistics: "Logistique", leftFlank: "Flanc gauche", rightFlank: "Flanc droit", unknown: "Inconnu / vide",
+    ports: "Niveaux des ports", portNote: "Un niveau par région suffit; corrigez certains ports si besoin. L'effet des niveaux sur le profit est inconnu.",
+    correction: "Corriger certains ports", same: "Comme la région", factor: "Facteur de temps",
+    factorNote: "1 = durée de l'ancien classeur. Si un trajet mesuré prend 25 % de plus, entrez 1,25. Aucune formule navire/cryptide n'est confirmée.",
+    reset: "Réinitialiser", saved: "Enregistré dans ce navigateur", search: "Meilleures boucles", stops: "Nombre maximal de ports", result: "Classement de référence",
+    rate: "Profit de référence/heure", profit: "Profit de référence/boucle", time: "Temps de trajet", empty: "Deux ports au moins doivent être accessibles.",
+    upgrades: "Prochains coûts des ports de la meilleure boucle", bills: "Lettres de change", gate: "Palier régional : augmenter",
+    upgradeNote: "Seuls les coûts sont connus. L'effet des niveaux et les vrais prix manquent : ce n'est pas un conseil de rentabilité.",
+    caveatTitle: "Interprétation du résultat",
+    caveat: "Toutes les boucles accessibles de deux ou trois ports sont parcourues. Les profits viennent de l'ancien classeur avec améliorations maximales, toutes les marchandises et Guildmaster +15. Vos niveaux ne modifient pas encore les profits. Seul le facteur de temps mesuré change la durée. Les escales, stocks, limites d'achat, remises, variations des prix et règles d'auto-route manquent. Le profit/heure est un indice comparatif, pas votre revenu réel.",
+    observed: "Cargaison observée au départ de Shipwreck Cove", observedNote: "36 Glazed Lamps, 1 Beer et 1 Chili. Prix d'achat et de vente relevés ; l'effet de la quantité reste inconnu. Aucun fret de retour n'est inclus.", observedEmpty: "Choisissez North Atlantic Islands et une région avec des prix de vente relevés pour comparer cette cargaison.",
+    shipmentProfit: "Profit de cargaison", shipmentRate: "Profit / heure de navigation",
+  },
   materials: {
     olive: "Rameau d’olivier",
     corolla: "Corolle",
