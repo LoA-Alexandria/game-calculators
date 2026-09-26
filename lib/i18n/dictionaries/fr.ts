@@ -4457,6 +4457,17 @@ const fr: Dictionary = {
       skillRankLabel: "#{rank}",
       foodsHeading: "Nourriture",
       foodGrowth: "+{growth} de croissance",
+      evolutionHeading: "Évolution",
+      stageStep: "Stade {n}",
+      stageAlt: "{cryptide} au stade {stage}",
+      stages: {
+        childhood: "Enfance",
+        youth: "Jeunesse",
+        growth: "Croissance",
+        adult: "Adulte",
+        commander: "Forme de commandant",
+        mythic: "Forme mythique",
+      },
       talentHeading: "Talents Cryptid",
       talentLede:
         "Les améliorations de talent utilisent un matériau d’invocation lié à la Tour de chaque Cryptide. Le même matériau débloque aussi le Cryptide.",
@@ -4566,13 +4577,20 @@ const fr: Dictionary = {
         },
       },
       credit:
-        "Portraits, compétences et icônes de nourriture découpés de captures d’écran (16 septembre 2026). Matériaux de talent : Cerbère / Pique / Cloche, Nidhogg / Arc / Branche, Caladrius / Bouclier / Potion, Sleipnir / Cheval / Herbe.",
+        "Portraits, compétences et icônes de nourriture découpés de captures d’écran (16 septembre 2026) ; les images d’évolution viennent de l’onglet Évoluer (17 septembre 2026). Les noms des formes sont ceux du client allemand ; l’anglais et le français sont le rendu de ce site. Matériaux de talent : Cerbère / Pique / Cloche, Nidhogg / Arc / Branche, Caladrius / Bouclier / Potion, Sleipnir / Cheval / Herbe.",
       sections: [
         {
           heading: "Comment fonctionne la nourriture",
           body: [
             "Chaque Cryptide ne mange que ses propres nourritures. Nourrir augmente la croissance ; les trois nourritures donnent +10, +30 et +100 de croissance par usage.",
             "Les compétences se débloquent et s’améliorent avec la croissance. Les valeurs exactes par niveau sont dans le jeu — ici figurent les descriptions de base des cartes de compétence.",
+          ],
+        },
+        {
+          heading: "Comment fonctionne l’évolution",
+          body: [
+            "Nourrir augmente la croissance, la croissance augmente le niveau, et en chemin la créature change six fois de forme : Enfance, Jeunesse, Croissance, Adulte, Forme de commandant, Forme mythique. L’onglet Évoluer les empile, allume celles déjà atteintes et marque la suivante.",
+            "Le niveau que demande chaque forme n’est pas encore noté ici \— les captures dont ce guide est tiré montrent l’échelle, pas les seuils. Ci-dessous, les six formes elles-mêmes, pour chaque Cryptide.",
           ],
         },
       ],
@@ -6495,6 +6513,9 @@ const fr: Dictionary = {
     foodGrowth: "Croissance",
     addFood: "Ajouter une nourriture",
     removeFood: "Retirer la nourriture",
+    stagesHeading: "Évolution",
+    stagesHint: "Les six formes, dans l’ordre. Les stades sont fixes et nommés dans le guide ; ici, seules les images changent.",
+    stageHint: "La créature seule, sans le cercle magique ni la bannière du nom. Réduite en WebP de 800 px.",
     talentHeading: "Chiffres des talents",
     talentLede: "Les mêmes pour chaque Cryptide.",
     talentUnlock: "Matériau d’invocation pour débloquer",
@@ -6518,6 +6539,7 @@ const fr: Dictionary = {
     problemEmptySkill: "{cryptide} : la compétence {position} n’a pas de nom anglais.",
     problemEmptyFood: "{cryptide} : la nourriture {position} n’a pas de nom anglais.",
     problemBadGrowth: "{cryptide} : la croissance de {row} doit être un nombre entier.",
+    problemPartialLadder: "{cryptide} : il manque {missing} image(s) dans l’échelle d’évolution.",
     problemBadTalent: "Les chiffres des talents doivent être des nombres entiers.",
   },
   goddessEditor: {

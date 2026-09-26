@@ -4457,6 +4457,17 @@ const de: Dictionary = {
       skillRankLabel: "#{rank}",
       foodsHeading: "Futter",
       foodGrowth: "+{growth} Wachstum",
+      evolutionHeading: "Entwicklung",
+      stageStep: "Stufe {n}",
+      stageAlt: "{cryptide} als {stage}",
+      stages: {
+        childhood: "Kindheit",
+        youth: "Jugend",
+        growth: "Wachstum",
+        adult: "Erwachsen",
+        commander: "Kommandantenform",
+        mythic: "Mythische Form",
+      },
       talentHeading: "Cryptid-Talente",
       talentLede:
         "Talent-Upgrades brauchen ein Beschwörungsmaterial vom Tower des Cryptides. Dasselbe Material schaltet den Cryptide auch frei.",
@@ -4566,13 +4577,20 @@ const de: Dictionary = {
         },
       },
       credit:
-        "Porträts, Skills und Futter-Icons aus Spiel-Screenshots (16. September 2026). Talent-Materialien: Kerberos / Speer / Glocke, Nidhöggr / Bogen / Zweig, Caladrius / Schild / Trank, Sleipnir / Pferd / Gras.",
+        "Porträts, Skills und Futter-Icons aus Spiel-Screenshots (16. September 2026); die Entwicklungsbilder aus dem Reiter „Entwickeln“ (17. September 2026). Die Namen der Gestalten sind die des deutschen Clients; Englisch und Französisch sind die Übertragung dieser Seite. Talent-Materialien: Kerberos / Speer / Glocke, Nidhöggr / Bogen / Zweig, Caladrius / Schild / Trank, Sleipnir / Pferd / Gras.",
       sections: [
         {
           heading: "So funktioniert Füttern",
           body: [
             "Jeder Cryptide frisst nur sein eigenes Futter. Füttern erhöht das Wachstum; die drei Futtersorten geben +10, +30 und +100 Wachstum pro Einsatz.",
             "Skills schalten sich frei und verbessern sich mit dem Wachstum. Die genauen Werte je Skillstufe stehen im Spiel — hier stehen die Basisbeschreibungen der Skillkarten.",
+          ],
+        },
+        {
+          heading: "So läuft die Entwicklung",
+          body: [
+            "Füttern hebt das Wachstum, Wachstum hebt die Stufe, und unterwegs ändert das Tier sechsmal die Gestalt: Kindheit, Jugend, Wachstum, Erwachsen, Kommandantenform, Mythische Form. Der Reiter „Entwickeln“ stapelt die sechs, hebt die erreichten hervor und markiert die nächste.",
+            "Welche Stufe eine Gestalt verlangt, steht hier noch nicht \— die Screenshots, auf denen der Guide beruht, zeigen die Leiter, nicht die Schwellen. Unten stehen die sechs Gestalten selbst, für jeden Cryptiden.",
           ],
         },
       ],
@@ -6479,6 +6497,9 @@ const de: Dictionary = {
     foodGrowth: "Wachstum",
     addFood: "Futter hinzufügen",
     removeFood: "Futter entfernen",
+    stagesHeading: "Entwicklung",
+    stagesHint: "Die sechs Gestalten, der Reihe nach. Die Stufen stehen fest und werden im Guide benannt; hier wechseln nur die Bilder.",
+    stageHint: "Nur das Tier, ohne Zauberkreis und Namensbanner. Wird auf 800 px WebP verkleinert.",
     talentHeading: "Talent-Zahlen",
     talentLede: "Für jeden Cryptide gleich.",
     talentUnlock: "Beschwörungsmaterial zum Freischalten",
@@ -6502,6 +6523,7 @@ const de: Dictionary = {
     problemEmptySkill: "{cryptide}: Skill {position} hat keinen englischen Namen.",
     problemEmptyFood: "{cryptide}: Futter {position} hat keinen englischen Namen.",
     problemBadGrowth: "{cryptide}: Das Wachstum von {row} muss eine ganze Zahl sein.",
+    problemPartialLadder: "{cryptide}: In der Entwicklungsleiter fehlen {missing} Bild(er).",
     problemBadTalent: "Die Talent-Zahlen müssen ganze Zahlen sein.",
   },
   goddessEditor: {

@@ -1434,6 +1434,17 @@ const en = {
       skillRankLabel: "#{rank}",
       foodsHeading: "Feed",
       foodGrowth: "+{growth} growth",
+      evolutionHeading: "Evolution",
+      stageStep: "Stage {n}",
+      stageAlt: "{cryptide} at {stage}",
+      stages: {
+        childhood: "Childhood",
+        youth: "Youth",
+        growth: "Growth",
+        adult: "Adult",
+        commander: "Commander Form",
+        mythic: "Mythic Form",
+      },
       talentHeading: "Cryptid talents",
       talentLede:
         "Talent upgrades use a summon material tied to each Cryptide’s Tower. The material also unlocks the Cryptide itself.",
@@ -1543,13 +1554,20 @@ const en = {
         },
       },
       credit:
-        "Portraits, skills, and feed icons cropped from in-game screenshots (16 September 2026). Talent material map: Cerberus / Pike / Bell, Nidhogg / Bow / Branch, Caladrius / Shield / Potion, Sleipnir / Horse / Grass.",
+        "Portraits, skills, and feed icons cut from in-game screenshots (16 September 2026); the evolution art from the Evolve tab (17 September 2026). The stage names are the German client’s; the English and French ones are this site’s rendering. Talent material map: Cerberus / Pike / Bell, Nidhogg / Bow / Branch, Caladrius / Shield / Potion, Sleipnir / Horse / Grass.",
       sections: [
         {
           heading: "How feeding works",
           body: [
             "Each Cryptide eats only its own foods. Feeding raises growth; the three foods give +10, +30, and +100 growth per use.",
             "Skills unlock and improve as the Cryptide grows. Check the in-game preview for the exact values at each skill level — the texts here are the base descriptions from the skill cards.",
+          ],
+        },
+        {
+          heading: "How evolution works",
+          body: [
+            "Feeding raises growth, growth raises the level, and on the way the creature changes shape six times: Childhood, Youth, Growth, Adult, Commander Form, and Mythic Form. The Evolve tab stacks the six, lights the ones already reached, and marks the next.",
+            "Which level each shape asks for is not written down here yet \— the screenshots this guide is built from show the ladder, not the thresholds. What is below is the six shapes themselves, for every Cryptide.",
           ],
         },
       ],
@@ -3269,6 +3287,9 @@ const en = {
     foodGrowth: "Growth",
     addFood: "Add food",
     removeFood: "Remove food",
+    stagesHeading: "Evolution",
+    stagesHint: "The six shapes, in order. The rungs are fixed and named on the guide; only the pictures change here.",
+    stageHint: "The creature on its own, without the magic circle or the name banner. Shrunk to 800 px WebP.",
     talentHeading: "Talent numbers",
     talentLede: "The same for every Cryptide.",
     talentUnlock: "Summon material to unlock",
@@ -3292,6 +3313,7 @@ const en = {
     problemEmptySkill: "{cryptide}: skill {position} has no English name.",
     problemEmptyFood: "{cryptide}: food {position} has no English name.",
     problemBadGrowth: "{cryptide}: the growth of {row} must be a whole number.",
+    problemPartialLadder: "{cryptide}: the evolution ladder is missing {missing} picture(s).",
     problemBadTalent: "The talent numbers must be whole numbers.",
   },
   goddessEditor: {

@@ -12,9 +12,12 @@
 
 import {
   CRYPTIDES_DATA,
+  CRYPTID_STAGES,
   CRYPTID_TOWERS,
   TALENT_MATERIALS,
+  isCryptidStage,
   type CryptidesData,
+  type CryptidStage,
   type CryptideText,
   type CryptideTexts,
   type CryptidTower,
@@ -28,6 +31,12 @@ export type EditorImage = { file?: string; data?: string };
 
 export type EditorSkill = { uid: string; id: string; image: EditorImage | null; name: Translations; body: Translations };
 export type EditorFood = { uid: string; id: string; growth: string; image: EditorImage | null; name: Translations };
+/**
+ * Evolution art. The ladder is the same six rungs for every Cryptide and the
+ * names live in the dictionary, so a rung is a picture slot and nothing else:
+ * the editor always holds all six, in order, empty where there is no art.
+ */
+export type EditorStage = { stage: CryptidStage; image: EditorImage | null };
 export type EditorCryptide = {
   uid: string;
   /** Empty for a Cryptide added in this draft; the export makes one from the English name. */
@@ -39,6 +48,7 @@ export type EditorCryptide = {
   image: EditorImage | null;
   skills: EditorSkill[];
   foods: EditorFood[];
+  stages: EditorStage[];
 };
 export type EditorTalent = { unlockCost: string; dropAmount: string; dropEveryLevels: string };
 export type CryptidesEditorState = { version: 1; nextUid: number; talent: EditorTalent; cryptides: EditorCryptide[] };
@@ -46,6 +56,13 @@ export type CryptidesEditorState = { version: 1; nextUid: number; talent: Editor
 export const CRYPTIDE_RARITIES = ["SSR", "SR", "R"] as const;
 export const CRYPTIDE_PORTRAIT_MAX_EDGE = 480;
 export const CRYPTIDE_ICON_MAX_EDGE = 160;
+/** Evolution art is shown large and stands on its own, so it keeps more pixels. */
+export const CRYPTIDE_STAGE_MAX_EDGE = 800;
+
+/** All six rungs in order, taking the pictures a row already has. */
+function stageSlots(have: (stage: CryptidStage) => EditorImage | null): EditorStage[] {
+  return CRYPTID_STAGES.map((stage) => ({ stage, image: have(stage) }));
+}
 
 /** Every language's `cryptideTexts` as the dictionaries have them now. */
 export function catalogsFromDictionaries(): Record<Locale, CryptideTexts> {
@@ -79,6 +96,10 @@ export function fromCryptidesData(data: CryptidesData, catalogs: Partial<Record<
       image: food.image ? { file: food.image } : null,
       name: words((text) => text?.foods?.[food.id]?.name, row.id),
     })),
+    stages: stageSlots((stage) => {
+      const art = row.stages?.find((entry) => entry.stage === stage);
+      return art?.image ? { file: art.image } : null;
+    }),
   }));
   return {
     version: 1,
@@ -126,6 +147,7 @@ export function addCryptide(state: CryptidesEditorState): { state: CryptidesEdit
     // Every Cryptide in the game has three skills and three foods, so a new one starts with the slots.
     skills: [0, 1, 2].map((index) => ({ uid: blank("s", index), id: "", image: null, name: blankTranslations(), body: blankTranslations() })),
     foods: [0, 1, 2].map((index) => ({ uid: blank("f", index + 3), id: "", growth: String([10, 30, 100][index]), image: null, name: blankTranslations() })),
+    stages: stageSlots(() => null),
   };
   return { state: { ...state, nextUid: state.nextUid + 7, cryptides: [...state.cryptides, cryptide] }, uid };
 }
@@ -154,6 +176,18 @@ export function setCryptideField(
 
 export function setPortrait(state: CryptidesEditorState, uid: string, image: EditorImage | null): CryptidesEditorState {
   return mapCryptide(state, uid, (cryptide) => ({ ...cryptide, image }));
+}
+
+export function setStageImage(
+  state: CryptidesEditorState,
+  uid: string,
+  stage: CryptidStage,
+  image: EditorImage | null,
+): CryptidesEditorState {
+  return mapCryptide(state, uid, (cryptide) => ({
+    ...cryptide,
+    stages: cryptide.stages.map((slot) => (slot.stage === stage ? { ...slot, image } : slot)),
+  }));
 }
 
 export function setTalent(state: CryptidesEditorState, field: keyof EditorTalent, value: string): CryptidesEditorState {
@@ -274,7 +308,8 @@ export type CryptidesExport = { data: CryptidesData; uploads: CryptideUpload[]; 
 /**
  * The JSON, the pictures to add, and the files nothing uses any more. A new
  * picture is named after the Cryptide and its place: `<id>.webp`,
- * `skills/<id>-<n>.webp`, `foods/<id>-<n>.webp`.
+ * `skills/<id>-<n>.webp`, `foods/<id>-<n>.webp`, `evolution/<id>-<n>.webp`,
+ * where the evolution number is the rung of the ladder, not the slot filled.
  */
 export function exportCryptides(state: CryptidesEditorState, published: CryptidesData): CryptidesExport {
   const ids = exportIds(state);
@@ -313,11 +348,25 @@ export function exportCryptides(state: CryptidesEditorState, published: Cryptide
           growth: whole(food.growth) ?? 0,
           image: picture(food.image, `foods/${id}-${index + 1}.webp`, `${name} · ${textIn(food.name, DEFAULT_LOCALE)}`),
         })),
+        stages: CRYPTID_STAGES.map((stage, index) => ({
+          stage,
+          image: picture(
+            cryptide.stages.find((slot) => slot.stage === stage)?.image ?? null,
+            `evolution/${id}-${index + 1}.webp`,
+            `${name} · ${stage}`,
+          ),
+        })).filter((art) => art.image),
       };
     }),
   };
-  const used = new Set(data.cryptides.flatMap((row) => [row.image, ...row.skills.map((s) => s.image), ...row.foods.map((f) => f.image)]));
-  const before = published.cryptides.flatMap((row) => [row.image, ...row.skills.map((s) => s.image), ...row.foods.map((f) => f.image)]);
+  const files = (row: CryptidesData["cryptides"][number]) => [
+    row.image,
+    ...row.skills.map((skill) => skill.image),
+    ...row.foods.map((food) => food.image),
+    ...row.stages.map((art) => art.image),
+  ];
+  const used = new Set(data.cryptides.flatMap(files));
+  const before = published.cryptides.flatMap(files);
   const uploaded = new Set(uploads.map((upload) => upload.file));
   // A file that an upload replaces under the same name is overwritten, not deleted.
   const removedFiles = [...new Set(before.filter((file) => file && !used.has(file) && !uploaded.has(file)))];
@@ -337,6 +386,8 @@ export function serializeCryptidesData(data: CryptidesData): string {
       `        { "id": ${json(skill.id)}, "image": ${json(skill.image)} }${at < row.skills.length - 1 ? "," : ""}`);
     const foods = row.foods.map((food, at) =>
       `        { "id": ${json(food.id)}, "growth": ${food.growth}, "image": ${json(food.image)} }${at < row.foods.length - 1 ? "," : ""}`);
+    const stages = row.stages.map((art, at) =>
+      `        { "stage": ${json(art.stage)}, "image": ${json(art.image)} }${at < row.stages.length - 1 ? "," : ""}`);
     lines.push(
       "    {",
       `      "id": ${json(row.id)},`,
@@ -350,7 +401,8 @@ export function serializeCryptidesData(data: CryptidesData): string {
       "      ],",
       `      "foods": [`,
       ...foods,
-      "      ]",
+      stages.length ? "      ]," : "      ]",
+      ...(stages.length ? [`      "stages": [`, ...stages, "      ]"] : []),
       `    }${index < data.cryptides.length - 1 ? "," : ""}`,
     );
   });
@@ -413,6 +465,7 @@ export type CryptideProblem =
   | { code: "emptySkill"; cryptide: string; position: number }
   | { code: "emptyFood"; cryptide: string; position: number }
   | { code: "badGrowth"; cryptide: string; row: string }
+  | { code: "partialLadder"; cryptide: string; missing: number }
   | { code: "badTalent"; field: keyof EditorTalent };
 
 /** What the export warns about; none of it stops the export. */
@@ -436,6 +489,12 @@ export function findCryptideProblems(state: CryptidesEditorState): CryptideProbl
       if (!food.image) problems.push({ code: "missingIcon", cryptide: label, row: rowName || `#${at + 1}` });
       if (whole(food.growth) === null) problems.push({ code: "badGrowth", cryptide: label, row: rowName || `#${at + 1}` });
     });
+    // A Cryptide with no evolution art at all is simply one nobody has
+    // photographed yet. A half-filled ladder is the suspicious state.
+    const filled = cryptide.stages.filter((slot) => slot.image).length;
+    if (filled > 0 && filled < cryptide.stages.length) {
+      problems.push({ code: "partialLadder", cryptide: label, missing: cryptide.stages.length - filled });
+    }
   });
   for (const cryptide of state.cryptides) {
     const name = cryptide.name[DEFAULT_LOCALE].trim();
@@ -482,6 +541,11 @@ export function parseCryptidesDraft(raw: string | null): CryptidesEditorState | 
       foods: (Array.isArray(row?.foods) ? row.foods : []).map((food) => ({
         uid: text(food?.uid), id: text(food?.id), growth: text(food?.growth), image: image(food?.image), name: words(food?.name),
       })),
+      stages: stageSlots((stage) => {
+        const slots = Array.isArray(row?.stages) ? row.stages : [];
+        const slot = slots.find((entry) => isCryptidStage(text(entry?.stage)) && entry.stage === stage);
+        return image(slot?.image);
+      }),
     }));
     const talent = parsed.talent as Partial<EditorTalent>;
     return {
