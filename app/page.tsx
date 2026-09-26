@@ -1,11 +1,10 @@
 "use client";
 
-import { useState, type CSSProperties } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { PREMIUM_PERIOD_DAYS, PREMIUM_PRICE_EUR } from "../lib/content/premium";
 import { NEWS } from "../lib/content/news";
 import { eventCount, guideCount, toolCount } from "../lib/navigation";
-import { asset } from "../lib/site";
 import { useAuth } from "./components/AuthProvider";
 import { useDocumentTitle, useLocale } from "./components/LocaleProvider";
 import { ChevronIcon } from "./components/Icons";
@@ -62,7 +61,6 @@ function NewsHero() {
       className="hero hero-news"
       aria-roledescription="carousel"
       aria-label={t.home.latestNews}
-      style={{ "--hero-news-image": `url("${asset("/banners/guides-scene.webp")}")` } as CSSProperties}
     >
       <div className="news-slide" aria-live="polite">
         <div className="news-slide-head">

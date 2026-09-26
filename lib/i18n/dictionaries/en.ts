@@ -3734,6 +3734,11 @@ const en = {
     guildDeleteNote: "Deleting frees your Premium slot, so you may register another guild.",
     guildDeleted: "The guild was deleted and your slot is free again.",
   },
+  notFound: {
+    title: "Nothing at this address",
+    lede: "Benben has read the signpost twice. Whatever stood here has moved, or never existed at all. Everything else is still where you left it.",
+    home: "Back to the overview",
+  },
   benben: {
     title: "Benben",
     badge: "Community pet",
