@@ -8147,6 +8147,23 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
   font-size: .76rem;
 }
 
+/* Quick ways to fill or empty the board, beside the colour chips. */
+.siege-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 10px;
+}
+.siege-tools-label { color: var(--ink-faint); font-size: .76rem; }
+.siege-tools-sep {
+  width: 1px;
+  height: 18px;
+  margin: 0 2px;
+  background: var(--line);
+}
+.siege-tools-ask { color: var(--ink-soft); font-size: .78rem; }
+
 .siege-hex-layer {
   position: absolute;
   inset: 0;

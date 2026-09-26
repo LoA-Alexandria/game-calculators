@@ -144,6 +144,13 @@ On the hex map the village chip is only its badge, and the name sits below it
 in a `pointer-events: none` caption: a chip wide enough to read covered several
 hexes and swallowed their taps.
 
+A toolbar over the map hands a half of the board to the colour in hand, empties
+one colour, or wipes the board (that last one asks first). `romeFillTiles`
+decides a half by the middle of the picture and always moves a structure whole,
+by where its own middle falls — half a city in another colour would be a lie
+about who holds it. Each fill is one upsert and each wipe one delete, not a few
+hundred round trips.
+
 Territory pays prestige (`dawn-of-rome-prestige.ts`): open land by the hex, a
 structure once for the whole place. Only the outpost (400/min) and the walled
 city (360/min) have known rates so far; the rest are `null`, which the board

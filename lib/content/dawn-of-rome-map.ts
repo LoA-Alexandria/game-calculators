@@ -227,3 +227,55 @@ export type DawnTone = (typeof DAWN_TONES)[number];
 export function isDawnTone(value: number): value is DawnTone {
   return (DAWN_TONES as readonly number[]).includes(value);
 }
+
+/**
+ * The quick fills on the board's toolbar. A half is decided by the middle of
+ * the picture; a structure always goes whole, by where its own middle falls,
+ * because its hexes are one target and half a city in another colour would be
+ * a lie about who holds it.
+ */
+export type RomeFill = "all" | "west" | "east" | "north" | "south";
+
+const MAP_MID_X = DAWN_OF_ROME_MAP.width / 2;
+const MAP_MID_Y = DAWN_OF_ROME_MAP.height / 2;
+
+function inHalf(fill: RomeFill, x: number, y: number): boolean {
+  if (fill === "all") return true;
+  if (fill === "west") return x < MAP_MID_X;
+  if (fill === "east") return x >= MAP_MID_X;
+  if (fill === "north") return y < MAP_MID_Y;
+  return y >= MAP_MID_Y;
+}
+
+/** Where a structure sits as a whole: the mean of its hex centres. */
+function structureCentre(structure: RomeStructure): { x: number; y: number } {
+  let x = 0;
+  let y = 0;
+  for (const [col, row] of structure.tiles) {
+    const centre = romeHexCenter(col, row);
+    x += centre.x;
+    y += centre.y;
+  }
+  return { x: x / structure.tiles.length, y: y / structure.tiles.length };
+}
+
+/** Every tile a quick fill should paint. */
+export function romeFillTiles(fill: RomeFill): RomeTile[] {
+  const tiles: RomeTile[] = [];
+  const wholeStructures = new Set<number>();
+  for (let i = 0; i < ROME_STRUCTURES.length; i++) {
+    const { x, y } = structureCentre(ROME_STRUCTURES[i]);
+    if (inHalf(fill, x, y)) wholeStructures.add(i);
+  }
+  for (const { col, row } of romeTiles()) {
+    if (!isRomeClickable(col, row)) continue;
+    const index = STRUCTURE_OF.get(tileKey(col, row));
+    if (index !== undefined) {
+      if (wholeStructures.has(index)) tiles.push({ col, row });
+      continue;
+    }
+    const centre = romeHexCenter(col, row);
+    if (inHalf(fill, centre.x, centre.y)) tiles.push({ col, row });
+  }
+  return tiles;
+}

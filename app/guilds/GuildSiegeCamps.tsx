@@ -22,14 +22,16 @@ import {
   DAWN_OF_ROME_BASES,
   DAWN_OF_ROME_MAP,
   DAWN_TONES,
+  romeFillTiles,
   type DawnTone,
+  type RomeFill,
 } from "../../lib/content/dawn-of-rome-map";
 import { guildRosterLabel, type GuildRosterEntry } from "../../lib/content/guilds";
 import { asset } from "../../lib/site";
 import { getSupabaseBrowserClient } from "../../lib/supabase/client";
 import { useLocale } from "../components/LocaleProvider";
 import { CheckIcon, CloseIcon, GuildsIcon, HornIcon, RingIcon, UsersIcon } from "../components/Icons";
-import { GuildRomeTerritory } from "./GuildRomeTerritory";
+import { GuildRomeTerritory, romeHexSource } from "./GuildRomeTerritory";
 import {
   romePrestigeBoard,
   type PaintedHex,
@@ -137,7 +139,56 @@ export function GuildSiegeCamps({
   const [erasing, setErasing] = useState(false);
   // What the territory layer holds, so the prestige can be totalled here.
   const [painted, setPainted] = useState<PaintedHex[]>([]);
+  const [hexToken, setHexToken] = useState(0);
+  const [wipeAsked, setWipeAsked] = useState(false);
   const prestige = useMemo(() => romePrestigeBoard(painted), [painted]);
+
+  /**
+   * The toolbar writes whole halves of the board in one go. Each fill is a
+   * single upsert and each wipe a single delete, rather than a few hundred
+   * round trips.
+   */
+  const hexSource = useMemo(() => romeHexSource(scope), [scope]);
+
+  const fillHexes = async (fill: RomeFill) => {
+    if (!supabase || !plans || busy) return;
+    const tiles = romeFillTiles(fill);
+    setBusy(true);
+    setError("");
+    const stamp = new Date().toISOString();
+    const { error: saveError } = await supabase.from(hexSource.table).upsert(
+      tiles.map((tile) => ({
+        ...hexSource.key,
+        day_index: dayIndex,
+        q: tile.col,
+        r: tile.row,
+        tone,
+        updated_at: stamp,
+      })),
+      { onConflict: hexSource.conflict },
+    );
+    if (saveError) setError(saveError.message);
+    else setHexToken((value) => value + 1);
+    setBusy(false);
+  };
+
+  const wipeHexes = async (only?: DawnTone) => {
+    if (!supabase || !plans || busy) return;
+    setBusy(true);
+    setError("");
+    let query = supabase
+      .from(hexSource.table)
+      .delete()
+      .match({ ...hexSource.key, day_index: dayIndex });
+    if (only !== undefined) query = query.eq("tone", only);
+    const { error: wipeError } = await query;
+    if (wipeError) setError(wipeError.message);
+    else {
+      setWipeAsked(false);
+      setHexToken((value) => value + 1);
+    }
+    setBusy(false);
+  };
 
   const toneLabel = (value: number) =>
     value === 1
@@ -388,6 +439,57 @@ export function GuildSiegeCamps({
         </div>
       ) : null}
 
+      {showHex && plans ? (
+        <div className="siege-tools" role="group" aria-label={t.guilds.hexToolsLabel}>
+          <span className="siege-tools-label">{t.guilds.hexSplit}</span>
+          {(["west", "east", "north", "south", "all"] as const).map((fill) => (
+            <button
+              key={fill}
+              type="button"
+              className="small-button"
+              disabled={busy}
+              onClick={() => void fillHexes(fill)}
+            >
+              {t.guilds.hexFills[fill]}
+            </button>
+          ))}
+          <span className="siege-tools-sep" aria-hidden="true" />
+          <button
+            type="button"
+            className="small-button"
+            disabled={busy}
+            onClick={() => void wipeHexes(tone)}
+          >
+            {tf(t.guilds.hexClearTone, { name: toneLabel(tone) })}
+          </button>
+          {wipeAsked ? (
+            <>
+              <span className="siege-tools-ask">{t.guilds.hexClearAllConfirm}</span>
+              <button
+                type="button"
+                className="small-button button-danger"
+                disabled={busy}
+                onClick={() => void wipeHexes()}
+              >
+                {t.guilds.hexClearAll}
+              </button>
+              <button type="button" className="small-button" disabled={busy} onClick={() => setWipeAsked(false)}>
+                {t.guilds.postCancel}
+              </button>
+            </>
+          ) : (
+            <button
+              type="button"
+              className="small-button button-danger"
+              disabled={busy}
+              onClick={() => setWipeAsked(true)}
+            >
+              {t.guilds.hexClearAll}
+            </button>
+          )}
+        </div>
+      ) : null}
+
       <div
         className="siege-map"
         data-wide={map.wide ? "true" : undefined}
@@ -406,6 +508,7 @@ export function GuildSiegeCamps({
             tone={tone}
             erasing={erasing}
             onPainted={setPainted}
+            reloadToken={hexToken}
           />
         ) : null}
 

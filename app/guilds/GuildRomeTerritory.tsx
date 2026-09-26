@@ -21,6 +21,24 @@ type SiegeScope =
 type HexRow = { q: number; r: number; tone: number };
 
 /**
+ * Which table holds this board's hexes, and the key that finds them. The
+ * toolbar writes whole halves of the board at once and needs the same answer.
+ */
+export function romeHexSource(scope: SiegeScope) {
+  return scope.kind === "alliance"
+    ? {
+        table: "guild_alliance_hexes",
+        key: { alliance_id: scope.allianceId } as Record<string, string>,
+        conflict: "alliance_id,day_index,q,r",
+      }
+    : {
+        table: "guild_event_hexes",
+        key: { guild_id: scope.guildId, event_id: "dawn-of-rome" } as Record<string, string>,
+        conflict: "guild_id,event_id,day_index,q,r",
+      };
+}
+
+/**
  * The territory layer of the Dawn of Rome map. Officers colour clickable tiles:
  * plain hexes one at a time, blue structures as a whole group. Red and anything
  * past the yellow board edge ignore taps. Only painted tiles are stored.
@@ -32,6 +50,7 @@ export function GuildRomeTerritory({
   tone,
   erasing,
   onPainted,
+  reloadToken = 0,
 }: {
   scope: SiegeScope;
   dayIndex: number;
@@ -40,6 +59,8 @@ export function GuildRomeTerritory({
   erasing: boolean;
   /** Every painted hex, so the board above can total the prestige. */
   onPainted?: (rows: HexRow[]) => void;
+  /** Bumped by the toolbar after it writes, to read the board back. */
+  reloadToken?: number;
 }) {
   const { t } = useLocale();
   const supabase = getSupabaseBrowserClient();
@@ -47,18 +68,7 @@ export function GuildRomeTerritory({
   const owner = shared ? scope.allianceId : scope.guildId;
 
   const source = useMemo(
-    () =>
-      shared
-        ? {
-            table: "guild_alliance_hexes",
-            key: { alliance_id: owner } as Record<string, string>,
-            conflict: "alliance_id,day_index,q,r",
-          }
-        : {
-            table: "guild_event_hexes",
-            key: { guild_id: owner, event_id: "dawn-of-rome" } as Record<string, string>,
-            conflict: "guild_id,event_id,day_index,q,r",
-          },
+    () => romeHexSource(shared ? { kind: "alliance", allianceId: owner } : { kind: "guild", guildId: owner }),
     [shared, owner],
   );
 
@@ -86,7 +96,7 @@ export function GuildRomeTerritory({
     return () => {
       gone = true;
     };
-  }, [supabase, source, dayIndex]);
+  }, [supabase, source, dayIndex, reloadToken]);
 
   useEffect(() => {
     onPainted?.(painted);
