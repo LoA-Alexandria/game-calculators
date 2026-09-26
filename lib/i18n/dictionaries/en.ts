@@ -367,7 +367,6 @@ const en = {
       "dawn-of-rome": "Dawn of Rome",
       "crown-of-the-nile": "Crown of the Nile",
     },
-    mapVariantHint: "The same board, the other way round. Your territory moves with it.",
     hexToolsLabel: "Board tools",
     hexSplit: "Hand over",
     hexFills: {

@@ -90,7 +90,7 @@ export const ROME_MAPS: Record<
     height: 975,
     ratio: "1024 / 975",
     originX: 8,
-    originY: 62,
+    originY: 55.5,
     mirrored: true,
   },
 };
