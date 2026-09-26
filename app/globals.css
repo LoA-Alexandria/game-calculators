@@ -5631,6 +5631,10 @@ button.pb-card:focus-visible { outline: none; box-shadow: var(--ring); }
 .pick-note { color: var(--ink-faint); font-size: .7rem; font-weight: 500; }
 .pick-item { border-color: color-mix(in srgb, var(--gold) 55%, var(--line)); background: var(--gold-soft); }
 .pick-item .pick-avatar { background: color-mix(in srgb, var(--gold) 22%, transparent); color: var(--gold); font-size: .58rem; }
+/* A Collection cut-out is a whole object on nothing, not a face: it has to fit
+   inside the badge rather than be cropped to it the way a portrait is. */
+.pick-avatar.is-collection { background: color-mix(in srgb, var(--gold) 18%, var(--surface)); }
+.pick-avatar.is-collection img { object-fit: contain; object-position: center; padding: 2px; }
 .build-tier[data-tier="key"] .pick {
   padding-block: 4px;
   border-color: color-mix(in srgb, var(--build) 50%, var(--line));

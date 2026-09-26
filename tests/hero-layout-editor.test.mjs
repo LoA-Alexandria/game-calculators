@@ -19,6 +19,10 @@ import {
   groupZoneId,
   heroesIn,
   insertHero,
+  zoneChips,
+  isItemChip,
+  chipLabel,
+  chipKey,
   moveBuild,
   moveChip,
   parseLayoutDraft,
@@ -73,6 +77,49 @@ test("heroes from the pool are inserted, found, and removed", () => {
   assert.equal(countLayoutChanges(base, state), 1);
   assert.equal(countLayoutChanges(base, removeChip(state, uid)), 0);
   assert.equal(heroesIn(base).has("Grenade"), false, "Collection items are not heroes");
+});
+
+test("a Collection name typed into a zone becomes that item, by id", () => {
+  const base = published();
+  const zone = buildZoneId("execute", "collection");
+
+  // Typed as it reads in the Collection guide, and as the datalist offers it.
+  const added = insertHero(base, zone, "Holy Hand Grenade").state;
+  const chip = zoneChips(added, zone).at(-1);
+  assert.equal(chip.item, "holy-hand-grenade");
+  assert.equal(chip.hero, "", "an item chip carries no name of its own");
+  assert.equal(chipKey(chip), "holy-hand-grenade");
+  assert.equal(isItemChip(chip), true);
+  assert.equal(chipLabel(chip), "Holy Hand Grenade");
+  assert.equal(heroesIn(added).has("Holy Hand Grenade"), false, "an item is not a hero");
+
+  const picks = toLayout(added).builds.find((build) => build.id === "execute").collection;
+  assert.deepEqual(picks.at(-1), { item: "holy-hand-grenade" });
+
+  // Case and stray spaces should not decide between a hero and an item.
+  const loose = insertHero(base, zone, "  thor’s hammer  ").state;
+  assert.equal(zoneChips(loose, zone).at(-1).item, "thors-hammer");
+
+  // A name the Collection guide does not have stays a hero.
+  const hero = insertHero(base, zone, "Cu Chulainn").state;
+  assert.equal(zoneChips(hero, zone).at(-1).item, undefined);
+  assert.equal(zoneChips(hero, zone).at(-1).hero, "Cu Chulainn");
+});
+
+test("an item that is not in the Collection guide is warned about", () => {
+  const base = published();
+  const zone = buildZoneId("crit", "collection");
+  const broken = {
+    ...base,
+    builds: base.builds.map((build) =>
+      build.id === "crit"
+        ? { ...build, zones: { ...build.zones, collection: [{ uid: "x1", hero: "", item: "ghost-item" }] } }
+        : build,
+    ),
+  };
+  const problems = findLayoutProblems(broken);
+  assert.ok(problems.some((problem) => problem.code === "unknownItem" && problem.item === "ghost-item"), zone);
+  assert.equal(findLayoutProblems(base).some((problem) => problem.code === "unknownItem"), false);
 });
 
 test("a new build gets text in every language and leaves no trace when removed", () => {
@@ -148,6 +195,7 @@ test("stored drafts are validated before use", () => {
   assert.equal(parseLayoutDraft(null), null);
   assert.equal(parseLayoutDraft("nope"), null);
   assert.equal(parseLayoutDraft(JSON.stringify({ ...state, version: 3 })), null);
+  assert.equal(parseLayoutDraft(JSON.stringify({ ...state, version: 1 })), null, "a draft from before item ids is dropped");
   // A draft saved before a language existed takes that language from its dictionary.
   const older = structuredClone(state);
   delete older.texts.de;

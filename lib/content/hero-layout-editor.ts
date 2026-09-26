@@ -11,8 +11,8 @@
 
 import {
   BUILD_ZONES,
-  COLLECTION_ITEMS,
   LAYOUT_DATA,
+  isItemPick,
   LAYOUT_TEXT_MAPS,
   layoutTexts,
   type BuildText,
@@ -21,10 +21,31 @@ import {
   type LayoutPick,
   type LayoutTexts,
 } from "./hero-layouts.ts";
+import { collectionIdNamed, collectionItemById } from "./collection.ts";
 import { longestIncreasing, textKeyFrom } from "./hero-tier-editor.ts";
 import { DEFAULT_LOCALE, LOCALE_CODES, getDictionary, mapLocales, type Locale } from "../i18n/index.ts";
 
-export type Chip = { uid: string; hero: string; note?: string };
+/**
+ * One chip in a zone: a hero by name, or a Collection item by its id in the
+ * Collection guide. An item chip carries no name of its own — the Collection
+ * guide has it, in every language — so `hero` is empty there and `chipKey`
+ * gives whichever of the two identifies the chip.
+ */
+export type Chip = { uid: string; hero: string; item?: string; note?: string };
+
+export function chipKey(chip: Chip): string {
+  return chip.item ?? chip.hero.trim();
+}
+
+export function isItemChip(chip: Chip): boolean {
+  return typeof chip.item === "string" && chip.item.length > 0;
+}
+
+/** What to call a chip in a warning: the hero's name, or the item's English one. */
+export function chipLabel(chip: Chip): string {
+  if (!isItemChip(chip)) return chip.hero.trim();
+  return collectionItemById(chip.item as string)?.name ?? (chip.item as string);
+}
 export type ChipList = { id: string; chips: Chip[] };
 export type BuildState = { id: string; zones: Record<BuildZone, Chip[]>; counters: ChipList[] };
 export type RoleState = { id: string; groups: ChipList[] };
@@ -38,7 +59,12 @@ export type EditableTexts = {
 };
 
 export type LayoutEditorState = {
-  version: 1;
+  /**
+   * 2 since a Collection chip carries an item id instead of a shorthand name.
+   * A draft from version 1 is dropped rather than half-read: its Collection
+   * chips would come back as heroes with names like "Grenade".
+   */
+  version: 2;
   builds: BuildState[];
   utility: RoleState[];
   texts: Record<Locale, EditableTexts>;
@@ -71,7 +97,12 @@ function copyText(text: BuildText): EditableBuildText {
 export function fromLayout(data: LayoutData, texts: Record<Locale, LayoutTexts>): LayoutEditorState {
   let nextId = 1;
   const chips = (picks: readonly LayoutPick[]): Chip[] =>
-    picks.map((pick) => (pick.note ? { uid: `c${nextId++}`, hero: pick.hero, note: pick.note } : { uid: `c${nextId++}`, hero: pick.hero }));
+    picks.map((pick) => {
+      const base: Chip = isItemPick(pick)
+        ? { uid: `c${nextId++}`, hero: "", item: pick.item }
+        : { uid: `c${nextId++}`, hero: pick.hero };
+      return pick.note ? { ...base, note: pick.note } : base;
+    });
   const builds = data.builds.map((build): BuildState => ({
     id: build.id,
     zones: Object.fromEntries(BUILD_ZONES.map((zone) => [zone, chips(build[zone])])) as Record<BuildZone, Chip[]>,
@@ -92,11 +123,14 @@ export function fromLayout(data: LayoutData, texts: Record<Locale, LayoutTexts>)
       groupLabels: { ...source.groupLabels },
     };
   }
-  return { version: 1, builds, utility, texts: copied, nextId };
+  return { version: 2, builds, utility, texts: copied, nextId };
 }
 
 const toPicks = (chips: readonly Chip[]): LayoutPick[] =>
-  chips.map((chip) => (chip.note ? { hero: chip.hero.trim(), note: chip.note } : { hero: chip.hero.trim() }));
+  chips.map((chip) => {
+    const pick: LayoutPick = isItemChip(chip) ? { item: chip.item as string } : { hero: chip.hero.trim() };
+    return chip.note ? { ...pick, note: chip.note } : pick;
+  });
 
 export function toLayout(state: LayoutEditorState): LayoutData {
   return {
@@ -190,13 +224,21 @@ export function moveChip(state: LayoutEditorState, uid: string, toZoneId: string
   });
 }
 
+/**
+ * Adds a chip from what was typed. A name the Collection guide knows becomes
+ * that item, by id; anything else is a hero. Matching happens here, once, so
+ * the file that leaves the editor carries ids rather than names.
+ */
 export function insertHero(state: LayoutEditorState, zoneId: string, hero: string, index?: number): { state: LayoutEditorState; uid: string } {
   const uid = `c${state.nextId}`;
   const target = zoneChips(state, zoneId);
-  if (!target || !hero.trim()) return { state, uid: "" };
+  const typed = hero.trim();
+  if (!target || !typed) return { state, uid: "" };
+  const item = collectionIdNamed(typed);
+  const chip: Chip = item ? { uid, hero: "", item } : { uid, hero: typed };
   const next = editZone(state, zoneId, (chips) => {
     const at = index === undefined ? chips.length : Math.max(0, Math.min(index, chips.length));
-    return [...chips.slice(0, at), { uid, hero: hero.trim() }, ...chips.slice(at)];
+    return [...chips.slice(0, at), chip, ...chips.slice(at)];
   });
   return { state: { ...next, nextId: state.nextId + 1 }, uid };
 }
@@ -349,7 +391,7 @@ export function addNote(state: LayoutEditorState, text: Record<Locale, string>):
 export function heroesIn(state: LayoutEditorState, buildId?: string): Set<string> {
   const names = new Set<string>();
   const add = (chips: readonly Chip[]) => {
-    for (const chip of chips) if (!COLLECTION_ITEMS.has(chip.hero.trim())) names.add(chip.hero.trim());
+    for (const chip of chips) if (!isItemChip(chip)) names.add(chip.hero.trim());
   };
   for (const build of state.builds) {
     if (buildId && build.id !== buildId) continue;
@@ -448,7 +490,7 @@ export function countLayoutChanges(published: LayoutEditorState, draft: LayoutEd
     const seen = new Map<string, number>();
     for (const zoneId of zoneIds(state)) {
       (zoneChips(state, zoneId) as Chip[]).forEach((chip, index) => {
-        const base = `${zoneId.split("|").slice(0, 2).join("|")}|${chip.hero.trim()}`;
+        const base = `${zoneId.split("|").slice(0, 2).join("|")}|${chipKey(chip)}`;
         const count = (seen.get(base) ?? 0) + 1;
         seen.set(base, count);
         map.set(`${base}#${count}`, { zone: zoneId, index, note: chip.note ?? "" });
@@ -498,7 +540,8 @@ export type LayoutProblem =
   | { code: "buildName"; build: string }
   | { code: "emptyHero"; zone: string }
   | { code: "duplicate"; zone: string; hero: string }
-  | { code: "noteText"; hero: string; note: string };
+  | { code: "noteText"; hero: string; note: string }
+  | { code: "unknownItem"; zone: string; item: string };
 
 export function findLayoutProblems(state: LayoutEditorState): LayoutProblem[] {
   const problems: LayoutProblem[] = [];
@@ -508,12 +551,13 @@ export function findLayoutProblems(state: LayoutEditorState): LayoutProblem[] {
   for (const zoneId of zoneIds(state)) {
     const seen = new Set<string>();
     for (const chip of zoneChips(state, zoneId) as Chip[]) {
-      const hero = chip.hero.trim();
-      if (!hero) { problems.push({ code: "emptyHero", zone: zoneId }); continue; }
-      if (seen.has(hero)) problems.push({ code: "duplicate", zone: zoneId, hero });
-      seen.add(hero);
+      const key = chipKey(chip);
+      if (!key) { problems.push({ code: "emptyHero", zone: zoneId }); continue; }
+      if (isItemChip(chip) && !collectionItemById(key)) { problems.push({ code: "unknownItem", zone: zoneId, item: key }); }
+      if (seen.has(key)) problems.push({ code: "duplicate", zone: zoneId, hero: chipLabel(chip) });
+      seen.add(key);
       if (chip.note && LOCALE_CODES.some((language) => !(chip.note as string in state.texts[language].pickNotes))) {
-        problems.push({ code: "noteText", hero, note: chip.note });
+        problems.push({ code: "noteText", hero: chipLabel(chip), note: chip.note });
       }
     }
   }
@@ -529,7 +573,7 @@ export function parseLayoutDraft(raw: string | null): LayoutEditorState | null {
   if (!raw) return null;
   try {
     const value = JSON.parse(raw) as LayoutEditorState;
-    if (value?.version !== 1 || typeof value.nextId !== "number" || !Array.isArray(value.builds) || !Array.isArray(value.utility)) return null;
+    if (value?.version !== 2 || typeof value.nextId !== "number" || !Array.isArray(value.builds) || !Array.isArray(value.utility)) return null;
     for (const build of value.builds) {
       if (typeof build.id !== "string" || !build.zones || !Array.isArray(build.counters)) return null;
       for (const zone of BUILD_ZONES) if (!Array.isArray(build.zones[zone])) return null;

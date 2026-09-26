@@ -21,7 +21,9 @@ import {
 } from "@dnd-kit/core";
 import { SortableContext, rectSortingStrategy, sortableKeyboardCoordinates, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { BUILD_ZONES, COLLECTION_ITEMS, LAYOUT_DATA, layoutTexts, type BuildZone } from "../../lib/content/hero-layouts";
+import { BUILD_ZONES, LAYOUT_DATA, layoutTexts, type BuildZone } from "../../lib/content/hero-layouts";
+import { COLLECTION_ITEMS, collectionItemById, localizedItem, type CollectionTexts } from "../../lib/content/collection";
+import { CollectionAvatar } from "../components/CollectionAvatar";
 import {
   addBuild,
   addBuildListItem,
@@ -93,6 +95,21 @@ const POOL_PREFIX = "pool:";
 const HERO_NAMES_ID = "layout-editor-heroes";
 const ITEM_NAMES_ID = "layout-editor-items";
 
+/** English Collection names, which `insertHero` turns back into ids. */
+const COLLECTION_NAMES = COLLECTION_ITEMS.map((item) => item.name).sort((a, b) => a.localeCompare(b));
+
+/**
+ * What a chip is called on screen: a hero's name as written, or the Collection
+ * piece's name in the language being edited, so the editor reads like the page.
+ */
+function chipName(chip: Chip, language: Locale): string {
+  if (!chip.item) return chip.hero;
+  const item = collectionItemById(chip.item);
+  if (!item) return chip.item;
+  const texts = getDictionary(language).guideEntries.collection.collectionTexts as CollectionTexts;
+  return localizedItem(item, texts).name;
+}
+
 type Ctx = {
   state: LayoutEditorState;
   commit: (next: LayoutEditorState) => void;
@@ -130,7 +147,7 @@ export function HeroLayoutsEditor() {
 
   const [chosenBuild, setChosenBuild] = useState<string | null>(null);
   const [dragState, setDragState] = useState<LayoutEditorState | null>(null);
-  const [dragLabel, setDragLabel] = useState<string | null>(null);
+  const [dragLabel, setDragLabel] = useState<{ name: string; item?: string } | null>(null);
   const [selectedChip, setSelectedChip] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
   const [exportOpen, setExportOpen] = useState(false);
@@ -176,10 +193,11 @@ export function HeroLayoutsEditor() {
     if (isZoneId(key)) return zoneChips(source, key) ? key : null;
     return findChip(source, key)?.zoneId ?? null;
   };
-  const labelOf = (id: UniqueIdentifier) => {
+  const labelOf = (id: UniqueIdentifier): { name: string; item?: string } => {
     const key = String(id);
-    if (key.startsWith(POOL_PREFIX)) return key.slice(POOL_PREFIX.length);
-    return findChip(view, key)?.chip.hero ?? "";
+    if (key.startsWith(POOL_PREFIX)) return { name: key.slice(POOL_PREFIX.length) };
+    const chip = findChip(view, key)?.chip;
+    return chip ? { name: chipName(chip, language), item: chip.item } : { name: "" };
   };
 
   const onDragStart = ({ active: dragged }: DragStartEvent) => {
@@ -226,16 +244,16 @@ export function HeroLayoutsEditor() {
   };
 
   const announcements: Announcements = {
-    onDragStart: ({ active: dragged }) => tf(e.announceStart, { hero: labelOf(dragged.id) }),
+    onDragStart: ({ active: dragged }) => tf(e.announceStart, { hero: labelOf(dragged.id).name }),
     onDragOver: ({ active: dragged, over }) => {
       const zone = over ? zoneOf(over.id, view) : null;
-      return zone ? tf(e.announceOver, { hero: labelOf(dragged.id), zone: zoneLabel(zone) }) : undefined;
+      return zone ? tf(e.announceOver, { hero: labelOf(dragged.id).name, zone: zoneLabel(zone) }) : undefined;
     },
     onDragEnd: ({ active: dragged, over }) => {
       const zone = over ? zoneOf(over.id, view) : null;
-      return zone ? tf(e.announceEnd, { hero: labelOf(dragged.id), zone: zoneLabel(zone) }) : undefined;
+      return zone ? tf(e.announceEnd, { hero: labelOf(dragged.id).name, zone: zoneLabel(zone) }) : undefined;
     },
-    onDragCancel: ({ active: dragged }) => tf(e.announceCancel, { hero: labelOf(dragged.id) }),
+    onDragCancel: ({ active: dragged }) => tf(e.announceCancel, { hero: labelOf(dragged.id).name }),
   };
 
   const reset = () => {
@@ -267,8 +285,13 @@ export function HeroLayoutsEditor() {
         </div>
       </div>
 
-      <datalist id={HERO_NAMES_ID}>{heroNames.map((name) => <option key={name} value={name} />)}</datalist>
-      <datalist id={ITEM_NAMES_ID}>{[...COLLECTION_ITEMS].map((name) => <option key={name} value={name} />)}</datalist>
+      {/* A counter can hold heroes and Collection pieces side by side, so the
+          hero list offers the pieces too; only the placeholder differs. */}
+      <datalist id={HERO_NAMES_ID}>
+        {heroNames.map((name) => <option key={name} value={name} />)}
+        {COLLECTION_NAMES.map((name) => <option key={`item-${name}`} value={name} />)}
+      </datalist>
+      <datalist id={ITEM_NAMES_ID}>{COLLECTION_NAMES.map((name) => <option key={name} value={name} />)}</datalist>
 
       <DndContext
         id={dndId}
@@ -338,9 +361,10 @@ export function HeroLayoutsEditor() {
 
         <DragOverlay>
           {dragLabel ? (
-            <span className={COLLECTION_ITEMS.has(dragLabel) ? "pick pick-item layout-chip is-overlay" : "pick layout-chip is-overlay"}>
+            <span className={dragLabel.item ? "pick pick-item layout-chip is-overlay" : "pick layout-chip is-overlay"}>
               <GripIcon className="icon icon-sm" />
-              <span className="pick-name">{dragLabel}</span>
+              {dragLabel.item ? <CollectionAvatar id={dragLabel.item} /> : null}
+              <span className="pick-name">{dragLabel.name}</span>
             </span>
           ) : null}
         </DragOverlay>
@@ -463,10 +487,10 @@ function AddToZone({ ctx, zoneId, items, label }: { ctx: Ctx; zoneId: string; it
 
 function SortableChip({ ctx, chip }: { ctx: Ctx; chip: Chip }) {
   const { attributes, listeners, setNodeRef, setActivatorNodeRef, transform, transition, isDragging } = useSortable({ id: chip.uid });
-  const item = COLLECTION_ITEMS.has(chip.hero);
+  const item = Boolean(chip.item);
   const note = chip.note ? ctx.state.texts[ctx.language].pickNotes[chip.note] : "";
   const selected = ctx.selectedChip === chip.uid;
-  const name = chip.hero || "—";
+  const name = chipName(chip, ctx.language) || "—";
   return (
     <li
       ref={setNodeRef}
@@ -477,7 +501,7 @@ function SortableChip({ ctx, chip }: { ctx: Ctx; chip: Chip }) {
         <GripIcon className="icon icon-sm" />
       </button>
       <button type="button" className="layout-chip-name" aria-expanded={selected} aria-label={ctx.tf(ctx.e.editChip, { hero: name })} onClick={() => ctx.select(selected ? null : chip.uid)}>
-        {item ? null : <HeroAvatar name={chip.hero} />}
+        {item ? <CollectionAvatar id={chip.item as string} /> : <HeroAvatar name={chip.hero} />}
         <span className="pick-name">{name}</span>
         {note ? <small className="pick-note">{note}</small> : null}
       </button>
@@ -743,6 +767,7 @@ function problemText(ctx: Ctx, problem: LayoutProblem): string {
     case "emptyHero": return ctx.tf(ctx.e.problemEmptyHero, { zone: ctx.zoneLabel(problem.zone) });
     case "duplicate": return ctx.tf(ctx.e.problemDuplicate, { zone: ctx.zoneLabel(problem.zone), hero: problem.hero });
     case "noteText": return ctx.tf(ctx.e.problemNoteText, { hero: problem.hero });
+    case "unknownItem": return ctx.tf(ctx.e.problemUnknownItem, { zone: ctx.zoneLabel(problem.zone), item: problem.item });
   }
 }
 

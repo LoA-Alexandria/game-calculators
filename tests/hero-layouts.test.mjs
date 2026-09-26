@@ -5,7 +5,8 @@ import { DEFAULT_LOCALE, LOCALE_CODES, getDictionary, mapLocales } from "../lib/
 import en from "../lib/i18n/dictionaries/en.ts";
 import {
   BUILD_ZONES,
-  COLLECTION_ITEMS,
+  isItemPick,
+  pickItem,
   FORMATION_COLUMNS,
   FORMATION_SLOTS,
   LAYOUT_DATA,
@@ -66,12 +67,37 @@ test("every key the layout data uses has text in every language, and no text is 
   }
 });
 
-test("every best-collection pick is styled as a Collection item", () => {
+test("every best-collection pick names a Collection item", () => {
   for (const build of LAYOUT_DATA.builds) {
     for (const pick of build.collection) {
-      assert.equal(COLLECTION_ITEMS.has(pick.hero), true, `${pick.hero} in ${build.id}`);
+      assert.equal(isItemPick(pick), true, `${JSON.stringify(pick)} in ${build.id}`);
     }
   }
+});
+
+test("every Collection pick resolves to an item the Collection guide has", () => {
+  const seen = [];
+  const check = (picks, where) => {
+    for (const pick of picks) {
+      if (!isItemPick(pick)) {
+        assert.equal(typeof pick.hero, "string", `${where} has a pick with neither hero nor item`);
+        assert.notEqual(pick.hero.trim(), "", `${where} has an empty hero`);
+        continue;
+      }
+      seen.push(pick.item);
+      const item = pickItem(pick);
+      assert.ok(item, `${pick.item} in ${where} is not a collection id`);
+      assert.ok(item.image, `${pick.item} has no picture`);
+    }
+  };
+  for (const build of LAYOUT_DATA.builds) {
+    for (const zone of BUILD_ZONES) check(build[zone], `${build.id}.${zone}`);
+    for (const counter of build.counters) check(counter.picks, `${build.id}.${counter.id}`);
+  }
+  for (const role of LAYOUT_DATA.utility) {
+    for (const group of role.groups) check(group.picks, `${role.id}.${group.id}`);
+  }
+  assert.ok(seen.length >= 12, "the guide should still be naming Collection pieces");
 });
 
 test("the hero layout and artwork guides share the Layouts category", () => {

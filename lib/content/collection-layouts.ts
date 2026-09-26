@@ -19,7 +19,7 @@
  */
 
 import data from "../data/collection-layouts.json" with { type: "json" };
-import { COLLECTION_ITEMS, collectionImageUrl, localizedItem, type CollectionItem, type CollectionTexts } from "./collection.ts";
+import { collectionImageUrl, collectionItemById, localizedItem, type CollectionTexts } from "./collection.ts";
 
 /** One equip slot per age, in the order the game shows them. */
 export const COLLECTION_AGES = ["iceAge", "stoneAge", "bronzeAge", "classical", "medieval", "renaissance"] as const;
@@ -78,12 +78,6 @@ export type SetupTexts = Record<string, SetupText>;
 export type OptionTexts = Record<string, { note?: string }>;
 
 export const COLLECTION_LAYOUTS_DATA = data as CollectionLayoutsData;
-
-const ITEM_BY_ID = new Map(COLLECTION_ITEMS.map((item) => [item.id, item]));
-
-export function collectionItemById(id: string): CollectionItem | undefined {
-  return ITEM_BY_ID.get(id);
-}
 
 /** Name, picture, and rarity of a slot or option; the picture is null until the Collection guide has it. */
 export function layoutItem(
