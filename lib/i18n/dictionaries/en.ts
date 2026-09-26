@@ -566,7 +566,7 @@ const en = {
     play: "Play",
     baseTicket: "Base ticket price",
     baseVisitors: "Base visitor flow",
-    baseNote: "The two numbers in the play’s preview. They are the same for everyone and never change, so a Magic Lantern shows them for any play; only the muse coin bonus depends on your goddesses. The numbers shown during the run are not the ones the income uses.",
+    baseNote: "The preview’s ticket price and audience are the same for every player and hall. Values recorded from screenshots fill in automatically; enter the preview values yourself for plays still missing. Only the Muse Coin bonus depends on your goddesses. The numbers shown during the run are not the base values.",
     bonus: "Muse coin bonus",
     bonusFromGoddesses: "Your goddesses give {percent} %.",
     bonusAtLeast: "Your goddesses give at least {percent} %.",
@@ -637,7 +637,7 @@ const en = {
       "Art Theater: ticket price again, as its extra upgrade slot weighs ticket income up. Royal Theater 1–7: visitor flow again.",
       "Goddess training does not change Muse Coins; each level adds 5 % productivity to the resource of that aptitude.",
     ],
-    credit: "Formula and test performances by Autumn (Ice, S12), shared on Discord on 20 August 2026. The calculator reproduces her three test performances to the coin. The aptitudes of every play and goddess come from German client screenshots of 22 September 2026. Base values are recorded where her tests show them; more are added as players report them.",
+    credit: "Formula and test performances by Autumn (Ice, S12), shared on Discord on 20 August 2026. The calculator reproduces her three test performances to the coin. Play and goddess aptitudes come from German client screenshots of 22 September 2026. Base preview values also come from player screenshots dated 25–26 September 2026; other plays can be added later.",
     storageNote: "Your numbers and goddesses are saved in this browser only.",
   },
   calculator: {

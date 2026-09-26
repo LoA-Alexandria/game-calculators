@@ -565,7 +565,7 @@ const fr: Dictionary = {
     play: "Pièce",
     baseTicket: "Prix du billet de base",
     baseVisitors: "Affluence de base",
-    baseNote: "Les deux nombres de l’aperçu de la pièce. Ils sont identiques pour tous et ne changent jamais, donc une Magic Lantern les montre pour n’importe quelle pièce ; seul le bonus de pièces des Muses dépend de vos déesses. Ceux affichés pendant la représentation ne sont pas ceux qui comptent pour les recettes.",
+    baseNote: "Le prix du billet et le public de l’aperçu sont identiques pour tous les joueurs et toutes les salles. Les valeurs relevées dans les captures se remplissent automatiquement ; saisissez celles de l’aperçu pour les pièces encore manquantes. Seul le bonus de pièces des Muses dépend de vos déesses. Les nombres affichés pendant la représentation ne sont pas les valeurs de base.",
     bonus: "Bonus de pièces des Muses",
     bonusFromGoddesses: "Vos déesses donnent {percent} %.",
     bonusAtLeast: "Vos déesses donnent au moins {percent} %.",
@@ -636,7 +636,7 @@ const fr: Dictionary = {
       "Art Theater : de nouveau le prix du billet, car son emplacement supplémentaire pèse sur les recettes des billets. Royal Theater 1–7 : de nouveau l’affluence.",
       "L’entraînement des déesses ne change pas les pièces des Muses ; chaque niveau ajoute 5 % de productivité à la ressource de l’aptitude.",
     ],
-    credit: "Formule et représentations de test par Autumn (Ice, S12), partagées sur Discord le 20 août 2026. Le calculateur reproduit ses trois représentations de test à la pièce près. Les aptitudes de toutes les pièces et déesses viennent de captures du client allemand du 22 septembre 2026. Les valeurs de base sont relevées là où ses tests les montrent ; d’autres s’ajoutent au fil des retours des joueurs.",
+    credit: "Formule et représentations de test par Autumn (Ice, S12), partagées sur Discord le 20 août 2026. Le calculateur reproduit ses trois représentations de test à la pièce près. Les aptitudes viennent de captures du client allemand du 22 septembre 2026. Les valeurs de base du billet et du public proviennent aussi de captures de joueurs du 25–26 septembre 2026 ; les autres pièces pourront être ajoutées plus tard.",
     storageNote: "Vos nombres et vos déesses sont enregistrés uniquement dans ce navigateur.",
   },
   calculator: {

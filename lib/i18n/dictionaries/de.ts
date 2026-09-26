@@ -565,7 +565,7 @@ const de: Dictionary = {
     play: "Stück",
     baseTicket: "Grund-Ticketpreis",
     baseVisitors: "Grund-Besucherstrom",
-    baseNote: "Die beiden Zahlen in der Vorschau des Stücks. Sie sind für alle gleich und ändern sich nie, also zeigt eine Magic Lantern sie für jedes Stück; nur der Musenmünzen-Bonus hängt von deinen Göttinnen ab. Die Zahlen während der Aufführung sind nicht die, mit denen die Einnahmen rechnen.",
+    baseNote: "Ticketpreis und Publikum aus der Vorschau sind für alle Spieler und Hallen gleich. Erfasste Werte aus Screenshots werden automatisch eingetragen; fehlende Werte trägst du von der Vorschau selbst ein. Nur der Musenmünzen-Bonus hängt von deinen Göttinnen ab. Die Zahlen während der Aufführung sind keine Grundwerte.",
     bonus: "Musenmünzen-Bonus",
     bonusFromGoddesses: "Deine Göttinnen geben {percent} %.",
     bonusAtLeast: "Deine Göttinnen geben mindestens {percent} %.",
@@ -636,7 +636,7 @@ const de: Dictionary = {
       "Art Theater: wieder Ticketpreis, weil der zusätzliche Upgrade-Platz die Ticket-Einnahmen stärker gewichtet. Royal Theater 1–7: wieder Besucherstrom.",
       "Göttinnen-Training ändert die Musenmünzen nicht; jede Stufe gibt 5 % Produktivität für die Ressource dieser Eignung.",
     ],
-    credit: "Formel und Test-Aufführungen von Autumn (Ice, S12), geteilt auf Discord am 20. August 2026. Der Rechner trifft ihre drei Test-Aufführungen auf die Münze genau. Die Eignungen aller Stücke und Göttinnen stammen aus Screenshots des deutschen Clients vom 22. September 2026. Grundwerte sind erfasst, wo ihre Tests sie zeigen; weitere kommen dazu, sobald Spieler sie melden.",
+    credit: "Formel und Test-Aufführungen von Autumn (Ice, S12), geteilt auf Discord am 20. August 2026. Der Rechner trifft ihre drei Test-Aufführungen auf die Münze genau. Eignungen stammen aus Screenshots des deutschen Clients vom 22. September 2026. Ticket- und Zuschauer-Grundwerte stammen zusätzlich aus Spieler-Screenshots vom 25.–26. September 2026; weitere Stücke können später ergänzt werden.",
     storageNote: "Deine Zahlen und Göttinnen werden nur in diesem Browser gespeichert.",
   },
   calculator: {
