@@ -7099,6 +7099,7 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
   border-radius: 0 0 var(--r-md) var(--r-md);
   background: var(--bg);
 }
+.planner-frame:fullscreen { width: 100vw; height: 100dvh; border: 0; border-radius: 0; }
 .planner-notes { display: grid; gap: 8px; margin-top: 18px; }
 
 /* --- admin --------------------------------------------------------------- */

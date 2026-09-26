@@ -1,5 +1,5 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
-import { serveSignedPlanner } from "./serve-signed-planner.mjs";
+import { loadTrustedPlannerHtml } from "./load-trusted-planner.mjs";
 
 const ALLOWED_ORIGINS = new Set([
   "https://loa-alexandria.github.io",
@@ -8,13 +8,11 @@ const ALLOWED_ORIGINS = new Set([
 ]);
 const OBJECT_PATH = "irrigation-planner/index.html";
 const SIGNED_URL_SECONDS = 600;
-const FUNCTION_PATH = "/functions/v1/premium-irrigation-planner";
-const SIGNED_STORAGE_PATH = `/storage/v1/object/sign/premium-tools/${OBJECT_PATH}`;
 
 function corsHeaders(origin: string | null): Record<string, string> {
   const headers: Record<string, string> = {
     "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
-    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
     "Cache-Control": "no-store",
     "Vary": "Origin",
   };
@@ -25,14 +23,7 @@ function corsHeaders(origin: string | null): Record<string, string> {
 Deno.serve(async (request) => {
   const origin = request.headers.get("Origin");
   const headers = corsHeaders(origin);
-  const requestUrl = new URL(request.url);
-
   if (request.method === "OPTIONS") return new Response(null, { status: 204, headers });
-  if (request.method === "GET") {
-    // Iframe navigation has no Authorization header. Storage verifies the
-    // short-lived signature against this fixed private object before HTML runs.
-    return serveSignedPlanner(requestUrl, headers, Deno.env.get("SUPABASE_URL"), SIGNED_STORAGE_PATH);
-  }
   if (request.method !== "POST") {
     return Response.json({ error: "Method not allowed" }, { status: 405, headers });
   }
@@ -72,12 +63,10 @@ Deno.serve(async (request) => {
   if (storageError || !data?.signedUrl) {
     return Response.json({ error: "Planner asset is unavailable" }, { status: 503, headers });
   }
-  const signedUrl = new URL(data.signedUrl);
-  const token = signedUrl.searchParams.get("token");
-  if (signedUrl.origin !== new URL(supabaseUrl).origin || signedUrl.pathname !== SIGNED_STORAGE_PATH || !token) {
-    return Response.json({ error: "Planner signature is invalid" }, { status: 503, headers });
+  try {
+    const html = await loadTrustedPlannerHtml(data.signedUrl);
+    return Response.json({ html }, { status: 200, headers });
+  } catch {
+    return Response.json({ error: "Planner asset does not match this release" }, { status: 503, headers });
   }
-  const plannerUrl = new URL(FUNCTION_PATH, supabaseUrl);
-  plannerUrl.searchParams.set("token", token);
-  return Response.json({ url: plannerUrl.toString(), expiresIn: SIGNED_URL_SECONDS }, { status: 200, headers });
 });

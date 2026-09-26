@@ -2,7 +2,8 @@
 
 The Irrigation Planner is a complete, self-contained application delivered
 through a Premium-gated Supabase Edge Function instead of being rewritten as
-React pages. Its source is kept outside the exported site.
+React pages. Its source is kept outside the exported site and its deployed bytes
+are checked against the versioned SHA-256 before execution.
 
 ```text
 supabase/private-assets/irrigation-planner/index.html  the application (HTML + CSS + JS)
@@ -72,8 +73,8 @@ stored formats only gained fields, so an older saved setup still loads.
 5. **Theme and scheme bridge** — a small script in `<head>` reads
    `localStorage['popepoch-theme']` and `localStorage['popepoch-scheme']` and
    applies them as `data-theme` and `data-scheme` on `<html>`. The private
-   iframe is cross-origin, so the wrapper transfers these values using a
-   restricted `postMessage` handshake and refreshes them on planner updates.
+   iframe has an opaque sandbox origin, so the wrapper transfers these values
+   through a bounded in-memory store and nonce-checked `postMessage` bridge.
    With no stored theme the planner falls back to `prefers-color-scheme`; with
    no stored scheme it keeps the default stone palette.
 
@@ -96,11 +97,11 @@ caps, the maxima and the cost sums all read the table.
 | `?embed=1` | set by the wrapper page only |
 | `irrigation_planner_*`, `irrigation_prod_v1`, `irrigation_tab_v1` | the planner alone |
 
-The wrapper page receives a ten-minute Edge Function URL after the user's
-session and Premium status pass server-side checks. The function proxies only
-the signed private asset because Supabase Storage sends HTML as plain text.
-The iframe remains on the Supabase origin and exchanges its known storage
-keys with the site using a source-checked `postMessage` handshake.
+The wrapper page receives the trusted HTML after the user's session and Premium
+status pass server-side checks. The function reads the private asset and checks
+its SHA-256 because Supabase Storage sends HTML as plain text. The iframe runs
+with `sandbox="allow-scripts"`, an opaque origin, and a restrictive document CSP;
+only the known storage keys cross the nonce-checked `postMessage` bridge.
 
 ## Updating the planner
 
@@ -109,7 +110,8 @@ keys with the site using a source-checked `postMessage` handshake.
 3. Record the new revision number in the **Origin** section.
 4. Upload the private asset as described in
    [PREMIUM-IRRIGATION-DEPLOYMENT.md](PREMIUM-IRRIGATION-DEPLOYMENT.md).
-5. Open `/simulations/irrigation-planner/`, switch the site theme and colour
+5. Update the SHA-256 in `supabase/functions/premium-irrigation-planner/load-trusted-planner.mjs`.
+6. Open `/simulations/irrigation-planner/`, switch the site theme and colour
    scheme, and check that the heading is not duplicated and the palette follows.
 
 ## Assumptions shown to players

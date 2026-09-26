@@ -1,19 +1,20 @@
 # Premium irrigation planner deployment
 
 The planner HTML is stored under `supabase/private-assets/`, outside the
-Next.js `public/` tree. The static page requests a short-lived signed URL from
-the `premium-irrigation-planner` Supabase Edge Function. That function validates
-the caller's Supabase session and active Premium entitlement before signing a
-read from the private `premium-tools` bucket. Supabase Storage deliberately
-serves HTML as plain text, so the signed URL points back to the Edge Function:
-on GET, it validates the Storage signature for this exact object and returns
-the HTML with `Content-Type: text/html` and a restrictive CSP.
+Next.js `public/` tree. The static page requests the HTML from the
+`premium-irrigation-planner` Supabase Edge Function. The JWT gateway and the
+function validate the caller's session; the function also checks active Premium
+before reading the private `premium-tools` bucket. Supabase Storage deliberately
+serves HTML as plain text. The function checks the downloaded bytes against the
+versioned SHA-256 in `load-trusted-planner.mjs` and returns the trusted document
+to the page. The page runs it in an opaque-origin `allow-scripts` sandbox with a
+bounded, nonce-checked storage bridge.
 
 Apply the migrations and deploy the function with the Supabase CLI:
 
 ```sh
 supabase db push
-supabase functions deploy premium-irrigation-planner --no-verify-jwt
+supabase functions deploy premium-irrigation-planner --use-api
 ```
 
 Upload or update the private asset from a trusted administrator shell. Never
@@ -32,13 +33,13 @@ Remove-Item Env:SUPABASE_URL
 
 The upload is intentionally separate from the public Pages build: the
 service-role key must not be added to the GitHub Pages build environment.
-The function must be deployed with `--no-verify-jwt` because iframe GET
-navigation cannot attach an Authorization header. POST still validates the
-caller using `auth.getUser()` and checks active Premium; GET accepts only
-the short-lived signature minted for the private planner object.
+Keep the function's JWT gateway verification enabled. Its only route is POST;
+the iframe never calls the function directly. The function also checks the
+session with `auth.getUser()` and verifies active Premium before serving bytes.
 After the migration, function, and private asset are deployed, the public
-`/tools/irrigation-planner/index.html` URL no longer exists. Signed URLs expire
-after ten minutes; refresh the planner page to obtain another URL.
+`/tools/irrigation-planner/index.html` URL no longer exists. When updating the
+private HTML, compute its SHA-256 and update `load-trusted-planner.mjs` in the
+same change; a mismatch fails closed rather than running unreviewed HTML.
 
 The migration resets inactive guild applications to the default `member` role.
 It leaves active officer assignments intact because the database cannot tell a
@@ -46,10 +47,10 @@ legitimate promotion from a role written through the old vulnerable policy.
 Review active officers after applying the migration and correct any unexpected
 assignments through the guild-master role controls.
 
-On its first load, the planner imports its previous layout, settings, and color
-scheme from the site origin through a whitelisted `postMessage` handshake. The
-planner accepts that bootstrap only from the production site or local dev
-origins, and only for its known storage keys.
+On load, the page copies its known planner storage keys into the sandbox's
+in-memory store. The sandbox sends changes back through `postMessage`; the page
+requires the exact iframe window, opaque origin, and a per-load nonce. Full
+screen expands that same sandboxed iframe.
 
 This controls normal access through the hosted site. The repository itself is
 public, so its checked-in planner source can still be read or copied. Protecting
