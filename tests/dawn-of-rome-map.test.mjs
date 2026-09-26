@@ -19,7 +19,8 @@ import {
 import {
   ROME_BLOCKED_TILES,
   ROME_OUTSIDE_TILES,
-  ROME_STRUCTURE_GROUPS,
+  ROME_STRUCTURES,
+  ROME_STRUCTURE_SIZES,
 } from "../lib/content/dawn-of-rome-tile-data.ts";
 
 describe("dawn of rome map", () => {
@@ -110,12 +111,19 @@ describe("dawn of rome map", () => {
   it("keeps blue and outside tiles from accepting paint", () => {
     assert.ok(ROME_BLOCKED_TILES.length > 50, "blue hexes form the non-clickable set");
     assert.ok(ROME_OUTSIDE_TILES.length > 0);
+    // A handful of places stand on hexes the colour pass called impassable;
+    // a place you can take stays clickable wherever it sits.
+    const onAStructure = new Set(
+      ROME_STRUCTURES.flatMap((structure) => structure.tiles.map(([c, r]) => `${c},${r}`)),
+    );
     for (const [col, row] of ROME_BLOCKED_TILES) {
+      if (onAStructure.has(`${col},${row}`)) continue;
       assert.equal(romeTileKind(col, row), "blocked");
       assert.equal(isRomeClickable(col, row), false);
       assert.deepEqual(romePaintTargets(col, row), []);
     }
     for (const [col, row] of ROME_OUTSIDE_TILES) {
+      if (onAStructure.has(`${col},${row}`)) continue;
       assert.equal(romeTileKind(col, row), "outside");
       assert.equal(isRomeClickable(col, row), false);
     }
@@ -125,18 +133,70 @@ describe("dawn of rome map", () => {
     assert.ok(clickable.length < 600, "blue hexes must remove a real share of the lattice");
   });
 
-  it("treats each structure group as one paint target", () => {
-    assert.ok(ROME_STRUCTURE_GROUPS.length > 0);
-    for (const group of ROME_STRUCTURE_GROUPS) {
-      assert.ok(group.length >= 1);
-      const [col, row] = group[0];
-      assert.equal(romeTileKind(col, row), "structure");
-      assert.equal(isRomeClickable(col, row), true);
-      const targets = romePaintTargets(col, row);
-      assert.equal(targets.length, group.length);
-      for (const [c, r] of group) {
-        assert.ok(targets.some((tile) => tile.col === c && tile.row === r));
+  it("takes a whole structure from a tap on any of its hexes", () => {
+    assert.ok(ROME_STRUCTURES.length > 0);
+    for (const structure of ROME_STRUCTURES) {
+      for (const [col, row] of structure.tiles) {
+        assert.equal(romeTileKind(col, row), "structure");
+        assert.equal(isRomeClickable(col, row), true);
+        const targets = romePaintTargets(col, row);
+        assert.equal(targets.length, structure.tiles.length);
+        for (const [c, r] of structure.tiles) {
+          assert.ok(
+            targets.some((tile) => tile.col === c && tile.row === r),
+            `tapping ${col},${row} must also take ${c},${r}`,
+          );
+        }
       }
+    }
+  });
+
+  it("gives every structure the size the game gives it", () => {
+    for (const structure of ROME_STRUCTURES) {
+      assert.equal(
+        structure.tiles.length,
+        ROME_STRUCTURE_SIZES[structure.kind],
+        `${structure.kind} at ${structure.tiles[0]}`,
+      );
+    }
+    const counted = (kind) => ROME_STRUCTURES.filter((s) => s.kind === kind).length;
+    assert.equal(counted("rome"), 1, "one Rome");
+    assert.equal(counted("home"), 6, "six outposts, one per guild slot");
+  });
+
+  it("never lets two structures share a hex", () => {
+    const seen = new Set();
+    for (const structure of ROME_STRUCTURES) {
+      for (const [col, row] of structure.tiles) {
+        assert.equal(seen.has(`${col},${row}`), false, `${col},${row} is claimed twice`);
+        seen.add(`${col},${row}`);
+      }
+    }
+  });
+
+  it("keeps every structure in one piece", () => {
+    const touches = (a, b) => {
+      const [ac, ar] = a;
+      const [bc, br] = b;
+      const sideRows = Math.abs(ac % 2) === 1 ? [br, br - 1] : [br + 1, br];
+      if (ac === bc) return Math.abs(ar - br) === 1;
+      if (Math.abs(ac - bc) !== 1) return false;
+      return sideRows.includes(ar);
+    };
+    for (const structure of ROME_STRUCTURES) {
+      const rest = structure.tiles.slice(1);
+      const reached = [structure.tiles[0]];
+      let grew = true;
+      while (grew) {
+        grew = false;
+        for (let i = rest.length - 1; i >= 0; i--) {
+          if (reached.some((tile) => touches(tile, rest[i]))) {
+            reached.push(rest.splice(i, 1)[0]);
+            grew = true;
+          }
+        }
+      }
+      assert.equal(rest.length, 0, `${structure.kind} at ${structure.tiles[0]} is split`);
     }
   });
 

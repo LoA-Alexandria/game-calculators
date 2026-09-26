@@ -12,4 +12,68 @@ export const ROME_BLOCKED_TILES: readonly RomeTileRef[] = [[0, 0], [0, 4], [0, 5
 
 export const ROME_OUTSIDE_TILES: readonly RomeTileRef[] = [[0, -1], [0, 1], [0, 2], [0, 3], [0, 10], [0, 11], [0, 12], [0, 13], [0, 14], [0, 21], [0, 22], [0, 23], [0, 25], [0, 26], [1, 26], [2, -1], [3, 26], [4, -1], [4, 25], [5, 24], [5, 25], [5, 26], [6, -1], [6, 0], [6, 1], [6, 2], [6, 3], [6, 25], [7, -1], [7, 2], [7, 24], [7, 25], [7, 26], [8, -1], [8, 25], [9, 25], [9, 26], [10, -1], [10, 25], [11, 25], [11, 26], [12, -1], [12, 25], [13, 26], [14, -1], [15, -1], [15, 26], [16, -1], [16, 0], [17, 23], [17, 24], [17, 25], [17, 26], [18, -1], [18, 24], [18, 25], [18, 26], [19, 24], [19, 25], [19, 26], [20, -1], [20, 24], [20, 25], [20, 26], [21, -1], [21, 24], [21, 25], [21, 26], [22, -1], [22, 0], [22, 24], [22, 25], [22, 26], [23, 24], [23, 25], [23, 26], [24, -1], [24, 25], [24, 26], [25, 24], [25, 25], [25, 26], [26, -1], [26, 14], [26, 26], [27, -1], [27, 13], [27, 14], [27, 26], [28, -1], [28, 0], [28, 1], [28, 2], [28, 13], [28, 14], [28, 15], [28, 16], [28, 17], [28, 18], [28, 19], [28, 21], [28, 22], [28, 23], [28, 24], [28, 25], [28, 26]] as const;
 
-export const ROME_STRUCTURE_GROUPS: readonly (readonly RomeTileRef[])[] = [[[3, 5], [3, 6], [4, 6]], [[3, 17]], [[7, 12], [8, 13]], [[8, 5]], [[11, 12]], [[13, 12], [14, 12], [14, 13], [15, 12]], [[18, 7], [19, 7]], [[18, 18]], [[25, 6]], [[25, 17]]] as const;
+/**
+ * What stands on the map, and how many hexes each thing covers.
+ *
+ * The sizes come from the game: Rome 7, a guild outpost 4, a walled city 4, a
+ * round city 3, a gate 2, a village 1. The hexes themselves are measured off
+ * the artwork — the building's own ink was masked out of
+ * `public/guilds/dawn-of-rome.webp`, and each group grown from the hex under
+ * the building's centre to whichever neighbour covered most of that ink, so
+ * every group is connected and sits on what it names.
+ *
+ * A structure is one target: painting any of its hexes paints them all.
+ */
+export type RomeStructureKind = "rome" | "home" | "large" | "medium" | "gate" | "small";
+
+export type RomeStructure = {
+  kind: RomeStructureKind;
+  tiles: readonly RomeTileRef[];
+};
+
+export const ROME_STRUCTURES: readonly RomeStructure[] = [
+  // Rome itself, the seven hexes of the marble complex in the middle.
+  { kind: "rome", tiles: [[13, 11], [13, 12], [14, 11], [14, 12], [14, 13], [15, 11], [15, 12]] },
+  // The six outposts at the rim: a guild's own base, four hexes each.
+  { kind: "home", tiles: [[13, 0], [14, 0], [14, 1], [15, 0]] },
+  { kind: "home", tiles: [[25, 5], [25, 6], [26, 6], [26, 7]] },
+  { kind: "home", tiles: [[1, 6], [2, 6], [2, 7], [3, 6]] },
+  { kind: "home", tiles: [[2, 17], [2, 18], [3, 16], [3, 17]] },
+  { kind: "home", tiles: [[25, 16], [25, 17], [26, 17], [26, 18]] },
+  { kind: "home", tiles: [[13, 22], [13, 23], [14, 23], [14, 24]] },
+  // Walled cities, four hexes.
+  { kind: "large", tiles: [[17, 6], [18, 6], [18, 7], [19, 6]] },
+  { kind: "large", tiles: [[7, 11], [7, 12], [8, 11], [8, 12]] },
+  { kind: "large", tiles: [[17, 17], [18, 17], [18, 18], [19, 17]] },
+  // Round cities, three hexes.
+  { kind: "medium", tiles: [[10, 6], [10, 7], [11, 6]] },
+  { kind: "medium", tiles: [[20, 12], [21, 11], [21, 12]] },
+  { kind: "medium", tiles: [[10, 17], [10, 18], [11, 17]] },
+  // Gates: the walled passes, two hexes.
+  { kind: "gate", tiles: [[15, 9], [16, 10]] },
+  { kind: "gate", tiles: [[11, 11], [11, 12]] },
+  { kind: "gate", tiles: [[15, 14], [16, 14]] },
+  // Villages, one hex.
+  { kind: "small", tiles: [[10, 3]] },
+  { kind: "small", tiles: [[18, 3]] },
+  { kind: "small", tiles: [[7, 4]] },
+  { kind: "small", tiles: [[21, 4]] },
+  { kind: "small", tiles: [[4, 10]] },
+  { kind: "small", tiles: [[24, 10]] },
+  { kind: "small", tiles: [[4, 13]] },
+  { kind: "small", tiles: [[24, 13]] },
+  { kind: "small", tiles: [[7, 19]] },
+  { kind: "small", tiles: [[21, 19]] },
+  { kind: "small", tiles: [[10, 21]] },
+  { kind: "small", tiles: [[18, 21]] },
+] as const;
+
+/** How many hexes each kind of structure covers. */
+export const ROME_STRUCTURE_SIZES: Record<RomeStructureKind, number> = {
+  rome: 7,
+  home: 4,
+  large: 4,
+  medium: 3,
+  gate: 2,
+  small: 1,
+};

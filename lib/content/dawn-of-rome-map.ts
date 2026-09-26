@@ -21,7 +21,9 @@
 import {
   ROME_BLOCKED_TILES,
   ROME_OUTSIDE_TILES,
-  ROME_STRUCTURE_GROUPS,
+  ROME_STRUCTURES,
+  type RomeStructure,
+  type RomeStructureKind,
   type RomeTileRef,
 } from "./dawn-of-rome-tile-data.ts";
 
@@ -146,20 +148,41 @@ function refKey([col, row]: RomeTileRef): string {
 const OUTSIDE = new Set(ROME_OUTSIDE_TILES.map(refKey));
 const BLOCKED = new Set(ROME_BLOCKED_TILES.map(refKey));
 const STRUCTURE_OF = new Map<string, number>();
-for (let i = 0; i < ROME_STRUCTURE_GROUPS.length; i++) {
-  for (const ref of ROME_STRUCTURE_GROUPS[i]) {
+for (let i = 0; i < ROME_STRUCTURES.length; i++) {
+  for (const ref of ROME_STRUCTURES[i].tiles) {
     STRUCTURE_OF.set(refKey(ref), i);
   }
 }
 
-/** Planning-key role of one lattice tile. */
+/**
+ * Planning-key role of one lattice tile.
+ *
+ * A structure wins over the terrain key: a few of them stand on hexes the
+ * colour pass had marked impassable (the outpost at (1, 6), the village at
+ * (18, 3)), and a place you can take has to be clickable wherever it sits.
+ */
 export function romeTileKind(col: number, row: number): RomeTileKind {
   if (!isRomeTile(col, row)) return "outside";
   const key = tileKey(col, row);
+  if (STRUCTURE_OF.has(key)) return "structure";
   if (OUTSIDE.has(key)) return "outside";
   if (BLOCKED.has(key)) return "blocked";
-  if (STRUCTURE_OF.has(key)) return "structure";
   return "plain";
+}
+
+/** The structure a tile belongs to, or null for open land. */
+export function romeStructureAt(col: number, row: number): RomeStructure | null {
+  const index = STRUCTURE_OF.get(tileKey(col, row));
+  return index === undefined ? null : ROME_STRUCTURES[index];
+}
+
+/** What kind of place a tile is, counting open land as its own kind. */
+export type RomePlaceKind = RomeStructureKind | "plain";
+
+export function romePlaceKind(col: number, row: number): RomePlaceKind | null {
+  const kind = romeTileKind(col, row);
+  if (kind === "outside" || kind === "blocked") return null;
+  return romeStructureAt(col, row)?.kind ?? "plain";
 }
 
 /** Officers may paint this tile (plain hex or any hex of a blue structure). */
@@ -174,9 +197,9 @@ export function isRomeClickable(col: number, row: number): boolean {
  */
 export function romePaintTargets(col: number, row: number): RomeTile[] {
   if (!isRomeClickable(col, row)) return [];
-  const group = STRUCTURE_OF.get(tileKey(col, row));
-  if (group === undefined) return [{ col, row }];
-  return ROME_STRUCTURE_GROUPS[group].map(([c, r]) => ({ col: c, row: r }));
+  const structure = romeStructureAt(col, row);
+  if (!structure) return [{ col, row }];
+  return structure.tiles.map(([c, r]) => ({ col: c, row: r }));
 }
 
 /**

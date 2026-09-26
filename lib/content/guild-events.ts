@@ -35,6 +35,12 @@ export type GuildPlanEventDef = {
   stock?: boolean;
   /** Paintable hex layer + capturable neutral settlements (Dawn of Rome). */
   hexTerritory?: boolean;
+  /**
+   * Day tabs, the two score fields, won/lost and the call line. Dawn of Rome
+   * is scored by the prestige its territory earns, so it has none of them and
+   * its board stays on day 1.
+   */
+  scoreboard?: boolean;
 };
 
 export const GUILD_PLAN_EVENTS: readonly GuildPlanEventDef[] = [
@@ -55,6 +61,7 @@ export const GUILD_PLAN_EVENTS: readonly GuildPlanEventDef[] = [
     camps: 6,
     stock: false,
     hexTerritory: true,
+    scoreboard: false,
   },
   {
     id: "heart-of-gold",

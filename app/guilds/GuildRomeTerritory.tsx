@@ -31,12 +31,15 @@ export function GuildRomeTerritory({
   canPaint,
   tone,
   erasing,
+  onPainted,
 }: {
   scope: SiegeScope;
   dayIndex: number;
   canPaint: boolean;
   tone: DawnTone;
   erasing: boolean;
+  /** Every painted hex, so the board above can total the prestige. */
+  onPainted?: (rows: HexRow[]) => void;
 }) {
   const { t } = useLocale();
   const supabase = getSupabaseBrowserClient();
@@ -84,6 +87,10 @@ export function GuildRomeTerritory({
       gone = true;
     };
   }, [supabase, source, dayIndex]);
+
+  useEffect(() => {
+    onPainted?.(painted);
+  }, [painted, onPainted]);
 
   const toneAt = (col: number, row: number) =>
     painted.find((entry) => entry.q === col && entry.r === row)?.tone ?? 0;

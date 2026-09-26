@@ -51,6 +51,9 @@ type Props = {
   canOfficer: boolean;
   roster: GuildRosterEntry[];
   eventId: GuildPlanEventId;
+  /** Every event the guild has switched on; the tabs live in this box's head. */
+  activeEventIds?: readonly GuildPlanEventId[];
+  onSelectEvent?: (id: GuildPlanEventId) => void;
 };
 
 function eventLabel(
@@ -69,11 +72,15 @@ export function GuildEventBoard({
   roster,
   eventId,
   onManageEvents,
+  activeEventIds = [],
+  onSelectEvent,
 }: Props) {
   const { t, tf } = useLocale();
   const supabase = getSupabaseBrowserClient();
   const ids = useId();
   const def = guildPlanEventDef(eventId);
+  // Rome is scored by the prestige its territory earns, not by day results.
+  const scored = def.scoreboard !== false;
 
   const [days, setDays] = useState<DayRow[]>([]);
   const [pledges, setPledges] = useState<PledgeRow[]>([]);
@@ -392,10 +399,28 @@ export function GuildEventBoard({
   return (
     <section className="guild-panel guild-event-board">
       <header className="guild-panel-head">
-        <h2>{eventLabel(t, eventId)}</h2>
-        <span className="count">
-          {t.guilds.eventSeries}: {series.won} : {series.lost}
-        </span>
+        {activeEventIds.length > 1 && onSelectEvent ? (
+          <nav className="guild-event-tabs" aria-label={t.guilds.planung}>
+            {activeEventIds.map((id) => (
+              <button
+                key={id}
+                type="button"
+                className={id === eventId ? "guild-tab is-active" : "guild-tab"}
+                aria-pressed={id === eventId}
+                onClick={() => onSelectEvent(id)}
+              >
+                {eventLabel(t, id)}
+              </button>
+            ))}
+          </nav>
+        ) : (
+          <h2>{eventLabel(t, eventId)}</h2>
+        )}
+        {scored ? (
+          <span className="count">
+            {t.guilds.eventSeries}: {series.won} : {series.lost}
+          </span>
+        ) : null}
         {canOfficer && onManageEvents ? (
           <button className="small-button" type="button" onClick={onManageEvents}>
             <PlusIcon className="icon icon-sm" />
@@ -416,6 +441,7 @@ export function GuildEventBoard({
         </p>
       ) : null}
 
+      {scored ? (
       <div className="guild-event-days" role="tablist" aria-label={t.guilds.eventSeries}>
         {Array.from({ length: def.seriesDays }, (_, i) => i + 1).map((n) => {
           const row = days.find((d) => d.day_index === n);
@@ -443,6 +469,7 @@ export function GuildEventBoard({
           );
         })}
       </div>
+      ) : null}
 
       <p className="guild-event-timer" aria-live="polite">
         <span className="guild-event-timer-label">{t.guilds.eventTimerLabel}</span>
@@ -451,6 +478,8 @@ export function GuildEventBoard({
         </strong>
       </p>
 
+      {scored ? (
+        <>
       <div className="guild-event-scores">
         <div className="field">
           <label htmlFor={`${ids}-our`}>{t.guilds.eventOurScore}</label>
@@ -543,6 +572,8 @@ export function GuildEventBoard({
           </button>
         ) : null}
       </div>
+        </>
+      ) : null}
 
       {def.camps ? (
         <GuildAlliance

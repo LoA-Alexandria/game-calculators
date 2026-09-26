@@ -242,9 +242,16 @@ export default function GuildsPage() {
             const canEnter = canManage || isActiveMember;
             const isPending = membership?.status === "pending";
             const isRejected = membership?.status === "rejected";
+            // Opening every guild room comes with the admin badge; being *in* a
+            // guild does not, so an admin applies like anybody else. The
+            // one-guild rule holds for them too — only the guild's own master
+            // is already in and has nothing to apply for.
             const blockedByOther =
-              Boolean(openMembership) && openMembership?.guild_id !== guild.id && !canManage;
+              Boolean(openMembership) && openMembership?.guild_id !== guild.id && !isDiscordMaster;
             const frozen = frozenIds.has(guild.id);
+            const canJoin =
+              Boolean(session) && !isDiscordMaster && !isActiveMember && !isPending
+              && !blockedByOther && !frozen;
             const busy = busyId === guild.id;
             const drafting = joinGuildId === guild.id;
             const noteId = `${ids}-note-${guild.id}`;
@@ -317,7 +324,7 @@ export default function GuildsPage() {
                       <Link className="button button-primary" href={guildRoomHref(guild.slug)}>
                         {t.guilds.openRoom}
                       </Link>
-                      {isActiveMember && !canManage && (
+                      {isActiveMember && !isDiscordMaster && (
                         <button
                           className="small-button"
                           type="button"
@@ -329,7 +336,7 @@ export default function GuildsPage() {
                       )}
                     </>
                   )}
-                  {!canEnter && isPending && (
+                  {isPending && (
                     <>
                       <span className="pill">{t.guilds.pending}</span>
                       <button
@@ -354,7 +361,7 @@ export default function GuildsPage() {
                   {!canEnter && !isPending && frozen && session ? (
                     <span className="guild-meta">{t.guilds.frozenJoin}</span>
                   ) : null}
-                  {!canEnter && !isPending && !blockedByOther && !frozen && session && drafting && (
+                  {canJoin && drafting && (
                     <>
                       <button
                         className="button button-primary"
@@ -369,7 +376,7 @@ export default function GuildsPage() {
                       </button>
                     </>
                   )}
-                  {!canEnter && !isPending && !blockedByOther && !frozen && session && !drafting && (
+                  {canJoin && !drafting && (
                     <button
                       className="button button-primary"
                       type="button"

@@ -30,6 +30,10 @@ import { getSupabaseBrowserClient } from "../../lib/supabase/client";
 import { useLocale } from "../components/LocaleProvider";
 import { CheckIcon, CloseIcon, GuildsIcon, HornIcon, RingIcon, UsersIcon } from "../components/Icons";
 import { GuildRomeTerritory } from "./GuildRomeTerritory";
+import {
+  romePrestigeBoard,
+  type PaintedHex,
+} from "../../lib/content/dawn-of-rome-prestige";
 
 const CAMP_COLUMNS = "slot, name, server_name, is_ours, priority, note, horn_share, ring_focus";
 const ORDER_COLUMNS = "user_id, attack_target";
@@ -131,6 +135,16 @@ export function GuildSiegeCamps({
   // Which colour the next tap paints with, and whether it wipes instead.
   const [tone, setTone] = useState<DawnTone>(1);
   const [erasing, setErasing] = useState(false);
+  // What the territory layer holds, so the prestige can be totalled here.
+  const [painted, setPainted] = useState<PaintedHex[]>([]);
+  const prestige = useMemo(() => romePrestigeBoard(painted), [painted]);
+
+  const toneLabel = (value: number) =>
+    value === 1
+      ? ownLabel || t.guilds.hexBrushOurs
+      : value === 2
+        ? partnerName || t.guilds.hexBrushAlly
+        : tf(t.guilds.hexBrushOther, { n: value - 2 });
 
   const source = useMemo(
     () =>
@@ -391,6 +405,7 @@ export function GuildSiegeCamps({
             canPaint={plans}
             tone={tone}
             erasing={erasing}
+            onPainted={setPainted}
           />
         ) : null}
 
@@ -669,6 +684,39 @@ export function GuildSiegeCamps({
           </>
         ) : null}
       </div>
+
+      {showHex ? (
+        <div className="siege-prestige">
+          <h3>{t.guilds.prestigeTitle}</h3>
+          {prestige.length === 0 ? (
+            <p className="siege-prestige-empty">{t.guilds.prestigeEmpty}</p>
+          ) : (
+            <ul className="siege-prestige-list">
+              {prestige.map((tally) => (
+                <li key={tally.tone} className="siege-prestige-row" data-tone={tally.tone}>
+                  <span className="siege-brush-dot" aria-hidden="true" />
+                  <span className="siege-prestige-name">{toneLabel(tally.tone)}</span>
+                  <span className="siege-prestige-hexes">
+                    {tf(t.guilds.prestigeHexes, { count: tally.hexes })}
+                  </span>
+                  <span className="siege-prestige-rate">
+                    {tf(t.guilds.prestigePerMinute, { n: n(tally.perMinute) })}
+                    {tally.incomplete ? <span className="siege-prestige-open">+?</span> : null}
+                  </span>
+                  <span className="siege-prestige-places">
+                    {tally.lines
+                      .map((line) => `${line.held}\u00d7 ${t.guilds.places[line.kind]}`)
+                      .join(" \u00b7 ")}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+          {prestige.some((tally) => tally.incomplete) ? (
+            <p className="siege-prestige-note">{t.guilds.prestigeUnknown}</p>
+          ) : null}
+        </div>
+      ) : null}
 
       {showStock ? (
         <div className="siege-stock">
