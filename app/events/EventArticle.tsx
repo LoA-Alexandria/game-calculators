@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { toLocale, type Dictionary } from "../../lib/i18n";
+import { eventTitleBanner } from "../../lib/content/banners";
 import { textGuideEntry, type TextGuideDraft } from "../../lib/content/text-guide-editor";
 import {
   eventWiki,
@@ -51,6 +52,7 @@ export function EventArticle({ id }: { id: EventGuideId }) {
   const wiki = eventWiki(id);
   const icon = eventWikiIconUrl(id);
   const showWiki = eventWikiHasHelp(id);
+  const banner = eventTitleBanner(id);
   useDocumentTitle(guide.title);
 
   return (
@@ -65,7 +67,18 @@ export function EventArticle({ id }: { id: EventGuideId }) {
           <nav className="guide-crumbs" aria-label={t.nav.events}>
             <Link href="/events/">{t.nav.events}</Link>
           </nav>
-          <h1>{guide.title}</h1>
+          {/* The banner already says the title, so it keeps it as alt text. */}
+          <h1 className="page-head-art event-head-art">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={banner.src}
+              alt={guide.title}
+              width={banner.width}
+              height={banner.height}
+              decoding="async"
+              fetchPriority="high"
+            />
+          </h1>
           <p className="guide-head-lede">{guide.summary}</p>
           {canEdit && !editing ? (
             <div className="guide-head-meta">

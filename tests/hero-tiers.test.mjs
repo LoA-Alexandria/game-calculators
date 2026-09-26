@@ -174,16 +174,40 @@ test("a placement can set the rarity it is rated at, and the frame follows it", 
   assert.equal(placementCaption(english, { rarity: "UR", variant: "withItem" }), `at UR · ${english.variants.withItem}`);
 });
 
-test("title banners point at a file of the size they declare", async () => {
+test("every banner is there, at twice the size it is drawn", async () => {
   const { readFileSync } = await import("node:fs");
-  const { GUIDE_TITLE_BANNERS } = await import("../lib/content/banners.ts");
-  assert.ok(GUIDE_TITLE_BANNERS.heroTierList, "the Hero tier list has its banner");
-  for (const [id, banner] of Object.entries(GUIDE_TITLE_BANNERS)) {
-    assert.ok(Object.hasOwn(en.guideEntries, id), `${id} is a guide`);
-    const file = readFileSync(new URL(`../public${banner.src}`, import.meta.url));
-    // A lossy WebP stores its size in the VP8 frame header: 14-bit width and height at bytes 26–29.
-    assert.equal(file.toString("ascii", 12, 16), "VP8 ", `${banner.src} is a lossy WebP`);
-    assert.equal(file.readUInt16LE(26) & 0x3fff, banner.width, `${banner.src} width`);
-    assert.equal(file.readUInt16LE(28) & 0x3fff, banner.height, `${banner.src} height`);
-  }
+  const { guideTitleBanner, eventTitleBanner, toolTitleBanner } =
+    await import("../lib/content/banners.ts");
+
+  const check = (banner, what) => {
+    assert.ok(banner, `${what} has a banner`);
+    const file = readFileSync(new URL(`../public${banner.src.split("?")[0]}`, import.meta.url));
+    // A lossy WebP stores its size in the VP8 frame header: 14-bit width and
+    // height at bytes 26–29.
+    assert.equal(file.toString("ascii", 12, 16), "VP8 ", `${what} is a lossy WebP`);
+    const width = file.readUInt16LE(26) & 0x3fff;
+    const height = file.readUInt16LE(28) & 0x3fff;
+    // Drawn at 1024 × 144. Most are supplied at twice that so they stay sharp
+    // on a dense screen; a couple are still the older single-size files.
+    const scale = width / banner.width;
+    assert.ok(scale === 1 || scale === 2, `${what} is ${width} wide, not 1x or 2x`);
+    assert.equal(height, banner.height * scale, `${what} height does not match its width`);
+  };
+
+  for (const id of Object.keys(en.guideEntries)) check(guideTitleBanner(id), `guide ${id}`);
+  for (const id of Object.keys(en.eventGuideEntries)) check(eventTitleBanner(id), `event ${id}`);
+  for (const href of [
+    "/calculators/city-upgrade/",
+    "/calculators/goddess-materials/",
+    "/calculators/goddess-xp/",
+    "/calculators/grand-voyage-route/",
+    "/calculators/red-carpet-materials/",
+    "/calculators/theater-income/",
+    "/simulations/irrigation-planner/",
+  ]) check(toolTitleBanner(href), `tool ${href}`);
+});
+
+test("a banner is cache-busted, so a redraw actually shows", async () => {
+  const { guideTitleBanner } = await import("../lib/content/banners.ts");
+  assert.match(guideTitleBanner("heroTierList").src, /\?v=/);
 });
