@@ -7764,8 +7764,25 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
 }
 .guild-chip .icon { width: 14px; height: 14px; color: var(--ink-faint); }
 
+/* The search sits beside the page title, not in the middle of the page. */
+.guilds-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 10px 28px;
+}
+.guilds-head .page-head { flex: 1 1 min(100%, 26rem); margin-bottom: 0; }
 .guild-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; }
+.guilds-head .guild-toolbar {
+  flex: 0 1 21rem;
+  flex-wrap: nowrap;
+  gap: 10px;
+  justify-content: flex-end;
+  min-width: 0;
+}
 .guild-toolbar .guild-filter { flex: 1 1 280px; max-width: 460px; }
+.guilds-head .guild-count { flex: none; white-space: nowrap; }
 .guild-count { margin: 0; color: var(--ink-faint); font-size: .86rem; }
 
 .guild-list { grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); align-items: stretch; }
@@ -8558,7 +8575,8 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
 
 /* --- one line above the guild list, the form lives in a dialog ----------- */
 
-.guild-request-bar-row { margin: 0 0 14px; }
+/* Centred on the same reading column as the heading and the guild list. */
+.guild-request-bar-row { margin: 0 auto 14px; }
 .guild-request-bar {
   display: flex;
   align-items: center;
