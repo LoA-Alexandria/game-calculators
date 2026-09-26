@@ -365,7 +365,6 @@ const fr: Dictionary = {
       "dawn-of-rome": "Dawn of Rome",
       "crown-of-the-nile": "Crown of the Nile",
     },
-    mapVariantHint: "Le même plateau, dans l’autre sens. Votre territoire suit.",
     hexToolsLabel: "Outils de carte",
     hexSplit: "Attribuer",
     hexFills: {

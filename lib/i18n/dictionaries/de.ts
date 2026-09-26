@@ -365,7 +365,6 @@ const de: Dictionary = {
       "dawn-of-rome": "Dawn of Rome",
       "crown-of-the-nile": "Crown of the Nile",
     },
-    mapVariantHint: "Dasselbe Feld, andersherum. Dein Gebiet wandert mit.",
     hexToolsLabel: "Kartenwerkzeuge",
     hexSplit: "Übergeben",
     hexFills: {

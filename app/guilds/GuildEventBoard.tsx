@@ -24,7 +24,11 @@ import {
 } from "../../lib/content/guild-alliances";
 import { GuildAlliance, type AllianceGuild } from "./GuildAlliance";
 import { GuildSiegeCamps, type SiegeBase } from "./GuildSiegeCamps";
-import { isRomeMapVariant, type RomeMapVariant } from "../../lib/content/dawn-of-rome-map";
+import {
+  ROME_MAP_VARIANTS,
+  isRomeMapVariant,
+  type RomeMapVariant,
+} from "../../lib/content/dawn-of-rome-map";
 import { getSupabaseBrowserClient } from "../../lib/supabase/client";
 import { useLocale } from "../components/LocaleProvider";
 import { CloseIcon, PlusIcon } from "../components/Icons";
@@ -605,6 +609,24 @@ export function GuildEventBoard({
         </>
       ) : null}
 
+      {hasHexTerritory ? (
+        <div className="siege-variant" role="group" aria-label={t.guilds.mapVariantLabel}>
+          <span className="siege-tools-label">{t.guilds.mapVariantLabel}</span>
+          {ROME_MAP_VARIANTS.map((value) => (
+            <button
+              key={value}
+              type="button"
+              className="small-button"
+              aria-pressed={variant === value}
+              disabled={busy || !canOfficer}
+              onClick={() => void switchMap(value)}
+            >
+              {t.guilds.mapVariants[value]}
+            </button>
+          ))}
+        </div>
+      ) : null}
+
       {def.camps ? (
         <GuildAlliance
           guildId={guildId}
@@ -657,7 +679,6 @@ export function GuildEventBoard({
           needsBase={onShared && ally !== null && allianceNeedsBase(ally, guildId) && canOfficer}
           onPickBase={pickSharedBase}
           variant={variant}
-          onVariant={(next) => void switchMap(next)}
           onChanged={reload}
         />
       ) : null}

@@ -19,7 +19,6 @@ import {
 } from "../../lib/content/guild-events";
 import {
   ROME_MAPS,
-  ROME_MAP_VARIANTS,
   romeBasePoints,
   DAWN_TONES,
   romeFillTiles,
@@ -111,7 +110,6 @@ export function GuildSiegeCamps({
   ownLabel = "",
   partnerName = "",
   variant = "dawn-of-rome",
-  onVariant,
 }: {
   scope: SiegeScope;
   eventId: GuildPlanEventId;
@@ -131,7 +129,6 @@ export function GuildSiegeCamps({
   partnerName?: string;
   /** Which picture of the Dawn of Rome board to draw. */
   variant?: RomeMapVariant;
-  onVariant?: (next: RomeMapVariant) => void;
 }) {
   const { t, tf, n } = useLocale();
   const supabase = getSupabaseBrowserClient();
@@ -460,25 +457,6 @@ export function GuildSiegeCamps({
             {t.guilds.hexBrushClear}
           </button>
           <span className="siege-brush-hint">{t.guilds.hexBrushHint}</span>
-        </div>
-      ) : null}
-
-      {showHex ? (
-        <div className="siege-variant" role="group" aria-label={t.guilds.mapVariantLabel}>
-          <span className="siege-tools-label">{t.guilds.mapVariantLabel}</span>
-          {ROME_MAP_VARIANTS.map((value) => (
-            <button
-              key={value}
-              type="button"
-              className="small-button"
-              aria-pressed={variant === value}
-              disabled={busy || !plans || !onVariant}
-              onClick={() => onVariant?.(value)}
-            >
-              {t.guilds.mapVariants[value]}
-            </button>
-          ))}
-          <span className="siege-brush-hint">{t.guilds.mapVariantHint}</span>
         </div>
       ) : null}
 
