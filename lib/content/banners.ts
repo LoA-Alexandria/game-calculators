@@ -72,3 +72,53 @@ export function guideTitleBanner(id: GuideEntryId): TitleBanner | null {
   const version = TITLE_BANNER_VERSION[id];
   return { ...banner, src: version ? `${src}?v=${version}` : src };
 }
+
+/**
+ * The same 1024 × 144 title slot, for a calculator or simulation, keyed by the
+ * page's own path. Supplied by the site team on 26 September 2026
+ * (`public/banners/tools/`), together with the matching icons in
+ * `public/tool-icons/`, which the cards on the two index pages wear.
+ */
+const TOOL_ART: Record<string, string> = {
+  "/calculators/city-upgrade/": "city-upgrade",
+  "/calculators/goddess-materials/": "goddess-materials",
+  "/calculators/goddess-xp/": "goddess-xp",
+  "/calculators/grand-voyage-route/": "grand-voyage-route",
+  "/calculators/red-carpet-materials/": "red-carpet-materials",
+  "/calculators/theater-income/": "theater-income",
+  "/simulations/irrigation-planner/": "irrigation-planner",
+};
+
+/** Trailing slash or not, a path finds its artwork. */
+function toolKey(href: string | null | undefined): string | null {
+  if (!href) return null;
+  const path = href.endsWith("/") ? href : `${href}/`;
+  return TOOL_ART[path] ?? null;
+}
+
+export function toolTitleBanner(href: string | null | undefined): TitleBanner | null {
+  const name = toolKey(href);
+  return name ? { src: asset(`/banners/tools/${name}.webp`), width: 1024, height: 144 } : null;
+}
+
+export function toolIconUrl(href: string | null | undefined): string | null {
+  const name = toolKey(href);
+  return name ? asset(`/tool-icons/${name}.webp`) : null;
+}
+
+/**
+ * Header art for a group of guides on the guides index. The file names are the
+ * category ids from `lib/navigation.ts` in kebab-case.
+ */
+const GUIDE_CATEGORY_ART: Record<string, string> = {
+  coreElements: "core-elements",
+  buildings: "buildings",
+  layouts: "layouts",
+  tierLists: "tier-lists",
+  tips: "tips",
+};
+
+export function guideCategoryArtUrl(categoryId: string): string | null {
+  const name = GUIDE_CATEGORY_ART[categoryId];
+  return name ? asset(`/banners/guide-categories/${name}.webp`) : null;
+}

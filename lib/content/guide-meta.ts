@@ -31,14 +31,20 @@ export const GUIDE_PRESENTATION: Record<GuideEntryId, GuidePresentation> = {
     art: ["/artwork/the-swing.webp", "/artwork/nightshade.webp", "/artwork/young-hare.webp"],
     editor: { href: "/guides/artwork/edit/", label: (t) => t.artworkEditor.openEditor },
   },
-  technology: { art: [] },
+  technology: {
+    art: ["/guides/technology-scroll.webp", "/guides/technology-machine.webp", "/guides/technology-books.webp"],
+    cutout: true,
+  },
   collection: {
     art: ["/collection/prometheus-torch.webp", "/collection/pandoras-box.webp", "/collection/aeolus-bag-of-winds.webp"],
     editor: { href: "/guides/collection/edit/", label: (t) => t.collectionEditor.openEditor },
     cutout: true,
   },
   manor: { art: [] },
-  adsBuy: { art: [] },
+  adsBuy: {
+    art: ["/guides/ads-buy-chest.webp", "/guides/ads-buy-gift.webp", "/guides/ads-buy-phone.webp"],
+    cutout: true,
+  },
   goddesses: {
     art: ["/goddesses/athena.webp", "/goddesses/fortuna.webp", "/goddesses/venus.webp", "/goddesses/hera.webp"],
     editor: { href: "/guides/goddesses/edit/", label: (t) => t.goddessEditor.openEditor },
@@ -94,8 +100,9 @@ export const GUIDE_PRESENTATION: Record<GuideEntryId, GuidePresentation> = {
     editor: { href: "/guides/anecdotes/edit/", label: (t) => t.anecdoteEditor.openEditor },
   },
   serverAgeUnlocks: {
-    art: [],
+    art: ["/guides/server-age-axe.webp", "/guides/server-age-column.webp", "/guides/server-age-tower.webp"],
     editor: { href: "/guides/server-age-unlocks/edit/", label: (t) => t.ageUnlocksEditor.openEditor },
+    cutout: true,
   },
 };
 
