@@ -157,12 +157,20 @@ describe("setting the target order on the map", () => {
       note: "",
     }));
 
-  it("gives an unnumbered camp a place and pushes the rest down", () => {
-    const changed = setCampPriority(board(1, 2, 0), 3, 1);
-    assert.deepEqual(
-      changed.map((camp) => [camp.slot, camp.priority]).sort(),
-      [[1, 2], [2, 3], [3, 1]],
-    );
+  it("gives a camp the number that was tapped, even on an empty board", () => {
+    // The bug: on a fresh board only 1 was reachable, because a number could
+    // not exceed the count of camps that already had one.
+    for (const wanted of [1, 2, 3, 4, 5]) {
+      const changed = setCampPriority(board(0, 0, 0, 0, 0), 2, wanted);
+      assert.deepEqual(changed.map((camp) => [camp.slot, camp.priority]), [[2, wanted]]);
+    }
+  });
+
+  it("leaves the gaps a plan asks for", () => {
+    // Six villages, one of them already third: calling another one fifth is a
+    // plan, and nothing in between has to be filled first.
+    const changed = setCampPriority(board(0, 0, 3, 0, 0, 0), 1, 5);
+    assert.deepEqual(changed.map((camp) => [camp.slot, camp.priority]), [[1, 5]]);
   });
 
   it("swaps two camps that both have a number", () => {
@@ -173,16 +181,33 @@ describe("setting the target order on the map", () => {
     );
   });
 
-  it("closes the gap when a camp leaves the order", () => {
-    const changed = setCampPriority(board(1, 2, 3), 1, 0);
+  it("sends the camp sitting on that number to the lowest free one", () => {
+    const changed = setCampPriority(board(2, 0, 0), 3, 2);
     assert.deepEqual(
       changed.map((camp) => [camp.slot, camp.priority]).sort(),
-      [[1, 0], [2, 1], [3, 2]],
+      [[1, 1], [3, 2]],
     );
   });
 
+  it("takes a camp out without disturbing the others", () => {
+    const changed = setCampPriority(board(1, 2, 3), 1, 0);
+    assert.deepEqual(changed.map((camp) => [camp.slot, camp.priority]), [[1, 0]]);
+  });
+
+  it("never lets two camps share a number", () => {
+    let camps = board(0, 0, 0);
+    for (const [slot, wanted] of [[1, 2], [2, 2], [3, 1], [1, 1]]) {
+      for (const change of setCampPriority(camps, slot, wanted)) {
+        camps = camps.map((camp) => (camp.slot === change.slot ? change : camp));
+      }
+      const used = camps.filter((camp) => camp.priority > 0).map((camp) => camp.priority);
+      assert.equal(new Set(used).size, used.length, `after ${slot} -> ${wanted}`);
+    }
+  });
+
   it("never numbers past the end of the list, and leaves our own camp alone", () => {
-    assert.deepEqual(setCampPriority(board(1, 0, 0), 2, 6).find((c) => c.slot === 2).priority, 2);
+    // Three camps means three numbers, so a tap on 6 lands on 3.
+    assert.deepEqual(setCampPriority(board(1, 0, 0), 2, 6).find((c) => c.slot === 2).priority, 3);
     const ours = [{ slot: 1, name: "", server_name: "", is_ours: true, priority: 0, note: "" }];
     assert.deepEqual(setCampPriority(ours, 1, 1), []);
   });

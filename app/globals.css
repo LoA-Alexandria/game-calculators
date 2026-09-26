@@ -8288,6 +8288,29 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
 .siege-village[data-compact="true"] .siege-village-head { gap: 0; }
 .siege-village[data-compact="true"]:hover { transform: translate(-50%, 22%) scale(1.12); }
 .siege-badge.is-blank { width: 14px; height: 14px; background: rgba(255, 255, 255, .8); }
+/* A neutral place writes its own name on the map, the way the game does. It
+   never takes a tap: the hexes underneath have to stay reachable. */
+.siege-place {
+  position: absolute;
+  top: var(--village-y);
+  left: var(--village-x);
+  z-index: 2;
+  transform: translate(-50%, 115%);
+  color: #f6f1e4;
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: .01em;
+  white-space: nowrap;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, .9), 0 0 3px rgba(0, 0, 0, .8);
+  pointer-events: none;
+}
+.siege-place[data-kind="rome"] { font-size: .78rem; transform: translate(-50%, 190%); }
+.siege-place[data-kind="gate"] { font-size: .62rem; opacity: .85; }
+@media (max-width: 520px) {
+  .siege-place { font-size: .58rem; }
+  .siege-place[data-kind="small"], .siege-place[data-kind="gate"] { display: none; }
+}
+
 .siege-village-caption {
   position: absolute;
   top: var(--village-y);

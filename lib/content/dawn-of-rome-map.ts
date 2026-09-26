@@ -279,3 +279,26 @@ export function romeFillTiles(fill: RomeFill): RomeTile[] {
   }
   return tiles;
 }
+
+/** Where a named place sits on the picture, in percent, for its label. */
+export function romeStructurePoint(structure: RomeStructure): { x: number; y: number } {
+  let x = 0;
+  let y = 0;
+  for (const [col, row] of structure.tiles) {
+    const centre = romeHexCenter(col, row);
+    x += centre.x;
+    y += centre.y;
+  }
+  return {
+    x: (x / structure.tiles.length / DAWN_OF_ROME_MAP.width) * 100,
+    y: (y / structure.tiles.length / DAWN_OF_ROME_MAP.height) * 100,
+  };
+}
+
+/** The neutral places the board names, with where to write each one. */
+export function romeNamedPlaces(): { structure: RomeStructure; point: { x: number; y: number } }[] {
+  return ROME_STRUCTURES.filter((structure) => structure.name).map((structure) => ({
+    structure,
+    point: romeStructurePoint(structure),
+  }));
+}

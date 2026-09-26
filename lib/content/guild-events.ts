@@ -210,11 +210,18 @@ export function nextCampPriority(camps: readonly GuildEventCampRow[]): number {
 }
 
 /**
- * Put one camp at a place in the target order and keep the order whole.
+ * Put one camp on the order number an officer tapped.
  *
- * A camp that already had a number swaps with whoever sits on the new one; a
- * camp that had none pushes the rest down; order 0 takes it out and closes the
- * gap. Returns only the camps whose number actually changed, ready to save.
+ * The number they tap is the number they get. Ordering used to be a dense
+ * ranking — the first target picked became 1 whichever chip was pressed,
+ * because a number could not be higher than the count of targets that already
+ * had one, so on a fresh board only 1 was reachable. Gaps are fine: hitting
+ * the third village first and calling it 3 is a plan, not an error.
+ *
+ * Two camps still never share a number. One that already had a number swaps
+ * with whoever sits on the new one; one that had none sends the camp sitting
+ * there to the lowest number nobody is using. Order 0 takes a camp out and
+ * leaves everyone else where they were. Returns only what changed.
  */
 export function setCampPriority(
   camps: readonly GuildEventCampRow[],
@@ -229,26 +236,29 @@ export function setCampPriority(
     if (camp.priority !== value) changed.push({ ...camp, priority: value });
   };
 
-  const others = camps.filter((camp) => camp.slot !== slot && !camp.is_ours && camp.priority > 0);
-
   if (priority <= 0) {
     move(target, 0);
-    if (target.priority > 0) {
-      for (const camp of others) {
-        if (camp.priority > target.priority) move(camp, camp.priority - 1);
-      }
-    }
     return changed;
   }
 
-  const wanted = Math.min(Math.max(1, Math.floor(priority)), others.length + 1);
+  const others = camps.filter((camp) => camp.slot !== slot && !camp.is_ours);
+  // One number per target, and no more than the chips the card offers.
+  const most = others.length + 1;
+  const wanted = Math.min(Math.max(1, Math.floor(priority)), most);
+  const sitting = others.find((camp) => camp.priority === wanted);
   move(target, wanted);
-  if (target.priority > 0) {
-    const sitting = others.find((camp) => camp.priority === wanted);
-    if (sitting) move(sitting, target.priority);
-  } else {
-    for (const camp of others) {
-      if (camp.priority >= wanted) move(camp, camp.priority + 1);
+
+  if (sitting) {
+    if (target.priority > 0) {
+      move(sitting, target.priority);
+    } else {
+      const taken = new Set(
+        others.filter((camp) => camp.slot !== sitting.slot).map((camp) => camp.priority),
+      );
+      taken.add(wanted);
+      let free = 1;
+      while (taken.has(free)) free += 1;
+      move(sitting, free > most ? 0 : free);
     }
   }
   return changed;

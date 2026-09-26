@@ -8,7 +8,6 @@ import {
   GUILD_HORN_STEPS,
   campAttackers,
   campSlots,
-  campTargets,
   emptyOrder,
   guildPlanEventDef,
   ringSpread,
@@ -23,6 +22,7 @@ import {
   DAWN_OF_ROME_MAP,
   DAWN_TONES,
   romeFillTiles,
+  romeNamedPlaces,
   type DawnTone,
   type RomeFill,
 } from "../../lib/content/dawn-of-rome-map";
@@ -142,6 +142,14 @@ export function GuildSiegeCamps({
   const [hexToken, setHexToken] = useState(0);
   const [wipeAsked, setWipeAsked] = useState(false);
   const prestige = useMemo(() => romePrestigeBoard(painted), [painted]);
+
+  /** A place keeps its own name until a guild takes it. */
+  const neutralPlaces = useMemo(() => {
+    const taken = new Set(painted.filter((hex) => hex.tone > 0).map((hex) => `${hex.q},${hex.r}`));
+    return romeNamedPlaces().filter(
+      ({ structure }) => !structure.tiles.some(([col, row]) => taken.has(`${col},${row}`)),
+    );
+  }, [painted]);
 
   /**
    * The toolbar writes whole halves of the board in one go. Each fill is a
@@ -352,8 +360,9 @@ export function GuildSiegeCamps({
   const campAt = (slot: number) => camps.find((camp) => camp.slot === slot) ?? blank[slot - 1];
   const attackable = camps.filter((camp) => !baseAt(camp.slot));
   // Only a village that actually has an order carries a number on the map.
-  const targets = campTargets(attackable).filter((camp) => camp.priority > 0);
-  const orderOf = (slot: number) => targets.findIndex((entry) => entry.slot === slot) + 1;
+  // The number an officer put on a village, not its rank among the others:
+  // ranking meant the first target tapped always came back as 1.
+  const orderOf = (slot: number) => campAt(slot).priority;
   const campLabel = (camp: GuildEventCampRow) => camp.name.trim() || tf(t.guilds.campSlot, { n: camp.slot });
 
   const selected = selection && selection.key === siege ? selection.slot : null;
@@ -511,6 +520,19 @@ export function GuildSiegeCamps({
             reloadToken={hexToken}
           />
         ) : null}
+
+        {showHex
+          ? neutralPlaces.map(({ structure, point }) => (
+              <span
+                key={structure.tiles[0].join(",")}
+                className="siege-place"
+                data-kind={structure.kind}
+                style={{ "--village-x": `${point.x}%`, "--village-y": `${point.y}%` } as CSSProperties}
+              >
+                {t.guilds.romePlaces[structure.name!]}
+              </span>
+            ))
+          : null}
 
         {Array.from({ length: count }, (_, index) => index + 1).map((slot) => {
           const point = map.points[(slot - 1) % map.points.length];
@@ -749,7 +771,7 @@ export function GuildSiegeCamps({
                       aria-label={t.guilds.campNote}
                       defaultValue={current.note}
                       maxLength={GUILD_CAMP_NOTE_MAX}
-                      placeholder={t.guilds.campNotePlaceholder}
+                      placeholder={showStock ? t.guilds.campNotePlaceholder : t.guilds.campNotePlain}
                       disabled={busy}
                       onBlur={(e) => {
                         if (e.target.value !== current.note) void saveCamp(current, { note: e.target.value });
