@@ -2050,23 +2050,9 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
 .guide-crumbs a:last-child:hover { background: color-mix(in srgb, var(--cat) 24%, transparent); }
 .guide-crumbs span { color: var(--ink-faint); }
 .guide-head h1 { margin: 2px 0 8px; font-size: clamp(1.8rem, 3.6vw, 2.6rem); letter-spacing: -.02em; }
-.event-head {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
-}
-.event-head-icon {
-  width: 72px;
-  height: 72px;
-  flex-shrink: 0;
-  object-fit: contain;
-  border-radius: 18px;
-  box-shadow: 0 8px 18px rgba(0, 0, 0, .28);
-}
-.event-head-copy { min-width: 0; flex: 1; }
-@media (max-width: 640px) {
-  .event-head-icon { width: 56px; height: 56px; border-radius: 14px; }
-}
+/* The banner says what the event is; the small icon beside it only pushed the
+   whole head to the right. */
+.event-head-copy { min-width: 0; }
 .article h3 { margin-top: 22px; font-size: 1.08rem; }
 .event-wiki-block + .event-wiki-block { margin-top: 8px; }
 .event-wiki-list {

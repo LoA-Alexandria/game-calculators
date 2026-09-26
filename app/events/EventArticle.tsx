@@ -8,7 +8,6 @@ import { textGuideEntry, type TextGuideDraft } from "../../lib/content/text-guid
 import {
   eventWiki,
   eventWikiHasHelp,
-  eventWikiIconUrl,
 } from "../../lib/content/event-guides";
 import { asset } from "../../lib/site";
 import { useAuth } from "../components/AuthProvider";
@@ -50,7 +49,6 @@ export function EventArticle({ id }: { id: EventGuideId }) {
   const published: ShownGuide = t.eventGuideEntries[id];
   const guide: ShownGuide = draft ? (textGuideEntry(draft, toLocale(locale)) as unknown as ShownGuide) : published;
   const wiki = eventWiki(id);
-  const icon = eventWikiIconUrl(id);
   const showWiki = eventWikiHasHelp(id);
   const banner = eventTitleBanner(id);
   useDocumentTitle(guide.title);
@@ -59,10 +57,6 @@ export function EventArticle({ id }: { id: EventGuideId }) {
     <>
       <BackLink href="/events/" label={t.nav.events} />
       <header className="guide-head event-head">
-        {icon ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img className="event-head-icon" src={icon} alt="" width={72} height={72} />
-        ) : null}
         <div className="event-head-copy">
           <nav className="guide-crumbs" aria-label={t.nav.events}>
             <Link href="/events/">{t.nav.events}</Link>
