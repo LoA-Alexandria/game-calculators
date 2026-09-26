@@ -185,6 +185,73 @@ export function guildMatchesServerFilter(
   );
 }
 
+/** A server number is digits only; the game numbers them S1, S2, … */
+export const GUILD_SERVER_NUMBER_MAX = 6;
+export const GUILD_OWNER_HANDLE_MAX = 60;
+
+const SERVER_NUMBER_PATTERN = /^[0-9]{1,6}$/;
+
+export function isGuildServerNumber(value: string): boolean {
+  return SERVER_NUMBER_PATTERN.test(value.trim());
+}
+
+/** Keep only the digits a person typed, so "S123" and "s 123" both work. */
+export function normalizeGuildServerNumber(value: string): string {
+  return value.replace(/[^0-9]/g, "").slice(0, GUILD_SERVER_NUMBER_MAX);
+}
+
+/**
+ * Assemble the server label from its two parts, always the same way:
+ * `S123 Alexandria`, or whichever half was given on its own.
+ */
+export function formatGuildServer(numberPart: string, namePart: string): string {
+  const digits = normalizeGuildServerNumber(numberPart);
+  const name = namePart.trim().slice(0, 80);
+  if (digits && name) return `S${digits} ${name}`;
+  if (digits) return `S${digits}`;
+  return name;
+}
+
+/** Trim and clamp a typed Discord name or site account name. */
+export function normalizeGuildOwnerHandle(value: string): string {
+  return value.trim().slice(0, GUILD_OWNER_HANDLE_MAX);
+}
+
+export type GuildRequestOwnerKind = "self" | "other";
+
+export type GuildOwnerChoice = {
+  owner_kind: GuildRequestOwnerKind;
+  owner_user_id: string | null;
+  master_discord_user_id: string | null;
+  master_handle: string;
+};
+
+/**
+ * Who the requested guild belongs to. An empty handle means the requester,
+ * which is why "somebody else" with nothing typed falls back to their own
+ * account rather than failing.
+ */
+export function guildOwnerChoice(
+  kind: GuildRequestOwnerKind,
+  handle: string,
+  self: { userId: string; discordUserId: string | null; name: string },
+): GuildOwnerChoice {
+  const typed = normalizeGuildOwnerHandle(handle);
+  if (kind === "self" || !typed) {
+    return {
+      owner_kind: "self",
+      owner_user_id: self.userId,
+      master_discord_user_id: self.discordUserId,
+      master_handle: normalizeGuildOwnerHandle(self.name),
+    };
+  }
+  const isId = isDiscordUserId(typed);
+  return {
+    owner_kind: "other",
+    owner_user_id: null,
+    master_discord_user_id: isId ? typed : null,
+    master_handle: isId ? "" : typed,
+
 /**
  * What a person may do inside a guild room.
  *
