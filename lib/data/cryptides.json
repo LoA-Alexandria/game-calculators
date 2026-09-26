@@ -21,6 +21,14 @@
         { "id": "meat-with-bones", "growth": 10, "image": "foods/nidhogg-1.webp" },
         { "id": "ribs", "growth": 30, "image": "foods/nidhogg-2.webp" },
         { "id": "asgard-tribute-meat", "growth": 100, "image": "foods/nidhogg-3.webp" }
+      ],
+      "stages": [
+        { "stage": "childhood", "image": "evolution/nidhogg-1.webp" },
+        { "stage": "youth", "image": "evolution/nidhogg-2.webp" },
+        { "stage": "growth", "image": "evolution/nidhogg-3.webp" },
+        { "stage": "adult", "image": "evolution/nidhogg-4.webp" },
+        { "stage": "commander", "image": "evolution/nidhogg-5.webp" },
+        { "stage": "mythic", "image": "evolution/nidhogg-6.webp" }
       ]
     },
     {
@@ -39,6 +47,14 @@
         { "id": "healing-tomato", "growth": 10, "image": "foods/caladrius-1.webp" },
         { "id": "flying-eggplant", "growth": 30, "image": "foods/caladrius-2.webp" },
         { "id": "mandrake-tomato", "growth": 100, "image": "foods/caladrius-3.webp" }
+      ],
+      "stages": [
+        { "stage": "childhood", "image": "evolution/caladrius-1.webp" },
+        { "stage": "youth", "image": "evolution/caladrius-2.webp" },
+        { "stage": "growth", "image": "evolution/caladrius-3.webp" },
+        { "stage": "adult", "image": "evolution/caladrius-4.webp" },
+        { "stage": "commander", "image": "evolution/caladrius-5.webp" },
+        { "stage": "mythic", "image": "evolution/caladrius-6.webp" }
       ]
     },
     {
@@ -57,6 +73,14 @@
         { "id": "juicy-bbq", "growth": 10, "image": "foods/cerberus-1.webp" },
         { "id": "deluxe-bbq", "growth": 30, "image": "foods/cerberus-2.webp" },
         { "id": "underworld-bbq", "growth": 100, "image": "foods/cerberus-3.webp" }
+      ],
+      "stages": [
+        { "stage": "childhood", "image": "evolution/cerberus-1.webp" },
+        { "stage": "youth", "image": "evolution/cerberus-2.webp" },
+        { "stage": "growth", "image": "evolution/cerberus-3.webp" },
+        { "stage": "adult", "image": "evolution/cerberus-4.webp" },
+        { "stage": "commander", "image": "evolution/cerberus-5.webp" },
+        { "stage": "mythic", "image": "evolution/cerberus-6.webp" }
       ]
     },
     {
@@ -75,6 +99,14 @@
         { "id": "fresh-grass", "growth": 10, "image": "foods/sleipnir-1.webp" },
         { "id": "morning-dew-grass", "growth": 30, "image": "foods/sleipnir-2.webp" },
         { "id": "thunder-grass", "growth": 100, "image": "foods/sleipnir-3.webp" }
+      ],
+      "stages": [
+        { "stage": "childhood", "image": "evolution/sleipnir-1.webp" },
+        { "stage": "youth", "image": "evolution/sleipnir-2.webp" },
+        { "stage": "growth", "image": "evolution/sleipnir-3.webp" },
+        { "stage": "adult", "image": "evolution/sleipnir-4.webp" },
+        { "stage": "commander", "image": "evolution/sleipnir-5.webp" },
+        { "stage": "mythic", "image": "evolution/sleipnir-6.webp" }
       ]
     }
   ]

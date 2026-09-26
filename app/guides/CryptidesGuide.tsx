@@ -7,6 +7,7 @@ import {
   cryptideImageUrl,
   foodText,
   localizedCryptideName,
+  orderedStages,
   searchCryptides,
   skillText,
   type Cryptide,
@@ -19,6 +20,47 @@ export function isCryptidesGuide(
   guide: Dictionary["guideEntries"][keyof Dictionary["guideEntries"]],
 ): guide is Guide {
   return guideLayout(guide) === "cryptides";
+}
+
+/**
+ * The six shapes the creature grows through, left to right. The pictures carry
+ * the section, so the rung is written under each one rather than beside it, and
+ * they load lazily: four creatures make twenty-four of them on one page.
+ */
+function StageLadder({ cryptide, guide, name }: { cryptide: Cryptide; guide: Guide; name: string }) {
+  const stages = orderedStages(cryptide);
+  if (stages.length === 0) return null;
+
+  return (
+    <section className="cryptide-section" aria-label={guide.evolutionHeading}>
+      <h4>{guide.evolutionHeading}</h4>
+      <ol className="cryptide-stages">
+        {stages.map((art, index) => {
+          const stage = guide.stages[art.stage];
+          return (
+            <li key={art.stage}>
+              <figure>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  className="cryptide-stage-art"
+                  src={cryptideImageUrl(art.image)}
+                  alt={fill(guide.stageAlt, { cryptide: name, stage })}
+                  width={800}
+                  height={600}
+                  loading="lazy"
+                  decoding="async"
+                />
+                <figcaption>
+                  <span className="cryptide-stage-step mono">{fill(guide.stageStep, { n: index + 1 })}</span>
+                  <strong>{stage}</strong>
+                </figcaption>
+              </figure>
+            </li>
+          );
+        })}
+      </ol>
+    </section>
+  );
 }
 
 function CryptideCard({ cryptide, guide }: { cryptide: Cryptide; guide: Guide }) {
@@ -79,6 +121,8 @@ function CryptideCard({ cryptide, guide }: { cryptide: Cryptide; guide: Guide })
           })}
         </ul>
       </section>
+
+      <StageLadder cryptide={cryptide} guide={guide} name={name} />
     </article>
   );
 }

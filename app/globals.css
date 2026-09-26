@@ -3977,6 +3977,68 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
   font-size: .84rem;
 }
 
+/* The evolution ladder: six shapes in reading order. The pictures are drawn on
+   nothing, so each one sits in its own tinted box to have an edge at all, and
+   they wrap to three per row on a narrow card. */
+.cryptide-stages {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  /* Three and three: six across is unreadably small in a card this wide, and
+     letting them wrap lands on a lopsided four and two. */
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+.cryptide-stages figure {
+  margin: 0;
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+  align-content: start;
+}
+.cryptide-stage-art {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: contain;
+  border-radius: var(--r-md);
+  background: color-mix(in srgb, var(--ink) 6%, var(--surface));
+}
+.cryptide-stages figcaption {
+  display: grid;
+  gap: 1px;
+  text-align: center;
+  line-height: 1.25;
+}
+.cryptide-stages figcaption strong {
+  font-size: .76rem;
+  font-weight: 650;
+  /* "Kommandantenform" is wider than a column on a phone; let it break rather
+     than spill over its neighbours — hyphenated where the browser can, since
+     the page carries its language. */
+  hyphens: auto;
+  overflow-wrap: anywhere;
+}
+.cryptide-stage-step {
+  color: var(--ink-soft);
+  font-size: .68rem;
+}
+/* A phone card is too narrow for three: "Kommandantenform" does not fit a 99px
+   column at a size anyone would read. Two and two and two instead, which also
+   gives the drawings half again as much room. */
+@media (max-width: 520px) {
+  .cryptide-stages { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* In the editor the six slots stand side by side, wide enough to judge a cut-out. */
+.cryptide-edit-stages {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr));
+  gap: 10px;
+}
+
 .leveling-filters {
   display: flex;
   flex-wrap: wrap;
