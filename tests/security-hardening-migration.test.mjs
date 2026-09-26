@@ -53,8 +53,11 @@ test("planner access checks the caller and Premium before signing the private as
   assert.match(migration, /allowed_mime_types = array\['text\/html'\]/i);
 });
 
-test("the static planner page invokes the entitlement endpoint instead of shipping a public URL", async () => {
-  assert.match(plannerPage, /functions\.invoke<\{ url\?: string \}>\("premium-irrigation-planner"\)/);
+test("the static planner page invokes the entitlement endpoint and isolates the returned HTML", async () => {
+  assert.match(plannerPage, /functions\.invoke<\{ html\?: string \}>\("premium-irrigation-planner"\)/);
+  assert.match(plannerPage, /sandbox="allow-scripts"/);
+  assert.match(plannerPage, /event\.origin !== "null"/);
+  assert.match(plannerPage, /message\.nonce !== plannerNonce/);
   assert.doesNotMatch(plannerPage, /\/tools\/irrigation-planner\/index\.html/);
   await assert.rejects(
     access(new URL("../public/tools/irrigation-planner/index.html", import.meta.url)),
@@ -65,7 +68,6 @@ test("the static planner page invokes the entitlement endpoint instead of shippi
 
 test("planner state round-trips without allowing stale host state to replace private saves", () => {
   assert.match(plannerPage, /event\.source !== plannerFrame\.current\?\.contentWindow/);
-  assert.match(plannerPage, /event\.origin !== plannerOrigin/);
   assert.match(plannerPage, /type !== "popepoch:planner-state"/);
   assert.match(privatePlanner, /localStorage\.getItem\(key\) === null/);
   assert.match(privatePlanner, /type:'popepoch:planner-state', storage:storage\}, parentOrigin/);

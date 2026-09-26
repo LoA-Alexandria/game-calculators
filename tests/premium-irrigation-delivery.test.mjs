@@ -1,63 +1,71 @@
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import test from "node:test";
-import { serveSignedPlanner } from "../supabase/functions/premium-irrigation-planner/serve-signed-planner.mjs";
+import vm from "node:vm";
+import { loadTrustedPlannerHtml } from "../supabase/functions/premium-irrigation-planner/load-trusted-planner.mjs";
+import { prepareSandboxedPlannerHtml } from "../lib/irrigation-planner-sandbox.ts";
 
-const STORAGE_PATH = "/storage/v1/object/sign/premium-tools/irrigation-planner/index.html";
-const ORIGIN = "https://example.supabase.co";
-const headers = { "Cache-Control": "no-store" };
+const asset = await readFile(new URL("../supabase/private-assets/irrigation-planner/index.html", import.meta.url));
 
-function plannerRequest(token) {
-  const url = new URL("https://example.supabase.co/functions/v1/premium-irrigation-planner");
-  if (token !== undefined) url.searchParams.set("token", token);
-  return url;
-}
+test("only the versioned private planner asset may run in the browser", async () => {
+  const html = await loadTrustedPlannerHtml("signed-url", async () => new Response(asset));
+  assert.equal(html, asset.toString("utf8"));
 
-test("unsigned and malformed planner requests never read the private asset", async () => {
-  let reads = 0;
-  const fetchAsset = () => { reads += 1; throw new Error("unexpected read"); };
-  for (const token of [undefined, "", "../../other-asset", "x".repeat(4097)]) {
-    const response = await serveSignedPlanner(plannerRequest(token), headers, ORIGIN, STORAGE_PATH, fetchAsset);
-    assert.equal(response.status, 403);
-  }
-  assert.equal(reads, 0);
-});
-
-test("an expired signature cannot return executable HTML", async () => {
-  const response = await serveSignedPlanner(
-    plannerRequest("signed.token"), headers, ORIGIN, STORAGE_PATH,
-    async () => new Response("expired", { status: 403 }),
+  const changed = new Uint8Array(asset);
+  changed[100] ^= 1;
+  await assert.rejects(
+    loadTrustedPlannerHtml("signed-url", async () => new Response(changed)),
+    /does not match this release/,
   );
-  assert.equal(response.status, 403);
-  assert.notEqual(response.headers.get("Content-Type"), "text/html; charset=utf-8");
-});
-
-test("a valid signature serves only the fixed private object as HTML", async () => {
-  const html = "<!doctype html><html><body>Planner</body></html>";
-  let requestedUrl;
-  const response = await serveSignedPlanner(
-    plannerRequest("signed.token"), headers, ORIGIN, STORAGE_PATH,
-    async (url) => {
-      requestedUrl = url;
-      return new Response(html, { headers: { "Content-Type": "text/plain" } });
-    },
+  await assert.rejects(
+    loadTrustedPlannerHtml("expired-url", async () => new Response("expired", { status: 403 })),
+    /could not be read/,
   );
-  assert.equal(requestedUrl.origin, ORIGIN);
-  assert.equal(requestedUrl.pathname, STORAGE_PATH);
-  assert.equal(requestedUrl.searchParams.get("token"), "signed.token");
-  assert.equal(response.status, 200);
-  assert.equal(await response.text(), html);
-  assert.equal(response.headers.get("Content-Type"), "text/html; charset=utf-8");
-  assert.equal(response.headers.get("Cache-Control"), "no-store");
-  assert.equal(response.headers.get("X-Content-Type-Options"), "nosniff");
-  assert.match(response.headers.get("Content-Security-Policy"), /frame-ancestors https:\/\/loa-alexandria\.github\.io/);
 });
 
-test("non-HTML and oversized private responses are refused", async () => {
-  for (const html of ["not HTML", `<!doctype html>${"x".repeat(1_000_000)}`]) {
-    const response = await serveSignedPlanner(
-      plannerRequest("signed.token"), headers, ORIGIN, STORAGE_PATH,
-      async () => new Response(html),
-    );
-    assert.equal(response.status, 503);
-  }
+test("sandboxed planner uses a bounded memory store and nonce-checked persistence bridge", () => {
+  const dangerous = "</script><script>unexpected()</script>";
+  const html = prepareSandboxedPlannerHtml(
+    asset.toString("utf8"),
+    { irrigation_planner_v1: dangerous, irrigation_prod_v1: "x".repeat(100_001) },
+    "https://loa-alexandria.github.io",
+    "one-time-nonce",
+  );
+  assert.match(html, /Content-Security-Policy/);
+  assert.doesNotMatch(html, /\blocalStorage\b/);
+  assert.doesNotMatch(html, /<script>unexpected\(\)<\/script>/);
+
+  const firstScript = html.match(/<script>([\s\S]*?)<\/script>/)?.[1];
+  assert.ok(firstScript);
+  const listeners = new Map();
+  const messages = [];
+  const parent = { postMessage: (message, origin) => messages.push({ message, origin }) };
+  const window = {
+    parent,
+    addEventListener: (type, handler) => listeners.set(type, handler),
+  };
+  vm.runInNewContext(firstScript, {
+    window,
+    document: { documentElement: { classList: { add: () => {} } } },
+  });
+  assert.equal(window.__plannerStorage.getItem("irrigation_planner_v1"), dangerous);
+  assert.equal(window.__plannerStorage.getItem("irrigation_prod_v1"), null);
+  window.__plannerStorage.setItem("irrigation_planner_v1", "saved-layout");
+  assert.equal(messages.at(-1).message.nonce, "one-time-nonce");
+  assert.equal(messages.at(-1).message.storage.irrigation_planner_v1, "saved-layout");
+  assert.equal(messages.at(-1).origin, "https://loa-alexandria.github.io");
+
+  const count = messages.length;
+  listeners.get("message")({
+    source: parent,
+    origin: "https://attacker.example",
+    data: { type: "popepoch:planner-ping", nonce: "one-time-nonce" },
+  });
+  assert.equal(messages.length, count);
+  listeners.get("message")({
+    source: parent,
+    origin: "https://loa-alexandria.github.io",
+    data: { type: "popepoch:planner-ping", nonce: "one-time-nonce" },
+  });
+  assert.equal(messages.length, count + 1);
 });
