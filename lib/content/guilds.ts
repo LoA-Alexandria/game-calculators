@@ -251,6 +251,8 @@ export function guildOwnerChoice(
     owner_user_id: null,
     master_discord_user_id: isId ? typed : null,
     master_handle: isId ? "" : typed,
+  };
+}
 
 /**
  * What a person may do inside a guild room.
