@@ -8522,6 +8522,47 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
   .mail-composer { grid-template-columns: minmax(0, 1fr); }
 }
 
+/* --- one line above the guild list, the form lives in a dialog ----------- */
+
+.guild-request-bar-row { margin: 0 0 14px; }
+.guild-request-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+.guild-request-bar:hover { border-color: var(--accent-line); }
+.guild-request-bar-label { flex: 1; min-width: 0; font-size: .9rem; }
+.guild-request-bar > .icon:first-child { flex: none; color: var(--accent); }
+.guild-request-bar > .icon-sm:last-child { flex: none; color: var(--ink-faint); }
+.guild-request-bar[data-state="open"] { border-color: var(--accent-line); background: var(--accent-soft); }
+.guild-request-bar[data-state="pending"] > .icon:first-child { color: var(--warn); }
+.guild-request-bar[data-state="approved"] > .icon:first-child { color: var(--good); }
+
+/* Number and name are entered apart and joined into one server label. */
+.guild-request-server { display: grid; grid-template-columns: minmax(0, 7.5rem) minmax(0, 1fr); gap: 10px; }
+.guild-request-owner {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 10px 12px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+}
+.guild-request-owner legend { padding: 0 4px; color: var(--ink-soft); font-size: .78rem; }
+.guild-request-owner-choice { display: flex; flex-wrap: wrap; gap: 8px 14px; }
+.guild-request-owner-choice label { display: inline-flex; align-items: center; gap: 6px; font-size: .88rem; }
+.guild-request-owner .assumption { margin: 0; }
+
 /* --- a dialog over the page ---------------------------------------------- */
 
 .guild-modal-layer { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; padding: 16px; }

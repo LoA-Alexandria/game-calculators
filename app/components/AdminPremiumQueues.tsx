@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useMemo, useState } from "react";
+import { formatGuildServer, isDiscordUserId } from "../../lib/content/guilds";
 import {
   isLifetimePremium,
   isPremiumActive,
@@ -26,9 +27,14 @@ type GuildRequest = {
   id: string;
   user_id: string;
   name: string;
+  server_number: string;
   server_name: string;
   description: string;
-  master_discord_user_id: string;
+  owner_kind: "self" | "other";
+  owner_user_id: string | null;
+  master_handle: string;
+  /** Null when the request named its master by account name instead. */
+  master_discord_user_id: string | null;
   status: string;
   created_at: string;
 };
@@ -66,6 +72,8 @@ export function AdminPremiumQueues({ reloadToken, onChanged }: { reloadToken: nu
   const [search, setSearch] = useState("");
   const [selectedUserId, setSelectedUserId] = useState("");
   const [manualUserId, setManualUserId] = useState("");
+  // A request may arrive without a snowflake; guilds still need one.
+  const [masterDrafts, setMasterDrafts] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [granted, setGranted] = useState(false);
@@ -83,7 +91,9 @@ export function AdminPremiumQueues({ reloadToken, onChanged }: { reloadToken: nu
           .order("created_at"),
         supabase
           .from("guild_create_requests")
-          .select("id, user_id, name, server_name, description, master_discord_user_id, status, created_at")
+          .select(
+            "id, user_id, name, server_number, server_name, description, owner_kind, owner_user_id, master_handle, master_discord_user_id, status, created_at",
+          )
           .eq("status", "pending")
           .order("created_at"),
         supabase.from("profiles").select("user_id, username").order("username"),
@@ -138,6 +148,12 @@ export function AdminPremiumQueues({ reloadToken, onChanged }: { reloadToken: nu
     }
     return [...byId.values()].sort((a, b) => a.label.localeCompare(b.label));
   }, [accessRows, profiles]);
+
+  const discordByUser = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const row of accessRows) map.set(row.user_id, row.discord_user_id);
+    return map;
+  }, [accessRows]);
 
   const entitlementByUser = useMemo(() => {
     const map = new Map<string, EntitlementRow>();
@@ -226,8 +242,22 @@ export function AdminPremiumQueues({ reloadToken, onChanged }: { reloadToken: nu
     setBusy(false);
   };
 
+  /** The snowflake to write: typed by the admin, stored, or the owner's own. */
+  const masterIdFor = (request: GuildRequest) => {
+    const draft = masterDrafts[request.id];
+    if (draft !== undefined) return draft.trim();
+    if (request.master_discord_user_id) return request.master_discord_user_id;
+    if (request.owner_user_id) return discordByUser.get(request.owner_user_id) ?? "";
+    return "";
+  };
+
   const reviewGuildRequest = async (request: GuildRequest, approve: boolean) => {
     if (!supabase || !session) return;
+    const masterId = masterIdFor(request);
+    if (approve && !isDiscordUserId(masterId)) {
+      setError(t.premium.adminGuildRequestMasterNeeded);
+      return;
+    }
     setBusy(true);
     setError("");
     setGranted(false);
@@ -247,8 +277,8 @@ export function AdminPremiumQueues({ reloadToken, onChanged }: { reloadToken: nu
           name: request.name.trim(),
           slug,
           description: request.description.trim(),
-          server_name: request.server_name.trim().slice(0, 80),
-          master_discord_user_id: request.master_discord_user_id,
+          server_name: formatGuildServer(request.server_number, request.server_name).slice(0, 80),
+          master_discord_user_id: masterId,
           created_by: session.userId,
         })
         .select("id")
@@ -554,6 +584,7 @@ export function AdminPremiumQueues({ reloadToken, onChanged }: { reloadToken: nu
                 <tr>
                   <th>{t.premium.guildRequestName}</th>
                   <th>{t.premium.guildRequestServer}</th>
+                  <th>{t.premium.adminGuildRequestOwner}</th>
                   <th>{t.premium.guildRequestDescription}</th>
                   <th />
                 </tr>
@@ -562,10 +593,29 @@ export function AdminPremiumQueues({ reloadToken, onChanged }: { reloadToken: nu
                 {guildRequests.map((request) => (
                   <tr key={request.id}>
                     <td>{request.name}</td>
-                    <td>{request.server_name || "—"}</td>
+                    <td>{formatGuildServer(request.server_number, request.server_name) || "—"}</td>
+                    <td data-label={t.premium.adminGuildRequestOwner}>
+                      {request.owner_kind === "self" && request.owner_user_id
+                        ? memberLabel(request.owner_user_id)
+                        : request.master_handle || request.master_discord_user_id || "—"}
+                      <div className="field">
+                        <label htmlFor={`${ids}-master-${request.id}`} className="visually-hidden">
+                          {t.premium.guildRequestMasterId}
+                        </label>
+                        <input
+                          id={`${ids}-master-${request.id}`}
+                          className="mono"
+                          inputMode="numeric"
+                          placeholder={t.premium.guildRequestMasterId}
+                          value={masterIdFor(request)}
+                          onChange={(event) =>
+                            setMasterDrafts((drafts) => ({ ...drafts, [request.id]: event.target.value }))
+                          }
+                        />
+                      </div>
+                    </td>
                     <td>
                       {request.description || "—"}
-                      <div className="assumption mono">{request.master_discord_user_id}</div>
                     </td>
                     <td className="actions">
                       <button
