@@ -3890,6 +3890,92 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
   align-items: baseline;
   gap: 6px 12px;
 }
+/* Cryptid layout: a row per slot group, the slot numbers on the left, the
+   Cryptides that go there beside them, and the reason underneath. The first row
+   holds two, so the portraits sit in a row of their own rather than in a fixed
+   first-and-second column. */
+.cryptid-formation {
+  margin: 0 0 14px;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+.cryptid-formation li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 6px 14px;
+  align-items: center;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+}
+.cryptid-formation-slot {
+  grid-row: 1 / span 2;
+  align-self: start;
+  margin-top: 4px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  color: var(--accent);
+  font-size: .72rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.cryptid-formation-who {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+}
+.cryptid-formation-one {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.cryptid-formation-art {
+  width: 44px;
+  height: 44px;
+  flex: none;
+  object-fit: cover;
+  object-position: center top;
+  border-radius: var(--r-md);
+  background: color-mix(in srgb, var(--ink) 6%, var(--surface));
+}
+.cryptid-formation li p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: .86rem;
+}
+/* The steps are an order, so they are numbered; the site strips list markers
+   from every list by default. */
+.cryptid-priority {
+  margin: 0 0 16px;
+  padding-left: 1.4em;
+  display: grid;
+  gap: 5px;
+  list-style: decimal;
+}
+.cryptid-tower-levels {
+  margin: 0 0 10px;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+.cryptid-tower-levels li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+}
+.cryptid-tower-levels li small {
+  flex-basis: 100%;
+  color: var(--ink-soft);
+  font-size: .8rem;
+}
+.cryptid-tower-note { color: var(--ink-soft); font-size: .88rem; }
+
 .cryptide-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
