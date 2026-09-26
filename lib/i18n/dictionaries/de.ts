@@ -6822,6 +6822,7 @@ const de: Dictionary = {
     problemEmptyHero: "{zone}: Ein Eintrag hat keinen Namen.",
     problemDuplicate: "{zone}: {hero} steht doppelt drin.",
     problemNoteText: "{hero}: Der Zusatz hat keinen Text.",
+    problemUnknownItem: "{zone}: Im Sammlung-Guide gibt es kein Stück {item}.",
     announceStart: "{hero} aufgenommen.",
     announceOver: "{hero} ist über {zone}.",
     announceEnd: "{hero} in {zone} abgelegt.",

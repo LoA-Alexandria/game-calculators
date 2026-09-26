@@ -3612,6 +3612,7 @@ const en = {
     problemEmptyHero: "{zone}: an entry has no name.",
     problemDuplicate: "{zone}: {hero} appears twice.",
     problemNoteText: "{hero}: the qualifier has no text.",
+    problemUnknownItem: "{zone}: {item} is not a collection id.",
     announceStart: "Picked up {hero}.",
     announceOver: "{hero} is over {zone}.",
     announceEnd: "{hero} dropped in {zone}.",

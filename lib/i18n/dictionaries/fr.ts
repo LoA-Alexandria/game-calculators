@@ -6838,6 +6838,7 @@ const fr: Dictionary = {
     problemEmptyHero: "{zone} : une entrée n’a pas de nom.",
     problemDuplicate: "{zone} : {hero} apparaît deux fois.",
     problemNoteText: "{hero} : la précision n’a pas de texte.",
+    problemUnknownItem: "{zone} : le guide Collection n’a aucune pièce {item}.",
     announceStart: "{hero} saisi.",
     announceOver: "{hero} est au-dessus de {zone}.",
     announceEnd: "{hero} déposé dans {zone}.",
