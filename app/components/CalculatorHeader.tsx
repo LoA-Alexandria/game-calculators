@@ -1,5 +1,7 @@
 "use client";
 
+import { usePathname } from "next/navigation";
+import { toolTitleBanner } from "../../lib/content/banners";
 import { useDocumentTitle, useLocale } from "./LocaleProvider";
 import { BackLink, PageHead } from "./Ui";
 
@@ -14,11 +16,14 @@ export function CalculatorHeader({
   description: string;
 }) {
   const { t } = useLocale();
+  const pathname = usePathname();
   useDocumentTitle(title);
+  // The banner already says the title, so the heading keeps it as alt text.
+  const art = toolTitleBanner(pathname);
   return (
     <>
       <BackLink href="/calculators/" label={t.nav.calculators} />
-      <PageHead eyebrow={eyebrow} title={title} lede={description} />
+      <PageHead eyebrow={eyebrow} title={title} lede={description} art={art ?? undefined} />
     </>
   );
 }

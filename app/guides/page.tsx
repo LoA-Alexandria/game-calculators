@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { guideCategoryArtUrl } from "../../lib/content/banners";
 import { guideArtUrls, guidePresentation } from "../../lib/content/guide-meta";
 import { guideHasSnippetEditor, guideIdFromHref, isGuideEntryId, type GuideEntryId } from "../../lib/content/guides";
 import { groupByBadge, sectionById, type NavGroup, type NavItem } from "../../lib/navigation";
@@ -137,8 +138,16 @@ function GuideCategory({
 }) {
   const { t, tf } = useLocale();
   const ledes = t.guides.categoryLedes as Record<string, string>;
+  const art = guideCategoryArtUrl(group.id);
   return (
     <section className="guides-category" id={group.id} data-category={group.id} aria-labelledby={`guides-${group.id}`}>
+      {art ? (
+        <div className="guides-category-art" aria-hidden="true">
+          {/* A static export cannot optimise images; the header is a small WebP. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={art} alt="" loading="lazy" decoding="async" />
+        </div>
+      ) : null}
       <header className="guides-category-head">
         <h2 id={`guides-${group.id}`}>{group.category}</h2>
         <span className="guides-category-count">
