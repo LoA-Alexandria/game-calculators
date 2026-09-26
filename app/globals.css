@@ -9075,7 +9075,7 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
    readable without hiding the scene; it is far lighter than the one the old
    stock photo needed. */
 .hero-news {
-  --hero-news-image: url("/banners/home-light.webp");
+  --hero-news-image: var(--hero-news-light);
   /* The scene leaves its left half empty for the headline; this veils that
      side just enough to read on, and lets go before the window. */
   --hero-news-veil: linear-gradient(90deg,
@@ -9091,7 +9091,7 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
 /* On a dark page the same scene is lit by candle, and the veil is ink. */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .hero-news {
-    --hero-news-image: url("/banners/home-dark.webp");
+    --hero-news-image: var(--hero-news-dark);
     --hero-news-veil: linear-gradient(90deg,
       rgba(12, 10, 7, .97) 0%,
       rgba(12, 10, 7, .93) 42%,
@@ -9102,7 +9102,7 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
   }
 }
 :root[data-theme="dark"] .hero-news {
-  --hero-news-image: url("/banners/home-dark.webp");
+  --hero-news-image: var(--hero-news-dark);
   --hero-news-veil: linear-gradient(90deg,
     rgba(12, 10, 7, .97) 0%,
     rgba(12, 10, 7, .93) 42%,
@@ -9116,7 +9116,7 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
    instead of fading across it, and the scene keeps its right-hand half. */
 @media (max-width: 900px) {
   .hero-news {
-    --hero-news-image: url("/banners/home-light-sm.webp");
+    --hero-news-image: var(--hero-news-light-sm);
     --hero-news-veil: linear-gradient(180deg,
       rgba(252, 248, 240, .93) 0%,
       rgba(252, 248, 240, .88) 55%,
@@ -9125,7 +9125,7 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) .hero-news {
-      --hero-news-image: url("/banners/home-dark-sm.webp");
+      --hero-news-image: var(--hero-news-dark-sm);
       --hero-news-veil: linear-gradient(180deg,
         rgba(12, 10, 7, .9) 0%,
         rgba(12, 10, 7, .84) 55%,
@@ -9133,7 +9133,7 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
     }
   }
   :root[data-theme="dark"] .hero-news {
-    --hero-news-image: url("/banners/home-dark-sm.webp");
+    --hero-news-image: var(--hero-news-dark-sm);
     --hero-news-veil: linear-gradient(180deg,
       rgba(12, 10, 7, .9) 0%,
       rgba(12, 10, 7, .84) 55%,
