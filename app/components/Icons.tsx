@@ -179,6 +179,17 @@ export function SearchIcon({ className }: IconProps) {
   );
 }
 
+/** A closed padlock: a guild whose Premium ran out is read-only. */
+export function LockIcon({ className }: IconProps) {
+  return (
+    <svg className={className} {...base}>
+      <rect x="4.5" y="10.5" width="15" height="9.5" rx="2.2" />
+      <path d="M8.2 10.5V7.8a3.8 3.8 0 0 1 7.6 0v2.7" />
+      <path d="M12 14.3v2.4" />
+    </svg>
+  );
+}
+
 export function ShieldIcon({ className }: IconProps) {
   return (
     <svg className={className} {...base}>

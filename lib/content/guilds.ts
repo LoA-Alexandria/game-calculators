@@ -184,3 +184,41 @@ export function guildMatchesServerFilter(
     || guild.name.toLocaleLowerCase().includes(needle)
   );
 }
+
+/**
+ * What a person may do inside a guild room.
+ *
+ * Two rules live here that are easy to get wrong when they are spread across
+ * the JSX: a frozen guild (its Premium ran out) keeps every reader and loses
+ * every writer, and a member may always walk out — frozen or not, and whether
+ * or not they can still do anything else.
+ */
+export type GuildRoomStanding = {
+  /** The listing's Premium has lapsed; the room is read-only. */
+  frozen: boolean;
+  /** Matches `guilds.master_discord_user_id`. */
+  isMaster: boolean;
+  isSiteAdmin: boolean;
+  membershipStatus: GuildMembershipStatus | null;
+  membershipRole: "member" | "officer" | null;
+};
+
+export type GuildRoomPowers = {
+  canEnter: boolean;
+  canOfficer: boolean;
+  canManageSettings: boolean;
+  canLeave: boolean;
+};
+
+export function guildRoomPowers(standing: GuildRoomStanding): GuildRoomPowers {
+  const active = standing.membershipStatus === "active";
+  const manage = standing.isMaster || standing.isSiteAdmin;
+  const officer = manage || (active && standing.membershipRole === "officer");
+  return {
+    canEnter: manage || active,
+    canOfficer: officer && !standing.frozen,
+    canManageSettings: manage && !standing.frozen,
+    // Leaving is a member's own door. The master cannot leave their own guild.
+    canLeave: active && !standing.isMaster,
+  };
+}

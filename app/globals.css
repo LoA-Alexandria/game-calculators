@@ -8522,6 +8522,27 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
   .mail-composer { grid-template-columns: minmax(0, 1fr); }
 }
 
+/* --- a guild whose Premium ran out --------------------------------------- */
+
+.guild-frozen {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 12px 0 0;
+  padding: 10px 12px;
+  border: 1px solid color-mix(in srgb, var(--warn) 45%, var(--line));
+  border-radius: var(--r-md);
+  background: color-mix(in srgb, var(--warn) 10%, transparent);
+  color: var(--ink);
+  font-size: .86rem;
+}
+.guild-frozen .icon { flex: none; margin-top: 1px; color: var(--warn); }
+.guild-frozen-pill { display: inline-flex; align-items: center; gap: 4px; }
+.guild-hero-leave { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin: 12px 0 0; font-size: .86rem; }
+/* Both sit under the guild's own details rather than beside them. */
+.guild-hero-body > .guild-frozen,
+.guild-hero-body > .guild-hero-leave { grid-column: 1 / -1; }
+
 /* --- a dialog over the page ---------------------------------------------- */
 
 .guild-modal-layer { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; padding: 16px; }

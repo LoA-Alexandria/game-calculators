@@ -34,6 +34,21 @@ tools marked `premium: true` in `lib/navigation.ts` and allows one
 `guild_create_requests` row (pending or approved). Rejected guild requests
 free the slot.
 
+**A guild freezes when its Premium runs out.** `guild_is_frozen` asks whether
+the account in `guilds.owner_user_id` still has Premium; admin-created guilds
+(no owner) never freeze. Reads are untouched — the guild, its posts, its roster
+and its plans all stay visible — but every write is refused.
+
+That rule is a trigger, not forty edited policies: `guard_guild_write` is
+attached to each guild-scoped table (and to `guilds` on update only, so the
+owner can still delete a frozen listing). Two things always pass: a site
+admin, who is how a frozen guild gets unstuck, and a member's own membership
+row on its way to `rejected` — **leaving a guild always works**, frozen or
+not. The client mirrors this with `guildRoomPowers` in `lib/content/guilds.ts`
+and a banner in the room; the trigger is what actually enforces it.
+
+`frozen_guild_ids()` lists every frozen guild in one call for the guild list.
+
 Admins can also grant Lifetime Premium from the Premium tab on `/admin/`. That
 writes the same table with `source: 'manual'`, `note: 'lifetime'`, and
 `expires_at` set to `2099-01-01` (see `lifetimePremiumExpiry` in
