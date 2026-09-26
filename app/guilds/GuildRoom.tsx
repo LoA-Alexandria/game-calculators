@@ -31,6 +31,7 @@ import {
   guildRoomHref,
   guildRosterLabel,
   isGuildIconFile,
+  guildRoomPowers,
   isGuildMasterOf,
   normalizeGuildDisplayName,
   readGuildSlugParam,
@@ -51,6 +52,7 @@ import {
   GlobeIcon,
   GuildsIcon,
   InboxIcon,
+  LockIcon,
   NewsIcon,
   PenIcon,
   PlusIcon,
@@ -169,6 +171,9 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
   const [iconFile, setIconFile] = useState<File | null>(null);
   const [managePanel, setManagePanel] = useState<ManagePanel>(null);
   const [rosterOpen, setRosterOpen] = useState(false);
+  // The listing's Premium ran out: everything reads, nothing writes.
+  const [frozen, setFrozen] = useState(false);
+  const [leaving, setLeaving] = useState(false);
   const [editingDisplayName, setEditingDisplayName] = useState(false);
   const [displayNameDraft, setDisplayNameDraft] = useState("");
   const [managingRoster, setManagingRoster] = useState(false);
@@ -234,6 +239,10 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
             : null,
         );
       }
+
+      const frozenRow = await supabase.rpc("guild_is_frozen", { p_guild_id: nextGuild.id });
+      if (gone) return;
+      if (!frozenRow.error) setFrozen(frozenRow.data === true);
 
       const isMaster =
         isGuildMasterOf(nextGuild, session.discordUserId) || session.role === "admin";
@@ -642,10 +651,13 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
 
   const isDiscordMaster = isGuildMasterOf(guild, session.discordUserId);
   const isSiteAdmin = session.role === "admin";
-  const canManageSettings = isDiscordMaster || isSiteAdmin;
-  const canOfficer =
-    canManageSettings || (membership?.status === "active" && membership.role === "officer");
-  const canEnter = canManageSettings || membership?.status === "active";
+  const { canEnter, canOfficer, canManageSettings, canLeave } = guildRoomPowers({
+    frozen,
+    isMaster: isDiscordMaster,
+    isSiteAdmin,
+    membershipStatus: membership?.status ?? null,
+    membershipRole: membership?.role ?? null,
+  });
 
   if (!canEnter) {
     return (
@@ -677,6 +689,28 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
     { id: "officers", label: t.guilds.officersGroup, rows: roster.filter((entry) => !entry.is_master && entry.is_officer) },
     { id: "members", label: t.guilds.membersGroup, rows: roster.filter((entry) => !entry.is_master && !entry.is_officer) },
   ].filter((group) => group.rows.length > 0);
+
+  /** A member's own door out, open whether or not the guild is frozen. */
+  const leaveGuild = async () => {
+    if (!supabase || !guild) return;
+    setBusy(true);
+    setError("");
+    const { error: updateError } = await supabase
+      .from("guild_memberships")
+      .update({
+        status: "rejected",
+        decided_at: new Date().toISOString(),
+        decided_by: session.userId,
+      })
+      .eq("guild_id", guild.id)
+      .eq("user_id", session.userId);
+    setBusy(false);
+    if (updateError) {
+      setError(updateError.message);
+      return;
+    }
+    router.push(guildListHref());
+  };
 
   const startCompose = () => {
     setComposeFor("news");
@@ -865,6 +899,36 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
             ) : null}
           </div>
           {guild.description ? <p className="guild-hero-desc">{guild.description}</p> : null}
+          {frozen ? (
+            <p className="guild-frozen" role="status">
+              <LockIcon className="icon" />
+              <span>{t.guilds.frozenRoom}</span>
+            </p>
+          ) : null}
+          {canLeave ? (
+            <p className="guild-hero-leave">
+              {leaving ? (
+                <>
+                  <span>{t.guilds.leaveConfirm}</span>
+                  <button
+                    className="small-button button-danger"
+                    type="button"
+                    disabled={busy}
+                    onClick={() => void leaveGuild()}
+                  >
+                    {t.guilds.leave}
+                  </button>
+                  <button className="small-button" type="button" disabled={busy} onClick={() => setLeaving(false)}>
+                    {t.guilds.requestCancel}
+                  </button>
+                </>
+              ) : (
+                <button className="small-button" type="button" disabled={busy} onClick={() => setLeaving(true)}>
+                  {t.guilds.leave}
+                </button>
+              )}
+            </p>
+          ) : null}
         </div>
         <nav className="guild-hero-tabs" aria-label={guild.name}>
           <Link
@@ -1291,7 +1355,7 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
                             </span>
                             <span className="guild-roster-tags">
                               {isYou ? <span className="pill">{t.guilds.membersYou}</span> : null}
-                              {isYou ? (
+                              {isYou && !frozen ? (
                                 <button
                                   className="icon-button guild-roster-edit-btn"
                                   type="button"

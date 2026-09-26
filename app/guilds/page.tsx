@@ -15,7 +15,7 @@ import {
 import { getSupabaseBrowserClient } from "../../lib/supabase/client";
 import { useAuth } from "../components/AuthProvider";
 import { useDocumentTitle, useLocale } from "../components/LocaleProvider";
-import { DiscordIcon, GlobeIcon, GuildsIcon, SearchIcon } from "../components/Icons";
+import { DiscordIcon, GlobeIcon, GuildsIcon, LockIcon, SearchIcon } from "../components/Icons";
 import { GuildCreateRequestPanel } from "../components/GuildCreateRequestPanel";
 import { PageHead, SectionBanner } from "../components/Ui";
 
@@ -53,6 +53,8 @@ export default function GuildsPage() {
   const [reloadToken, setReloadToken] = useState(0);
   const [joinGuildId, setJoinGuildId] = useState<string | null>(null);
   const [joinNote, setJoinNote] = useState("");
+  // Guilds whose listing has run out of Premium: readable, not writable.
+  const [frozenIds, setFrozenIds] = useState<Set<string>>(new Set());
 
   const reload = useCallback(() => setReloadToken((value) => value + 1), []);
 
@@ -67,6 +69,12 @@ export default function GuildsPage() {
       if (gone) return;
       if (listed.error) setError(listed.error.message);
       else setGuilds((listed.data ?? []) as Guild[]);
+
+      const frozen = await supabase.rpc("frozen_guild_ids");
+      if (gone) return;
+      if (!frozen.error) {
+        setFrozenIds(new Set(((frozen.data ?? []) as string[]).map(String)));
+      }
 
       if (!session) {
         setMemberships([]);
@@ -234,6 +242,7 @@ export default function GuildsPage() {
             const isRejected = membership?.status === "rejected";
             const blockedByOther =
               Boolean(openMembership) && openMembership?.guild_id !== guild.id && !canManage;
+            const frozen = frozenIds.has(guild.id);
             const busy = busyId === guild.id;
             const drafting = joinGuildId === guild.id;
             const noteId = `${ids}-note-${guild.id}`;
@@ -268,6 +277,12 @@ export default function GuildsPage() {
                       </p>
                     ) : null}
                   </div>
+                  {frozen ? (
+                    <span className="pill pill-warn guild-frozen-pill" title={t.guilds.frozenHint}>
+                      <LockIcon className="icon icon-sm" />
+                      {t.guilds.frozen}
+                    </span>
+                  ) : null}
                   {statusLabel ? <span className={statusClass}>{statusLabel}</span> : null}
                 </div>
                 <div className="guild-card-body">
@@ -334,7 +349,10 @@ export default function GuildsPage() {
                       {t.auth.signIn}
                     </button>
                   )}
-                  {!canEnter && !isPending && !blockedByOther && session && drafting && (
+                  {!canEnter && !isPending && frozen && session ? (
+                    <span className="guild-meta">{t.guilds.frozenJoin}</span>
+                  ) : null}
+                  {!canEnter && !isPending && !blockedByOther && !frozen && session && drafting && (
                     <>
                       <button
                         className="button button-primary"
@@ -349,7 +367,7 @@ export default function GuildsPage() {
                       </button>
                     </>
                   )}
-                  {!canEnter && !isPending && !blockedByOther && session && !drafting && (
+                  {!canEnter && !isPending && !blockedByOther && !frozen && session && !drafting && (
                     <button
                       className="button button-primary"
                       type="button"
