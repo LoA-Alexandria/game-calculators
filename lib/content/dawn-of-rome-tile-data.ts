@@ -37,7 +37,7 @@ export const ROME_STRUCTURES: readonly RomeStructure[] = [
   // The six outposts at the rim: a guild's own base, four hexes each.
   { kind: "home", tiles: [[13, 0], [14, 0], [14, 1], [15, 0]] },
   { kind: "home", tiles: [[25, 5], [25, 6], [26, 6], [26, 7]] },
-  { kind: "home", tiles: [[2, 6], [2, 7], [3, 6], [3, 7]] },
+  { kind: "home", tiles: [[2, 6], [2, 7], [3, 5], [3, 6]] },
   { kind: "home", tiles: [[2, 17], [2, 18], [3, 16], [3, 17]] },
   { kind: "home", tiles: [[25, 16], [25, 17], [26, 17], [26, 18]] },
   { kind: "home", tiles: [[13, 23], [14, 23], [14, 24], [15, 23]] },
