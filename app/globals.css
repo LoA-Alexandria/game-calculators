@@ -8257,6 +8257,36 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
 .siege-village:focus-visible { outline: none; box-shadow: var(--ring); }
 .siege-village[aria-pressed="true"] { border-color: #fff; box-shadow: 0 0 0 2px rgba(255, 255, 255, .4); }
 .siege-village[data-state="ours"] { background: color-mix(in srgb, var(--accent) 72%, rgba(10, 12, 18, .8)); }
+
+/* On the hex map the chip is only its badge: a chip wide enough to read the
+   name covered several hexes and swallowed their taps. The name moves out of
+   the button, below it, and lets clicks through to the board. */
+.siege-village[data-compact="true"] {
+  width: auto;
+  max-width: none;
+  padding: 3px;
+  border-radius: 999px;
+}
+.siege-village[data-compact="true"] .siege-village-name { display: none; }
+.siege-village[data-compact="true"] .siege-village-head { gap: 0; }
+.siege-village[data-compact="true"]:hover { transform: translate(-50%, 22%) scale(1.12); }
+.siege-badge.is-blank { width: 14px; height: 14px; background: rgba(255, 255, 255, .8); }
+.siege-village-caption {
+  position: absolute;
+  top: var(--village-y);
+  left: var(--village-x);
+  z-index: 2;
+  transform: translate(-50%, 165%);
+  padding: 1px 6px 2px;
+  border-radius: 999px;
+  background: rgba(10, 12, 18, .66);
+  color: #fff;
+  font-size: .68rem;
+  font-weight: 650;
+  white-space: nowrap;
+  /* The whole point: the hexes under the name stay clickable. */
+  pointer-events: none;
+}
 .siege-village[data-state="ally"] { background: color-mix(in srgb, var(--good) 68%, rgba(10, 12, 18, .8)); }
 .siege-village[data-state="free"] { border-style: dashed; background: rgba(10, 12, 18, .5); }
 

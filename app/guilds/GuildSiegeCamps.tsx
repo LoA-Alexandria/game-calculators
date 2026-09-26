@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState, type CSSProperties } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useState, type CSSProperties } from "react";
 import {
   GUILD_CAMP_NAME_MAX,
   GUILD_CAMP_NOTE_MAX,
@@ -417,15 +417,20 @@ export function GuildSiegeCamps({
           const attackers = campAttackers(slot, orders);
           const quiet = camp.horn_share === 0 && !camp.ring_focus && attackers.length === 0;
 
+          const label = base ? base.label : campLabel(camp);
+          const place = { "--village-x": `${point.x}%`, "--village-y": `${point.y}%` } as CSSProperties;
+
           return (
+            <Fragment key={slot}>
             <button
-              key={slot}
               type="button"
               className="siege-village"
+              data-compact={showHex ? "true" : undefined}
               data-state={base ? (base.own ? "ours" : "ally") : order > 0 ? "target" : "free"}
               data-prio={order > 0 ? Math.min(order, 4) : undefined}
               aria-pressed={selected === slot}
-              style={{ "--village-x": `${point.x}%`, "--village-y": `${point.y}%` } as CSSProperties}
+              aria-label={showHex ? label : undefined}
+              style={place}
               onClick={() => pick(slot)}
             >
               <span className="siege-village-head">
@@ -437,8 +442,10 @@ export function GuildSiegeCamps({
                   <span className="siege-badge" data-prio={Math.min(order, 4)}>
                     {order}
                   </span>
+                ) : showHex ? (
+                  <span className="siege-badge is-blank" aria-hidden="true" />
                 ) : null}
-                <span className="siege-village-name">{base ? base.label : campLabel(camp)}</span>
+                <span className="siege-village-name">{label}</span>
               </span>
               {base || quiet || !showStock ? null : (
                 <span className="siege-village-numbers">
@@ -470,6 +477,15 @@ export function GuildSiegeCamps({
                 </span>
               ) : null}
             </button>
+            {/* The name sits beside the badge, not inside the button: on the hex
+                map a chip wide enough to read covered several hexes and swallowed
+                their taps. This one lets them through. */}
+            {showHex ? (
+              <span className="siege-village-caption" style={place} aria-hidden="true">
+                {label}
+              </span>
+            ) : null}
+            </Fragment>
           );
         })}
 

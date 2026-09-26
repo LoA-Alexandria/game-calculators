@@ -136,7 +136,13 @@ paints them all. Their sizes come from the game — Rome 7 hexes, a guild outpos
 themselves are measured off the artwork, by masking the building's own ink out
 of the picture and growing each group from the hex under its centre to whichever
 neighbour covered most of that ink. A structure wins over the terrain key, since
-a few of them stand on hexes the colour pass had called impassable.
+a few of them stand on hexes the colour pass had called impassable. The fit was
+checked by eye against a labelled grid drawn over the artwork, which is how
+three groups that the ink mask had put a hex off were corrected.
+
+On the hex map the village chip is only its badge, and the name sits below it
+in a `pointer-events: none` caption: a chip wide enough to read covered several
+hexes and swallowed their taps.
 
 Territory pays prestige (`dawn-of-rome-prestige.ts`): open land by the hex, a
 structure once for the whole place. Only the outpost (400/min) and the walled
