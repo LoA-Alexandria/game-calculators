@@ -32,7 +32,18 @@ submit a claim with their transaction id (`premium_claims`), and an admin
 approves the claim to extend `expires_at` by 30 days. Active Premium unlocks
 tools marked `premium: true` in `lib/navigation.ts` and allows one
 `guild_create_requests` row (pending or approved). Rejected guild requests
-free the slot.
+free the slot. One open row is the whole rule: a renewed month does not buy a
+second guild while the first is still pending or approved.
+
+A request says who the guild is for. `owner_kind: 'self'` points at the
+requester through `owner_user_id`; `'other'` names somebody else, by Discord
+snowflake in `master_discord_user_id` or by account name in `master_handle`
+when no snowflake was given. An empty name means the requester, so the form
+cannot leave a guild ownerless. `guilds.master_discord_user_id` is still
+required, so the admin queue asks for the snowflake before it creates the
+guild — a password account has none of its own. The server is stored in two
+parts (`server_number`, `server_name`) and joined by `formatGuildServer` into
+the one label the guild carries, `S12 Garden`.
 
 `/account/` is where a member sees both. It reads their own
 `premium_entitlements` row (days left, and a reminder in the last five) and the
