@@ -31,6 +31,28 @@ export const CRYPTID_FORMATION: readonly {
   { id: "sleipnir", slots: [4], cryptides: ["sleipnir"] },
 ];
 
+/**
+ * The order to raise them in, as Autumn gave it on 11 August 2026.
+ *
+ * Each step names the Cryptides it is about, so the page can show them rather
+ * than only spell them out. "Then the other two" is written out as Caladrius
+ * and Sleipnir, which is what is left after the two before it.
+ */
+export const CRYPTID_PRIORITY: readonly {
+  id: string;
+  cryptides: readonly string[];
+  /** The rarity the step pushes them to. */
+  target: "SSR" | "UR";
+  /** The step spells out an order, so its pictures are numbered. */
+  ordered?: boolean;
+}[] = [
+  { id: "allSsr", cryptides: ["cerberus", "caladrius", "nidhogg", "sleipnir"], target: "SSR" },
+  { id: "order", cryptides: ["cerberus", "caladrius", "nidhogg", "sleipnir"], target: "SSR", ordered: true },
+  { id: "nidhoggUr", cryptides: ["nidhogg"], target: "UR" },
+  { id: "cerberusUr", cryptides: ["cerberus"], target: "UR" },
+  { id: "rest", cryptides: ["caladrius", "sleipnir"], target: "UR" },
+];
+
 /** One Cryptide by its id in the Cryptides guide. */
 export function cryptideById(id: string): Cryptide | undefined {
   return CRYPTIDES.find((cryptide) => cryptide.id === id);

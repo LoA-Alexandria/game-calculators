@@ -1,7 +1,7 @@
 "use client";
 
 import { guideLayout } from "../../lib/content/guides";
-import { CRYPTID_FORMATION, cryptideById } from "../../lib/content/cryptid-layout";
+import { CRYPTID_FORMATION, CRYPTID_PRIORITY, cryptideById } from "../../lib/content/cryptid-layout";
 import { cryptideImageUrl, localizedCryptideName, type CryptideTexts } from "../../lib/content/cryptides";
 import { fill, type Dictionary } from "../../lib/i18n";
 import { useLocale } from "../components/LocaleProvider";
@@ -55,6 +55,43 @@ function Formation({ guide, texts }: { guide: Guide; texts: CryptideTexts }) {
   );
 }
 
+/**
+ * The order to raise them in: a path of numbered steps, each showing the
+ * Cryptides it is about and the rarity it pushes them to. The second step is
+ * an order rather than a set, so its pictures are numbered as well.
+ */
+function Priority({ guide, texts }: { guide: Guide; texts: CryptideTexts }) {
+  return (
+    <ol className="cryptid-path">
+      {CRYPTID_PRIORITY.map((step) => (
+        <li key={step.id}>
+          <p className="cryptid-path-line">
+            <strong>{guide.prioritySteps[step.id as keyof Guide["prioritySteps"]]}</strong>
+            <span className="cryptid-path-target" data-rarity={step.target}>
+              {fill(guide.priorityTarget, { rarity: step.target })}
+            </span>
+          </p>
+          <ul className="cryptid-path-who">
+            {step.cryptides.map((id, index) => {
+              const cryptide = cryptideById(id);
+              if (!cryptide) return null;
+              return (
+                <li key={id}>
+                  {step.ordered ? <span className="cryptid-path-rank mono">{index + 1}</span> : null}
+                  {/* A static export cannot optimise images; the portrait is already a small WebP. */}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={cryptideImageUrl(cryptide.image)} alt="" loading="lazy" decoding="async" />
+                  <span>{localizedCryptideName(cryptide, texts)}</span>
+                </li>
+              );
+            })}
+          </ul>
+        </li>
+      ))}
+    </ol>
+  );
+}
+
 export function CryptidLayoutGuide({ guide }: { guide: Guide }) {
   const { t } = useLocale();
   // Names come from the Cryptides guide, so a Cryptide is called the same on
@@ -72,11 +109,7 @@ export function CryptidLayoutGuide({ guide }: { guide: Guide }) {
 
       <h2>{guide.priorityHeading}</h2>
       <p className="guide-lede">{guide.priorityLede}</p>
-      <ol className="cryptid-priority">
-        {guide.prioritySteps.map((step) => (
-          <li key={step}>{step}</li>
-        ))}
-      </ol>
+      <Priority guide={guide} texts={texts} />
 
       <h2>{guide.towerHeading}</h2>
       {guide.towerBody.map((paragraph, index) => (

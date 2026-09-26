@@ -8,7 +8,12 @@ import { getDictionary, mapLocales } from "../lib/i18n/index.ts";
 import { sectionById } from "../lib/navigation.ts";
 import { guideHref, guideLayout } from "../lib/content/guides.ts";
 import { GUIDE_PRESENTATION } from "../lib/content/guide-meta.ts";
-import { CRYPTID_FORMATION, cryptideById, formationCryptides } from "../lib/content/cryptid-layout.ts";
+import {
+  CRYPTID_FORMATION,
+  CRYPTID_PRIORITY,
+  cryptideById,
+  formationCryptides,
+} from "../lib/content/cryptid-layout.ts";
 import { CRYPTIDES } from "../lib/content/cryptides.ts";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -51,9 +56,11 @@ test("every language gives a reason per group and the same lists", () => {
     assert.ok(guide.sourceNote.includes("Autumn"), `${code} keeps the credit`);
     // The lists are one piece of advice each, so they have to line up across
     // languages; a missing step would read as a different plan.
-    steps ??= guide.prioritySteps.length;
+    steps ??= Object.keys(guide.prioritySteps).length;
     levels ??= guide.towerLevels.length;
-    assert.equal(guide.prioritySteps.length, steps, `${code} priority steps`);
+    assert.equal(Object.keys(guide.prioritySteps).length, steps, `${code} priority steps`);
+    for (const step of CRYPTID_PRIORITY) assert.ok(guide.prioritySteps[step.id]?.trim(), `${code}.${step.id}`);
+    assert.ok(guide.priorityTarget.includes("{rarity}"), `${code} target keeps its placeholder`);
     assert.equal(guide.towerLevels.length, levels, `${code} tower levels`);
     for (const row of guide.towerLevels) {
       assert.ok(row.tier.trim(), code);
@@ -62,6 +69,21 @@ test("every language gives a reason per group and the same lists", () => {
   }
   assert.equal(steps, 5);
   assert.equal(levels, 4);
+});
+
+test("every step of the path names Cryptides that exist and a rarity to reach", () => {
+  const rarities = new Set(["SSR", "UR"]);
+  for (const step of CRYPTID_PRIORITY) {
+    assert.ok(step.cryptides.length > 0, step.id);
+    assert.ok(rarities.has(step.target), `${step.id} target`);
+    for (const id of step.cryptides) assert.ok(cryptideById(id), `${step.id}: ${id}`);
+  }
+  // Everything named across the path is a Cryptide the guide actually has, and
+  // every Cryptide is reached at some point.
+  const touched = new Set(CRYPTID_PRIORITY.flatMap((step) => step.cryptides));
+  assert.deepEqual([...touched].sort(), CRYPTIDES.map((cryptide) => cryptide.id).sort());
+  const ur = CRYPTID_PRIORITY.filter((step) => step.target === "UR").flatMap((step) => step.cryptides);
+  assert.deepEqual([...ur].sort(), CRYPTIDES.map((cryptide) => cryptide.id).sort(), "all four end at UR");
 });
 
 test("the guide card shows pictures that are on disk and no editor", () => {

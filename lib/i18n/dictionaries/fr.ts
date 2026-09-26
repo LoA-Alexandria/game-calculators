@@ -4462,13 +4462,14 @@ const fr: Dictionary = {
         "Dès que Nidhogg et Cerbère sont SSR, Autumn change la formation pour que la compétence de Nidhogg soit amplifiée. L’ordre de cette seconde formation n’est pas encore noté ici.",
       priorityHeading: "Quoi faire évoluer en premier",
       priorityLede: "L’ordre à suivre une fois que vous avez les quatre.",
-      prioritySteps: [
-        "Amener les quatre en SSR.",
-        "Puis dans cet ordre : Cerbère, Caladrius, Nidhogg, Sleipnir.",
-        "Puis Nidhogg en UR.",
-        "Puis Cerbère en UR.",
-        "Puis les deux autres.",
-      ],
+      priorityTarget: "en {rarity}",
+      prioritySteps: {
+        allSsr: "Amener les quatre en SSR.",
+        order: "Les monter dans cet ordre.",
+        nidhoggUr: "Puis Nidhogg.",
+        cerberusUr: "Puis Cerbère.",
+        rest: "Puis les deux autres.",
+      },
       towerHeading: "Niveaux pour les Tours",
       towerBody: [
         "Une Tour est un donjon à un seul type de troupe : tous vos héros de ce type y vont. C’est donc toute la troupe qu’il faut monter, pas seulement les meilleurs.",

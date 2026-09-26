@@ -4462,13 +4462,14 @@ const de: Dictionary = {
         "Sobald Nidhöggr und Kerberos SSR sind, stellt Autumn um, damit Nidhöggrs Skill verstärkt wird. Die Reihenfolge dieser zweiten Aufstellung steht hier noch nicht.",
       priorityHeading: "Was zuerst entwickeln",
       priorityLede: "Die Reihenfolge, wenn du alle vier hast.",
-      prioritySteps: [
-        "Alle vier auf SSR bringen.",
-        "Danach in dieser Reihenfolge: Kerberos, Caladrius, Nidhöggr, Sleipnir.",
-        "Dann Nidhöggr auf UR.",
-        "Dann Kerberos auf UR.",
-        "Dann die anderen beiden.",
-      ],
+      priorityTarget: "auf {rarity}",
+      prioritySteps: {
+        allSsr: "Alle vier auf SSR bringen.",
+        order: "In dieser Reihenfolge hochziehen.",
+        nidhoggUr: "Dann Nidhöggr.",
+        cerberusUr: "Dann Kerberos.",
+        rest: "Dann die anderen beiden.",
+      },
       towerHeading: "Stufen für die Tower",
       towerBody: [
         "Ein Tower ist ein Dungeon für eine einzige Truppengattung: Es gehen alle Helden dieser Gattung hinein. Also muss die ganze Gattung gelevelt werden, nicht nur die besten paar.",

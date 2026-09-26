@@ -1439,13 +1439,14 @@ const en = {
         "Once Nidhogg and Cerberus are SSR, Autumn changes the line-up so that Nidhogg’s skill is amplified. The order for that second formation is not written down here yet.",
       priorityHeading: "What to evolve first",
       priorityLede: "The order to push them, once you have all four.",
-      prioritySteps: [
-        "Bring all four to SSR.",
-        "Then in this order: Cerberus, Caladrius, Nidhogg, Sleipnir.",
-        "Then Nidhogg to UR.",
-        "Then Cerberus to UR.",
-        "Then the other two.",
-      ],
+      priorityTarget: "to {rarity}",
+      prioritySteps: {
+        allSsr: "Bring all four to SSR.",
+        order: "Push them in this order.",
+        nidhoggUr: "Then Nidhogg.",
+        cerberusUr: "Then Cerberus.",
+        rest: "Then the other two.",
+      },
       towerHeading: "Levels for the Towers",
       towerBody: [
         "A Tower is a single-troop dungeon: every hero of that troop type goes in. So the whole troop has to be levelled, not only the best few.",
