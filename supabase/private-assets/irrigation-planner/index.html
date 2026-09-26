@@ -605,10 +605,7 @@ html.embedded .head{margin-bottom:12px;}
 html.embedded .head h1, html.embedded .head .eyebrow{display:none;}
 </style>
 <script>
-/* Embed flag, theme bridge, and colour-scheme bridge. The host site stores
-   the reader's choices under 'popepoch-theme' and 'popepoch-scheme'; this
-   document is served from the same origin, so the values are visible here
-   and later changes arrive as a 'storage' event. */
+/* Embed flag plus a bounded storage/theme bridge to the authenticated host. */
 (function(){
   try{
     if (new URLSearchParams(location.search).get('embed') === '1'){
@@ -617,6 +614,12 @@ html.embedded .head h1, html.embedded .head .eyebrow{display:none;}
   }catch(e){}
   var KEY = 'popepoch-theme';
   var SCHEME_KEY = 'popepoch-scheme';
+  var PARENT_ORIGINS = ['https://loa-alexandria.github.io', 'http://localhost:3000', 'http://localhost:3017'];
+  var parentOrigin = '';
+  try{
+    var referrerOrigin = new URL(document.referrer).origin;
+    if (PARENT_ORIGINS.indexOf(referrerOrigin) >= 0) parentOrigin = referrerOrigin;
+  }catch(e){}
   function apply(v){
     if (v === 'light' || v === 'dark') document.documentElement.setAttribute('data-theme', v);
     else document.documentElement.removeAttribute('data-theme');
@@ -632,6 +635,64 @@ html.embedded .head h1, html.embedded .head .eyebrow{display:none;}
     if (e.key === KEY) apply(e.newValue);
     if (e.key === SCHEME_KEY) applyScheme(e.newValue);
   });
+  window.addEventListener('message', function(event){
+    if (PARENT_ORIGINS.indexOf(event.origin) < 0) return;
+    var message = event.data;
+    if (!message) return;
+    if (message.type === 'popepoch:planner-theme'){
+      try{
+        if (message.theme === 'light' || message.theme === 'dark') localStorage.setItem(KEY, message.theme);
+        else localStorage.removeItem(KEY);
+        if (message.scheme === 'stone' || message.scheme === 'lapis' || message.scheme === 'papyrus' || message.scheme === 'steam')
+          localStorage.setItem(SCHEME_KEY, message.scheme);
+        else localStorage.removeItem(SCHEME_KEY);
+      }catch(e){}
+      apply(message.theme);
+      applyScheme(message.scheme);
+      return;
+    }
+    if (message.type !== 'popepoch:planner-bootstrap' ||
+        !message.storage || typeof message.storage !== 'object') return;
+    var allowed = [KEY, SCHEME_KEY, 'irrigation_planner_v1', 'irrigation_planner_mode_v1',
+      'irrigation_planner_types_v1', 'irrigation_prod_v1', 'irrigation_tab_v1'];
+    var reload = false, total = 0;
+    allowed.forEach(function(key){
+      var value = message.storage[key];
+      if (typeof value !== 'string' || value.length > 100000) return;
+      total += value.length;
+      if (total > 200000) return;
+      try{
+        // The private-origin planner is authoritative once it has a saved
+        // value. Copy the old site-origin value only for keys not migrated yet.
+        var isPlannerData = key.indexOf('irrigation_') === 0;
+        if ((!isPlannerData || localStorage.getItem(key) === null) && localStorage.getItem(key) !== value){
+          localStorage.setItem(key, value);
+          if (isPlannerData) reload = true;
+        }
+      }catch(e){}
+    });
+    apply(message.storage[KEY]);
+    applyScheme(message.storage[SCHEME_KEY]);
+    if (reload) location.reload();
+    else syncParentStorage();
+  });
+  function syncParentStorage(){
+    if (window.parent === window || !parentOrigin) return;
+    var storage = {};
+    var allowed = [KEY, SCHEME_KEY, 'irrigation_planner_v1', 'irrigation_planner_mode_v1',
+      'irrigation_planner_types_v1', 'irrigation_prod_v1', 'irrigation_tab_v1'];
+    allowed.forEach(function(key){
+      try{
+        var value = localStorage.getItem(key);
+        if (value !== null) storage[key] = value;
+      }catch(e){}
+    });
+    window.parent.postMessage({type:'popepoch:planner-state', storage:storage}, parentOrigin);
+  }
+  window.__popepochSyncPlannerState = syncParentStorage;
+  // Planner persistence runs every four seconds. Mirror its local state back
+  // to the host app so navigation/reopening retains the latest layout.
+  setInterval(syncParentStorage, 4000);
 })();
 </script>
 </head>
@@ -3627,6 +3688,7 @@ html.embedded .head h1, html.embedded .head .eyebrow{display:none;}
       var data = {placed:placed, targets:{}};
       DEFS.forEach(function(d){ data.targets[d.key]=d.target; });
       localStorage.setItem('irrigation_planner_v1', JSON.stringify(data));
+      if (typeof window.__popepochSyncPlannerState === 'function') window.__popepochSyncPlannerState();
     }catch(e){}
   }
   function loadLocal(){
