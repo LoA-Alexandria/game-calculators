@@ -29,11 +29,23 @@ export type RomeStructureKind = "rome" | "home" | "large" | "medium" | "gate" | 
 export type RomeStructure = {
   kind: RomeStructureKind;
   tiles: readonly RomeTileRef[];
+  /**
+   * The place's own name, keyed into `t.guilds.romePlaces`. The game gives
+   * these in every client language, so the picture stays wordless and the
+   * board writes them. The six outposts have none: a guild holds one and puts
+   * its own name on it.
+   */
+  name?: RomePlaceName;
 };
+
+export type RomePlaceName =
+  | "rome" | "tibur" | "ostia" | "aricia" | "kailey" | "praeneste" | "ardea"
+  | "pass" | "sutrium" | "eretum" | "tres" | "ceyni" | "arsium" | "anagni"
+  | "laurentum" | "alatri" | "satricum" | "lanuvium" | "cisterna" | "velletri";
 
 export const ROME_STRUCTURES: readonly RomeStructure[] = [
   // Rome itself, the seven hexes of the marble complex in the middle.
-  { kind: "rome", tiles: [[13, 11], [13, 12], [14, 11], [14, 12], [14, 13], [15, 11], [15, 12]] },
+  { kind: "rome", tiles: [[13, 11], [13, 12], [14, 11], [14, 12], [14, 13], [15, 11], [15, 12]], name: "rome" },
   // The six outposts at the rim: a guild's own base, four hexes each.
   { kind: "home", tiles: [[13, 0], [14, 0], [14, 1], [15, 0]] },
   { kind: "home", tiles: [[25, 5], [25, 6], [26, 6], [26, 7]] },
@@ -42,30 +54,30 @@ export const ROME_STRUCTURES: readonly RomeStructure[] = [
   { kind: "home", tiles: [[25, 16], [25, 17], [26, 17], [26, 18]] },
   { kind: "home", tiles: [[13, 23], [14, 23], [14, 24], [15, 23]] },
   // Walled cities, four hexes.
-  { kind: "large", tiles: [[17, 6], [18, 6], [18, 7], [19, 6]] },
-  { kind: "large", tiles: [[6, 12], [7, 11], [7, 12], [8, 12]] },
-  { kind: "large", tiles: [[17, 17], [18, 17], [18, 18], [19, 17]] },
+  { kind: "large", tiles: [[17, 6], [18, 6], [18, 7], [19, 6]], name: "tibur" },
+  { kind: "large", tiles: [[6, 12], [7, 11], [7, 12], [8, 12]], name: "ostia" },
+  { kind: "large", tiles: [[17, 17], [18, 17], [18, 18], [19, 17]], name: "aricia" },
   // Round cities, three hexes.
-  { kind: "medium", tiles: [[10, 6], [10, 7], [11, 6]] },
-  { kind: "medium", tiles: [[20, 12], [21, 11], [21, 12]] },
-  { kind: "medium", tiles: [[10, 17], [10, 18], [11, 17]] },
+  { kind: "medium", tiles: [[10, 6], [10, 7], [11, 6]], name: "kailey" },
+  { kind: "medium", tiles: [[20, 12], [21, 11], [21, 12]], name: "praeneste" },
+  { kind: "medium", tiles: [[10, 17], [10, 18], [11, 17]], name: "ardea" },
   // Gates: the walled passes, two hexes.
-  { kind: "gate", tiles: [[15, 9], [16, 10]] },
-  { kind: "gate", tiles: [[11, 11], [11, 12]] },
-  { kind: "gate", tiles: [[15, 14], [16, 14]] },
+  { kind: "gate", tiles: [[15, 9], [16, 10]], name: "pass" },
+  { kind: "gate", tiles: [[11, 11], [11, 12]], name: "pass" },
+  { kind: "gate", tiles: [[15, 14], [16, 14]], name: "pass" },
   // Villages, one hex.
-  { kind: "small", tiles: [[10, 3]] },
-  { kind: "small", tiles: [[18, 3]] },
-  { kind: "small", tiles: [[7, 4]] },
-  { kind: "small", tiles: [[21, 4]] },
-  { kind: "small", tiles: [[4, 10]] },
-  { kind: "small", tiles: [[24, 10]] },
-  { kind: "small", tiles: [[4, 13]] },
-  { kind: "small", tiles: [[24, 13]] },
-  { kind: "small", tiles: [[7, 19]] },
-  { kind: "small", tiles: [[21, 19]] },
-  { kind: "small", tiles: [[10, 21]] },
-  { kind: "small", tiles: [[18, 21]] },
+  { kind: "small", tiles: [[10, 3]], name: "sutrium" },
+  { kind: "small", tiles: [[18, 3]], name: "eretum" },
+  { kind: "small", tiles: [[7, 4]], name: "tres" },
+  { kind: "small", tiles: [[21, 4]], name: "ceyni" },
+  { kind: "small", tiles: [[4, 10]], name: "arsium" },
+  { kind: "small", tiles: [[24, 10]], name: "anagni" },
+  { kind: "small", tiles: [[4, 13]], name: "laurentum" },
+  { kind: "small", tiles: [[24, 13]], name: "alatri" },
+  { kind: "small", tiles: [[7, 19]], name: "satricum" },
+  { kind: "small", tiles: [[21, 19]], name: "lanuvium" },
+  { kind: "small", tiles: [[10, 21]], name: "cisterna" },
+  { kind: "small", tiles: [[18, 21]], name: "velletri" },
 ] as const;
 
 /** How many hexes each kind of structure covers. */

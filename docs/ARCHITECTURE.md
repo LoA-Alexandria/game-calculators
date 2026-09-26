@@ -144,6 +144,12 @@ On the hex map the village chip is only its badge, and the name sits below it
 in a `pointer-events: none` caption: a chip wide enough to read covered several
 hexes and swallowed their taps.
 
+Every place except the six outposts carries its own name — `name` on the
+structure, keyed into `t.guilds.romePlaces`, written on the map until a guild
+takes it. The picture itself stays wordless because the game prints those names
+in each client language; the board supplies them instead. An outpost has none:
+a guild holds one and puts its own name on it.
+
 A toolbar over the map hands a half of the board to the colour in hand, empties
 one colour, or wipes the board (that last one asks first). `romeFillTiles`
 decides a half by the middle of the picture and always moves a structure whole,
