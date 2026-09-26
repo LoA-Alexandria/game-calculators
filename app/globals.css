@@ -7562,11 +7562,15 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
 }
 .guild-panel-head {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 10px;
+  gap: 8px 10px;
   margin-bottom: 12px;
 }
+/* The event switcher lives in this head now; it takes the room it needs and
+   the score and the manage button follow on the next line. */
+.guild-panel-head > .guild-event-tabs { flex: 1 1 100%; margin: 0; }
 .guild-panel-head h2 {
   margin: 0;
   font-family: var(--font-display);
@@ -8183,6 +8187,45 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
 }
 
 .siege-hex-error { margin: 0 0 8px; }
+
+/* --- what each guild's territory earns ------------------------------------ */
+
+.siege-prestige { margin-top: 12px; }
+.siege-prestige h3 {
+  margin: 0 0 8px;
+  color: var(--ink-soft);
+  font-family: var(--font-display);
+  font-size: .88rem;
+}
+.siege-prestige-empty, .siege-prestige-note { margin: 0; color: var(--ink-faint); font-size: .78rem; }
+.siege-prestige-note { margin-top: 8px; }
+.siege-prestige-list { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.siege-prestige-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 4px 10px;
+  padding: 7px 10px;
+  border: 1px solid var(--line);
+  border-left: 3px solid color-mix(in srgb, var(--tone) 70%, transparent);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  font-size: .84rem;
+}
+.siege-prestige-name { font-weight: 600; }
+.siege-prestige-hexes { color: var(--ink-faint); font-size: .78rem; }
+.siege-prestige-rate { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.siege-prestige-open { margin-left: 3px; color: var(--warn); }
+.siege-prestige-places { grid-column: 2 / -1; color: var(--ink-soft); font-size: .76rem; }
+.siege-prestige-row[data-tone="1"] { --tone: var(--accent); }
+.siege-prestige-row[data-tone="2"] { --tone: var(--good); }
+.siege-prestige-row[data-tone="3"] { --tone: var(--bad); }
+.siege-prestige-row[data-tone="4"] { --tone: var(--warn); }
+.siege-prestige-row[data-tone="5"] { --tone: #a684e8; }
+.siege-prestige-row[data-tone="6"] { --tone: #8ea2b5; }
+@media (max-width: 560px) {
+  .siege-prestige-row { grid-template-columns: auto minmax(0, 1fr) auto; }
+}
 
 .siege-village {
   position: absolute;

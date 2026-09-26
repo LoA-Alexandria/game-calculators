@@ -129,6 +129,22 @@ whose board it is, 2 for the guild it is allied with, 3 to 6 for the other side,
 so one map can show who holds what. Tapping a tile that already wears the chosen
 colour clears it.
 
+What stands on the map is a second list, `ROME_STRUCTURES` in
+`dawn-of-rome-tile-data.ts`. A structure is one target: tapping any of its hexes
+paints them all. Their sizes come from the game — Rome 7 hexes, a guild outpost
+4, a walled city 4, a round city 3, a gate 2, a village 1 — and the hexes
+themselves are measured off the artwork, by masking the building's own ink out
+of the picture and growing each group from the hex under its centre to whichever
+neighbour covered most of that ink. A structure wins over the terrain key, since
+a few of them stand on hexes the colour pass had called impassable.
+
+Territory pays prestige (`dawn-of-rome-prestige.ts`): open land by the hex, a
+structure once for the whole place. Only the outpost (400/min) and the walled
+city (360/min) have known rates so far; the rest are `null`, which the board
+shows as `+?` rather than counting as zero. Rome therefore has no day tabs, no
+score fields and no call line (`scoreboard: false`), and its board stays on day
+1 — its scoreboard is the prestige table under the map.
+
 Officers turn events on and off from a dialog that the board's own header opens.
 Ending an event calls `end_guild_event`, which deletes its villages, stock, day
 scores, pledges, painted hexes and any alliance for it, so the next

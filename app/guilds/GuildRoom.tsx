@@ -17,7 +17,6 @@ import {
 import { LOCALES, type Locale } from "../../lib/i18n";
 import { blankTranslations, type Translations } from "../../lib/i18n/translations";
 import {
-  GUILD_PLAN_EVENTS,
   isGuildPlanEventId,
   guildPlanEventDef,
   type GuildPlanEventId,
@@ -1109,25 +1108,6 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
         <div className="guild-room-main">
           {tab === "planung" ? (
             <>
-              {activeEventIds.length > 0 ? (
-                <nav className="guild-event-tabs" aria-label={t.guilds.planung}>
-                  {activeEventIds.map((id) => {
-                    const def = GUILD_PLAN_EVENTS.find((e) => e.id === id);
-                    if (!def) return null;
-                    return (
-                      <button
-                        key={id}
-                        type="button"
-                        className={planEventId === id ? "guild-tab is-active" : "guild-tab"}
-                        aria-pressed={planEventId === id}
-                        onClick={() => setPlanEventId(id)}
-                      >
-                        {t.guilds.events[def.labelKey]}
-                      </button>
-                    );
-                  })}
-                </nav>
-              ) : null}
               {planEventId ? (
                 <GuildEventBoard
                   guildId={guild.id}
@@ -1136,6 +1116,8 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
                   canOfficer={canOfficer}
                   roster={roster}
                   eventId={planEventId}
+                  activeEventIds={activeEventIds}
+                  onSelectEvent={setPlanEventId}
                   onManageEvents={() => setEventPickerOpen(true)}
                 />
               ) : (
