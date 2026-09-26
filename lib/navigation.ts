@@ -310,6 +310,11 @@ export const SECTIONS: NavSection[] = [
     icon: "simulations",
     items: [
       {
+        href: "/simulations/hero-team-planner/",
+        label: (t) => t.heroTeamPlanner.title,
+        description: (t) => t.heroTeamPlanner.intro,
+      },
+      {
         href: "/simulations/irrigation-planner/",
         label: (t) => t.tools.irrigation.name,
         description: (t) => t.tools.irrigation.description,
