@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useState } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import {
   formatGuildServer,
@@ -167,152 +168,159 @@ export function GuildCreateRequestPanel() {
     );
   }
 
+  // `.content > *` caps its children at the 1440px reading column, which cut
+  // the backdrop off at both sides. The dialog belongs to the window, so it
+  // renders on <body> instead of inside the page.
+  const dialog = (
+    <div className="guild-modal-layer">
+      <button
+        type="button"
+        className="guild-modal-backdrop"
+        aria-label={t.premium.guildRequestClose}
+        onClick={() => setOpen(false)}
+      />
+      <div className="guild-modal" role="dialog" aria-modal="true" aria-label={t.premium.guildRequestTitle}>
+        <header className="guild-modal-head">
+          <h2>{t.premium.guildRequestTitle}</h2>
+          <button
+            type="button"
+            className="icon-button"
+            aria-label={t.premium.guildRequestClose}
+            onClick={() => setOpen(false)}
+          >
+            <CloseIcon className="icon" />
+          </button>
+        </header>
+
+        {error ? (
+          <p className="sign-in-error" role="alert">
+            {error}
+          </p>
+        ) : null}
+
+        {locked ? (
+          <>
+            <p>{pending ? t.premium.guildRequestPending : t.premium.guildRequestApproved}</p>
+            <p className="assumption">
+              {own?.name}
+              {ownServerLabel ? ` · ${ownServerLabel}` : ""}
+            </p>
+            <p className="assumption">{t.premium.guildRequestLocked}</p>
+          </>
+        ) : (
+          <form
+            className="premium-claim-form"
+            onSubmit={(event) => {
+              event.preventDefault();
+              void submit();
+            }}
+          >
+            <p className="assumption">{t.premium.guildRequestLede}</p>
+
+            <label htmlFor={`${ids}-name`}>
+              <span>{t.premium.guildRequestName}</span>
+              <input
+                id={`${ids}-name`}
+                value={name}
+                onChange={(event) => setName(event.target.value)}
+                required
+                minLength={2}
+                maxLength={80}
+              />
+            </label>
+
+            <div className="guild-request-server">
+              <label htmlFor={`${ids}-server-no`}>
+                <span>{t.premium.guildRequestServerNumber}</span>
+                <input
+                  id={`${ids}-server-no`}
+                  value={serverNumber}
+                  inputMode="numeric"
+                  maxLength={GUILD_SERVER_NUMBER_MAX}
+                  onChange={(event) => setServerNumber(normalizeGuildServerNumber(event.target.value))}
+                />
+              </label>
+              <label htmlFor={`${ids}-server-name`}>
+                <span>{t.premium.guildRequestServerName}</span>
+                <input
+                  id={`${ids}-server-name`}
+                  value={serverName}
+                  maxLength={80}
+                  onChange={(event) => setServerName(event.target.value)}
+                />
+              </label>
+            </div>
+            {serverLabel ? (
+              <p className="assumption">
+                {t.premium.guildRequestServerPreview} <strong>{serverLabel}</strong>
+              </p>
+            ) : null}
+
+            <label htmlFor={`${ids}-desc`}>
+              <span>{t.premium.guildRequestDescription}</span>
+              <input
+                id={`${ids}-desc`}
+                value={description}
+                maxLength={500}
+                onChange={(event) => setDescription(event.target.value)}
+              />
+            </label>
+
+            <fieldset className="guild-request-owner">
+              <legend>{t.premium.guildRequestOwner}</legend>
+              <div className="guild-request-owner-choice">
+                <label>
+                  <input
+                    type="radio"
+                    name={`${ids}-owner`}
+                    value="self"
+                    checked={ownerKind === "self"}
+                    onChange={() => setOwnerKind("self")}
+                  />
+                  <span>{t.premium.guildRequestOwnerSelf}</span>
+                </label>
+                <label>
+                  <input
+                    type="radio"
+                    name={`${ids}-owner`}
+                    value="other"
+                    checked={ownerKind === "other"}
+                    onChange={() => setOwnerKind("other")}
+                  />
+                  <span>{t.premium.guildRequestOwnerOther}</span>
+                </label>
+              </div>
+              {ownerKind === "other" ? (
+                <label htmlFor={`${ids}-handle`}>
+                  <span>{t.premium.guildRequestOwnerHandle}</span>
+                  <input
+                    id={`${ids}-handle`}
+                    value={ownerHandle}
+                    maxLength={GUILD_OWNER_HANDLE_MAX}
+                    onChange={(event) => setOwnerHandle(normalizeGuildOwnerHandle(event.target.value))}
+                  />
+                </label>
+              ) : null}
+              <p className="assumption">
+                {ownerKind === "other"
+                  ? tf(t.premium.guildRequestOwnerFallback, { name: session.name })
+                  : tf(t.premium.guildRequestOwnerSelfHint, { name: session.name })}
+              </p>
+            </fieldset>
+
+            <button className="button button-primary" type="submit" disabled={busy}>
+              {t.premium.guildRequestSubmit}
+            </button>
+          </form>
+        )}
+    </div>
+    </div>
+  );
+
   return (
     <>
       {bar}
-      <div className="guild-modal-layer">
-        <button
-          type="button"
-          className="guild-modal-backdrop"
-          aria-label={t.premium.guildRequestClose}
-          onClick={() => setOpen(false)}
-        />
-        <div className="guild-modal" role="dialog" aria-modal="true" aria-label={t.premium.guildRequestTitle}>
-          <header className="guild-modal-head">
-            <h2>{t.premium.guildRequestTitle}</h2>
-            <button
-              type="button"
-              className="icon-button"
-              aria-label={t.premium.guildRequestClose}
-              onClick={() => setOpen(false)}
-            >
-              <CloseIcon className="icon" />
-            </button>
-          </header>
-
-          {error ? (
-            <p className="sign-in-error" role="alert">
-              {error}
-            </p>
-          ) : null}
-
-          {locked ? (
-            <>
-              <p>{pending ? t.premium.guildRequestPending : t.premium.guildRequestApproved}</p>
-              <p className="assumption">
-                {own?.name}
-                {ownServerLabel ? ` · ${ownServerLabel}` : ""}
-              </p>
-              <p className="assumption">{t.premium.guildRequestLocked}</p>
-            </>
-          ) : (
-            <form
-              className="premium-claim-form"
-              onSubmit={(event) => {
-                event.preventDefault();
-                void submit();
-              }}
-            >
-              <p className="assumption">{t.premium.guildRequestLede}</p>
-
-              <label htmlFor={`${ids}-name`}>
-                <span>{t.premium.guildRequestName}</span>
-                <input
-                  id={`${ids}-name`}
-                  value={name}
-                  onChange={(event) => setName(event.target.value)}
-                  required
-                  minLength={2}
-                  maxLength={80}
-                />
-              </label>
-
-              <div className="guild-request-server">
-                <label htmlFor={`${ids}-server-no`}>
-                  <span>{t.premium.guildRequestServerNumber}</span>
-                  <input
-                    id={`${ids}-server-no`}
-                    value={serverNumber}
-                    inputMode="numeric"
-                    maxLength={GUILD_SERVER_NUMBER_MAX}
-                    onChange={(event) => setServerNumber(normalizeGuildServerNumber(event.target.value))}
-                  />
-                </label>
-                <label htmlFor={`${ids}-server-name`}>
-                  <span>{t.premium.guildRequestServerName}</span>
-                  <input
-                    id={`${ids}-server-name`}
-                    value={serverName}
-                    maxLength={80}
-                    onChange={(event) => setServerName(event.target.value)}
-                  />
-                </label>
-              </div>
-              {serverLabel ? (
-                <p className="assumption">
-                  {t.premium.guildRequestServerPreview} <strong>{serverLabel}</strong>
-                </p>
-              ) : null}
-
-              <label htmlFor={`${ids}-desc`}>
-                <span>{t.premium.guildRequestDescription}</span>
-                <input
-                  id={`${ids}-desc`}
-                  value={description}
-                  maxLength={500}
-                  onChange={(event) => setDescription(event.target.value)}
-                />
-              </label>
-
-              <fieldset className="guild-request-owner">
-                <legend>{t.premium.guildRequestOwner}</legend>
-                <div className="guild-request-owner-choice">
-                  <label>
-                    <input
-                      type="radio"
-                      name={`${ids}-owner`}
-                      value="self"
-                      checked={ownerKind === "self"}
-                      onChange={() => setOwnerKind("self")}
-                    />
-                    <span>{t.premium.guildRequestOwnerSelf}</span>
-                  </label>
-                  <label>
-                    <input
-                      type="radio"
-                      name={`${ids}-owner`}
-                      value="other"
-                      checked={ownerKind === "other"}
-                      onChange={() => setOwnerKind("other")}
-                    />
-                    <span>{t.premium.guildRequestOwnerOther}</span>
-                  </label>
-                </div>
-                {ownerKind === "other" ? (
-                  <label htmlFor={`${ids}-handle`}>
-                    <span>{t.premium.guildRequestOwnerHandle}</span>
-                    <input
-                      id={`${ids}-handle`}
-                      value={ownerHandle}
-                      maxLength={GUILD_OWNER_HANDLE_MAX}
-                      onChange={(event) => setOwnerHandle(normalizeGuildOwnerHandle(event.target.value))}
-                    />
-                  </label>
-                ) : null}
-                <p className="assumption">
-                  {ownerKind === "other"
-                    ? tf(t.premium.guildRequestOwnerFallback, { name: session.name })
-                    : tf(t.premium.guildRequestOwnerSelfHint, { name: session.name })}
-                </p>
-              </fieldset>
-
-              <button className="button button-primary" type="submit" disabled={busy}>
-                {t.premium.guildRequestSubmit}
-              </button>
-            </form>
-          )}
-        </div>
-      </div>
+      {typeof document === "undefined" ? null : createPortal(dialog, document.body)}
     </>
   );
 }

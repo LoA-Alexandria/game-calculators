@@ -189,7 +189,29 @@ export default function GuildsPage() {
   return (
     <>
       <SectionBanner id="guilds" />
-      <PageHead eyebrow={t.navDescriptions.guilds} title={t.guilds.title} lede={t.guilds.lede} />
+
+      <div className="guilds-head">
+        <PageHead eyebrow={t.navDescriptions.guilds} title={t.guilds.title} lede={t.guilds.lede} />
+        {supabase && guilds.length > 0 ? (
+          <div className="guild-toolbar">
+            <div className="guild-filter">
+              <SearchIcon className="icon" />
+              <input
+                type="search"
+                value={serverFilter}
+                autoComplete="off"
+                spellCheck={false}
+                aria-label={t.guilds.serverFilterLabel}
+                placeholder={t.guilds.serverFilterPlaceholder}
+                onChange={(e) => setServerFilter(e.target.value)}
+              />
+            </div>
+            <p className="guild-count" aria-live="polite">
+              {visibleGuilds.length === 1 ? t.guilds.listCountOne : tf(t.guilds.listCount, { count: visibleGuilds.length })}
+            </p>
+          </div>
+        ) : null}
+      </div>
 
       <GuildCreateRequestPanel />
 
@@ -206,26 +228,6 @@ export default function GuildsPage() {
       )}
 
       <div className="guilds-browse">
-        {supabase && guilds.length > 0 && (
-          <div className="guild-toolbar">
-          <div className="guild-filter">
-            <SearchIcon className="icon" />
-            <input
-              type="search"
-              value={serverFilter}
-              autoComplete="off"
-              spellCheck={false}
-              aria-label={t.guilds.serverFilterLabel}
-              placeholder={t.guilds.serverFilterPlaceholder}
-              onChange={(e) => setServerFilter(e.target.value)}
-            />
-          </div>
-          <p className="guild-count" aria-live="polite">
-            {visibleGuilds.length === 1 ? t.guilds.listCountOne : tf(t.guilds.listCount, { count: visibleGuilds.length })}
-          </p>
-          </div>
-        )}
-
         {supabase && guilds.length === 0 ? (
           <div className="empty-state">{authLoading ? t.guilds.loading : t.guilds.empty}</div>
         ) : visibleGuilds.length === 0 && guilds.length > 0 ? (
