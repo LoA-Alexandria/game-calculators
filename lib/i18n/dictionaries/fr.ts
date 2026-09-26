@@ -6961,6 +6961,11 @@ const fr: Dictionary = {
     guildDeleteNote: "La suppression libère votre place Premium, vous pouvez donc enregistrer une autre guilde.",
     guildDeleted: "La guilde a été supprimée, votre place est de nouveau libre.",
   },
+  notFound: {
+    title: "Rien à cette adresse",
+    lede: "Benben a relu le panneau deux fois. Ce qui se trouvait ici a déménagé, ou n’a jamais existé. Tout le reste est resté où vous l’avez laissé.",
+    home: "Retour à l’aperçu",
+  },
   benben: {
     title: "Benben",
     badge: "Mascotte communautaire",

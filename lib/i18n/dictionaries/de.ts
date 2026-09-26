@@ -6945,6 +6945,11 @@ const de: Dictionary = {
     guildDeleteNote: "Nach dem Löschen ist dein Premium-Platz wieder frei und du kannst eine andere Gilde eintragen.",
     guildDeleted: "Die Gilde wurde gelöscht, dein Platz ist wieder frei.",
   },
+  notFound: {
+    title: "Hier ist nichts",
+    lede: "Benben hat den Wegweiser zweimal gelesen. Was hier stand, ist umgezogen — oder es gab es nie. Alles andere steht noch da, wo du es verlassen hast.",
+    home: "Zurück zur Übersicht",
+  },
   benben: {
     title: "Benben",
     badge: "Gemeinschaftstier",
