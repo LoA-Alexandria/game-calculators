@@ -23,7 +23,7 @@ Deno.serve(async (request) => {
   const origin = request.headers.get("Origin");
   const headers = corsHeaders(origin);
 
-  if (request.method === "OPTIONS") return new Response("ok", { status: 204, headers });
+  if (request.method === "OPTIONS") return new Response(null, { status: 204, headers });
   if (request.method !== "POST") {
     return Response.json({ error: "Method not allowed" }, { status: 405, headers });
   }
