@@ -45,6 +45,21 @@ guild — a password account has none of its own. The server is stored in two
 parts (`server_number`, `server_name`) and joined by `formatGuildServer` into
 the one label the guild carries, `S12 Garden`.
 
+`/account/` is where a member sees both. It reads their own
+`premium_entitlements` row (days left, and a reminder in the last five) and the
+guild their request created. `premium_entitlements.auto_renew` is a preference,
+not a mandate: nothing is charged automatically, because payment is still the
+PayPal button plus an admin approving the claim. Members set it through
+`set_premium_auto_renew`, since the table itself is admin-write only.
+
+`guilds.owner_user_id` is the account whose Premium slot holds a listing (null
+for admin-created guilds, backfilled from approved requests). That account, and
+site admins, may call `set_guild_master` to hand the guild-master Discord id to
+somebody else, or `delete_own_guild` to take the listing down — which marks the
+request rejected first, so the slot is free for another guild. Both are
+security-definer functions guarded by `owns_guild_listing`; the `guilds` table
+stays admin-write.
+
 **A guild freezes when its Premium runs out.** `guild_is_frozen` asks whether
 the account in `guilds.owner_user_id` still has Premium; admin-created guilds
 (no owner) never freeze. Reads are untouched — the guild, its posts, its roster
@@ -52,10 +67,11 @@ and its plans all stay visible — but every write is refused.
 
 That rule is a trigger, not forty edited policies: `guard_guild_write` is
 attached to each guild-scoped table (and to `guilds` on update only, so the
-owner can still delete a frozen listing). Two things always pass: a site
-admin, who is how a frozen guild gets unstuck, and a member's own membership
-row on its way to `rejected` — **leaving a guild always works**, frozen or
-not. The client mirrors this with `guildRoomPowers` in `lib/content/guilds.ts`
+owner can still delete a frozen listing). Three things always pass: a site
+admin, who is how a frozen guild gets unstuck; the registrant writing to
+`guilds` itself, so they can still hand the listing on or take it down from
+`/account/`; and a member's own membership row on its way to `rejected` —
+**leaving a guild always works**, frozen or not. The client mirrors this with `guildRoomPowers` in `lib/content/guilds.ts`
 and a banner in the room; the trigger is what actually enforces it.
 
 `frozen_guild_ids()` lists every frozen guild in one call for the guild list.
