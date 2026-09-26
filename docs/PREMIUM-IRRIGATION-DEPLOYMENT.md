@@ -4,13 +4,16 @@ The planner HTML is stored under `supabase/private-assets/`, outside the
 Next.js `public/` tree. The static page requests a short-lived signed URL from
 the `premium-irrigation-planner` Supabase Edge Function. That function validates
 the caller's Supabase session and active Premium entitlement before signing a
-read from the private `premium-tools` bucket.
+read from the private `premium-tools` bucket. Supabase Storage deliberately
+serves HTML as plain text, so the signed URL points back to the Edge Function:
+on GET, it validates the Storage signature for this exact object and returns
+the HTML with `Content-Type: text/html` and a restrictive CSP.
 
 Apply the migrations and deploy the function with the Supabase CLI:
 
 ```sh
 supabase db push
-supabase functions deploy premium-irrigation-planner
+supabase functions deploy premium-irrigation-planner --no-verify-jwt
 ```
 
 Upload or update the private asset from a trusted administrator shell. Never
@@ -29,6 +32,10 @@ Remove-Item Env:SUPABASE_URL
 
 The upload is intentionally separate from the public Pages build: the
 service-role key must not be added to the GitHub Pages build environment.
+The function must be deployed with `--no-verify-jwt` because iframe GET
+navigation cannot attach an Authorization header. POST still validates the
+caller using `auth.getUser()` and checks active Premium; GET accepts only
+the short-lived signature minted for the private planner object.
 After the migration, function, and private asset are deployed, the public
 `/tools/irrigation-planner/index.html` URL no longer exists. Signed URLs expire
 after ten minutes; refresh the planner page to obtain another URL.

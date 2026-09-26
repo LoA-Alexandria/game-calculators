@@ -29,7 +29,8 @@ function isExpectedPlannerUrl(value: string) {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     if (!supabaseUrl) return false;
     return url.origin === new URL(supabaseUrl).origin &&
-      url.pathname.endsWith("/premium-tools/irrigation-planner/index.html");
+      url.pathname === "/functions/v1/premium-irrigation-planner" &&
+      Boolean(url.searchParams.get("token"));
   } catch {
     return false;
   }
