@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import {
   DAWN_COL_PITCH,
-  DAWN_OF_ROME_BASES,
+  romeBasePoints,
   DAWN_OF_ROME_MAP,
   DAWN_ROW_PITCH,
   DAWN_TONES,
@@ -25,8 +25,8 @@ import {
 
 describe("dawn of rome map", () => {
   it("keeps the six outposts inside the picture", () => {
-    assert.equal(DAWN_OF_ROME_BASES.length, 6);
-    for (const base of DAWN_OF_ROME_BASES) {
+    assert.equal(romeBasePoints().length, 6);
+    for (const base of romeBasePoints()) {
       assert.ok(base.x > 0 && base.x < 100, "x in percent");
       assert.ok(base.y > 0 && base.y < 100, "y in percent");
     }

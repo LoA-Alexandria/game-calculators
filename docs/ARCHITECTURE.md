@@ -144,6 +144,18 @@ On the hex map the village chip is only its badge, and the name sits below it
 in a `pointer-events: none` caption: a chip wide enough to read covered several
 hexes and swallowed their taps.
 
+**Crown of the Nile is the same board seen the other way round.** Same lattice,
+same tile for tile, same places at the same sizes, mirrored left to right and
+drawn over Egypt. `ROME_MAPS` holds what differs — the picture, its height,
+where the lattice starts on it, and whether column 0 is drawn on the left or
+the right — and the geometry helpers take a variant. Measured the same way as
+Rome: the mirrored places land on the Nile buildings to within a few pixels.
+Because the tiles are shared, a guild's painted territory moves with the switch
+instead of scattering; the choice lives on `guild_active_events.map_variant`
+and an officer flips it above the map. The six outposts come from the `home`
+structures themselves (`romeBasePoints`), ranked on the unmirrored board so a
+slot keeps its number when the picture flips.
+
 Every place except the six outposts carries its own name — `name` on the
 structure, keyed into `t.guilds.romePlaces`, written on the map until a guild
 takes it. The picture itself stays wordless because the game prints those names
