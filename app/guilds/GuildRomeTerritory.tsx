@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import {
-  DAWN_OF_ROME_MAP,
+  ROME_MAPS,
   isRomeClickable,
   isRomeTile,
   romeHexPolygon,
@@ -10,6 +10,7 @@ import {
   romeTileKind,
   romeTiles,
   type DawnTone,
+  type RomeMapVariant,
 } from "../../lib/content/dawn-of-rome-map";
 import { getSupabaseBrowserClient } from "../../lib/supabase/client";
 import { useLocale } from "../components/LocaleProvider";
@@ -51,6 +52,7 @@ export function GuildRomeTerritory({
   erasing,
   onPainted,
   reloadToken = 0,
+  variant = "dawn-of-rome",
 }: {
   scope: SiegeScope;
   dayIndex: number;
@@ -61,6 +63,8 @@ export function GuildRomeTerritory({
   onPainted?: (rows: HexRow[]) => void;
   /** Bumped by the toolbar after it writes, to read the board back. */
   reloadToken?: number;
+  /** Which of the two pictures of this board is on screen. */
+  variant?: RomeMapVariant;
 }) {
   const { t } = useLocale();
   const supabase = getSupabaseBrowserClient();
@@ -169,7 +173,7 @@ export function GuildRomeTerritory({
 
       <svg
         className="siege-hex-layer"
-        viewBox={`0 0 ${DAWN_OF_ROME_MAP.width} ${DAWN_OF_ROME_MAP.height}`}
+        viewBox={`0 0 ${ROME_MAPS[variant].width} ${ROME_MAPS[variant].height}`}
         preserveAspectRatio="none"
         role="group"
         aria-label={t.guilds.hexLayerLabel}
@@ -185,7 +189,7 @@ export function GuildRomeTerritory({
             <polygon
               key={`${col},${row}`}
               className="siege-hex"
-              points={romeHexPolygon(col, row)}
+              points={romeHexPolygon(col, row, variant)}
               data-tone={worn || undefined}
               data-kind={kind}
               onClick={canPaint && clickable ? () => void paint(col, row) : undefined}

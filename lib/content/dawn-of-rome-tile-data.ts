@@ -36,6 +36,8 @@ export type RomeStructure = {
    * its own name on it.
    */
   name?: RomePlaceName;
+  /** What Crown of the Nile calls the same place. */
+  nileName?: NilePlaceName;
 };
 
 export type RomePlaceName =
@@ -43,9 +45,15 @@ export type RomePlaceName =
   | "pass" | "sutrium" | "eretum" | "tres" | "ceyni" | "arsium" | "anagni"
   | "laurentum" | "alatri" | "satricum" | "lanuvium" | "cisterna" | "velletri";
 
+export type NilePlaceName =
+  | "alexandria" | "naukratis" | "plinthine" | "sebennpolis" | "schedia" | "buto"
+  | "bubastis" | "pass" | "passEast" | "antiphrae" | "taposiris" | "paraitonium"
+  | "canopus" | "amun" | "herakleion" | "mareia" | "metelis" | "andropolis"
+  | "xois" | "sais" | "sebennytos";
+
 export const ROME_STRUCTURES: readonly RomeStructure[] = [
   // Rome itself, the seven hexes of the marble complex in the middle.
-  { kind: "rome", tiles: [[13, 11], [13, 12], [14, 11], [14, 12], [14, 13], [15, 11], [15, 12]], name: "rome" },
+  { kind: "rome", tiles: [[13, 11], [13, 12], [14, 11], [14, 12], [14, 13], [15, 11], [15, 12]], name: "rome", nileName: "alexandria" },
   // The six outposts at the rim: a guild's own base, four hexes each.
   { kind: "home", tiles: [[13, 0], [14, 0], [14, 1], [15, 0]] },
   { kind: "home", tiles: [[25, 5], [25, 6], [26, 6], [26, 7]] },
@@ -54,30 +62,30 @@ export const ROME_STRUCTURES: readonly RomeStructure[] = [
   { kind: "home", tiles: [[25, 16], [25, 17], [26, 17], [26, 18]] },
   { kind: "home", tiles: [[13, 23], [14, 23], [14, 24], [15, 23]] },
   // Walled cities, four hexes.
-  { kind: "large", tiles: [[17, 6], [18, 6], [18, 7], [19, 6]], name: "tibur" },
-  { kind: "large", tiles: [[6, 12], [7, 11], [7, 12], [8, 12]], name: "ostia" },
-  { kind: "large", tiles: [[17, 17], [18, 17], [18, 18], [19, 17]], name: "aricia" },
+  { kind: "large", tiles: [[17, 6], [18, 6], [18, 7], [19, 6]], name: "tibur", nileName: "naukratis" },
+  { kind: "large", tiles: [[6, 12], [7, 11], [7, 12], [8, 12]], name: "ostia", nileName: "plinthine" },
+  { kind: "large", tiles: [[17, 17], [18, 17], [18, 18], [19, 17]], name: "aricia", nileName: "sebennpolis" },
   // Round cities, three hexes.
-  { kind: "medium", tiles: [[10, 6], [10, 7], [11, 6]], name: "kailey" },
-  { kind: "medium", tiles: [[20, 12], [21, 11], [21, 12]], name: "praeneste" },
-  { kind: "medium", tiles: [[10, 17], [10, 18], [11, 17]], name: "ardea" },
+  { kind: "medium", tiles: [[10, 6], [10, 7], [11, 6]], name: "kailey", nileName: "schedia" },
+  { kind: "medium", tiles: [[20, 12], [21, 11], [21, 12]], name: "praeneste", nileName: "buto" },
+  { kind: "medium", tiles: [[10, 17], [10, 18], [11, 17]], name: "ardea", nileName: "bubastis" },
   // Gates: the walled passes, two hexes.
-  { kind: "gate", tiles: [[15, 9], [16, 10]], name: "pass" },
-  { kind: "gate", tiles: [[11, 11], [11, 12]], name: "pass" },
-  { kind: "gate", tiles: [[15, 14], [16, 14]], name: "pass" },
+  { kind: "gate", tiles: [[15, 9], [16, 10]], name: "pass", nileName: "pass" },
+  { kind: "gate", tiles: [[11, 11], [11, 12]], name: "pass", nileName: "passEast" },
+  { kind: "gate", tiles: [[15, 14], [16, 14]], name: "pass", nileName: "pass" },
   // Villages, one hex.
-  { kind: "small", tiles: [[10, 3]], name: "sutrium" },
-  { kind: "small", tiles: [[18, 3]], name: "eretum" },
-  { kind: "small", tiles: [[7, 4]], name: "tres" },
-  { kind: "small", tiles: [[21, 4]], name: "ceyni" },
-  { kind: "small", tiles: [[4, 10]], name: "arsium" },
-  { kind: "small", tiles: [[24, 10]], name: "anagni" },
-  { kind: "small", tiles: [[4, 13]], name: "laurentum" },
-  { kind: "small", tiles: [[24, 13]], name: "alatri" },
-  { kind: "small", tiles: [[7, 19]], name: "satricum" },
-  { kind: "small", tiles: [[21, 19]], name: "lanuvium" },
-  { kind: "small", tiles: [[10, 21]], name: "cisterna" },
-  { kind: "small", tiles: [[18, 21]], name: "velletri" },
+  { kind: "small", tiles: [[10, 3]], name: "sutrium", nileName: "antiphrae" },
+  { kind: "small", tiles: [[18, 3]], name: "eretum", nileName: "taposiris" },
+  { kind: "small", tiles: [[7, 4]], name: "tres", nileName: "paraitonium" },
+  { kind: "small", tiles: [[21, 4]], name: "ceyni", nileName: "canopus" },
+  { kind: "small", tiles: [[4, 10]], name: "arsium", nileName: "amun" },
+  { kind: "small", tiles: [[24, 10]], name: "anagni", nileName: "herakleion" },
+  { kind: "small", tiles: [[4, 13]], name: "laurentum", nileName: "mareia" },
+  { kind: "small", tiles: [[24, 13]], name: "alatri", nileName: "metelis" },
+  { kind: "small", tiles: [[7, 19]], name: "satricum", nileName: "andropolis" },
+  { kind: "small", tiles: [[21, 19]], name: "lanuvium", nileName: "xois" },
+  { kind: "small", tiles: [[10, 21]], name: "cisterna", nileName: "sais" },
+  { kind: "small", tiles: [[18, 21]], name: "velletri", nileName: "sebennytos" },
 ] as const;
 
 /** How many hexes each kind of structure covers. */

@@ -18,13 +18,15 @@ import {
   type GuildPlanEventId,
 } from "../../lib/content/guild-events";
 import {
-  DAWN_OF_ROME_BASES,
-  DAWN_OF_ROME_MAP,
+  ROME_MAPS,
+  ROME_MAP_VARIANTS,
+  romeBasePoints,
   DAWN_TONES,
   romeFillTiles,
   romeNamedPlaces,
   type DawnTone,
   type RomeFill,
+  type RomeMapVariant,
 } from "../../lib/content/dawn-of-rome-map";
 import { guildRosterLabel, type GuildRosterEntry } from "../../lib/content/guilds";
 import { asset } from "../../lib/site";
@@ -56,9 +58,9 @@ const SIEGE_MAPS: Partial<
     ],
   },
   "dawn-of-rome": {
-    image: DAWN_OF_ROME_MAP.image,
-    ratio: DAWN_OF_ROME_MAP.ratio,
-    points: [...DAWN_OF_ROME_BASES],
+    image: ROME_MAPS["dawn-of-rome"].image,
+    ratio: ROME_MAPS["dawn-of-rome"].ratio,
+    points: romeBasePoints("dawn-of-rome"),
     wide: true,
   },
 };
@@ -108,6 +110,8 @@ export function GuildSiegeCamps({
   onChanged,
   ownLabel = "",
   partnerName = "",
+  variant = "dawn-of-rome",
+  onVariant,
 }: {
   scope: SiegeScope;
   eventId: GuildPlanEventId;
@@ -125,13 +129,24 @@ export function GuildSiegeCamps({
   /** Allied partner on a shared board, if any. */
   /** The allied guild's name, for the territory palette. */
   partnerName?: string;
+  /** Which picture of the Dawn of Rome board to draw. */
+  variant?: RomeMapVariant;
+  onVariant?: (next: RomeMapVariant) => void;
 }) {
   const { t, tf, n } = useLocale();
   const supabase = getSupabaseBrowserClient();
-  const map = SIEGE_MAPS[eventId] ?? FALLBACK;
   const eventDef = guildPlanEventDef(eventId);
   const showStock = eventDef.stock !== false;
   const showHex = eventDef.hexTerritory === true;
+  // Dawn of Rome has two pictures of the same board; every other event has one.
+  const map = showHex
+    ? {
+        ...(SIEGE_MAPS[eventId] ?? FALLBACK),
+        image: ROME_MAPS[variant].image,
+        ratio: ROME_MAPS[variant].ratio,
+        points: romeBasePoints(variant),
+      }
+    : SIEGE_MAPS[eventId] ?? FALLBACK;
   const shared = scope.kind === "alliance";
   const owner = shared ? scope.allianceId : scope.guildId;
   // Which colour the next tap paints with, and whether it wipes instead.
@@ -146,10 +161,10 @@ export function GuildSiegeCamps({
   /** A place keeps its own name until a guild takes it. */
   const neutralPlaces = useMemo(() => {
     const taken = new Set(painted.filter((hex) => hex.tone > 0).map((hex) => `${hex.q},${hex.r}`));
-    return romeNamedPlaces().filter(
+    return romeNamedPlaces(variant).filter(
       ({ structure }) => !structure.tiles.some(([col, row]) => taken.has(`${col},${row}`)),
     );
-  }, [painted]);
+  }, [painted, variant]);
 
   /**
    * The toolbar writes whole halves of the board in one go. Each fill is a
@@ -448,6 +463,25 @@ export function GuildSiegeCamps({
         </div>
       ) : null}
 
+      {showHex ? (
+        <div className="siege-variant" role="group" aria-label={t.guilds.mapVariantLabel}>
+          <span className="siege-tools-label">{t.guilds.mapVariantLabel}</span>
+          {ROME_MAP_VARIANTS.map((value) => (
+            <button
+              key={value}
+              type="button"
+              className="small-button"
+              aria-pressed={variant === value}
+              disabled={busy || !plans || !onVariant}
+              onClick={() => onVariant?.(value)}
+            >
+              {t.guilds.mapVariants[value]}
+            </button>
+          ))}
+          <span className="siege-brush-hint">{t.guilds.mapVariantHint}</span>
+        </div>
+      ) : null}
+
       {showHex && plans ? (
         <div className="siege-tools" role="group" aria-label={t.guilds.hexToolsLabel}>
           <span className="siege-tools-label">{t.guilds.hexSplit}</span>
@@ -518,6 +552,7 @@ export function GuildSiegeCamps({
             erasing={erasing}
             onPainted={setPainted}
             reloadToken={hexToken}
+            variant={variant}
           />
         ) : null}
 
@@ -529,7 +564,9 @@ export function GuildSiegeCamps({
                 data-kind={structure.kind}
                 style={{ "--village-x": `${point.x}%`, "--village-y": `${point.y}%` } as CSSProperties}
               >
-                {t.guilds.romePlaces[structure.name!]}
+                {variant === "crown-of-the-nile"
+                  ? t.guilds.nilePlaces[structure.nileName!]
+                  : t.guilds.romePlaces[structure.name!]}
               </span>
             ))
           : null}

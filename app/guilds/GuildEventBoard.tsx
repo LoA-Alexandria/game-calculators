@@ -24,6 +24,7 @@ import {
 } from "../../lib/content/guild-alliances";
 import { GuildAlliance, type AllianceGuild } from "./GuildAlliance";
 import { GuildSiegeCamps, type SiegeBase } from "./GuildSiegeCamps";
+import { isRomeMapVariant, type RomeMapVariant } from "../../lib/content/dawn-of-rome-map";
 import { getSupabaseBrowserClient } from "../../lib/supabase/client";
 import { useLocale } from "../components/LocaleProvider";
 import { CloseIcon, PlusIcon } from "../components/Icons";
@@ -95,6 +96,9 @@ export function GuildEventBoard({
   const [ourScore, setOurScore] = useState("0");
   const [enemyScore, setEnemyScore] = useState("0");
   const [callNote, setCallNote] = useState("");
+  // Which of the two pictures of the Dawn of Rome board this guild plays.
+  const [variant, setVariant] = useState<RomeMapVariant>("dawn-of-rome");
+  const hasHexTerritory = def.hexTerritory === true;
   const [pledgeAmount, setPledgeAmount] = useState("0");
   const [pledgeStatus, setPledgeStatus] = useState<GuildEventPledgeStatus>("waiting");
   const [error, setError] = useState("");
@@ -113,6 +117,17 @@ export function GuildEventBoard({
     if (!supabase) return;
     let gone = false;
     void (async () => {
+      if (hasHexTerritory) {
+        const mapRes = await supabase
+          .from("guild_active_events")
+          .select("map_variant")
+          .match({ guild_id: guildId, event_id: eventId })
+          .maybeSingle();
+        if (gone) return;
+        const stored = mapRes.data?.map_variant;
+        if (typeof stored === "string" && isRomeMapVariant(stored)) setVariant(stored);
+      }
+
       const [dayRes, pledgeRes] = await Promise.all([
         supabase
           .from("guild_event_days")
@@ -143,7 +158,7 @@ export function GuildEventBoard({
     return () => {
       gone = true;
     };
-  }, [supabase, guildId, eventId, def.seriesDays, reloadToken]);
+  }, [supabase, guildId, eventId, def.seriesDays, reloadToken, hasHexTerritory]);
 
   useEffect(() => {
     if (!supabase) return;
@@ -169,7 +184,7 @@ export function GuildEventBoard({
     return () => {
       gone = true;
     };
-  }, [supabase, guildId, eventId, dayIndex, userId, reloadToken]);
+  }, [supabase, guildId, eventId, dayIndex, userId, reloadToken, hasHexTerritory]);
 
   useEffect(() => {
     if (!supabase) return;
@@ -282,6 +297,21 @@ export function GuildEventBoard({
       return null;
     }
     return data as DayRow;
+  };
+
+  /**
+    * The map a guild plays is on its active-event row. The painted hexes are
+    * kept in the board's own coordinates, which both pictures share, so the
+    * territory moves with the switch rather than scattering.
+    */
+  const switchMap = async (next: RomeMapVariant) => {
+    if (!supabase || next === variant) return;
+    setVariant(next);
+    const { error: saveError } = await supabase
+      .from("guild_active_events")
+      .update({ map_variant: next })
+      .match({ guild_id: guildId, event_id: eventId });
+    if (saveError) setError(saveError.message);
   };
 
   const saveScores = async () => {
@@ -626,6 +656,8 @@ export function GuildEventBoard({
           bases={onShared ? sharedBases : []}
           needsBase={onShared && ally !== null && allianceNeedsBase(ally, guildId) && canOfficer}
           onPickBase={pickSharedBase}
+          variant={variant}
+          onVariant={(next) => void switchMap(next)}
           onChanged={reload}
         />
       ) : null}
