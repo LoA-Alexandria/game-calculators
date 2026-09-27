@@ -467,6 +467,15 @@ export function textBlock(texts: EditableTexts, buildOrder: readonly string[], u
   return lines.join("\n");
 }
 
+/**
+ * One map of words, in every language, as the save path wants it. The call
+ * site names the dictionary field, because that name is what a published row
+ * is keyed by and it has to be readable where it is used.
+ */
+export function textsFor(state: LayoutEditorState, field: "buildTexts" | TextMap): Record<Locale, unknown> {
+  return mapLocales((locale) => state.texts[locale][field]);
+}
+
 export function textBlocks(state: LayoutEditorState): Record<Locale, string> {
   const order = {
     roles: state.utility.map((role) => role.id),

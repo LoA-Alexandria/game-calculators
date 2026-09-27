@@ -209,7 +209,7 @@ export function ArtworkEditor() {
           </span>
           <button className="button" type="button" onClick={add}>{e.addSet}</button>
           <button className="button" type="button" onClick={reset} disabled={!draft}>{e.reset}</button>
-          <SaveToSite file="paintings" data={draftData} />
+          <SaveToSite file="paintings" data={draftData} guideId="artwork" texts={{ catalogTexts: texts }} />
           <button className="button button-primary" type="button" onClick={() => setExportOpen(true)}>{e.export}</button>
         </div>
       </div>

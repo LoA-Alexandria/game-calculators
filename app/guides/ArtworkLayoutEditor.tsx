@@ -28,6 +28,7 @@ import {
   type Problem,
   type TextGroup,
   type Translations,
+  textsFor,
 } from "../../lib/content/artwork-layout-editor";
 import { DEFAULT_LOCALE, LOCALES, type Dictionary, type Locale } from "../../lib/i18n";
 import { blankTranslations } from "../../lib/i18n/translations";
@@ -174,7 +175,15 @@ export function ArtworkLayoutEditor() {
           <button className="button" type="button" onClick={() => setAdding(true)}>{e.addBuild}</button>
           <button className="button" type="button" onClick={removeActive} disabled={state.builds.length <= 1}>{e.removeBuild}</button>
           <button className="button" type="button" onClick={reset} disabled={!draft}>{e.reset}</button>
-          <SaveToSite file="artwork-layouts" data={draftData} />
+          <SaveToSite
+            file="artwork-layouts"
+            data={draftData}
+            guideId="artworkLayouts"
+            texts={{
+              buildNames: textsFor(state.texts, "names"),
+              notes: textsFor(state.texts, "notes"),
+              reasons: textsFor(state.texts, "reasons"),
+            }} />
           <button className="button button-primary" type="button" onClick={() => setExportOpen(true)}>{e.export}</button>
         </div>
       </div>

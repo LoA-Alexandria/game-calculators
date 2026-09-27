@@ -203,8 +203,7 @@ export function CryptidesEditor() {
             data={exported.data}
             uploads={exported.uploads}
             guideId="cryptides"
-            textField="cryptideTexts"
-            texts={exportedCryptideTexts(state)}
+            texts={{ cryptideTexts: exportedCryptideTexts(state) }}
           />
           <button className="button button-primary" type="button" onClick={() => setExportOpen(true)}>
             {e.export}

@@ -15,7 +15,7 @@ import type {
   LayoutBuildData,
   LayoutRowData,
 } from "./artwork-layouts.ts";
-import { DEFAULT_LOCALE, LOCALE_CODES, dictionaryFile, getDictionary, type Locale } from "../i18n/index.ts";
+import { DEFAULT_LOCALE, LOCALE_CODES, mapLocales, dictionaryFile, getDictionary, type Locale } from "../i18n/index.ts";
 import { parseTranslations, textIn, translationsFrom, type Translations } from "../i18n/translations.ts";
 
 export type { Translations };
@@ -264,6 +264,21 @@ export function serializeLayoutData(data: ArtworkLayoutData): string {
  * Lines to add to or replace in each dictionary for text typed in the editor.
  * A language left empty gets the English text. Empty when there is none.
  */
+/**
+ * One group of words, in every language, as the save path wants it. Blank
+ * lines are left out: a key with nothing under it keeps what the build has.
+ */
+export function textsFor(texts: CustomTexts, group: TextGroup): Record<Locale, Record<string, string>> {
+  return mapLocales((locale) => {
+    const rows: Record<string, string> = {};
+    for (const [key, value] of Object.entries(texts[group])) {
+      const line = textIn(value, locale).trim();
+      if (line) rows[key] = line;
+    }
+    return rows;
+  });
+}
+
 export function dictionarySnippet(texts: CustomTexts): Record<Locale, string> {
   const result = {} as Record<Locale, string>;
   for (const locale of LOCALE_CODES) {

@@ -33,27 +33,41 @@ export const OVERRIDABLE_FIELDS = [
   // the file is one per guide and these are one per language, and every guide
   // prefers them to the file when it has them.
   "anecdoteTexts",
+  "buildNames",
   "buildTexts",
   "buildingTexts",
   "catalogTexts",
   "collectionTexts",
+  "counterLabels",
   "cryptideTexts",
+  "effects",
   "eventTexts",
   "goddessTexts",
+  "groupLabels",
+  "heroNotes",
   "heroTexts",
   "linkTexts",
+  "notes",
   "optionTexts",
   "phaseTexts",
+  "pickNotes",
   "playTexts",
+  "reasons",
+  "resources",
+  "roleNames",
+  "roles",
   "setupTexts",
   "skinTexts",
+  "variants",
 ] as const;
 
 /** The fields above that hold a tree of names rather than one line of text. */
 const TEXT_MAPS = new Set<string>([
-  "anecdoteTexts", "buildTexts", "buildingTexts", "catalogTexts", "collectionTexts",
-  "cryptideTexts", "eventTexts", "goddessTexts", "heroTexts", "linkTexts",
-  "optionTexts", "phaseTexts", "playTexts", "setupTexts", "skinTexts",
+  "anecdoteTexts", "buildNames", "buildTexts", "buildingTexts", "catalogTexts",
+  "collectionTexts", "counterLabels", "cryptideTexts", "effects", "eventTexts",
+  "goddessTexts", "groupLabels", "heroNotes", "heroTexts", "linkTexts", "notes",
+  "optionTexts", "phaseTexts", "pickNotes", "playTexts", "reasons", "resources",
+  "roleNames", "roles", "setupTexts", "skinTexts", "variants",
 ]);
 export type OverridableField = (typeof OVERRIDABLE_FIELDS)[number];
 
@@ -83,7 +97,10 @@ export type GuideContentRow = {
  */
 function isTextTree(value: unknown, depth = 0): boolean {
   if (typeof value === "string") return true;
-  if (typeof value !== "object" || value === null || Array.isArray(value)) return false;
+  // A list of lines — a build's pros, cons or notes — is one value, not a tree.
+  // Never the whole field, though: every field a guide reads is a map.
+  if (Array.isArray(value)) return depth > 0 && value.every((line) => typeof line === "string");
+  if (typeof value !== "object" || value === null) return false;
   // The real nesting is four objects deep before the words: the map of
   // entries, one entry, its skills or foods, then one row. Five refuses
   // anything past that without refusing the shape that exists.
@@ -100,11 +117,22 @@ function isTextTree(value: unknown, depth = 0): boolean {
  * empty boxes and save those blanks over the rest.
  */
 export function mergeTexts<T>(committed: T, override: unknown): T {
+  // A value may only replace one of its own kind, or fill a place the build
+  // does not have — an editor may add an entry, but nothing may turn a line
+  // into a list under a renderer that reads a line.
+  const kind = (value: unknown) =>
+    typeof value === "string" ? "line" : Array.isArray(value) ? "list" : typeof value === "object" && value !== null ? "map" : "none";
+  const here = kind(committed);
+  const there = kind(override);
+  if (there === "none") return committed;
+  if (here !== "none" && here !== there) return committed;
   if (typeof override === "string") return override as unknown as T;
-  if (typeof override !== "object" || override === null || Array.isArray(override)) return committed;
+  // A list replaces the built list: its order is what it says, so there is
+  // nothing to merge item by item.
+  if (Array.isArray(override)) return override as unknown as T;
   const base = (typeof committed === "object" && committed !== null ? committed : {}) as Record<string, unknown>;
   const out: Record<string, unknown> = { ...base };
-  for (const [key, value] of Object.entries(override)) {
+  for (const [key, value] of Object.entries(override as Record<string, unknown>)) {
     out[key] = mergeTexts(base[key], value);
   }
   return out as unknown as T;
@@ -123,7 +151,13 @@ function prunedTexts(committed: unknown, edited: unknown): unknown {
     if (typeof committed === "string" && committed.trim() === edited.trim()) return undefined;
     return edited;
   }
-  if (typeof edited !== "object" || edited === null || Array.isArray(edited)) return undefined;
+  if (Array.isArray(edited)) {
+    if (!edited.every((line) => typeof line === "string")) return undefined;
+    if (JSON.stringify(committed) === JSON.stringify(edited)) return undefined;
+    // An emptied list is a change, unless the built one was empty as well.
+    return edited;
+  }
+  if (typeof edited !== "object" || edited === null) return undefined;
   const base = (typeof committed === "object" && committed !== null ? committed : {}) as Record<string, unknown>;
   const out: Record<string, unknown> = {};
   for (const [key, value] of Object.entries(edited)) {

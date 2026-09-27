@@ -22,6 +22,7 @@ import {
   unusedHeroes,
   type MuseionEditorState,
   type MuseionProblem,
+  exportedBuildingTexts,
 } from "../../lib/content/museion-editor";
 import { HERO_RARITIES, heroNamed, heroPortrait } from "../../lib/content/heroes";
 import { DEFAULT_LOCALE, fill, toLocale, type Dictionary, type Locale } from "../../lib/i18n";
@@ -383,7 +384,7 @@ export function MuseionEditor() {
           >
             {e.reset}
           </button>
-          <SaveToSite file="museion" data={result} />
+          <SaveToSite file="museion" data={result} guideId="museion" texts={{ buildingTexts: exportedBuildingTexts(state) }} />
           <button className="button button-primary" type="button" onClick={() => setExportOpen(true)}>
             {e.export}
             {problems.length > 0 ? (

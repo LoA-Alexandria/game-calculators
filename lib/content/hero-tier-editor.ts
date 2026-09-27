@@ -16,7 +16,7 @@ import {
   type TierListData,
 } from "./hero-tiers.ts";
 import { HERO_RARITIES } from "./heroes.ts";
-import { LOCALE_CODES, dictionaryFile, getDictionary, type Locale } from "../i18n/index.ts";
+import { LOCALE_CODES, mapLocales, dictionaryFile, getDictionary, type Locale } from "../i18n/index.ts";
 import { parseTranslations, textIn, translationsFrom, type Translations } from "../i18n/translations.ts";
 
 export const LIST_IDS = ["overall", "battle", "utility", "productivity"] as const;
@@ -293,6 +293,21 @@ export function textFor(texts: CustomTexts, group: TextGroup, key: string, local
  * Lines to add to or replace in each dictionary for text typed in the editor.
  * A language left empty gets the English text. Empty when there is none.
  */
+/**
+ * One group of words, in every language, as the save path wants it. Blank
+ * lines are left out: a key with nothing under it keeps what the build has.
+ */
+export function textsFor(texts: CustomTexts, group: TextGroup): Record<Locale, Record<string, string>> {
+  return mapLocales((locale) => {
+    const rows: Record<string, string> = {};
+    for (const [key, value] of Object.entries(texts[group])) {
+      const line = textIn(value, locale).trim();
+      if (line) rows[key] = line;
+    }
+    return rows;
+  });
+}
+
 export function dictionarySnippet(texts: CustomTexts): Record<Locale, string> {
   const result = {} as Record<Locale, string>;
   for (const locale of LOCALE_CODES) {
