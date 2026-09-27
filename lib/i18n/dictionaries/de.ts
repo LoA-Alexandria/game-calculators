@@ -516,6 +516,11 @@ const de: Dictionary = {
       description: "Reisezeit, Gewinn und Effizienz einer Rundreise über zwei bis sechs Städte vergleichen.",
       category: "Große Reise",
     },
+    voyageSimulator: {
+      name: "Große-Reise-Simulation",
+      description: "Erreichbare Handelsrunden mit gespeichertem Schiffs-, Kryptiden- und Hafenprofil suchen.",
+      category: "Große Reise",
+    },
     irrigation: {
       name: "Bewässerungsplaner",
       description:
@@ -693,6 +698,23 @@ const de: Dictionary = {
     exampleNote: "{items} Gegenstände × {value} Punkte",
   },
   units: { hour: "h", minute: "min" },
+  voyageSimulator: {
+    title: "Große-Reise-Simulation", intro: "Suche automatisch erreichbare Handelsrunden und speichere deine Schiffs- und Hafenausstattung für spätere Daten.",
+    profile: "Deine Ausstattung", player: "Eigenes Level", regions: "Freigeschaltete Regionen", regionNote: "Die Level-Freischaltungen sind unbekannt. Wähle erreichbare Regionen selbst.",
+    ship: "Schiffsteil-Stufen", sails: "Segel", nails: "Kielnägel", cabin: "Kabine", figurehead: "Galionsfigur",
+    cryptids: "Kryptiden", vanguard: "Vorhut", logistics: "Logistik", leftFlank: "Linke Flanke", rightFlank: "Rechte Flanke", unknown: "Unbekannt / leer",
+    ports: "Hafenstufen", portNote: "Eine Grundstufe pro Region genügt; einzelne Häfen kannst du korrigieren. Der Einfluss der Stufen auf den Gewinn ist noch unbekannt.",
+    correction: "Einzelne Häfen korrigieren", same: "Wie Region", factor: "Fahrzeit-Faktor",
+    factorNote: "1 = Fahrzeit der alten Arbeitsmappe. Dauert eine gemessene Fahrt 25 % länger, gib 1,25 ein. Schiff und Kryptiden liefern noch keine bestätigte Formel.",
+    reset: "Profil zurücksetzen", saved: "Nur in diesem Browser gespeichert", search: "Beste Runden", stops: "Maximale Häfen", result: "Referenz-Rangliste",
+    rate: "Referenzgewinn/Stunde", profit: "Referenzgewinn/Runde", time: "Fahrzeit", empty: "Mindestens zwei Häfen müssen erreichbar sein.",
+    upgrades: "Nächste Hafenkosten der besten Runde", bills: "Wechselbriefe", gate: "Regionssperre: erhöhe",
+    upgradeNote: "Nur bekannte Kosten. Nutzen pro Stufe und echte Marktpreise fehlen; das ist keine Rendite-Empfehlung.",
+    caveatTitle: "Was dieses Ergebnis bedeutet",
+    caveat: "Das Tool durchsucht alle erreichbaren Zwei- und Drei-Hafen-Runden. Die Gewinne stammen aus der alten Auto-Handels-Arbeitsmappe mit Vollausbau, allen Waren und Guildmaster +15. Deine Schiff-, Kryptiden- und Hafenstufen ändern den Gewinn noch nicht. Nur der gemessene Fahrzeit-Faktor verändert die Stunden. Hafenliegezeit, Kaufgrenzen, Bestand, Rabatte, Preiseffekt und Auto-Routen-Regeln fehlen. Gewinn/Stunde ist ein Vergleichswert, kein persönlicher Ertrag.",
+    observed: "Beobachtete Einzelfahrt ab Shipwreck Cove", observedNote: "36 Glazed Lamps, 1 Beer und 1 Chili. Einkaufs- und Verkaufspreise sind erfasst; mengenabhängige Preiseffekte sind ungeprüft. Eine Rückladung ist nicht enthalten.", observedEmpty: "Wähle Nordatlantik-Inseln und eine Region mit erfassten Verkaufspreisen für den Ladungsvergleich.",
+    shipmentProfit: "Ladungsgewinn", shipmentRate: "Ladungsgewinn / Fahrstunde",
+  },
   materials: {
     olive: "Olivenzweig",
     corolla: "Blütenkrone",

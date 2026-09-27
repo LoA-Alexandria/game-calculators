@@ -517,6 +517,11 @@ const en = {
       description: "Compare travel time, profit, and efficiency for a two-to-six-city round trip.",
       category: "Grand Voyage",
     },
+    voyageSimulator: {
+      name: "Grand Voyage simulator",
+      description: "Search accessible trade loops using your saved ship, cryptids and port profile.",
+      category: "Grand Voyage",
+    },
     irrigation: {
       name: "Irrigation Planner",
       description:
@@ -692,6 +697,23 @@ const en = {
     exampleNote: "{items} items × {value} points",
   },
   units: { hour: "h", minute: "m" },
+  voyageSimulator: {
+    title: "Grand Voyage simulator", intro: "Search accessible trade loops automatically and keep your ship and port setup for future data.",
+    profile: "Your setup", player: "Player level", regions: "Accessible regions", regionNote: "Level unlock rules are unknown. Select accessible regions yourself.",
+    ship: "Ship component levels", sails: "Sails", nails: "Keel Nails", cabin: "Cabin", figurehead: "Figurehead",
+    cryptids: "Cryptids", vanguard: "Vanguard", logistics: "Logistics", leftFlank: "Left flank", rightFlank: "Right flank", unknown: "Unknown / empty",
+    ports: "Port levels", portNote: "Set one base level per region, then correct individual ports. Levels are saved but their profit effect is unknown.",
+    correction: "Individual port corrections", same: "As region", factor: "Travel-time factor",
+    factorNote: "1 = historical workbook time. If a measured trip takes 25% longer, enter 1.25. Ship and cryptid levels cannot yet calculate this factor.",
+    reset: "Reset profile", saved: "Saved in this browser only", search: "Best loops", stops: "Maximum ports", result: "Reference rankings",
+    rate: "Reference profit/hour", profit: "Reference profit/loop", time: "Sailing time", empty: "Select access to at least two ports.",
+    upgrades: "Next port upgrade costs on the top loop", bills: "Bills", gate: "Regional gate: raise",
+    upgradeNote: "Known costs only. The benefit per level and real market prices are missing, so this is not a return-on-investment recommendation.",
+    caveatTitle: "How to read this result",
+    caveat: "All accessible two- and three-port loops are searched. Leg profits come from the old full-upgrade auto-trade workbook (all goods unlocked, Guildmaster +15). Your ship, cryptids and port levels do not yet change profit. Only the measured time factor changes hours. Port stays, purchase limits, stock, discounts, price effects and auto-route rules are not included. Profit/hour is a comparison index, not your personal earnings.",
+    observed: "Observed one-way cargo from Shipwreck Cove", observedNote: "36 Glazed Lamps, 1 Beer and 1 Chili. Purchase and sale prices are recorded; quantity-dependent sale effects are unverified. No return cargo is included.", observedEmpty: "Select North Atlantic Islands and a region with recorded sale prices to compare the observed cargo.",
+    shipmentProfit: "Cargo profit", shipmentRate: "Cargo profit / sailing hour",
+  },
   materials: {
     olive: "Olive Branch",
     corolla: "Corolla",

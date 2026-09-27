@@ -317,6 +317,12 @@ export const SECTIONS: NavSection[] = [
     icon: "simulations",
     items: [
       {
+        href: "/simulations/grand-voyage/",
+        label: (t) => t.tools.voyageSimulator.name,
+        description: (t) => t.tools.voyageSimulator.description,
+        badge: (t) => t.tools.voyageSimulator.category,
+      },
+      {
         href: "/simulations/irrigation-planner/",
         label: (t) => t.tools.irrigation.name,
         description: (t) => t.tools.irrigation.description,

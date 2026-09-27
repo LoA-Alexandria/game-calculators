@@ -56,8 +56,13 @@ const TITLE_BANNER_SIZE = { width: 1024, height: 144 } as const;
 /** Bumped when the pictures are redrawn, so a cached one is not served. */
 const TITLE_BANNER_VERSION = "hd1";
 
-function titleBanner(path: string): TitleBanner {
-  return { src: `${asset(path)}?v=${TITLE_BANNER_VERSION}`, ...TITLE_BANNER_SIZE };
+const GUIDE_TITLE_BANNER_VERSIONS: Partial<Record<GuideEntryId, string>> = {
+  artwork: "hd2",
+  heroes: "hd2",
+};
+
+function titleBanner(path: string, version = TITLE_BANNER_VERSION): TitleBanner {
+  return { src: `${asset(path)}?v=${version}`, ...TITLE_BANNER_SIZE };
 }
 
 const GUIDE_BANNER_IDS: readonly GuideEntryId[] = [
@@ -68,7 +73,9 @@ const GUIDE_BANNER_IDS: readonly GuideEntryId[] = [
 ];
 
 export function guideTitleBanner(id: GuideEntryId): TitleBanner | null {
-  return GUIDE_BANNER_IDS.includes(id) ? titleBanner(`/banners/${camelToKebab(id)}.webp`) : null;
+  return GUIDE_BANNER_IDS.includes(id)
+    ? titleBanner(`/banners/${camelToKebab(id)}.webp`, GUIDE_TITLE_BANNER_VERSIONS[id])
+    : null;
 }
 
 /** Every event page has one too; the id is its slug. */
