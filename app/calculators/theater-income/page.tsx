@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useSyncExternalStore } from "react";
+import { useMemo, useRef, useSyncExternalStore } from "react";
 import { CalculatorHeader } from "../../components/CalculatorHeader";
 import { useLocale } from "../../components/LocaleProvider";
 import { PremiumGate } from "../../components/PremiumGate";
@@ -38,6 +38,7 @@ type Saved = {
   plays: Record<string, PlayInput>;
   theaterLevel: string;
   startingEnergy: string[];
+  startingPlays: string[];
   lipsticks: string;
   lipstickSlot: string;
   runMode: TheaterRunMode;
@@ -54,6 +55,7 @@ const DEFAULTS: Saved = {
   plays: {},
   theaterLevel: "15",
   startingEnergy: ["300", "300", "300", "300", "300"],
+  startingPlays: ["happy-prince", "happy-prince", "happy-prince", "happy-prince", "happy-prince"],
   lipsticks: "0",
   lipstickSlot: "0",
   runMode: "single",
@@ -77,6 +79,9 @@ function parseSaved(raw: string | null): Saved | null {
       startingEnergy: Array.isArray(value.startingEnergy)
         ? value.startingEnergy.map((energy) => (typeof energy === "string" ? energy : "300")).slice(0, 5).concat(DEFAULTS.startingEnergy).slice(0, 5)
         : DEFAULTS.startingEnergy,
+      startingPlays: Array.isArray(value.startingPlays)
+        ? value.startingPlays.map((play) => (typeof play === "string" ? play : "")).slice(0, 5).concat(DEFAULTS.startingPlays).slice(0, 5)
+        : DEFAULTS.startingPlays,
       lipsticks: text(value.lipsticks, DEFAULTS.lipsticks),
       lipstickSlot: text(value.lipstickSlot, DEFAULTS.lipstickSlot),
       runMode: value.runMode === "mass" ? "mass" : "single",
@@ -134,6 +139,7 @@ export default function TheaterIncomePage() {
   const update = (patch: Partial<Saved>) => store.set({ ...saved, ...patch });
   const updatePlay = (id: string, patch: PlayInput) =>
     update({ plays: { ...saved.plays, [id]: { ...saved.plays[id], ...patch } } });
+  const logRef = useRef<HTMLDialogElement>(null);
 
   const playTexts = t.guideEntries.goddessTheater.playTexts;
   const playName = (entry: IncomePlay) => localizedPlayName(entry.play, playTexts);
@@ -160,21 +166,25 @@ export default function TheaterIncomePage() {
   const simulation = useMemo(() => {
     if (!stats || level === null || !Number.isSafeInteger(level) || level < 1) return null;
     const building = theaterBuildingForLevel(level);
+    const details = INCOME_PLAYS.flatMap((entry) => {
+      const values = saved.plays[entry.id] ?? {};
+      const ticket = amount(values.ticket) ?? (entry.ticket ?? null);
+      const visitors = amount(values.visitors) ?? (entry.visitors ?? null);
+      const deploy = deployment(entry, saved.owned, building.goddessSlots);
+      // Mass mode always auto-deploys the best currently owned goddesses; the
+      // manual bonus override from Single mode does not change that assignment.
+      const bonusPercent = deploy?.percent ?? null;
+      if (ticket === null || visitors === null || bonusPercent === null) return [];
+      const numbers = { ticket: Math.floor(ticket), visitors: Math.floor(visitors), bonusPercent };
+      const income = performance(numbers, stats);
+      const [low, high] = redCarpetPoints(income.total);
+      return [{ entry, numbers, deploy, income, low, high, average: (low + high) / 2 }];
+    });
     const rewardSets = PLAY_RARITIES.map((rarity) => {
-      const known = INCOME_PLAYS.filter((entry) => entry.rarity === rarity).flatMap((entry) => {
-        const values = saved.plays[entry.id] ?? {};
-        const ticket = amount(values.ticket) ?? (entry.ticket ?? null);
-        const visitors = amount(values.visitors) ?? (entry.visitors ?? null);
-        const deploy = deployment(entry, saved.owned, building.goddessSlots);
-        const bonusPercent = amount(values.bonus) ?? deploy?.percent ?? null;
-        if (ticket === null || visitors === null || bonusPercent === null) return [];
-        const income = performance({ ticket: Math.floor(ticket), visitors: Math.floor(visitors), bonusPercent }, stats).total;
-        const [low, high] = redCarpetPoints(income);
-        return [{ low, average: (low + high) / 2, high }];
-      });
+      const known = details.filter(({ entry }) => entry.rarity === rarity);
       return { rarity, known };
     });
-    const knownPlays = rewardSets.reduce((sum, set) => sum + set.known.length, 0);
+    const knownPlays = details.length;
     const rewards = Object.fromEntries(rewardSets.filter(({ known }) => known.length > 0).map(({ rarity, known }) => [rarity, {
       low: known.reduce((sum, reward) => sum + reward.low, 0) / known.length,
       average: known.reduce((sum, reward) => sum + reward.average, 0) / known.length,
@@ -186,15 +196,26 @@ export default function TheaterIncomePage() {
     const lipstickSlot = enteredLipstickSlot === null ? null : Math.min(enteredLipstickSlot, building.theaterSlots - 1);
     if (energy.length !== building.theaterSlots || energy.some((value) => value === null || !Number.isInteger(value) || value > 5_000)) return { building, tier: theaterTierForLevel(level), projection: null, knownPlays };
     if (lipsticks === null || !Number.isSafeInteger(lipsticks) || lipsticks > 10_000 || enteredLipstickSlot === null || lipstickSlot === null || !Number.isInteger(enteredLipstickSlot) || enteredLipstickSlot < 0) return { building, tier: theaterTierForLevel(level), projection: null, knownPlays };
+    const startingPlays = saved.startingPlays.slice(0, building.theaterSlots).map((id) => details.find(({ entry }) => entry.id === id));
+    if (startingPlays.length !== building.theaterSlots || startingPlays.some((play) => !play)) return { building, tier: theaterTierForLevel(level), projection: null, knownPlays, details, startingPlays: [] };
     try {
       return {
         building,
         tier: theaterTierForLevel(level),
-        projection: simulateTheaterRun({ level, startingEnergy: energy as number[], lipsticks, lipstickSlot, rewards }),
+        projection: simulateTheaterRun({
+          level,
+          startingEnergy: energy as number[],
+          startingPlays: startingPlays.map((play) => ({ rarity: play!.entry.rarity, reward: { low: play!.low, average: play!.average, high: play!.high } })),
+          lipsticks,
+          lipstickSlot,
+          rewards,
+        }),
         knownPlays,
+        details,
+        startingPlays,
       };
     } catch {
-      return { building, tier: theaterTierForLevel(level), projection: null, knownPlays };
+      return { building, tier: theaterTierForLevel(level), projection: null, knownPlays, details, startingPlays };
     }
   }, [stats, level, saved]);
 
@@ -202,6 +223,10 @@ export default function TheaterIncomePage() {
   const toggle = (name: string) =>
     update({ owned: saved.owned.includes(name) ? saved.owned.filter((owned) => owned !== name) : [...saved.owned, name] });
   const matchText = (count: number) => (count === 1 ? copy.matchOne : tf(copy.matchMany, { count }));
+  const deployedNames = (deploy: Deployment | null) => {
+    const names = deploy?.goddesses.map((row) => `${row.name} (${matchText(row.matches)})`).join(", ") || copy.simulation.none;
+    return deploy && !deploy.exact ? `${names} · ${copy.simulation.goddessUncertain}` : names;
+  };
 
   return (
     <>
@@ -510,7 +535,29 @@ export default function TheaterIncomePage() {
             <h2 id="theater-session-heading">{copy.simulation.heading}</h2>
           </div>
           <p className="theater-lede">{copy.simulation.massLede}</p>
-          <p className="theater-note">{copy.simulation.massDataSource}</p>
+          <div className="theater-mass-config">
+            <div className="theater-mass-group">
+              <h3>{copy.statsHeading}</h3>
+              <div className="input-row theater-session-inputs">
+                <div className="field"><label htmlFor="theater-ticket-percent-mass">{copy.ticketPercent} %</label><input id="theater-ticket-percent-mass" type="number" min="0" step="0.5" value={saved.ticketPercent} onChange={(event) => update({ ticketPercent: event.target.value })} /></div>
+                <div className="field"><label htmlFor="theater-visitor-percent-mass">{copy.visitorPercent} %</label><input id="theater-visitor-percent-mass" type="number" min="0" step="0.5" value={saved.visitorPercent} onChange={(event) => update({ visitorPercent: event.target.value })} /></div>
+                <div className="field"><label htmlFor="theater-merchandise-mass">{copy.merchandise}</label><input id="theater-merchandise-mass" type="number" min="0" value={saved.merchandise} onChange={(event) => update({ merchandise: event.target.value })} /></div>
+                <div className="field"><label htmlFor="theater-event-mass">{copy.event}</label><select id="theater-event-mass" value={saved.event} onChange={(event) => update({ event: event.target.value as RehearsalEvent })}>{REHEARSAL_EVENTS.map((id) => <option key={id} value={id}>{copy.events[id]}</option>)}</select></div>
+              </div>
+            </div>
+            <div className="theater-mass-group">
+              <div className="section-heading compact-heading"><h3>{copy.goddessesHeading}</h3><div className="theater-goddess-actions"><button type="button" className="small-button" onClick={() => update({ owned: GODDESSES.map((goddess) => goddess.name) })}>{copy.goddessesAll}</button><button type="button" className="small-button" onClick={() => update({ owned: [] })}>{copy.goddessesNone}</button></div></div>
+              <div className="theater-mass-goddesses">{GODDESSES.map((goddess) => {
+                const portrait = goddessPortrait(goddess.name);
+                return <button type="button" key={goddess.id} className="theater-goddess" data-rarity={goddess.rarity} aria-pressed={saved.owned.includes(goddess.name)} onClick={() => toggle(goddess.name)}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  {portrait ? <img src={portrait} alt="" width={34} height={34} loading="lazy" decoding="async" /> : <span className="theater-goddess-blank" aria-hidden="true" />}
+                  <span>{goddess.name}</span>
+                </button>;
+              })}</div>
+              <p className="theater-note">{copy.simulation.goddessAuto}</p>
+            </div>
+          </div>
           <div className="input-row theater-session-inputs">
             <div className="field">
               <label htmlFor="theater-level">{copy.simulation.level}</label>
@@ -531,7 +578,7 @@ export default function TheaterIncomePage() {
                   goddesses: simulation.building.goddessSlots,
                 })}
               </p>
-              <div className="input-row theater-session-inputs">
+              <div className="input-row theater-session-inputs theater-run-fields">
                 <div className="field">
                   <label htmlFor="theater-lipstick-slot">{copy.simulation.lipstickSlot}</label>
                   <select id="theater-lipstick-slot" value={String(Math.min(Number(saved.lipstickSlot) || 0, simulation.building.theaterSlots - 1))} onChange={(event) => update({ lipstickSlot: event.target.value })}>
@@ -540,8 +587,9 @@ export default function TheaterIncomePage() {
                 </div>
                 <div className="theater-energy-fields">
                   {Array.from({ length: simulation.building.theaterSlots }, (_, index) => (
-                    <div className="field" key={index}>
-                      <label htmlFor={`theater-energy-${index}`}>{tf(copy.simulation.energySlot, { slot: index + 1 })}</label>
+                  <div className="theater-slot-card" key={index}>
+                      <h3>{tf(copy.simulation.slotHeading, { slot: index + 1 })}</h3>
+                      <div className="field"><label htmlFor={`theater-energy-${index}`}>{tf(copy.simulation.energySlot, { slot: index + 1 })}</label>
                       <input
                         id={`theater-energy-${index}`}
                         type="number"
@@ -555,6 +603,8 @@ export default function TheaterIncomePage() {
                           update({ startingEnergy });
                         }}
                       />
+                      </div>
+                      <div className="field"><label htmlFor={`theater-start-play-${index}`}>{copy.simulation.startPlay}</label><select id={`theater-start-play-${index}`} value={saved.startingPlays[index] ?? ""} onChange={(event) => { const startingPlays = [...saved.startingPlays]; startingPlays[index] = event.target.value; update({ startingPlays }); }}><option value="">{copy.simulation.choosePlay}</option>{PLAY_RARITIES.map((rarity) => <optgroup key={rarity} label={rarity}>{INCOME_PLAYS.filter((entry) => entry.rarity === rarity && simulation.details?.some((row) => row.entry.id === entry.id)).map((entry) => <option key={entry.id} value={entry.id}>{playName(entry)}</option>)}</optgroup>)}</select></div>
                     </div>
                   ))}
                 </div>
@@ -570,8 +620,15 @@ export default function TheaterIncomePage() {
                 <div><span>{copy.simulation.minimum}</span><strong>{n(simulation.projection.minimum)}</strong></div>
                 <div><span>{copy.simulation.average}</span><strong>{n(simulation.projection.average)}</strong></div>
                 <div><span>{copy.simulation.maximum}</span><strong>{n(simulation.projection.maximum)}</strong></div>
-                <div><span>{copy.simulation.expectedPlays}</span><strong>{n(simulation.projection.expectedPlays, { maximumFractionDigits: 1 })}</strong></div>
               </div>
+              <button type="button" className="theater-log-trigger" onClick={() => logRef.current?.showModal()}>{copy.simulation.openLog}</button>
+              <dialog className="theater-log-dialog" ref={logRef} aria-labelledby="theater-log-title">
+                <div className="theater-log-header"><div><p className="eyebrow">{copy.simulation.logEyebrow}</p><h2 id="theater-log-title">{copy.simulation.logTitle}</h2></div><button type="button" className="small-button" onClick={() => logRef.current?.close()}>{copy.simulation.closeLog}</button></div>
+                <p className="theater-note">{copy.simulation.runAssumptions}</p>
+                <div className="theater-log-summary"><div><span>{copy.simulation.minimum}</span><strong>{n(simulation.projection.minimum)}</strong></div><div><span>{copy.simulation.average}</span><strong>{n(simulation.projection.average)}</strong></div><div><span>{copy.simulation.maximum}</span><strong>{n(simulation.projection.maximum)}</strong></div><div><span>{copy.simulation.logSettings}</span><strong>{copy.ticketPercent}: {n(stats?.ticketPercent ?? 0)} % · {copy.visitorPercent}: {n(stats?.visitorPercent ?? 0)} % · {copy.merchandise}: {n(stats?.merchandise ?? 0)} · {copy.events[saved.event]}</strong></div></div>
+                <div className="theater-log-slots">{simulation.startingPlays?.map((play, index) => { const projection = simulation.projection!.slots[index]; const startCost = PLAY_ENERGY[play!.entry.rarity]; return <article className="theater-log-slot" key={index}><h3>{tf(copy.simulation.slotHeading, { slot: index + 1 })} · {playName(play!.entry)}</h3><p>{tf(copy.simulation.logEnergy, { energy: n(projection.energy), remaining: n(projection.energy - startCost) })}</p><p>{tf(copy.simulation.logGoddesses, { goddesses: deployedNames(play!.deploy) })} · {tf(copy.simulation.logBonus, { bonus: n(play!.numbers.bonusPercent) })}</p><p>{tf(copy.simulation.logIncome, { ticket: n(play!.income.ticketIncome), merchandise: n(play!.income.merchandiseIncome), total: n(play!.income.total) })} · {tf(copy.simulation.logRedCarpet, { low: n(play!.low), high: n(play!.high) })}</p></article>; })}</div>
+                <h3>{copy.simulation.logKnownPlays}</h3><div className="table-scroll theater-log-table"><table className="data-table"><thead><tr><th scope="col">{copy.colPlay}</th><th scope="col">{copy.simulation.logGoddessColumn}</th><th scope="col" className="num">{copy.baseTicket}</th><th scope="col" className="num">{copy.simulation.logAdjustedTicket}</th><th scope="col" className="num">{copy.baseVisitors}</th><th scope="col" className="num">{copy.simulation.logAdjustedVisitors}</th><th scope="col" className="num">{copy.bonus}</th><th scope="col" className="num">{copy.ticketIncome}</th><th scope="col" className="num">{copy.merchandiseIncome}</th><th scope="col" className="num">{copy.simulation.logTotal}</th><th scope="col" className="num">{copy.redCarpet}</th></tr></thead><tbody>{simulation.details?.map((row) => <tr key={row.entry.id}><th scope="row">{playName(row.entry)} <span className="rarity" data-rarity={row.entry.rarity}>{row.entry.rarity}</span></th><td>{deployedNames(row.deploy)}</td><td className="num">{n(row.numbers.ticket)}</td><td className="num">{n(row.income.ticketPrice)}</td><td className="num">{n(row.numbers.visitors)}</td><td className="num">{n(row.income.audience)}</td><td className="num">{n(row.numbers.bonusPercent)} %</td><td className="num">{n(row.income.ticketIncome)}</td><td className="num">{n(row.income.merchandiseIncome)}</td><td className="num">{n(row.income.total)}</td><td className="num">{tf(copy.redCarpetRange, { low: n(row.low), high: n(row.high) })}</td></tr>)}</tbody></table></div>
+              </dialog>
               {simulation.knownPlays < INCOME_PLAYS.length ? <p className="theater-note theater-session-warning">{tf(copy.simulation.dataWarning, { known: simulation.knownPlays, total: INCOME_PLAYS.length })}</p> : null}
               <details className="theater-session-details"><summary>{copy.assumptionsTitle}</summary><p>{copy.simulation.runAssumptions}</p></details>
             </div>

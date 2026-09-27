@@ -27,10 +27,11 @@ test("each building has a complete rarity distribution and the recorded energy c
   ]);
 });
 
-test("three offers and independent theater slots produce expected, minimum, and maximum totals", () => {
+test("starting plays spend energy before three-offer projections are added", () => {
   const result = simulateTheaterRun({
     level: 3,
-    startingEnergy: [30, 30],
+    startingEnergy: [90, 90],
+    startingPlays: ["SR", "SR"].map((rarity) => ({ rarity, reward: { low: 10, average: 20, high: 30 } })),
     lipsticks: 1,
     lipstickSlot: 0,
     rewards: {
@@ -38,16 +39,16 @@ test("three offers and independent theater slots produce expected, minimum, and 
       SR: { low: 1_000, average: 1_000, high: 1_000 },
     },
   });
-  assert.deepEqual(result.slots.map(({ energy }) => energy), [35, 30]);
-  assert.equal(result.expectedPlays, 1.568, "R is affordable and appears in at least one of three offers with probability 1 - 0.6^3");
-  assert.equal(result.minimum, 0, "all three offers may omit R");
-  assert.equal(result.maximum, 200, "both slots can complete one R script");
-  assert.equal(result.average, 156.8, "each slot contributes 100 points with probability 0.784");
+  assert.deepEqual(result.slots.map(({ energy }) => energy), [95, 90]);
+  assert.equal(result.minimum, 20, "the two forced starting plays always contribute their low reward");
+  assert.equal(result.maximum, 260, "the fixed high reward is added to the two possible R scripts");
+  assert.equal(result.average, 196.8, "fixed starting plays add 40 points to the expected offer reward");
 });
 
 test("run input validation covers slot count, energy, lipstick amount, and target slot", () => {
-  const input = { level: 1, startingEnergy: [10], lipsticks: 0, lipstickSlot: 0, rewards: {} };
+  const input = { level: 1, startingEnergy: [30], startingPlays: [{ rarity: "R", reward: { low: 0, average: 0, high: 0 } }], lipsticks: 0, lipstickSlot: 0, rewards: {} };
   assert.throws(() => simulateTheaterRun({ ...input, startingEnergy: [] }), RangeError);
+  assert.throws(() => simulateTheaterRun({ ...input, startingPlays: [] }), RangeError);
   assert.throws(() => simulateTheaterRun({ ...input, startingEnergy: [-1] }), RangeError);
   assert.throws(() => simulateTheaterRun({ ...input, lipsticks: 10_001 }), RangeError);
   assert.throws(() => simulateTheaterRun({ ...input, lipstickSlot: 1 }), RangeError);
@@ -56,18 +57,28 @@ test("run input validation covers slot count, energy, lipstick amount, and targe
 test("mass mode accepts more than 1,000 lipsticks and applies all of their energy", () => {
   const result = simulateTheaterRun({
     level: 1,
-    startingEnergy: [0],
+    startingEnergy: [30],
+    startingPlays: [{ rarity: "R", reward: { low: 100, average: 100, high: 100 } }],
     lipsticks: 2_400,
     lipstickSlot: 0,
     rewards: { R: { low: 100, average: 100, high: 100 } },
   });
-  assert.equal(result.slots[0].energy, 12_000);
-  assert.ok(result.expectedPlays > 0);
+  assert.equal(result.slots[0].energy, 12_030);
+  assert.ok(result.average > 100);
   assert.throws(() => simulateTheaterRun({
     level: 1,
     startingEnergy: [0],
+    startingPlays: [{ rarity: "R", reward: { low: 0, average: 0, high: 0 } }],
     lipsticks: 10_001,
     lipstickSlot: 0,
     rewards: {},
   }), RangeError);
+  assert.throws(() => simulateTheaterRun({
+    level: 1,
+    startingEnergy: [29],
+    startingPlays: [{ rarity: "R", reward: { low: 0, average: 0, high: 0 } }],
+    lipsticks: 0,
+    lipstickSlot: 0,
+    rewards: {},
+  }), /does not cover its selected play/);
 });
