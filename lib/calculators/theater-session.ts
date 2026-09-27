@@ -81,11 +81,18 @@ type Offer = { rarities: readonly PlayRarity[]; probability: number };
 function offersFor(building: TheaterBuilding): Offer[] {
   const rarities = (Object.keys(building.rarityChances) as PlayRarity[]).filter((rarity) => building.rarityChances[rarity] > 0);
   const offers: Offer[] = [];
-  for (const first of rarities) for (const second of rarities) for (const third of rarities) {
-    offers.push({
-      rarities: [first, second, third],
-      probability: building.rarityChances[first] * building.rarityChances[second] * building.rarityChances[third] / 1_000_000,
-    });
+  for (let first = 0; first < rarities.length; first += 1) {
+    for (let second = first; second < rarities.length; second += 1) {
+      for (let third = second; third < rarities.length; third += 1) {
+        const selected = [rarities[first], rarities[second], rarities[third]];
+        const distinct = new Set(selected).size;
+        const permutations = distinct === 1 ? 1 : distinct === 2 ? 3 : 6;
+        offers.push({
+          rarities: selected,
+          probability: permutations * selected.reduce((probability, rarity) => probability * building.rarityChances[rarity], 1) / 1_000_000,
+        });
+      }
+    }
   }
   return offers;
 }
@@ -105,7 +112,7 @@ function projectSlot(building: TheaterBuilding, energy: number, offers: readonly
     let low = Number.POSITIVE_INFINITY;
     let high = Number.NEGATIVE_INFINITY;
     for (const offer of offers) {
-      const actions = offer.rarities
+      const actions = [...new Set(offer.rarities)]
         .filter((rarity) => PLAY_ENERGY[rarity] <= remaining)
         .map((rarity) => ({ rarity, value: (rewards[rarity]?.average ?? 0) + expected[remaining - PLAY_ENERGY[rarity]].points }))
         .sort(compareActions);
@@ -135,7 +142,7 @@ function projectSlot(building: TheaterBuilding, energy: number, offers: readonly
 export function simulateTheaterRun(input: TheaterRunInput): TheaterRunProjection {
   const building = theaterBuildingForLevel(input.level);
   if (input.startingEnergy.length !== building.theaterSlots) throw new RangeError(`Enter the starting energy for all ${building.theaterSlots} theater slots.`);
-  if (!Number.isInteger(input.lipsticks) || input.lipsticks < 0 || input.lipsticks > 1_000) throw new RangeError("Lipsticks must be a whole number from 0 to 1,000.");
+  if (!Number.isSafeInteger(input.lipsticks) || input.lipsticks < 0 || input.lipsticks > 10_000) throw new RangeError("Lipsticks must be a whole number from 0 to 10,000.");
   if (!Number.isInteger(input.lipstickSlot) || input.lipstickSlot < 0 || input.lipstickSlot >= building.theaterSlots) throw new RangeError("Choose an open theater slot for the lipsticks.");
   for (const energy of input.startingEnergy) if (!Number.isInteger(energy) || energy < 0 || energy > 5_000) throw new RangeError("Starting energy must be a whole number from 0 to 5,000.");
 

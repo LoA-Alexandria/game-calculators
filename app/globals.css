@@ -7153,6 +7153,11 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
 .theater-panel .result-breakdown { margin-top: 2px; }
 .theater-session { margin-top: 20px; }
 .theater-session-inputs { margin-top: 16px; }
+.theater-mode { display: flex; flex-wrap: wrap; gap: 10px; margin: 16px 0; padding: 0; border: 0; }
+.theater-mode legend { width: 100%; margin-bottom: 8px; font-size: .9rem; font-weight: 700; }
+.theater-mode label { display: inline-flex; align-items: center; gap: 8px; min-height: 42px; padding: 8px 14px; border: 1px solid var(--line); border-radius: 10px; cursor: pointer; }
+.theater-mode label:has(input:checked) { border-color: var(--accent); background: var(--accent-soft); }
+.theater-mode input { accent-color: var(--accent); }
 .theater-session-status { margin: 0 0 16px; color: var(--muted); font-size: .92rem; }
 .theater-energy-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 13px; }
 .theater-session-odds { padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; color: var(--muted); font-size: .9rem; line-height: 1.6; }

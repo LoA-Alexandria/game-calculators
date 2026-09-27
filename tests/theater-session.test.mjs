@@ -49,6 +49,25 @@ test("run input validation covers slot count, energy, lipstick amount, and targe
   const input = { level: 1, startingEnergy: [10], lipsticks: 0, lipstickSlot: 0, rewards: {} };
   assert.throws(() => simulateTheaterRun({ ...input, startingEnergy: [] }), RangeError);
   assert.throws(() => simulateTheaterRun({ ...input, startingEnergy: [-1] }), RangeError);
-  assert.throws(() => simulateTheaterRun({ ...input, lipsticks: 1_001 }), RangeError);
+  assert.throws(() => simulateTheaterRun({ ...input, lipsticks: 10_001 }), RangeError);
   assert.throws(() => simulateTheaterRun({ ...input, lipstickSlot: 1 }), RangeError);
+});
+
+test("mass mode accepts more than 1,000 lipsticks and applies all of their energy", () => {
+  const result = simulateTheaterRun({
+    level: 1,
+    startingEnergy: [0],
+    lipsticks: 2_400,
+    lipstickSlot: 0,
+    rewards: { R: { low: 100, average: 100, high: 100 } },
+  });
+  assert.equal(result.slots[0].energy, 12_000);
+  assert.ok(result.expectedPlays > 0);
+  assert.throws(() => simulateTheaterRun({
+    level: 1,
+    startingEnergy: [0],
+    lipsticks: 10_001,
+    lipstickSlot: 0,
+    rewards: {},
+  }), RangeError);
 });

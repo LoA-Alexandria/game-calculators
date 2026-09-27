@@ -27,6 +27,7 @@ import { GODDESSES, goddessPortrait } from "../../../lib/content/goddesses";
 
 /** What a player typed; strings, so a half-typed "268." stays in the field. */
 type PlayInput = { ticket?: string; visitors?: string; bonus?: string };
+type TheaterRunMode = "single" | "mass";
 type Saved = {
   ticketPercent: string;
   visitorPercent: string;
@@ -39,6 +40,7 @@ type Saved = {
   startingEnergy: string[];
   lipsticks: string;
   lipstickSlot: string;
+  runMode: TheaterRunMode;
 };
 
 // The page opens on example values and every goddess whose aptitudes are recorded, so the first numbers mean something.
@@ -54,6 +56,7 @@ const DEFAULTS: Saved = {
   startingEnergy: ["300", "300", "300", "300", "300"],
   lipsticks: "0",
   lipstickSlot: "0",
+  runMode: "single",
 };
 
 function parseSaved(raw: string | null): Saved | null {
@@ -76,6 +79,7 @@ function parseSaved(raw: string | null): Saved | null {
         : DEFAULTS.startingEnergy,
       lipsticks: text(value.lipsticks, DEFAULTS.lipsticks),
       lipstickSlot: text(value.lipstickSlot, DEFAULTS.lipstickSlot),
+      runMode: value.runMode === "mass" ? "mass" : "single",
     };
   } catch {
     return null;
@@ -181,7 +185,7 @@ export default function TheaterIncomePage() {
     const enteredLipstickSlot = amount(saved.lipstickSlot);
     const lipstickSlot = enteredLipstickSlot === null ? null : Math.min(enteredLipstickSlot, building.theaterSlots - 1);
     if (energy.length !== building.theaterSlots || energy.some((value) => value === null || !Number.isInteger(value) || value > 5_000)) return { building, tier: theaterTierForLevel(level), projection: null, knownPlays };
-    if (lipsticks === null || !Number.isInteger(lipsticks) || lipsticks > 1_000 || enteredLipstickSlot === null || lipstickSlot === null || !Number.isInteger(enteredLipstickSlot) || enteredLipstickSlot < 0) return { building, tier: theaterTierForLevel(level), projection: null, knownPlays };
+    if (lipsticks === null || !Number.isSafeInteger(lipsticks) || lipsticks > 10_000 || enteredLipstickSlot === null || lipstickSlot === null || !Number.isInteger(enteredLipstickSlot) || enteredLipstickSlot < 0) return { building, tier: theaterTierForLevel(level), projection: null, knownPlays };
     try {
       return {
         building,
@@ -204,6 +208,19 @@ export default function TheaterIncomePage() {
       <CalculatorHeader eyebrow={copy.eyebrow} title={t.tools.theaterIncome.name} description={copy.intro} />
 
       <PremiumGate>
+      <fieldset className="theater-mode">
+        <legend>{copy.simulation.mode}</legend>
+        <label>
+          <input type="radio" name="theater-run-mode" value="single" checked={saved.runMode === "single"} onChange={() => update({ runMode: "single" })} />
+          <span>{copy.simulation.single}</span>
+        </label>
+        <label>
+          <input type="radio" name="theater-run-mode" value="mass" checked={saved.runMode === "mass"} onChange={() => update({ runMode: "mass" })} />
+          <span>{copy.simulation.mass}</span>
+        </label>
+      </fieldset>
+      {saved.runMode === "single" ? (
+        <>
       <section className="calculator-panel theater-panel" aria-label={t.tools.theaterIncome.name}>
         <div className="calculator-form">
           <h2 className="theater-heading">{copy.statsHeading}</h2>
@@ -371,78 +388,6 @@ export default function TheaterIncomePage() {
         </div>
       </section>
 
-      <section className="surface theater-session" aria-labelledby="theater-session-heading">
-        <div className="section-heading compact-heading">
-          <h2 id="theater-session-heading">{copy.simulation.heading}</h2>
-        </div>
-        <p className="theater-lede">{copy.simulation.lede}</p>
-        <div className="input-row theater-session-inputs">
-          <div className="field">
-            <label htmlFor="theater-level">{copy.simulation.level}</label>
-            <input id="theater-level" type="number" min="1" step="1" value={saved.theaterLevel} onChange={(event) => update({ theaterLevel: event.target.value })} />
-          </div>
-          <div className="field">
-            <label htmlFor="theater-lipsticks">{copy.simulation.lipsticks}</label>
-            <input id="theater-lipsticks" type="number" min="0" max="1000" step="1" value={saved.lipsticks} onChange={(event) => update({ lipsticks: event.target.value })} />
-          </div>
-        </div>
-        {simulation && level !== null ? (
-          <>
-            <p className="theater-session-status">
-              {tf(copy.simulation.levelStatus, {
-                building: copy.simulation.buildings[simulation.building.id],
-                tier: simulation.tier,
-                theaters: simulation.building.theaterSlots,
-                goddesses: simulation.building.goddessSlots,
-              })}
-            </p>
-            <div className="input-row theater-session-inputs">
-              <div className="field">
-                <label htmlFor="theater-lipstick-slot">{copy.simulation.lipstickSlot}</label>
-                <select id="theater-lipstick-slot" value={String(Math.min(Number(saved.lipstickSlot) || 0, simulation.building.theaterSlots - 1))} onChange={(event) => update({ lipstickSlot: event.target.value })}>
-                  {Array.from({ length: simulation.building.theaterSlots }, (_, index) => <option key={index} value={index}>{index + 1}</option>)}
-                </select>
-              </div>
-              <div className="theater-energy-fields">
-                {Array.from({ length: simulation.building.theaterSlots }, (_, index) => (
-                  <div className="field" key={index}>
-                    <label htmlFor={`theater-energy-${index}`}>{tf(copy.simulation.energySlot, { slot: index + 1 })}</label>
-                    <input
-                      id={`theater-energy-${index}`}
-                      type="number"
-                      min="0"
-                      max="5000"
-                      step="1"
-                      value={saved.startingEnergy[index] ?? "300"}
-                      onChange={(event) => {
-                        const startingEnergy = [...saved.startingEnergy];
-                        startingEnergy[index] = event.target.value;
-                        update({ startingEnergy });
-                      }}
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-            <p className="theater-note">{copy.simulation.energyCap}</p>
-            <p className="theater-session-odds"><strong>{copy.simulation.chances}:</strong> {PLAY_RARITIES.filter((rarity) => simulation.building.rarityChances[rarity] > 0).map((rarity) => `${rarity} ${simulation.building.rarityChances[rarity]}% · ${PLAY_ENERGY[rarity]} ${copy.simulation.energyUnit}`).join(" · ")}</p>
-          </>
-        ) : <p className="result-error">{stats ? copy.simulation.levelError : copy.invalid}</p>}
-        {simulation?.projection ? (
-          <div className="theater-session-result" aria-live="polite">
-            <h3>{copy.simulation.resultHeading}</h3>
-            <div className="theater-session-metrics">
-              <div><span>{copy.simulation.minimum}</span><strong>{n(simulation.projection.minimum)}</strong></div>
-              <div><span>{copy.simulation.average}</span><strong>{n(simulation.projection.average)}</strong></div>
-              <div><span>{copy.simulation.maximum}</span><strong>{n(simulation.projection.maximum)}</strong></div>
-              <div><span>{copy.simulation.expectedPlays}</span><strong>{n(simulation.projection.expectedPlays, { maximumFractionDigits: 1 })}</strong></div>
-            </div>
-            {simulation.knownPlays < INCOME_PLAYS.length ? <p className="theater-note theater-session-warning">{tf(copy.simulation.dataWarning, { known: simulation.knownPlays, total: INCOME_PLAYS.length })}</p> : null}
-            <details className="theater-session-details"><summary>{copy.assumptionsTitle}</summary><p>{copy.simulation.runAssumptions}</p></details>
-          </div>
-        ) : stats && level !== null && Number.isSafeInteger(level) && level >= 1 ? <p className="result-note">{copy.simulation.energyCap}</p> : null}
-      </section>
-
       <section className="surface theater-goddesses" aria-labelledby="theater-goddesses-heading">
         <div className="section-heading compact-heading">
           <h2 id="theater-goddesses-heading">{copy.goddessesHeading}</h2>
@@ -558,6 +503,81 @@ export default function TheaterIncomePage() {
         <p>{copy.credit}</p>
       </details>
       <p className="assumption">{copy.storageNote}</p>
+        </>
+      ) : (
+        <section className="surface theater-session" aria-labelledby="theater-session-heading">
+          <div className="section-heading compact-heading">
+            <h2 id="theater-session-heading">{copy.simulation.heading}</h2>
+          </div>
+          <p className="theater-lede">{copy.simulation.massLede}</p>
+          <p className="theater-note">{copy.simulation.massDataSource}</p>
+          <div className="input-row theater-session-inputs">
+            <div className="field">
+              <label htmlFor="theater-level">{copy.simulation.level}</label>
+              <input id="theater-level" type="number" min="1" step="1" value={saved.theaterLevel} onChange={(event) => update({ theaterLevel: event.target.value })} />
+            </div>
+            <div className="field">
+              <label htmlFor="theater-lipsticks">{copy.simulation.lipsticks}</label>
+              <input id="theater-lipsticks" type="number" min="0" max="10000" step="1" value={saved.lipsticks} onChange={(event) => update({ lipsticks: event.target.value })} />
+            </div>
+          </div>
+          {simulation && level !== null ? (
+            <>
+              <p className="theater-session-status">
+                {tf(copy.simulation.levelStatus, {
+                  building: copy.simulation.buildings[simulation.building.id],
+                  tier: simulation.tier,
+                  theaters: simulation.building.theaterSlots,
+                  goddesses: simulation.building.goddessSlots,
+                })}
+              </p>
+              <div className="input-row theater-session-inputs">
+                <div className="field">
+                  <label htmlFor="theater-lipstick-slot">{copy.simulation.lipstickSlot}</label>
+                  <select id="theater-lipstick-slot" value={String(Math.min(Number(saved.lipstickSlot) || 0, simulation.building.theaterSlots - 1))} onChange={(event) => update({ lipstickSlot: event.target.value })}>
+                    {Array.from({ length: simulation.building.theaterSlots }, (_, index) => <option key={index} value={index}>{index + 1}</option>)}
+                  </select>
+                </div>
+                <div className="theater-energy-fields">
+                  {Array.from({ length: simulation.building.theaterSlots }, (_, index) => (
+                    <div className="field" key={index}>
+                      <label htmlFor={`theater-energy-${index}`}>{tf(copy.simulation.energySlot, { slot: index + 1 })}</label>
+                      <input
+                        id={`theater-energy-${index}`}
+                        type="number"
+                        min="0"
+                        max="5000"
+                        step="1"
+                        value={saved.startingEnergy[index] ?? "300"}
+                        onChange={(event) => {
+                          const startingEnergy = [...saved.startingEnergy];
+                          startingEnergy[index] = event.target.value;
+                          update({ startingEnergy });
+                        }}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <p className="theater-note">{copy.simulation.energyCap} {copy.simulation.lipstickCap}</p>
+              <p className="theater-session-odds"><strong>{copy.simulation.chances}:</strong> {PLAY_RARITIES.filter((rarity) => simulation.building.rarityChances[rarity] > 0).map((rarity) => `${rarity} ${simulation.building.rarityChances[rarity]}% · ${PLAY_ENERGY[rarity]} ${copy.simulation.energyUnit}`).join(" · ")}</p>
+            </>
+          ) : <p className="result-error">{stats ? copy.simulation.levelError : copy.invalid}</p>}
+          {simulation?.projection ? (
+            <div className="theater-session-result" aria-live="polite">
+              <h3>{copy.simulation.resultHeading}</h3>
+              <div className="theater-session-metrics">
+                <div><span>{copy.simulation.minimum}</span><strong>{n(simulation.projection.minimum)}</strong></div>
+                <div><span>{copy.simulation.average}</span><strong>{n(simulation.projection.average)}</strong></div>
+                <div><span>{copy.simulation.maximum}</span><strong>{n(simulation.projection.maximum)}</strong></div>
+                <div><span>{copy.simulation.expectedPlays}</span><strong>{n(simulation.projection.expectedPlays, { maximumFractionDigits: 1 })}</strong></div>
+              </div>
+              {simulation.knownPlays < INCOME_PLAYS.length ? <p className="theater-note theater-session-warning">{tf(copy.simulation.dataWarning, { known: simulation.knownPlays, total: INCOME_PLAYS.length })}</p> : null}
+              <details className="theater-session-details"><summary>{copy.assumptionsTitle}</summary><p>{copy.simulation.runAssumptions}</p></details>
+            </div>
+          ) : stats && level !== null && Number.isSafeInteger(level) && level >= 1 ? <p className="result-note">{copy.simulation.invalidRun}</p> : null}
+        </section>
+      )}
       </PremiumGate>
     </>
   );
