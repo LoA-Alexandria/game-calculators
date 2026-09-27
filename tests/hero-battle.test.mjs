@@ -68,7 +68,7 @@ test("healing restores actual missing HP and shields absorb incoming damage", ()
 });
 test("unsupported skills/items and invalid settings fail instead of receiving invented effects", () => {
   const pool = [hero("achilles"), hero("caesar")];
-  for (const patch of [{ rounds: 0 }, { rounds: 101 }, { seed: -1 }, { size: 0 }, { size: 3 }, { trials: 0 }, { budget: 1001 }, { enemyReduction: NaN }, { collection: ["wings-of-icarus"] }, { enemyCount: 2 }, { cryptides: [{ id: "nidhogg", skills: 4 }] }]) assert.throws(() => validateBattle(pool, { ...options, ...patch }), RangeError);
+  for (const patch of [{ rounds: 0 }, { rounds: 101 }, { seed: -1 }, { size: 0 }, { size: 3 }, { trials: 0 }, { budget: 1001 }, { enemyReduction: NaN }, { collection: ["wings-of-icarus"] }, { collectionSlots: 7 }, { enemyCount: 2 }, { cryptides: [{ id: "nidhogg", skills: 4 }] }, { cryptides: Array.from({ length: 5 }, () => ({ id: "nidhogg", skills: 1 })) }]) assert.throws(() => validateBattle(pool, { ...options, ...patch }), RangeError);
   assert.throws(() => validateBattle([hero("billy-the-kid"), hero("caesar")], options), RangeError);
   assert.throws(() => validateBattle([hero("achilles", { hp: 0 }), hero("caesar")], options), RangeError);
 });
@@ -81,6 +81,20 @@ test("optimizer independently enumerates and ranks ordered teams from a small in
   assert.ok(result.candidates.every((candidate) => candidate.team.every((unit) => pool.some((entry) => entry.id === unit.id))));
   assert.ok(result.candidates[0].damage >= result.candidates[1].damage);
   assert.deepEqual(result, optimizeTeams([...pool].reverse(), options));
+});
+test("optimizer searches owned Collection choices together with the best ordered team", () => {
+  const pool = [hero("lancelot")];
+  const opts = { ...options, size: 1, budget: 2, collectionSlots: 1, collection: ["dead-sea-scrolls", "prometheus-torch"] };
+  const result = optimizeTeams(pool, opts);
+  assert.equal(result.exhaustive, true);
+  assert.equal(result.evaluated, 2);
+  const expected = opts.collection.map((id) => {
+    const damage = Array.from({ length: 128 }, (_, i) => simulateBattle(pool, { ...opts, collection: [id] }, (opts.seed + i * 7919 + 1000003) >>> 0).damage).reduce((sum, value) => sum + value, 0) / 128;
+    return { id, damage };
+  }).sort((a, b) => b.damage - a.damage)[0];
+  assert.deepEqual(result.candidates[0].collection, [expected.id]);
+  assert.equal(result.candidates[0].damage, expected.damage);
+  assert.ok(result.candidates.every((candidate) => candidate.collection.length === 1));
 });
 test("larger searches respect the candidate budget and never mutate inventory", () => {
   const pool = [...MODELED_HEROES].slice(0, 8).map((id) => hero(id));
@@ -133,15 +147,28 @@ test("Horn stacks coexist with Arthur reduction and persist after its expiry", (
   assert.equal(damageAt(13), 104); // Arthur expires; 48% Horn remains.
 });
 
-test("cryptides act once at the start of their ordered round and use the unlocked-skill count", () => {
+test("all four Cryptides attack exactly once at the start of their ordered rounds and use skill unlocks", () => {
   const result = simulateBattle([hero("achilles"), hero("caesar")], {
-    ...options, rounds: 4, cryptides: [{ id: "nidhogg", skills: 3 }, { id: "cerberus", skills: 2 }, null],
+    ...options, rounds: 4, cryptides: [{ id: "sleipnir", skills: 3 }, { id: "nidhogg", skills: 3 }, { id: "cerberus", skills: 2 }, { id: "caladrius", skills: 1 }],
   }, 42, true);
-  assert.deepEqual(result.events.filter((event) => event.action === "cryptid" && ["nidhogg", "cerberus"].includes(event.actor) && event.amount <= 3).map(({ round, actor, amount }) => [round, actor, amount]), [[1, "nidhogg", 3], [2, "cerberus", 2]]);
+  assert.deepEqual(result.events.filter((event) => event.action === "cryptid" && event.amount <= 3).map(({ round, actor, amount }) => [round, actor, amount]), [[1, "sleipnir", 3], [2, "nidhogg", 3], [3, "cerberus", 2], [4, "caladrius", 1]]);
   assert.ok(result.damage > simulateBattle([hero("achilles"), hero("caesar")], { ...options, rounds: 4 }, 42).damage);
   const oneUnlocked = simulateBattle([hero("guinevere")], { ...options, rounds: 8, enemyReduction: .5, cryptides: [{ id: "nidhogg", skills: 1 }] }, 42);
   const threeUnlocked = simulateBattle([hero("guinevere")], { ...options, rounds: 8, enemyReduction: .5, cryptides: [{ id: "nidhogg", skills: 3 }] }, 42);
   assert.ok(threeUnlocked.damage > oneUnlocked.damage);
+});
+
+test("Sleipnir removes modeled enemy buffs and allied debuffs", () => {
+  let observed = false;
+  for (let seed = 0; seed < 1000 && !observed; seed++) {
+    const result = simulateBattle([hero("lancelot")], {
+      ...options, dummy: false, rounds: 4, enemy: [hero("hermes", { hp: 100000 }), hero("charles-the-great", { hp: 100000 })],
+      cryptides: [null, null, { id: "sleipnir", skills: 3 }],
+    }, seed, true);
+    observed = result.events.some((event) => event.action === "dispelBuff" && event.amount > 0)
+      && result.events.some((event) => event.action === "dispelDebuff" && event.amount > 0);
+  }
+  assert.equal(observed, true);
 });
 
 test("finite dummy groups share one pool and attacks are never multiplied by target count", () => {
