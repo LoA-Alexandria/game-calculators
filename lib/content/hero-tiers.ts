@@ -175,7 +175,8 @@ export type TierListId = "overall" | "battle" | "utility" | "productivity";
 export type TierPlacement = { list: TierListId; tier: TierId; rarity?: HeroRarity; variant?: VariantKey; resource?: ResourceKey };
 
 /** Every row a hero appears in across the four lists, in list order. */
-export function tierPlacements(hero: string): TierPlacement[] {
+/** `data` defaults to the built lists; a page passes the published ones. */
+export function tierPlacements(hero: string, data: TierListData = TIER_DATA): TierPlacement[] {
   const found: TierPlacement[] = [];
   const add = (list: TierListId, tier: TierId, entry: Tagged, resource?: ResourceKey) => {
     if (entry.hero !== hero) return;
@@ -187,10 +188,10 @@ export function tierPlacements(hero: string): TierPlacement[] {
       ...(resource ? { resource } : {}),
     });
   };
-  for (const row of OVERALL_TIERS) for (const entry of row.entries) add("overall", row.tier, entry);
-  for (const row of BATTLE_TIERS) for (const entry of row.entries) add("battle", row.tier, entry);
-  for (const row of UTILITY_TIERS) for (const entry of row.entries) add("utility", row.tier, entry);
-  for (const row of PRODUCTIVITY_TIERS) {
+  for (const row of data.overall) for (const entry of row.entries) add("overall", row.tier, entry);
+  for (const row of data.battle) for (const entry of row.entries) add("battle", row.tier, entry);
+  for (const row of data.utility) for (const entry of row.entries) add("utility", row.tier, entry);
+  for (const row of data.productivity) {
     for (const group of row.groups) for (const entry of group.entries) add("productivity", row.tier, entry, group.resource);
   }
   return found;

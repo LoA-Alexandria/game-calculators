@@ -94,10 +94,16 @@ export function artworkImageUrl(file: string): string {
   return asset(`/artwork/${file}`);
 }
 
-export const PAINTING_SETS: PaintingSet[] = (catalogue.sets as RawSet[]).map((set) => ({
-  ...set,
-  paintings: set.paintings.map(asPainting),
-}));
+/**
+ * The catalogue in the shape the pages read. The file and a published
+ * replacement go through the same hands, so nothing downstream can tell them
+ * apart.
+ */
+export function paintingSetsFrom(data: { sets: unknown[] }): PaintingSet[] {
+  return (data.sets as RawSet[]).map((set) => ({ ...set, paintings: set.paintings.map(asPainting) }));
+}
+
+export const PAINTING_SETS: PaintingSet[] = paintingSetsFrom(catalogue as { sets: unknown[] });
 
 /** A set's wording in another language; a missing or blank part keeps the English text. */
 export type PaintingSetText = { name?: string; effect?: string };
@@ -172,12 +178,13 @@ function heroHaystack(name: string): string {
   return [name, ...(HERO_ALIASES[name] ?? [])].join(" ").toLowerCase();
 }
 
-export function setsByRarity(rarity: PaintingRarity): PaintingSet[] {
-  return PAINTING_SETS.filter((entry) => entry.rarity === rarity);
+/** `sets` defaults to the built catalogue; a page passes the published one. */
+export function setsByRarity(rarity: PaintingRarity, sets: readonly PaintingSet[] = PAINTING_SETS): PaintingSet[] {
+  return sets.filter((entry) => entry.rarity === rarity);
 }
 
-export function paintingSetById(id: string): PaintingSet | undefined {
-  return PAINTING_SETS.find((entry) => entry.id === id);
+export function paintingSetById(id: string, sets: readonly PaintingSet[] = PAINTING_SETS): PaintingSet | undefined {
+  return sets.find((entry) => entry.id === id);
 }
 
 export type PaintingHit = {
@@ -210,11 +217,15 @@ export function searchPaintings(query: string): PaintingHit[] {
  * the translations of every language, so a German reader can find "Die
  * Schaukel" and a French one "L'Escarpolette" on any page language.
  */
-export function searchCatalogue(query: string, catalogs: readonly PaintingTexts[] = []): PaintingHit[] {
+export function searchCatalogue(
+  query: string,
+  catalogs: readonly PaintingTexts[] = [],
+  sets: readonly PaintingSet[] = PAINTING_SETS,
+): PaintingHit[] {
   const needle = fold(query);
   if (!needle) return [];
   const hits: PaintingHit[] = [];
-  for (const entry of PAINTING_SETS) {
+  for (const entry of sets) {
     for (const canvas of entry.paintings) {
       const translated = catalogs.flatMap((texts) => {
         const local = texts.paintings?.[canvas.id];

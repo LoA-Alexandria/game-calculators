@@ -171,17 +171,7 @@ test("a guide reads the data the site serves, or is on the list of those that do
   // Publishing writes a row; a guide that still reads its committed file shows
   // nothing of it. The list below is the work left, and it may only shrink.
   const waiting = [
-    "AnecdotesGuide.tsx",
-    "ArtworkGuide.tsx",
-    "BuildingsGuide.tsx",
-    "CollectionGuide.tsx",
-    "CollectionLayoutsGuide.tsx",
     "CryptidTowerLayoutGuide.tsx",
-    "GoddessLevelingGuide.tsx",
-    "GoddessesGuide.tsx",
-    "HeroRoster.tsx",
-    "HeroTierListGuide.tsx",
-    "MuseionGuide.tsx",
   ];
   const pages = readdirSync(guidesDir).filter(
     (name) => name.endsWith("Guide.tsx") || name === "HeroRoster.tsx",

@@ -20,7 +20,6 @@ import {
   HERO_FRAGMENT_KEYS,
   HERO_RARITIES,
   HERO_STAR_COSTS,
-  HEROES,
   abilityCount,
   heroImageUrl,
   heroesByRarity,
@@ -30,17 +29,17 @@ import {
   mergeHeroTexts,
   type Hero,
   type HeroRarity,
-  type HeroTexts,
-} from "../../lib/content/heroes";
+  type HeroTexts, HERO_DATA} from "../../lib/content/heroes";
 import { LOCALE_CODES, fill, getDictionary, type Dictionary } from "../../lib/i18n";
 import { exclusiveCollectionSearchText, type CollectionTexts } from "../../lib/content/collection";
-import { HERO_SKIN_GROUPS, HERO_SKINS, skinSearchText, skinsFor } from "../../lib/content/skins";
+import { HERO_SKIN_GROUPS, skinSearchText, skinsFor, type SkinData} from "../../lib/content/skins";
 import { ChevronIcon, CloseIcon } from "../components/Icons";
 import { heroChibiUrl } from "../../lib/content/hero-chibis";
 import { HeroPortrait } from "../components/HeroPortrait";
 import { useLocale } from "../components/LocaleProvider";
 import { HeroAbilities, HeroArtifact } from "./HeroAbilities";
 import { SkinCatalog, SkinLines } from "./SkinCatalog";
+import { useGuideData } from "./GuideOverrides";
 
 type Guide = Dictionary["guideEntries"]["heroes"];
 
@@ -116,6 +115,9 @@ function closeHeroHash() {
 }
 
 export function HeroRoster({ guide }: { guide: Guide }) {
+  // The build carries the guide; a published edit lies over it a moment later.
+  const roster = useGuideData<typeof HERO_DATA>("heroes").heroes;
+  const skins = useGuideData<SkinData>("hero-skins").skins;
   const { locale } = useLocale();
   const [rarity, setRarity] = useState<HeroRarity | "all">("all");
   const [query, setQuery] = useState("");
@@ -140,20 +142,21 @@ export function HeroRoster({ guide }: { guide: Guide }) {
         heroCatalogs,
         (hero) =>
           [
-            skinSearchText(hero.name, HERO_SKINS, skinCatalogs),
+            skinSearchText(hero.name, skins, skinCatalogs),
             exclusiveCollectionSearchText(hero.id, collectionCatalogs),
           ].join(" "),
+        roster,
       ),
-    [query, rarity, heroCatalogs, skinCatalogs, collectionCatalogs],
+    [query, rarity, heroCatalogs, skinCatalogs, collectionCatalogs, skins, roster],
   );
   const grouped = rarity === "all" && !query.trim();
   const fragmentLabels = guide.fragments;
 
   const hash = useSyncExternalStore(subscribeHash, () => window.location.hash, () => "");
   const openId = decodeURIComponent(hash.slice(1));
-  const open = openId ? HEROES.find((hero) => hero.id === openId) ?? null : null;
+  const open = openId ? roster.find((hero) => hero.id === openId) ?? null : null;
   // Step through what is on screen, or the whole roster when a link opened a filtered-out hero.
-  const stepList = open && rows.some((hero) => hero.id === open.id) ? rows : HEROES;
+  const stepList = open && rows.some((hero) => hero.id === open.id) ? rows : roster;
 
   const openHero = (hero: Hero) => openHeroHash(hero.id);
   // The subject the reader picked stays picked as they step through the roster.
@@ -176,7 +179,7 @@ export function HeroRoster({ guide }: { guide: Guide }) {
         <div className="hero-filters" role="group" aria-label={guide.filterLabel}>
           <button type="button" className="hero-filter" aria-pressed={rarity === "all"} onClick={() => setRarity("all")}>
             {guide.filterAll}
-            <span className="hero-filter-count">{HEROES.length}</span>
+            <span className="hero-filter-count">{roster.length}</span>
           </button>
           {HERO_RARITIES.map((tier) => (
             <button
@@ -188,7 +191,7 @@ export function HeroRoster({ guide }: { guide: Guide }) {
               onClick={() => setRarity(tier)}
             >
               {tier}
-              <span className="hero-filter-count">{heroesByRarity(tier).length}</span>
+              <span className="hero-filter-count">{heroesByRarity(tier, roster).length}</span>
             </button>
           ))}
         </div>
@@ -256,7 +259,7 @@ export function HeroRoster({ guide }: { guide: Guide }) {
         ))}
       </div>
       <SkinCatalog
-        skins={HERO_SKINS}
+        skins={skins}
         groups={guide.skinGroups}
         groupOrder={HERO_SKIN_GROUPS}
         texts={guide.skinTexts}
@@ -266,7 +269,7 @@ export function HeroRoster({ guide }: { guide: Guide }) {
         missableLabel={guide.missableLabel}
         unconfirmedLabel={guide.unconfirmedLabel}
         ownerOf={(name) => {
-          const hero = HEROES.find((entry) => entry.name === name);
+          const hero = roster.find((entry) => entry.name === name);
           return {
             name,
             href: hero ? `${guideHref("heroes")}#${encodeURIComponent(hero.id)}` : null,
@@ -527,7 +530,7 @@ function HeroDetail({
     counter: layoutGuide.labelCounters,
   };
   const nothing = !found.tiers.length && !found.builds.length && !found.roles.length && !found.paintings.length;
-  const listedSkins = skinsFor(HERO_SKINS, hero.name);
+  const listedSkins = skinsFor(useGuideData<SkinData>("hero-skins").skins, hero.name);
   const troopLabel = hero.troop ? guide.troops[hero.troop] : null;
   const ageLabel = hero.age ? guide.ages[hero.age] : null;
   // How many guides name this hero, for the count beside the subject.
