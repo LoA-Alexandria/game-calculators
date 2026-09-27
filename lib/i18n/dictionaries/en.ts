@@ -1443,9 +1443,9 @@ const en = {
     },
     cryptidLayout: {
       title: "Cryptid layout",
-      summary: "The order the four Cryptides go into a fight, what to evolve first, and the levels a Tower asks of a troop.",
+      summary: "The order the four Cryptides go into a fight and what to evolve first.",
       intro:
-        "Four Cryptides, four slots. Which one opens and which one waits decides how much of each buff you actually get. The Towers behind them ask for a whole troop rather than a handful of heroes.",
+        "Four Cryptides, four slots. Which one opens and which one waits decides how much of each buff you actually get.",
       credit: "Guide by Autumn (Ice, S12), shared on Discord",
       creditDate: "August 2026",
       formationHeading: "The opening line-up",
@@ -1469,18 +1469,6 @@ const en = {
         cerberusUr: "Then Cerberus.",
         rest: "Then the other two.",
       },
-      towerHeading: "Levels for the Towers",
-      towerBody: [
-        "A Tower is a single-troop dungeon: every hero of that troop type goes in. So the whole troop has to be levelled, not only the best few.",
-      ],
-      towerLevels: [
-        { tier: "Every hero", target: "100–130" },
-        { tier: "UR and UR+", target: "200+" },
-        { tier: "SSR", target: "150", note: "Do not ascend past it — the materials are needed for the UR heroes." },
-        { tier: "R and SR", target: "120–130" },
-      ],
-      towerNote:
-        "Once everyone is there, keep the same gap between the rarities and push the whole troop forward together.",
       sections: [
         {
           heading: "Where the Cryptides themselves are",
@@ -1489,9 +1477,9 @@ const en = {
           ],
         },
       ],
-      note: "Autumn’s level targets are from August 2026 and move as a server ages. Bring a correction to Discord if yours runs different ones.",
+      note: "",
       sourceNote:
-        "Formation, evolution order, and Tower levels from Autumn (Ice, S12), shared on Discord on 6 and 11 August 2026. Cryptide names and portraits come from the Cryptides guide.",
+        "Formation and evolution order from Autumn (Ice, S12), shared on Discord on 6 and 11 August 2026. Cryptide names and portraits come from the Cryptides guide.",
     },
     cryptidTowerLayout: {
       title: "Cryptid Tower Layout",

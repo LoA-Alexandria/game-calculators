@@ -4466,9 +4466,9 @@ const fr: Dictionary = {
     },
     cryptidLayout: {
       title: "Formation Cryptid",
-      summary: "L’ordre dans lequel les quatre Cryptides entrent en combat, quoi faire évoluer en premier, et les niveaux qu’une Tour demande à une troupe.",
+      summary: "L’ordre dans lequel les quatre Cryptides entrent en combat et quoi faire évoluer en premier.",
       intro:
-        "Quatre Cryptides, quatre places. Qui ouvre et qui attend décide de ce que chaque bonus rapporte vraiment. Et les Tours derrière eux demandent toute une troupe, pas une poignée de héros.",
+        "Quatre Cryptides, quatre places. Qui ouvre et qui attend décide de ce que chaque bonus rapporte vraiment.",
       credit: "Guide d’Autumn (Ice, S12), partagé sur Discord",
       creditDate: "Août 2026",
       formationHeading: "L’ouverture",
@@ -4492,18 +4492,6 @@ const fr: Dictionary = {
         cerberusUr: "Puis Cerbère.",
         rest: "Puis les deux autres.",
       },
-      towerHeading: "Niveaux pour les Tours",
-      towerBody: [
-        "Une Tour est un donjon à un seul type de troupe : tous vos héros de ce type y vont. C’est donc toute la troupe qu’il faut monter, pas seulement les meilleurs.",
-      ],
-      towerLevels: [
-        { tier: "Tous les héros", target: "100–130" },
-        { tier: "UR et UR+", target: "200+" },
-        { tier: "SSR", target: "150", note: "Ne les ascensionnez pas au-delà : les matériaux servent aux héros UR." },
-        { tier: "R et SR", target: "120–130" },
-      ],
-      towerNote:
-        "Une fois tout le monde à ce niveau, gardez le même écart entre les raretés et avancez toute la troupe ensemble.",
       sections: [
         {
           heading: "Où trouver les Cryptides eux-mêmes",
@@ -4512,9 +4500,9 @@ const fr: Dictionary = {
           ],
         },
       ],
-      note: "Les niveaux visés par Autumn datent d’août 2026 et bougent avec l’âge d’un serveur. Signalez une correction sur Discord si le vôtre diffère.",
+      note: "",
       sourceNote:
-        "Formation, ordre d’évolution et niveaux des Tours d’Autumn (Ice, S12), partagés sur Discord les 6 et 11 août 2026. Les noms et portraits des Cryptides viennent du guide Cryptides.",
+        "Formation et ordre d’évolution d’Autumn (Ice, S12), partagés sur Discord les 6 et 11 août 2026. Les noms et portraits des Cryptides viennent du guide Cryptides.",
     },
     cryptidTowerLayout: {
       title: "Formations des tours de cryptides",

@@ -4045,26 +4045,6 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
   font-size: .7rem;
   font-weight: 700;
 }
-.cryptid-tower-levels {
-  margin: 0 0 10px;
-  padding: 0;
-  list-style: none;
-  display: grid;
-  gap: 8px;
-}
-.cryptid-tower-levels li {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 4px 12px;
-}
-.cryptid-tower-levels li small {
-  flex-basis: 100%;
-  color: var(--ink-soft);
-  font-size: .8rem;
-}
-.cryptid-tower-note { color: var(--ink-soft); font-size: .88rem; }
-
 .cryptid-tower-layout .ct-progress-note { color: var(--ink-soft); font-size: .88rem; margin: .25rem 0 1rem; }
 .ct-level-guidance { margin: 1rem 0 1.25rem; padding: 1rem 1.2rem; border: 1px solid var(--line); border-radius: 1rem; background: var(--surface); }
 .ct-level-guidance h2 { margin: 0 0 .5rem; font-size: 1.15rem; }
