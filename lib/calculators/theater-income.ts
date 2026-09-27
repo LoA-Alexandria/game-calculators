@@ -156,6 +156,14 @@ export function redCarpetPoints(total: number): [number, number] {
   return [hundreds(RED_CARPET_SHARE[0]), hundreds(RED_CARPET_SHARE[1])];
 }
 
+/** Compare one play's Muse Coins and Red Carpet range against its fixed energy cost. */
+export function energyEfficiency(total: number, energyCost: number): { museCoins: number; redCarpet: [number, number] } {
+  if (!Number.isFinite(total) || total < 0) throw new RangeError("Muse Coins must be a non-negative finite number.");
+  if (!Number.isFinite(energyCost) || energyCost <= 0) throw new RangeError("Energy cost must be a positive finite number.");
+  const [low, high] = redCarpetPoints(total);
+  return { museCoins: total / energyCost, redCarpet: [low / energyCost, high / energyCost] };
+}
+
 /** What one more upgrade step (+0.5 %) of ticket price or visitor flow adds to this play. */
 export function upgradeGains(play: PlayNumbers, stats: TheaterStats): { ticket: number; visitors: number } {
   const now = performance(play, stats).total;

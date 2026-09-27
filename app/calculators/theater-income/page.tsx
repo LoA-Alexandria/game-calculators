@@ -11,6 +11,7 @@ import {
   PLAY_RARITIES,
   REHEARSAL_EVENTS,
   deployment,
+  energyEfficiency,
   incomePlay,
   performance,
   redCarpetPoints,
@@ -480,7 +481,11 @@ export default function TheaterIncomePage() {
         {PLAY_RARITIES.map((rarity) => {
           const group = rows
             .filter((row) => row.entry.rarity === rarity)
-            .map((row) => ({ row, income: stats && row.numbers ? performance(row.numbers, stats).total : null }))
+            .map((row) => {
+              const income = stats && row.numbers ? performance(row.numbers, stats).total : null;
+              const energy = PLAY_ENERGY[row.entry.rarity];
+              return { row, income, energy, efficiency: income === null ? null : energyEfficiency(income, energy) };
+            })
             .sort((a, b) => (b.income ?? -1) - (a.income ?? -1) || (b.row.bonusPercent ?? -1) - (a.row.bonusPercent ?? -1));
           const best = group[0]?.income ?? null;
           return (
@@ -493,12 +498,15 @@ export default function TheaterIncomePage() {
                   <tr>
                     <th scope="col">{copy.colPlay}</th>
                     <th scope="col" className="num">{copy.colBonus}</th>
+                    <th scope="col" className="num">{copy.colEnergyCost}</th>
                     <th scope="col" className="num">{copy.colIncome}</th>
+                    <th scope="col" className="num">{copy.colCoinsPerEnergy}</th>
                     <th scope="col" className="num">{copy.colRedCarpet}</th>
+                    <th scope="col" className="num">{copy.colRedCarpetPerEnergy}</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {group.map(({ row, income }) => (
+                  {group.map(({ row, income, energy, efficiency }) => (
                     <tr key={row.entry.id} aria-current={row.entry.id === current.entry.id ? "true" : undefined}>
                       <th scope="row">
                         <button type="button" className="theater-row-play" onClick={() => update({ play: row.entry.id })}>
@@ -511,9 +519,14 @@ export default function TheaterIncomePage() {
                           ? `${row.bonus.trim() === "" && row.deploy && !row.deploy.exact ? "≥ " : ""}${n(row.bonusPercent)} %`
                           : "—"}
                       </td>
+                      <td className="num">{n(energy)} {copy.simulation.energyUnit}</td>
                       <td className="num">{income !== null ? n(income) : <span className="theater-missing">{copy.needsValues}</span>}</td>
+                      <td className="num">{efficiency ? n(efficiency.museCoins, { maximumFractionDigits: 1 }) : "—"}</td>
                       <td className="num">
                         {income !== null ? tf(copy.redCarpetRange, { low: n(redCarpetPoints(income)[0]), high: n(redCarpetPoints(income)[1]) }) : "—"}
+                      </td>
+                      <td className="num">
+                        {efficiency ? tf(copy.redCarpetRange, { low: n(efficiency.redCarpet[0], { maximumFractionDigits: 1 }), high: n(efficiency.redCarpet[1], { maximumFractionDigits: 1 }) }) : "—"}
                       </td>
                     </tr>
                   ))}
