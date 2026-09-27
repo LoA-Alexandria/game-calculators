@@ -3,6 +3,7 @@ import { Inter, JetBrains_Mono, Sora } from "next/font/google";
 import { AppShell } from "./components/AppShell";
 import { AuthProvider } from "./components/AuthProvider";
 import { LocaleProvider } from "./components/LocaleProvider";
+import { GuideOverridesProvider } from "./guides/GuideOverrides";
 import { SCHEME_STORAGE_KEY, THEME_STORAGE_KEY } from "../lib/site";
 import "./globals.css";
 
@@ -55,7 +56,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body>
         <LocaleProvider>
           <AuthProvider>
-            <AppShell>{children}</AppShell>
+            <GuideOverridesProvider>
+              <AppShell>{children}</AppShell>
+            </GuideOverridesProvider>
           </AuthProvider>
         </LocaleProvider>
       </body>

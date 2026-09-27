@@ -53,14 +53,20 @@ export const CRYPTID_PRIORITY: readonly {
   { id: "rest", cryptides: ["caladrius", "sleipnir"], target: "UR" },
 ];
 
-/** One Cryptide by its id in the Cryptides guide. */
-export function cryptideById(id: string): Cryptide | undefined {
-  return CRYPTIDES.find((cryptide) => cryptide.id === id);
+/**
+ * One Cryptide by its id in the Cryptides guide. `from` defaults to the
+ * committed bestiary; a page that has the published one passes it, so both
+ * pages agree about what a Cryptide is called.
+ */
+export function cryptideById(id: string, from: readonly Cryptide[] = CRYPTIDES): Cryptide | undefined {
+  return from.find((cryptide) => cryptide.id === id);
 }
 
 /** Every Cryptide the formation names, in slot order. */
 export function formationCryptides(): Cryptide[] {
   return CRYPTID_FORMATION.flatMap((group) =>
-    group.cryptides.map(cryptideById).filter((cryptide): cryptide is Cryptide => Boolean(cryptide)),
+    group.cryptides
+      .map((id) => cryptideById(id))
+      .filter((cryptide): cryptide is Cryptide => Boolean(cryptide)),
   );
 }
