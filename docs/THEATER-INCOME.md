@@ -6,7 +6,7 @@ and the Red Carpet points a theater run can earn from starting energy.
 ## Sources and effective date
 
 - Play names, rarity, and roles: the [Goddess Theater guide](https://loa-alexandria.github.io/game-calculators/guides/goddess-theater/), checked 27 September 2026.
-- Preview ticket and audience values: the player's in-game screenshots supplied on 25–27 September 2026. 21 of the 30 plays currently have both values; the remaining entries stay blank until evidence is supplied.
+- Preview ticket and audience values: the player's in-game screenshots supplied on 25–27 September 2026. 23 of the 30 plays currently have both values; the remaining entries stay blank until evidence is supplied.
 - Building unlock levels, rarity odds, and energy costs: the player's in-game screenshots and confirmations supplied on 27 September 2026. Royal and Civic each use SSR 40% and UR 10%, as confirmed by the player.
 - Red Carpet conversion and income formula: Autumn's (Ice, S12) in-game tests from 20–21 August 2026, encoded in `lib/calculators/theater-income.ts` and checked in `tests/theater-income.test.mjs`.
 
