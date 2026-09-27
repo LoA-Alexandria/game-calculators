@@ -7,6 +7,7 @@ import {
   INCOME_PLAYS,
   PLAY_RARITIES,
   deployment,
+  energyEfficiency,
   incomePlay,
   performance,
   redCarpetPoints,
@@ -61,6 +62,15 @@ test("Red Carpet points are 83–85 % of the income ÷ 1,000, rounded down to wh
   assert.deepEqual(redCarpetPoints(9_500_000), [7800, 8000]);
   assert.deepEqual(redCarpetPoints(1_000_000), [800, 800]);
   assert.deepEqual(redCarpetPoints(0), [0, 0]);
+});
+
+test("single-play efficiency compares Muse Coins and Red Carpet points against rarity energy", () => {
+  assert.deepEqual(energyEfficiency(9_500_000, 600), {
+    museCoins: 9_500_000 / 600,
+    redCarpet: [13, 8_000 / 600],
+  });
+  assert.deepEqual(energyEfficiency(0, 600), { museCoins: 0, redCarpet: [0, 0] });
+  assert.throws(() => energyEfficiency(100, 0), /Energy cost must be a positive finite number/);
 });
 
 test("after Merchandise, visitor flow is worth more than ticket price", () => {

@@ -44,7 +44,10 @@ models three independent rarity offers with replacement at each decision and
 selects the affordable offer that maximizes expected remaining points.
 
 The calculator has two display modes to save space. **Single** is the existing
-per-play Muse Coin calculator and comparison tables. **Mass** exposes theater
+per-play Muse Coin calculator and comparison tables. Its “All plays” tables
+also show each rarity's energy cost, Muse Coins per energy, and the existing
+Red Carpet range per energy. Each efficiency value is the matching total or
+Red Carpet range divided by the rarity's energy cost. **Mass** exposes theater
 stats, owned goddesses, energy, lipsticks, and a starting play for every active
 slot, so the run can be set up without switching modes. Each starting play is
 counted exactly once before later offer choices and its energy cost is deducted
