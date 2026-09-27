@@ -193,6 +193,7 @@ export function CryptidesEditor() {
             {e.addCryptide}
           </button>
           <button className="button" type="button" onClick={reset} disabled={!draft}>{e.reset}</button>
+          <SaveToSite ctx={ctx} result={exported} />
           <button className="button button-primary" type="button" onClick={() => setExportOpen(true)}>
             {e.export}
             {problems.length > 0 ? <span className="tier-edit-count" aria-label={tf(e.problemCount, { count: problems.length })}>{problems.length}</span> : null}
@@ -609,6 +610,90 @@ function PictureField({
   );
 }
 
+/**
+ * Saving to the site, beside Export rather than inside it: writing the guide
+ * is the ordinary thing to do now, and exporting a file the exception.
+ */
+function SaveToSite({ ctx, result }: { ctx: Ctx; result: CryptidesExport }) {
+  const { e, tf } = ctx;
+  const { session, allows } = useAuth();
+  const [state, setState] = useState<SaveState>("idle");
+  const [error, setError] = useState("");
+  const newPictures = result.uploads.length;
+  const fits = dataFits("cryptides", result.data);
+
+  const writeToSite = async (andPublish: boolean) => {
+    if (!session) return;
+    setState("saving");
+    setError("");
+
+    // Pictures first: an entry must never point at one that is not there yet.
+    const { renamed, error: uploadFailed } = await uploadPictures("cryptides", result.uploads);
+    if (uploadFailed) {
+      setError(uploadFailed);
+      setState("failed");
+      return;
+    }
+    const data = withUploadedPictures(result.data, renamed);
+    if (!dataFits("cryptides", data)) {
+      setError(e.saveToSiteUnfit);
+      setState("failed");
+      return;
+    }
+
+    const failure = await saveDataDraft("cryptides", data, session.userId);
+    if (failure) {
+      setError(failure);
+      setState("failed");
+      return;
+    }
+    if (andPublish) {
+      const refused = await publishData("cryptides");
+      if (refused) {
+        setError(refused);
+        setState("failed");
+        return;
+      }
+    }
+    setState("saved");
+    window.setTimeout(() => setState("idle"), 2500);
+  };
+
+  if (!session || !allows("guides.draft")) return null;
+
+  const hint = !fits
+    ? e.saveToSiteUnfit
+    : newPictures > 0
+      ? tf(e.saveToSitePictures, { count: newPictures })
+      : "";
+
+  return (
+    <>
+      <button
+        className="button"
+        type="button"
+        disabled={!fits || state === "saving"}
+        title={hint || undefined}
+        onClick={() => void writeToSite(false)}
+      >
+        <CheckIcon className="icon icon-sm" />
+        {state === "saving" ? e.saving : state === "saved" ? e.savedToSite : e.saveToSite}
+      </button>
+      {allows("guides.publish") ? (
+        <button
+          className="button"
+          type="button"
+          disabled={!fits || state === "saving"}
+          onClick={() => void writeToSite(true)}
+        >
+          {e.publishNow}
+        </button>
+      ) : null}
+      {error ? <span className="tier-edit-status result-error" role="alert">{error}</span> : null}
+    </>
+  );
+}
+
 function problemText(e: EditorText, tf: Tf, problem: CryptideProblem): string {
   switch (problem.code) {
     case "emptyName": return tf(e.problemEmptyName, { index: problem.index });
@@ -628,50 +713,6 @@ function ExportDialog({ ctx, result, problems, onClose }: { ctx: Ctx; result: Cr
   const dialog = useRef<HTMLDialogElement>(null);
   const [copied, setCopied] = useState(false);
   const { e, tf } = ctx;
-  const { session, allows } = useAuth();
-  const [saveState, setSaveState] = useState<SaveState>("idle");
-  const [saveError, setSaveError] = useState("");
-  // Pictures the export adds go into the bucket; the ones it drops stay where
-  // they are, because a committed file is not ours to delete from here.
-  const newPictures = result.uploads.length;
-  const fits = dataFits("cryptides", result.data);
-
-  const writeToSite = async (andPublish: boolean) => {
-    if (!session) return;
-    setSaveState("saving");
-    setSaveError("");
-
-    // Pictures first: an entry must never point at one that is not there yet.
-    const { renamed, error: uploadFailed } = await uploadPictures("cryptides", result.uploads);
-    if (uploadFailed) {
-      setSaveError(uploadFailed);
-      setSaveState("failed");
-      return;
-    }
-    const data = withUploadedPictures(result.data, renamed);
-    if (!dataFits("cryptides", data)) {
-      setSaveError(e.saveToSiteUnfit);
-      setSaveState("failed");
-      return;
-    }
-
-    const failure = await saveDataDraft("cryptides", data, session.userId);
-    if (failure) {
-      setSaveError(failure);
-      setSaveState("failed");
-      return;
-    }
-    if (andPublish) {
-      const refused = await publishData("cryptides");
-      if (refused) {
-        setSaveError(refused);
-        setSaveState("failed");
-        return;
-      }
-    }
-    setSaveState("saved");
-    window.setTimeout(() => setSaveState("idle"), 2500);
-  };
   const json = useMemo(() => serializeCryptidesData(result.data), [result]);
   // Only the dictionaries whose cryptideTexts changed need a new block.
   const blocks = useMemo(() => {
@@ -715,47 +756,6 @@ function ExportDialog({ ctx, result, problems, onClose }: { ctx: Ctx; result: Cr
             <strong>{e.problemsTitle}</strong>
             <ul>{problems.map((problem, index) => <li key={index}>{problemText(e, tf, problem)}</li>)}</ul>
           </div>
-        </div>
-      ) : null}
-
-      {session && allows("guides.draft") ? (
-        <div className="tier-export-block">
-          <div className="tier-export-head">
-            <strong>{e.saveToSiteHeading}</strong>
-            <div className="tier-edit-row-actions">
-              <button
-                className="small-button"
-                type="button"
-                disabled={!fits || saveState === "saving"}
-                onClick={() => void writeToSite(false)}
-              >
-                <CheckIcon className="icon icon-sm" />
-                {e.saveToSite}
-              </button>
-              {allows("guides.publish") ? (
-                <button
-                  className="small-button button-primary"
-                  type="button"
-                  disabled={!fits || saveState === "saving"}
-                  onClick={() => void writeToSite(true)}
-                >
-                  {e.publishNow}
-                </button>
-              ) : null}
-            </div>
-          </div>
-          <p className="tier-small" aria-live="polite">
-            {saveState === "saving"
-              ? e.saving
-              : saveState === "saved"
-                ? e.savedToSite
-                : !fits
-                  ? e.saveToSiteUnfit
-                  : newPictures > 0
-                    ? tf(e.saveToSitePictures, { count: newPictures })
-                    : e.saveToSiteHint}
-          </p>
-          {saveError ? <p className="notice notice-warn" role="alert">{saveError}</p> : null}
         </div>
       ) : null}
 

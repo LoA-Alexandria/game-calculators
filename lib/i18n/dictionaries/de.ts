@@ -6744,7 +6744,7 @@ const de: Dictionary = {
   cryptidesEditor: {
     title: "Cryptides bearbeiten",
     eyebrow: "Cryptides",
-    lede: "Cryptides hinzufügen, Skills und Futter korrigieren, Turm und Talent-Material festlegen und Porträt und Icons hochladen. Namen und Texte lassen sich in jeder Sprache der Seite schreiben; Zahlen und Bilder sind überall gleich. Dein Entwurf samt Bildern bleibt nur in diesem Browser; exportiere ihn, wenn du fertig bist.",
+    lede: "Cryptides hinzufügen, Skills und Futter korrigieren, Turm und Talent-Material festlegen und Porträt und Icons hochladen. Namen und Texte lassen sich in jeder Sprache der Seite schreiben; Zahlen und Bilder sind überall gleich. Dein Entwurf bleibt in diesem Browser, bis du ihn auf der Seite speicherst; über Export bekommst du weiterhin die Dateien, wenn du sie lieber committen willst.",
     back: "Zurück zu Cryptides",
     openEditor: "Cryptides bearbeiten",
     savedNote: "Entwurf in diesem Browser gespeichert",

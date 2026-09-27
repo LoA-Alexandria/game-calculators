@@ -408,7 +408,35 @@ export function GuideEditor({
       <div>
         <div className="form-actions editor-languages-bar">
           <AllLanguagesToggle />
+          {editing && session && allows("guides.draft") ? (
+            <>
+              <button
+                className="button"
+                type="button"
+                disabled={saveState === "saving"}
+                onClick={() => void writeToSite(false)}
+              >
+                <CheckIcon className="icon icon-sm" />
+                {saveState === "saving"
+                  ? t.editor.saving
+                  : saveState === "saved"
+                    ? t.editor.savedToSite
+                    : t.editor.saveToSite}
+              </button>
+              {allows("guides.publish") ? (
+                <button
+                  className="button"
+                  type="button"
+                  disabled={saveState === "saving"}
+                  onClick={() => void writeToSite(true)}
+                >
+                  {t.editor.publishNow}
+                </button>
+              ) : null}
+            </>
+          ) : null}
         </div>
+        {saveError ? <p className="result-error" role="alert">{saveError}</p> : null}
         <section className="panel">
           <TranslatedField
             label={t.editor.fieldTitle}
@@ -606,33 +634,6 @@ export function GuideEditor({
           <p>{t.editor.outputLede}</p>
           <DictionaryBlocks blocks={blocks} rows={8} />
           <textarea className="code-out" readOnly value={output} />
-          {editing && session && allows("guides.draft") ? (
-            <div className="form-actions editor-publish">
-              <button
-                className="button"
-                type="button"
-                disabled={saveState === "saving"}
-                onClick={() => void writeToSite(false)}
-              >
-                <CheckIcon className="icon" />
-                {t.editor.saveToSite}
-              </button>
-              {allows("guides.publish") ? (
-                <button
-                  className="button button-primary"
-                  type="button"
-                  disabled={saveState === "saving"}
-                  onClick={() => void writeToSite(true)}
-                >
-                  {t.editor.publishNow}
-                </button>
-              ) : null}
-              <span aria-live="polite" className="tier-small">
-                {saveState === "saving" ? t.editor.saving : saveState === "saved" ? t.editor.savedToSite : ""}
-              </span>
-            </div>
-          ) : null}
-          {saveError ? <p className="result-error" role="alert">{saveError}</p> : null}
           <div className="form-actions">
             {copy}
             {onClose && (
