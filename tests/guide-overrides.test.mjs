@@ -4,7 +4,9 @@ import test from "node:test";
 import {
   OVERRIDABLE_FIELDS,
   applyOverride,
+  mergeTexts,
   overrideFrom,
+  overrideWith,
   overridesByGuide,
   readOverride,
 } from "../lib/content/guide-overrides.ts";
@@ -96,8 +98,8 @@ test("the names of the things a guide lists can be overridden", () => {
   assert.equal(shown.title, cryptides.title, "the rest of the guide is untouched");
 
   assert.deepEqual(overrideFrom(cryptides, { ...cryptides, cryptideTexts: renamed }), {
-    cryptideTexts: renamed,
-  });
+    cryptideTexts: { nidhogg: { name: "Nidhoggd" } },
+  }, "only the name that changed travels");
   assert.deepEqual(overrideFrom(cryptides, { ...cryptides }), {}, "no change, nothing sent");
 });
 
@@ -126,4 +128,139 @@ test("every overridable field is one a guide entry actually carries", () => {
       `no guide has a ${field}`,
     );
   }
+});
+
+test("a name edited back to the built one is taken out of the payload", () => {
+  // The bug this pins: the editor showed the published name, the name was put
+  // back to the committed one, and the payload then said nothing about the
+  // field — so the published row kept winning and the page never changed.
+  const cryptides = getDictionary("en").guideEntries.cryptides;
+  const renamed = {
+    ...cryptides.cryptideTexts,
+    nidhogg: { ...cryptides.cryptideTexts.nidhogg, name: "Nidhoggd" },
+  };
+  const live = { cryptideTexts: { nidhogg: { name: "Nidhoggd" } } };
+
+  assert.deepEqual(
+    overrideWith(live, cryptides, { ...cryptides }, ["cryptideTexts"]),
+    {},
+    "back to the built name, so nothing is laid over the build any more",
+  );
+  assert.deepEqual(
+    overrideWith(live, cryptides, { ...cryptides, cryptideTexts: renamed }, ["cryptideTexts"]),
+    live,
+    "saving the same thing again writes the same payload",
+  );
+});
+
+test("an editor leaves the fields it does not own alone", () => {
+  const cryptides = getDictionary("en").guideEntries.cryptides;
+  const renamed = {
+    ...cryptides.cryptideTexts,
+    nidhogg: { ...cryptides.cryptideTexts.nidhogg, name: "Nidhoggd" },
+  };
+  const live = { cryptideTexts: renamed, intro: "A published intro." };
+
+  // The prose editor writes the prose. The published names survive it, in both
+  // directions: a new summary, and a summary put back.
+  const prose = { title: cryptides.title, summary: "A new line.", intro: cryptides.intro };
+  const after = overrideWith(live, cryptides, prose, Object.keys(prose));
+  assert.equal(after.cryptideTexts, renamed, "the names another editor published are kept");
+  assert.equal(after.summary, "A new line.");
+  assert.equal("intro" in after, false, "the intro is back to the built one");
+
+  // And the names editor does not drop the prose.
+  const names = overrideWith(live, cryptides, { ...cryptides, cryptideTexts: renamed }, ["cryptideTexts"]);
+  assert.equal(names.intro, "A published intro.");
+});
+
+test("a field a payload may not carry is dropped rather than published", () => {
+  const cryptides = getDictionary("en").guideEntries.cryptides;
+  const live = { summary: "A published line." };
+  assert.deepEqual(
+    overrideWith(live, cryptides, { ...cryptides, summary: "   " }, ["summary"]),
+    {},
+    "a cleared box means back to the built text, not a blank guide",
+  );
+  assert.deepEqual(
+    overrideWith(live, cryptides, { ...cryptides, cryptideTexts: { nidhogg: { name: 42 } } }, ["cryptideTexts"]),
+    live,
+    "nonsense never reaches the payload",
+  );
+});
+
+test("a payload carries only the names that were changed", () => {
+  const cryptides = getDictionary("en").guideEntries.cryptides;
+  const edited = {
+    ...cryptides,
+    cryptideTexts: {
+      ...cryptides.cryptideTexts,
+      nidhogg: { ...cryptides.cryptideTexts.nidhogg, name: "Nidhoggd" },
+    },
+  };
+  const payload = overrideWith(null, cryptides, edited, ["cryptideTexts"]);
+  assert.deepEqual(payload, { cryptideTexts: { nidhogg: { name: "Nidhoggd" } } });
+  assert.equal(
+    "caladrius" in payload.cryptideTexts,
+    false,
+    "the names nobody touched stay in the build, where a later commit can still change them",
+  );
+  assert.equal(
+    "skills" in payload.cryptideTexts.nidhogg,
+    false,
+    "and so do the skills of the one that was renamed",
+  );
+});
+
+test("a name an editor left empty is not published as empty", () => {
+  // The editors build a full tree of boxes. An empty one means "as built", and
+  // writing it through would blank a skill name on the page.
+  const cryptides = getDictionary("en").guideEntries.cryptides;
+  const blanked = {
+    ...cryptides,
+    cryptideTexts: {
+      nidhogg: {
+        name: "Nidhoggd",
+        skills: { "fireball-hail": { name: "", body: "" } },
+        foods: { ribs: { name: "   " } },
+      },
+    },
+  };
+  assert.deepEqual(overrideWith(null, cryptides, blanked, ["cryptideTexts"]), {
+    cryptideTexts: { nidhogg: { name: "Nidhoggd" } },
+  });
+});
+
+test("published names are laid over the built ones, not in place of them", () => {
+  const cryptides = getDictionary("en").guideEntries.cryptides;
+  const shown = applyOverride(cryptides, { cryptideTexts: { nidhogg: { name: "Nidhoggd" } } });
+  assert.equal(shown.cryptideTexts.nidhogg.name, "Nidhoggd");
+  assert.deepEqual(
+    shown.cryptideTexts.nidhogg.skills,
+    cryptides.cryptideTexts.nidhogg.skills,
+    "the skills of the renamed Cryptide survive",
+  );
+  assert.deepEqual(
+    shown.cryptideTexts.caladrius,
+    cryptides.cryptideTexts.caladrius,
+    "and so does every other entry",
+  );
+  assert.equal(mergeTexts(cryptides.cryptideTexts, undefined), cryptides.cryptideTexts);
+});
+
+test("a rename and a revert make a round trip", () => {
+  const cryptides = getDictionary("en").guideEntries.cryptides;
+  const renamed = mergeTexts(cryptides.cryptideTexts, { nidhogg: { name: "Nidhoggd" } });
+  const live = overrideWith(null, cryptides, { ...cryptides, cryptideTexts: renamed }, ["cryptideTexts"]);
+  assert.deepEqual(live, { cryptideTexts: { nidhogg: { name: "Nidhoggd" } } });
+
+  // What the editor now opens on, and the letter taken back off it.
+  const asShown = mergeTexts(cryptides.cryptideTexts, live.cryptideTexts);
+  assert.equal(asShown.nidhogg.name, "Nidhoggd");
+  const back = mergeTexts(asShown, { nidhogg: { name: cryptides.cryptideTexts.nidhogg.name } });
+  assert.deepEqual(
+    overrideWith(live, cryptides, { ...cryptides, cryptideTexts: back }, ["cryptideTexts"]),
+    {},
+    "nothing is laid over the build any more, so publishing takes the row away",
+  );
 });
