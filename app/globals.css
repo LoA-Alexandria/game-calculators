@@ -4055,7 +4055,8 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
 .ct-cryptide img { grid-row: span 2; width: 2.5rem; height: 2.5rem; object-fit: contain; }
 .ct-cryptide span { font-size: .84rem; font-weight: 700; }
 .ct-cryptide small { color: var(--ink-soft); font-size: .72rem; }
-.ct-linked-pick { text-decoration: none; }
+.cryptid-tower-layout .ct-linked-pick,
+.cryptid-tower-layout .ct-cryptide { color: var(--ink); text-decoration: none; }
 .ct-linked-pick:hover, .ct-cryptide:hover { border-color: var(--build, var(--accent)); }
 .ct-linked-pick:focus-visible, .ct-cryptide:focus-visible { outline: 2px solid var(--build, var(--accent)); outline-offset: 2px; }
 .ct-linked-pick .pick-name { min-width: 0; }
