@@ -117,6 +117,9 @@ export const GUIDE_PRESENTATION: Record<GuideEntryId, GuidePresentation> = {
     editor: { href: "/guides/server-age-unlocks/edit/", label: (t) => t.ageUnlocksEditor.openEditor },
     cutout: true,
   },
+  eventOrderRotation: {
+    art: ["/events/holy-grail.webp", "/events/astral-wonderland.webp", "/events/great-flood.webp", "/events/grand-voyage.webp"],
+  },
 };
 
 export function guidePresentation(id: GuideEntryId): GuidePresentation {

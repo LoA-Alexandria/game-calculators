@@ -44,6 +44,7 @@ const SNIPPET_EDITOR_SKIP = new Set<string>([
   "heroLinking",
   "anecdotes",
   "serverAgeUnlocks",
+  "eventOrderRotation",
   "museion",
   "heroLeveling",
   "buildings",
@@ -80,6 +81,7 @@ export type GuideLayout =
   | "heroLinking"
   | "anecdotes"
   | "serverAgeUnlocks"
+  | "eventOrderRotation"
   | "museion"
   | "heroLeveling"
   | "buildings"
@@ -120,6 +122,7 @@ export function guideLayout(guide: object): GuideLayout {
   if ("linksHeading" in guide) return "heroLinking";
   if ("anecdoteTexts" in guide) return "anecdotes";
   if ("timelineHeading" in guide) return "serverAgeUnlocks";
+  if ("rotationHeading" in guide) return "eventOrderRotation";
   if ("buildingsHeading" in guide) return "museion";
   if ("focusHeading" in guide) return "heroLeveling";
   if ("categoriesHeading" in guide) return "buildings";
