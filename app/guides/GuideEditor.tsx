@@ -20,7 +20,10 @@ import {
 } from "../../lib/content/guides";
 import { GUIDE_DRAFT_STORAGE_KEY } from "../../lib/site";
 import { AllLanguagesToggle, DictionaryBlocks, TranslatedField, useEditorLanguages } from "../components/EditorLanguages";
+import { useAuth } from "../components/AuthProvider";
 import { useLocale } from "../components/LocaleProvider";
+import { overrideFrom } from "../../lib/content/guide-overrides";
+import { publishGuide, saveGuideDraft, type SaveState } from "./useGuideContent";
 import { BackLink, PageHead } from "../components/Ui";
 import {
   AlertIcon,
@@ -191,6 +194,9 @@ export function GuideEditor({
   const ids = useId();
   const editing = target?.action === "edit" ? target.id : null;
   const removing = target?.action === "remove" ? target.id : null;
+  const { session, allows } = useAuth();
+  const [saveState, setSaveState] = useState<SaveState>("idle");
+  const [saveError, setSaveError] = useState("");
   const [draft, setDraft] = useState<GuideDraft>(() => (editing || removing ? draftFromEntry((editing ?? removing) as GuideEntryId) : emptyDraft()));
   const [slugTouched, setSlugTouched] = useState(Boolean(editing || removing));
   const [categoryId, setCategoryId] = useState<GuideCategoryId>(
@@ -305,6 +311,50 @@ export function GuideEditor({
       setCategoryId(loaded.categoryId as GuideCategoryId);
     }
     setSlugTouched(true);
+  };
+
+  /** The guide as this draft would have it, in one language, for comparison. */
+  const entryFor = (locale: Locale) => ({
+    title: textIn(draft.title, locale),
+    summary: textIn(draft.summary, locale),
+    intro: textIn(draft.intro, locale),
+    note: textIn(draft.note, locale),
+    sections: draft.sections
+      .filter((section) => textIn(section.heading, locale) || textIn(section.body, locale))
+      .map((section) => ({
+        heading: textIn(section.heading, locale),
+        body: paragraphs(textIn(section.body, locale)),
+      })),
+  });
+
+  /**
+   * Writes the guide to the site rather than to a file. Every language goes at
+   * once, because a guide half published reads as a mistake in the other two.
+   */
+  const writeToSite = async (andPublish: boolean) => {
+    if (!editing || !session) return;
+    setSaveState("saving");
+    setSaveError("");
+    for (const locale of LOCALE_CODES) {
+      const base = getDictionary(locale).guideEntries[editing];
+      const failure = await saveGuideDraft(editing, locale, base, entryFor(locale), session.userId);
+      if (failure) {
+        setSaveError(failure);
+        setSaveState("failed");
+        return;
+      }
+      if (!andPublish) continue;
+      // Nothing to publish when the draft matched the committed text.
+      if (Object.keys(overrideFrom(base, entryFor(locale))).length === 0) continue;
+      const refused = await publishGuide(editing, locale);
+      if (refused) {
+        setSaveError(refused);
+        setSaveState("failed");
+        return;
+      }
+    }
+    setSaveState("saved");
+    window.setTimeout(() => setSaveState("idle"), 2500);
   };
 
   const copyOutput = () => {
@@ -556,6 +606,33 @@ export function GuideEditor({
           <p>{t.editor.outputLede}</p>
           <DictionaryBlocks blocks={blocks} rows={8} />
           <textarea className="code-out" readOnly value={output} />
+          {editing && session && allows("guides.draft") ? (
+            <div className="form-actions editor-publish">
+              <button
+                className="button"
+                type="button"
+                disabled={saveState === "saving"}
+                onClick={() => void writeToSite(false)}
+              >
+                <CheckIcon className="icon" />
+                {t.editor.saveToSite}
+              </button>
+              {allows("guides.publish") ? (
+                <button
+                  className="button button-primary"
+                  type="button"
+                  disabled={saveState === "saving"}
+                  onClick={() => void writeToSite(true)}
+                >
+                  {t.editor.publishNow}
+                </button>
+              ) : null}
+              <span aria-live="polite" className="tier-small">
+                {saveState === "saving" ? t.editor.saving : saveState === "saved" ? t.editor.savedToSite : ""}
+              </span>
+            </div>
+          ) : null}
+          {saveError ? <p className="result-error" role="alert">{saveError}</p> : null}
           <div className="form-actions">
             {copy}
             {onClose && (

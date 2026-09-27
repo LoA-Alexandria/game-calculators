@@ -7280,6 +7280,10 @@ const de: Dictionary = {
       "Lösche den guideEntries-Block in jedem Wörterbuch, dann die Navigationszeile und den Seitenordner für diesen Slug.",
     removeOutput: "Notizen zum Entfernen",
     cancel: "Zurück",
+    saveToSite: "Auf der Seite speichern",
+    publishNow: "Veröffentlichen",
+    saving: "Wird gespeichert …",
+    savedToSite: "Gespeichert",
   },
   textGuideEditor: {
     title: "Diesen Guide bearbeiten",
