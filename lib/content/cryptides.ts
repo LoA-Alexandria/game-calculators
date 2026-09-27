@@ -85,10 +85,15 @@ export function orderedStages(cryptide: Cryptide): CryptidStageArt[] {
   );
 }
 
-export function searchCryptides(query: string, texts: CryptideTexts): Cryptide[] {
+/** `items` defaults to the committed bestiary; the guide passes the published one. */
+export function searchCryptides(
+  query: string,
+  texts: CryptideTexts,
+  items: readonly Cryptide[] = CRYPTIDES,
+): Cryptide[] {
   const needle = query.trim().toLowerCase();
-  if (!needle) return [...CRYPTIDES];
-  return CRYPTIDES.filter((cryptide) => {
+  if (!needle) return [...items];
+  return items.filter((cryptide) => {
     const local = localizedCryptideName(cryptide, texts);
     const skillNames = cryptide.skills.map((skill) => skillText(cryptide.id, skill.id, texts).name ?? "");
     const foodNames = cryptide.foods.map((food) => foodText(cryptide.id, food.id, texts).name ?? "");

@@ -44,7 +44,11 @@ import { DEFAULT_LOCALE, LOCALE_CODES, fill, type Dictionary, type Locale } from
 import { CRYPTIDES_DRAFT_STORAGE_KEY } from "../../lib/site";
 import { AllLanguagesToggle, DictionaryBlocks, TranslatedField, useEditorLanguages } from "../components/EditorLanguages";
 import { CheckIcon, ChevronIcon, CloseIcon, CopyIcon, DownloadIcon, PlusIcon, TrashIcon, UploadIcon } from "../components/Icons";
+import { useAuth } from "../components/AuthProvider";
 import { useLocale } from "../components/LocaleProvider";
+import { dataFits } from "../../lib/content/guide-data";
+import { publishData, saveDataDraft } from "./useGuideData";
+import type { SaveState } from "./useGuideContent";
 import { createPersistentStore } from "../components/persistentStore";
 import { BackLink, PageHead } from "../components/Ui";
 
@@ -624,6 +628,35 @@ function ExportDialog({ ctx, result, problems, onClose }: { ctx: Ctx; result: Cr
   const dialog = useRef<HTMLDialogElement>(null);
   const [copied, setCopied] = useState(false);
   const { e, tf } = ctx;
+  const { session, allows } = useAuth();
+  const [saveState, setSaveState] = useState<SaveState>("idle");
+  const [saveError, setSaveError] = useState("");
+  // A new picture is still a file to commit; the site can only point at ones
+  // that are already there.
+  const needsFiles = result.uploads.length > 0 || result.removedFiles.length > 0;
+  const fits = dataFits("cryptides", result.data);
+
+  const writeToSite = async (andPublish: boolean) => {
+    if (!session) return;
+    setSaveState("saving");
+    setSaveError("");
+    const failure = await saveDataDraft("cryptides", result.data, session.userId);
+    if (failure) {
+      setSaveError(failure);
+      setSaveState("failed");
+      return;
+    }
+    if (andPublish) {
+      const refused = await publishData("cryptides");
+      if (refused) {
+        setSaveError(refused);
+        setSaveState("failed");
+        return;
+      }
+    }
+    setSaveState("saved");
+    window.setTimeout(() => setSaveState("idle"), 2500);
+  };
   const json = useMemo(() => serializeCryptidesData(result.data), [result]);
   // Only the dictionaries whose cryptideTexts changed need a new block.
   const blocks = useMemo(() => {
@@ -667,6 +700,47 @@ function ExportDialog({ ctx, result, problems, onClose }: { ctx: Ctx; result: Cr
             <strong>{e.problemsTitle}</strong>
             <ul>{problems.map((problem, index) => <li key={index}>{problemText(e, tf, problem)}</li>)}</ul>
           </div>
+        </div>
+      ) : null}
+
+      {session && allows("guides.draft") ? (
+        <div className="tier-export-block">
+          <div className="tier-export-head">
+            <strong>{e.saveToSiteHeading}</strong>
+            <div className="tier-edit-row-actions">
+              <button
+                className="small-button"
+                type="button"
+                disabled={!fits || saveState === "saving"}
+                onClick={() => void writeToSite(false)}
+              >
+                <CheckIcon className="icon icon-sm" />
+                {e.saveToSite}
+              </button>
+              {allows("guides.publish") ? (
+                <button
+                  className="small-button button-primary"
+                  type="button"
+                  disabled={!fits || saveState === "saving"}
+                  onClick={() => void writeToSite(true)}
+                >
+                  {e.publishNow}
+                </button>
+              ) : null}
+            </div>
+          </div>
+          <p className="tier-small" aria-live="polite">
+            {saveState === "saving"
+              ? e.saving
+              : saveState === "saved"
+                ? e.savedToSite
+                : !fits
+                  ? e.saveToSiteUnfit
+                  : needsFiles
+                    ? e.saveToSitePictures
+                    : e.saveToSiteHint}
+          </p>
+          {saveError ? <p className="notice notice-warn" role="alert">{saveError}</p> : null}
         </div>
       ) : null}
 
