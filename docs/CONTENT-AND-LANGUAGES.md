@@ -179,7 +179,19 @@ that guide has (`goddessTexts` for Goddesses, `phaseTexts` for Goddess leveling,
 `filterAll` for Heroes), and
 `tests/guides.test.mjs` pins every entry, so two guides cannot claim the same
 renderer by sharing a field name. Keep `sections` and `note` in those entries
-too, since the editor reads them. Goddess names, rarity, portraits, and the
+too, since the editor reads them.
+
+Cryptid Tower Layout is separate from the existing Cryptid layout:
+`lib/content/cryptid-tower-layouts.ts` stores tower-to-hero, Collection, and
+Cryptide ids, while the localized copy lives in
+`guideEntries.cryptidTowerLayout`. Those ids resolve to pictures, names, and
+anchors in the Core Heroes, Collection, and Cryptides guides. Autumn's notes
+were supplied from Discord messages dated 21 and 25 September 2026; shorthand
+“Mask” and “Wings” are mapped to Golden Mask of Agamemnon and Wings of Icarus.
+The source misspelling “Cerebrus” follows the canonical Core spelling,
+Cerberus.
+
+Goddess names, rarity, portraits, and the
 English affinity and obtain live in `lib/data/goddesses.json`, once for all
 languages; `goddessTexts` translates the wording. `tests/goddesses.test.mjs`
 checks the roster against `public/goddesses/`. Goddess Theater casts live in
