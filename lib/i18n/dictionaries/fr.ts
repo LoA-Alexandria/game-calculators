@@ -6760,7 +6760,7 @@ const fr: Dictionary = {
   cryptidesEditor: {
     title: "Modifier les Cryptides",
     eyebrow: "Cryptides",
-    lede: "Ajoutez des Cryptides, corrigez leurs compétences et leur nourriture, choisissez la tour et le matériau de talent, et téléversez le portrait et les icônes. Noms et textes peuvent être écrits dans chaque langue du site ; nombres et images sont communs. Votre brouillon, images comprises, reste dans ce navigateur ; exportez-le quand vous avez fini.",
+    lede: "Ajoutez des Cryptides, corrigez leurs compétences et leur nourriture, choisissez la tour et le matériau de talent, et téléversez le portrait et les icônes. Noms et textes peuvent être écrits dans chaque langue du site ; nombres et images sont communs. Votre brouillon reste dans ce navigateur jusqu’à ce que vous l’enregistriez sur le site ; Export vous donne toujours les fichiers si vous préférez les commiter.",
     back: "Retour aux Cryptides",
     openEditor: "Modifier les Cryptides",
     savedNote: "Brouillon enregistré dans ce navigateur",

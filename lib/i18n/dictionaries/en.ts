@@ -3534,7 +3534,7 @@ const en = {
   cryptidesEditor: {
     title: "Edit Cryptides",
     eyebrow: "Cryptides",
-    lede: "Add Cryptides, fix their skills and feed foods, set the Tower and talent material, and upload the portrait and icons. Names and texts can be written in every language the site has; numbers and pictures are shared. Your draft, pictures included, is saved in this browser only; export it when you are done.",
+    lede: "Add Cryptides, fix their skills and feed foods, set the Tower and talent material, and upload the portrait and icons. Names and texts can be written in every language the site has; numbers and pictures are shared. Your draft stays in this browser until you save it to the site; Export still gives you the files if you would rather commit them.",
     back: "Back to Cryptides",
     openEditor: "Edit Cryptides",
     savedNote: "Draft saved in this browser",
