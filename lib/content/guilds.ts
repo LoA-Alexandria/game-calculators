@@ -63,7 +63,7 @@ export function guildRosterLabel(entry: {
   return `${id.slice(0, 4)}…${id.slice(-4)}`;
 }
 
-export type GuildTab = "news" | "planung";
+export type GuildTab = "news" | "planung" | "trade";
 
 export type GuildPost = {
   id: string;
@@ -111,9 +111,14 @@ export function guildListHref(): string {
   return "/guilds/";
 }
 
+const GUILD_TAB_PATHS: Record<GuildTab, string> = {
+  news: "/guilds/room/news/",
+  planung: "/guilds/room/planung/",
+  trade: "/guilds/room/trade/",
+};
+
 export function guildRoomHref(slug: string, tab: GuildTab = "news"): string {
-  const path = tab === "news" ? "/guilds/room/news/" : "/guilds/room/planung/";
-  return `${path}?guild=${encodeURIComponent(slug)}`;
+  return `${GUILD_TAB_PATHS[tab]}?guild=${encodeURIComponent(slug)}`;
 }
 
 export function guildRoomUrl(slug: string, tab: GuildTab = "news"): string {

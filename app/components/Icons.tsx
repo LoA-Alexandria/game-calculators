@@ -53,6 +53,18 @@ export function NewsIcon({ className }: IconProps) {
   );
 }
 
+/** Two arrows passing each other: something goes out, something comes back. */
+export function TradeIcon({ className }: IconProps) {
+  return (
+    <svg className={className} {...base}>
+      <path d="M4 8h13" />
+      <path d="m14 5 3 3-3 3" />
+      <path d="M20 16H7" />
+      <path d="m10 13-3 3 3 3" />
+    </svg>
+  );
+}
+
 /** An opened tablet with a reading rule. */
 export function GuidesIcon({ className }: IconProps) {
   return (

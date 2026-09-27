@@ -4,6 +4,7 @@ import { useCallback, useEffect, useId, useState, useSyncExternalStore, type CSS
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { GuildEventBoard, GuildEventPicker } from "./GuildEventBoard";
+import { GuildTradeBoard } from "./GuildTradeBoard";
 import { GuildRichTextEditor, GuildRichTextView } from "./GuildRichText";
 import { guildPostHtml, sanitizeGuildHtml } from "../../lib/content/guild-rich-text";
 import {
@@ -55,6 +56,7 @@ import {
   NewsIcon,
   PenIcon,
   PlusIcon,
+  TradeIcon,
   TrashIcon,
   UsersIcon,
 } from "../components/Icons";
@@ -181,7 +183,8 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
 
   const reload = useCallback(() => setReloadToken((value) => value + 1), []);
 
-  useDocumentTitle(guild ? `${guild.name} · ${tab === "news" ? t.guilds.news : t.guilds.planung}` : t.guilds.title);
+  const tabTitle = tab === "news" ? t.guilds.news : tab === "trade" ? t.guilds.tradeTab : t.guilds.planung;
+  useDocumentTitle(guild ? `${guild.name} · ${tabTitle}` : t.guilds.title);
 
   useEffect(() => {
     if (!supabase || !slug) return;
@@ -269,7 +272,9 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
             .from("guild_posts")
             .select("id, guild_id, channel, title, body, source_locale, title_i18n, body_i18n, author_id, created_at, updated_at")
             .eq("guild_id", nextGuild.id)
-            .eq("channel", tab)
+            // Trade has a board rather than a feed, so it borrows the news channel
+            // for the query and shows none of it.
+            .eq("channel", tab === "trade" ? "news" : tab)
             .order("created_at", { ascending: false }),
           supabase.rpc("guild_roster", { p_guild_id: nextGuild.id }),
           supabase.from("guild_active_events").select("event_id").eq("guild_id", nextGuild.id),
@@ -946,6 +951,14 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
             <EventsIcon className="icon" />
             {t.guilds.planung}
           </Link>
+          <Link
+            className={tab === "trade" ? "guild-hero-tab is-active" : "guild-hero-tab"}
+            href={guildRoomHref(guild.slug, "trade")}
+            aria-current={tab === "trade" ? "page" : undefined}
+          >
+            <TradeIcon className="icon" />
+            {t.guilds.tradeTab}
+          </Link>
         </nav>
       </header>
 
@@ -1106,7 +1119,14 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
 
       <div className="guild-room-layout">
         <div className="guild-room-main">
-          {tab === "planung" ? (
+          {tab === "trade" ? (
+            <GuildTradeBoard
+              guildId={guild.id}
+              userId={session.userId}
+              roster={roster}
+              frozen={frozen}
+            />
+          ) : tab === "planung" ? (
             <>
               {planEventId ? (
                 <GuildEventBoard

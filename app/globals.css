@@ -7881,6 +7881,157 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
   background: color-mix(in srgb, var(--panel) 92%, var(--line));
 }
 .guild-compose-locale h4 { margin: 0; font-size: .92rem; color: var(--ink-soft); }
+/* ---------------------------------------------------------------- trade
+
+   The trade board: who owns which pieces of an event furniture set, what is
+   worth passing on, and the plan for a trading day. */
+.guild-trade { display: grid; gap: 16px; }
+.guild-trade-progress .is-me th,
+.guild-trade-counts .is-me th { color: var(--accent); }
+.guild-trade-bar {
+  display: inline-block;
+  width: 64px;
+  height: 6px;
+  margin-right: 8px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ink) 12%, transparent);
+  overflow: hidden;
+  vertical-align: middle;
+}
+.guild-trade-bar > span { display: block; height: 100%; background: var(--accent); }
+/* A counter at the day's limit is done; past it, somebody has to give one up. */
+.guild-trade-counts .is-full { color: var(--good); font-weight: 700; }
+.guild-trade-counts .is-over { color: var(--bad); font-weight: 700; }
+
+.guild-trade-grid {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 210px), 1fr));
+  gap: 10px;
+}
+.guild-trade-card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+}
+.guild-trade-card.is-done { border-color: color-mix(in srgb, var(--good) 45%, var(--line)); }
+.guild-trade-card > img {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--r-md);
+  object-fit: cover;
+}
+.guild-trade-card-body { display: grid; gap: 4px; min-width: 0; }
+.guild-trade-card-body strong { font-size: .84rem; line-height: 1.25; }
+.guild-trade-done {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: .78rem;
+  color: var(--ink-soft);
+}
+.guild-trade-parts-toggle {
+  justify-self: start;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  font-size: .74rem;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.guild-trade-parts {
+  margin: 2px 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.guild-trade-part {
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--ink-soft);
+  font: inherit;
+  font-size: .72rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.guild-trade-part.is-held {
+  border-color: var(--accent-line, var(--accent));
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.guild-trade-part:disabled { cursor: default; opacity: .6; }
+
+.guild-trade-day-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.guild-trade-day-bar .field { margin: 0; }
+.guild-trade-day-bar select[data-status="go"] { border-color: color-mix(in srgb, var(--good) 55%, var(--line)); }
+.guild-trade-day-bar select[data-status="stop"] { border-color: color-mix(in srgb, var(--bad) 45%, var(--line)); }
+
+.guild-trade-gifts {
+  margin: 0 0 12px;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 6px;
+}
+.guild-trade-gifts > li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface);
+}
+.guild-trade-gifts > li.is-done { opacity: .6; }
+.guild-trade-gift-line {
+  flex: 1 1 260px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px;
+  min-width: 0;
+  font-size: .86rem;
+}
+.guild-trade-gift-item { color: var(--ink-soft); }
+.guild-trade-tick {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  flex: none;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--ink-faint);
+  cursor: pointer;
+}
+.guild-trade-tick[aria-pressed="true"] {
+  border-color: color-mix(in srgb, var(--good) 55%, var(--line));
+  color: var(--good);
+}
+
 .guild-empty {
   display: grid;
   justify-items: center;
