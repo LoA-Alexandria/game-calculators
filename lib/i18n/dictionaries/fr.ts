@@ -7298,6 +7298,10 @@ const fr: Dictionary = {
       "Supprimez le bloc guideEntries de chaque dictionnaire, puis la ligne de navigation et le dossier de page de ce slug.",
     removeOutput: "Notes de retrait",
     cancel: "Retour",
+    saveToSite: "Enregistrer sur le site",
+    publishNow: "Publier",
+    saving: "Enregistrement…",
+    savedToSite: "Enregistré",
   },
   textGuideEditor: {
     title: "Modifier ce guide",

@@ -4069,6 +4069,10 @@ const en = {
       "Delete the guideEntries block from every dictionary, then the navigation row and the page folder for this slug.",
     removeOutput: "Removal notes",
     cancel: "Back",
+    saveToSite: "Save to the site",
+    publishNow: "Publish",
+    saving: "Saving…",
+    savedToSite: "Saved",
   },
   textGuideEditor: {
     title: "Edit this guide",
