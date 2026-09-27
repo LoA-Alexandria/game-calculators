@@ -181,6 +181,19 @@ test("every language names the tab and the board", async () => {
   }
 });
 
+test("no two migrations share a version number", async () => {
+  const { readdirSync } = await import("node:fs");
+  const files = readdirSync(join(root, "supabase/migrations")).filter((name) => name.endsWith(".sql"));
+  const seen = new Set();
+  const twice = files
+    .map((name) => name.split("_")[0])
+    .filter((version) => (seen.has(version) ? true : (seen.add(version), false)));
+  // Supabase records an applied migration by this number alone, so a second
+  // file carrying it is never run and never reported as skipped.
+  assert.deepEqual(twice, [], "these versions are used by more than one migration");
+  assert.ok(files.some((name) => name.endsWith("_guild_trade.sql")), "the trade migration is missing");
+});
+
 test("only the three statuses the board offers are accepted", () => {
   assert.equal(isTradeDayStatus("stop"), true);
   assert.equal(isTradeDayStatus("pending"), true);
