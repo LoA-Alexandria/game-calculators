@@ -121,9 +121,9 @@ test("a goddess whose aptitudes are not recorded makes the bonus a lower bound",
   // With four goddesses matching two or more, an unknown one could still match three.
   const full = deployment(incomePlay("pride-and-prejudice"), ["Venus", "Vivian", "Fortuna", "Muse", "Lilith"]);
   assert.equal(full.exact, false);
-  // Artemis lacks Suspense, so Robinson Crusoe is exact without her third aptitude; Peter Pan is not.
+  // Artemis's talent page shows all three aptitudes, including Idealism.
   assert.equal(deployment(incomePlay("robinson-crusoe"), ["Artemis"]).exact, true);
-  assert.equal(deployment(incomePlay("peter-pan"), ["Artemis"]).exact, false);
+  assert.equal(deployment(incomePlay("peter-pan"), ["Artemis"]).exact, true);
   assert.equal(deployment({ ...incomePlay("hamlet"), aptitudes: undefined }, ["Venus"]), null, "a play without aptitudes has no bonus to work out");
 });
 
@@ -133,13 +133,21 @@ test("Bastet shares all three of Cats' aptitudes, as Autumn expected", () => {
   assert.equal(cats.percent, 30);
 });
 
-test("every play and every goddess but Lilith and Artemis has three recorded aptitudes", () => {
+test("Artemis's Idealism aptitude counts for plays that use it", () => {
+  const aladdin = deployment(incomePlay("aladdin"), ["Artemis"]);
+  assert.deepEqual(aladdin.goddesses, [{ name: "Artemis", matches: 2 }]);
+  assert.equal(aladdin.percent, 20);
+  assert.equal(aladdin.exact, true);
+});
+
+test("every play has three aptitudes; only Lilith is missing from the goddess aptitude list", () => {
   for (const entry of INCOME_PLAYS) assert.equal(entry.aptitudes?.length, 3, entry.id);
   const partial = GODDESS_APTITUDES.filter((goddess) => goddess.aptitudes.length < 3).map((goddess) => goddess.name);
-  assert.deepEqual(partial, ["Artemis"]);
+  assert.deepEqual(partial, []);
   const recorded = new Set(GODDESS_APTITUDES.map((goddess) => goddess.name));
   assert.deepEqual(GODDESSES.filter((goddess) => !recorded.has(goddess.name)).map((goddess) => goddess.name), ["Lilith"]);
   assert.equal(APTITUDES.length, 12);
+  assert.deepEqual(GODDESS_APTITUDES.find((goddess) => goddess.name === "Artemis")?.aptitudes, ["idealism", "adventure", "instinct"]);
 });
 
 test("the data names real plays and goddesses and stays consistent", () => {
