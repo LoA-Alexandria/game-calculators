@@ -74,6 +74,7 @@ import { useLocale } from "../components/LocaleProvider";
 import { createPersistentStore } from "../components/persistentStore";
 import { BackLink, PageHead } from "../components/Ui";
 import { CheckIcon, CloseIcon, CopyIcon, DownloadIcon, GripIcon, PlusIcon, TrashIcon } from "../components/Icons";
+import { SaveToSite } from "./SaveToSite";
 
 type GuideText = Dictionary["guideEntries"]["heroLayouts"];
 type EditorText = Dictionary["layoutEditor"];
@@ -151,6 +152,7 @@ export function HeroLayoutsEditor() {
   const [selectedChip, setSelectedChip] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
   const [exportOpen, setExportOpen] = useState(false);
+  const savePayload = useMemo(() => toLayout(state), [state]);
   const dndId = useId();
 
   const view = dragState ?? state;
@@ -281,6 +283,7 @@ export function HeroLayoutsEditor() {
             {changes > 0 ? `${changes === 1 ? e.changeOne : tf(e.changes, { count: changes })} · ${e.savedNote}` : e.unchanged}
           </span>
           <button className="button" type="button" onClick={reset} disabled={!draft}>{e.reset}</button>
+          <SaveToSite file="hero-layouts" data={savePayload} />
           <button className="button button-primary" type="button" onClick={() => setExportOpen(true)}>{e.export}</button>
         </div>
       </div>

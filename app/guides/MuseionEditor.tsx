@@ -32,6 +32,7 @@ import { useLocale } from "../components/LocaleProvider";
 import { createPersistentStore } from "../components/persistentStore";
 import { BackLink, PageHead } from "../components/Ui";
 import { MUSEION_STATS, type MuseionStat } from "../../lib/content/museion";
+import { SaveToSite } from "./SaveToSite";
 
 type EditorText = Dictionary["museionEditor"];
 type Tf = (template: string, values: Record<string, string | number>) => string;
@@ -331,6 +332,7 @@ export function MuseionEditor() {
 
   const [selected, setSelected] = useState<string | null>(state.buildings[0]?.uid ?? null);
   const [exportOpen, setExportOpen] = useState(false);
+  const result = useMemo(() => exportMuseion(state), [state]);
   const changes = useMemo(() => countMuseionChanges(PUBLISHED_MUSEION, state), [state]);
   const problems = useMemo(() => findMuseionProblems(state), [state]);
   const active = selected && buildingByUid(state, selected) ? selected : state.buildings[0]?.uid ?? null;
@@ -374,6 +376,7 @@ export function MuseionEditor() {
           >
             {e.reset}
           </button>
+          <SaveToSite file="museion" data={result} />
           <button className="button button-primary" type="button" onClick={() => setExportOpen(true)}>
             {e.export}
             {problems.length > 0 ? (

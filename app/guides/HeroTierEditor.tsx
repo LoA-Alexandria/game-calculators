@@ -60,6 +60,7 @@ import { useLocale } from "../components/LocaleProvider";
 import { createPersistentStore } from "../components/persistentStore";
 import { BackLink, PageHead } from "../components/Ui";
 import { CheckIcon, CloseIcon, CopyIcon, DownloadIcon, GripIcon, PlusIcon, TrashIcon } from "../components/Icons";
+import { SaveToSite } from "./SaveToSite";
 
 type Text = Dictionary["guideEntries"]["heroTierList"];
 type EditorText = Dictionary["tierEditor"];
@@ -265,6 +266,7 @@ export function HeroTierEditor() {
             {totalChanges > 0 ? `${totalChanges === 1 ? e.changeOne : tf(e.changes, { count: totalChanges })} · ${e.savedNote}` : e.unchanged}
           </span>
           <button className="button" type="button" onClick={reset} disabled={!draft}>{e.reset}</button>
+          <SaveToSite file="hero-tiers" data={draftData} />
           <button className="button button-primary" type="button" onClick={() => setExportOpen(true)}>{e.export}</button>
         </div>
       </div>

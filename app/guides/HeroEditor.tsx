@@ -44,6 +44,7 @@ import { createPersistentStore } from "../components/persistentStore";
 import { BackLink, PageHead } from "../components/Ui";
 import { HeroPortrait } from "../components/HeroPortrait";
 import { counted } from "./HeroRoster";
+import { SaveToSite } from "./SaveToSite";
 
 type EditorText = Dictionary["heroEditor"];
 type Tf = (template: string, values: Record<string, string | number>) => string;
@@ -199,6 +200,7 @@ export function HeroEditor() {
             {e.addHero}
           </button>
           <button className="button" type="button" onClick={reset} disabled={!draft}>{e.reset}</button>
+          <SaveToSite file="heroes" data={exported.data} uploads={exported.uploads} guideId="heroes" textField="heroTexts" texts={texts} />
           <button className="button button-primary" type="button" onClick={() => setExportOpen(true)}>
             {e.export}
             {problems.length > 0 ? <span className="tier-edit-count" aria-label={tf(e.problemCount, { count: problems.length })}>{problems.length}</span> : null}

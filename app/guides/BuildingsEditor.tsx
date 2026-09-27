@@ -36,6 +36,7 @@ import { CheckIcon, CloseIcon, CopyIcon, DownloadIcon, PlusIcon, TrashIcon } fro
 import { useLocale } from "../components/LocaleProvider";
 import { createPersistentStore } from "../components/persistentStore";
 import { BackLink, PageHead } from "../components/Ui";
+import { SaveToSite } from "./SaveToSite";
 
 type EditorText = Dictionary["buildingsEditor"];
 type Guide = Dictionary["guideEntries"]["buildings"];
@@ -362,6 +363,7 @@ export function BuildingsEditor() {
   const commit = (next: BuildingsEditorState) => draftStore.set(next);
   const [selected, setSelected] = useState<string | null>(state.buildings[0]?.uid ?? null);
   const [exportOpen, setExportOpen] = useState(false);
+  const exported = useMemo(() => exportBuildings(state), [state]);
   const changes = useMemo(() => countBuildingChanges(PUBLISHED_BUILDINGS, state), [state]);
   const problems = useMemo(() => findBuildingProblems(state), [state]);
   const active = selected && buildingByUid(state, selected) ? selected : (state.buildings[0]?.uid ?? null);
@@ -405,6 +407,7 @@ export function BuildingsEditor() {
           >
             {e.reset}
           </button>
+          <SaveToSite file="buildings" data={exported} />
           <button className="button button-primary" type="button" onClick={() => setExportOpen(true)}>
             {e.export}
             {problems.length > 0 ? (

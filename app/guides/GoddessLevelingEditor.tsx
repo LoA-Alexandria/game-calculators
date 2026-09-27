@@ -35,6 +35,7 @@ import { HeroPortrait } from "../components/HeroPortrait";
 import { useLocale } from "../components/LocaleProvider";
 import { createPersistentStore } from "../components/persistentStore";
 import { BackLink, PageHead } from "../components/Ui";
+import { SaveToSite } from "./SaveToSite";
 
 type EditorText = Dictionary["goddessLevelingEditor"];
 type Tf = (template: string, values: Record<string, string | number>) => string;
@@ -70,6 +71,7 @@ export function GoddessLevelingEditor() {
   const state = draft ?? PUBLISHED;
   const commit = (next: GoddessLevelingEditorState) => draftStore.set(next);
   const [exportOpen, setExportOpen] = useState(false);
+  const savePayload = useMemo(() => exportLeveling(state), [state]);
 
   const changes = useMemo(() => countLevelingChanges(PUBLISHED, state), [state]);
   const problems = useMemo(() => findLevelingProblems(state), [state]);
@@ -102,6 +104,7 @@ export function GoddessLevelingEditor() {
             {e.addPhase}
           </button>
           <button className="button" type="button" onClick={reset} disabled={!draft}>{e.reset}</button>
+          <SaveToSite file="goddess-leveling" data={savePayload} />
           <button className="button button-primary" type="button" onClick={() => setExportOpen(true)}>
             {e.export}
             {problems.length > 0 ? <span className="tier-edit-count" aria-label={tf(e.problemCount, { count: problems.length })}>{problems.length}</span> : null}

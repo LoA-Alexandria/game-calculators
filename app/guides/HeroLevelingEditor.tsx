@@ -43,6 +43,7 @@ import { HeroPortrait } from "../components/HeroPortrait";
 import { useLocale } from "../components/LocaleProvider";
 import { createPersistentStore } from "../components/persistentStore";
 import { BackLink, PageHead } from "../components/Ui";
+import { SaveToSite } from "./SaveToSite";
 
 type EditorText = Dictionary["levelingEditor"];
 type Guide = Dictionary["guideEntries"]["heroLeveling"];
@@ -421,6 +422,7 @@ export function HeroLevelingEditor() {
   const commit = (next: LevelingEditorState) => draftStore.set(next);
   const [selected, setSelected] = useState<LevelingBuildId>(state.defaultBuild);
   const [exportOpen, setExportOpen] = useState(false);
+  const exported = useMemo(() => exportLeveling(state), [state]);
   const changes = useMemo(() => countLevelingChanges(PUBLISHED_LEVELING, state), [state]);
   const problems = useMemo(() => findLevelingProblems(state), [state]);
   const buildNames = useMemo(() => {
@@ -458,6 +460,7 @@ export function HeroLevelingEditor() {
           >
             {e.reset}
           </button>
+          <SaveToSite file="hero-leveling" data={exported} />
           <button className="button button-primary" type="button" onClick={() => setExportOpen(true)}>
             {e.export}
             {problems.length > 0 ? (

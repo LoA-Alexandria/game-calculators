@@ -39,6 +39,7 @@ import { useLocale } from "../components/LocaleProvider";
 import { createPersistentStore } from "../components/persistentStore";
 import { BackLink, PageHead } from "../components/Ui";
 import { CheckIcon, CloseIcon, CopyIcon, DownloadIcon, TrashIcon, UploadIcon } from "../components/Icons";
+import { SaveToSite } from "./SaveToSite";
 
 type EditorText = Dictionary["theaterEditor"];
 
@@ -112,6 +113,7 @@ export function GoddessTheaterEditor() {
   const [playUid, setPlayUid] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [exportOpen, setExportOpen] = useState(false);
+  const savePayload = useMemo(() => exportTheater(state, THEATER_DATA).data, [state]);
 
   const changes = useMemo(() => countTheaterChanges(PUBLISHED_THEATER, state), [state]);
   const needle = query.trim().toLowerCase();
@@ -156,6 +158,7 @@ export function GoddessTheaterEditor() {
           </span>
           <button className="button" type="button" onClick={add}>{e.addPlay}</button>
           <button className="button" type="button" onClick={reset} disabled={!draft}>{e.reset}</button>
+          <SaveToSite file="goddess-theater" data={savePayload} />
           <button className="button button-primary" type="button" onClick={() => setExportOpen(true)}>{e.export}</button>
         </div>
       </div>

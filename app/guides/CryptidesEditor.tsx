@@ -41,16 +41,12 @@ import {
   type RowKind,
 } from "../../lib/content/cryptides-editor";
 import { CRYPTIDES_DATA, CRYPTID_TOWERS, TALENT_MATERIALS, cryptideImageUrl } from "../../lib/content/cryptides";
-import { DEFAULT_LOCALE, LOCALE_CODES, fill, getDictionary, type Dictionary, type Locale } from "../../lib/i18n";
+import { DEFAULT_LOCALE, LOCALE_CODES, fill, type Dictionary, type Locale } from "../../lib/i18n";
 import { CRYPTIDES_DRAFT_STORAGE_KEY } from "../../lib/site";
 import { AllLanguagesToggle, DictionaryBlocks, TranslatedField, useEditorLanguages } from "../components/EditorLanguages";
 import { CheckIcon, ChevronIcon, CloseIcon, CopyIcon, DownloadIcon, PlusIcon, TrashIcon, UploadIcon } from "../components/Icons";
-import { useAuth } from "../components/AuthProvider";
 import { useLocale } from "../components/LocaleProvider";
-import { dataFits } from "../../lib/content/guide-data";
-import { publishData, saveDataDraft, uploadPictures, withUploadedPictures } from "./useGuideData";
-import { publishGuide, saveGuideDraft } from "./useGuideContent";
-import type { SaveState } from "./useGuideContent";
+import { SaveToSite } from "./SaveToSite";
 import { createPersistentStore } from "../components/persistentStore";
 import { BackLink, PageHead } from "../components/Ui";
 
@@ -195,7 +191,14 @@ export function CryptidesEditor() {
             {e.addCryptide}
           </button>
           <button className="button" type="button" onClick={reset} disabled={!draft}>{e.reset}</button>
-          <SaveToSite ctx={ctx} result={exported} />
+          <SaveToSite
+            file="cryptides"
+            data={exported.data}
+            uploads={exported.uploads}
+            guideId="cryptides"
+            textField="cryptideTexts"
+            texts={exportedCryptideTexts(state)}
+          />
           <button className="button button-primary" type="button" onClick={() => setExportOpen(true)}>
             {e.export}
             {problems.length > 0 ? <span className="tier-edit-count" aria-label={tf(e.problemCount, { count: problems.length })}>{problems.length}</span> : null}
@@ -609,123 +612,6 @@ function PictureField({
       {compact ? null : <p className="tier-small">{hint}</p>}
       {error ? <p className="notice notice-warn" role="alert">{error}</p> : null}
     </fieldset>
-  );
-}
-
-/**
- * Saving to the site, beside Export rather than inside it: writing the guide
- * is the ordinary thing to do now, and exporting a file the exception.
- */
-function SaveToSite({ ctx, result }: { ctx: Ctx; result: CryptidesExport }) {
-  const { e, tf } = ctx;
-  const { session, allows } = useAuth();
-  const [state, setState] = useState<SaveState>("idle");
-  const [error, setError] = useState("");
-  const newPictures = result.uploads.length;
-  const fits = dataFits("cryptides", result.data);
-
-  const writeToSite = async (andPublish: boolean) => {
-    if (!session) return;
-    setState("saving");
-    setError("");
-
-    // Pictures first: an entry must never point at one that is not there yet.
-    const { renamed, error: uploadFailed } = await uploadPictures("cryptides", result.uploads);
-    if (uploadFailed) {
-      setError(uploadFailed);
-      setState("failed");
-      return;
-    }
-    const data = withUploadedPictures(result.data, renamed);
-    if (!dataFits("cryptides", data)) {
-      setError(e.saveToSiteUnfit);
-      setState("failed");
-      return;
-    }
-
-    const failure = await saveDataDraft("cryptides", data, session.userId);
-    if (failure) {
-      setError(failure);
-      setState("failed");
-      return;
-    }
-
-    // The names of the Cryptides, their skills and their feed are not in the
-    // data file: they are per language, and the guide reads them from there in
-    // preference to the file. Saving the one without the other renames nothing.
-    const texts = exportedCryptideTexts(ctx.state);
-    const guide = (locale: Locale) => getDictionary(locale).guideEntries.cryptides;
-    for (const locale of LOCALE_CODES) {
-      const wrote = await saveGuideDraft(
-        "cryptides",
-        locale,
-        guide(locale),
-        { ...guide(locale), cryptideTexts: texts[locale] },
-        session.userId,
-      );
-      if (wrote) {
-        setError(wrote);
-        setState("failed");
-        return;
-      }
-    }
-
-    if (andPublish) {
-      const refused = await publishData("cryptides");
-      if (refused) {
-        setError(refused);
-        setState("failed");
-        return;
-      }
-      for (const locale of LOCALE_CODES) {
-        // A language whose texts match the committed ones leaves no draft, and
-        // publishing one that is not there is not an error worth showing.
-        const same = JSON.stringify(texts[locale]) === JSON.stringify(guide(locale).cryptideTexts);
-        if (same) continue;
-        const denied = await publishGuide("cryptides", locale);
-        if (denied) {
-          setError(denied);
-          setState("failed");
-          return;
-        }
-      }
-    }
-    setState("saved");
-    window.setTimeout(() => setState("idle"), 2500);
-  };
-
-  if (!session || !allows("guides.draft")) return null;
-
-  const hint = !fits
-    ? e.saveToSiteUnfit
-    : newPictures > 0
-      ? tf(e.saveToSitePictures, { count: newPictures })
-      : "";
-
-  return (
-    <>
-      <button
-        className="button"
-        type="button"
-        disabled={!fits || state === "saving"}
-        title={hint || undefined}
-        onClick={() => void writeToSite(false)}
-      >
-        <CheckIcon className="icon icon-sm" />
-        {state === "saving" ? e.saving : state === "saved" ? e.savedToSite : e.saveToSite}
-      </button>
-      {allows("guides.publish") ? (
-        <button
-          className="button"
-          type="button"
-          disabled={!fits || state === "saving"}
-          onClick={() => void writeToSite(true)}
-        >
-          {e.publishNow}
-        </button>
-      ) : null}
-      {error ? <span className="tier-edit-status result-error" role="alert">{error}</span> : null}
-    </>
   );
 }
 
