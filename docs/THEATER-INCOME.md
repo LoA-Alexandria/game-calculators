@@ -36,6 +36,14 @@ affordable offer that maximizes expected remaining points. It calculates the
 expected number of completed scripts and the minimum and maximum points under
 that same selection policy.
 
+The calculator has two display modes to save space. **Single** is the existing
+per-play Muse Coin calculator, including the play selector, goddess ownership,
+and comparison tables. **Mass** shows the energy and lipstick run projection
+only. It uses theater stats, entered play previews, and goddess ownership from
+Single; switch back to edit those inputs. The lipstick input accepts 0–10,000
+lipsticks so values such as 2,400 are valid; starting energy remains 0–5,000 per
+slot.
+
 Reward per rarity is the mean of the available plays of that rarity for the
 player's current upgrade stats and selected goddesses. Goddess deployment is
 limited to the number of slots unlocked by the building. Each play's Red Carpet
