@@ -30,29 +30,33 @@ For an active building, tier is its level minus the building's first level,
 plus one.
 
 Each script costs R 30, SR 60, SSR 160, UR 300, or UR+ 600 energy. Each lipstick
-adds 5 energy to one selected theater slot. The calculator models three
-independent rarity offers with replacement at each decision, then selects the
-affordable offer that maximizes expected remaining points. It calculates the
-expected number of completed scripts and the minimum and maximum points under
-that same selection policy.
+adds 5 energy to one selected theater slot. The selected starting script in
+each slot is counted first and its energy cost is deducted. The calculator then
+models three independent rarity offers with replacement at each decision and
+selects the affordable offer that maximizes expected remaining points.
 
 The calculator has two display modes to save space. **Single** is the existing
-per-play Muse Coin calculator, including the play selector, goddess ownership,
-and comparison tables. **Mass** shows the energy and lipstick run projection
-only. It uses theater stats, entered play previews, and goddess ownership from
-Single; switch back to edit those inputs. The lipstick input accepts 0–10,000
-lipsticks so values such as 2,400 are valid; starting energy remains 0–5,000 per
-slot.
+per-play Muse Coin calculator and comparison tables. **Mass** exposes theater
+stats, owned goddesses, energy, lipsticks, and a starting play for every active
+slot, so the run can be set up without switching modes. Each starting play is
+counted exactly once before later offer choices and its energy cost is deducted
+from that slot. The lipstick input accepts 0–10,000 lipsticks; starting energy
+remains 0–5,000 per slot.
 
 Reward per rarity is the mean of the available plays of that rarity for the
-player's current upgrade stats and selected goddesses. Goddess deployment is
-limited to the number of slots unlocked by the building. Each play's Red Carpet
-range is the existing 83–85% Muse Coin formula, rounded down to whole hundreds;
-the projection uses its midpoint as the expected reward. Since only some play
-previews have been recorded, the projection is partial: unknown plays are
-omitted, and a rarity with no usable preview data contributes zero points. It
-is not a complete ranking of every possible script until the remaining preview
-values are collected.
+player's current upgrade stats and selected goddesses. Mass mode always
+auto-assigns the best owned goddesses to each play, limited to the goddess slots
+unlocked by the building. A manual bonus override from Single does not alter
+this auto-assignment. Each play's Red Carpet range is the existing 83–85% Muse
+Coin formula, rounded down to whole hundreds; the projection uses its midpoint
+as the expected reward. The calculation log shows every included play, its base
+and upgraded ticket/visitor values, goddess assignment, bonus, ticket and
+merchandise income, and Red Carpet range. Later plays are an expected-value
+projection, not a fixed random sequence; the log makes that distinction clear.
+Since only some play previews have been recorded, the projection is partial:
+unknown plays are omitted, and a rarity with no usable preview data contributes
+zero points. It is not a complete ranking of every possible script until the
+remaining preview values are collected.
 
 ## Existing income formula
 

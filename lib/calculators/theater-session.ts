@@ -52,6 +52,7 @@ export type RarityReward = { low: number; average: number; high: number };
 export type TheaterRunInput = {
   level: number;
   startingEnergy: readonly number[];
+  startingPlays: readonly { rarity: PlayRarity; reward: RarityReward }[];
   lipsticks: number;
   lipstickSlot: number;
   rewards: Partial<Record<PlayRarity, RarityReward>>;
@@ -62,7 +63,6 @@ export type TheaterSlotProjection = {
   minimum: number;
   average: number;
   maximum: number;
-  expectedPlays: number;
 };
 export type TheaterRunProjection = {
   building: TheaterBuilding;
@@ -70,11 +70,10 @@ export type TheaterRunProjection = {
   minimum: number;
   average: number;
   maximum: number;
-  expectedPlays: number;
   unpricedRarities: PlayRarity[];
 };
 
-type ExpectedValue = { points: number; plays: number };
+type ExpectedValue = { points: number };
 type RangeValue = { low: number; high: number };
 type Offer = { rarities: readonly PlayRarity[]; probability: number };
 
@@ -104,11 +103,10 @@ function compareActions(a: { rarity: PlayRarity; value: number }, b: { rarity: P
 function projectSlot(building: TheaterBuilding, energy: number, offers: readonly Offer[], rewards: TheaterRunInput["rewards"]): Omit<TheaterSlotProjection, "slot" | "energy"> {
   // Energy only decreases, so fill tables from 0 upward. This avoids deep and
   // repeated recursion when a player enters thousands of energy.
-  const expected: ExpectedValue[] = Array.from({ length: energy + 1 }, () => ({ points: 0, plays: 0 }));
+  const expected: ExpectedValue[] = Array.from({ length: energy + 1 }, () => ({ points: 0 }));
   const ranges: RangeValue[] = Array.from({ length: energy + 1 }, () => ({ low: 0, high: 0 }));
   for (let remaining = 1; remaining <= energy; remaining += 1) {
     let points = 0;
-    let plays = 0;
     let low = Number.POSITIVE_INFINITY;
     let high = Number.NEGATIVE_INFINITY;
     for (const offer of offers) {
@@ -125,23 +123,23 @@ function projectSlot(building: TheaterBuilding, energy: number, offers: readonly
       const nextRemaining = remaining - PLAY_ENERGY[chosen.rarity];
       const next = expected[nextRemaining];
       points += offer.probability * ((rewards[chosen.rarity]?.average ?? 0) + next.points);
-      plays += offer.probability * (1 + next.plays);
       const nextRange = ranges[nextRemaining];
       low = Math.min(low, (rewards[chosen.rarity]?.low ?? 0) + nextRange.low);
       high = Math.max(high, (rewards[chosen.rarity]?.high ?? 0) + nextRange.high);
     }
-    expected[remaining] = { points, plays };
+    expected[remaining] = { points };
     ranges[remaining] = { low: Number.isFinite(low) ? low : 0, high: Number.isFinite(high) ? high : 0 };
   }
 
   const expectation = expected[energy];
   const range = ranges[energy];
-  return { minimum: range.low, average: expectation.points, maximum: range.high, expectedPlays: expectation.plays };
+  return { minimum: range.low, average: expectation.points, maximum: range.high };
 }
 
 export function simulateTheaterRun(input: TheaterRunInput): TheaterRunProjection {
   const building = theaterBuildingForLevel(input.level);
   if (input.startingEnergy.length !== building.theaterSlots) throw new RangeError(`Enter the starting energy for all ${building.theaterSlots} theater slots.`);
+  if (input.startingPlays.length !== building.theaterSlots) throw new RangeError(`Choose a starting play for all ${building.theaterSlots} theater slots.`);
   if (!Number.isSafeInteger(input.lipsticks) || input.lipsticks < 0 || input.lipsticks > 10_000) throw new RangeError("Lipsticks must be a whole number from 0 to 10,000.");
   if (!Number.isInteger(input.lipstickSlot) || input.lipstickSlot < 0 || input.lipstickSlot >= building.theaterSlots) throw new RangeError("Choose an open theater slot for the lipsticks.");
   for (const energy of input.startingEnergy) if (!Number.isInteger(energy) || energy < 0 || energy > 5_000) throw new RangeError("Starting energy must be a whole number from 0 to 5,000.");
@@ -149,7 +147,17 @@ export function simulateTheaterRun(input: TheaterRunInput): TheaterRunProjection
   const offers = offersFor(building);
   const slots = input.startingEnergy.map((start, index) => {
     const energy = start + (index === input.lipstickSlot ? input.lipsticks * 5 : 0);
-    return { slot: index + 1, energy, ...projectSlot(building, energy, offers, input.rewards) };
+    const startingPlay = input.startingPlays[index];
+    const remaining = energy - PLAY_ENERGY[startingPlay.rarity];
+    if (remaining < 0) throw new RangeError(`The starting energy in slot ${index + 1} does not cover its selected play.`);
+    const range = projectSlot(building, remaining, offers, input.rewards);
+    return {
+      slot: index + 1,
+      energy,
+      minimum: startingPlay.reward.low + range.minimum,
+      average: startingPlay.reward.average + range.average,
+      maximum: startingPlay.reward.high + range.maximum,
+    };
   });
   const rarityChances = Object.keys(building.rarityChances) as PlayRarity[];
   return {
@@ -158,7 +166,6 @@ export function simulateTheaterRun(input: TheaterRunInput): TheaterRunProjection
     minimum: slots.reduce((sum, slot) => sum + slot.minimum, 0),
     average: slots.reduce((sum, slot) => sum + slot.average, 0),
     maximum: slots.reduce((sum, slot) => sum + slot.maximum, 0),
-    expectedPlays: slots.reduce((sum, slot) => sum + slot.expectedPlays, 0),
     unpricedRarities: rarityChances.filter((rarity) => building.rarityChances[rarity] > 0 && !input.rewards[rarity]),
   };
 }
