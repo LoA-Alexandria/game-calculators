@@ -43,6 +43,13 @@ test("Cryptid Tower guide has localized copy and a Layouts navigation entry", ()
     assert.ok(guide.towerBuilds.pike.title.trim());
     assert.ok(guide.towerBuilds.archer.title.trim());
     assert.ok(guide.towerBuilds.shield.title.trim());
+    assert.ok(guide.levelGuidanceHeading.trim());
+    assert.ok(guide.levelGuidanceIntro.trim());
+    assert.ok(guide.levelGuidanceEveryHero.includes("100"));
+    assert.ok(guide.levelGuidanceUr.includes("200"));
+    assert.ok(guide.levelGuidanceSsr.includes("150"));
+    assert.ok(guide.levelGuidanceRsSr.includes("120"));
+    assert.ok(guide.levelGuidanceNote.trim());
     assert.ok(guide.sourceNote.trim());
     assert.ok(guide.itemAliasNote.includes("Golden Mask") || guide.itemAliasNote.includes("Goldene Maske") || guide.itemAliasNote.includes("Masque d’or"));
   }

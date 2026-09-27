@@ -4066,6 +4066,11 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
 .cryptid-tower-note { color: var(--ink-soft); font-size: .88rem; }
 
 .cryptid-tower-layout .ct-progress-note { color: var(--ink-soft); font-size: .88rem; margin: .25rem 0 1rem; }
+.ct-level-guidance { margin: 1rem 0 1.25rem; padding: 1rem 1.2rem; border: 1px solid var(--line); border-radius: 1rem; background: var(--surface); }
+.ct-level-guidance h2 { margin: 0 0 .5rem; font-size: 1.15rem; }
+.ct-level-guidance p { margin: .4rem 0; color: var(--ink-soft); }
+.ct-level-guidance ul { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); gap: .4rem .75rem; margin: .75rem 0; padding-left: 1.25rem; }
+.ct-level-guidance li { padding-left: .1rem; }
 .ct-towers { display: grid; gap: 1.2rem; }
 .ct-tower-card { overflow: hidden; border: 1px solid var(--line); border-radius: 1rem; background: var(--surface); }
 .ct-tower-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem 1.2rem; border-bottom: 1px solid var(--line); background: color-mix(in srgb, var(--cat) 9%, var(--surface)); }
