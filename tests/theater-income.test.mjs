@@ -147,23 +147,33 @@ test("the data names real plays and goddesses and stays consistent", () => {
   }
 });
 
-test("theater bases from the September 25–26 screenshots are complete and exact", () => {
+test("theater bases from the September 25–27 screenshots are complete and exact", () => {
   const expected = {
     "robin-hood": [135, 125],
     "count-of-monte-cristo": [480, 510],
+    "robinson-crusoe": [500, 490],
     hamlet: [495, 495],
+    "romeo-and-juliet": [305, 295],
     "pride-and-prejudice": [285, 315],
     "treasure-island": [295, 305],
     "peter-pan": [310, 290],
     "midsummer-nights-dream": [290, 310],
     "don-quixote": [300, 300],
     aladdin: [120, 140],
+    "wizard-of-oz": [125, 135],
     "sleeping-beauty": [130, 130],
     "sound-of-music": [140, 120],
+    chicago: [130, 130],
+    "happy-prince": [40, 60],
+    "little-women": [50, 50],
+    mozart: [45, 55],
+    "three-musketeers": [50, 50],
+    "lion-king": [55, 45],
+    "little-red-riding-hood": [60, 40],
   };
   for (const [id, [ticket, visitors]] of Object.entries(expected)) {
     assert.deepEqual([incomePlay(id).ticket, incomePlay(id).visitors], [ticket, visitors], id);
   }
-  assert.equal(INCOME_PLAYS.filter((entry) => entry.ticket !== undefined).length, 12);
+  assert.equal(INCOME_PLAYS.filter((entry) => entry.ticket !== undefined && entry.visitors !== undefined).length, 21);
   assert.equal(incomePlay("macbeth").ticket, undefined, "unprovided plays remain ready for later data entry");
 });
