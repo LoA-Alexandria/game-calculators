@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { PLAY_ENERGY, THEATER_BUILDINGS, simulateTheaterRun, theaterBuildingForLevel, theaterTierForLevel } from "../lib/calculators/theater-session.ts";
+import { PLAY_ENERGY, THEATER_BUILDINGS, rarityAppearanceChance, simulateTheaterRun, theaterBuildingForLevel, theaterTierForLevel } from "../lib/calculators/theater-session.ts";
 
 test("theater levels resolve to the five buildings and their unlock capacities", () => {
   assert.deepEqual([1, 2, 3, 14, 15, 26, 27, 39, 40].map((level) => theaterBuildingForLevel(level).id), [
@@ -11,6 +11,18 @@ test("theater levels resolve to the five buildings and their unlock capacities",
   assert.deepEqual([2, 3, 14, 15, 26, 27, 39, 40].map(theaterTierForLevel), [2, 1, 12, 1, 12, 1, 13, 1]);
   assert.throws(() => theaterBuildingForLevel(0), RangeError);
   assert.throws(() => theaterBuildingForLevel(2.5), RangeError);
+});
+
+test("three-offer appearance chances are distinct from per-offer odds", () => {
+  const royal = theaterBuildingForLevel(39);
+  assert.equal(royal.rarityChances.R, 10);
+  assert.equal(royal.rarityChances.SR, 30);
+  assert.ok(Math.abs(rarityAppearanceChance(royal.rarityChances.R) - 27.1) < 1e-10);
+  assert.ok(Math.abs(rarityAppearanceChance(royal.rarityChances.SR) - 65.7) < 1e-10);
+  assert.equal(rarityAppearanceChance(0), 0);
+  assert.equal(rarityAppearanceChance(100), 100);
+  assert.throws(() => rarityAppearanceChance(-1), RangeError);
+  assert.throws(() => rarityAppearanceChance(10, 0), RangeError);
 });
 
 test("each building has a complete rarity distribution and the recorded energy costs", () => {
