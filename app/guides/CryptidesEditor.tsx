@@ -13,6 +13,7 @@ import {
   countCryptideChanges,
   cryptideByUid,
   cryptideTextBlocks,
+  exportedCryptideTexts,
   exportCryptides,
   exportIds,
   findCryptideProblems,
@@ -40,7 +41,7 @@ import {
   type RowKind,
 } from "../../lib/content/cryptides-editor";
 import { CRYPTIDES_DATA, CRYPTID_TOWERS, TALENT_MATERIALS, cryptideImageUrl } from "../../lib/content/cryptides";
-import { DEFAULT_LOCALE, LOCALE_CODES, fill, type Dictionary, type Locale } from "../../lib/i18n";
+import { DEFAULT_LOCALE, LOCALE_CODES, fill, getDictionary, type Dictionary, type Locale } from "../../lib/i18n";
 import { CRYPTIDES_DRAFT_STORAGE_KEY } from "../../lib/site";
 import { AllLanguagesToggle, DictionaryBlocks, TranslatedField, useEditorLanguages } from "../components/EditorLanguages";
 import { CheckIcon, ChevronIcon, CloseIcon, CopyIcon, DownloadIcon, PlusIcon, TrashIcon, UploadIcon } from "../components/Icons";
@@ -48,6 +49,7 @@ import { useAuth } from "../components/AuthProvider";
 import { useLocale } from "../components/LocaleProvider";
 import { dataFits } from "../../lib/content/guide-data";
 import { publishData, saveDataDraft, uploadPictures, withUploadedPictures } from "./useGuideData";
+import { publishGuide, saveGuideDraft } from "./useGuideContent";
 import type { SaveState } from "./useGuideContent";
 import { createPersistentStore } from "../components/persistentStore";
 import { BackLink, PageHead } from "../components/Ui";
@@ -647,12 +649,45 @@ function SaveToSite({ ctx, result }: { ctx: Ctx; result: CryptidesExport }) {
       setState("failed");
       return;
     }
+
+    // The names of the Cryptides, their skills and their feed are not in the
+    // data file: they are per language, and the guide reads them from there in
+    // preference to the file. Saving the one without the other renames nothing.
+    const texts = exportedCryptideTexts(ctx.state);
+    const guide = (locale: Locale) => getDictionary(locale).guideEntries.cryptides;
+    for (const locale of LOCALE_CODES) {
+      const wrote = await saveGuideDraft(
+        "cryptides",
+        locale,
+        guide(locale),
+        { ...guide(locale), cryptideTexts: texts[locale] },
+        session.userId,
+      );
+      if (wrote) {
+        setError(wrote);
+        setState("failed");
+        return;
+      }
+    }
+
     if (andPublish) {
       const refused = await publishData("cryptides");
       if (refused) {
         setError(refused);
         setState("failed");
         return;
+      }
+      for (const locale of LOCALE_CODES) {
+        // A language whose texts match the committed ones leaves no draft, and
+        // publishing one that is not there is not an error worth showing.
+        const same = JSON.stringify(texts[locale]) === JSON.stringify(guide(locale).cryptideTexts);
+        if (same) continue;
+        const denied = await publishGuide("cryptides", locale);
+        if (denied) {
+          setError(denied);
+          setState("failed");
+          return;
+        }
       }
     }
     setState("saved");

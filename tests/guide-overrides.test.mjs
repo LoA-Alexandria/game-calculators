@@ -82,6 +82,40 @@ test("rows are read per language", () => {
   assert.deepEqual([...overridesByGuide(rows, "fr").keys()], []);
 });
 
+test("the names of the things a guide lists can be overridden", () => {
+  // This is the edit everybody tries first, and the one that silently did
+  // nothing: the displayed name comes from these texts, not the data file.
+  const cryptides = getDictionary("en").guideEntries.cryptides;
+  const renamed = {
+    ...cryptides.cryptideTexts,
+    nidhogg: { ...cryptides.cryptideTexts.nidhogg, name: "Nidhoggd" },
+  };
+  const shown = applyOverride(cryptides, { cryptideTexts: renamed });
+  assert.equal(shown.cryptideTexts.nidhogg.name, "Nidhoggd");
+  assert.equal(shown.cryptideTexts.caladrius.name, cryptides.cryptideTexts.caladrius.name);
+  assert.equal(shown.title, cryptides.title, "the rest of the guide is untouched");
+
+  assert.deepEqual(overrideFrom(cryptides, { ...cryptides, cryptideTexts: renamed }), {
+    cryptideTexts: renamed,
+  });
+  assert.deepEqual(overrideFrom(cryptides, { ...cryptides }), {}, "no change, nothing sent");
+});
+
+test("a text tree with something other than words in it is refused", () => {
+  const bad = [
+    { nidhogg: { name: 42 } },
+    { nidhogg: { skills: ["a list"] } },
+    { nidhogg: { skills: { one: { body: { too: { deep: "here" } } } } } },
+    "a string",
+    ["a list"],
+  ];
+  for (const payload of bad) {
+    assert.equal("cryptideTexts" in readOverride({ cryptideTexts: payload }), false, JSON.stringify(payload));
+  }
+  const fine = { nidhogg: { name: "N", skills: { s1: { name: "A", body: "B" } }, foods: { f1: { name: "C" } } } };
+  assert.deepEqual(readOverride({ cryptideTexts: fine }).cryptideTexts, fine);
+});
+
 test("every overridable field is one a guide entry actually carries", () => {
   // `applyOverride` only writes fields the base already has, so a name that no
   // guide uses would be dead weight and a sign the list has drifted.

@@ -23,6 +23,10 @@ export const OVERRIDABLE_FIELDS = [
   "status",
   "note",
   "sections",
+  // The names of the things a guide lists — a Cryptide, its skills, its feed.
+  // They live here rather than in the data file, because the file is one per
+  // guide and these are one per language, and the guide prefers them.
+  "cryptideTexts",
 ] as const;
 export type OverridableField = (typeof OVERRIDABLE_FIELDS)[number];
 
@@ -35,6 +39,21 @@ export type GuideContentRow = {
   locale: string;
   payload: GuideOverride | null;
 };
+
+/**
+ * A tree of names: an entry, then its rows, then their fields. Only strings at
+ * the leaves, because a renderer walks these and anything else is what breaks
+ * a page.
+ */
+function isTextTree(value: unknown, depth = 0): boolean {
+  if (typeof value === "string") return true;
+  if (typeof value !== "object" || value === null || Array.isArray(value)) return false;
+  // The real nesting is four objects deep before the words: the map of
+  // entries, one entry, its skills or foods, then one row. Five refuses
+  // anything past that without refusing the shape that exists.
+  if (depth >= 5) return false;
+  return Object.values(value).every((child) => isTextTree(child, depth + 1));
+}
 
 function isSection(value: unknown): value is GuideSection {
   if (typeof value !== "object" || value === null) return false;
@@ -60,6 +79,10 @@ export function readOverride(payload: unknown): GuideOverride {
     const value = row[field];
     if (field === "sections") {
       if (Array.isArray(value) && value.every(isSection)) out.sections = value;
+      continue;
+    }
+    if (field === "cryptideTexts") {
+      if (isTextTree(value) && typeof value === "object") out.cryptideTexts = value;
       continue;
     }
     if (typeof value === "string" && value.trim()) out[field] = value;
@@ -105,6 +128,10 @@ export function overrideFrom<T extends object>(base: T, edited: T): GuideOverrid
     const value = to[field];
     if (field === "sections") {
       if (Array.isArray(value) && value.every(isSection)) out.sections = value;
+      continue;
+    }
+    if (field === "cryptideTexts") {
+      if (isTextTree(value) && typeof value === "object") out.cryptideTexts = value;
       continue;
     }
     if (typeof value === "string" && value.trim()) out[field] = value;
