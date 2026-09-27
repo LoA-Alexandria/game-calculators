@@ -8,7 +8,7 @@
  */
 
 import data from "../data/cryptides.json" with { type: "json" };
-import { asset } from "../site.ts";
+import { guidePictureUrl } from "./guide-media.ts";
 
 export const CRYPTID_TOWERS = ["pike", "bow", "shield", "horse"] as const;
 export type CryptidTower = (typeof CRYPTID_TOWERS)[number];
@@ -63,7 +63,7 @@ export const CRYPTIDES_DATA = data as CryptidesData;
 export const CRYPTIDES: readonly Cryptide[] = CRYPTIDES_DATA.cryptides;
 
 export function cryptideImageUrl(file: string): string {
-  return asset(`/cryptides/${file.replace(/^\//, "")}`);
+  return guidePictureUrl("cryptides", file);
 }
 
 export function localizedCryptideName(cryptide: Cryptide, texts: CryptideTexts): string {

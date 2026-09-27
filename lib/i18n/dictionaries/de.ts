@@ -6820,7 +6820,7 @@ const de: Dictionary = {
     saving: "Wird gespeichert …",
     savedToSite: "Gespeichert",
     saveToSiteHint: "Schreibt das Bestiarium direkt auf die Seite. Kein Commit nötig.",
-    saveToSitePictures: "Neue oder entfernte Bilder müssen weiterhin committet werden; alles andere lässt sich hier speichern.",
+    saveToSitePictures: "{count} neue(s) Bild(er) werden mit auf die Seite geladen.",
     saveToSiteUnfit: "Dieser Export passt nicht zu der Form, die der Guide liest, und kann deshalb nicht auf der Seite gespeichert werden.",
     problemsTitle: "Vor dem Export prüfen",
     problemEmptyName: "Cryptide {index} hat keinen englischen Namen.",

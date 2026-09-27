@@ -47,7 +47,7 @@ import { CheckIcon, ChevronIcon, CloseIcon, CopyIcon, DownloadIcon, PlusIcon, Tr
 import { useAuth } from "../components/AuthProvider";
 import { useLocale } from "../components/LocaleProvider";
 import { dataFits } from "../../lib/content/guide-data";
-import { publishData, saveDataDraft } from "./useGuideData";
+import { publishData, saveDataDraft, uploadPictures, withUploadedPictures } from "./useGuideData";
 import type { SaveState } from "./useGuideContent";
 import { createPersistentStore } from "../components/persistentStore";
 import { BackLink, PageHead } from "../components/Ui";
@@ -631,16 +631,31 @@ function ExportDialog({ ctx, result, problems, onClose }: { ctx: Ctx; result: Cr
   const { session, allows } = useAuth();
   const [saveState, setSaveState] = useState<SaveState>("idle");
   const [saveError, setSaveError] = useState("");
-  // A new picture is still a file to commit; the site can only point at ones
-  // that are already there.
-  const needsFiles = result.uploads.length > 0 || result.removedFiles.length > 0;
+  // Pictures the export adds go into the bucket; the ones it drops stay where
+  // they are, because a committed file is not ours to delete from here.
+  const newPictures = result.uploads.length;
   const fits = dataFits("cryptides", result.data);
 
   const writeToSite = async (andPublish: boolean) => {
     if (!session) return;
     setSaveState("saving");
     setSaveError("");
-    const failure = await saveDataDraft("cryptides", result.data, session.userId);
+
+    // Pictures first: an entry must never point at one that is not there yet.
+    const { renamed, error: uploadFailed } = await uploadPictures("cryptides", result.uploads);
+    if (uploadFailed) {
+      setSaveError(uploadFailed);
+      setSaveState("failed");
+      return;
+    }
+    const data = withUploadedPictures(result.data, renamed);
+    if (!dataFits("cryptides", data)) {
+      setSaveError(e.saveToSiteUnfit);
+      setSaveState("failed");
+      return;
+    }
+
+    const failure = await saveDataDraft("cryptides", data, session.userId);
     if (failure) {
       setSaveError(failure);
       setSaveState("failed");
@@ -736,8 +751,8 @@ function ExportDialog({ ctx, result, problems, onClose }: { ctx: Ctx; result: Cr
                 ? e.savedToSite
                 : !fits
                   ? e.saveToSiteUnfit
-                  : needsFiles
-                    ? e.saveToSitePictures
+                  : newPictures > 0
+                    ? tf(e.saveToSitePictures, { count: newPictures })
                     : e.saveToSiteHint}
           </p>
           {saveError ? <p className="notice notice-warn" role="alert">{saveError}</p> : null}

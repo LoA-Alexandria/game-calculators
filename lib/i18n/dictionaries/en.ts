@@ -3610,7 +3610,7 @@ const en = {
     saving: "Saving…",
     savedToSite: "Saved",
     saveToSiteHint: "Writes the bestiary straight to the site. No commit needed.",
-    saveToSitePictures: "New or removed pictures still have to be committed; everything else can be saved here.",
+    saveToSitePictures: "{count} new picture(s) will be uploaded to the site as well.",
     saveToSiteUnfit: "This export does not fit the shape the guide reads, so it cannot be saved to the site.",
     problemsTitle: "Check before exporting",
     problemEmptyName: "Cryptide {index} has no English name.",
