@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import {
   applyOverride,
-  overrideFrom,
+  overrideWith,
   type GuideContentRow,
   type GuideOverride,
 } from "../../lib/content/guide-overrides";
@@ -51,8 +51,13 @@ export function withOverride<T extends object>(base: T, override: GuideOverride 
 export type SaveState = "idle" | "saving" | "saved" | "failed";
 
 /**
- * Writes one language's draft. The payload carries only what differs from the
- * committed text, so a guide nobody has edited leaves no row behind.
+ * Writes one language's draft.
+ *
+ * `fields` is what this editor is responsible for; everything else a publisher
+ * has written stays as it is. A field edited back to the committed text is
+ * removed from the payload, and a payload with nothing left in it is still
+ * written — it is the record that this language should go back to the built
+ * version, and publishing it takes the live row away.
  */
 export async function saveGuideDraft(
   guideId: string,
@@ -60,14 +65,12 @@ export async function saveGuideDraft(
   base: object,
   edited: object,
   userId: string,
+  fields: readonly string[],
+  published: GuideOverride | null,
 ): Promise<string | null> {
   const supabase = getSupabaseBrowserClient();
   if (!supabase) return "No connection.";
-  const payload = overrideFrom(base, edited);
-  if (Object.keys(payload).length === 0) {
-    const { error } = await supabase.from("guide_drafts").delete().match({ guide_id: guideId, locale });
-    return error ? error.message : null;
-  }
+  const payload = overrideWith(published, base, edited, fields);
   const { error } = await supabase.from("guide_drafts").upsert(
     { guide_id: guideId, locale, payload, updated_by: userId, updated_at: new Date().toISOString() },
     { onConflict: "guide_id,locale" },

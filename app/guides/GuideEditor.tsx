@@ -22,7 +22,8 @@ import { GUIDE_DRAFT_STORAGE_KEY } from "../../lib/site";
 import { AllLanguagesToggle, DictionaryBlocks, TranslatedField, useEditorLanguages } from "../components/EditorLanguages";
 import { useAuth } from "../components/AuthProvider";
 import { useLocale } from "../components/LocaleProvider";
-import { overrideFrom } from "../../lib/content/guide-overrides";
+
+import { usePublishedOverrides } from "./GuideOverrides";
 import { publishGuide, saveGuideDraft, type SaveState } from "./useGuideContent";
 import { BackLink, PageHead } from "../components/Ui";
 import {
@@ -195,6 +196,7 @@ export function GuideEditor({
   const editing = target?.action === "edit" ? target.id : null;
   const removing = target?.action === "remove" ? target.id : null;
   const { session, allows } = useAuth();
+  const published = usePublishedOverrides(editing ?? undefined);
   const [saveState, setSaveState] = useState<SaveState>("idle");
   const [saveError, setSaveError] = useState("");
   const [draft, setDraft] = useState<GuideDraft>(() => (editing || removing ? draftFromEntry((editing ?? removing) as GuideEntryId) : emptyDraft()));
@@ -337,15 +339,24 @@ export function GuideEditor({
     setSaveError("");
     for (const locale of LOCALE_CODES) {
       const base = getDictionary(locale).guideEntries[editing];
-      const failure = await saveGuideDraft(editing, locale, base, entryFor(locale), session.userId);
+      const edited = entryFor(locale);
+      // Only the prose this editor shows. The per-entry names a guide carries
+      // belong to its own editor and are left exactly as published.
+      const failure = await saveGuideDraft(
+        editing,
+        locale,
+        base,
+        edited,
+        session.userId,
+        Object.keys(edited),
+        published[locale],
+      );
       if (failure) {
         setSaveError(failure);
         setSaveState("failed");
         return;
       }
       if (!andPublish) continue;
-      // Nothing to publish when the draft matched the committed text.
-      if (Object.keys(overrideFrom(base, entryFor(locale))).length === 0) continue;
       const refused = await publishGuide(editing, locale);
       if (refused) {
         setSaveError(refused);

@@ -77,6 +77,48 @@ function isTextTree(value: unknown, depth = 0): boolean {
   return Object.values(value).every((child) => isTextTree(child, depth + 1));
 }
 
+/**
+ * The committed names with the published ones laid over them, leaf by leaf.
+ *
+ * A payload carries only the names somebody changed, so replacing the whole
+ * map would take every other name with it: the guide would fall back to
+ * identifiers, and the editor — which opens on what is published — would show
+ * empty boxes and save those blanks over the rest.
+ */
+export function mergeTexts<T>(committed: T, override: unknown): T {
+  if (typeof override === "string") return override as unknown as T;
+  if (typeof override !== "object" || override === null || Array.isArray(override)) return committed;
+  const base = (typeof committed === "object" && committed !== null ? committed : {}) as Record<string, unknown>;
+  const out: Record<string, unknown> = { ...base };
+  for (const [key, value] of Object.entries(override)) {
+    out[key] = mergeTexts(base[key], value);
+  }
+  return out as unknown as T;
+}
+
+/**
+ * What an editor actually changed in a tree of names, and nothing else.
+ *
+ * A name back at the committed one, or an empty box, leaves no trace: that is
+ * how the site returns to the built version. A tree with nothing left in it
+ * comes back as `undefined`, which drops the field.
+ */
+function prunedTexts(committed: unknown, edited: unknown): unknown {
+  if (typeof edited === "string") {
+    if (!edited.trim()) return undefined;
+    if (typeof committed === "string" && committed.trim() === edited.trim()) return undefined;
+    return edited;
+  }
+  if (typeof edited !== "object" || edited === null || Array.isArray(edited)) return undefined;
+  const base = (typeof committed === "object" && committed !== null ? committed : {}) as Record<string, unknown>;
+  const out: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(edited)) {
+    const kept = prunedTexts(base[key], value);
+    if (kept !== undefined) out[key] = kept;
+  }
+  return Object.keys(out).length > 0 ? out : undefined;
+}
+
 function isSection(value: unknown): value is GuideSection {
   if (typeof value !== "object" || value === null) return false;
   const row = value as Record<string, unknown>;
@@ -123,7 +165,8 @@ export function applyOverride<T extends object>(base: T, payload: unknown): T {
   for (const [field, value] of Object.entries(override)) {
     // A guide that never had the field cannot gain one this way: the renderers
     // read a fixed shape, and an unexpected key would simply be ignored.
-    if (field in merged) merged[field] = value;
+    if (!(field in merged)) continue;
+    merged[field] = TEXT_MAPS.has(field) ? mergeTexts(merged[field], value) : value;
   }
   return merged as T;
 }
@@ -139,24 +182,58 @@ export function overridesByGuide(rows: readonly GuideContentRow[], locale: strin
   return out;
 }
 
-/** What the editor sends: only the fields that differ from the committed text. */
-export function overrideFrom<T extends object>(base: T, edited: T): GuideOverride {
-  const out: GuideOverride = {};
+/** The one value a field may carry, or `undefined` when it may not carry one. */
+function cleanField(field: string, value: unknown): unknown {
+  if (field === "sections") {
+    return Array.isArray(value) && value.every(isSection) ? value : undefined;
+  }
+  if (TEXT_MAPS.has(field)) {
+    if (value === undefined) return undefined;
+    return isTextTree(value) && typeof value === "object" ? value : undefined;
+  }
+  return typeof value === "string" && value.trim() ? value : undefined;
+}
+
+/**
+ * The payload to store after an edit: what is published already, with the
+ * fields this editor owns brought up to date.
+ *
+ * Two things make the merge necessary. An editor owns a few fields and knows
+ * nothing about the rest — the prose editor must not drop the names the
+ * Cryptides editor published, and the other way round. And a field edited back
+ * to the committed text has to be *taken out*, because leaving it alone means
+ * the published row keeps winning and the site never returns to the built
+ * version. That was the bug: removing a letter from a name looked saved and
+ * changed nothing.
+ *
+ * So the result can be empty, and an empty payload means exactly this guide
+ * and language are back to what the build carries.
+ */
+export function overrideWith<T extends object>(
+  published: GuideOverride | null,
+  base: T,
+  edited: T,
+  fields: readonly string[],
+): GuideOverride {
+  const out: GuideOverride = { ...readOverride(published) };
   const from = base as Record<string, unknown>;
   const to = edited as Record<string, unknown>;
-  for (const field of OVERRIDABLE_FIELDS) {
+  for (const field of fields) {
+    if (!OVERRIDABLE_FIELDS.includes(field as OverridableField)) continue;
     if (!(field in to)) continue;
-    if (JSON.stringify(to[field]) === JSON.stringify(from[field])) continue;
-    const value = to[field];
-    if (field === "sections") {
-      if (Array.isArray(value) && value.every(isSection)) out.sections = value;
-      continue;
-    }
-    if (TEXT_MAPS.has(field)) {
-      if (isTextTree(value) && typeof value === "object") out[field] = value;
-      continue;
-    }
-    if (typeof value === "string" && value.trim()) out[field] = value;
+    const key = field as OverridableField;
+    const value = TEXT_MAPS.has(field)
+      ? cleanField(field, prunedTexts(from[field], to[field]))
+      : JSON.stringify(to[field]) === JSON.stringify(from[field])
+        ? undefined
+        : cleanField(field, to[field]);
+    if (value === undefined) delete out[key];
+    else out[key] = value;
   }
   return out;
+}
+
+/** What an editor that owns the whole entry sends: only what differs. */
+export function overrideFrom<T extends object>(base: T, edited: T): GuideOverride {
+  return overrideWith(null, base, edited, OVERRIDABLE_FIELDS);
 }

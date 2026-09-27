@@ -6,6 +6,7 @@ import { getDictionary, LOCALE_CODES, type Locale } from "../../lib/i18n";
 import { useAuth } from "../components/AuthProvider";
 import { useLocale } from "../components/LocaleProvider";
 import { CheckIcon } from "../components/Icons";
+import { usePublishedOverrides } from "./GuideOverrides";
 import { publishGuide, saveGuideDraft, type SaveState } from "./useGuideContent";
 import { publishData, saveDataDraft, uploadPictures, withUploadedPictures } from "./useGuideData";
 
@@ -43,6 +44,7 @@ type Props = {
 export function SaveToSite({ file, data, uploads = [], folder, guideId, textField, texts }: Props) {
   const { t } = useLocale();
   const { session, allows } = useAuth();
+  const published = usePublishedOverrides(guideId);
   const [state, setState] = useState<SaveState>("idle");
   const [error, setError] = useState("");
   const words = t.editor;
@@ -66,6 +68,10 @@ export function SaveToSite({ file, data, uploads = [], folder, guideId, textFiel
     const wrote = await saveDataDraft(file, payload, session.userId);
     if (wrote) return stop(wrote);
 
+    // The languages this press wrote a draft for, and so the ones to publish.
+    // A name put back to the committed one leaves an empty draft rather than
+    // no draft, because publishing that is what takes the live row away.
+    const drafted: Locale[] = [];
     if (guideId && textField && texts) {
       for (const locale of LOCALE_CODES) {
         const entry = getDictionary(locale).guideEntries as Record<string, Record<string, unknown>>;
@@ -77,24 +83,20 @@ export function SaveToSite({ file, data, uploads = [], folder, guideId, textFiel
           base,
           { ...base, [textField]: texts[locale] },
           session.userId,
+          [textField],
+          published[locale],
         );
         if (failed) return stop(failed);
+        drafted.push(locale);
       }
     }
 
     if (andPublish) {
       const refused = await publishData(file);
       if (refused) return stop(refused);
-      if (guideId && textField && texts) {
-        for (const locale of LOCALE_CODES) {
-          const entry = getDictionary(locale).guideEntries as Record<string, Record<string, unknown>>;
-          const base = entry[guideId];
-          // A language whose names match the committed ones leaves no draft,
-          // and publishing one that is not there is not worth an error.
-          if (!base || JSON.stringify(texts[locale]) === JSON.stringify(base[textField])) continue;
-          const denied = await publishGuide(guideId, locale);
-          if (denied) return stop(denied);
-        }
+      for (const locale of drafted) {
+        const denied = await publishGuide(guideId as string, locale);
+        if (denied) return stop(denied);
       }
     }
 

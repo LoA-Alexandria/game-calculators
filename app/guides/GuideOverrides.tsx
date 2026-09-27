@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { committedData, resolveData } from "../../lib/content/guide-data";
-import { applyOverride, type GuideOverride } from "../../lib/content/guide-overrides";
+import { applyOverride, mergeTexts, type GuideOverride } from "../../lib/content/guide-overrides";
 import { getSupabaseBrowserClient } from "../../lib/supabase/client";
 import { getDictionary, mapLocales, toLocale, type Locale } from "../../lib/i18n";
 import { useLocale } from "../components/LocaleProvider";
@@ -98,9 +98,24 @@ export function usePublishedTexts<T>(guideId: string | undefined, field: string 
       if (!guideId || !field) return committed as T;
       const override = texts.get(textKey(guideId, locale));
       const published = override ? (override as Record<string, unknown>)[field] : undefined;
-      return (published ?? committed) as T;
+      // Laid over the committed names, not in place of them: a payload carries
+      // only what was changed, and an editor that lost the rest would save the
+      // gaps.
+      return (published === undefined ? committed : mergeTexts(committed, published)) as T;
     });
   }, [texts, guideId, field]);
+}
+
+/**
+ * A guide's published payload in every language, as an editor needs it before
+ * it writes: what it saves has to keep the fields it does not own.
+ */
+export function usePublishedOverrides(guideId: string | undefined): Record<Locale, GuideOverride | null> {
+  const { texts } = useContext(GuideOverridesContext);
+  return useMemo(() => {
+    if (!guideId) return mapLocales(() => null);
+    return mapLocales((locale) => texts.get(textKey(guideId, locale)) ?? null);
+  }, [texts, guideId]);
 }
 
 /** For pages that only need to know whether a file has been replaced. */
