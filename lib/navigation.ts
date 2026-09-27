@@ -324,6 +324,11 @@ export const SECTIONS: NavSection[] = [
     icon: "simulations",
     items: [
       {
+        href: "/simulations/hero-team-planner/",
+        label: (t) => t.heroBattle.title,
+        description: (t) => t.heroBattle.intro,
+      },
+      {
         href: "/simulations/grand-voyage/",
         label: (t) => t.tools.voyageSimulator.name,
         description: (t) => t.tools.voyageSimulator.description,
