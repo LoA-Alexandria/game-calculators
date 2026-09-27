@@ -17,7 +17,8 @@ guides, and a Discord- and email-authenticated editor, published on GitHub Pages
 - Preserve keyboard access, visible labels, mobile layouts, and reduced-motion behavior.
 - Do not commit generated `out/`, `.next/`, secrets, personal data, or local environment files.
 - Work on a feature branch and open a pull request. Never push directly to `main`.
-- Merge a pull request only after the verification below and passing checks. Approval is not required, but request a review for large or risky changes (authentication, roles, database migrations, redesigns) and tell the person you are working for, so they can mention it in the team chat — review requests arrive by email and are easy to miss.
+- Merge a pull request only after the verification below and passing checks. Approval is not required, and there is no second maintainer to ask: nobody reviews this repository but the person you are working for.
+- That makes authentication, roles, row level security, database migrations and redesigns your responsibility alone. Do not route them to a reviewer who is not there. Instead: keep the change small and single-purpose, write in the pull request what could go wrong and what you actually checked, verify against the real database where you can, and say plainly in chat which parts are unverified. A risk named out loud is the substitute for the review, not a review request.
 
 ## Before editing
 
