@@ -6836,7 +6836,7 @@ const fr: Dictionary = {
     saving: "Enregistrement…",
     savedToSite: "Enregistré",
     saveToSiteHint: "Écrit le bestiaire directement sur le site. Aucun commit nécessaire.",
-    saveToSitePictures: "Les images ajoutées ou retirées doivent toujours être commitées ; le reste peut être enregistré ici.",
+    saveToSitePictures: "{count} nouvelle(s) image(s) seront aussi envoyée(s) sur le site.",
     saveToSiteUnfit: "Cet export ne correspond pas à la forme que lit le guide ; il ne peut pas être enregistré sur le site.",
     problemsTitle: "À vérifier avant l’export",
     problemEmptyName: "Le Cryptide {index} n’a pas de nom anglais.",
