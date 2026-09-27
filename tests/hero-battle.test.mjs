@@ -5,7 +5,7 @@ import { MODELED_HEROES, MODELED_ITEMS, skillFor, simulateBattle, optimizeTeams,
 import { COLLECTION_ITEMS } from "../lib/content/collection.ts";
 
 const hero = (id, patch = {}) => ({ id, atk: 100, hp: 1000, stars: 0, ...patch });
-const options = { rounds: 20, seed: 42, trials: 8, budget: 30, size: 2, enemyFirst: false, repeatSkills: false, objective: "damage", enemy: [hero("achilles")], dummy: true, enemyReduction: 0, items: [], collection: [] };
+const options = { rounds: 20, seed: 42, trials: 8, budget: 30, size: 2, enemyFirst: false, objective: "damage", enemy: [hero("achilles")], dummy: true, enemyReduction: 0, items: [], collection: [] };
 test("modeled entries exist and all recorded star tiers compile to finite skill values", () => {
   for (const id of MODELED_HEROES) for (const stars of [0, 4, 5, 9, 10, 39, 40]) {
     const skill = skillFor(hero(id, { stars }));
@@ -41,23 +41,23 @@ test("normal and skill damage consume HP; highest slot falls first and dead unit
   assert.equal(result.alive, 0);
   assert.equal(result.remaining, 0);
 });
-test("DoT runs for exactly three victim actions and expires", () => {
+test("DoT resolves per victim action and stacks while the hero reapplies it", () => {
   const result = simulateBattle([hero("lancelot")], { ...options, rounds: 30 }, 42, true);
   const dots = result.events.filter((event) => event.action === "dot");
-  assert.equal(dots.length, 3);
-  assert.ok(dots.every((event) => event.amount === 75));
+  const casts = result.events.filter((event) => event.actor === "lancelot" && event.action === "cast").length;
+  assert.ok(casts > 3);
+  assert.ok(dots.length > 3 && dots.length < 30);
+  assert.ok(dots.every((event) => event.amount >= 75 && event.amount % 75 === 0));
+  assert.ok(dots.some((event) => event.amount > 75));
 });
 test("DoT Collection effects change simulated damage rather than guide points", () => {
   const base = simulateBattle([hero("lancelot")], options);
   const boosted = simulateBattle([hero("lancelot")], { ...options, collection: ["dead-sea-scrolls", "brutus-dagger"] });
   assert.ok(boosted.damage > base.damage);
 });
-test("skill trigger exhaustion and repeat mode produce distinct event sequences", () => {
-  const team = [hero("guinevere")];
-  const once = simulateBattle(team, { ...options, rounds: 100 }, 42, true);
-  const repeat = simulateBattle(team, { ...options, rounds: 100, repeatSkills: true }, 42, true);
-  assert.equal(once.events.filter((event) => event.action === "cast").length, 1);
-  assert.ok(repeat.events.filter((event) => event.action === "cast").length > 1);
+test("a ready hero skill can activate again on later rounds", () => {
+  const result = simulateBattle([hero("guinevere")], { ...options, rounds: 100 }, 42, true);
+  assert.ok(result.events.filter((event) => event.action === "cast").length > 1);
 });
 test("healing restores actual missing HP and shields absorb incoming damage", () => {
   const opts = { ...options, dummy: false, enemy: [hero("guinevere", { atk: 80, hp: 100000 })], rounds: 50 };
@@ -68,7 +68,7 @@ test("healing restores actual missing HP and shields absorb incoming damage", ()
 });
 test("unsupported skills/items and invalid settings fail instead of receiving invented effects", () => {
   const pool = [hero("achilles"), hero("caesar")];
-  for (const patch of [{ rounds: 0 }, { rounds: 101 }, { seed: -1 }, { size: 0 }, { size: 3 }, { trials: 0 }, { budget: 1001 }, { enemyReduction: NaN }, { collection: ["wings-of-icarus"] }]) assert.throws(() => validateBattle(pool, { ...options, ...patch }), RangeError);
+  for (const patch of [{ rounds: 0 }, { rounds: 101 }, { seed: -1 }, { size: 0 }, { size: 3 }, { trials: 0 }, { budget: 1001 }, { enemyReduction: NaN }, { collection: ["wings-of-icarus"] }, { enemyCount: 2 }, { cryptides: [{ id: "nidhogg", skills: 4 }] }]) assert.throws(() => validateBattle(pool, { ...options, ...patch }), RangeError);
   assert.throws(() => validateBattle([hero("billy-the-kid"), hero("caesar")], options), RangeError);
   assert.throws(() => validateBattle([hero("achilles", { hp: 0 }), hero("caesar")], options), RangeError);
 });
@@ -122,13 +122,38 @@ test("Brutus Dagger resolves after the opponent acts, including dummy boundaries
   assert.ok(dagger > result.events.findIndex((event) => event.side === 1 && ["normal", "skill"].includes(event.action)));
   assert.ok(result.remaining < 1);
   const dummy = simulateBattle([hero("lancelot")], { ...opts, dummy: true, rounds: 20 }, 0, true);
-  assert.equal(dummy.events.filter((event) => event.actor === "brutus-dagger").length, 3);
+  assert.equal(dummy.events.filter((event) => event.actor === "brutus-dagger").length, dummy.events.filter((event) => event.action === "dot").length);
 });
 
 test("Horn stacks coexist with Arthur reduction and persist after its expiry", () => {
-  const opts = { ...options, rounds: 15, dummy: false, repeatSkills: true, enemy: [hero("guinevere", { hp: 100000 })], collection: ["heimdalls-horn"] };
+  const opts = { ...options, rounds: 15, dummy: false, enemy: [hero("guinevere", { hp: 100000 })], collection: ["heimdalls-horn"] };
   const result = simulateBattle([hero("king-arthur", { atk: 1, hp: 100000 })], opts, 42, true);
   const damageAt = (round) => result.events.find((event) => event.round === round && event.side === 1 && event.action === "skill").amount;
   assert.ok(Math.abs(damageAt(9) - 64) < 1e-9); // 48% Horn + 20% Arthur.
   assert.equal(damageAt(13), 104); // Arthur expires; 48% Horn remains.
+});
+
+test("cryptides act once at the start of their ordered round and use the unlocked-skill count", () => {
+  const result = simulateBattle([hero("achilles"), hero("caesar")], {
+    ...options, rounds: 4, cryptides: [{ id: "nidhogg", skills: 3 }, { id: "cerberus", skills: 2 }, null],
+  }, 42, true);
+  assert.deepEqual(result.events.filter((event) => event.action === "cryptid" && ["nidhogg", "cerberus"].includes(event.actor) && event.amount <= 3).map(({ round, actor, amount }) => [round, actor, amount]), [[1, "nidhogg", 3], [2, "cerberus", 2]]);
+  assert.ok(result.damage > simulateBattle([hero("achilles"), hero("caesar")], { ...options, rounds: 4 }, 42).damage);
+  const oneUnlocked = simulateBattle([hero("guinevere")], { ...options, rounds: 8, enemyReduction: .5, cryptides: [{ id: "nidhogg", skills: 1 }] }, 42);
+  const threeUnlocked = simulateBattle([hero("guinevere")], { ...options, rounds: 8, enemyReduction: .5, cryptides: [{ id: "nidhogg", skills: 3 }] }, 42);
+  assert.ok(threeUnlocked.damage > oneUnlocked.damage);
+});
+
+test("finite dummy groups share one pool and attacks are never multiplied by target count", () => {
+  const team = [hero("hermes", { atk: 1500 })];
+  const infiniteOne = simulateBattle(team, { ...options, rounds: 1, enemyCount: 1, infiniteDummy: true }, 0);
+  const infiniteThirty = simulateBattle(team, { ...options, rounds: 1, enemyCount: 30, infiniteDummy: true }, 0);
+  assert.equal(infiniteOne.damage, infiniteThirty.damage);
+  const finiteOne = simulateBattle(team, { ...options, rounds: 1, enemyCount: 1, infiniteDummy: false }, 0);
+  const finiteFive = simulateBattle(team, { ...options, rounds: 1, enemyCount: 5, infiniteDummy: false }, 0);
+  const finiteThirty = simulateBattle(team, { ...options, rounds: 1, enemyCount: 30, infiniteDummy: false }, 0);
+  assert.equal(finiteOne.damage, 1000);
+  assert.ok(finiteFive.damage > finiteOne.damage);
+  assert.equal(finiteFive.damage, 3000);
+  assert.equal(finiteThirty.damage, finiteFive.damage);
 });

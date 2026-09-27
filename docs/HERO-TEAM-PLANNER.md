@@ -1,6 +1,6 @@
 # Hero simulator
 
-Experimental event simulation and independent team search, model v2, 26 September
+Experimental event simulation and independent team search, model v3, 27 September
 2026. This replaces the original guide-weight ranking. Neither battle simulation
 nor team search imports layout archetypes, tiers, role scores, or recommended builds.
 The browser runs the search in a cancellable Web Worker with a reproducible seed.
@@ -15,12 +15,15 @@ The browser runs the search in a cancellable Web Worker with a reproducible seed
   the model; the guide's fixed build lists are never used by the optimizer.
 - [Collection](https://loa-alexandria.github.io/game-calculators/guides/collection/):
   lib/data/collection.json, screenshots 16–18 September 2026.
+- [Cryptides](https://loa-alexandria.github.io/game-calculators/guides/cryptides/):
+  lib/data/cryptides.json and localized guide skill texts, screenshots 16 September 2026.
 
 The model reads skill coefficients from the recorded English ability tier. Stars
 select the highest explicitly unlocked tier; unlabelled later tiers are never
-guessed. Items use the level currently recorded in their guide. No base-stat
-curve is known: 100 ATK / 1,000 HP are clearly labeled scenario defaults and
-players can enter actual ATK/HP separately. Hero level is saved metadata only.
+guessed. Items use the level currently recorded in their guide. All selected
+heroes share one entered level. No base-stat curve is known: 100 ATK / 1,000 HP
+are fixed placeholders, so this level is metadata until real stat scaling is
+recorded. Results compare modeled interactions, not real damage values.
 
 ## Coverage
 
@@ -33,7 +36,11 @@ The source ability text is available on each selected card.
 
 Implemented events include skill activation, normal hits, critical damage, extra
 attacks / pursuit, DoT, healing, shields, dodge, damage reduction, buff removal,
-and the supported Collection triggers. No execute, revival, Plunder, unknown
+the supported Collection triggers, and up to three ordered Cryptid attacks. A
+selected Cryptid attacks once at the start of its assigned round (slots 1–3 map
+to rounds 1–3); the chosen unlock count enables its first one, two, or three
+recorded skill effects. Cryptid timing follows the user's supplied rule; the
+Cryptid effect mapping follows the published skill text. No execute, revival, Plunder, unknown
 proc chances, troop advantages, event passives, command scaling or enemy items
 are silently approximated.
 
@@ -66,8 +73,11 @@ are silently approximated.
 - Damage metrics count effective HP loss after shields and reductions; overkill
   is excluded. Damage per scheduled round divides by the selected fight length,
   including unused rounds after a kill. There is no invented seconds-per-round.
-- Training target: no attacks, effectively unlimited HP; victory percentage does
-  not apply. Standard test team: Achilles, Caesar, Da Vinci, each 100 ATK / 1,000 HP,
+- Training target: no attacks, unlimited shared HP by default; victory percentage does
+  not apply. An optional finite target group uses 1,000 placeholder HP per selected
+  target (1, 5, 10, 20, or 30) in one shared pool. Each action damages that pool once;
+  damage is never multiplied by enemy count, and the rear-most pool segments fall first.
+  Standard test team: Achilles, Caesar, Da Vinci, each 100 ATK / 1,000 HP,
   0 stars. Custom opponents use supported heroes with manual stats and slot order.
   Enemy artifacts/Collection are not modeled in this version.
 

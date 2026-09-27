@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { HEROES, localizedHero, heroImageUrl } from "../../../lib/content/heroes";
 import { COLLECTION_ITEMS, EXCLUSIVE_COLLECTION_HEROES, localizedItem } from "../../../lib/content/collection";
+import { CRYPTIDES, cryptideImageUrl, localizedCryptideName, skillText as cryptideSkillText } from "../../../lib/content/cryptides";
 import { BUILDINGS, localizedBuildingName } from "../../../lib/content/buildings";
 import { MODELED_HEROES, MODELED_ITEMS, skillFor, validateBattle, type Fighter, type BattleOptions, type SearchResult } from "../../../lib/calculators/hero-battle";
 import { simulateProduction, PRODUCTION_BUILDINGS, type ProductionSlot } from "../../../lib/calculators/hero-team";
@@ -13,13 +14,14 @@ import { createPersistentStore } from "../../components/persistentStore";
 import styles from "./planner.module.css";
 
 type Owned = Fighter & { productionLevel: number };
-type Saved = { heroes: Owned[]; options: BattleOptions; mode: "combat" | "production"; opponent: "dummy" | "standard" | "custom"; slots: ProductionSlot[]; hours: number };
+type Saved = { heroes: Owned[]; heroLevel: number; options: BattleOptions; mode: "combat" | "production"; opponent: "dummy" | "standard" | "custom"; slots: ProductionSlot[]; hours: number };
+const lineupSelected = (lineup: BattleOptions["cryptides"], id: string, currentSlot: number) => Boolean(lineup?.some((entry, slot) => slot !== currentSlot && entry?.id === id));
 const fighter = (id: string): Owned => ({ id, atk: 100, hp: 1000, stars: 0, productionLevel: 1 });
 const standard = ["achilles", "caesar", "da-vinci"].map(fighter);
 const initial: Saved = {
-  heroes: [], mode: "combat", opponent: "dummy", hours: 24,
+  heroes: [], heroLevel: 100, mode: "combat", opponent: "dummy", hours: 24,
   slots: [{ building: "Coal Plant", baseRate: 100 }, { building: "Farm", baseRate: 100 }],
-  options: { rounds: 20, seed: 42, trials: 16, budget: 200, size: 3, enemyFirst: false, repeatSkills: false, objective: "damage", enemy: standard, dummy: true, enemyReduction: 0, items: [], collection: ["", "", ""] },
+  options: { rounds: 10, seed: 42, trials: 16, budget: 200, size: 3, enemyCount: 1, infiniteDummy: true, enemyFirst: false, objective: "damage", enemy: standard, dummy: true, enemyReduction: 0, items: [], collection: ["", "", ""], cryptides: [null, null, null] },
 };
 const store = createPersistentStore<Saved>({
   key: "popepoch-hero-simulator-v2", serverValue: initial, fallback: () => initial, serialize: JSON.stringify,
@@ -32,8 +34,9 @@ const store = createPersistentStore<Saved>({
       if (!value.heroes.every(valid) || !Array.isArray(value.options.enemy) || !value.options.enemy.every(valid)) return null;
       if (!Array.isArray(value.options.items) || !Array.isArray(value.options.collection) || value.options.collection.length > 25 || ![...value.options.items, ...value.options.collection].every((id) => typeof id === "string")) return null;
       if (![value.hours, value.options.rounds, value.options.seed, value.options.size, value.options.trials, value.options.budget, value.options.enemyReduction].every(Number.isFinite)) return null;
+      if (value.heroLevel !== undefined && (!Number.isInteger(value.heroLevel) || value.heroLevel < 1 || value.heroLevel > 1000)) return null;
       if (!value.slots.every((slot) => slot && typeof slot.building === "string" && Number.isFinite(slot.baseRate))) return null;
-      return value;
+      return { ...value, heroLevel: Number.isFinite(value.heroLevel) ? value.heroLevel : 100, options: { ...value.options, enemyCount: [1, 5, 10, 20, 30].includes(value.options.enemyCount ?? 1) ? value.options.enemyCount ?? 1 : 1, infiniteDummy: typeof value.options.infiniteDummy === "boolean" ? value.options.infiniteDummy : true, cryptides: Array.isArray(value.options.cryptides) && value.options.cryptides.length <= 3 ? value.options.cryptides : [null, null, null] } };
     } catch { return null; }
   },
 });
@@ -62,6 +65,7 @@ export default function HeroSimulator() {
   const editHero = (id: string, patch: Partial<Owned>) => update({ heroes: input.heroes.map((hero) => hero.id === id ? { ...hero, ...patch } : hero) });
   const heroName = (id: string) => HEROES.find((hero) => hero.id === id)?.name ?? id;
   const itemName = (id: string) => { const item = COLLECTION_ITEMS.find((item) => item.id === id); return item ? localizedItem(item, t.guideEntries.collection.collectionTexts).name : id; };
+  const cryptideName = (id: string) => { const cryptide = CRYPTIDES.find((entry) => entry.id === id); return cryptide ? localizedCryptideName(cryptide, t.guideEntries.cryptides.cryptideTexts) : id; };
   const buildingName = (name: string) => { const building = BUILDINGS.find((entry) => entry.name === name); return building ? localizedBuildingName(building, t.guideEntries.buildings.buildingTexts) : name === "Forge" ? text.forge : name === "Masonry Workshop" ? text.masonry : name; };
   const fmt = (value: number) => new Intl.NumberFormat(locale, { maximumFractionDigits: 1 }).format(value);
   const eligible = (id: string) => input.mode === "combat" ? MODELED_HEROES.has(id) : Boolean(HEROES.find((hero) => hero.id === id)?.production);
@@ -72,8 +76,8 @@ export default function HeroSimulator() {
       catch { setError(true); }
       return;
     }
-    const config = { ...input.options, dummy: input.opponent === "dummy", enemy: input.opponent === "standard" ? standard : input.options.enemy, collection: input.options.collection.filter(Boolean) };
-    const pool = input.heroes.filter((hero) => MODELED_HEROES.has(hero.id));
+    const config = { ...input.options, cryptides: input.options.cryptides ?? [null, null, null], dummy: input.opponent === "dummy", enemy: input.opponent === "standard" ? standard : input.options.enemy, collection: input.options.collection.filter(Boolean) };
+    const pool = input.heroes.filter((hero) => MODELED_HEROES.has(hero.id)).map((hero) => ({ ...hero, level: input.heroLevel, atk: 100, hp: 1000 }));
     try {
       validateBattle(pool, config);
       const next = new Worker(new URL("./battle.worker.ts", import.meta.url));
@@ -100,28 +104,48 @@ export default function HeroSimulator() {
       <h2>{sim.opponent}</h2>
       <div className={styles.controls}>
         <label>{sim.opponent}<select value={input.opponent} onChange={(event) => update({ opponent: event.target.value as Saved["opponent"], options: { ...input.options, objective: event.target.value === "dummy" ? "damage" : input.options.objective } })}><option value="dummy">{sim.dummy}</option><option value="standard">{sim.standard}</option><option value="custom">{sim.custom}</option></select></label>
-        <label>{text.size}<input type="number" min={1} max={25} value={Number.isNaN(input.options.size) ? "" : input.options.size} onChange={(event) => options({ size: event.target.valueAsNumber })} /></label>
+        <label>{sim.size}<input type="number" min={1} max={25} value={Number.isNaN(input.options.size) ? "" : input.options.size} onChange={(event) => options({ size: event.target.valueAsNumber })} /></label>
+        <label>{sim.heroLevel}<input type="number" min={1} max={1000} value={Number.isNaN(input.heroLevel) ? "" : input.heroLevel} onChange={(event) => update({ heroLevel: event.target.valueAsNumber })} /></label>
         {(["rounds", "trials", "budget", "seed"] as const).map((key) => <label key={key}>{sim[key]}<input type="number" min={key === "seed" ? 0 : 1} max={{ rounds: 100, trials: 128, budget: 1000, seed: 2147483647 }[key]} value={Number.isNaN(input.options[key]) ? "" : input.options[key]} onChange={(event) => options({ [key]: event.target.valueAsNumber })} /></label>)}
         <label>{sim.objective}<select value={input.options.objective} onChange={(event) => options({ objective: event.target.value as BattleOptions["objective"] })}><option value="damage">{sim.damageGoal}</option><option value="wins" disabled={input.opponent === "dummy"}>{sim.winGoal}</option></select></label>
         <label>{sim.reduction}<input type="number" min={0} max={.9} step={.05} value={input.options.enemyReduction} onChange={(event) => options({ enemyReduction: event.target.valueAsNumber })} /></label>
       </div>
-      <div className={styles.items}><label><input type="checkbox" checked={input.options.enemyFirst} onChange={(event) => options({ enemyFirst: event.target.checked })} />{sim.enemyFirst}</label><label><input type="checkbox" checked={input.options.repeatSkills} onChange={(event) => options({ repeatSkills: event.target.checked })} />{sim.repeat}</label></div>
-      {input.opponent === "standard" && <p>{standard.map((hero) => heroName(hero.id) + " · " + hero.atk + " ATK / " + hero.hp + " HP").join(" — ")}</p>}
+      {input.opponent === "dummy" && <><div className={styles.controls}><label><input type="checkbox" checked={input.options.infiniteDummy !== false} onChange={(event) => options({ infiniteDummy: event.target.checked })} />{sim.unlimitedHp}</label>{input.options.infiniteDummy === false && <label>{sim.enemyCount}<select value={input.options.enemyCount ?? 1} onChange={(event) => options({ enemyCount: Number(event.target.value) as 1 | 5 | 10 | 20 | 30 })}>{[1, 5, 10, 20, 30].map((count) => <option key={count} value={count}>{count}</option>)}</select></label>}</div>{input.options.infiniteDummy === false && <p>{sim.finitePoolNote.replace("{count}", String(input.options.enemyCount ?? 1))}</p>}</>}
+      <div className={styles.items}><label><input type="checkbox" checked={input.options.enemyFirst} onChange={(event) => options({ enemyFirst: event.target.checked })} />{sim.enemyFirst}</label></div>
+      <h3>{sim.cryptidSetup}</h3>
+      <div className={styles.roster}>{[0, 1, 2].map((slot) => {
+        const selection = input.options.cryptides?.[slot] ?? null;
+        const cryptide = selection && CRYPTIDES.find((entry) => entry.id === selection.id);
+        return <div className={styles.hero} key={slot}>
+          <label>{sim.cryptidRound} {slot + 1}<select value={selection?.id ?? ""} onChange={(event) => {
+            const lineup = [...(input.options.cryptides ?? [null, null, null])];
+            lineup[slot] = event.target.value ? { id: event.target.value, skills: 1 } : null;
+            options({ cryptides: lineup });
+          }}><option value="">{text.empty}</option>{CRYPTIDES.map((entry) => <option key={entry.id} value={entry.id} disabled={Boolean(lineupSelected(input.options.cryptides, entry.id, slot))}>{cryptideName(entry.id)}</option>)}</select></label>
+          {selection && cryptide && <>
+            <label>{sim.unlockedSkills}<select value={selection.skills} onChange={(event) => { const lineup = [...(input.options.cryptides ?? [null, null, null])]; lineup[slot] = { ...selection, skills: Number(event.target.value) as 1 | 2 | 3 }; options({ cryptides: lineup }); }}><option value={1}>1</option><option value={2}>2</option><option value={3}>3</option></select></label>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={cryptideImageUrl(cryptide.image)} alt="" width={52} height={52} loading="lazy" />
+            <details><summary>{sim.cryptidSkills}</summary>{cryptide.skills.slice(0, selection.skills).map((skill) => <p key={skill.id}><strong>{cryptideSkillText(cryptide.id, skill.id, t.guideEntries.cryptides.cryptideTexts).name}</strong>: {cryptideSkillText(cryptide.id, skill.id, t.guideEntries.cryptides.cryptideTexts).body}</p>)}</details>
+          </>}
+        </div>;
+      })}</div>
+        {input.opponent === "standard" && <p>{standard.map((hero) => heroName(hero.id)).join(" — ")}</p>}
       {input.opponent === "custom" && <><h3>{sim.enemyTeam}</h3><div className={styles.roster}>{input.options.enemy.map((enemy, index) => <div className={styles.hero} key={enemy.id}><strong>{index + 1}. {heroName(enemy.id)}</strong>{<FighterNumbers unit={enemy} labels={sim} prefix={sim.enemy + " " + heroName(enemy.id)} onChange={(patch) => options({ enemy: input.options.enemy.map((entry, slot) => slot === index ? { ...entry, ...patch } : entry) })} />}<div className={styles.controls}><button className="button" disabled={index === 0} onClick={() => { const list = [...input.options.enemy]; [list[index - 1], list[index]] = [list[index], list[index - 1]]; options({ enemy: list }); }}>{sim.up}</button><button className="button" onClick={() => options({ enemy: input.options.enemy.filter((_, slot) => slot !== index) })}>{sim.remove}</button></div></div>)}</div><label>{sim.addEnemy}<select value="" disabled={input.options.enemy.length >= 25} onChange={(event) => { if (event.target.value) options({ enemy: [...input.options.enemy, fighter(event.target.value)] }); }}><option value="">{text.empty}</option>{HEROES.filter((hero) => MODELED_HEROES.has(hero.id) && !input.options.enemy.some((enemy) => enemy.id === hero.id)).map((hero) => <option key={hero.id} value={hero.id}>{hero.name}</option>)}</select></label></>}
     </section> : <section className="panel"><h2>{text.production}</h2><label>{sim.hours}<input type="number" min={0} max={168} step="any" value={input.hours} onChange={(event) => update({ hours: event.target.valueAsNumber })} /></label>{input.slots.map((slot, index) => <div className={styles.controls} key={index}><label>{text.building} {index + 1}<select value={slot.building} onChange={(event) => update({ slots: input.slots.map((entry, i) => i === index ? { ...entry, building: event.target.value } : entry) })}>{PRODUCTION_BUILDINGS.map((building) => <option key={building} value={building}>{buildingName(building)}</option>)}</select></label><label>{sim.baseRate} {index + 1}<input type="number" min={0} step="any" value={slot.baseRate} onChange={(event) => update({ slots: input.slots.map((entry, i) => i === index ? { ...entry, baseRate: event.target.valueAsNumber } : entry) })} /></label><button className="button" disabled={input.slots.length === 1} onClick={() => update({ slots: input.slots.filter((_, i) => i !== index) })}>{sim.remove}</button></div>)}<button className="button" disabled={input.slots.length >= 25} onClick={() => update({ slots: [...input.slots, { building: "Farm", baseRate: 100 }] })}>{sim.addBuilding}</button></section>}
     <section className="panel">
-      <h2>{text.heroes} <span className={styles.count}>{input.heroes.filter((hero) => eligible(hero.id)).length} / {HEROES.filter((hero) => eligible(hero.id)).length}</span></h2>
+      <h2>{text.heroes} <span className={styles.count}>{input.heroes.filter((hero) => eligible(hero.id)).length} / {HEROES.length}</span><small>{MODELED_HEROES.size} {sim.heroesModeled}</small></h2>
       <div className={styles.controls}><label>{text.search}<input type="search" value={search} onChange={(event) => setSearch(event.target.value)} /></label><button className="button" onClick={() => update({ heroes: HEROES.filter((hero) => eligible(hero.id)).map((hero) => input.heroes.find((entry) => entry.id === hero.id) ?? fighter(hero.id)) })}>{text.all}</button><button className="button" onClick={() => update({ heroes: [] })}>{text.none}</button></div>
-      <div className={styles.roster}>{HEROES.filter((hero) => eligible(hero.id) && hero.name.toLowerCase().includes(search.toLowerCase())).map((hero) => {
+      <div className={styles.roster}>{HEROES.filter((hero) => hero.name.toLowerCase().includes(search.toLowerCase())).map((hero) => {
         const own = input.heroes.find((entry) => entry.id === hero.id);
+        const supported = eligible(hero.id);
         const localized = localizedHero(hero, t.guideEntries.heroes.heroTexts, t.guideEntries.collection.collectionTexts);
-        return <div className={styles.hero + (own ? " " + styles.owned : "")} key={hero.id}>
-          <label className={styles.heroCheck}><input type="checkbox" checked={Boolean(own)} onChange={(event) => update({ heroes: event.target.checked ? [...input.heroes, fighter(hero.id)] : input.heroes.filter((entry) => entry.id !== hero.id) })} />
+        return <div className={styles.hero + (own ? " " + styles.owned : "")} key={hero.id} title={[hero.bio, own ? localized.skill?.levels[(skillFor(own)?.level ?? 1) - 1] : hero.skill?.levels[0]].filter(Boolean).join("\n\n")}>
+          <label className={styles.heroCheck}><input type="checkbox" checked={Boolean(own)} disabled={!supported} onChange={(event) => update({ heroes: event.target.checked ? [...input.heroes, fighter(hero.id)] : input.heroes.filter((entry) => entry.id !== hero.id) })} />
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            {hero.images[0] && <img src={heroImageUrl(hero.images[0])} alt="" width={44} height={44} loading="lazy" />}<span>{hero.name}<small>{hero.rarity}</small></span>
+            {hero.images[0] && <img src={heroImageUrl(hero.images[0])} alt="" width={44} height={44} loading="lazy" />}<span>{hero.name}<small>{hero.rarity}{!supported ? " · " + sim.unsupportedShort : ""}</small></span>
           </label>
-          {own && <>{input.mode === "combat" ? <FighterNumbers unit={own} labels={sim} prefix={hero.name} onChange={(patch) => editHero(hero.id, patch)} /> : <label>{sim.stars}<input type="number" min={0} value={own.stars} onChange={(event) => editHero(hero.id, { stars: event.target.valueAsNumber })} /></label>}
-            <label>{text.level}<input type="number" min={1} placeholder={text.unknown} value={own.level ?? ""} onChange={(event) => editHero(hero.id, { level: event.target.value === "" ? undefined : event.target.valueAsNumber })} /></label>
+          {own && <><label>{sim.stars}<input aria-label={hero.name + ": " + sim.stars} type="number" min={0} max={1000} value={Number.isNaN(own.stars) ? "" : own.stars} onChange={(event) => editHero(hero.id, { stars: event.target.valueAsNumber })} /></label>
             {input.mode === "production" && hero.production && <label>{text.ability}<select value={own.productionLevel} onChange={(event) => editHero(hero.id, { productionLevel: Number(event.target.value) })}>{hero.production.levels.map((_, index) => <option key={index} value={index + 1}>{index + 1}</option>)}</select></label>}
             <details><summary>{text.reference}</summary><p>{input.mode === "production" ? localized.production?.levels[own.productionLevel - 1] : localized.skill?.levels[(skillFor(own)?.level ?? 1) - 1]}</p></details>
           </>}
@@ -138,7 +162,7 @@ export default function HeroSimulator() {
     {input.mode === "combat" && <section aria-label={sim.results}><h2>{sim.results}</h2>{!result ? <p>{sim.empty}</p> : <>
       {result.key !== signature && <p role="status">{sim.stale}</p>}
       <p>{sim.evaluated}: {result.data.evaluated} · {result.data.exhaustive ? sim.exhaustive : sim.sampled} · {sim.validation}: {result.data.validationTrials}</p>
-      <div className={styles.results}>{result.data.candidates.map((candidate, index) => <article className="panel" key={candidate.team.map((hero) => hero.id).join(",")}><h3>{sim.best} {index + 1}</h3><strong className={styles.metric}>{fmt(candidate.damage / result.rounds)}</strong><p>{sim.perRound}</p><dl><dt>{sim.totalDamage}</dt><dd>{fmt(candidate.damage)}</dd><dt>{sim.deviation}</dt><dd>± {fmt(candidate.deviation)}</dd><dt>{sim.healing}</dt><dd>{fmt(candidate.healing)}</dd><dt>{sim.wins}</dt><dd>{result.dummy ? "—" : fmt(candidate.winRate * 100) + "%"}</dd><dt>{sim.remaining}</dt><dd>{fmt(candidate.remaining * 100)}%</dd></dl><ol className={styles.team}>{candidate.team.map((hero) => <li key={hero.id}><strong>{heroName(hero.id)}</strong><small>{hero.atk} ATK · {hero.hp} HP · {hero.stars} {sim.stars}</small></li>)}</ol></article>)}</div>
+      <div className={styles.results}>{result.data.candidates.map((candidate, index) => <article className="panel" key={candidate.team.map((hero) => hero.id).join(",")}><h3>{sim.best} {index + 1}</h3><strong className={styles.metric}>{fmt(candidate.damage / result.rounds)}</strong><p>{sim.perRound}</p><dl><dt>{sim.totalDamage}</dt><dd>{fmt(candidate.damage)}</dd><dt>{sim.deviation}</dt><dd>± {fmt(candidate.deviation)}</dd><dt>{sim.healing}</dt><dd>{fmt(candidate.healing)}</dd><dt>{sim.wins}</dt><dd>{result.dummy ? "—" : fmt(candidate.winRate * 100) + "%"}</dd><dt>{sim.remaining}</dt><dd>{fmt(candidate.remaining * 100)}%</dd></dl><ol className={styles.team}>{candidate.team.map((hero) => <li key={hero.id}><strong>{heroName(hero.id)}</strong><small>{hero.stars} {sim.stars} · Lv. {input.heroLevel}</small></li>)}</ol></article>)}</div>
       <h3>{sim.timeline}</h3>{chart(result.data.trace.timeline.map((row) => ({ x: row.round, y: row.damage })), sim.timeline)}
       <details><summary>{sim.trace}</summary><p>{sim.logNote}</p><div className={styles.log}><table><thead><tr><th>{sim.round}</th><th>{sim.ally} / {sim.enemy}</th><th>{text.heroes}</th><th>{sim.action}</th><th>{sim.amount}</th></tr></thead><tbody>{result.data.trace.events.map((event, index) => <tr key={index}><td>{event.round}</td><td>{event.side === 0 ? sim.ally : sim.enemy}</td><td>{heroName(event.actor)}</td><td>{event.action.startsWith("fall:") ? sim.events.fall + ": " + heroName(event.action.slice(5)) : sim.events[event.action as keyof typeof sim.events] ?? event.action}</td><td>{fmt(event.amount)}</td></tr>)}</tbody></table></div></details>
     </>}</section>}

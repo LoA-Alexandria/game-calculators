@@ -1,8 +1,11 @@
 import { HEROES } from "../content/heroes.ts";
 import { COLLECTION_ITEMS, EXCLUSIVE_COLLECTION_HEROES } from "../content/collection.ts";
+import { CRYPTIDES } from "../content/cryptides.ts";
+import { FORMATION_COLUMNS } from "../content/hero-layouts.ts";
 
 export type Fighter = { id: string; atk: number; hp: number; stars: number; level?: number };
-export type BattleOptions = { rounds: number; seed: number; trials: number; budget: number; size: number; enemyFirst: boolean; repeatSkills: boolean; objective: "damage" | "wins"; enemy: Fighter[]; dummy: boolean; enemyReduction: number; items: string[]; collection: string[] };
+export type CryptidSelection = { id: string; skills: 1 | 2 | 3 };
+export type BattleOptions = { rounds: number; seed: number; trials: number; budget: number; size: number; enemyCount?: 1 | 5 | 10 | 20 | 30; infiniteDummy?: boolean; enemyFirst: boolean; objective: "damage" | "wins"; enemy: Fighter[]; dummy: boolean; enemyReduction: number; items: string[]; collection: string[]; cryptides?: (CryptidSelection | null)[] };
 export type BattleEvent = { round: number; side: number; actor: string; action: string; amount: number; allyHp: number; enemyHp: number };
 export type BattleResult = { damage: number; healing: number; absorbed: number; alive: number; remaining: number; win: boolean; rounds: number; events: BattleEvent[]; timeline: { round: number; damage: number; allyHp: number; enemyHp: number }[] };
 export type Candidate = { team: Fighter[]; damage: number; healing: number; winRate: number; remaining: number; deviation: number };
@@ -47,7 +50,7 @@ export function seededRandom(seed: number) {
   return () => { state += 0x6D2B79F5; let t = state; t = Math.imul(t ^ t >>> 15, t | 1); t ^= t + Math.imul(t ^ t >>> 7, t | 61); return ((t ^ t >>> 14) >>> 0) / 4294967296; };
 }
 type Effect = { key: string; source: string; value: number; expires: number; ticks?: number };
-type Unit = Fighter & { health: number; spent: boolean };
+type Unit = Fighter & { health: number };
 type Side = { units: Unit[]; max: number; shield: number; effects: Effect[]; items: Set<string>; damage: number; healing: number; absorbed: number; actions: number; labyrinth: boolean; dotTaken: number };
 const totalHp = (side: Side) => side.units.reduce((sum, unit) => sum + unit.health, 0);
 const living = (side: Side) => side.units.filter((unit) => unit.health > 0);
@@ -57,7 +60,7 @@ const debuffs = new Set(["dot", "skillDown", "replace"]);
 
 export function validateBattle(pool: Fighter[], options: BattleOptions) {
   const whole = (value: number, min: number, max: number) => Number.isInteger(value) && value >= min && value <= max;
-  if (!whole(options.rounds, 1, 100) || !whole(options.size, 1, 25) || !whole(options.seed, 0, 2147483647) || !whole(options.trials, 1, 128) || !whole(options.budget, 1, 1000)) throw new RangeError("settings");
+  if (!whole(options.rounds, 1, 100) || !whole(options.size, 1, 25) || (options.enemyCount !== undefined && ![1, 5, 10, 20, 30].includes(options.enemyCount)) || (options.infiniteDummy !== undefined && typeof options.infiniteDummy !== "boolean") || !whole(options.seed, 0, 2147483647) || !whole(options.trials, 1, 128) || !whole(options.budget, 1, 1000)) throw new RangeError("settings");
   if (!["damage", "wins"].includes(options.objective) || !Number.isFinite(options.enemyReduction) || options.enemyReduction < 0 || options.enemyReduction > .9) throw new RangeError("settings");
   const validateTeam = (team: Fighter[], dummy = false) => {
     if (!team.length || team.length > 82 || new Set(team.map((unit) => unit.id)).size !== team.length) throw new RangeError("team");
@@ -66,6 +69,9 @@ export function validateBattle(pool: Fighter[], options: BattleOptions) {
     }
   };
   validateTeam(pool);
+  const cryptides = options.cryptides ?? [];
+  const selectedCryptides = cryptides.filter((entry): entry is CryptidSelection => entry !== null);
+  if (cryptides.length > 3 || new Set(selectedCryptides.map((entry) => entry.id)).size !== selectedCryptides.length || selectedCryptides.some((entry) => !CRYPTIDES.some((cryptide) => cryptide.id === entry.id) || !whole(entry.skills, 1, 3))) throw new RangeError("cryptides");
   if (pool.length < options.size) throw new RangeError("size");
   if (!options.dummy) { validateTeam(options.enemy); if (options.enemy.length > 25) throw new RangeError("enemy"); }
   if (options.items.some((id) => !MODELED_ITEMS.has(id) || !EXCLUSIVE_COLLECTION_HEROES[id]) || options.collection.some((id) => !MODELED_ITEMS.has(id)) || options.collection.length > 25) throw new RangeError("items");
@@ -74,9 +80,12 @@ export function validateBattle(pool: Fighter[], options: BattleOptions) {
 /** Event simulation with an explicit scenario model; see HERO-TEAM-PLANNER.md. */
 export function simulateBattle(team: Fighter[], options: BattleOptions, seed = options.seed, record = false): BattleResult {
   const random = seededRandom(seed);
-  const make = (units: Fighter[], items: string[]): Side => ({ units: units.map((unit) => ({ ...unit, health: unit.hp, spent: false })), max: units.reduce((sum, unit) => sum + unit.hp, 0), shield: 0, effects: [], items: new Set(items), damage: 0, healing: 0, absorbed: 0, actions: 0, labyrinth: false, dotTaken: 0 });
+  const make = (units: Fighter[], items: string[]): Side => ({ units: units.map((unit) => ({ ...unit, health: unit.hp })), max: units.reduce((sum, unit) => sum + unit.hp, 0), shield: 0, effects: [], items: new Set(items), damage: 0, healing: 0, absorbed: 0, actions: 0, labyrinth: false, dotTaken: 0 });
   const owned = options.items.filter((id) => team.some((unit) => unit.id === EXCLUSIVE_COLLECTION_HEROES[id]));
-  const sides = [make(team, [...owned, ...options.collection]), make(options.dummy ? [{ id: "dummy", atk: 0, hp: 1e15, stars: 0 }] : options.enemy, [])];
+  const targets = options.infiniteDummy === false
+    ? Array.from({ length: options.enemyCount ?? 1 }, (_, index) => ({ id: "target-" + (index + 1), atk: 0, hp: 1000, stars: 0 }))
+    : [{ id: "dummy", atk: 0, hp: 1e15, stars: 0 }];
+  const sides = [make(team, [...owned, ...options.collection]), make(options.dummy ? targets : options.enemy, [])];
   const events: BattleEvent[] = [];
   const timeline: BattleResult["timeline"] = [];
   let round = 0;
@@ -88,7 +97,7 @@ export function simulateBattle(team: Fighter[], options: BattleOptions, seed = o
   };
   const addDot = (side: Side, value: number) => side.effects.push({ key: "dot", source: actor, value, expires: Infinity, ticks: 3 });
   const item = (side: Side, id: string, index = 0) => side.items.has(id) ? percentages(itemMap.get(id)!.skill.text)[index] ?? 0 : 0;
-  const attack = (side: Side) => living(side).reduce((sum, unit) => sum + unit.atk, 0) * Math.max(0, 1 + effect(side, "atk"));
+  const attack = (side: Side) => living(side).reduce((sum, unit) => sum + unit.atk, 0) * (1 + Math.max(0, effect(side, "atk") - effect(side, "atkDown")));
   const heal = (index: number, amount: number) => {
     const side = sides[index];
     let left = amount * (1 + item(side, "decameron-manuscript"));
@@ -109,12 +118,14 @@ export function simulateBattle(team: Fighter[], options: BattleOptions, seed = o
     const from = sides[index], to = sides[1 - index];
     if (totalHp(to) <= 0 || raw <= 0) return 0;
     if (effect(to, "barrier") > 0) { log(index, "immune", 0); return 0; }
+    // Each action applies damage once to a shared pool represented by ordered
+    // 1,000-HP segments; enemy count changes pool capacity, never hit damage.
     let amount = raw;
-    if (kind === "skill") amount *= Math.max(0, 1 + effect(from, "skill") - effect(from, "skillDown")) * (1 - Math.min(.9, effect(to, "reduction")));
+    if (kind === "skill") amount *= Math.max(0, 1 + effect(from, "skill") - effect(from, "skillDown")) * (1 - Math.min(.9, Math.max(0, effect(to, "reduction") - effect(from, "skillReductionDown"))));
     if (kind === "extra") amount *= 1 + effect(from, "extra");
     if (kind === "dot") amount *= 1 + item(from, "dead-sea-scrolls");
     if (critical) amount *= 1 + effect(from, "crit");
-    if (index === 0) amount *= 1 - options.enemyReduction;
+    if (index === 0) amount *= 1 - Math.max(0, options.enemyReduction - effect(to, "reductionDown"));
     const bypass = kind === "skill" || kind === "extra" ? Math.min(1, effect(from, "break")) : 0;
     const absorbed = Math.min(to.shield, amount * (1 - bypass));
     to.shield -= absorbed; to.absorbed += absorbed; amount -= absorbed;
@@ -135,6 +146,8 @@ export function simulateBattle(team: Fighter[], options: BattleOptions, seed = o
     from.damage += dealt;
     log(index, critical ? "critical" : kind, dealt);
     if (kind === "dot") to.dotTaken += dealt;
+    if (dealt > 0 && effect(to, "cryptidHeal") > 0) heal(1 - index, to.max * effect(to, "cryptidHeal"));
+    if (dealt > 0 && kind !== "reflection" && effect(to, "reflect") > 0) hit(1 - index, dealt * effect(to, "reflect"), "reflection");
     if (!to.labyrinth && totalHp(to) > 0 && totalHp(to) < to.max * .5 && to.items.has("model-of-the-minotaurs-labyrinth")) {
       to.labyrinth = true; heal(1 - index, to.max * item(to, "model-of-the-minotaurs-labyrinth"));
     }
@@ -153,7 +166,6 @@ export function simulateBattle(team: Fighter[], options: BattleOptions, seed = o
     const v = skill.values;
     const atk = attack(from);
     const hadShield = to.shield > 0;
-    unit.spent = !options.repeatSkills;
     if (random() < effect(to, "dodge")) { log(index, "dodge", 0); return; }
     log(index, "cast", skill.level);
     if (unit.id === "achilles" && from.items.has("divine-greaves")) add(from, "crit", item(from, "divine-greaves"), 3, true);
@@ -205,8 +217,49 @@ export function simulateBattle(team: Fighter[], options: BattleOptions, seed = o
     }
     if (from.items.has("notre-dame-de-paris-replica") && random() < item(from, "notre-dame-de-paris-replica")) hit(index, atk * item(from, "notre-dame-de-paris-replica", 1), "collection");
   };
+  const removeEffects = (side: Side, kinds: Set<string>, count: number) => {
+    let removed = 0;
+    for (let index = side.effects.length - 1; index >= 0 && removed < count; index--) {
+      if (kinds.has(side.effects[index].key)) { side.effects.splice(index, 1); removed++; }
+    }
+  };
+  const cryptidAction = (selection: CryptidSelection) => {
+    const from = sides[0], to = sides[1];
+    const unlocked = selection.skills;
+    actor = selection.id;
+    log(0, "cryptid", unlocked);
+    switch (selection.id) {
+      case "nidhogg":
+        hit(0, attack(from) * 2, "cryptid");
+        add(from, "frontForce", 1, 3, false, "nidhogg");
+        if (unlocked >= 2) add(from, "skill", .25, 2, false, "nidhogg");
+        if (unlocked >= 3) add(to, "reductionDown", .15, 2, false, "nidhogg");
+        break;
+      case "caladrius":
+        from.shield += from.max * .3;
+        log(0, "shield", from.max * .3);
+        add(from, "reduction", .2, 3, false, "caladrius");
+        if (unlocked >= 2) add(to, "atkDown", .1, 2, false, "caladrius");
+        if (unlocked >= 3) add(from, "cryptidHeal", .08, 3, false, "caladrius");
+        break;
+      case "cerberus":
+        hit(0, attack(from) * 2, "cryptid");
+        add(from, "skill", .2, 3, false, "cerberus");
+        if (unlocked >= 2) add(to, "skillDown", .2, 2, false, "cerberus");
+        if (unlocked >= 3) hit(0, Math.min(to.max * .1, attack(from)), "cryptid");
+        break;
+      case "sleipnir":
+        heal(0, from.max * .3);
+        add(from, "reflect", .2, 3, false, "sleipnir");
+        if (unlocked >= 2) removeEffects(to, buffs, 2);
+        if (unlocked >= 3) removeEffects(from, debuffs, 2);
+        break;
+    }
+  };
   let completed = 0;
   for (round = 1; round <= options.rounds && totalHp(sides[0]) > 0 && totalHp(sides[1]) > 0; round++) {
+    const cryptid = options.cryptides?.[round - 1];
+    if (cryptid && totalHp(sides[0]) > 0 && totalHp(sides[1]) > 0) cryptidAction(cryptid);
     for (const index of options.enemyFirst ? [1, 0] : [0, 1]) {
       const from = sides[index], to = sides[1 - index];
       if (totalHp(from) <= 0 || totalHp(to) <= 0) break;
@@ -229,11 +282,14 @@ export function simulateBattle(team: Fighter[], options: BattleOptions, seed = o
       const replacement = effect(from, "replace");
       if (replacement) { from.effects = from.effects.filter((e) => e.key !== "replace"); hit(1 - index, replacement, "normal"); }
       else {
-        const available = living(from).filter((unit) => !unit.spent);
-        const ready = available.filter((unit) => random() < (skillFor(unit)?.chance ?? 0));
+        const available = living(from);
+        const ready = available.filter((unit, slot) => random() < Math.min(1, (skillFor(unit)?.chance ?? 0) + (slot < FORMATION_COLUMNS.front.filter((value) => value > 0).length ? effect(from, "frontForce") : 0)));
         // Arthur's text explicitly gives him activation priority.
         const unit = ready.find((entry) => entry.id === "king-arthur") ?? ready[0];
-        if (unit) { actor = unit.id; cast(index, unit); }
+        if (unit && effect(from, "frontForce") > 0) {
+          for (const front of ready.filter((entry) => from.units.indexOf(entry) < FORMATION_COLUMNS.front.filter((value) => value > 0).length)) { actor = front.id; cast(index, front); }
+        }
+        else if (unit) { actor = unit.id; cast(index, unit); }
         else hit(index, attack(from), "normal");
       }
       if (effect(from, "dotHeal")) heal(index, to.dotTaken * effect(from, "dotHeal"));
