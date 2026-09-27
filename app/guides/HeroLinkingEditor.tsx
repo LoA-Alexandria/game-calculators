@@ -25,6 +25,7 @@ import {
   type LinkList,
   type LinkingEditorState,
   type LinkingProblem,
+  exportedLinkTexts,
 } from "../../lib/content/hero-linking-editor";
 import { HERO_RARITIES, heroNamed, heroPortrait } from "../../lib/content/heroes";
 import type { Dictionary, Locale } from "../../lib/i18n";
@@ -171,7 +172,7 @@ export function HeroLinkingEditor() {
             {changes > 0 ? `${changes === 1 ? e.changeOne : tf(e.changes, { count: changes })} · ${e.savedNote}` : e.unchanged}
           </span>
           <button className="button" type="button" onClick={reset} disabled={!draft}>{e.reset}</button>
-          <SaveToSite file="hero-linking" data={savePayload} />
+          <SaveToSite file="hero-linking" data={savePayload} guideId="heroLinking" texts={{ linkTexts: exportedLinkTexts(ctx.state) }} />
           <button className="button button-primary" type="button" onClick={() => setExportOpen(true)}>
             {e.export}
             {problems.length > 0 ? <span className="tier-edit-count" aria-label={tf(e.problemCount, { count: problems.length })}>{problems.length}</span> : null}

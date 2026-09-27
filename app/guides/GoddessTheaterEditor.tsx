@@ -30,6 +30,7 @@ import {
   type TheaterProblem,
   PUBLISHED_THEATER,
   fromTheaterData,
+  exportedPlayTexts,
 } from "../../lib/content/goddess-theater-editor";
 import { DEFAULT_LOCALE, LOCALES, type Dictionary, type Locale } from "../../lib/i18n";
 import { THEATER_DRAFT_STORAGE_KEY } from "../../lib/site";
@@ -166,7 +167,7 @@ export function GoddessTheaterEditor() {
           </span>
           <button className="button" type="button" onClick={add}>{e.addPlay}</button>
           <button className="button" type="button" onClick={reset} disabled={!draft}>{e.reset}</button>
-          <SaveToSite file="goddess-theater" data={savePayload} />
+          <SaveToSite file="goddess-theater" data={savePayload} guideId="goddessTheater" texts={{ playTexts: exportedPlayTexts(ctx.state) }} />
           <button className="button button-primary" type="button" onClick={() => setExportOpen(true)}>{e.export}</button>
         </div>
       </div>

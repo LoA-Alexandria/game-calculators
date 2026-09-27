@@ -33,6 +33,7 @@ import {
   updateFragment,
   type LevelingEditorState,
   type LevelingProblem,
+  exportedHeroNotes,
 } from "../../lib/content/hero-leveling-editor";
 import { HEROES, HERO_RARITIES, heroNamed, heroPortrait } from "../../lib/content/heroes";
 import { fill, type Dictionary, type Locale } from "../../lib/i18n";
@@ -466,7 +467,7 @@ export function HeroLevelingEditor() {
           >
             {e.reset}
           </button>
-          <SaveToSite file="hero-leveling" data={exported} />
+          <SaveToSite file="hero-leveling" data={exported} guideId="heroLeveling" texts={{ heroNotes: exportedHeroNotes(state) }} />
           <button className="button button-primary" type="button" onClick={() => setExportOpen(true)}>
             {e.export}
             {problems.length > 0 ? (

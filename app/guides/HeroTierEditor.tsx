@@ -51,6 +51,7 @@ import {
   type Problem,
   type TextGroup,
   type Translations,
+  textsFor,
 } from "../../lib/content/hero-tier-editor";
 import { DEFAULT_LOCALE, type Dictionary, type Locale } from "../../lib/i18n";
 import { TIER_DRAFT_STORAGE_KEY } from "../../lib/site";
@@ -269,7 +270,18 @@ export function HeroTierEditor() {
             {totalChanges > 0 ? `${totalChanges === 1 ? e.changeOne : tf(e.changes, { count: totalChanges })} · ${e.savedNote}` : e.unchanged}
           </span>
           <button className="button" type="button" onClick={reset} disabled={!draft}>{e.reset}</button>
-          <SaveToSite file="hero-tiers" data={draftData} />
+          <SaveToSite
+            file="hero-tiers"
+            data={draftData}
+            guideId="heroTierList"
+            texts={{
+              variants: textsFor(state.texts, "variants"),
+              roles: textsFor(state.texts, "roles"),
+              effects: textsFor(state.texts, "effects"),
+              resources: textsFor(state.texts, "resources"),
+              notes: textsFor(state.texts, "notes"),
+              reasons: textsFor(state.texts, "reasons"),
+            }} />
           <button className="button button-primary" type="button" onClick={() => setExportOpen(true)}>{e.export}</button>
         </div>
       </div>

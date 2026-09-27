@@ -204,3 +204,24 @@ test("stored drafts are validated before use", () => {
   delete broken.texts.en;
   assert.equal(parseLayoutDraft(JSON.stringify(broken)), null);
 });
+
+test("the builder is handed a guide's whole entry, not one of its maps", () => {
+  // What broke the editor: it was given `buildTexts` alone, and the builder
+  // reads five maps, so the page threw before it rendered. The five come from
+  // the entry together, published or built.
+  const entries = mapLocales((locale) => getDictionary(locale).guideEntries.heroLayouts);
+  const state = fromLayout(LAYOUT_DATA, entries);
+  for (const locale of ["en", "de", "fr"]) {
+    for (const map of ["buildTexts", "counterLabels", "pickNotes", "roleNames", "groupLabels"]) {
+      assert.ok(
+        Object.keys(state.texts[locale][map]).length > 0,
+        `${locale}.${map} came across empty`,
+      );
+    }
+  }
+  assert.throws(
+    () => fromLayout(LAYOUT_DATA, mapLocales((locale) => getDictionary(locale).guideEntries.heroLayouts.buildTexts)),
+    TypeError,
+    "one map alone has to fail loudly rather than build half a state",
+  );
+});

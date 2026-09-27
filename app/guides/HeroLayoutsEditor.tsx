@@ -21,7 +21,7 @@ import {
 } from "@dnd-kit/core";
 import { SortableContext, rectSortingStrategy, sortableKeyboardCoordinates, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { BUILD_ZONES, type BuildZone } from "../../lib/content/hero-layouts";
+import { BUILD_ZONES, type BuildZone, type LayoutTexts } from "../../lib/content/hero-layouts";
 import { COLLECTION_ITEMS, collectionItemById, localizedItem, type CollectionTexts } from "../../lib/content/collection";
 import { CollectionAvatar } from "../components/CollectionAvatar";
 import {
@@ -62,6 +62,7 @@ import {
   type LayoutEditorState,
   type LayoutProblem,
   type TextMap,
+  textsFor,
 } from "../../lib/content/hero-layout-editor";
 import { searchable } from "../../lib/content/hero-tiers";
 import { HERO_RARITIES, HEROES, type HeroRarity } from "../../lib/content/heroes";
@@ -75,7 +76,7 @@ import { createPersistentStore } from "../components/persistentStore";
 import { BackLink, PageHead } from "../components/Ui";
 import { CheckIcon, CloseIcon, CopyIcon, DownloadIcon, GripIcon, PlusIcon, TrashIcon } from "../components/Icons";
 import { SaveToSite } from "./SaveToSite";
-import { useGuideData, usePublishedTexts } from "./GuideOverrides";
+import { useGuideData, usePublishedEntries } from "./GuideOverrides";
 
 type GuideText = Dictionary["guideEntries"]["heroLayouts"];
 type EditorText = Dictionary["layoutEditor"];
@@ -144,7 +145,9 @@ export function HeroLayoutsEditor() {
 
   const draft = useSyncExternalStore(draftStore.subscribe, draftStore.getSnapshot, draftStore.getServerSnapshot);
   const liveData = useGuideData<Parameters<typeof fromLayout>[0]>("hero-layouts");
-  const liveTexts = usePublishedTexts("heroLayouts", "buildTexts") as Parameters<typeof fromLayout>[1];
+  // Five maps of words belong to this guide and the builder reads all of them,
+  // so the whole entry comes across rather than one field of it.
+  const liveTexts = usePublishedEntries<LayoutTexts>("heroLayouts");
   const published = useMemo(() => fromLayout(liveData, liveTexts), [liveData, liveTexts]);
   const state = draft ?? published;
   const commit = (next: LayoutEditorState) => draftStore.set(next);
@@ -286,7 +289,17 @@ export function HeroLayoutsEditor() {
             {changes > 0 ? `${changes === 1 ? e.changeOne : tf(e.changes, { count: changes })} · ${e.savedNote}` : e.unchanged}
           </span>
           <button className="button" type="button" onClick={reset} disabled={!draft}>{e.reset}</button>
-          <SaveToSite file="hero-layouts" data={savePayload} />
+          <SaveToSite
+            file="hero-layouts"
+            data={savePayload}
+            guideId="heroLayouts"
+            texts={{
+              buildTexts: textsFor(state, "buildTexts"),
+              counterLabels: textsFor(state, "counterLabels"),
+              pickNotes: textsFor(state, "pickNotes"),
+              roleNames: textsFor(state, "roleNames"),
+              groupLabels: textsFor(state, "groupLabels"),
+            }} />
           <button className="button button-primary" type="button" onClick={() => setExportOpen(true)}>{e.export}</button>
         </div>
       </div>

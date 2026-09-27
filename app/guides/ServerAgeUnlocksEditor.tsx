@@ -32,6 +32,7 @@ import {
   type EditorAgeEvent,
   type EditorAgeMilestone,
   type EventTextField,
+  exportedEventTexts,
 } from "../../lib/content/server-age-unlocks-editor";
 import { DEFAULT_LOCALE, LOCALE_CODES, fill, type Dictionary, type Locale } from "../../lib/i18n";
 import { AGE_UNLOCKS_DRAFT_STORAGE_KEY } from "../../lib/site";
@@ -479,7 +480,7 @@ export function ServerAgeUnlocksEditor() {
           >
             {e.reset}
           </button>
-          <SaveToSite file="server-age-unlocks" data={exported.data} uploads={exported.uploads} />
+          <SaveToSite file="server-age-unlocks" data={exported.data} uploads={exported.uploads} guideId="serverAgeUnlocks" texts={{ eventTexts: exportedEventTexts(state) }} />
           <button className="button button-primary" type="button" onClick={() => setExportOpen(true)}>
             {e.export}
             {problems.length > 0 ? (

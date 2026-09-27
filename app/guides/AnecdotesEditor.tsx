@@ -220,7 +220,7 @@ export function AnecdotesEditor() {
             {e.addAnecdote}
           </button>
           <button className="button" type="button" onClick={reset} disabled={!draft}>{e.reset}</button>
-          <SaveToSite file="anecdotes" data={exported.data} uploads={exported.uploads} guideId="anecdotes" textField="anecdoteTexts" texts={texts} />
+          <SaveToSite file="anecdotes" data={exported.data} uploads={exported.uploads} guideId="anecdotes" texts={{ anecdoteTexts: texts }} />
           <button className="button button-primary" type="button" onClick={() => setExportOpen(true)}>
             {e.export}
             {problems.length > 0 ? <span className="tier-edit-count" aria-label={tf(e.problemCount, { count: problems.length })}>{problems.length}</span> : null}

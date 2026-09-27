@@ -106,9 +106,10 @@ test("the names of the things a guide lists can be overridden", () => {
 test("a text tree with something other than words in it is refused", () => {
   const bad = [
     { nidhogg: { name: 42 } },
-    { nidhogg: { skills: ["a list"] } },
     { nidhogg: { skills: { one: { body: { too: { deep: "here" } } } } } },
     "a string",
+    // A list of lines is a leaf, but never a whole field: every field a guide
+    // reads is a map of entries.
     ["a list"],
   ];
   for (const payload of bad) {
@@ -263,4 +264,34 @@ test("a rename and a revert make a round trip", () => {
     {},
     "nothing is laid over the build any more, so publishing takes the row away",
   );
+});
+
+test("a list of lines is a value a build may carry", () => {
+  // Hero layouts keep pros, cons and notes as lists, so a leaf may be one.
+  const layouts = getDictionary("en").guideEntries.heroLayouts;
+  const id = Object.keys(layouts.buildTexts)[0];
+  const payload = { buildTexts: { [id]: { pros: ["One reason.", "Another."] } } };
+  const shown = applyOverride(layouts, payload);
+  assert.deepEqual(shown.buildTexts[id].pros, ["One reason.", "Another."]);
+  assert.equal(shown.buildTexts[id].name, layouts.buildTexts[id].name, "the rest of the build stays");
+  assert.deepEqual(
+    overrideWith(null, layouts, { ...layouts, buildTexts: mergeTexts(layouts.buildTexts, payload.buildTexts) }, ["buildTexts"]),
+    payload,
+    "and only the list that changed is written",
+  );
+});
+
+test("nothing may turn a line into a list, or a list into a line", () => {
+  // The renderers read a fixed shape. A payload of the wrong kind is ignored
+  // rather than handed on, so a page cannot be broken from the database.
+  const layouts = getDictionary("en").guideEntries.heroLayouts;
+  const id = Object.keys(layouts.buildTexts)[0];
+  const asLine = applyOverride(layouts, { buildTexts: { [id]: { pros: "one line" } } });
+  assert.deepEqual(asLine.buildTexts[id].pros, layouts.buildTexts[id].pros);
+  const asList = applyOverride(layouts, { buildTexts: { [id]: { name: ["a", "list"] } } });
+  assert.equal(asList.buildTexts[id].name, layouts.buildTexts[id].name);
+
+  // A key the build does not have is still allowed: an editor may add a build.
+  const added = applyOverride(layouts, { buildTexts: { newBuild: { name: "New" } } });
+  assert.equal(added.buildTexts.newBuild.name, "New");
 });

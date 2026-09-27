@@ -19,14 +19,15 @@ type Props = {
   uploads?: readonly { file: string; data: string }[];
   /** Where committed pictures for this guide live under `public/`. */
   folder?: string;
-  /**
-   * The guide whose dictionary entry holds the names, and the field they sit
-   * in — `heroTexts`, `catalogTexts` and so on. Guides with no per-entry names
-   * leave both out.
-   */
+  /** The guide whose dictionary entry holds the words this editor writes. */
   guideId?: string;
-  textField?: string;
-  texts?: Partial<Record<Locale, unknown>>;
+  /**
+   * Those words, by the field they sit in: `heroTexts`, `buildTexts`,
+   * `pickNotes` and so on, each with one catalogue per language. An editor
+   * that writes no words leaves this out; one that writes several fields names
+   * them all, because they are published together.
+   */
+  texts?: Record<string, Partial<Record<Locale, unknown>>>;
 };
 
 /**
@@ -41,7 +42,7 @@ type Props = {
  * Publishing is a separate press, and the database checks the role rather than
  * trusting the button.
  */
-export function SaveToSite({ file, data, uploads = [], folder, guideId, textField, texts }: Props) {
+export function SaveToSite({ file, data, uploads = [], folder, guideId, texts }: Props) {
   const { t } = useLocale();
   const { session, allows } = useAuth();
   const published = usePublishedOverrides(guideId);
@@ -72,18 +73,30 @@ export function SaveToSite({ file, data, uploads = [], folder, guideId, textFiel
     // A name put back to the committed one leaves an empty draft rather than
     // no draft, because publishing that is what takes the live row away.
     const drafted: Locale[] = [];
-    if (guideId && textField && texts) {
+    const fields = texts ? Object.keys(texts) : [];
+    if (guideId && fields.length > 0) {
       for (const locale of LOCALE_CODES) {
         const entry = getDictionary(locale).guideEntries as Record<string, Record<string, unknown>>;
         const base = entry[guideId];
-        if (!base || texts[locale] === undefined) continue;
+        if (!base) continue;
+        // Every field this editor writes goes into one draft, so publishing a
+        // rename cannot leave the note beside it behind.
+        const edited = { ...base };
+        const wrote: string[] = [];
+        for (const field of fields) {
+          const catalogue = texts?.[field]?.[locale];
+          if (catalogue === undefined) continue;
+          edited[field] = catalogue;
+          wrote.push(field);
+        }
+        if (wrote.length === 0) continue;
         const failed = await saveGuideDraft(
           guideId,
           locale,
           base,
-          { ...base, [textField]: texts[locale] },
+          edited,
           session.userId,
-          [textField],
+          wrote,
           published[locale],
         );
         if (failed) return stop(failed);

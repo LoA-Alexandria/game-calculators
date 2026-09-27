@@ -83,6 +83,24 @@ export function useGuideEntry<T extends object>(guideId: string, base: T): T {
 }
 
 /**
+ * A guide's whole entry in every language, as the site has it: the built entry
+ * with anything published laid over it. For an editor that reads several of a
+ * guide's fields at once — hero layouts keeps five maps of words together.
+ */
+export function usePublishedEntries<T>(guideId: string): Record<Locale, T> {
+  const { texts } = useContext(GuideOverridesContext);
+  return useMemo(
+    () =>
+      mapLocales((locale) => {
+        const entry = (getDictionary(locale).guideEntries as Record<string, object>)[guideId];
+        const override = texts.get(textKey(guideId, locale));
+        return (override ? applyOverride(entry, override) : entry) as T;
+      }),
+    [texts, guideId],
+  );
+}
+
+/**
  * One field of a guide's entry in every language, as an editor needs it: the
  * published text where there is one, the built text otherwise.
  *

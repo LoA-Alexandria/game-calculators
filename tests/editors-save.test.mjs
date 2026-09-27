@@ -18,10 +18,22 @@ function savers() {
   const out = [];
   for (const name of editors) {
     const text = source(name);
-    for (const match of text.matchAll(/<SaveToSite\s([^>]*?)\/>/gs)) {
+    for (const match of text.matchAll(/<SaveToSite\s([^<>]*?)\/>/g)) {
       const props = {};
-      for (const prop of match[1].matchAll(/(\w+)=(?:"([^"]*)"|\{([^}]*)\})/g)) {
-        props[prop[1]] = prop[2] ?? prop[3].trim();
+      // `texts={{ a: …, b: … }}` nests, so a brace is counted rather than matched.
+      for (const prop of match[1].matchAll(/(\w+)=(?:"([^"]*)"|\{)/g)) {
+        if (prop[2] !== undefined) {
+          props[prop[1]] = prop[2];
+          continue;
+        }
+        let depth = 1;
+        let at = prop.index + prop[0].length;
+        while (at < match[1].length && depth > 0) {
+          if (match[1][at] === "{") depth += 1;
+          if (match[1][at] === "}") depth -= 1;
+          at += 1;
+        }
+        props[prop[1]] = match[1].slice(prop.index + prop[0].length, at - 1).trim();
       }
       out.push({ editor: name, props });
     }
@@ -53,17 +65,52 @@ test("no two editors claim the same data file", () => {
   }
 });
 
-test("a guide named for its texts really has that field", () => {
+/** The dictionary fields an editor names in `texts={{ … }}`. */
+function textFields(props) {
+  if (!props.texts) return [];
+  const inner = props.texts.replace(/^\{|\}$/g, "");
+  const fields = [];
+  let depth = 0;
+  for (const part of inner.split(/([{}(),])/)) {
+    if (part === "{" || part === "(") depth += 1;
+    else if (part === "}" || part === ")") depth -= 1;
+    else if (depth === 0) {
+      const named = part.match(/^\s*(\w+)\s*:/);
+      if (named) fields.push(named[1]);
+    }
+  }
+  return fields;
+}
+
+test("a guide named for its texts really has those fields", () => {
   const entries = getDictionary("en").guideEntries;
   for (const { editor, props } of savers()) {
-    if (!props.guideId && !props.textField) continue;
-    assert.ok(props.guideId && props.textField && props.texts, `${editor} names texts only halfway`);
+    const fields = textFields(props);
+    if (!props.guideId && fields.length === 0) continue;
+    assert.ok(props.guideId && fields.length > 0, `${editor} names texts only halfway`);
     const entry = entries[props.guideId];
     assert.ok(entry, `${editor} names guide "${props.guideId}", which does not exist`);
-    assert.ok(props.textField in entry, `${props.guideId} has no ${props.textField}`);
+    for (const field of fields) {
+      assert.ok(field in entry, `${props.guideId} has no ${field}`);
+      assert.ok(
+        OVERRIDABLE_FIELDS.includes(field),
+        `${field} is not a field an override may carry`,
+      );
+    }
+  }
+});
+
+test("an editor that hands out dictionary blocks also publishes those words", () => {
+  // The leak this closes: thirteen editors saved their data file and nothing
+  // else, so a renamed label looked saved and never reached the page. An
+  // editor that can write words for the dictionary has to be able to publish
+  // them.
+  for (const { editor, props } of savers()) {
+    if (!source(editor).includes("DictionaryBlocks")) continue;
+    const fields = textFields(props);
     assert.ok(
-      OVERRIDABLE_FIELDS.includes(props.textField),
-      `${props.textField} is not a field an override may carry`,
+      fields.length > 0,
+      `${editor} can write dictionary text but its Save button only carries ${props.file}`,
     );
   }
 });
@@ -86,9 +133,12 @@ test("an editor that saves also starts from what is published", () => {
       text.includes("useGuideData<"),
       `${editor} saves ${props.file} but opens on the committed version`,
     );
-    // Only the editors that write per-entry names need those published too.
-    if (props.textField) {
-      assert.ok(text.includes("usePublishedTexts("), `${editor} opens on the committed names`);
+    // Only the editors that write words need those published too.
+    if (textFields(props).length > 0) {
+      assert.ok(
+        text.includes("usePublishedTexts(") || text.includes("fromLayout(") || text.includes("state.texts"),
+        `${editor} opens on the committed names`,
+      );
     }
   }
 });

@@ -28,6 +28,7 @@ import {
   setBuildingNote,
   type BuildingProblem,
   type BuildingsEditorState,
+  exportedBuildingTexts,
 } from "../../lib/content/buildings-editor";
 import { DEFAULT_LOCALE, fill, toLocale, type Dictionary, type Locale } from "../../lib/i18n";
 import { BUILDINGS_DRAFT_STORAGE_KEY } from "../../lib/site";
@@ -413,7 +414,7 @@ export function BuildingsEditor() {
           >
             {e.reset}
           </button>
-          <SaveToSite file="buildings" data={exported} />
+          <SaveToSite file="buildings" data={exported} guideId="buildings" texts={{ buildingTexts: exportedBuildingTexts(state) }} />
           <button className="button button-primary" type="button" onClick={() => setExportOpen(true)}>
             {e.export}
             {problems.length > 0 ? (

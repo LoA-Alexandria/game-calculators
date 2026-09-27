@@ -28,6 +28,7 @@ import {
   type CollectionProblem,
   type EditorImage,
   type EditorItem,
+  exportedCollectionTexts,
 } from "../../lib/content/collection-editor";
 import { COLLECTION_DATA, COLLECTION_RARITIES, collectionImageUrl, type CollectionRarity } from "../../lib/content/collection";
 import { DEFAULT_LOCALE, LOCALE_CODES, fill, type Dictionary, type Locale } from "../../lib/i18n";
@@ -195,7 +196,7 @@ export function CollectionEditor() {
             {e.addItem}
           </button>
           <button className="button" type="button" onClick={reset} disabled={!draft}>{e.reset}</button>
-          <SaveToSite file="collection" data={exported.data} uploads={exported.uploads} />
+          <SaveToSite file="collection" data={exported.data} uploads={exported.uploads} guideId="collection" texts={{ collectionTexts: exportedCollectionTexts(ctx.state) }} />
           <button className="button button-primary" type="button" onClick={() => setExportOpen(true)}>
             {e.export}
             {problems.length > 0 ? <span className="tier-edit-count" aria-label={tf(e.problemCount, { count: problems.length })}>{problems.length}</span> : null}
