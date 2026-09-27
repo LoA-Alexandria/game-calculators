@@ -2,9 +2,10 @@
 
 import { guideLayout } from "../../lib/content/guides";
 import { CRYPTID_FORMATION, CRYPTID_PRIORITY, cryptideById } from "../../lib/content/cryptid-layout";
-import { cryptideImageUrl, localizedCryptideName, type CryptideTexts } from "../../lib/content/cryptides";
+import { cryptideImageUrl, localizedCryptideName, type Cryptide, type CryptideTexts } from "../../lib/content/cryptides";
 import { fill, type Dictionary } from "../../lib/i18n";
 import { useLocale } from "../components/LocaleProvider";
+import { useGuideData, useGuideEntry } from "./GuideOverrides";
 
 type Guide = Dictionary["guideEntries"]["cryptidLayout"];
 
@@ -20,7 +21,7 @@ export function isCryptidLayoutGuide(
  * holds two, so the pictures sit in a row of their own rather than in a fixed
  * first-and-second column.
  */
-function Formation({ guide, texts }: { guide: Guide; texts: CryptideTexts }) {
+function Formation({ guide, texts, bestiary }: { guide: Guide; texts: CryptideTexts; bestiary: readonly Cryptide[] }) {
   return (
     <ol className="cryptid-formation">
       {CRYPTID_FORMATION.map((group) => (
@@ -30,7 +31,7 @@ function Formation({ guide, texts }: { guide: Guide; texts: CryptideTexts }) {
           </span>
           <div className="cryptid-formation-who">
             {group.cryptides.map((id) => {
-              const cryptide = cryptideById(id);
+              const cryptide = cryptideById(id, bestiary);
               if (!cryptide) return null;
               return (
                 <span className="cryptid-formation-one" key={id}>
@@ -60,7 +61,7 @@ function Formation({ guide, texts }: { guide: Guide; texts: CryptideTexts }) {
  * Cryptides it is about and the rarity it pushes them to. The second step is
  * an order rather than a set, so its pictures are numbered as well.
  */
-function Priority({ guide, texts }: { guide: Guide; texts: CryptideTexts }) {
+function Priority({ guide, texts, bestiary }: { guide: Guide; texts: CryptideTexts; bestiary: readonly Cryptide[] }) {
   return (
     <ol className="cryptid-path">
       {CRYPTID_PRIORITY.map((step) => (
@@ -73,7 +74,7 @@ function Priority({ guide, texts }: { guide: Guide; texts: CryptideTexts }) {
           </p>
           <ul className="cryptid-path-who">
             {step.cryptides.map((id, index) => {
-              const cryptide = cryptideById(id);
+              const cryptide = cryptideById(id, bestiary);
               if (!cryptide) return null;
               return (
                 <li key={id}>
@@ -94,9 +95,12 @@ function Priority({ guide, texts }: { guide: Guide; texts: CryptideTexts }) {
 
 export function CryptidLayoutGuide({ guide }: { guide: Guide }) {
   const { t } = useLocale();
-  // Names come from the Cryptides guide, so a Cryptide is called the same on
-  // both pages, in the reader's language.
-  const texts = t.guideEntries.cryptides.cryptideTexts as CryptideTexts;
+  // Both the names and the bestiary come from the Cryptides guide, and both
+  // have to arrive through its overrides — otherwise this page and that one
+  // disagree about what a Cryptide is called.
+  const cryptides = useGuideEntry("cryptides", t.guideEntries.cryptides);
+  const texts = cryptides.cryptideTexts as CryptideTexts;
+  const bestiary = useGuideData<{ cryptides: Cryptide[] }>("cryptides").cryptides;
 
   return (
     <div className="guide-wide cryptid-layout-guide">
@@ -104,12 +108,12 @@ export function CryptidLayoutGuide({ guide }: { guide: Guide }) {
 
       <h2>{guide.formationHeading}</h2>
       <p className="guide-lede">{guide.formationLede}</p>
-      <Formation guide={guide} texts={texts} />
+      <Formation guide={guide} texts={texts} bestiary={bestiary} />
       <p className="callout">{guide.formationSwap}</p>
 
       <h2>{guide.priorityHeading}</h2>
       <p className="guide-lede">{guide.priorityLede}</p>
-      <Priority guide={guide} texts={texts} />
+      <Priority guide={guide} texts={texts} bestiary={bestiary} />
 
       {guide.sections.map((section) => (
         <section key={section.heading}>

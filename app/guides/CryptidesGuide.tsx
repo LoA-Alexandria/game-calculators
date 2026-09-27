@@ -13,7 +13,7 @@ import {
   type Cryptide,
 } from "../../lib/content/cryptides";
 import { fill, type Dictionary } from "../../lib/i18n";
-import { useGuideData } from "./useGuideData";
+import { useGuideData } from "./GuideOverrides";
 
 type Guide = Dictionary["guideEntries"]["cryptides"];
 

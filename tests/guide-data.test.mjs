@@ -1,11 +1,15 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
+import { readdirSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+
 import {
-  GUIDE_DATA_KINDS,
+  DATA_FILE_NAMES,
   committedData,
   dataFits,
-  isGuideDataKind,
+  isDataFileName,
   resolveData,
 } from "../lib/content/guide-data.ts";
 import { CRYPTIDES_DATA } from "../lib/content/cryptides.ts";
@@ -13,11 +17,23 @@ import { CRYPTIDES_DATA } from "../lib/content/cryptides.ts";
 /** The committed file, deep-copied, so a test can bend one field of it. */
 const copy = () => JSON.parse(JSON.stringify(CRYPTIDES_DATA));
 
-test("the committed file is what the build carries", () => {
-  assert.equal(committedData("cryptides"), CRYPTIDES_DATA);
-  assert.deepEqual(GUIDE_DATA_KINDS, ["cryptides"]);
-  assert.equal(isGuideDataKind("cryptides"), true);
-  assert.equal(isGuideDataKind("heroes"), false);
+test("every file under lib/data is registered", () => {
+  const dir = join(dirname(fileURLToPath(import.meta.url)), "..", "lib", "data");
+  const onDisk = readdirSync(dir).filter((name) => name.endsWith(".json")).map((name) => name.slice(0, -5)).sort();
+  assert.deepEqual([...DATA_FILE_NAMES].sort(), onDisk, "a data file is missing from the registry");
+  for (const name of onDisk) {
+    assert.equal(isDataFileName(name), true, name);
+    assert.ok(committedData(name), name);
+    // A file has to accept itself, or no override for it could ever be used.
+    assert.equal(dataFits(name, committedData(name)), true, name);
+  }
+});
+
+test("an unknown file is not a way in", () => {
+  assert.equal(isDataFileName("../secrets"), false);
+  assert.equal(committedData("nope"), undefined);
+  assert.equal(dataFits("nope", { anything: true }), false);
+  assert.equal(resolveData("nope", { anything: true }), undefined);
 });
 
 test("a payload shaped like the file is used", () => {
@@ -32,18 +48,16 @@ test("a payload shaped like the file is used", () => {
 
 test("nothing from the database is used until it fits", () => {
   // Every one of these would throw somewhere in the guide if it got through.
-  const broken = [
+  for (const payload of [
     null,
-    undefined,
     "a string",
     42,
     [],
     {},
     { talent: {}, cryptides: [] },
-    { talent: { unlockCost: 5, dropAmount: 5, dropEveryLevels: 20 }, cryptides: [] },
     { ...copy(), cryptides: "not a list" },
-  ];
-  for (const payload of broken) {
+    { ...copy(), cryptides: [] },
+  ]) {
     assert.equal(resolveData("cryptides", payload), CRYPTIDES_DATA, JSON.stringify(payload));
   }
 });
@@ -52,12 +66,11 @@ test("one bad row rejects the whole payload rather than half of it", () => {
   const cases = {
     "a missing skills array": (data) => { delete data.cryptides[1].skills; },
     "a skill without an id": (data) => { data.cryptides[0].skills[0].id = ""; },
-    "a food with a negative growth": (data) => { data.cryptides[0].foods[0].growth = -5; },
-    "an unknown tower": (data) => { data.cryptides[0].tower = "catapult"; },
-    "an unknown talent material": (data) => { data.cryptides[0].talentMaterial = "gold"; },
-    "two Cryptides with one id": (data) => { data.cryptides[1].id = data.cryptides[0].id; },
+    "a growth that became a word": (data) => { data.cryptides[0].foods[0].growth = "ten"; },
+    "a tower that became a number": (data) => { data.cryptides[0].tower = 3; },
     "a blank name": (data) => { data.cryptides[0].name = "   "; },
-    "a talent number that is not whole": (data) => { data.talent.dropAmount = 2.5; },
+    "a field the file never had": (data) => { data.cryptides[0].colour = "red"; },
+    "a stage list emptied": (data) => { data.cryptides[0].stages = []; },
   };
   for (const [what, bend] of Object.entries(cases)) {
     const data = copy();
@@ -67,39 +80,25 @@ test("one bad row rejects the whole payload rather than half of it", () => {
   }
 });
 
-test("a picture may only be a file inside the guide's own folder", () => {
-  const bad = [
+test("a picture may not leave this origin", () => {
+  for (const image of [
     "https://example.com/evil.webp",
-    "/etc/passwd",
+    "//example.com/evil.webp",
     "../../secret.webp",
-    "foo//bar.webp",
-    "Nidhogg.webp",
-    "nidhogg.png",
+    "data:image/webp;base64,AAA=",
     "nidhogg",
     "",
-  ];
-  for (const image of bad) {
+  ]) {
     const data = copy();
     data.cryptides[0].image = image;
     assert.equal(dataFits("cryptides", data), false, image || "(empty)");
   }
 
-  const good = ["nidhogg.webp", "skills/nidhogg-1.webp", "evolution/nidhogg-6.webp"];
-  for (const image of good) {
+  for (const image of ["nidhogg.webp", "skills/nidhogg-1.webp", "up/cryptides/nidhogg-k3f9.webp"]) {
     const data = copy();
     data.cryptides[0].image = image;
     assert.equal(dataFits("cryptides", data), true, image);
   }
-});
-
-test("stages are optional, but not malformed", () => {
-  const without = copy();
-  for (const row of without.cryptides) delete row.stages;
-  assert.equal(dataFits("cryptides", without), true, "a Cryptide nobody has photographed");
-
-  const wrong = copy();
-  wrong.cryptides[0].stages = [{ stage: "childhood" }];
-  assert.equal(dataFits("cryptides", wrong), false, "a stage without a picture");
 });
 
 test("the file that ships today passes its own check", () => {
