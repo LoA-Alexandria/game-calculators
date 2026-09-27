@@ -21,7 +21,7 @@ import {
 } from "@dnd-kit/core";
 import { SortableContext, rectSortingStrategy, sortableKeyboardCoordinates, useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { BUILD_ZONES, LAYOUT_DATA, layoutTexts, type BuildZone } from "../../lib/content/hero-layouts";
+import { BUILD_ZONES, type BuildZone } from "../../lib/content/hero-layouts";
 import { COLLECTION_ITEMS, collectionItemById, localizedItem, type CollectionTexts } from "../../lib/content/collection";
 import { CollectionAvatar } from "../components/CollectionAvatar";
 import {
@@ -66,7 +66,7 @@ import {
 import { searchable } from "../../lib/content/hero-tiers";
 import { HERO_RARITIES, HEROES, type HeroRarity } from "../../lib/content/heroes";
 import { siteName } from "../../lib/content/hero-names";
-import { getDictionary, mapLocales, type Dictionary, type Locale } from "../../lib/i18n";
+import { getDictionary, type Dictionary, type Locale } from "../../lib/i18n";
 import { NewTextForm, AllLanguagesToggle, DictionaryBlocks, TranslatedField, useEditorLanguages } from "../components/EditorLanguages";
 import { LAYOUT_DRAFT_STORAGE_KEY } from "../../lib/site";
 import { HeroAvatar } from "../components/HeroAvatar";
@@ -75,11 +75,11 @@ import { createPersistentStore } from "../components/persistentStore";
 import { BackLink, PageHead } from "../components/Ui";
 import { CheckIcon, CloseIcon, CopyIcon, DownloadIcon, GripIcon, PlusIcon, TrashIcon } from "../components/Icons";
 import { SaveToSite } from "./SaveToSite";
+import { useGuideData, usePublishedTexts } from "./GuideOverrides";
 
 type GuideText = Dictionary["guideEntries"]["heroLayouts"];
 type EditorText = Dictionary["layoutEditor"];
 
-const PUBLISHED = fromLayout(LAYOUT_DATA, mapLocales((locale) => layoutTexts(getDictionary(locale).guideEntries.heroLayouts)));
 
 const draftStore = createPersistentStore<LayoutEditorState | null>({
   key: LAYOUT_DRAFT_STORAGE_KEY,
@@ -143,7 +143,10 @@ export function HeroLayoutsEditor() {
   const { language, languages } = useEditorLanguages();
 
   const draft = useSyncExternalStore(draftStore.subscribe, draftStore.getSnapshot, draftStore.getServerSnapshot);
-  const state = draft ?? PUBLISHED;
+  const liveData = useGuideData<Parameters<typeof fromLayout>[0]>("hero-layouts");
+  const liveTexts = usePublishedTexts("heroLayouts", "buildTexts") as Parameters<typeof fromLayout>[1];
+  const published = useMemo(() => fromLayout(liveData, liveTexts), [liveData, liveTexts]);
+  const state = draft ?? published;
   const commit = (next: LayoutEditorState) => draftStore.set(next);
 
   const [chosenBuild, setChosenBuild] = useState<string | null>(null);
@@ -157,7 +160,7 @@ export function HeroLayoutsEditor() {
 
   const view = dragState ?? state;
   const active = view.builds.find((build) => build.id === chosenBuild) ?? view.builds[0];
-  const changes = useMemo(() => countLayoutChanges(PUBLISHED, state), [state]);
+  const changes = useMemo(() => countLayoutChanges(published, state), [state, published]);
 
   const zoneLabel = (zoneId: string) => {
     const [kind, first, second, third] = zoneId.split("|");

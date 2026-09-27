@@ -3,6 +3,7 @@
 import { useId, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import {
   PUBLISHED_LAYOUTS,
+  fromLayoutsData,
   addNote,
   addSetup,
   countLayoutChanges,
@@ -45,12 +46,12 @@ import { useLocale } from "../components/LocaleProvider";
 import { createPersistentStore } from "../components/persistentStore";
 import { BackLink, PageHead } from "../components/Ui";
 import { SaveToSite } from "./SaveToSite";
+import { useGuideData, usePublishedTexts } from "./GuideOverrides";
 
 type EditorText = Dictionary["collectionLayoutsEditor"];
 type Tf = (template: string, values: Record<string, string | number>) => string;
 type Selection = { kind: "setup" | "option"; uid: string } | null;
 
-const PUBLISHED = PUBLISHED_LAYOUTS;
 const PUBLISHED_BLOCKS = layoutTextBlocks(PUBLISHED_LAYOUTS);
 
 const draftStore = createPersistentStore<LayoutsEditorState | null>({
@@ -102,14 +103,21 @@ export function CollectionLayoutsEditor() {
   const { languages } = useEditorLanguages({ withDefault: true });
 
   const draft = useSyncExternalStore(draftStore.subscribe, draftStore.getSnapshot, draftStore.getServerSnapshot);
-  const state = draft ?? PUBLISHED;
+  const liveData = useGuideData<Parameters<typeof fromLayoutsData>[0]>("collection-layouts");
+  const liveSetups = usePublishedTexts("collectionLayouts", "setupTexts") as Parameters<typeof fromLayoutsData>[1];
+  const liveOptions = usePublishedTexts("collectionLayouts", "optionTexts") as Parameters<typeof fromLayoutsData>[2];
+  const published = useMemo(
+    () => fromLayoutsData(liveData, liveSetups, liveOptions),
+    [liveData, liveSetups, liveOptions],
+  );
+  const state = draft ?? published;
   const commit = (next: LayoutsEditorState) => draftStore.set(next);
   const [selected, setSelected] = useState<Selection>(null);
   const [exportOpen, setExportOpen] = useState(false);
   const savePayload = useMemo(() => exportLayouts(state), [state]);
 
   const ctx: Ctx = { state, commit, e, guide, names, tf, languages };
-  const changes = useMemo(() => countLayoutChanges(PUBLISHED, state), [state]);
+  const changes = useMemo(() => countLayoutChanges(published, state), [state, published]);
   const problems = useMemo(() => findLayoutProblems(state), [state]);
   const ids = useMemo(() => exportIds(state), [state]);
 

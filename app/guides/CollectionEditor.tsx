@@ -5,6 +5,7 @@ import {
   COLLECTION_ICON_MAX_EDGE,
   COLLECTION_IMAGE_MAX_EDGE,
   PUBLISHED_COLLECTION,
+  fromCollectionData,
   addItem,
   collectionTextBlocks,
   countCollectionChanges,
@@ -37,6 +38,7 @@ import { useLocale } from "../components/LocaleProvider";
 import { createPersistentStore } from "../components/persistentStore";
 import { BackLink, PageHead } from "../components/Ui";
 import { SaveToSite } from "./SaveToSite";
+import { useGuideData, usePublishedTexts } from "./GuideOverrides";
 
 type EditorText = Dictionary["collectionEditor"];
 type Tf = (template: string, values: Record<string, string | number>) => string;
@@ -112,7 +114,12 @@ export function CollectionEditor() {
   const { languages } = useEditorLanguages({ withDefault: true });
 
   const draft = useSyncExternalStore(draftStore.subscribe, draftStore.getSnapshot, draftStore.getServerSnapshot);
-  const state = draft ?? PUBLISHED;
+  const liveData = useGuideData<Parameters<typeof fromCollectionData>[0]>("collection");
+  const liveTexts = usePublishedTexts("collection", "collectionTexts") as Parameters<
+    typeof fromCollectionData
+  >[1];
+  const published = useMemo(() => fromCollectionData(liveData, liveTexts), [liveData, liveTexts]);
+  const state = draft ?? published;
   const commit = (next: CollectionEditorState) => draftStore.set(next);
 
   const [rarity, setFilter] = useState<CollectionRarity | "all">("all");
@@ -121,8 +128,8 @@ export function CollectionEditor() {
   const [exportOpen, setExportOpen] = useState(false);
 
   const ctx: Ctx = { state, commit, e, tf, languages };
-  const exported = useMemo(() => exportCollection(state, COLLECTION_DATA), [state]);
-  const changes = useMemo(() => countCollectionChanges(PUBLISHED, state), [state]);
+  const exported = useMemo(() => exportCollection(state, liveData), [state, liveData]);
+  const changes = useMemo(() => countCollectionChanges(published, state), [state, published]);
   const problems = useMemo(() => findCollectionProblems(state), [state]);
   const ids = useMemo(() => exportIds(state), [state]);
 

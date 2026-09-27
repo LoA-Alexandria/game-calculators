@@ -21,7 +21,7 @@ import {
   textBlocks,
   unusedHeroes,
   updateLink,
-  PUBLISHED_LINKING,
+  fromLinkingData,
   type LinkList,
   type LinkingEditorState,
   type LinkingProblem,
@@ -36,6 +36,7 @@ import { useLocale } from "../components/LocaleProvider";
 import { createPersistentStore } from "../components/persistentStore";
 import { BackLink, PageHead } from "../components/Ui";
 import { SaveToSite } from "./SaveToSite";
+import { useGuideData, usePublishedTexts } from "./GuideOverrides";
 
 type EditorText = Dictionary["linkingEditor"];
 type Tf = (template: string, values: Record<string, string | number>) => string;
@@ -138,14 +139,19 @@ export function HeroLinkingEditor() {
   const { languages } = useEditorLanguages({ withDefault: true });
 
   const draft = useSyncExternalStore(draftStore.subscribe, draftStore.getSnapshot, draftStore.getServerSnapshot);
-  const state = draft ?? PUBLISHED_LINKING;
+  const liveData = useGuideData<Parameters<typeof fromLinkingData>[0]>("hero-linking");
+  const liveTexts = usePublishedTexts("heroLinking", "linkTexts") as Parameters<
+    typeof fromLinkingData
+  >[1];
+  const published = useMemo(() => fromLinkingData(liveData, liveTexts), [liveData, liveTexts]);
+  const state = draft ?? published;
   const commit = (next: LinkingEditorState) => draftStore.set(next);
 
   const [exportOpen, setExportOpen] = useState(false);
   const savePayload = useMemo(() => exportLinking(state), [state]);
   const ctx: Ctx = { state, commit, e, tf, languages, sources: t.guideEntries.heroLinking.sources };
 
-  const changes = useMemo(() => countLinkingChanges(PUBLISHED_LINKING, state), [state]);
+  const changes = useMemo(() => countLinkingChanges(published, state), [state, published]);
   const problems = useMemo(() => findLinkingProblems(state), [state]);
 
   const reset = () => {

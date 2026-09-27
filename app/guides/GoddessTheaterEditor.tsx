@@ -29,8 +29,8 @@ import {
   type TheaterEditorState,
   type TheaterProblem,
   PUBLISHED_THEATER,
+  fromTheaterData,
 } from "../../lib/content/goddess-theater-editor";
-import { THEATER_DATA } from "../../lib/content/goddess-theater";
 import { DEFAULT_LOCALE, LOCALES, type Dictionary, type Locale } from "../../lib/i18n";
 import { THEATER_DRAFT_STORAGE_KEY } from "../../lib/site";
 import { HeroPortrait } from "../components/HeroPortrait";
@@ -40,6 +40,7 @@ import { createPersistentStore } from "../components/persistentStore";
 import { BackLink, PageHead } from "../components/Ui";
 import { CheckIcon, CloseIcon, CopyIcon, DownloadIcon, TrashIcon, UploadIcon } from "../components/Icons";
 import { SaveToSite } from "./SaveToSite";
+import { useGuideData, usePublishedTexts } from "./GuideOverrides";
 
 type EditorText = Dictionary["theaterEditor"];
 
@@ -92,6 +93,8 @@ function download(href: string, name: string) {
 
 type Ctx = {
   state: TheaterEditorState;
+  /** The data the site has, which the export compares against. */
+  liveData: Parameters<typeof fromTheaterData>[0];
   commit: (next: TheaterEditorState) => void;
   e: EditorText;
   tf: (template: string, values: Record<string, string | number>) => string;
@@ -106,16 +109,21 @@ export function GoddessTheaterEditor() {
   const { language, languages } = useEditorLanguages({ withDefault: true });
 
   const draft = useSyncExternalStore(draftStore.subscribe, draftStore.getSnapshot, draftStore.getServerSnapshot);
-  const state = draft ?? PUBLISHED_THEATER;
+  const liveData = useGuideData<Parameters<typeof fromTheaterData>[0]>("goddess-theater");
+  const liveTexts = usePublishedTexts("goddessTheater", "playTexts") as Parameters<
+    typeof fromTheaterData
+  >[1];
+  const published = useMemo(() => fromTheaterData(liveData, liveTexts), [liveData, liveTexts]);
+  const state = draft ?? published;
   const commit = (next: TheaterEditorState) => draftStore.set(next);
-  const ctx: Ctx = { state, commit, e, tf, language, languages };
+  const ctx: Ctx = { state, liveData, commit, e, tf, language, languages };
 
   const [playUid, setPlayUid] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [exportOpen, setExportOpen] = useState(false);
-  const savePayload = useMemo(() => exportTheater(state, THEATER_DATA).data, [state]);
+  const savePayload = useMemo(() => exportTheater(state, liveData).data, [state, liveData]);
 
-  const changes = useMemo(() => countTheaterChanges(PUBLISHED_THEATER, state), [state]);
+  const changes = useMemo(() => countTheaterChanges(published, state), [state, published]);
   const needle = query.trim().toLowerCase();
   const visible = needle
     ? state.plays.filter((play) => {
@@ -434,7 +442,7 @@ function ExportDialog({ ctx, onClose }: { ctx: Ctx; onClose: () => void }) {
   const id = useId();
   const dialog = useRef<HTMLDialogElement>(null);
   const [copied, setCopied] = useState("");
-  const result = useMemo(() => exportTheater(ctx.state, THEATER_DATA), [ctx.state]);
+  const result = useMemo(() => exportTheater(ctx.state, ctx.liveData), [ctx.state, ctx.liveData]);
   const json = useMemo(() => serializeTheaterData(result.data), [result]);
   const blocks = useMemo(() => textBlocks(ctx.state), [ctx.state]);
   const problems = useMemo(() => findProblems(ctx.state), [ctx.state]);

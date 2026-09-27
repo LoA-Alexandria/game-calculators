@@ -12,7 +12,7 @@ import {
   type ProductionTag,
 } from "../../lib/content/buildings";
 import {
-  PUBLISHED_BUILDINGS,
+  fromBuildingsData,
   addBuilding,
   buildingByUid,
   buildingTextBlocks,
@@ -37,6 +37,7 @@ import { useLocale } from "../components/LocaleProvider";
 import { createPersistentStore } from "../components/persistentStore";
 import { BackLink, PageHead } from "../components/Ui";
 import { SaveToSite } from "./SaveToSite";
+import { useGuideData, usePublishedTexts } from "./GuideOverrides";
 
 type EditorText = Dictionary["buildingsEditor"];
 type Guide = Dictionary["guideEntries"]["buildings"];
@@ -359,12 +360,17 @@ export function BuildingsEditor() {
   const { languages } = useEditorLanguages({ withDefault: true });
   const uiLocale = toLocale(locale);
   const draft = useSyncExternalStore(draftStore.subscribe, draftStore.getSnapshot, draftStore.getServerSnapshot);
-  const state = draft ?? PUBLISHED_BUILDINGS;
+  const liveData = useGuideData<Parameters<typeof fromBuildingsData>[0]>("buildings");
+  const liveTexts = usePublishedTexts("buildings", "buildingTexts") as Parameters<
+    typeof fromBuildingsData
+  >[1];
+  const published = useMemo(() => fromBuildingsData(liveData, liveTexts), [liveData, liveTexts]);
+  const state = draft ?? published;
   const commit = (next: BuildingsEditorState) => draftStore.set(next);
   const [selected, setSelected] = useState<string | null>(state.buildings[0]?.uid ?? null);
   const [exportOpen, setExportOpen] = useState(false);
   const exported = useMemo(() => exportBuildings(state), [state]);
-  const changes = useMemo(() => countBuildingChanges(PUBLISHED_BUILDINGS, state), [state]);
+  const changes = useMemo(() => countBuildingChanges(published, state), [state, published]);
   const problems = useMemo(() => findBuildingProblems(state), [state]);
   const active = selected && buildingByUid(state, selected) ? selected : (state.buildings[0]?.uid ?? null);
   const ctx: Ctx = { state, commit, e, guide, tf, languages };

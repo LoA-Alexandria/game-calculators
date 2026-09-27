@@ -3,6 +3,7 @@
 import { useId, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import {
   PUBLISHED_MUSEION,
+  fromMuseionData,
   addBuilding,
   addHero,
   buildingByUid,
@@ -33,6 +34,7 @@ import { createPersistentStore } from "../components/persistentStore";
 import { BackLink, PageHead } from "../components/Ui";
 import { MUSEION_STATS, type MuseionStat } from "../../lib/content/museion";
 import { SaveToSite } from "./SaveToSite";
+import { useGuideData, usePublishedTexts } from "./GuideOverrides";
 
 type EditorText = Dictionary["museionEditor"];
 type Tf = (template: string, values: Record<string, string | number>) => string;
@@ -327,13 +329,18 @@ export function MuseionEditor() {
   const uiLocale = toLocale(locale);
 
   const draft = useSyncExternalStore(draftStore.subscribe, draftStore.getSnapshot, draftStore.getServerSnapshot);
-  const state = draft ?? PUBLISHED_MUSEION;
+  const liveData = useGuideData<Parameters<typeof fromMuseionData>[0]>("museion");
+  const liveTexts = usePublishedTexts("museion", "buildingTexts") as Parameters<
+    typeof fromMuseionData
+  >[1];
+  const published = useMemo(() => fromMuseionData(liveData, liveTexts), [liveData, liveTexts]);
+  const state = draft ?? published;
   const commit = (next: MuseionEditorState) => draftStore.set(next);
 
   const [selected, setSelected] = useState<string | null>(state.buildings[0]?.uid ?? null);
   const [exportOpen, setExportOpen] = useState(false);
   const result = useMemo(() => exportMuseion(state), [state]);
-  const changes = useMemo(() => countMuseionChanges(PUBLISHED_MUSEION, state), [state]);
+  const changes = useMemo(() => countMuseionChanges(published, state), [state, published]);
   const problems = useMemo(() => findMuseionProblems(state), [state]);
   const active = selected && buildingByUid(state, selected) ? selected : state.buildings[0]?.uid ?? null;
   const ctx: Ctx = { state, commit, e, tf, languages, statLabels: guide.stats };

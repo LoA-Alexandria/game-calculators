@@ -38,6 +38,7 @@ import { createPersistentStore } from "../components/persistentStore";
 import { BackLink, PageHead } from "../components/Ui";
 import { CheckIcon, CloseIcon, CopyIcon, DownloadIcon, TrashIcon } from "../components/Icons";
 import { SaveToSite } from "./SaveToSite";
+import { useGuideData } from "./GuideOverrides";
 
 type Guide = Dictionary["guideEntries"]["artworkLayouts"];
 type EditorText = Dictionary["artworkLayoutEditor"];
@@ -84,7 +85,9 @@ export function ArtworkLayoutEditor() {
   const { language, languages } = useEditorLanguages();
 
   const draft = useSyncExternalStore(draftStore.subscribe, draftStore.getSnapshot, draftStore.getServerSnapshot);
-  const state = draft ?? PUBLISHED;
+  const liveData = useGuideData<Parameters<typeof fromLayoutData>[0]>("artwork-layouts");
+  const published = useMemo(() => fromLayoutData(liveData), [liveData]);
+  const state = draft ?? published;
   const commit = (next: EditorState) => draftStore.set(next);
 
   const [buildId, setBuildId] = useState(state.builds[0]?.id ?? "");
@@ -110,7 +113,7 @@ export function ArtworkLayoutEditor() {
   const reset = () => {
     if (!window.confirm(e.resetConfirm)) return;
     draftStore.clear();
-    setBuildId(PUBLISHED.builds[0]?.id ?? "");
+    setBuildId(published.builds[0]?.id ?? "");
   };
 
   const removeActive = () => {

@@ -12,6 +12,7 @@ import {
 import {
   ANECDOTE_IMAGE_MAX_EDGE,
   PUBLISHED_ANECDOTES,
+  fromAnecdoteData,
   addAnecdote,
   addStep,
   addSubstep,
@@ -52,6 +53,7 @@ import { createPersistentStore } from "../components/persistentStore";
 import { BackLink, PageHead } from "../components/Ui";
 import { AnecdoteCard } from "./AnecdotesGuide";
 import { SaveToSite } from "./SaveToSite";
+import { useGuideData, usePublishedTexts } from "./GuideOverrides";
 
 type EditorText = Dictionary["anecdoteEditor"];
 type Tf = (template: string, values: Record<string, string | number>) => string;
@@ -130,7 +132,12 @@ export function AnecdotesEditor() {
   const { language, languages } = useEditorLanguages({ withDefault: true });
 
   const draft = useSyncExternalStore(draftStore.subscribe, draftStore.getSnapshot, draftStore.getServerSnapshot);
-  const state = draft ?? PUBLISHED_ANECDOTES;
+  const liveData = useGuideData<Parameters<typeof fromAnecdoteData>[0]>("anecdotes");
+  const liveTexts = usePublishedTexts("anecdotes", "anecdoteTexts") as Parameters<
+    typeof fromAnecdoteData
+  >[1];
+  const published = useMemo(() => fromAnecdoteData(liveData, liveTexts), [liveData, liveTexts]);
+  const state = draft ?? published;
   const commit = (next: AnecdoteEditorState) => draftStore.set(next);
 
   const [group, setGroupFilter] = useState<AnecdoteGroup | "all">("all");
@@ -138,9 +145,9 @@ export function AnecdotesEditor() {
   const [selected, setSelected] = useState<string | null>(null);
   const [exportOpen, setExportOpen] = useState(false);
 
-  const exported = useMemo(() => exportAnecdotes(state, ANECDOTE_DATA), [state]);
+  const exported = useMemo(() => exportAnecdotes(state, liveData), [state, liveData]);
   const texts = useMemo(() => exportedAnecdoteTexts(state), [state]);
-  const changes = useMemo(() => countAnecdoteChanges(PUBLISHED_ANECDOTES, state), [state]);
+  const changes = useMemo(() => countAnecdoteChanges(published, state), [state, published]);
   const problems = useMemo(() => findAnecdoteProblems(state), [state]);
   const ctx: Ctx = { state, commit, t, e, tf, language, languages, exported };
 

@@ -10,7 +10,7 @@ import {
   type LevelingBuildId,
 } from "../../lib/content/hero-leveling";
 import {
-  PUBLISHED_LEVELING,
+  fromLevelingData,
   addFocusHero,
   addFragment,
   buildOf,
@@ -44,6 +44,7 @@ import { useLocale } from "../components/LocaleProvider";
 import { createPersistentStore } from "../components/persistentStore";
 import { BackLink, PageHead } from "../components/Ui";
 import { SaveToSite } from "./SaveToSite";
+import { useGuideData, usePublishedTexts } from "./GuideOverrides";
 
 type EditorText = Dictionary["levelingEditor"];
 type Guide = Dictionary["guideEntries"]["heroLeveling"];
@@ -418,12 +419,17 @@ export function HeroLevelingEditor() {
   const guide = t.guideEntries.heroLeveling;
   const { languages } = useEditorLanguages({ withDefault: true });
   const draft = useSyncExternalStore(draftStore.subscribe, draftStore.getSnapshot, draftStore.getServerSnapshot);
-  const state = draft ?? PUBLISHED_LEVELING;
+  const liveData = useGuideData<Parameters<typeof fromLevelingData>[0]>("hero-leveling");
+  const liveTexts = usePublishedTexts(undefined, undefined) as Parameters<
+    typeof fromLevelingData
+  >[1];
+  const published = useMemo(() => fromLevelingData(liveData, liveTexts), [liveData, liveTexts]);
+  const state = draft ?? published;
   const commit = (next: LevelingEditorState) => draftStore.set(next);
   const [selected, setSelected] = useState<LevelingBuildId>(state.defaultBuild);
   const [exportOpen, setExportOpen] = useState(false);
   const exported = useMemo(() => exportLeveling(state), [state]);
-  const changes = useMemo(() => countLevelingChanges(PUBLISHED_LEVELING, state), [state]);
+  const changes = useMemo(() => countLevelingChanges(published, state), [state, published]);
   const problems = useMemo(() => findLevelingProblems(state), [state]);
   const buildNames = useMemo(() => {
     const names = {} as Record<LevelingBuildId, string>;
@@ -454,7 +460,7 @@ export function HeroLevelingEditor() {
             onClick={() => {
               if (window.confirm(e.resetConfirm)) {
                 draftStore.clear();
-                setSelected(PUBLISHED_LEVELING.defaultBuild);
+                setSelected(published.defaultBuild);
               }
             }}
           >
