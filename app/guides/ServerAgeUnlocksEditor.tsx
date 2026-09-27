@@ -1,10 +1,11 @@
 "use client";
 
 import { useId, useMemo, useRef, useState, useSyncExternalStore, type DragEvent } from "react";
-import { AGE_UNLOCKS_DATA, eventImageUrl } from "../../lib/content/server-age-unlocks";
+import { eventImageUrl } from "../../lib/content/server-age-unlocks";
 import {
   AGE_UNLOCK_IMAGE_MAX_EDGE,
   PUBLISHED_AGE_UNLOCKS,
+  fromAgeUnlocksData,
   addEvent,
   addMilestone,
   countAgeUnlockChanges,
@@ -40,6 +41,7 @@ import { useLocale } from "../components/LocaleProvider";
 import { createPersistentStore } from "../components/persistentStore";
 import { BackLink, PageHead } from "../components/Ui";
 import { SaveToSite } from "./SaveToSite";
+import { useGuideData, usePublishedTexts } from "./GuideOverrides";
 
 type EditorText = Dictionary["ageUnlocksEditor"];
 type Tf = (template: string, values: Record<string, string | number>) => string;
@@ -430,7 +432,12 @@ export function ServerAgeUnlocksEditor() {
   const { languages } = useEditorLanguages({ withDefault: true });
 
   const draft = useSyncExternalStore(draftStore.subscribe, draftStore.getSnapshot, draftStore.getServerSnapshot);
-  const state = draft ?? PUBLISHED_AGE_UNLOCKS;
+  const liveData = useGuideData<Parameters<typeof fromAgeUnlocksData>[0]>("server-age-unlocks");
+  const liveTexts = usePublishedTexts("serverAgeUnlocks", "eventTexts") as Parameters<
+    typeof fromAgeUnlocksData
+  >[1];
+  const published = useMemo(() => fromAgeUnlocksData(liveData, liveTexts), [liveData, liveTexts]);
+  const state = draft ?? published;
   const commit = (next: AgeUnlocksEditorState) => {
     try {
       draftStore.set(next);
@@ -440,8 +447,8 @@ export function ServerAgeUnlocksEditor() {
   };
 
   const [exportOpen, setExportOpen] = useState(false);
-  const exported = useMemo(() => exportAgeUnlocks(state, AGE_UNLOCKS_DATA), [state]);
-  const changes = useMemo(() => countAgeUnlockChanges(PUBLISHED_AGE_UNLOCKS, state), [state]);
+  const exported = useMemo(() => exportAgeUnlocks(state, liveData), [state, liveData]);
+  const changes = useMemo(() => countAgeUnlockChanges(published, state), [state, published]);
   const problems = useMemo(() => findAgeUnlockProblems(state), [state]);
   const guideTitles = useMemo(
     () => Object.fromEntries(Object.entries(t.guideEntries).map(([key, guide]) => [key, guide.title])),

@@ -28,6 +28,7 @@ import {
   setObtain,
   updateHero,
   PUBLISHED_HEROES,
+  fromHeroData,
   type EditorHero,
   type EditorImage,
   type HeroEditorState,
@@ -45,6 +46,7 @@ import { BackLink, PageHead } from "../components/Ui";
 import { HeroPortrait } from "../components/HeroPortrait";
 import { counted } from "./HeroRoster";
 import { SaveToSite } from "./SaveToSite";
+import { useGuideData, usePublishedTexts } from "./GuideOverrides";
 
 type EditorText = Dictionary["heroEditor"];
 type Tf = (template: string, values: Record<string, string | number>) => string;
@@ -121,7 +123,12 @@ export function HeroEditor() {
   const { languages } = useEditorLanguages({ withDefault: true });
 
   const draft = useSyncExternalStore(draftStore.subscribe, draftStore.getSnapshot, draftStore.getServerSnapshot);
-  const state = draft ?? PUBLISHED;
+  const liveData = useGuideData<Parameters<typeof fromHeroData>[0]>("heroes");
+  const liveTexts = usePublishedTexts("heroes", "heroTexts") as Parameters<
+    typeof fromHeroData
+  >[1];
+  const published = useMemo(() => fromHeroData(liveData, liveTexts), [liveData, liveTexts]);
+  const state = draft ?? published;
   const commit = (next: HeroEditorState) => draftStore.set(next);
 
   const [rarity, setRarity] = useState<HeroRarity | "all">("all");
@@ -131,9 +138,9 @@ export function HeroEditor() {
 
   const ctx: Ctx = { state, commit, t, e, tf, languages };
 
-  const exported = useMemo(() => exportHeroes(state, HERO_DATA), [state]);
-  const changes = useMemo(() => countHeroDraftChanges(PUBLISHED, state), [state]);
-  const problems = useMemo(() => findHeroProblems(state, HERO_DATA), [state]);
+  const exported = useMemo(() => exportHeroes(state, liveData), [state, liveData]);
+  const changes = useMemo(() => countHeroDraftChanges(published, state), [state, published]);
+  const problems = useMemo(() => findHeroProblems(state, liveData), [state, liveData]);
   const texts = useMemo(() => exportedHeroTexts(state), [state]);
   const needle = query.trim().toLowerCase();
   const visible = state.heroes.filter(

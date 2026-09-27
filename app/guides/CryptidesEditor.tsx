@@ -7,6 +7,7 @@ import {
   CRYPTIDE_RARITIES,
   CRYPTIDE_STAGE_MAX_EDGE,
   PUBLISHED_CRYPTIDES,
+  fromCryptidesData,
   addCryptide,
   addRow,
   changedTextLocales,
@@ -40,7 +41,7 @@ import {
   type EditorTalent,
   type RowKind,
 } from "../../lib/content/cryptides-editor";
-import { CRYPTIDES_DATA, CRYPTID_TOWERS, TALENT_MATERIALS, cryptideImageUrl } from "../../lib/content/cryptides";
+import { CRYPTID_TOWERS, TALENT_MATERIALS, cryptideImageUrl } from "../../lib/content/cryptides";
 import { DEFAULT_LOCALE, LOCALE_CODES, fill, type Dictionary, type Locale } from "../../lib/i18n";
 import { CRYPTIDES_DRAFT_STORAGE_KEY } from "../../lib/site";
 import { AllLanguagesToggle, DictionaryBlocks, TranslatedField, useEditorLanguages } from "../components/EditorLanguages";
@@ -49,6 +50,7 @@ import { useLocale } from "../components/LocaleProvider";
 import { SaveToSite } from "./SaveToSite";
 import { createPersistentStore } from "../components/persistentStore";
 import { BackLink, PageHead } from "../components/Ui";
+import { useGuideData, usePublishedTexts } from "./GuideOverrides";
 
 type EditorText = Dictionary["cryptidesEditor"];
 type Tf = (template: string, values: Record<string, string | number>) => string;
@@ -128,7 +130,12 @@ export function CryptidesEditor() {
   const { languages } = useEditorLanguages({ withDefault: true });
 
   const draft = useSyncExternalStore(draftStore.subscribe, draftStore.getSnapshot, draftStore.getServerSnapshot);
-  const state = draft ?? PUBLISHED;
+  const liveData = useGuideData<Parameters<typeof fromCryptidesData>[0]>("cryptides");
+  const liveTexts = usePublishedTexts("cryptides", "cryptideTexts") as Parameters<
+    typeof fromCryptidesData
+  >[1];
+  const published = useMemo(() => fromCryptidesData(liveData, liveTexts), [liveData, liveTexts]);
+  const state = draft ?? published;
   const commit = (next: CryptidesEditorState) => draftStore.set(next);
 
   const [query, setQuery] = useState("");
@@ -136,8 +143,8 @@ export function CryptidesEditor() {
   const [exportOpen, setExportOpen] = useState(false);
 
   const ctx: Ctx = { state, commit, e, tf, guide, languages };
-  const exported = useMemo(() => exportCryptides(state, CRYPTIDES_DATA), [state]);
-  const changes = useMemo(() => countCryptideChanges(PUBLISHED, state), [state]);
+  const exported = useMemo(() => exportCryptides(state, liveData), [state, liveData]);
+  const changes = useMemo(() => countCryptideChanges(published, state), [state, published]);
   const problems = useMemo(() => findCryptideProblems(state), [state]);
   const ids = useMemo(() => exportIds(state), [state]);
 

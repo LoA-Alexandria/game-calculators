@@ -53,6 +53,7 @@ import { createPersistentStore } from "../components/persistentStore";
 import { BackLink, PageHead } from "../components/Ui";
 import { CheckIcon, CloseIcon, CopyIcon, DownloadIcon, TrashIcon, UploadIcon } from "../components/Icons";
 import { SaveToSite } from "./SaveToSite";
+import { useGuideData, usePublishedTexts } from "./GuideOverrides";
 
 type Guide = Dictionary["guideEntries"]["artwork"];
 type EditorText = Dictionary["artworkEditor"];
@@ -120,7 +121,10 @@ export function ArtworkEditor() {
   const e = t.artworkEditor;
 
   const draft = useSyncExternalStore(draftStore.subscribe, draftStore.getSnapshot, draftStore.getServerSnapshot);
-  const state = draft ?? PUBLISHED;
+  const liveData = useGuideData<Parameters<typeof fromCatalogue>[0]>("paintings");
+  const liveTexts = usePublishedTexts("artwork", "catalogTexts") as Parameters<typeof fromCatalogue>[1];
+  const published = useMemo(() => fromCatalogue(liveData, liveTexts), [liveData, liveTexts]);
+  const state = draft ?? published;
   const commit = (next: EditorState) => draftStore.set(next);
   // paintings.json holds English, so English stays next to the reader's language.
   const { languages } = useEditorLanguages({ withDefault: true });

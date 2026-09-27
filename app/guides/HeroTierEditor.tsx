@@ -61,6 +61,7 @@ import { createPersistentStore } from "../components/persistentStore";
 import { BackLink, PageHead } from "../components/Ui";
 import { CheckIcon, CloseIcon, CopyIcon, DownloadIcon, GripIcon, PlusIcon, TrashIcon } from "../components/Icons";
 import { SaveToSite } from "./SaveToSite";
+import { useGuideData } from "./GuideOverrides";
 
 type Text = Dictionary["guideEntries"]["heroTierList"];
 type EditorText = Dictionary["tierEditor"];
@@ -124,7 +125,9 @@ export function HeroTierEditor() {
   const { language, languages } = useEditorLanguages();
 
   const draft = useSyncExternalStore(draftStore.subscribe, draftStore.getSnapshot, draftStore.getServerSnapshot);
-  const state = draft ?? PUBLISHED;
+  const liveData = useGuideData<Parameters<typeof fromTierData>[0]>("hero-tiers");
+  const published = useMemo(() => fromTierData(liveData), [liveData]);
+  const state = draft ?? published;
   const commit = (next: EditorState) => draftStore.set(next);
 
   const [list, setList] = useState<ListId>("overall");

@@ -76,6 +76,23 @@ test("the editors that still only export are the ones we know about", () => {
   assert.deepEqual(without, ["GuideEditor.tsx"]);
 });
 
+test("an editor that saves also starts from what is published", () => {
+  // An editor that opens on the committed data shows the old names while the
+  // site shows the new ones, and its next save puts the old ones back. Saving
+  // without this is worse than not saving at all.
+  for (const { editor, props } of savers()) {
+    const text = source(editor);
+    assert.ok(
+      text.includes("useGuideData<"),
+      `${editor} saves ${props.file} but opens on the committed version`,
+    );
+    // Only the editors that write per-entry names need those published too.
+    if (props.textField) {
+      assert.ok(text.includes("usePublishedTexts("), `${editor} opens on the committed names`);
+    }
+  }
+});
+
 test("a file cannot be saved under a name it does not fit", () => {
   // The guard behind all of this: the right file accepts its own contents,
   // and a different one does not.

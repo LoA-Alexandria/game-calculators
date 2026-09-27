@@ -5,6 +5,7 @@ import {
   GODDESS_MARKS,
   GODDESS_PORTRAIT_MAX_EDGE,
   PUBLISHED_GODDESSES,
+  fromGoddessData,
   addGoddess,
   addImage,
   countGoddessDraftChanges,
@@ -40,6 +41,7 @@ import { BackLink, PageHead } from "../components/Ui";
 import { HeroPortrait } from "../components/HeroPortrait";
 import { counted } from "./HeroRoster";
 import { SaveToSite } from "./SaveToSite";
+import { useGuideData, usePublishedTexts } from "./GuideOverrides";
 
 type EditorText = Dictionary["goddessEditor"];
 type Tf = (template: string, values: Record<string, string | number>) => string;
@@ -116,7 +118,12 @@ export function GoddessEditor() {
   const { languages } = useEditorLanguages({ withDefault: true });
 
   const draft = useSyncExternalStore(draftStore.subscribe, draftStore.getSnapshot, draftStore.getServerSnapshot);
-  const state = draft ?? PUBLISHED;
+  const liveData = useGuideData<Parameters<typeof fromGoddessData>[0]>("goddesses");
+  const liveTexts = usePublishedTexts("goddesses", "goddessTexts") as Parameters<
+    typeof fromGoddessData
+  >[1];
+  const published = useMemo(() => fromGoddessData(liveData, liveTexts), [liveData, liveTexts]);
+  const state = draft ?? published;
   const commit = (next: GoddessEditorState) => draftStore.set(next);
 
   const [rarity, setRarity] = useState<GoddessRarity | "all">("all");
@@ -126,9 +133,9 @@ export function GoddessEditor() {
 
   const ctx: Ctx = { state, commit, t, e, tf, languages };
 
-  const exported = useMemo(() => exportGoddesses(state, GODDESS_DATA), [state]);
-  const changes = useMemo(() => countGoddessDraftChanges(PUBLISHED, state), [state]);
-  const problems = useMemo(() => findGoddessProblems(state, GODDESS_DATA), [state]);
+  const exported = useMemo(() => exportGoddesses(state, liveData), [state, liveData]);
+  const changes = useMemo(() => countGoddessDraftChanges(published, state), [state, published]);
+  const problems = useMemo(() => findGoddessProblems(state, liveData), [state, liveData]);
   const texts = useMemo(() => exportedGoddessTexts(state), [state]);
   const needle = query.trim().toLowerCase();
   const visible = state.goddesses.filter(

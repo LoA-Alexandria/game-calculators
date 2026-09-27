@@ -4,6 +4,7 @@ import { useId, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { phaseTone } from "../../lib/content/goddess-leveling";
 import {
   PUBLISHED_GODDESS_LEVELING,
+  fromLevelingData,
   addPhase,
   addRow,
   countLevelingChanges,
@@ -36,11 +37,11 @@ import { useLocale } from "../components/LocaleProvider";
 import { createPersistentStore } from "../components/persistentStore";
 import { BackLink, PageHead } from "../components/Ui";
 import { SaveToSite } from "./SaveToSite";
+import { useGuideData, usePublishedTexts } from "./GuideOverrides";
 
 type EditorText = Dictionary["goddessLevelingEditor"];
 type Tf = (template: string, values: Record<string, string | number>) => string;
 
-const PUBLISHED = PUBLISHED_GODDESS_LEVELING;
 const PUBLISHED_BLOCKS = phaseTextBlocks(PUBLISHED_GODDESS_LEVELING);
 const EVERYONE = "*";
 
@@ -68,12 +69,17 @@ export function GoddessLevelingEditor() {
   const { languages } = useEditorLanguages({ withDefault: true });
 
   const draft = useSyncExternalStore(draftStore.subscribe, draftStore.getSnapshot, draftStore.getServerSnapshot);
-  const state = draft ?? PUBLISHED;
+  const liveData = useGuideData<Parameters<typeof fromLevelingData>[0]>("goddess-leveling");
+  const liveTexts = usePublishedTexts("goddessLeveling", "phaseTexts") as Parameters<
+    typeof fromLevelingData
+  >[1];
+  const published = useMemo(() => fromLevelingData(liveData, liveTexts), [liveData, liveTexts]);
+  const state = draft ?? published;
   const commit = (next: GoddessLevelingEditorState) => draftStore.set(next);
   const [exportOpen, setExportOpen] = useState(false);
   const savePayload = useMemo(() => exportLeveling(state), [state]);
 
-  const changes = useMemo(() => countLevelingChanges(PUBLISHED, state), [state]);
+  const changes = useMemo(() => countLevelingChanges(published, state), [state, published]);
   const problems = useMemo(() => findLevelingProblems(state), [state]);
   const ctx: Ctx = { state, commit, e, tf, languages };
 

@@ -4,7 +4,7 @@ import { createContext, useContext, useEffect, useMemo, useState, type ReactNode
 import { committedData, resolveData } from "../../lib/content/guide-data";
 import { applyOverride, type GuideOverride } from "../../lib/content/guide-overrides";
 import { getSupabaseBrowserClient } from "../../lib/supabase/client";
-import { toLocale } from "../../lib/i18n";
+import { getDictionary, mapLocales, toLocale, type Locale } from "../../lib/i18n";
 import { useLocale } from "../components/LocaleProvider";
 
 /**
@@ -21,15 +21,17 @@ import { useLocale } from "../components/LocaleProvider";
  */
 type Overrides = {
   data: Map<string, unknown>;
+  /** Keyed `guideId:locale`, because an editor writes every language at once. */
   texts: Map<string, GuideOverride>;
 };
+
+const textKey = (guideId: string, locale: string) => `${guideId}:${locale}`;
 
 const EMPTY: Overrides = { data: new Map(), texts: new Map() };
 const GuideOverridesContext = createContext<Overrides>(EMPTY);
 
 export function GuideOverridesProvider({ children }: { children: ReactNode }) {
   const supabase = getSupabaseBrowserClient();
-  const { locale } = useLocale();
   const [overrides, setOverrides] = useState<Overrides>(EMPTY);
 
   useEffect(() => {
@@ -38,7 +40,9 @@ export function GuideOverridesProvider({ children }: { children: ReactNode }) {
     void (async () => {
       const [dataRows, textRows] = await Promise.all([
         supabase.from("guide_data").select("guide_id,payload"),
-        supabase.from("guide_content").select("guide_id,locale,payload").eq("locale", toLocale(locale)),
+        // Every language, not just the one being read: an editor edits all
+        // three at once and has to start from what is published in each.
+        supabase.from("guide_content").select("guide_id,locale,payload"),
       ]);
       if (gone) return;
       const data = new Map<string, unknown>();
@@ -46,15 +50,15 @@ export function GuideOverridesProvider({ children }: { children: ReactNode }) {
         data.set(row.guide_id, row.payload);
       }
       const texts = new Map<string, GuideOverride>();
-      for (const row of (textRows.data ?? []) as { guide_id: string; payload: GuideOverride | null }[]) {
-        if (row.payload) texts.set(row.guide_id, row.payload);
+      for (const row of (textRows.data ?? []) as { guide_id: string; locale: string; payload: GuideOverride | null }[]) {
+        if (row.payload) texts.set(textKey(row.guide_id, row.locale), row.payload);
       }
       if (data.size > 0 || texts.size > 0) setOverrides({ data, texts });
     })();
     return () => {
       gone = true;
     };
-  }, [supabase, locale]);
+  }, [supabase]);
 
   return <GuideOverridesContext.Provider value={overrides}>{children}</GuideOverridesContext.Provider>;
 }
@@ -68,13 +72,35 @@ export function useGuideData<T>(name: string): T {
   return useMemo(() => resolveData(name, data.get(name)) as T, [data, name]);
 }
 
-/** A guide's dictionary entry with anything published on top of it. */
+/** A guide's dictionary entry, in the reader's language, with any edit on top. */
 export function useGuideEntry<T extends object>(guideId: string, base: T): T {
   const { texts } = useContext(GuideOverridesContext);
+  const { locale } = useLocale();
   return useMemo(() => {
-    const override = texts.get(guideId);
+    const override = texts.get(textKey(guideId, toLocale(locale)));
     return override ? applyOverride(base, override) : base;
-  }, [texts, guideId, base]);
+  }, [texts, guideId, base, locale]);
+}
+
+/**
+ * One field of a guide's entry in every language, as an editor needs it: the
+ * published text where there is one, the built text otherwise.
+ *
+ * Without this an editor opens on the committed names while the site shows the
+ * published ones, and the next save quietly puts the old names back.
+ */
+export function usePublishedTexts<T>(guideId: string | undefined, field: string | undefined): Record<Locale, T> {
+  const { texts } = useContext(GuideOverridesContext);
+  return useMemo(() => {
+    return mapLocales((locale) => {
+      const entry = getDictionary(locale).guideEntries as Record<string, Record<string, unknown>>;
+      const committed = guideId ? entry[guideId]?.[field ?? ""] : undefined;
+      if (!guideId || !field) return committed as T;
+      const override = texts.get(textKey(guideId, locale));
+      const published = override ? (override as Record<string, unknown>)[field] : undefined;
+      return (published ?? committed) as T;
+    });
+  }, [texts, guideId, field]);
 }
 
 /** For pages that only need to know whether a file has been replaced. */
