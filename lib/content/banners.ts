@@ -70,6 +70,7 @@ const GUIDE_BANNER_IDS: readonly GuideEntryId[] = [
   "artworkLayouts", "manor", "adsBuy", "goddesses", "cryptides",
   "goddessTheater", "anecdotes", "heroLayouts", "heroTierList", "heroLinking",
   "heroLeveling", "goddessLeveling", "buildings", "serverAgeUnlocks", "museion",
+  "cryptidLayout", "cryptidTowerLayout",
 ];
 
 export function guideTitleBanner(id: GuideEntryId): TitleBanner | null {
