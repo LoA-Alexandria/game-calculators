@@ -179,9 +179,11 @@ export type Deployment = {
  * The bonus auto deploy reaches with the goddesses a player owns. Null when the
  * play's own aptitudes are not recorded yet.
  */
-export function deployment(entry: IncomePlay, owned: readonly string[]): Deployment | null {
+export function deployment(entry: IncomePlay, owned: readonly string[], availableSlots = entry.slots): Deployment | null {
   const needs = entry.aptitudes;
   if (!needs) return null;
+  const slots = Math.max(0, Math.min(entry.slots, Math.floor(availableSlots)));
+  if (slots === 0) return { percent: 0, goddesses: [], exact: true, unknown: [] };
   const known = new Map(GODDESS_APTITUDES.map((goddess) => [goddess.name, goddess]));
   const unknown: string[] = [];
   const rows = owned.map((name) => {
@@ -196,10 +198,10 @@ export function deployment(entry: IncomePlay, owned: readonly string[]): Deploym
   const chosen = rows
     .filter((row) => row.matches > 0)
     .sort((a, b) => b.matches - a.matches || a.name.localeCompare(b.name))
-    .slice(0, entry.slots);
+    .slice(0, slots);
   const percent = chosen.reduce((sum, row) => sum + row.matches * BONUS_PER_MATCH, 0);
   // A goddess with unknown aptitudes only matters if she could still beat the weakest one sent, or fill a free slot.
-  const weakest = chosen.length < entry.slots ? 0 : chosen[chosen.length - 1].matches;
+  const weakest = chosen.length < slots ? 0 : chosen[chosen.length - 1].matches;
   const exact = unknown.every((name) => {
     const goddess = known.get(name);
     const recorded = goddess ? needs.filter((aptitude) => goddess.aptitudes.includes(aptitude)).length : 0;

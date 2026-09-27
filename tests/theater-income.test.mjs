@@ -90,6 +90,13 @@ test("auto deploy takes the best goddesses up to the play's slots", () => {
   assert.equal(quixote.percent, 80);
 });
 
+test("theater level limits auto deployment to its unlocked goddess slots", () => {
+  const owned = ["Venus", "Vivian", "Fortuna", "Muse"];
+  assert.equal(deployment(incomePlay("pride-and-prejudice"), owned).percent, 90);
+  assert.equal(deployment(incomePlay("pride-and-prejudice"), owned, 1).percent, 30);
+  assert.equal(deployment(incomePlay("pride-and-prejudice"), owned, 0).percent, 0);
+});
+
 test("a goddess whose aptitudes are not recorded makes the bonus a lower bound", () => {
   const pride = deployment(incomePlay("pride-and-prejudice"), ["Venus", "Lilith"]);
   assert.equal(pride.percent, 30);

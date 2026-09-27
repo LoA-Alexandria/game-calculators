@@ -7151,6 +7151,22 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
 .theater-panel .metric-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .theater-panel .metric-grid > :last-child { grid-column: 1 / -1; }
 .theater-panel .result-breakdown { margin-top: 2px; }
+.theater-session { margin-top: 20px; }
+.theater-session-inputs { margin-top: 16px; }
+.theater-session-status { margin: 0 0 16px; color: var(--muted); font-size: .92rem; }
+.theater-energy-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 13px; }
+.theater-session-odds { padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; color: var(--muted); font-size: .9rem; line-height: 1.6; }
+.theater-session-result { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--line); }
+.theater-session-result h3 { margin: 0 0 14px; font-size: 1rem; }
+.theater-session-metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+.theater-session-metrics > div { min-width: 0; padding: 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
+.theater-session-metrics span, .theater-session-metrics strong { display: block; }
+.theater-session-metrics span { margin-bottom: 7px; color: var(--muted); font-size: .82rem; }
+.theater-session-metrics strong { font-size: clamp(1rem, 2vw, 1.35rem); overflow-wrap: anywhere; }
+.theater-session-warning { margin-top: 14px; }
+.theater-session-details { margin-top: 12px; color: var(--muted); font-size: .9rem; }
+.theater-session-details summary { cursor: pointer; color: var(--text); }
+.theater-session-details p { line-height: 1.6; }
 .theater-upgrade { margin: 16px 0 0; line-height: 1.5; }
 .theater-upgrade strong { color: var(--on-inverse); }
 
@@ -7247,6 +7263,9 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
   .theater-goddess-list { grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); }
   .theater-panel .input-row { grid-template-columns: minmax(0, 1fr); gap: 15px; margin-bottom: 15px; }
   .theater-panel .input-row .field { margin-bottom: 0; }
+  .theater-session-inputs { grid-template-columns: minmax(0, 1fr); }
+  .theater-energy-fields { grid-template-columns: minmax(0, 1fr); }
+  .theater-session-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 /* --- planner ------------------------------------------------------------- */
