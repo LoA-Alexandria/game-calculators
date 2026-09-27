@@ -1,17 +1,23 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { LOCALE_CODES, dictionaryFile } from "../../lib/i18n";
+import { LOCALE_CODES, dictionaryFile, getDictionary, mapLocales, type Locale } from "../../lib/i18n";
 import { blankTranslations, type Translations } from "../../lib/i18n/translations";
 import {
   changedLocales,
   parseTextGuideDraft,
   textGuideBlocks,
   textGuideDraft,
+  textGuideEntry,
   textGuideStorageKey,
   type TextGuideCatalog,
   type TextGuideDraft,
 } from "../../lib/content/text-guide-editor";
+import { applyOverride, entryKey } from "../../lib/content/guide-overrides";
+import { usePublishedOverrides } from "../guides/GuideOverrides";
+import { publishGuide, saveGuideDraft, type SaveState } from "../guides/useGuideContent";
+import { useAuth } from "./AuthProvider";
+import { CheckIcon } from "./Icons";
 import { AllLanguagesToggle, DictionaryBlocks, TranslatedField, useEditorLanguages } from "./EditorLanguages";
 import { ChevronIcon, CloseIcon, InfoIcon, PlusIcon, TrashIcon } from "./Icons";
 import { useLocale } from "./LocaleProvider";
@@ -37,9 +43,27 @@ export function TextGuideEditor({
 }) {
   const { t, tf } = useLocale();
   const words = t.textGuideEditor;
+  const { session, allows } = useAuth();
   const { languages } = useEditorLanguages({ withDefault: true });
   const storageKey = textGuideStorageKey(catalog, id);
-  const published = useMemo(() => textGuideDraft(catalog, id), [catalog, id]);
+  // What the site shows, language by language: the dictionaries with anything
+  // published over them. The editor opens here, so saving cannot put the built
+  // text back over a published edit.
+  const key = entryKey(catalog, id);
+  const live = usePublishedOverrides(key);
+  const shown = useMemo(
+    () =>
+      mapLocales((locale) => {
+        const base = getDictionary(locale)[catalog] as unknown as Record<string, object | undefined>;
+        const entry = base[id];
+        if (!entry) return undefined;
+        return applyOverride(entry, live[locale]) as Record<string, unknown>;
+      }),
+    [catalog, id, live],
+  );
+  const published = useMemo(() => textGuideDraft(catalog, id, shown), [catalog, id, shown]);
+  const [saveState, setSaveState] = useState<SaveState>("idle");
+  const [saveError, setSaveError] = useState("");
   // The editor only mounts after a click, so reading storage here never runs on the server.
   const [draft, setDraft] = useState<TextGuideDraft>(() => {
     try {
@@ -100,6 +124,47 @@ export function TextGuideEditor({
       return { ...current, sections };
     });
 
+  /**
+   * Writes the entry to the site rather than to a file. Every language at
+   * once, because an event guide half published reads as a mistake in the
+   * other two, and each one is compared with what is published there.
+   */
+  const write = async (andPublish: boolean) => {
+    if (!session) return;
+    setSaveState("saving");
+    setSaveError("");
+    const wrote: Locale[] = [];
+    for (const locale of LOCALE_CODES) {
+      const base = (getDictionary(locale)[catalog] as unknown as Record<string, object | undefined>)[id];
+      if (!base) continue;
+      const edited = textGuideEntry(draft, locale);
+      const failure = await saveGuideDraft(
+        key,
+        locale,
+        base,
+        edited,
+        session.userId,
+        Object.keys(edited),
+        live[locale],
+      );
+      if (failure) return stop(failure);
+      wrote.push(locale);
+    }
+    if (andPublish) {
+      for (const locale of wrote) {
+        const refused = await publishGuide(key, locale);
+        if (refused) return stop(refused);
+      }
+    }
+    setSaveState("saved");
+    window.setTimeout(() => setSaveState("idle"), 2500);
+  };
+
+  function stop(message: string) {
+    setSaveError(message);
+    setSaveState("failed");
+  }
+
   return (
     <section className="panel text-guide-editor" id="text-guide-editor">
       <div className="text-guide-editor-head">
@@ -121,10 +186,42 @@ export function TextGuideEditor({
           type="button"
           className="button"
           disabled={changed.length === 0}
-          onClick={() => setDraft(textGuideDraft(catalog, id))}
+          onClick={() => setDraft(published)}
         >
           {words.reset}
         </button>
+        {session && allows("guides.draft") ? (
+          <>
+            <button
+              type="button"
+              className="button"
+              disabled={saveState === "saving"}
+              onClick={() => void write(false)}
+            >
+              <CheckIcon className="icon icon-sm" />
+              {saveState === "saving"
+                ? t.editor.saving
+                : saveState === "saved"
+                  ? t.editor.savedToSite
+                  : t.editor.saveToSite}
+            </button>
+            {allows("guides.publish") ? (
+              <button
+                type="button"
+                className="button"
+                disabled={saveState === "saving"}
+                onClick={() => void write(true)}
+              >
+                {t.editor.publishNow}
+              </button>
+            ) : null}
+          </>
+        ) : null}
+        {saveError ? (
+          <span className="tier-edit-status result-error" role="alert">
+            {saveError}
+          </span>
+        ) : null}
       </div>
 
       <div className="text-guide-editor-grid">
