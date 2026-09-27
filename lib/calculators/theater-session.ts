@@ -48,6 +48,17 @@ export function theaterTierForLevel(level: number): number {
   return level - building.minLevel + 1;
 }
 
+/** Probability that a rarity appears at least once across independent offers. */
+export function rarityAppearanceChance(perOfferPercent: number, offerCount = 3): number {
+  if (!Number.isFinite(perOfferPercent) || perOfferPercent < 0 || perOfferPercent > 100) {
+    throw new RangeError("Offer chance must be from 0 to 100 percent.");
+  }
+  if (!Number.isSafeInteger(offerCount) || offerCount < 1) {
+    throw new RangeError("Offer count must be a positive whole number.");
+  }
+  return 100 * (1 - (1 - perOfferPercent / 100) ** offerCount);
+}
+
 export type RarityReward = { low: number; average: number; high: number };
 export type TheaterRunInput = {
   level: number;

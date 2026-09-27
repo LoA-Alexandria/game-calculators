@@ -97,6 +97,12 @@ test("theater level limits auto deployment to its unlocked goddess slots", () =>
   assert.equal(deployment(incomePlay("pride-and-prejudice"), owned, 0).percent, 0);
 });
 
+test("Hamilton assignment respects the four goddess slots unlocked at level 39", () => {
+  const hamilton = deployment(incomePlay("hamilton"), ["Isis", "Lady Liberty", "Hestia", "Nike", "Athena"], 4);
+  assert.equal(hamilton.percent, 90);
+  assert.deepEqual(hamilton.goddesses.map(({ name }) => name), ["Isis", "Hestia", "Lady Liberty", "Nike"]);
+});
+
 test("a goddess whose aptitudes are not recorded makes the bonus a lower bound", () => {
   const pride = deployment(incomePlay("pride-and-prejudice"), ["Venus", "Lilith"]);
   assert.equal(pride.percent, 30);

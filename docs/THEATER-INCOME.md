@@ -23,6 +23,14 @@ theater slots, goddess slots, and offer distribution:
 | Royal Theater | 27–39 | 4 | 4 | 10 / 30 / 40 / 10 / 10 % |
 | Civic Theater | 40+ | 5 | 5 | 5 / 25 / 40 / 10 / 20 % |
 
+Rarity percentages are per offered script, not the chance that at least one of
+the three offered scripts has that rarity. At level 39, for example, R has a
+10% chance per offer and SR 30%; assuming three independent draws with
+replacement, that is a 27.1% chance to see at least one R and a 65.7% chance to
+see at least one SR in a menu. These menu chances do not mean the calculator
+will select that rarity: it chooses among affordable offers to maximize
+expected Red Carpet points for the remaining energy.
+
 Parade's one parallel theater is inferred from its single goddess slot. Civic's
 five goddess slots are inferred from its five parallel theaters and the five
 roles shown for UR+ plays. Both should be corrected if the game shows otherwise.
@@ -57,6 +65,13 @@ Since only some play previews have been recorded, the projection is partial:
 unknown plays are omitted, and a rarity with no usable preview data contributes
 zero points. It is not a complete ranking of every possible script until the
 remaining preview values are collected.
+
+In the Mass calculation log, the slot cards show the fixed starting plays.
+The table titled “Reference plays used for rarity averages” shows all known
+plays used to calculate each rarity's average reward and automatic goddess
+assignment. Those reference rows are not later plays selected by the
+simulator; later plays are valued by rarity averages and are not individually
+drawn or logged.
 
 ## Existing income formula
 
