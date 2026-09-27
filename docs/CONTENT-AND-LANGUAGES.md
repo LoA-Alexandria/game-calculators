@@ -665,9 +665,10 @@ Innocence, telescope Adventure, chess piece Intrigue, raven Darkness, scroll
 Suspense, harp Artistry, jester Satire, broken mask Revenge, dove Idealism,
 heart Love, hare Instinct). The talent page also names the resource an
 aptitude trains; Darkness and Revenge were not shown, so their `resource` is
-left out (Glass and Paper are the two left). Lilith has no screenshot and
-Artemis only the two aptitudes Autumn's test showed. The same screenshots
-added Hamilton, Les Misérables, and Notre-Dame de Paris to
+left out (Glass and Paper are the two left). Lilith has no screenshot. A
+talent-page screenshot added Artemis's previously missing third aptitude,
+Idealism, on 27 September 2026; it also confirms Adventure and Instinct.
+Separate screenshots added Hamilton, Les Misérables, and Notre-Dame de Paris to
 `goddess-theater.json`, with covers cut from the Archive cards and no cast
 yet; the Goddess Theater guide says the cast is not recorded, and the editor
 test pins their `noRoles` problems until someone adds them.

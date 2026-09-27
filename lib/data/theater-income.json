@@ -48,7 +48,7 @@
     { "id": "little-red-riding-hood", "rarity": "R", "ticket": 60, "visitors": 40, "aptitudes": ["innocence", "instinct", "suspense"] }
   ],
   "goddesses": [
-    { "name": "Artemis", "aptitudes": ["adventure", "instinct"], "lacks": ["suspense"] },
+    { "name": "Artemis", "aptitudes": ["idealism", "adventure", "instinct"] },
     { "name": "Athena", "aptitudes": ["idealism", "adventure", "revenge"] },
     { "name": "Bastet", "aptitudes": ["artistry", "satire", "instinct"] },
     { "name": "Brunhild", "aptitudes": ["adventure", "suspense", "revenge"] },
