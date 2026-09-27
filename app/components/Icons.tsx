@@ -53,6 +53,18 @@ export function NewsIcon({ className }: IconProps) {
   );
 }
 
+/** Two arrows passing each other: something goes out, something comes back. */
+export function TradeIcon({ className }: IconProps) {
+  return (
+    <svg className={className} {...base}>
+      <path d="M4 8h13" />
+      <path d="m14 5 3 3-3 3" />
+      <path d="M20 16H7" />
+      <path d="m10 13-3 3 3 3" />
+    </svg>
+  );
+}
+
 /** An opened tablet with a reading rule. */
 export function GuidesIcon({ className }: IconProps) {
   return (
@@ -175,6 +187,17 @@ export function SearchIcon({ className }: IconProps) {
     <svg className={className} {...base}>
       <circle cx="10.5" cy="10.5" r="6.5" />
       <path d="M15.5 15.5 21 21" />
+    </svg>
+  );
+}
+
+/** A closed padlock: a guild whose Premium ran out is read-only. */
+export function LockIcon({ className }: IconProps) {
+  return (
+    <svg className={className} {...base}>
+      <rect x="4.5" y="10.5" width="15" height="9.5" rx="2.2" />
+      <path d="M8.2 10.5V7.8a3.8 3.8 0 0 1 7.6 0v2.7" />
+      <path d="M12 14.3v2.4" />
     </svg>
   );
 }

@@ -5,6 +5,7 @@ import {
   CRYPTIDE_ICON_MAX_EDGE,
   CRYPTIDE_PORTRAIT_MAX_EDGE,
   CRYPTIDE_RARITIES,
+  CRYPTIDE_STAGE_MAX_EDGE,
   PUBLISHED_CRYPTIDES,
   addCryptide,
   addRow,
@@ -28,6 +29,7 @@ import {
   setPortrait,
   setRowImage,
   setSkillText,
+  setStageImage,
   setTalent,
   type CryptideProblem,
   type CryptidesEditorState,
@@ -376,6 +378,37 @@ function CryptideForm({
 
       <RowList ctx={ctx} cryptide={cryptide} kind="skills" ids={ids} />
       <RowList ctx={ctx} cryptide={cryptide} kind="foods" ids={ids} />
+      <StageStrip ctx={ctx} cryptide={cryptide} />
+    </section>
+  );
+}
+
+/**
+ * The six rungs of the evolution ladder. They are fixed and named in the
+ * dictionary, so each one is a picture slot and nothing else — there is no
+ * adding, removing or reordering.
+ */
+function StageStrip({ ctx, cryptide }: { ctx: Ctx; cryptide: EditorCryptide }) {
+  const { e, guide } = ctx;
+  return (
+    <section className="cryptide-edit-rows" aria-label={e.stagesHeading}>
+      <h3>{e.stagesHeading}</h3>
+      <p className="tier-small">{e.stagesHint}</p>
+      <div className="cryptide-edit-stages">
+        {cryptide.stages.map((slot) => (
+          <PictureField
+            key={slot.stage}
+            ctx={ctx}
+            legend={guide.stages[slot.stage]}
+            hint={e.stageHint}
+            current={slot.image}
+            rarity={cryptide.rarity}
+            maxEdge={CRYPTIDE_STAGE_MAX_EDGE}
+            compact
+            apply={(base, image) => setStageImage(base, cryptide.uid, slot.stage, image)}
+          />
+        ))}
+      </div>
     </section>
   );
 }
@@ -581,6 +614,7 @@ function problemText(e: EditorText, tf: Tf, problem: CryptideProblem): string {
     case "emptySkill": return tf(e.problemEmptySkill, { cryptide: problem.cryptide, position: problem.position });
     case "emptyFood": return tf(e.problemEmptyFood, { cryptide: problem.cryptide, position: problem.position });
     case "badGrowth": return tf(e.problemBadGrowth, { cryptide: problem.cryptide, row: problem.row });
+    case "partialLadder": return tf(e.problemPartialLadder, { cryptide: problem.cryptide, missing: problem.missing });
     case "badTalent": return e.problemBadTalent;
   }
 }

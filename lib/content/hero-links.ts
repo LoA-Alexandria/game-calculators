@@ -10,7 +10,7 @@
 
 import { PAINTING_SETS } from "./artwork.ts";
 import { ROSTER_SPELLING } from "./hero-names.ts";
-import { BUILD_ZONES, COLLECTION_ITEMS, LAYOUT_DATA, type BuildZone } from "./hero-layouts.ts";
+import { BUILD_ZONES, LAYOUT_DATA, isItemPick, type BuildZone, type LayoutPick } from "./hero-layouts.ts";
 import { TIER_DATA, type TierId, type VariantKey } from "./hero-tiers.ts";
 import type { HeroRarity } from "./heroes.ts";
 
@@ -55,17 +55,18 @@ function index(): Map<string, HeroAppearances> {
   }
 
   for (const build of LAYOUT_DATA.builds) {
-    const add = (name: string, zone: BuildZone | "counter") => {
-      if (COLLECTION_ITEMS.has(name)) return;
-      const builds = entry(name).builds;
+    const add = (pick: LayoutPick, zone: BuildZone | "counter") => {
+      if (isItemPick(pick)) return;
+      const builds = entry(pick.hero).builds;
       if (!builds.some((placed) => placed.build === build.id)) builds.push({ build: build.id, zone });
     };
-    for (const zone of BUILD_ZONES) for (const pick of build[zone]) add(pick.hero, zone);
-    for (const counter of build.counters) for (const pick of counter.picks) add(pick.hero, "counter");
+    for (const zone of BUILD_ZONES) for (const pick of build[zone]) add(pick, zone);
+    for (const counter of build.counters) for (const pick of counter.picks) add(pick, "counter");
   }
   for (const role of LAYOUT_DATA.utility) {
     for (const group of role.groups) {
       for (const pick of group.picks) {
+        if (isItemPick(pick)) continue;
         const roles = entry(pick.hero).roles;
         if (!roles.includes(role.id)) roles.push(role.id);
       }

@@ -25,9 +25,10 @@ import {
   setPortrait,
   setRowImage,
   setSkillText,
+  setStageImage,
   setTalent,
 } from "../lib/content/cryptides-editor.ts";
-import { CRYPTIDES_DATA } from "../lib/content/cryptides.ts";
+import { CRYPTID_STAGES, CRYPTIDES_DATA } from "../lib/content/cryptides.ts";
 import { LOCALE_CODES } from "../lib/i18n/index.ts";
 
 const FILE = readFileSync(new URL("../lib/data/cryptides.json", import.meta.url), "utf8");
@@ -92,11 +93,39 @@ test("a new Cryptide gets ids from its English names and pictures named after th
   assert.ok(findCryptideProblems(state).some((problem) => problem.code === "missingIcon"));
 });
 
+test("stage art is named after the rung, and a half-filled ladder is warned about", () => {
+  const published = PUBLISHED_CRYPTIDES.cryptides.find((cryptide) => cryptide.id === "nidhogg");
+  assert.deepEqual(published.stages.map((slot) => slot.stage), [...CRYPTID_STAGES]);
+  assert.deepEqual(published.stages.map((slot) => slot.image?.file), [
+    "evolution/nidhogg-1.webp", "evolution/nidhogg-2.webp", "evolution/nidhogg-3.webp",
+    "evolution/nidhogg-4.webp", "evolution/nidhogg-5.webp", "evolution/nidhogg-6.webp",
+  ]);
+
+  // The fourth rung gets a new picture; it is named for the rung, not for the
+  // order of the upload, so it lands on top of the file it replaces.
+  const art = "data:image/webp;base64,AAA=";
+  const state = setStageImage(PUBLISHED_CRYPTIDES, published.uid, "adult", { data: art });
+  const result = exportCryptides(state, CRYPTIDES_DATA);
+  assert.deepEqual(result.uploads.map((upload) => upload.file), ["evolution/nidhogg-4.webp"]);
+  assert.deepEqual(result.removedFiles, [], "an overwritten picture is not a deleted one");
+  const row = result.data.cryptides.find((cryptide) => cryptide.id === "nidhogg");
+  assert.deepEqual(row.stages.map((entry) => entry.stage), [...CRYPTID_STAGES]);
+
+  // A rung left empty drops out of the JSON, and the export says so.
+  const gap = setStageImage(PUBLISHED_CRYPTIDES, published.uid, "adult", null);
+  const gapped = exportCryptides(gap, CRYPTIDES_DATA).data.cryptides.find((cryptide) => cryptide.id === "nidhogg");
+  assert.deepEqual(gapped.stages.map((entry) => entry.stage), CRYPTID_STAGES.filter((stage) => stage !== "adult"));
+  assert.ok(findCryptideProblems(gap).some((problem) => problem.code === "partialLadder"));
+  assert.ok(!findCryptideProblems(PUBLISHED_CRYPTIDES).some((problem) => problem.code === "partialLadder"));
+});
+
 test("removing a Cryptide lists its pictures for deletion; order and rows move", () => {
   const cerberus = PUBLISHED_CRYPTIDES.cryptides.find((cryptide) => cryptide.id === "cerberus");
   const removed = exportCryptides(removeCryptide(PUBLISHED_CRYPTIDES, cerberus.uid), CRYPTIDES_DATA);
   assert.deepEqual(removed.removedFiles.sort(), [
     "cerberus.webp",
+    "evolution/cerberus-1.webp", "evolution/cerberus-2.webp", "evolution/cerberus-3.webp",
+    "evolution/cerberus-4.webp", "evolution/cerberus-5.webp", "evolution/cerberus-6.webp",
     "foods/cerberus-1.webp", "foods/cerberus-2.webp", "foods/cerberus-3.webp",
     "skills/cerberus-1.webp", "skills/cerberus-2.webp", "skills/cerberus-3.webp",
   ]);

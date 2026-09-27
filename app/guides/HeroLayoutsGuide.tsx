@@ -4,15 +4,20 @@ import { useId, useState, type CSSProperties, type KeyboardEvent } from "react";
 import { guideLayout } from "../../lib/content/guides";
 import type { Dictionary } from "../../lib/i18n";
 import {
-  COLLECTION_ITEMS,
   FORMATION_COLUMNS,
   FORMATION_ORDER,
   LAYOUT_DATA,
+  firstLayoutItem,
+  isItemPick,
   layoutTexts,
+  pickItem,
+  pickKey,
   slotWeight,
   type LayoutPick,
   type LayoutTexts,
 } from "../../lib/content/hero-layouts";
+import { localizedItem, type CollectionTexts } from "../../lib/content/collection";
+import { CollectionAvatar } from "../components/CollectionAvatar";
 import { HeroAvatar } from "../components/HeroAvatar";
 import { useLocale } from "../components/LocaleProvider";
 import { CheckIcon, CloseIcon } from "../components/Icons";
@@ -31,15 +36,29 @@ function initial(name: string): string {
 }
 
 function Pick({ pick, guide, texts }: { pick: LayoutPick; guide: Guide; texts: LayoutTexts }) {
-  const name = pick.hero;
+  const { t } = useLocale();
   const note = pick.note ? texts.pickNotes[pick.note] ?? "" : "";
-  const item = COLLECTION_ITEMS.has(name);
+  if (isItemPick(pick)) {
+    // The picture and the name both come from the Collection guide, so a piece
+    // is called the same here as it is there, in the reader's language.
+    const item = pickItem(pick);
+    const collectionTexts = t.guideEntries.collection.collectionTexts as CollectionTexts;
+    const name = item ? localizedItem(item, collectionTexts).name : pick.item;
+    return (
+      <li className="pick pick-item">
+        <CollectionAvatar id={pick.item} />
+        <span className="pick-name">{name}</span>
+        {note ? <small className="pick-note">{note}</small> : null}
+        <span className="visually-hidden"> ({guide.legendCollection})</span>
+      </li>
+    );
+  }
+  const name = pick.hero;
   return (
-    <li className={item ? "pick pick-item" : "pick"}>
-      {item ? <span className="pick-avatar" aria-hidden="true">◆</span> : <HeroAvatar name={name} fallback={initial(name)} />}
+    <li className="pick">
+      <HeroAvatar name={name} fallback={initial(name)} />
       <span className="pick-name">{name}</span>
       {note ? <small className="pick-note">{note}</small> : null}
-      {item ? <span className="visually-hidden"> ({guide.legendCollection})</span> : null}
     </li>
   );
 }
@@ -48,7 +67,7 @@ function PickList({ picks, guide, texts }: { picks: readonly LayoutPick[]; guide
   return (
     <ul className="pick-list">
       {picks.map((pick) => (
-        <Pick key={`${pick.hero}-${pick.note ?? ""}`} pick={pick} guide={guide} texts={texts} />
+        <Pick key={`${pickKey(pick)}-${pick.note ?? ""}`} pick={pick} guide={guide} texts={texts} />
       ))}
     </ul>
   );
@@ -257,7 +276,7 @@ export function HeroLayoutsGuide({ guide }: { guide: Guide }) {
         <p>{guide.buildsLede}</p>
         <ul className="pick-list pick-legend" aria-hidden="true">
           <li className="pick"><span className="pick-avatar">A</span><span className="pick-name">{guide.legendHero}</span></li>
-          <li className="pick pick-item"><span className="pick-avatar">◆</span><span className="pick-name">{guide.legendCollection}</span></li>
+          <li className="pick pick-item"><CollectionAvatar id={firstLayoutItem(LAYOUT_DATA)} /><span className="pick-name">{guide.legendCollection}</span></li>
         </ul>
       </div>
       <BuildTabs guide={guide} texts={texts} />

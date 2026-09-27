@@ -15,7 +15,7 @@ import {
 import { getSupabaseBrowserClient } from "../../lib/supabase/client";
 import { useAuth } from "../components/AuthProvider";
 import { useDocumentTitle, useLocale } from "../components/LocaleProvider";
-import { DiscordIcon, GlobeIcon, GuildsIcon, SearchIcon } from "../components/Icons";
+import { DiscordIcon, GlobeIcon, GuildsIcon, LockIcon, SearchIcon } from "../components/Icons";
 import { GuildCreateRequestPanel } from "../components/GuildCreateRequestPanel";
 import { PageHead, SectionBanner } from "../components/Ui";
 
@@ -53,6 +53,8 @@ export default function GuildsPage() {
   const [reloadToken, setReloadToken] = useState(0);
   const [joinGuildId, setJoinGuildId] = useState<string | null>(null);
   const [joinNote, setJoinNote] = useState("");
+  // Guilds whose listing has run out of Premium: readable, not writable.
+  const [frozenIds, setFrozenIds] = useState<Set<string>>(new Set());
 
   const reload = useCallback(() => setReloadToken((value) => value + 1), []);
 
@@ -67,6 +69,12 @@ export default function GuildsPage() {
       if (gone) return;
       if (listed.error) setError(listed.error.message);
       else setGuilds((listed.data ?? []) as Guild[]);
+
+      const frozen = await supabase.rpc("frozen_guild_ids");
+      if (gone) return;
+      if (!frozen.error) {
+        setFrozenIds(new Set(((frozen.data ?? []) as string[]).map(String)));
+      }
 
       if (!session) {
         setMemberships([]);
@@ -181,7 +189,29 @@ export default function GuildsPage() {
   return (
     <>
       <SectionBanner id="guilds" />
-      <PageHead eyebrow={t.navDescriptions.guilds} title={t.guilds.title} lede={t.guilds.lede} />
+
+      <div className="guilds-head">
+        <PageHead eyebrow={t.navDescriptions.guilds} title={t.guilds.title} lede={t.guilds.lede} />
+        {supabase && guilds.length > 0 ? (
+          <div className="guild-toolbar">
+            <div className="guild-filter">
+              <SearchIcon className="icon" />
+              <input
+                type="search"
+                value={serverFilter}
+                autoComplete="off"
+                spellCheck={false}
+                aria-label={t.guilds.serverFilterLabel}
+                placeholder={t.guilds.serverFilterPlaceholder}
+                onChange={(e) => setServerFilter(e.target.value)}
+              />
+            </div>
+            <p className="guild-count" aria-live="polite">
+              {visibleGuilds.length === 1 ? t.guilds.listCountOne : tf(t.guilds.listCount, { count: visibleGuilds.length })}
+            </p>
+          </div>
+        ) : null}
+      </div>
 
       <GuildCreateRequestPanel />
 
@@ -198,26 +228,6 @@ export default function GuildsPage() {
       )}
 
       <div className="guilds-browse">
-        {supabase && guilds.length > 0 && (
-          <div className="guild-toolbar">
-          <div className="guild-filter">
-            <SearchIcon className="icon" />
-            <input
-              type="search"
-              value={serverFilter}
-              autoComplete="off"
-              spellCheck={false}
-              aria-label={t.guilds.serverFilterLabel}
-              placeholder={t.guilds.serverFilterPlaceholder}
-              onChange={(e) => setServerFilter(e.target.value)}
-            />
-          </div>
-          <p className="guild-count" aria-live="polite">
-            {visibleGuilds.length === 1 ? t.guilds.listCountOne : tf(t.guilds.listCount, { count: visibleGuilds.length })}
-          </p>
-          </div>
-        )}
-
         {supabase && guilds.length === 0 ? (
           <div className="empty-state">{authLoading ? t.guilds.loading : t.guilds.empty}</div>
         ) : visibleGuilds.length === 0 && guilds.length > 0 ? (
@@ -232,8 +242,16 @@ export default function GuildsPage() {
             const canEnter = canManage || isActiveMember;
             const isPending = membership?.status === "pending";
             const isRejected = membership?.status === "rejected";
+            // Opening every guild room comes with the admin badge; being *in* a
+            // guild does not, so an admin applies like anybody else. The
+            // one-guild rule holds for them too — only the guild's own master
+            // is already in and has nothing to apply for.
             const blockedByOther =
-              Boolean(openMembership) && openMembership?.guild_id !== guild.id && !canManage;
+              Boolean(openMembership) && openMembership?.guild_id !== guild.id && !isDiscordMaster;
+            const frozen = frozenIds.has(guild.id);
+            const canJoin =
+              Boolean(session) && !isDiscordMaster && !isActiveMember && !isPending
+              && !blockedByOther && !frozen;
             const busy = busyId === guild.id;
             const drafting = joinGuildId === guild.id;
             const noteId = `${ids}-note-${guild.id}`;
@@ -268,6 +286,12 @@ export default function GuildsPage() {
                       </p>
                     ) : null}
                   </div>
+                  {frozen ? (
+                    <span className="pill pill-warn guild-frozen-pill" title={t.guilds.frozenHint}>
+                      <LockIcon className="icon icon-sm" />
+                      {t.guilds.frozen}
+                    </span>
+                  ) : null}
                   {statusLabel ? <span className={statusClass}>{statusLabel}</span> : null}
                 </div>
                 <div className="guild-card-body">
@@ -300,7 +324,7 @@ export default function GuildsPage() {
                       <Link className="button button-primary" href={guildRoomHref(guild.slug)}>
                         {t.guilds.openRoom}
                       </Link>
-                      {isActiveMember && !canManage && (
+                      {isActiveMember && !isDiscordMaster && (
                         <button
                           className="small-button"
                           type="button"
@@ -312,7 +336,7 @@ export default function GuildsPage() {
                       )}
                     </>
                   )}
-                  {!canEnter && isPending && (
+                  {isPending && (
                     <>
                       <span className="pill">{t.guilds.pending}</span>
                       <button
@@ -334,7 +358,10 @@ export default function GuildsPage() {
                       {t.auth.signIn}
                     </button>
                   )}
-                  {!canEnter && !isPending && !blockedByOther && session && drafting && (
+                  {!canEnter && !isPending && frozen && session ? (
+                    <span className="guild-meta">{t.guilds.frozenJoin}</span>
+                  ) : null}
+                  {canJoin && drafting && (
                     <>
                       <button
                         className="button button-primary"
@@ -349,7 +376,7 @@ export default function GuildsPage() {
                       </button>
                     </>
                   )}
-                  {!canEnter && !isPending && !blockedByOther && session && !drafting && (
+                  {canJoin && !drafting && (
                     <button
                       className="button button-primary"
                       type="button"

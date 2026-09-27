@@ -24,6 +24,11 @@ import {
 } from "../../lib/content/guild-alliances";
 import { GuildAlliance, type AllianceGuild } from "./GuildAlliance";
 import { GuildSiegeCamps, type SiegeBase } from "./GuildSiegeCamps";
+import {
+  ROME_MAP_VARIANTS,
+  isRomeMapVariant,
+  type RomeMapVariant,
+} from "../../lib/content/dawn-of-rome-map";
 import { getSupabaseBrowserClient } from "../../lib/supabase/client";
 import { useLocale } from "../components/LocaleProvider";
 import { CloseIcon, PlusIcon } from "../components/Icons";
@@ -51,6 +56,9 @@ type Props = {
   canOfficer: boolean;
   roster: GuildRosterEntry[];
   eventId: GuildPlanEventId;
+  /** Every event the guild has switched on; the tabs live in this box's head. */
+  activeEventIds?: readonly GuildPlanEventId[];
+  onSelectEvent?: (id: GuildPlanEventId) => void;
 };
 
 function eventLabel(
@@ -69,11 +77,15 @@ export function GuildEventBoard({
   roster,
   eventId,
   onManageEvents,
+  activeEventIds = [],
+  onSelectEvent,
 }: Props) {
   const { t, tf } = useLocale();
   const supabase = getSupabaseBrowserClient();
   const ids = useId();
   const def = guildPlanEventDef(eventId);
+  // Rome is scored by the prestige its territory earns, not by day results.
+  const scored = def.scoreboard !== false;
 
   const [days, setDays] = useState<DayRow[]>([]);
   const [pledges, setPledges] = useState<PledgeRow[]>([]);
@@ -88,6 +100,9 @@ export function GuildEventBoard({
   const [ourScore, setOurScore] = useState("0");
   const [enemyScore, setEnemyScore] = useState("0");
   const [callNote, setCallNote] = useState("");
+  // Which of the two pictures of the Dawn of Rome board this guild plays.
+  const [variant, setVariant] = useState<RomeMapVariant>("dawn-of-rome");
+  const hasHexTerritory = def.hexTerritory === true;
   const [pledgeAmount, setPledgeAmount] = useState("0");
   const [pledgeStatus, setPledgeStatus] = useState<GuildEventPledgeStatus>("waiting");
   const [error, setError] = useState("");
@@ -106,6 +121,17 @@ export function GuildEventBoard({
     if (!supabase) return;
     let gone = false;
     void (async () => {
+      if (hasHexTerritory) {
+        const mapRes = await supabase
+          .from("guild_active_events")
+          .select("map_variant")
+          .match({ guild_id: guildId, event_id: eventId })
+          .maybeSingle();
+        if (gone) return;
+        const stored = mapRes.data?.map_variant;
+        if (typeof stored === "string" && isRomeMapVariant(stored)) setVariant(stored);
+      }
+
       const [dayRes, pledgeRes] = await Promise.all([
         supabase
           .from("guild_event_days")
@@ -136,7 +162,7 @@ export function GuildEventBoard({
     return () => {
       gone = true;
     };
-  }, [supabase, guildId, eventId, def.seriesDays, reloadToken]);
+  }, [supabase, guildId, eventId, def.seriesDays, reloadToken, hasHexTerritory]);
 
   useEffect(() => {
     if (!supabase) return;
@@ -162,7 +188,7 @@ export function GuildEventBoard({
     return () => {
       gone = true;
     };
-  }, [supabase, guildId, eventId, dayIndex, userId, reloadToken]);
+  }, [supabase, guildId, eventId, dayIndex, userId, reloadToken, hasHexTerritory]);
 
   useEffect(() => {
     if (!supabase) return;
@@ -275,6 +301,21 @@ export function GuildEventBoard({
       return null;
     }
     return data as DayRow;
+  };
+
+  /**
+    * The map a guild plays is on its active-event row. The painted hexes are
+    * kept in the board's own coordinates, which both pictures share, so the
+    * territory moves with the switch rather than scattering.
+    */
+  const switchMap = async (next: RomeMapVariant) => {
+    if (!supabase || next === variant) return;
+    setVariant(next);
+    const { error: saveError } = await supabase
+      .from("guild_active_events")
+      .update({ map_variant: next })
+      .match({ guild_id: guildId, event_id: eventId });
+    if (saveError) setError(saveError.message);
   };
 
   const saveScores = async () => {
@@ -392,10 +433,28 @@ export function GuildEventBoard({
   return (
     <section className="guild-panel guild-event-board">
       <header className="guild-panel-head">
-        <h2>{eventLabel(t, eventId)}</h2>
-        <span className="count">
-          {t.guilds.eventSeries}: {series.won} : {series.lost}
-        </span>
+        {activeEventIds.length > 1 && onSelectEvent ? (
+          <nav className="guild-event-tabs" aria-label={t.guilds.planung}>
+            {activeEventIds.map((id) => (
+              <button
+                key={id}
+                type="button"
+                className={id === eventId ? "guild-tab is-active" : "guild-tab"}
+                aria-pressed={id === eventId}
+                onClick={() => onSelectEvent(id)}
+              >
+                {eventLabel(t, id)}
+              </button>
+            ))}
+          </nav>
+        ) : (
+          <h2>{eventLabel(t, eventId)}</h2>
+        )}
+        {scored ? (
+          <span className="count">
+            {t.guilds.eventSeries}: {series.won} : {series.lost}
+          </span>
+        ) : null}
         {canOfficer && onManageEvents ? (
           <button className="small-button" type="button" onClick={onManageEvents}>
             <PlusIcon className="icon icon-sm" />
@@ -416,6 +475,7 @@ export function GuildEventBoard({
         </p>
       ) : null}
 
+      {scored ? (
       <div className="guild-event-days" role="tablist" aria-label={t.guilds.eventSeries}>
         {Array.from({ length: def.seriesDays }, (_, i) => i + 1).map((n) => {
           const row = days.find((d) => d.day_index === n);
@@ -443,6 +503,7 @@ export function GuildEventBoard({
           );
         })}
       </div>
+      ) : null}
 
       <p className="guild-event-timer" aria-live="polite">
         <span className="guild-event-timer-label">{t.guilds.eventTimerLabel}</span>
@@ -451,6 +512,8 @@ export function GuildEventBoard({
         </strong>
       </p>
 
+      {scored ? (
+        <>
       <div className="guild-event-scores">
         <div className="field">
           <label htmlFor={`${ids}-our`}>{t.guilds.eventOurScore}</label>
@@ -543,6 +606,26 @@ export function GuildEventBoard({
           </button>
         ) : null}
       </div>
+        </>
+      ) : null}
+
+      {hasHexTerritory ? (
+        <div className="siege-variant" role="group" aria-label={t.guilds.mapVariantLabel}>
+          <span className="siege-tools-label">{t.guilds.mapVariantLabel}</span>
+          {ROME_MAP_VARIANTS.map((value) => (
+            <button
+              key={value}
+              type="button"
+              className="small-button"
+              aria-pressed={variant === value}
+              disabled={busy || !canOfficer}
+              onClick={() => void switchMap(value)}
+            >
+              {t.guilds.mapVariants[value]}
+            </button>
+          ))}
+        </div>
+      ) : null}
 
       {def.camps ? (
         <GuildAlliance
@@ -595,6 +678,7 @@ export function GuildEventBoard({
           bases={onShared ? sharedBases : []}
           needsBase={onShared && ally !== null && allianceNeedsBase(ally, guildId) && canOfficer}
           onPickBase={pickSharedBase}
+          variant={variant}
           onChanged={reload}
         />
       ) : null}

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import {
-  DAWN_OF_ROME_MAP,
+  ROME_MAPS,
   isRomeClickable,
   isRomeTile,
   romeHexPolygon,
@@ -10,6 +10,7 @@ import {
   romeTileKind,
   romeTiles,
   type DawnTone,
+  type RomeMapVariant,
 } from "../../lib/content/dawn-of-rome-map";
 import { getSupabaseBrowserClient } from "../../lib/supabase/client";
 import { useLocale } from "../components/LocaleProvider";
@@ -19,6 +20,24 @@ type SiegeScope =
   | { kind: "alliance"; allianceId: string };
 
 type HexRow = { q: number; r: number; tone: number };
+
+/**
+ * Which table holds this board's hexes, and the key that finds them. The
+ * toolbar writes whole halves of the board at once and needs the same answer.
+ */
+export function romeHexSource(scope: SiegeScope) {
+  return scope.kind === "alliance"
+    ? {
+        table: "guild_alliance_hexes",
+        key: { alliance_id: scope.allianceId } as Record<string, string>,
+        conflict: "alliance_id,day_index,q,r",
+      }
+    : {
+        table: "guild_event_hexes",
+        key: { guild_id: scope.guildId, event_id: "dawn-of-rome" } as Record<string, string>,
+        conflict: "guild_id,event_id,day_index,q,r",
+      };
+}
 
 /**
  * The territory layer of the Dawn of Rome map. Officers colour clickable tiles:
@@ -31,12 +50,21 @@ export function GuildRomeTerritory({
   canPaint,
   tone,
   erasing,
+  onPainted,
+  reloadToken = 0,
+  variant = "dawn-of-rome",
 }: {
   scope: SiegeScope;
   dayIndex: number;
   canPaint: boolean;
   tone: DawnTone;
   erasing: boolean;
+  /** Every painted hex, so the board above can total the prestige. */
+  onPainted?: (rows: HexRow[]) => void;
+  /** Bumped by the toolbar after it writes, to read the board back. */
+  reloadToken?: number;
+  /** Which of the two pictures of this board is on screen. */
+  variant?: RomeMapVariant;
 }) {
   const { t } = useLocale();
   const supabase = getSupabaseBrowserClient();
@@ -44,18 +72,7 @@ export function GuildRomeTerritory({
   const owner = shared ? scope.allianceId : scope.guildId;
 
   const source = useMemo(
-    () =>
-      shared
-        ? {
-            table: "guild_alliance_hexes",
-            key: { alliance_id: owner } as Record<string, string>,
-            conflict: "alliance_id,day_index,q,r",
-          }
-        : {
-            table: "guild_event_hexes",
-            key: { guild_id: owner, event_id: "dawn-of-rome" } as Record<string, string>,
-            conflict: "guild_id,event_id,day_index,q,r",
-          },
+    () => romeHexSource(shared ? { kind: "alliance", allianceId: owner } : { kind: "guild", guildId: owner }),
     [shared, owner],
   );
 
@@ -83,7 +100,11 @@ export function GuildRomeTerritory({
     return () => {
       gone = true;
     };
-  }, [supabase, source, dayIndex]);
+  }, [supabase, source, dayIndex, reloadToken]);
+
+  useEffect(() => {
+    onPainted?.(painted);
+  }, [painted, onPainted]);
 
   const toneAt = (col: number, row: number) =>
     painted.find((entry) => entry.q === col && entry.r === row)?.tone ?? 0;
@@ -152,7 +173,7 @@ export function GuildRomeTerritory({
 
       <svg
         className="siege-hex-layer"
-        viewBox={`0 0 ${DAWN_OF_ROME_MAP.width} ${DAWN_OF_ROME_MAP.height}`}
+        viewBox={`0 0 ${ROME_MAPS[variant].width} ${ROME_MAPS[variant].height}`}
         preserveAspectRatio="none"
         role="group"
         aria-label={t.guilds.hexLayerLabel}
@@ -168,7 +189,7 @@ export function GuildRomeTerritory({
             <polygon
               key={`${col},${row}`}
               className="siege-hex"
-              points={romeHexPolygon(col, row)}
+              points={romeHexPolygon(col, row, variant)}
               data-tone={worn || undefined}
               data-kind={kind}
               onClick={canPaint && clickable ? () => void paint(col, row) : undefined}

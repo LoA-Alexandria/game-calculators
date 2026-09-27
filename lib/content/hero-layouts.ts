@@ -1,12 +1,14 @@
 import layoutData from "../data/hero-layouts.json" with { type: "json" };
+import { collectionItemById, type CollectionItem } from "./collection.ts";
 
 /**
  * Language-independent parts of the Hero layouts guide. Which hero sits in
  * which build, counter, or utility group is in `lib/data/hero-layouts.json`,
  * the file the layouts editor exports. Everything readable (build names and
  * texts, counter and group labels, notes such as "with item") lives in
- * `guideEntries.heroLayouts` under keys the JSON points at. Hero and Collection
- * names are the same in every language.
+ * `guideEntries.heroLayouts` under keys the JSON points at. Hero names are the
+ * same in every language; a Collection pick names an item by its id in the
+ * Collection guide, which supplies the picture and the translated name.
  */
 
 /**
@@ -36,25 +38,31 @@ export function slotWeight(slot: number): number {
   return (slot - 1) / (FORMATION_SLOTS - 1);
 }
 
-/** Collection items get their own chip style next to heroes. */
-export const COLLECTION_ITEMS: ReadonlySet<string> = new Set([
-  "Bicycle",
-  "Boat",
-  "Dagger",
-  "David/Adam",
-  "Grenade",
-  "Hammer",
-  "Horse",
-  "Mask",
-  "Noah’s Ark",
-  "Pedal Car",
-  "Replica",
-  "Wings",
-  "Wreath",
-]);
+/**
+ * A hero by name, or a Collection item by its id in `lib/data/collection.json`.
+ * `note` is a key into `pickNotes` ("with item").
+ *
+ * The guide used to keep its own list of Collection names and draw a diamond
+ * beside them. Pointing at the item instead means the picture and the
+ * translated name come from the Collection guide, the same way Collection
+ * layouts does it, and there is one list of items on the site rather than two.
+ */
+export type LayoutPick = { hero: string; item?: undefined; note?: string } | { hero?: undefined; item: string; note?: string };
 
-/** A hero or Collection item; `note` is a key into `pickNotes` ("with item"). */
-export type LayoutPick = { hero: string; note?: string };
+/** True when the pick names a Collection item rather than a hero. */
+export function isItemPick(pick: LayoutPick): pick is { item: string; note?: string } {
+  return typeof pick.item === "string" && pick.item.length > 0;
+}
+
+/** The Collection item a pick names, or nothing when the pick is a hero. */
+export function pickItem(pick: LayoutPick): CollectionItem | undefined {
+  return isItemPick(pick) ? collectionItemById(pick.item) : undefined;
+}
+
+/** What a pick is called before translation: a hero name, or the item's id. */
+export function pickKey(pick: LayoutPick): string {
+  return pick.item ?? pick.hero ?? "";
+}
 export type LayoutCounter = { id: string; picks: LayoutPick[] };
 export type LayoutGroup = { id: string; picks: LayoutPick[] };
 export type LayoutRole = { id: string; groups: LayoutGroup[] };
@@ -102,11 +110,33 @@ export function layoutTexts(entry: { [key in (typeof LAYOUT_TEXT_MAPS)[number]]:
   };
 }
 
+/**
+ * The first Collection item the guide picks anywhere, for the legend to show.
+ * Taken from the data rather than named in the page, so the legend cannot end
+ * up pointing at an item the guide has stopped using.
+ */
+export function firstLayoutItem(data: LayoutData): string {
+  for (const build of data.builds) {
+    for (const zone of BUILD_ZONES) {
+      for (const pick of build[zone]) if (isItemPick(pick)) return pick.item;
+    }
+    for (const counter of build.counters) {
+      for (const pick of counter.picks) if (isItemPick(pick)) return pick.item;
+    }
+  }
+  for (const role of data.utility) {
+    for (const group of role.groups) {
+      for (const pick of group.picks) if (isItemPick(pick)) return pick.item;
+    }
+  }
+  return "";
+}
+
 /** Every hero named anywhere in the layout, Collection items excluded. */
 export function placedHeroes(data: LayoutData): Set<string> {
   const names = new Set<string>();
   const add = (picks: readonly LayoutPick[]) => {
-    for (const pick of picks) if (!COLLECTION_ITEMS.has(pick.hero)) names.add(pick.hero);
+    for (const pick of picks) if (!isItemPick(pick)) names.add(pick.hero);
   };
   for (const build of data.builds) {
     for (const zone of BUILD_ZONES) add(build[zone]);

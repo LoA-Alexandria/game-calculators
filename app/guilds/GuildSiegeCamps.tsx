@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState, type CSSProperties } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useState, type CSSProperties } from "react";
 import {
   GUILD_CAMP_NAME_MAX,
   GUILD_CAMP_NOTE_MAX,
@@ -8,7 +8,6 @@ import {
   GUILD_HORN_STEPS,
   campAttackers,
   campSlots,
-  campTargets,
   emptyOrder,
   guildPlanEventDef,
   ringSpread,
@@ -19,17 +18,25 @@ import {
   type GuildPlanEventId,
 } from "../../lib/content/guild-events";
 import {
-  DAWN_OF_ROME_BASES,
-  DAWN_OF_ROME_MAP,
+  ROME_MAPS,
+  romeBasePoints,
   DAWN_TONES,
+  romeFillTiles,
+  romeNamedPlaces,
   type DawnTone,
+  type RomeFill,
+  type RomeMapVariant,
 } from "../../lib/content/dawn-of-rome-map";
 import { guildRosterLabel, type GuildRosterEntry } from "../../lib/content/guilds";
 import { asset } from "../../lib/site";
 import { getSupabaseBrowserClient } from "../../lib/supabase/client";
 import { useLocale } from "../components/LocaleProvider";
 import { CheckIcon, CloseIcon, GuildsIcon, HornIcon, RingIcon, UsersIcon } from "../components/Icons";
-import { GuildRomeTerritory } from "./GuildRomeTerritory";
+import { GuildRomeTerritory, romeHexSource } from "./GuildRomeTerritory";
+import {
+  romePrestigeBoard,
+  type PaintedHex,
+} from "../../lib/content/dawn-of-rome-prestige";
 
 const CAMP_COLUMNS = "slot, name, server_name, is_ours, priority, note, horn_share, ring_focus";
 const ORDER_COLUMNS = "user_id, attack_target";
@@ -50,9 +57,9 @@ const SIEGE_MAPS: Partial<
     ],
   },
   "dawn-of-rome": {
-    image: DAWN_OF_ROME_MAP.image,
-    ratio: DAWN_OF_ROME_MAP.ratio,
-    points: [...DAWN_OF_ROME_BASES],
+    image: ROME_MAPS["dawn-of-rome"].image,
+    ratio: ROME_MAPS["dawn-of-rome"].ratio,
+    points: romeBasePoints("dawn-of-rome"),
     wide: true,
   },
 };
@@ -102,6 +109,7 @@ export function GuildSiegeCamps({
   onChanged,
   ownLabel = "",
   partnerName = "",
+  variant = "dawn-of-rome",
 }: {
   scope: SiegeScope;
   eventId: GuildPlanEventId;
@@ -119,18 +127,95 @@ export function GuildSiegeCamps({
   /** Allied partner on a shared board, if any. */
   /** The allied guild's name, for the territory palette. */
   partnerName?: string;
+  /** Which picture of the Dawn of Rome board to draw. */
+  variant?: RomeMapVariant;
 }) {
   const { t, tf, n } = useLocale();
   const supabase = getSupabaseBrowserClient();
-  const map = SIEGE_MAPS[eventId] ?? FALLBACK;
   const eventDef = guildPlanEventDef(eventId);
   const showStock = eventDef.stock !== false;
   const showHex = eventDef.hexTerritory === true;
+  // Dawn of Rome has two pictures of the same board; every other event has one.
+  const map = showHex
+    ? {
+        ...(SIEGE_MAPS[eventId] ?? FALLBACK),
+        image: ROME_MAPS[variant].image,
+        ratio: ROME_MAPS[variant].ratio,
+        points: romeBasePoints(variant),
+      }
+    : SIEGE_MAPS[eventId] ?? FALLBACK;
   const shared = scope.kind === "alliance";
   const owner = shared ? scope.allianceId : scope.guildId;
   // Which colour the next tap paints with, and whether it wipes instead.
   const [tone, setTone] = useState<DawnTone>(1);
   const [erasing, setErasing] = useState(false);
+  // What the territory layer holds, so the prestige can be totalled here.
+  const [painted, setPainted] = useState<PaintedHex[]>([]);
+  const [hexToken, setHexToken] = useState(0);
+  const [wipeAsked, setWipeAsked] = useState(false);
+  const prestige = useMemo(() => romePrestigeBoard(painted), [painted]);
+
+  /** A place keeps its own name until a guild takes it. */
+  const neutralPlaces = useMemo(() => {
+    const taken = new Set(painted.filter((hex) => hex.tone > 0).map((hex) => `${hex.q},${hex.r}`));
+    return romeNamedPlaces(variant).filter(
+      ({ structure }) => !structure.tiles.some(([col, row]) => taken.has(`${col},${row}`)),
+    );
+  }, [painted, variant]);
+
+  /**
+   * The toolbar writes whole halves of the board in one go. Each fill is a
+   * single upsert and each wipe a single delete, rather than a few hundred
+   * round trips.
+   */
+  const hexSource = useMemo(() => romeHexSource(scope), [scope]);
+
+  const fillHexes = async (fill: RomeFill) => {
+    if (!supabase || !plans || busy) return;
+    const tiles = romeFillTiles(fill);
+    setBusy(true);
+    setError("");
+    const stamp = new Date().toISOString();
+    const { error: saveError } = await supabase.from(hexSource.table).upsert(
+      tiles.map((tile) => ({
+        ...hexSource.key,
+        day_index: dayIndex,
+        q: tile.col,
+        r: tile.row,
+        tone,
+        updated_at: stamp,
+      })),
+      { onConflict: hexSource.conflict },
+    );
+    if (saveError) setError(saveError.message);
+    else setHexToken((value) => value + 1);
+    setBusy(false);
+  };
+
+  const wipeHexes = async (only?: DawnTone) => {
+    if (!supabase || !plans || busy) return;
+    setBusy(true);
+    setError("");
+    let query = supabase
+      .from(hexSource.table)
+      .delete()
+      .match({ ...hexSource.key, day_index: dayIndex });
+    if (only !== undefined) query = query.eq("tone", only);
+    const { error: wipeError } = await query;
+    if (wipeError) setError(wipeError.message);
+    else {
+      setWipeAsked(false);
+      setHexToken((value) => value + 1);
+    }
+    setBusy(false);
+  };
+
+  const toneLabel = (value: number) =>
+    value === 1
+      ? ownLabel || t.guilds.hexBrushOurs
+      : value === 2
+        ? partnerName || t.guilds.hexBrushAlly
+        : tf(t.guilds.hexBrushOther, { n: value - 2 });
 
   const source = useMemo(
     () =>
@@ -287,8 +372,9 @@ export function GuildSiegeCamps({
   const campAt = (slot: number) => camps.find((camp) => camp.slot === slot) ?? blank[slot - 1];
   const attackable = camps.filter((camp) => !baseAt(camp.slot));
   // Only a village that actually has an order carries a number on the map.
-  const targets = campTargets(attackable).filter((camp) => camp.priority > 0);
-  const orderOf = (slot: number) => targets.findIndex((entry) => entry.slot === slot) + 1;
+  // The number an officer put on a village, not its rank among the others:
+  // ranking meant the first target tapped always came back as 1.
+  const orderOf = (slot: number) => campAt(slot).priority;
   const campLabel = (camp: GuildEventCampRow) => camp.name.trim() || tf(t.guilds.campSlot, { n: camp.slot });
 
   const selected = selection && selection.key === siege ? selection.slot : null;
@@ -374,6 +460,57 @@ export function GuildSiegeCamps({
         </div>
       ) : null}
 
+      {showHex && plans ? (
+        <div className="siege-tools" role="group" aria-label={t.guilds.hexToolsLabel}>
+          <span className="siege-tools-label">{t.guilds.hexSplit}</span>
+          {(["west", "east", "north", "south", "all"] as const).map((fill) => (
+            <button
+              key={fill}
+              type="button"
+              className="small-button"
+              disabled={busy}
+              onClick={() => void fillHexes(fill)}
+            >
+              {t.guilds.hexFills[fill]}
+            </button>
+          ))}
+          <span className="siege-tools-sep" aria-hidden="true" />
+          <button
+            type="button"
+            className="small-button"
+            disabled={busy}
+            onClick={() => void wipeHexes(tone)}
+          >
+            {tf(t.guilds.hexClearTone, { name: toneLabel(tone) })}
+          </button>
+          {wipeAsked ? (
+            <>
+              <span className="siege-tools-ask">{t.guilds.hexClearAllConfirm}</span>
+              <button
+                type="button"
+                className="small-button button-danger"
+                disabled={busy}
+                onClick={() => void wipeHexes()}
+              >
+                {t.guilds.hexClearAll}
+              </button>
+              <button type="button" className="small-button" disabled={busy} onClick={() => setWipeAsked(false)}>
+                {t.guilds.postCancel}
+              </button>
+            </>
+          ) : (
+            <button
+              type="button"
+              className="small-button button-danger"
+              disabled={busy}
+              onClick={() => setWipeAsked(true)}
+            >
+              {t.guilds.hexClearAll}
+            </button>
+          )}
+        </div>
+      ) : null}
+
       <div
         className="siege-map"
         data-wide={map.wide ? "true" : undefined}
@@ -391,8 +528,26 @@ export function GuildSiegeCamps({
             canPaint={plans}
             tone={tone}
             erasing={erasing}
+            onPainted={setPainted}
+            reloadToken={hexToken}
+            variant={variant}
           />
         ) : null}
+
+        {showHex
+          ? neutralPlaces.map(({ structure, point }) => (
+              <span
+                key={structure.tiles[0].join(",")}
+                className="siege-place"
+                data-kind={structure.kind}
+                style={{ "--village-x": `${point.x}%`, "--village-y": `${point.y}%` } as CSSProperties}
+              >
+                {variant === "crown-of-the-nile"
+                  ? t.guilds.nilePlaces[structure.nileName!]
+                  : t.guilds.romePlaces[structure.name!]}
+              </span>
+            ))
+          : null}
 
         {Array.from({ length: count }, (_, index) => index + 1).map((slot) => {
           const point = map.points[(slot - 1) % map.points.length];
@@ -402,15 +557,20 @@ export function GuildSiegeCamps({
           const attackers = campAttackers(slot, orders);
           const quiet = camp.horn_share === 0 && !camp.ring_focus && attackers.length === 0;
 
+          const label = base ? base.label : campLabel(camp);
+          const place = { "--village-x": `${point.x}%`, "--village-y": `${point.y}%` } as CSSProperties;
+
           return (
+            <Fragment key={slot}>
             <button
-              key={slot}
               type="button"
               className="siege-village"
+              data-compact={showHex ? "true" : undefined}
               data-state={base ? (base.own ? "ours" : "ally") : order > 0 ? "target" : "free"}
               data-prio={order > 0 ? Math.min(order, 4) : undefined}
               aria-pressed={selected === slot}
-              style={{ "--village-x": `${point.x}%`, "--village-y": `${point.y}%` } as CSSProperties}
+              aria-label={showHex ? label : undefined}
+              style={place}
               onClick={() => pick(slot)}
             >
               <span className="siege-village-head">
@@ -422,8 +582,10 @@ export function GuildSiegeCamps({
                   <span className="siege-badge" data-prio={Math.min(order, 4)}>
                     {order}
                   </span>
+                ) : showHex ? (
+                  <span className="siege-badge is-blank" aria-hidden="true" />
                 ) : null}
-                <span className="siege-village-name">{base ? base.label : campLabel(camp)}</span>
+                <span className="siege-village-name">{label}</span>
               </span>
               {base || quiet || !showStock ? null : (
                 <span className="siege-village-numbers">
@@ -455,6 +617,15 @@ export function GuildSiegeCamps({
                 </span>
               ) : null}
             </button>
+            {/* The name sits beside the badge, not inside the button: on the hex
+                map a chip wide enough to read covered several hexes and swallowed
+                their taps. This one lets them through. */}
+            {showHex ? (
+              <span className="siege-village-caption" style={place} aria-hidden="true">
+                {label}
+              </span>
+            ) : null}
+            </Fragment>
           );
         })}
 
@@ -615,7 +786,7 @@ export function GuildSiegeCamps({
                       aria-label={t.guilds.campNote}
                       defaultValue={current.note}
                       maxLength={GUILD_CAMP_NOTE_MAX}
-                      placeholder={t.guilds.campNotePlaceholder}
+                      placeholder={showStock ? t.guilds.campNotePlaceholder : t.guilds.campNotePlain}
                       disabled={busy}
                       onBlur={(e) => {
                         if (e.target.value !== current.note) void saveCamp(current, { note: e.target.value });
@@ -669,6 +840,39 @@ export function GuildSiegeCamps({
           </>
         ) : null}
       </div>
+
+      {showHex ? (
+        <div className="siege-prestige">
+          <h3>{t.guilds.prestigeTitle}</h3>
+          {prestige.length === 0 ? (
+            <p className="siege-prestige-empty">{t.guilds.prestigeEmpty}</p>
+          ) : (
+            <ul className="siege-prestige-list">
+              {prestige.map((tally) => (
+                <li key={tally.tone} className="siege-prestige-row" data-tone={tally.tone}>
+                  <span className="siege-brush-dot" aria-hidden="true" />
+                  <span className="siege-prestige-name">{toneLabel(tally.tone)}</span>
+                  <span className="siege-prestige-hexes">
+                    {tf(t.guilds.prestigeHexes, { count: tally.hexes })}
+                  </span>
+                  <span className="siege-prestige-rate">
+                    {tf(t.guilds.prestigePerMinute, { n: n(tally.perMinute) })}
+                    {tally.incomplete ? <span className="siege-prestige-open">+?</span> : null}
+                  </span>
+                  <span className="siege-prestige-places">
+                    {tally.lines
+                      .map((line) => `${line.held}\u00d7 ${t.guilds.places[line.kind]}`)
+                      .join(" \u00b7 ")}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+          {prestige.some((tally) => tally.incomplete) ? (
+            <p className="siege-prestige-note">{t.guilds.prestigeUnknown}</p>
+          ) : null}
+        </div>
+      ) : null}
 
       {showStock ? (
         <div className="siege-stock">

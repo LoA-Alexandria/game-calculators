@@ -86,6 +86,8 @@ test("each guide entry is claimed by exactly the renderer it was written for", (
     goddessLeveling: "goddessLeveling",
     collection: "collection",
     collectionLayouts: "collectionLayouts",
+    cryptidLayout: "cryptidLayout",
+    cryptidTowerLayout: "cryptidTowerLayout",
     adsBuy: "adsBuy",
   };
   for (const [code, dictionary] of Object.entries(mapLocales(getDictionary))) {

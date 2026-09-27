@@ -179,7 +179,19 @@ that guide has (`goddessTexts` for Goddesses, `phaseTexts` for Goddess leveling,
 `filterAll` for Heroes), and
 `tests/guides.test.mjs` pins every entry, so two guides cannot claim the same
 renderer by sharing a field name. Keep `sections` and `note` in those entries
-too, since the editor reads them. Goddess names, rarity, portraits, and the
+too, since the editor reads them.
+
+Cryptid Tower Layout is separate from the existing Cryptid layout:
+`lib/content/cryptid-tower-layouts.ts` stores tower-to-hero, Collection, and
+Cryptide ids, while the localized copy lives in
+`guideEntries.cryptidTowerLayout`. Those ids resolve to pictures, names, and
+anchors in the Core Heroes, Collection, and Cryptides guides. Autumn's notes
+were supplied from Discord messages dated 21 and 25 September 2026; shorthand
+“Mask” and “Wings” are mapped to Golden Mask of Agamemnon and Wings of Icarus.
+The source misspelling “Cerebrus” follows the canonical Core spelling,
+Cerberus.
+
+Goddess names, rarity, portraits, and the
 English affinity and obtain live in `lib/data/goddesses.json`, once for all
 languages; `goddessTexts` translates the wording. `tests/goddesses.test.mjs`
 checks the roster against `public/goddesses/`. Goddess Theater casts live in
@@ -660,8 +672,15 @@ added Hamilton, Les Misérables, and Notre-Dame de Paris to
 yet; the Goddess Theater guide says the cast is not recorded, and the editor
 test pins their `noRoles` problems until someone adds them.
 
-Base values were known only for Pride and Prejudice, Don Quixote, and Robinson
-Crusoe on that day. Autumn
+The first set of base values came from Pride and Prejudice, Don Quixote, and
+Robinson Crusoe. Screenshots from the player supplied on 25–26 September 2026
+add Robin Hood, Count of Monte Cristo, Hamlet, Treasure Island, Peter Pan,
+A Midsummer Night's Dream, Aladdin, Sleeping Beauty, and The Sound of Music.
+The values were read from the play-selection preview; the ticket icon is ticket
+price and the visitor portrait is audience. The same title shows the same pair
+in different halls. Betty and Her Sisters appears in a screenshot but is not in
+the calculator's current play catalog, so it is left for a later catalog update.
+Autumn
 confirmed that a play's base ticket price and visitor flow never change and are
 the same for every player; only the muse coin bonus depends on the goddesses. A
 Magic Lantern shows any play's preview, so the base values can be read off for

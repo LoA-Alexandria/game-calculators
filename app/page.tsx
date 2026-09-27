@@ -5,10 +5,10 @@ import Link from "next/link";
 import { PREMIUM_PERIOD_DAYS, PREMIUM_PRICE_EUR } from "../lib/content/premium";
 import { NEWS } from "../lib/content/news";
 import { eventCount, guideCount, toolCount } from "../lib/navigation";
-import { asset } from "../lib/site";
 import { useAuth } from "./components/AuthProvider";
 import { useDocumentTitle, useLocale } from "./components/LocaleProvider";
 import { ChevronIcon } from "./components/Icons";
+import { asset } from "../lib/site";
 
 export default function Home() {
   const { t, n } = useLocale();
@@ -37,6 +37,21 @@ export default function Home() {
   );
 }
 
+/**
+ * The four draws of the banner, addressed for the page.
+ *
+ * They live in `public/`, so their URLs need the GitHub Pages base path, and a
+ * stylesheet cannot add it: a `url()` written in the CSS file resolves against
+ * the site root and misses the repository folder. The stylesheet still decides
+ * which one to show, by theme and by width; this only tells it where they are.
+ */
+const NEWS_HERO_ART = {
+  "--hero-news-light": `url("${asset("/banners/home-light.webp")}")`,
+  "--hero-news-dark": `url("${asset("/banners/home-dark.webp")}")`,
+  "--hero-news-light-sm": `url("${asset("/banners/home-light-sm.webp")}")`,
+  "--hero-news-dark-sm": `url("${asset("/banners/home-dark-sm.webp")}")`,
+} as CSSProperties;
+
 /** The overview leads with the news slide, then Premium, then the site counts. */
 function NewsHero() {
   const { t, tf, d } = useLocale();
@@ -45,7 +60,7 @@ function NewsHero() {
 
   if (entries.length === 0) {
     return (
-      <section className="hero hero-news">
+      <section className="hero hero-news" style={NEWS_HERO_ART}>
         <div className="eyebrow">{t.home.latestNews}</div>
         <h1>{t.news.title}</h1>
         <p className="lede">{t.news.empty}</p>
@@ -60,9 +75,9 @@ function NewsHero() {
   return (
     <section
       className="hero hero-news"
+      style={NEWS_HERO_ART}
       aria-roledescription="carousel"
       aria-label={t.home.latestNews}
-      style={{ "--hero-news-image": `url("${asset("/banners/guides-scene.webp")}")` } as CSSProperties}
     >
       <div className="news-slide" aria-live="polite">
         <div className="news-slide-head">

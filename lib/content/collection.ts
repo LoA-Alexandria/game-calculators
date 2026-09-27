@@ -107,6 +107,23 @@ export function exclusiveCollectionSearchText(
     .join(" ");
 }
 
+const ITEM_BY_ID = new Map(COLLECTION_ITEMS.map((item) => [item.id, item]));
+
+/** One item by its id, or nothing when the Collection guide has not got it yet. */
+export function collectionItemById(id: string): CollectionItem | undefined {
+  return ITEM_BY_ID.get(id);
+}
+
+const ID_BY_NAME = new Map(COLLECTION_ITEMS.map((item) => [item.name.trim().toLowerCase(), item.id]));
+
+/**
+ * The id of the item with this English name. Editors type a name; the files
+ * they export carry the id, so the matching happens once, at the keyboard.
+ */
+export function collectionIdNamed(name: string): string | undefined {
+  return ID_BY_NAME.get(name.trim().toLowerCase());
+}
+
 export function collectionImageUrl(file: string): string {
   return asset(`/collection/${file}`);
 }

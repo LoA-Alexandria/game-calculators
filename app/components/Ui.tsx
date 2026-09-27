@@ -5,6 +5,7 @@ import { sectionBannerLogoUrl, sectionBannerUrl } from "../../lib/content/banner
 import type { NavItem, NavSection } from "../../lib/navigation";
 import { useAuth } from "./AuthProvider";
 import { SECTION_ICONS } from "./Icons";
+import { toolIconUrl } from "../../lib/content/banners";
 import { useLocale } from "./LocaleProvider";
 
 export function SectionBanner({ id }: { id: NavSection["id"] }) {
@@ -74,6 +75,7 @@ export function ToolCard({ item }: { item: NavItem }) {
   const { session } = useAuth();
   const locked = Boolean(item.premium && !session?.premium);
   const href = locked ? "/premium/" : item.href;
+  const icon = toolIconUrl(item.href);
   return (
     <Link className={locked ? "tool-card tool-card-premium-locked" : "tool-card"} href={href}>
       <div className="card-topline">
@@ -83,6 +85,13 @@ export function ToolCard({ item }: { item: NavItem }) {
         </div>
         <span aria-hidden="true" className="arrow">↗</span>
       </div>
+      {icon ? (
+        <div className="tool-card-mark" aria-hidden="true">
+          {/* A static export cannot optimise images; these are small WebP already. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={icon} alt="" width={64} height={64} loading="lazy" decoding="async" />
+        </div>
+      ) : null}
       <h3>{item.label(t)}</h3>
       {item.description ? (
         <div className={locked ? "tool-card-body is-blurred" : "tool-card-body"}>

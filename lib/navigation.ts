@@ -199,6 +199,20 @@ export const SECTIONS: NavSection[] = [
         categoryId: "layouts",
       },
       {
+        href: "/guides/cryptid-layout/",
+        label: (t) => t.guideEntries.cryptidLayout.title,
+        description: (t) => t.guideEntries.cryptidLayout.summary,
+        badge: (t) => t.guideCategories.layouts,
+        categoryId: "layouts",
+      },
+      {
+        href: "/guides/cryptid-tower-layout/",
+        label: (t) => t.guideEntries.cryptidTowerLayout.title,
+        description: (t) => t.guideEntries.cryptidTowerLayout.summary,
+        badge: (t) => t.guideCategories.layouts,
+        categoryId: "layouts",
+      },
+      {
         href: "/guides/artwork-layouts/",
         label: (t) => t.guideEntries.artworkLayouts.title,
         description: (t) => t.guideEntries.artworkLayouts.summary,
@@ -313,6 +327,12 @@ export const SECTIONS: NavSection[] = [
         href: "/simulations/hero-team-planner/",
         label: (t) => t.heroBattle.title,
         description: (t) => t.heroBattle.intro,
+      },
+      {
+        href: "/simulations/grand-voyage/",
+        label: (t) => t.tools.voyageSimulator.name,
+        description: (t) => t.tools.voyageSimulator.description,
+        badge: (t) => t.tools.voyageSimulator.category,
       },
       {
         href: "/simulations/irrigation-planner/",

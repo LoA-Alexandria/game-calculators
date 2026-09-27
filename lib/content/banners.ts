@@ -1,6 +1,6 @@
 import type { NavSection } from "../navigation.ts";
 import { asset } from "../site.ts";
-import type { GuideEntryId } from "./guides.ts";
+import { camelToKebab, type GuideEntryId } from "./guides.ts";
 
 /**
  * Optional images for the banner slot on each section index.
@@ -43,32 +43,93 @@ export function sectionBannerLogoUrl(id: NavSection["id"]): string | null {
 export type TitleBanner = { src: string; width: number; height: number };
 
 /**
- * Artwork that takes the place of a guide's title text. The picture already
- * says the title, so the heading keeps the translated title as its alt text.
+ * Artwork that takes the place of a title. The picture already says the title,
+ * so the heading keeps the translated one as its alt text.
  *
- * The Hero tier list banner was supplied by the site team on 16 September
- * 2026 (`public/banners/hero-tier-list.webp`, 1024 × 144). The Artwork
- * gallery banner was supplied the same day (`public/banners/artwork.webp`,
- * 1024 × 144). The Goddesses banner followed later that day
- * (`public/banners/goddesses.webp`, 1024 × 144). The Heroes banner is original
- * splash art for the same 1024 × 144 title slot (`public/banners/heroes.webp`,
- * 18 September 2026).
+ * Every guide, every event and every tool has one, supplied by the site team
+ * and redrawn at 2048 × 288 on 26 September 2026 — twice the slot they fill,
+ * so they stay sharp on a dense screen. The file name is the id in kebab-case,
+ * which is also the page's own slug.
  */
-const TITLE_BANNER_VERSION: Partial<Record<GuideEntryId, string>> = {
-  heroes: "5",
+const TITLE_BANNER_SIZE = { width: 1024, height: 144 } as const;
+
+/** Bumped when the pictures are redrawn, so a cached one is not served. */
+const TITLE_BANNER_VERSION = "hd1";
+
+const GUIDE_TITLE_BANNER_VERSIONS: Partial<Record<GuideEntryId, string>> = {
+  artwork: "hd2",
+  heroes: "hd2",
 };
 
-export const GUIDE_TITLE_BANNERS: Partial<Record<GuideEntryId, TitleBanner>> = {
-  heroTierList: { src: "/banners/hero-tier-list.webp", width: 1024, height: 144 },
-  artwork: { src: "/banners/artwork.webp", width: 1024, height: 144 },
-  goddesses: { src: "/banners/goddesses.webp", width: 1024, height: 144 },
-  heroes: { src: "/banners/heroes.webp", width: 1024, height: 144 },
-};
+function titleBanner(path: string, version = TITLE_BANNER_VERSION): TitleBanner {
+  return { src: `${asset(path)}?v=${version}`, ...TITLE_BANNER_SIZE };
+}
+
+const GUIDE_BANNER_IDS: readonly GuideEntryId[] = [
+  "heroes", "technology", "collection", "artwork", "collectionLayouts",
+  "artworkLayouts", "manor", "adsBuy", "goddesses", "cryptides",
+  "goddessTheater", "anecdotes", "heroLayouts", "heroTierList", "heroLinking",
+  "heroLeveling", "goddessLeveling", "buildings", "serverAgeUnlocks", "museion",
+  "cryptidLayout", "cryptidTowerLayout",
+];
 
 export function guideTitleBanner(id: GuideEntryId): TitleBanner | null {
-  const banner = GUIDE_TITLE_BANNERS[id];
-  if (!banner) return null;
-  const src = asset(banner.src);
-  const version = TITLE_BANNER_VERSION[id];
-  return { ...banner, src: version ? `${src}?v=${version}` : src };
+  return GUIDE_BANNER_IDS.includes(id)
+    ? titleBanner(`/banners/${camelToKebab(id)}.webp`, GUIDE_TITLE_BANNER_VERSIONS[id])
+    : null;
+}
+
+/** Every event page has one too; the id is its slug. */
+export function eventTitleBanner(id: string): TitleBanner {
+  return titleBanner(`/banners/events/${camelToKebab(id)}.webp`);
+}
+
+/**
+ * The same 1024 × 144 title slot, for a calculator or simulation, keyed by the
+ * page's own path. Supplied by the site team on 26 September 2026
+ * (`public/banners/tools/`), together with the matching icons in
+ * `public/tool-icons/`, which the cards on the two index pages wear.
+ */
+const TOOL_ART: Record<string, string> = {
+  "/calculators/city-upgrade/": "city-upgrade",
+  "/calculators/goddess-materials/": "goddess-materials",
+  "/calculators/goddess-xp/": "goddess-xp",
+  "/calculators/grand-voyage-route/": "grand-voyage-route",
+  "/calculators/red-carpet-materials/": "red-carpet-materials",
+  "/calculators/theater-income/": "theater-income",
+  "/simulations/irrigation-planner/": "irrigation-planner",
+};
+
+/** Trailing slash or not, a path finds its artwork. */
+function toolKey(href: string | null | undefined): string | null {
+  if (!href) return null;
+  const path = href.endsWith("/") ? href : `${href}/`;
+  return TOOL_ART[path] ?? null;
+}
+
+export function toolTitleBanner(href: string | null | undefined): TitleBanner | null {
+  const name = toolKey(href);
+  return name ? titleBanner(`/banners/tools/${name}.webp`) : null;
+}
+
+export function toolIconUrl(href: string | null | undefined): string | null {
+  const name = toolKey(href);
+  return name ? asset(`/tool-icons/${name}.webp`) : null;
+}
+
+/**
+ * Header art for a group of guides on the guides index. The file names are the
+ * category ids from `lib/navigation.ts` in kebab-case.
+ */
+const GUIDE_CATEGORY_ART: Record<string, string> = {
+  coreElements: "core-elements",
+  buildings: "buildings",
+  layouts: "layouts",
+  tierLists: "tier-lists",
+  tips: "tips",
+};
+
+export function guideCategoryArtUrl(categoryId: string): string | null {
+  const name = GUIDE_CATEGORY_ART[categoryId];
+  return name ? asset(`/banners/guide-categories/${name}.webp`) : null;
 }

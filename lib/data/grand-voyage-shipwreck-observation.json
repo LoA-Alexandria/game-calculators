@@ -1,0 +1,136 @@
+{
+  "source": "Grand Voyage PopEpoch/daten/markt_verkauf.csv; markt_einkauf.csv; schiff_ladung.csv",
+  "effectiveDate": "2026-09-12/13 observation",
+  "origin": "Shipwreck Cove",
+  "cargo": {
+    "Glazed Lamp": {
+      "quantity": 36,
+      "buy": 13570
+    },
+    "Beer": {
+      "quantity": 1,
+      "buy": 2124
+    },
+    "Chili": {
+      "quantity": 1,
+      "buy": 546
+    }
+  },
+  "salePrices": {
+    "Hamburg": {
+      "Glazed Lamp": 33780,
+      "Beer": 2666,
+      "Chili": 860
+    },
+    "Amsterdam": {
+      "Glazed Lamp": 30940,
+      "Beer": 3458,
+      "Chili": 890
+    },
+    "London": {
+      "Glazed Lamp": 27330,
+      "Beer": 4059,
+      "Chili": 849
+    },
+    "Plymouth": {
+      "Glazed Lamp": 27810,
+      "Beer": 4392,
+      "Chili": 846
+    },
+    "Dublin": {
+      "Glazed Lamp": 30500,
+      "Beer": 4487,
+      "Chili": 819
+    },
+    "Paris": {
+      "Glazed Lamp": 27600,
+      "Beer": 2603,
+      "Chili": 765
+    },
+    "Saint-Malo": {
+      "Glazed Lamp": 21920,
+      "Beer": 3812,
+      "Chili": 788
+    },
+    "Bordeaux": {
+      "Glazed Lamp": 22170,
+      "Beer": 3381,
+      "Chili": 726
+    },
+    "Madrid": {
+      "Glazed Lamp": 18570,
+      "Beer": 4097,
+      "Chili": 778
+    },
+    "Gibraltar": {
+      "Glazed Lamp": 19630,
+      "Beer": 4486,
+      "Chili": 679
+    },
+    "Lisbon": {
+      "Glazed Lamp": 13990,
+      "Beer": 3740,
+      "Chili": 785
+    },
+    "Nuuk": {
+      "Glazed Lamp": 26590,
+      "Beer": 3935,
+      "Chili": 769
+    },
+    "Azores": {
+      "Glazed Lamp": 18110,
+      "Beer": 2800,
+      "Chili": 698
+    },
+    "Toronto": {
+      "Glazed Lamp": 19270,
+      "Beer": 4406,
+      "Chili": 746
+    },
+    "Boston": {
+      "Glazed Lamp": 16440,
+      "Beer": 3324,
+      "Chili": 744
+    },
+    "New York": {
+      "Glazed Lamp": 14000,
+      "Beer": 3792,
+      "Chili": 753
+    },
+    "Washington": {
+      "Glazed Lamp": 13720,
+      "Beer": 4524,
+      "Chili": 761
+    },
+    "Jamestown": {
+      "Glazed Lamp": 16650,
+      "Beer": 4127,
+      "Chili": 770
+    },
+    "St. Augustine": {
+      "Glazed Lamp": 19100,
+      "Beer": 3619,
+      "Chili": 701
+    },
+    "Nassau": {
+      "Glazed Lamp": 24630,
+      "Beer": 2792,
+      "Chili": 536
+    },
+    "Havana": {
+      "Glazed Lamp": 34180,
+      "Beer": 4440,
+      "Chili": 769
+    },
+    "Gulf of Mexico": {
+      "Glazed Lamp": 26760,
+      "Beer": 4514,
+      "Chili": 748
+    },
+    "Veracruz": {
+      "Glazed Lamp": 30890,
+      "Beer": 4220,
+      "Chili": 752
+    }
+  }
+}

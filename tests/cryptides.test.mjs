@@ -10,8 +10,10 @@ import { guideHasSnippetEditor, guideHref, guideLayout } from "../lib/content/gu
 import {
   CRYPTIDES,
   CRYPTIDES_DATA,
+  CRYPTID_STAGES,
   CRYPTID_TOWERS,
   TALENT_MATERIALS,
+  orderedStages,
 } from "../lib/content/cryptides.ts";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -53,6 +55,46 @@ test("every Cryptide has tower material, skills, foods, and on-disk images", () 
       assert.ok(existsSync(join(root, "public", "cryptides", food.image)), food.image);
       assert.ok(food.growth > 0, food.id);
     }
+  }
+});
+
+test("every Cryptide walks all six rungs of the ladder, each with a picture", () => {
+  for (const cryptide of CRYPTIDES) {
+    assert.deepEqual(
+      cryptide.stages.map((art) => art.stage),
+      [...CRYPTID_STAGES],
+      cryptide.id,
+    );
+    for (const art of cryptide.stages) {
+      assert.ok(existsSync(join(root, "public", "cryptides", art.image)), art.image);
+    }
+  }
+});
+
+test("orderedStages puts the rungs in ladder order and drops the empty ones", () => {
+  const shuffled = {
+    ...CRYPTIDES[0],
+    stages: [
+      { stage: "mythic", image: "evolution/nidhogg-6.webp" },
+      { stage: "childhood", image: "evolution/nidhogg-1.webp" },
+      { stage: "adult", image: "" },
+    ],
+  };
+  assert.deepEqual(
+    orderedStages(shuffled).map((art) => art.stage),
+    ["childhood", "mythic"],
+  );
+});
+
+test("every language names all six stages", () => {
+  for (const [code, dictionary] of Object.entries(mapLocales(getDictionary))) {
+    const guide = dictionary.guideEntries.cryptides;
+    assert.ok(guide.evolutionHeading, code);
+    for (const stage of CRYPTID_STAGES) {
+      assert.ok(guide.stages[stage], `${code}.${stage}`);
+    }
+    // The six names have to be six different words, or the ladder reads as one rung.
+    assert.equal(new Set(CRYPTID_STAGES.map((stage) => guide.stages[stage])).size, CRYPTID_STAGES.length, code);
   }
 });
 

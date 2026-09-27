@@ -129,6 +129,53 @@ whose board it is, 2 for the guild it is allied with, 3 to 6 for the other side,
 so one map can show who holds what. Tapping a tile that already wears the chosen
 colour clears it.
 
+What stands on the map is a second list, `ROME_STRUCTURES` in
+`dawn-of-rome-tile-data.ts`. A structure is one target: tapping any of its hexes
+paints them all. Their sizes come from the game — Rome 7 hexes, a guild outpost
+4, a walled city 4, a round city 3, a gate 2, a village 1 — and the hexes
+themselves are measured off the artwork, by masking the building's own ink out
+of the picture and growing each group from the hex under its centre to whichever
+neighbour covered most of that ink. A structure wins over the terrain key, since
+a few of them stand on hexes the colour pass had called impassable. The fit was
+checked by eye against a labelled grid drawn over the artwork, which is how
+three groups that the ink mask had put a hex off were corrected.
+
+On the hex map the village chip is only its badge, and the name sits below it
+in a `pointer-events: none` caption: a chip wide enough to read covered several
+hexes and swallowed their taps.
+
+**Crown of the Nile is the same board seen the other way round.** Same lattice,
+same tile for tile, same places at the same sizes, mirrored left to right and
+drawn over Egypt. `ROME_MAPS` holds what differs — the picture, its height,
+where the lattice starts on it, and whether column 0 is drawn on the left or
+the right — and the geometry helpers take a variant. Measured the same way as
+Rome: the mirrored places land on the Nile buildings to within a few pixels.
+Because the tiles are shared, a guild's painted territory moves with the switch
+instead of scattering; the choice lives on `guild_active_events.map_variant`
+and an officer flips it above the map. The six outposts come from the `home`
+structures themselves (`romeBasePoints`), ranked on the unmirrored board so a
+slot keeps its number when the picture flips.
+
+Every place except the six outposts carries its own name — `name` on the
+structure, keyed into `t.guilds.romePlaces`, written on the map until a guild
+takes it. The picture itself stays wordless because the game prints those names
+in each client language; the board supplies them instead. An outpost has none:
+a guild holds one and puts its own name on it.
+
+A toolbar over the map hands a half of the board to the colour in hand, empties
+one colour, or wipes the board (that last one asks first). `romeFillTiles`
+decides a half by the middle of the picture and always moves a structure whole,
+by where its own middle falls — half a city in another colour would be a lie
+about who holds it. Each fill is one upsert and each wipe one delete, not a few
+hundred round trips.
+
+Territory pays prestige (`dawn-of-rome-prestige.ts`): open land by the hex, a
+structure once for the whole place. Only the outpost (400/min) and the walled
+city (360/min) have known rates so far; the rest are `null`, which the board
+shows as `+?` rather than counting as zero. Rome therefore has no day tabs, no
+score fields and no call line (`scoreboard: false`), and its board stays on day
+1 — its scoreboard is the prestige table under the map.
+
 Officers turn events on and off from a dialog that the board's own header opens.
 Ending an event calls `end_guild_event`, which deletes its villages, stock, day
 scores, pledges, painted hexes and any alliance for it, so the next

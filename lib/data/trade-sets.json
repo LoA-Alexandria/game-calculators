@@ -1,0 +1,59 @@
+{
+  "sets": [
+    {
+      "id": "spring-furniture",
+      "name": "Spring Furniture",
+      "groups": [
+        { "id": "ur", "parts": 8 },
+        { "id": "choice", "parts": 0 },
+        { "id": "ssr", "parts": 6 }
+      ],
+      "items": [
+        { "id": "tea-party-corridor", "name": "Tea Party Corridor", "kind": "ur", "parts": ["A", "B", "C", "D", "E", "F", "G", "H"] },
+        { "id": "floral-wing-lamp", "name": "Floral Wing Lamp", "kind": "ur", "parts": ["A", "B", "C", "D", "E", "F", "G", "H"] },
+        { "id": "flower-crown-seating", "name": "Flower Crown Seating", "kind": "ur", "parts": ["A", "B", "C", "D", "E", "F", "G", "H"] },
+        { "id": "moonpod-bed", "name": "Moonpod Bed", "kind": "ur", "parts": ["A", "B", "C", "D", "E", "F", "G", "H"] },
+        { "id": "hanging-flower-box", "name": "Hanging Flower Box", "kind": "ur", "parts": ["A", "B", "C", "D", "E", "F", "G", "H"] },
+        { "id": "tree-hollow-cabinet", "name": "Tree Hollow Cabinet", "kind": "ur", "parts": ["A", "B", "C", "D", "E", "F", "G", "H"] },
+        { "id": "floating-leaf-sofa", "name": "Floating Leaf Sofa", "kind": "ur", "parts": ["A", "B", "C", "D", "E", "F", "G", "H"] },
+        { "id": "witchs-hot-spring", "name": "Witch's Hot Spring", "kind": "ur", "parts": ["A", "B", "C", "D", "E", "F", "G", "H"] },
+        { "id": "moon-well", "name": "Moon Well", "kind": "ur", "parts": ["A", "B", "C", "D", "E", "F", "G", "H"] },
+        { "id": "titanias-throne", "name": "Titania's Throne", "kind": "ur", "parts": ["A", "B", "C", "D", "E", "F", "G", "H"] },
+        { "id": "glowing-altar", "name": "Glowing Altar", "kind": "ur", "parts": ["A", "B", "C", "D", "E", "F", "G", "H"] },
+        { "id": "demeter-statue", "name": "Demeter Statue", "kind": "ur", "parts": ["A", "B", "C", "D", "E", "F", "G", "H"] },
+        { "id": "nightveil-screen", "name": "Nightveil Screen", "kind": "choice", "parts": [] },
+        { "id": "rose-cursed-clock-cabinet", "name": "Rose-Cursed Clock Cabinet", "kind": "choice", "parts": [] },
+        { "id": "cloud-storage-ladder", "name": "Cloud Storage Ladder", "kind": "choice", "parts": [] },
+        { "id": "spinach-power-fridge", "name": "Spinach Power Fridge", "kind": "choice", "parts": [] },
+        { "id": "pea-gatekeeper", "name": "Pea Gatekeeper", "kind": "choice", "parts": [] },
+        { "id": "chirpy-projection-screen", "name": "Chirpy Projection Screen", "kind": "choice", "parts": [] },
+        { "id": "weirwood-fireplace", "name": "Weirwood Fireplace", "kind": "choice", "parts": [] },
+        { "id": "exorcism-ring", "name": "Exorcism Ring", "kind": "choice", "parts": [] },
+        { "id": "elven-transportation-circle", "name": "Elven Transportation Circle", "kind": "choice", "parts": [] },
+        { "id": "carnivorous-flower", "name": "Carnivorous Flower", "kind": "choice", "parts": [] },
+        { "id": "leyline-flooring", "name": "Leyline Flooring", "kind": "choice", "parts": [] },
+        { "id": "leyline-wallpaper", "name": "Leyline Wallpaper", "kind": "choice", "parts": [] },
+        { "id": "spring-bay-window", "name": "Spring Bay Window", "kind": "ssr", "parts": ["A", "B", "C", "D", "E", "F"] },
+        { "id": "spring-washbasin", "name": "Spring Washbasin", "kind": "ssr", "parts": ["A", "B", "C", "D", "E", "F"] },
+        { "id": "spring-cupboard", "name": "Spring Cupboard", "kind": "ssr", "parts": ["A", "B", "C", "D", "E", "F"] },
+        { "id": "spring-loveseat", "name": "Spring Loveseat", "kind": "ssr", "parts": ["A", "B", "C", "D", "E", "F"] },
+        { "id": "spring-entryway-cabinet", "name": "Spring Entryway cabinet", "kind": "ssr", "parts": ["A", "B", "C", "D", "E", "F"] },
+        { "id": "spring-picnic-blanket", "name": "Spring picnic blanket", "kind": "ssr", "parts": ["A", "B", "C", "D", "E", "F"] },
+        { "id": "irrigation-canal", "name": "Irrigation canal", "kind": "ssr", "parts": ["A", "B", "C", "D", "E", "F"] },
+        { "id": "spring-pond", "name": "Spring Pond", "kind": "ssr", "parts": ["A", "B", "C", "D", "E", "F"] },
+        { "id": "spring-canopy-bed", "name": "Spring Canopy Bed", "kind": "ssr", "parts": ["A", "B", "C", "D", "E", "F"] },
+        { "id": "spring-three-seat-sofa", "name": "Spring Three-Seat Sofa", "kind": "ssr", "parts": ["A", "B", "C", "D", "E", "F"] },
+        { "id": "spring-fireplace", "name": "Spring Fireplace", "kind": "ssr", "parts": ["A", "B", "C", "D", "E", "F"] },
+        { "id": "banquet-table", "name": "Banquet Table", "kind": "ssr", "parts": ["A", "B", "C", "D", "E", "F"] },
+        { "id": "display-cabinet", "name": "Display Cabinet", "kind": "ssr", "parts": ["A", "B", "C", "D", "E", "F"] },
+        { "id": "bread-cabinet", "name": "Bread Cabinet", "kind": "ssr", "parts": ["A", "B", "C", "D", "E", "F"] },
+        { "id": "kitchen-sink", "name": "Kitchen Sink", "kind": "ssr", "parts": ["A", "B", "C", "D", "E", "F"] },
+        { "id": "pet-house", "name": "Pet House", "kind": "ssr", "parts": ["A", "B", "C", "D", "E", "F"] },
+        { "id": "floor-bird-stand", "name": "Floor Bird Stand", "kind": "ssr", "parts": ["A", "B", "C", "D", "E", "F"] },
+        { "id": "aquarium-cabinet", "name": "Aquarium Cabinet", "kind": "ssr", "parts": ["A", "B", "C", "D", "E", "F"] },
+        { "id": "warm-sun-wallpaper", "name": "Warm Sun Wallpaper", "kind": "ssr", "parts": ["A", "B", "C", "D", "E", "F"] },
+        { "id": "warm-sun-flooring", "name": "Warm Sun Flooring", "kind": "ssr", "parts": ["A", "B", "C", "D", "E", "F"] }
+      ]
+    }
+  ]
+}
