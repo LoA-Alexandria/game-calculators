@@ -21,6 +21,7 @@ import { CollectionAvatar } from "../components/CollectionAvatar";
 import { HeroAvatar } from "../components/HeroAvatar";
 import { useLocale } from "../components/LocaleProvider";
 import { CheckIcon, CloseIcon } from "../components/Icons";
+import { useGuideData } from "./GuideOverrides";
 
 type Guide = Dictionary["guideEntries"]["heroLayouts"];
 
@@ -112,7 +113,7 @@ function FormationBoard({ guide }: { guide: Guide }) {
 }
 
 function BuildTabs({ guide, texts }: { guide: Guide; texts: LayoutTexts }) {
-  const builds = LAYOUT_DATA.builds;
+  const builds = useGuideData<typeof LAYOUT_DATA>("hero-layouts").builds;
   const base = useId();
   const [activeId, setActiveId] = useState(builds[0]?.id ?? "");
   const active = builds.find((build) => build.id === activeId) ?? builds[0];
@@ -234,6 +235,8 @@ function BuildTabs({ guide, texts }: { guide: Guide; texts: LayoutTexts }) {
 }
 
 export function HeroLayoutsGuide({ guide }: { guide: Guide }) {
+  // The build carries the guide; a published edit lies over it a moment later.
+  const data = useGuideData<typeof LAYOUT_DATA>("hero-layouts");
   const texts = layoutTexts(guide);
   return (
     <div className="guide-wide hero-layouts">
@@ -276,7 +279,7 @@ export function HeroLayoutsGuide({ guide }: { guide: Guide }) {
         <p>{guide.buildsLede}</p>
         <ul className="pick-list pick-legend" aria-hidden="true">
           <li className="pick"><span className="pick-avatar">A</span><span className="pick-name">{guide.legendHero}</span></li>
-          <li className="pick pick-item"><CollectionAvatar id={firstLayoutItem(LAYOUT_DATA)} /><span className="pick-name">{guide.legendCollection}</span></li>
+          <li className="pick pick-item"><CollectionAvatar id={firstLayoutItem(data)} /><span className="pick-name">{guide.legendCollection}</span></li>
         </ul>
       </div>
       <BuildTabs guide={guide} texts={texts} />
@@ -284,7 +287,7 @@ export function HeroLayoutsGuide({ guide }: { guide: Guide }) {
       <h2>{guide.utilityHeading}</h2>
       <p className="utility-lede">{guide.utilityLede}</p>
       <div className="utility-grid">
-        {LAYOUT_DATA.utility.map((role) => (
+        {data.utility.map((role) => (
           <article className="utility-card" key={role.id}>
             <h3>{texts.roleNames[role.id]}</h3>
             {role.groups.map((group) => (

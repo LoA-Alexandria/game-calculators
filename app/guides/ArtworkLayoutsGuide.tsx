@@ -7,6 +7,7 @@ import { ARTWORK_LAYOUT_DATA, setSkillRank } from "../../lib/content/artwork-lay
 import { PAINTING_SETS, artworkImageUrl, localizedSet, type Painting, type PaintingSet, type PaintingTexts } from "../../lib/content/artwork";
 import type { Dictionary } from "../../lib/i18n";
 import { useLocale } from "../components/LocaleProvider";
+import { useGuideData } from "./GuideOverrides";
 
 type Guide = Dictionary["guideEntries"]["artworkLayouts"];
 
@@ -82,7 +83,7 @@ function SetSkillTabs({ guide }: { guide: Guide }) {
   const { t } = useLocale();
   const artworkTexts = t.guideEntries.artwork.catalogTexts as PaintingTexts;
   const base = useId();
-  const builds = ARTWORK_LAYOUT_DATA.builds;
+  const builds = useGuideData<typeof ARTWORK_LAYOUT_DATA>("artwork-layouts").builds;
   const [buildId, setBuildId] = useState(builds[0]?.id ?? "");
   const build = builds.find((entry) => entry.id === buildId) ?? builds[0];
   const rows = build ? setSkillRank(build.id) : [];

@@ -3,17 +3,17 @@
 import Link from "next/link";
 import { guideHref, guideLayout, isGuideEntryId } from "../../lib/content/guides";
 import {
-  AGE_MILESTONES,
-  AGE_UNCONFIRMED,
   eventDescription,
   eventDetail,
   eventImageUrl,
   eventName,
   milestoneLabel,
   type AgeEvent,
+  AGE_UNLOCKS_DATA,
 } from "../../lib/content/server-age-unlocks";
 import { fill, type Dictionary } from "../../lib/i18n";
 import { useLocale } from "../components/LocaleProvider";
+import { useGuideData } from "./GuideOverrides";
 
 type Guide = Dictionary["guideEntries"]["serverAgeUnlocks"];
 
@@ -75,6 +75,9 @@ function EventRow({ event, guide }: { event: AgeEvent; guide: Guide }) {
 }
 
 export function ServerAgeUnlocksGuide({ guide }: { guide: Guide }) {
+  // The build carries the guide; a published edit lies over it a moment later.
+  const data = useGuideData<typeof AGE_UNLOCKS_DATA>("server-age-unlocks");
+  const milestones = data.milestones;
   return (
     <div className="guide-wide age-unlocks-guide">
       <p className="intro">{guide.intro}</p>
@@ -92,11 +95,11 @@ export function ServerAgeUnlocksGuide({ guide }: { guide: Guide }) {
       </div>
       <p className="guide-lede">{guide.timelineLede}</p>
       <ol className="age-timeline">
-        {AGE_MILESTONES.map((milestone, index) => {
+        {milestones.map((milestone, index) => {
           const label =
             milestoneLabel(milestone, guide.eventTexts) ??
             (milestone.day != null ? fill(guide.dayLabel, { day: milestone.day }) : milestone.id);
-          const isLast = index === AGE_MILESTONES.length - 1;
+          const isLast = index === milestones.length - 1;
           return (
             <li className="age-milestone" key={milestone.id}>
               <div className="age-milestone-rail" aria-hidden="true">
@@ -123,7 +126,7 @@ export function ServerAgeUnlocksGuide({ guide }: { guide: Guide }) {
       <h2>{guide.unconfirmedHeading}</h2>
       <p className="guide-lede">{guide.unconfirmedLede}</p>
       <ul className="age-unconfirmed">
-        {AGE_UNCONFIRMED.map((event) => (
+        {data.unconfirmed.map((event) => (
           <EventRow key={event.id} event={event} guide={guide} />
         ))}
       </ul>

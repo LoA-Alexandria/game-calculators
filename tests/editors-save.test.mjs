@@ -166,3 +166,34 @@ test("the text editor can save and starts from what is published", () => {
     assert.match(readFileSync(join(root, page), "utf8"), /useGuideEntry\(/, `${page} shows only the built text`);
   }
 });
+
+test("a guide reads the data the site serves, or is on the list of those that do not yet", () => {
+  // Publishing writes a row; a guide that still reads its committed file shows
+  // nothing of it. The list below is the work left, and it may only shrink.
+  const waiting = [
+    "AnecdotesGuide.tsx",
+    "ArtworkGuide.tsx",
+    "BuildingsGuide.tsx",
+    "CollectionGuide.tsx",
+    "CollectionLayoutsGuide.tsx",
+    "CryptidTowerLayoutGuide.tsx",
+    "GoddessLevelingGuide.tsx",
+    "GoddessesGuide.tsx",
+    "HeroRoster.tsx",
+    "HeroTierListGuide.tsx",
+    "MuseionGuide.tsx",
+  ];
+  const pages = readdirSync(guidesDir).filter(
+    (name) => name.endsWith("Guide.tsx") || name === "HeroRoster.tsx",
+  );
+  const withoutData = pages
+    // A guide with a data constant in its imports: a plain helper is no sign.
+    .filter((name) => /import \{[^}]*\b[A-Z][A-Z_0-9]{2,}\b[^}]*\} from "\.\.\/\.\.\/lib\/content\//s.test(source(name)))
+    .filter((name) => !source(name).includes("useGuideData<"))
+    .sort();
+  assert.deepEqual(
+    withoutData,
+    waiting.filter((name) => pages.includes(name)).sort(),
+    "a guide either reads the published data or is named above",
+  );
+});
