@@ -45,7 +45,6 @@ test("the formation covers the four slots once each and names every Cryptide", (
 test("every language gives a reason per group and the same lists", () => {
   const groups = CRYPTID_FORMATION.map((group) => group.id);
   let steps = null;
-  let levels = null;
   for (const [code, dictionary] of Object.entries(mapLocales(getDictionary))) {
     const guide = dictionary.guideEntries.cryptidLayout;
     assert.ok(guide.title.trim(), code);
@@ -57,18 +56,14 @@ test("every language gives a reason per group and the same lists", () => {
     // The lists are one piece of advice each, so they have to line up across
     // languages; a missing step would read as a different plan.
     steps ??= Object.keys(guide.prioritySteps).length;
-    levels ??= guide.towerLevels.length;
     assert.equal(Object.keys(guide.prioritySteps).length, steps, `${code} priority steps`);
     for (const step of CRYPTID_PRIORITY) assert.ok(guide.prioritySteps[step.id]?.trim(), `${code}.${step.id}`);
     assert.ok(guide.priorityTarget.includes("{rarity}"), `${code} target keeps its placeholder`);
-    assert.equal(guide.towerLevels.length, levels, `${code} tower levels`);
-    for (const row of guide.towerLevels) {
-      assert.ok(row.tier.trim(), code);
-      assert.ok(row.target.trim(), code);
+    for (const field of ["towerHeading", "towerBody", "towerLevels", "towerNote"]) {
+      assert.equal(field in guide, false, `${code} no duplicate Tower level field ${field}`);
     }
   }
   assert.equal(steps, 5);
-  assert.equal(levels, 4);
 });
 
 test("every step of the path names Cryptides that exist and a rarity to reach", () => {

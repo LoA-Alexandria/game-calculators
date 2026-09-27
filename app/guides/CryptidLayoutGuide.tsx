@@ -111,21 +111,6 @@ export function CryptidLayoutGuide({ guide }: { guide: Guide }) {
       <p className="guide-lede">{guide.priorityLede}</p>
       <Priority guide={guide} texts={texts} />
 
-      <h2>{guide.towerHeading}</h2>
-      {guide.towerBody.map((paragraph, index) => (
-        <p key={index}>{paragraph}</p>
-      ))}
-      <ul className="cryptid-tower-levels">
-        {guide.towerLevels.map((row) => (
-          <li key={row.tier}>
-            <strong>{row.tier}</strong>
-            <span className="mono">{row.target}</span>
-            {row.note ? <small>{row.note}</small> : null}
-          </li>
-        ))}
-      </ul>
-      <p className="cryptid-tower-note">{guide.towerNote}</p>
-
       {guide.sections.map((section) => (
         <section key={section.heading}>
           <h2>{section.heading}</h2>

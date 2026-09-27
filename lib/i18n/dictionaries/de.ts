@@ -4466,9 +4466,9 @@ const de: Dictionary = {
     },
     cryptidLayout: {
       title: "Cryptid-Layout",
-      summary: "Die Reihenfolge, in der die vier Cryptiden in den Kampf gehen, was zuerst entwickelt wird, und welche Stufen ein Tower von einer Truppengattung verlangt.",
+      summary: "Die Reihenfolge, in der die vier Cryptiden in den Kampf gehen, und was zuerst entwickelt wird.",
       intro:
-        "Vier Cryptiden, vier Plätze. Wer anfängt und wer wartet, entscheidet, wie viel von jedem Buff überhaupt ankommt. Und die Tower dahinter verlangen eine ganze Truppengattung, nicht eine Handvoll Helden.",
+        "Vier Cryptiden, vier Plätze. Wer anfängt und wer wartet, entscheidet, wie viel von jedem Buff überhaupt ankommt.",
       credit: "Guide von Autumn (Ice, S12), geteilt auf Discord",
       creditDate: "August 2026",
       formationHeading: "Die Eröffnung",
@@ -4492,18 +4492,6 @@ const de: Dictionary = {
         cerberusUr: "Dann Kerberos.",
         rest: "Dann die anderen beiden.",
       },
-      towerHeading: "Stufen für die Tower",
-      towerBody: [
-        "Ein Tower ist ein Dungeon für eine einzige Truppengattung: Es gehen alle Helden dieser Gattung hinein. Also muss die ganze Gattung gelevelt werden, nicht nur die besten paar.",
-      ],
-      towerLevels: [
-        { tier: "Alle Helden", target: "100–130" },
-        { tier: "UR und UR+", target: "200+" },
-        { tier: "SSR", target: "150", note: "Nicht weiter aufsteigen lassen — die Materialien brauchst du für die UR-Helden." },
-        { tier: "R und SR", target: "120–130" },
-      ],
-      towerNote:
-        "Sind alle so weit, hältst du den Abstand zwischen den Seltenheiten bei und schiebst die ganze Gattung gemeinsam weiter.",
       sections: [
         {
           heading: "Wo die Cryptiden selbst stehen",
@@ -4512,9 +4500,9 @@ const de: Dictionary = {
           ],
         },
       ],
-      note: "Autumns Stufenziele sind vom August 2026 und verschieben sich, je älter ein Server wird. Korrekturen gern im Discord melden, falls auf deinem etwas anderes gilt.",
+      note: "",
       sourceNote:
-        "Aufstellung, Entwicklungsreihenfolge und Tower-Stufen von Autumn (Ice, S12), geteilt auf Discord am 6. und 11. August 2026. Namen und Porträts der Cryptiden stammen aus dem Cryptides-Guide.",
+        "Aufstellung und Entwicklungsreihenfolge von Autumn (Ice, S12), geteilt auf Discord am 6. und 11. August 2026. Namen und Porträts der Cryptiden stammen aus dem Cryptides-Guide.",
     },
     cryptidTowerLayout: {
       title: "Kryptidenturm-Layouts",
