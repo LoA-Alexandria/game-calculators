@@ -194,10 +194,9 @@ test("every banner is there, at twice the size it is drawn", async () => {
     assert.equal(height, banner.height * scale, `${what} height does not match its width`);
   };
 
-  // A guide without art falls back to a plain heading, which the header
-  // handles. The list is pinned so a guide cannot lose its banner unnoticed.
+  // Keep the list pinned so a guide cannot lose its banner unnoticed.
   const withoutBanner = Object.keys(en.guideEntries).filter((id) => !guideTitleBanner(id));
-  assert.deepEqual(withoutBanner, ["cryptidLayout", "cryptidTowerLayout"], "guides with no title banner");
+  assert.deepEqual(withoutBanner, [], "guides with no title banner");
   for (const id of Object.keys(en.guideEntries)) {
     const banner = guideTitleBanner(id);
     if (banner) check(banner, `guide ${id}`);
