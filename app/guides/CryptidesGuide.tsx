@@ -13,6 +13,7 @@ import {
   type Cryptide,
 } from "../../lib/content/cryptides";
 import { fill, type Dictionary } from "../../lib/i18n";
+import { useGuideData } from "./useGuideData";
 
 type Guide = Dictionary["guideEntries"]["cryptides"];
 
@@ -128,9 +129,15 @@ function CryptideCard({ cryptide, guide }: { cryptide: Cryptide; guide: Guide })
 }
 
 export function CryptidesGuide({ guide }: { guide: Guide }) {
+  // The build carries the bestiary; anything published on the site replaces it
+  // once it has arrived and passed the shape check.
+  const data = useGuideData<typeof CRYPTIDES_DATA>("cryptides");
   const [query, setQuery] = useState("");
-  const cryptides = useMemo(() => searchCryptides(query, guide.cryptideTexts), [guide.cryptideTexts, query]);
-  const talent = CRYPTIDES_DATA.talent;
+  const cryptides = useMemo(
+    () => searchCryptides(query, guide.cryptideTexts, data.cryptides),
+    [guide.cryptideTexts, query, data],
+  );
+  const talent = data.talent;
 
   return (
     <div className="guide-wide cryptides-guide">
@@ -151,7 +158,7 @@ export function CryptidesGuide({ guide }: { guide: Guide }) {
         <li>{fill(guide.talentDrop, { count: talent.dropAmount, levels: talent.dropEveryLevels })}</li>
       </ul>
       <ul className="cryptide-talent-map">
-        {CRYPTIDES_DATA.cryptides.map((cryptide) => (
+        {data.cryptides.map((cryptide) => (
           <li key={cryptide.id}>
             <strong>{localizedCryptideName(cryptide, guide.cryptideTexts)}</strong>
             <span>
