@@ -32,8 +32,12 @@ export const BUILDING_LEVELS = levels as BuildingLevelsData;
 
 const BUILDING_STAGE_IMAGE_VERSION = "1";
 
-export function buildingLevelDetail(id: string): BuildingLevelDetail | undefined {
-  return BUILDING_LEVELS[id];
+/** `levels` defaults to the built file; a page passes the published one. */
+export function buildingLevelDetail(
+  id: string,
+  levels: BuildingLevelsData = BUILDING_LEVELS,
+): BuildingLevelDetail | undefined {
+  return levels[id];
 }
 
 export function buildingStageUrl(path: string): string {

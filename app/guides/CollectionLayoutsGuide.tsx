@@ -18,6 +18,7 @@ import { guideHref, guideLayout } from "../../lib/content/guides";
 import { fill, type Dictionary } from "../../lib/i18n";
 import type { CollectionTexts } from "../../lib/content/collection";
 import { useLocale } from "../components/LocaleProvider";
+import { useGuideData } from "./GuideOverrides";
 
 type Guide = Dictionary["guideEntries"]["collectionLayouts"];
 
@@ -27,17 +28,22 @@ export function isCollectionLayoutsGuide(
   return guideLayout(guide) === "collectionLayouts";
 }
 
-/** How many published setups equip a collection. */
-const SETUP_USES = new Map<string, number>();
-for (const setup of COLLECTION_LAYOUTS_DATA.setups) {
-  for (const age of COLLECTION_AGES) {
-    const id = setup.slots[age];
-    if (id) SETUP_USES.set(id, (SETUP_USES.get(id) ?? 0) + 1);
-  }
+/** The layouts as the site serves them: the build, or a published replacement. */
+function useLayouts(): typeof COLLECTION_LAYOUTS_DATA {
+  return useGuideData<typeof COLLECTION_LAYOUTS_DATA>("collection-layouts");
 }
 
-/** Tags any option carries, in the order the registry lists them. */
-const OPTION_TAGS = [...new Set(COLLECTION_LAYOUTS_DATA.options.flatMap((option) => option.tags))];
+/** How many setups equip a collection, counted from what is published. */
+function setupUses(data: typeof COLLECTION_LAYOUTS_DATA): Map<string, number> {
+  const uses = new Map<string, number>();
+  for (const setup of data.setups) {
+    for (const age of COLLECTION_AGES) {
+      const id = setup.slots[age];
+      if (id) uses.set(id, (uses.get(id) ?? 0) + 1);
+    }
+  }
+  return uses;
+}
 
 function fold(text: string): string {
   return text.normalize("NFKD").replace(/[̀-ͯ]/g, "").toLowerCase();
@@ -105,7 +111,9 @@ function SetupCard({ setup, guide, names }: { setup: CollectionSetup; guide: Gui
 
 function OptionCard({ option, guide, names }: { option: CollectionOption; guide: Guide; names: CollectionTexts }) {
   const item = layoutItem(option.item, option.name, names);
-  const uses = SETUP_USES.get(option.item) ?? 0;
+  const data = useLayouts();
+  const counted = useMemo(() => setupUses(data), [data]);
+  const uses = counted.get(option.item) ?? 0;
   return (
     <article className="cl-card" id={`option-${option.item}`}>
       <div className={item.image ? "cl-card-art" : "cl-card-art is-pending"}>
@@ -152,7 +160,10 @@ export function CollectionLayoutsGuide({ guide }: { guide: Guide }) {
     [guide, names, needle, tag],
   );
   const shown = ages.reduce((sum, entry) => sum + entry.options.length, 0);
-  const pending = COLLECTION_LAYOUTS_DATA.options.some((option) => !layoutItem(option.item, option.name, names).known);
+  const data = useLayouts();
+  // Tags any option carries, in the order the registry lists them.
+  const tags = useMemo(() => [...new Set(data.options.flatMap((option) => option.tags))], [data]);
+  const pending = data.options.some((option) => !layoutItem(option.item, option.name, names).known);
 
   return (
     <div className="guide-wide collection-layouts">
@@ -161,7 +172,7 @@ export function CollectionLayoutsGuide({ guide }: { guide: Guide }) {
       <h2>{guide.setupsHeading}</h2>
       <p className="guide-lede">{guide.setupsLede}</p>
       <div className="cl-setups">
-        {COLLECTION_LAYOUTS_DATA.setups.map((setup) => <SetupCard key={setup.id} setup={setup} guide={guide} names={names} />)}
+        {data.setups.map((setup) => <SetupCard key={setup.id} setup={setup} guide={guide} names={names} />)}
       </div>
       {pending ? <p className="callout cl-pending-note">{guide.pendingNote}</p> : null}
 
@@ -174,7 +185,7 @@ export function CollectionLayoutsGuide({ guide }: { guide: Guide }) {
         </label>
         <div className="cl-filters" role="group" aria-label={guide.optionsHeading}>
           <button type="button" className="cl-filter" aria-pressed={tag === null} onClick={() => setTag(null)}>{guide.filterAll}</button>
-          {OPTION_TAGS.map((entry) => (
+          {tags.map((entry) => (
             <button
               key={entry}
               type="button"

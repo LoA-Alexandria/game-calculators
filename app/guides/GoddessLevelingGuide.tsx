@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { GODDESS_LEVELING_DATA, localizedPhase, phaseTone, type LevelingRow } from "../../lib/content/goddess-leveling";
-import { GODDESSES, goddessById, goddessImageUrl, type Goddess } from "../../lib/content/goddesses";
+import { goddessById, goddessImageUrl, type Goddess } from "../../lib/content/goddesses";
 import { guideHref, guideLayout } from "../../lib/content/guides";
 import { fill, type Dictionary } from "../../lib/i18n";
 import { HeroPortrait } from "../components/HeroPortrait";
+import { useGuideData } from "./GuideOverrides";
 
 type Guide = Dictionary["guideEntries"]["goddessLeveling"];
 
@@ -19,13 +20,16 @@ const portraitOf = (goddess: Goddess) => (goddess.images[0] ? goddessImageUrl(go
 const rosterLink = (goddess: Goddess) => `${guideHref("goddesses")}#${encodeURIComponent(goddess.id)}`;
 
 /** Goddesses no phase names, for the "everyone else" card. */
-function unnamedGoddesses(): Goddess[] {
-  const named = new Set(GODDESS_LEVELING_DATA.phases.flatMap((phase) => phase.rows.map((row) => row.goddess)));
-  return GODDESSES.filter((goddess) => !named.has(goddess.id));
+function unnamedGoddesses(data: typeof GODDESS_LEVELING_DATA, roster: readonly Goddess[]): Goddess[] {
+  const named = new Set(data.phases.flatMap((phase) => phase.rows.map((row) => row.goddess)));
+  return roster.filter((goddess) => !named.has(goddess.id));
 }
 
 function LevelCard({ row, guide }: { row: LevelingRow; guide: Guide }) {
-  const goddess = row.goddess ? goddessById(row.goddess) : undefined;
+  // The build carries the guide; a published edit lies over it a moment later.
+  const data = useGuideData<typeof GODDESS_LEVELING_DATA>("goddess-leveling");
+  const roster = useGuideData<{ goddesses: Goddess[] }>("goddesses").goddesses;
+  const goddess = row.goddess ? goddessById(row.goddess, roster) : undefined;
   const target = (
     <span className="gl-level">
       <span className="gl-level-label">{guide.levelLabel}</span>
@@ -40,7 +44,7 @@ function LevelCard({ row, guide }: { row: LevelingRow; guide: Guide }) {
   ) : null;
 
   if (!goddess) {
-    const others = unnamedGoddesses();
+    const others = unnamedGoddesses(data, roster);
     return (
       <li className="gl-card is-everyone">
         <span className="gl-stack" aria-hidden="true">
@@ -75,7 +79,9 @@ function LevelCard({ row, guide }: { row: LevelingRow; guide: Guide }) {
 
 /** Every named goddess across the phases, so her whole path reads on one line. */
 function Overview({ guide }: { guide: Guide }) {
-  const phases = GODDESS_LEVELING_DATA.phases.filter((phase) => phase.rows.some((row) => row.goddess));
+  const data = useGuideData<typeof GODDESS_LEVELING_DATA>("goddess-leveling");
+  const roster = useGuideData<{ goddesses: Goddess[] }>("goddesses").goddesses;
+  const phases = data.phases.filter((phase) => phase.rows.some((row) => row.goddess));
   const order: string[] = [];
   for (const phase of phases) {
     for (const row of phase.rows) if (row.goddess && !order.includes(row.goddess)) order.push(row.goddess);
@@ -89,14 +95,14 @@ function Overview({ guide }: { guide: Guide }) {
             <th scope="col">{guide.colGoddess}</th>
             {phases.map((phase) => (
               <th scope="col" key={phase.id}>
-                {fill(guide.phaseLabel, { number: GODDESS_LEVELING_DATA.phases.indexOf(phase) + 1 })}
+                {fill(guide.phaseLabel, { number: data.phases.indexOf(phase) + 1 })}
               </th>
             ))}
           </tr>
         </thead>
         <tbody>
           {order.map((id) => {
-            const goddess = goddessById(id);
+            const goddess = goddessById(id, roster);
             return (
               <tr key={id}>
                 <th scope="row">
@@ -108,7 +114,7 @@ function Overview({ guide }: { guide: Guide }) {
                 {phases.map((phase) => {
                   const row = phase.rows.find((entry) => entry.goddess === id);
                   return (
-                    <td key={phase.id} data-tone={phaseTone(GODDESS_LEVELING_DATA.phases.indexOf(phase))}>
+                    <td key={phase.id} data-tone={phaseTone(data.phases.indexOf(phase))}>
                       {row ? (
                         <>
                           <strong className="gl-overview-level">{row.target}</strong>
@@ -130,6 +136,8 @@ function Overview({ guide }: { guide: Guide }) {
 }
 
 export function GoddessLevelingGuide({ guide }: { guide: Guide }) {
+  // The build carries the guide; a published edit lies over it a moment later.
+  const data = useGuideData<typeof GODDESS_LEVELING_DATA>("goddess-leveling");
   return (
     <div className="guide-wide goddess-leveling">
       <p className="intro">{guide.intro}</p>
@@ -138,7 +146,7 @@ export function GoddessLevelingGuide({ guide }: { guide: Guide }) {
       <p className="guide-lede">{guide.phasesLede}</p>
 
       <ol className="gl-phases">
-        {GODDESS_LEVELING_DATA.phases.map((phase, index) => {
+        {data.phases.map((phase, index) => {
           const text = localizedPhase(phase, guide.phaseTexts);
           return (
             <li className="gl-phase" key={phase.id} data-tone={phaseTone(index)}>

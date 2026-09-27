@@ -98,18 +98,20 @@ export function mergeGoddessTexts(skills: GoddessTexts, lore: GoddessTexts): God
 export const GODDESS_DATA = roster as GoddessData;
 export const GODDESSES: Goddess[] = GODDESS_DATA.goddesses;
 
-export function goddessesByRarity(rarity: GoddessRarity | "all"): Goddess[] {
-  if (rarity === "all") return GODDESSES;
-  return GODDESSES.filter((goddess) => goddess.rarity === rarity);
+/** `roster` defaults to the built file; a page passes the published one. */
+export function goddessesByRarity(rarity: GoddessRarity | "all", roster: readonly Goddess[] = GODDESSES): Goddess[] {
+  if (rarity === "all") return [...roster];
+  return roster.filter((goddess) => goddess.rarity === rarity);
 }
 
 export function searchGoddesses(
   query: string,
   rarity: GoddessRarity | "all",
   extra: (goddess: Goddess) => string,
+  roster: readonly Goddess[] = GODDESSES,
 ): Goddess[] {
   const needle = query.trim().toLowerCase();
-  const pool = goddessesByRarity(rarity);
+  const pool = goddessesByRarity(rarity, roster);
   if (!needle) return pool;
   return pool.filter((goddess) => {
     const hay = [goddess.name, goddess.title ?? "", goddess.bio ?? "", extra(goddess)].join(" ").toLowerCase();
@@ -136,8 +138,9 @@ export function goddessImageUrl(file: string): string {
   return asset(`/goddesses/${file}`);
 }
 
-export function goddessById(id: string): Goddess | undefined {
-  return GODDESSES.find((goddess) => goddess.id === id);
+/** `roster` defaults to the built file; a page passes the published one. */
+export function goddessById(id: string, roster: readonly Goddess[] = GODDESSES): Goddess | undefined {
+  return roster.find((goddess) => goddess.id === id);
 }
 
 const BY_NAME = new Map(GODDESSES.map((goddess) => [goddess.name.toLowerCase(), goddess]));

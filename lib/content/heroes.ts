@@ -215,9 +215,10 @@ export const HERO_STAR_COSTS: { star: number; costs: number[] }[] = [
 export const HERO_DATA = roster as HeroData;
 export const HEROES: Hero[] = HERO_DATA.heroes;
 
-export function heroesByRarity(rarity: HeroRarity | "all"): Hero[] {
-  if (rarity === "all") return HEROES;
-  return HEROES.filter((hero) => hero.rarity === rarity);
+/** `roster` defaults to the built file; a page passes the published one. */
+export function heroesByRarity(rarity: HeroRarity | "all", roster: readonly Hero[] = HEROES): Hero[] {
+  if (rarity === "all") return [...roster];
+  return roster.filter((hero) => hero.rarity === rarity);
 }
 
 /** Every searchable string of one translation of a hero. */
@@ -241,9 +242,10 @@ export function searchHeroes(
   rarity: HeroRarity | "all",
   catalogs: readonly HeroTexts[] = [],
   extra: (hero: Hero) => string = () => "",
+  roster: readonly Hero[] = HEROES,
 ): Hero[] {
   const needle = query.trim().toLowerCase();
-  const pool = heroesByRarity(rarity);
+  const pool = heroesByRarity(rarity, roster);
   if (!needle) return pool;
   return pool.filter((hero) => {
     const translated = catalogs.flatMap((texts) => (texts[hero.id] ? textOf(localizedHero(hero, texts)) : []));

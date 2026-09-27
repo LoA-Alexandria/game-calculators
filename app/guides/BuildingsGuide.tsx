@@ -4,7 +4,6 @@ import { useEffect, useId, useMemo, useRef, useState, type KeyboardEvent } from 
 import { ChevronIcon, CloseIcon } from "../components/Icons";
 import { guideLayout } from "../../lib/content/guides";
 import {
-  BUILDINGS,
   BUILDING_CATEGORIES,
   PRODUCTION_GROUPS,
   PRODUCTION_RESOURCES,
@@ -17,14 +16,17 @@ import {
   type ProductionGroupId,
   type ProductionResource,
   type ProductionTag,
+  BUILDINGS_DATA,
 } from "../../lib/content/buildings";
 import {
   buildingLevelDetail,
   buildingStageUrl,
   type BuildingCost,
   type BuildingLevelRow,
+  BUILDING_LEVELS,
 } from "../../lib/content/building-levels";
 import { fill, type Dictionary } from "../../lib/i18n";
+import { useGuideData } from "./GuideOverrides";
 
 type Guide = Dictionary["guideEntries"]["buildings"];
 
@@ -36,13 +38,15 @@ export function isBuildingsGuide(
 
 const tone = (index: number) => String((index % 4) + 1);
 
-const USED_RESOURCES = PRODUCTION_RESOURCES.filter((resource) =>
-  BUILDINGS.some(
-    (building) =>
-      building.category === "production" &&
-      (building.produces === resource || building.requires?.includes(resource)),
-  ),
-);
+/** Resources any production building touches, so an unused one is not offered. */
+const usedResources = (list: readonly Building[]) =>
+  PRODUCTION_RESOURCES.filter((resource) =>
+    list.some(
+      (building) =>
+        building.category === "production" &&
+        (building.produces === resource || building.requires?.includes(resource)),
+    ),
+  );
 
 function fold(text: string): string {
   return text.normalize("NFKD").replace(/[̀-ͯ]/g, "").toLowerCase();
@@ -216,7 +220,7 @@ function BuildingDetail({
 }) {
   const id = useId();
   const dialog = useRef<HTMLDialogElement>(null);
-  const detail = buildingLevelDetail(building.id);
+  const detail = buildingLevelDetail(building.id, useGuideData<typeof BUILDING_LEVELS>("building-levels"));
   const stages = detail?.stages ?? [];
   const [shown, setShown] = useState(() => Math.max(0, stages.length - 1));
   const name = localizedBuildingName(building, guide.buildingTexts);
@@ -404,6 +408,9 @@ type Stage = {
 };
 
 export function BuildingsGuide({ guide }: { guide: Guide }) {
+  // The build carries the guide; a published edit lies over it a moment later.
+  const buildings = useGuideData<typeof BUILDINGS_DATA>("buildings").buildings;
+  const resources = useMemo(() => usedResources(buildings), [buildings]);
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<BuildingCategory | "all">("all");
   const [resource, setResource] = useState<ProductionResource | null>(null);
@@ -415,32 +422,32 @@ export function BuildingsGuide({ guide }: { guide: Guide }) {
     const list: Stage[] = [];
     let index = 0;
 
-    const population = BUILDINGS.filter((building) => building.category === "population").filter(filter);
+    const population = buildings.filter((building) => building.category === "population").filter(filter);
     if (population.length > 0) {
       list.push({ key: "population", title: guide.categories.population, index: index++, buildings: population });
     }
 
     for (const groupId of PRODUCTION_GROUPS) {
-      const buildings = productionBuildingsByGroup(groupId).filter(filter);
-      if (buildings.length === 0) continue;
+      const group = productionBuildingsByGroup(groupId, buildings).filter(filter);
+      if (group.length === 0) continue;
       list.push({
         key: groupId,
         title: guide.groups[groupId as ProductionGroupId],
         index: index++,
-        buildings,
+        buildings: group,
       });
     }
 
-    const military = BUILDINGS.filter((building) => building.category === "military").filter(filter);
+    const military = buildings.filter((building) => building.category === "military").filter(filter);
     if (military.length > 0) {
       list.push({ key: "military", title: guide.categories.military, index: index++, buildings: military });
     }
 
     return list;
-  }, [guide, needle, category, resource]);
+  }, [guide, needle, category, resource, buildings]);
 
   const flatList = useMemo(() => stages.flatMap((stage) => stage.buildings), [stages]);
-  const openBuilding = openId ? BUILDINGS.find((building) => building.id === openId) : undefined;
+  const openBuilding = openId ? buildings.find((building) => building.id === openId) : undefined;
   const shown = flatList.length;
   const showResourceFilter = category === "all" || category === "production";
 
@@ -482,7 +489,7 @@ export function BuildingsGuide({ guide }: { guide: Guide }) {
             <button type="button" className="pb-filter" aria-pressed={resource === null} onClick={() => setResource(null)}>
               {guide.filterAll}
             </button>
-            {USED_RESOURCES.map((entry) => (
+            {resources.map((entry) => (
               <button
                 key={entry}
                 type="button"
@@ -651,7 +658,7 @@ export function BuildingsGuide({ guide }: { guide: Guide }) {
         <BuildingDetail
           key={openBuilding.id}
           building={openBuilding}
-          list={flatList.length ? flatList : BUILDINGS}
+          list={flatList.length ? flatList : buildings}
           guide={guide}
           onStep={(entry) => setOpenId(entry.id)}
           onClose={() => setOpenId(null)}

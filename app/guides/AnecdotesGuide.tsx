@@ -3,7 +3,6 @@
 import { useMemo, useState } from "react";
 import {
   ANECDOTE_GROUPS,
-  ANECDOTES,
   anecdoteImageUrl,
   anecdotesAfter,
   chainPosition,
@@ -12,10 +11,12 @@ import {
   type Anecdote,
   type AnecdoteGroup,
   type AnecdoteTexts,
+  ANECDOTE_DATA,
 } from "../../lib/content/anecdotes";
 import { guideLayout } from "../../lib/content/guides";
 import { LOCALE_CODES, fill, getDictionary, type Dictionary } from "../../lib/i18n";
 import { InfoIcon } from "../components/Icons";
+import { useGuideData } from "./GuideOverrides";
 
 type Guide = Dictionary["guideEntries"]["anecdotes"];
 
@@ -198,10 +199,12 @@ export function AnecdotesGuide({ guide }: { guide: Guide }) {
   const [query, setQuery] = useState("");
 
   // Search every language's wording, so a reader finds an anecdote by the name they know.
-  const rows = useMemo(() => searchAnecdotes(query, group, CATALOGS), [query, group]);
+  // The build carries the guide; a published edit lies over it a moment later.
+  const anecdotes = useGuideData<typeof ANECDOTE_DATA>("anecdotes").anecdotes;
+  const rows = useMemo(() => searchAnecdotes(query, group, CATALOGS, anecdotes), [query, group, anecdotes]);
   const texts = guide.anecdoteTexts as AnecdoteTexts;
   const nameOf = (id: string) => {
-    const row = ANECDOTES.find((anecdote) => anecdote.id === id);
+    const row = anecdotes.find((anecdote) => anecdote.id === id);
     return row ? localizedAnecdote(row, texts).name : id;
   };
 
@@ -236,12 +239,12 @@ export function AnecdotesGuide({ guide }: { guide: Guide }) {
         <div className="hero-filters" role="group" aria-label={guide.filterLabel}>
           <button type="button" className="hero-filter" aria-pressed={group === "all"} onClick={() => setGroup("all")}>
             {guide.groupAll}
-            <span className="hero-filter-count">{ANECDOTES.length}</span>
+            <span className="hero-filter-count">{anecdotes.length}</span>
           </button>
           {ANECDOTE_GROUPS.map((entry) => (
             <button key={entry} type="button" className="hero-filter" aria-pressed={group === entry} onClick={() => setGroup(entry)}>
               {guide.groups[entry]}
-              <span className="hero-filter-count">{ANECDOTES.filter((anecdote) => anecdote.group === entry).length}</span>
+              <span className="hero-filter-count">{anecdotes.filter((anecdote) => anecdote.group === entry).length}</span>
             </button>
           ))}
         </div>
@@ -271,8 +274,8 @@ export function AnecdotesGuide({ guide }: { guide: Guide }) {
                     anecdote={anecdote}
                     guide={guide}
                     after={row.after ? { id: row.after, name: nameOf(row.after) } : null}
-                    next={anecdotesAfter(row.id).map((follower) => ({ id: follower.id, name: nameOf(follower.id) }))}
-                    chain={chainPosition(row.id)}
+                    next={anecdotesAfter(row.id, anecdotes).map((follower) => ({ id: follower.id, name: nameOf(follower.id) }))}
+                    chain={chainPosition(row.id, anecdotes)}
                     image={row.image ? anecdoteImageUrl(row.image) : null}
                     onJump={jumpTo}
                   />

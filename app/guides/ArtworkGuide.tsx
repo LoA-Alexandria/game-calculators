@@ -5,7 +5,6 @@ import Link from "next/link";
 import { guideLayout } from "../../lib/content/guides";
 import {
   PAINTING_RARITIES,
-  PAINTING_SETS,
   artworkImageUrl,
   localizedPainting,
   localizedSet,
@@ -19,10 +18,12 @@ import {
   type PaintingSet,
   type PaintingStat,
   type PaintingTexts,
+  paintingSetsFrom,
 } from "../../lib/content/artwork";
 import { CheckIcon, CloseIcon } from "../components/Icons";
 import { LOCALE_CODES, fill, getDictionary, localeMeta, type Dictionary } from "../../lib/i18n";
 import { HeroAvatar } from "../components/HeroAvatar";
+import { useGuideData } from "./GuideOverrides";
 
 type Guide = Dictionary["guideEntries"]["artwork"];
 
@@ -69,6 +70,12 @@ function HeroPicks({ heroes }: { heroes: readonly string[] }) {
 }
 
 /** Every language's catalogue, so the search and the detail list reach all of them. */
+/** The catalogue as the site serves it: the build, or a published replacement. */
+function usePaintingSets(): PaintingSet[] {
+  const raw = useGuideData<{ sets: unknown[] }>("paintings");
+  return useMemo(() => paintingSetsFrom(raw), [raw]);
+}
+
 const CATALOGS = LOCALE_CODES.map((code) => ({ code, texts: getDictionary(code).guideEntries.artwork.catalogTexts as PaintingTexts }));
 
 type OpenPainting = (setId: string, paintingId: string) => void;
@@ -194,12 +201,13 @@ function SetCard({ entry, guide, onOpen }: { entry: PaintingSet; guide: Guide; o
 
 function RarityTabs({ guide, onOpen }: { guide: Guide; onOpen: OpenPainting }) {
   const base = useId();
+  const sets = usePaintingSets();
   const [rarity, setRarity] = useState<PaintingRarity>("SSR");
   // A link such as /guides/artwork/#rococo-curtain opens that set's rarity tab.
   useEffect(() => {
     const open = () => {
       const id = decodeURIComponent(window.location.hash.slice(1));
-      const set = id ? paintingSetById(id) : undefined;
+      const set = id ? paintingSetById(id, sets) : undefined;
       if (!set) return;
       setRarity(set.rarity);
       window.requestAnimationFrame(() => document.getElementById(set.id)?.scrollIntoView({ block: "start" }));
@@ -207,8 +215,8 @@ function RarityTabs({ guide, onOpen }: { guide: Guide; onOpen: OpenPainting }) {
     open();
     window.addEventListener("hashchange", open);
     return () => window.removeEventListener("hashchange", open);
-  }, []);
-  const sets = setsByRarity(rarity).map((set) => localizedSet(set, guide.catalogTexts as PaintingTexts));
+  }, [sets]);
+  const shown = setsByRarity(rarity, sets).map((set) => localizedSet(set, guide.catalogTexts as PaintingTexts));
 
   const tabId = (id: PaintingRarity) => `${base}-tab-${id}`;
 
@@ -259,7 +267,7 @@ function RarityTabs({ guide, onOpen }: { guide: Guide; onOpen: OpenPainting }) {
         aria-labelledby={tabId(rarity)}
       >
         <div className="painting-sets">
-          {sets.map((entry) => (
+          {shown.map((entry) => (
             <SetCard key={entry.id} entry={entry} guide={guide} onOpen={onOpen} />
           ))}
         </div>
@@ -294,7 +302,7 @@ function PaintingDialog({ setId, paintingId, guide, onClose }: { setId: string; 
     dialog.current = node;
     if (node && !node.open) node.showModal();
   }, []);
-  const set = PAINTING_SETS.find((entry) => entry.id === setId);
+  const set = usePaintingSets().find((entry) => entry.id === setId);
   const raw = set?.paintings.find((canvas) => canvas.id === paintingId);
   if (!set || !raw) return null;
   const texts = guide.catalogTexts as PaintingTexts;
@@ -353,7 +361,8 @@ export function ArtworkGuide({ guide }: { guide: Guide }) {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState<{ setId: string; paintingId: string } | null>(null);
   const onOpen = useCallback<OpenPainting>((setId, paintingId) => setOpen({ setId, paintingId }), []);
-  const hits = useMemo(() => searchCatalogue(query, CATALOGS.map((entry) => entry.texts)), [query]);
+  const sets = usePaintingSets();
+  const hits = useMemo(() => searchCatalogue(query, CATALOGS.map((entry) => entry.texts), sets), [query, sets]);
   const grouped = useMemo(() => {
     const texts = guide.catalogTexts as PaintingTexts;
     return groupHits(hits).map((row) => ({ set: localizedSet(row.set, texts), paintings: row.paintings.map((canvas) => localizedPainting(canvas, texts)) }));

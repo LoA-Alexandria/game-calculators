@@ -44,10 +44,12 @@ export function buildingById(id: string): MuseionBuilding | undefined {
 export function searchMuseionBuildings(
   query: string,
   catalogs: MuseionBuildingTexts[],
+  /** Defaults to the built file; a page passes the published buildings. */
+  items: readonly MuseionBuilding[] = MUSEION_BUILDINGS,
 ): MuseionBuilding[] {
   const needle = query.trim().toLowerCase();
-  if (!needle) return [...MUSEION_BUILDINGS];
-  return MUSEION_BUILDINGS.filter((building) => {
+  if (!needle) return [...items];
+  return items.filter((building) => {
     const names = [building.name, ...catalogs.map((catalog) => catalog[building.id]?.name ?? "")];
     const hay = [...names, ...building.heroes].join(" ").toLowerCase();
     return hay.includes(needle);

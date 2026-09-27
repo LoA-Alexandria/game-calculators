@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from "react";
 import {
-  COLLECTION_ITEMS,
   COLLECTION_RARITIES,
   collectionImageUrl,
   itemsByRarity,
@@ -10,10 +9,12 @@ import {
   searchCollection,
   type CollectionItem,
   type CollectionRarity,
+  COLLECTION_DATA,
 } from "../../lib/content/collection";
 import { guideLayout } from "../../lib/content/guides";
 import { fill, type Dictionary } from "../../lib/i18n";
 import { counted } from "./HeroRoster";
+import { useGuideData } from "./GuideOverrides";
 
 type Guide = Dictionary["guideEntries"]["collection"];
 
@@ -24,7 +25,6 @@ export function isCollectionGuide(
 }
 
 /** Rarities that have at least one item, so an empty R filter does not show. */
-const USED_RARITIES = COLLECTION_RARITIES.filter((rarity) => itemsByRarity(rarity).length > 0);
 
 function ItemCard({ item, guide }: { item: CollectionItem; guide: Guide }) {
   const text = localizedItem(item, guide.collectionTexts);
@@ -59,7 +59,17 @@ function ItemCard({ item, guide }: { item: CollectionItem; guide: Guide }) {
 export function CollectionGuide({ guide }: { guide: Guide }) {
   const [rarity, setRarity] = useState<CollectionRarity | "all">("all");
   const [query, setQuery] = useState("");
-  const rows = useMemo(() => searchCollection(query, rarity, guide.collectionTexts), [query, rarity, guide.collectionTexts]);
+  // The build carries the guide; a published edit lies over it a moment later.
+  const catalogue = useGuideData<typeof COLLECTION_DATA>("collection").items;
+  const rows = useMemo(
+    () => searchCollection(query, rarity, guide.collectionTexts, catalogue),
+    [query, rarity, guide.collectionTexts, catalogue],
+  );
+  // Which tiers to offer follows the data, so a published tier is not hidden.
+  const tiers = useMemo(
+    () => COLLECTION_RARITIES.filter((entry) => itemsByRarity(entry, catalogue).length > 0),
+    [catalogue],
+  );
   const grouped = rarity === "all" && !query.trim();
 
   return (
@@ -73,12 +83,12 @@ export function CollectionGuide({ guide }: { guide: Guide }) {
         <div className="hero-filters" role="group" aria-label={guide.filterLabel}>
           <button type="button" className="hero-filter" aria-pressed={rarity === "all"} onClick={() => setRarity("all")}>
             {guide.filterAll}
-            <span className="hero-filter-count">{COLLECTION_ITEMS.length}</span>
+            <span className="hero-filter-count">{catalogue.length}</span>
           </button>
-          {USED_RARITIES.map((tier) => (
+          {tiers.map((tier) => (
             <button key={tier} type="button" className="hero-filter" data-rarity={tier} aria-pressed={rarity === tier} onClick={() => setRarity(tier)}>
               {tier}
-              <span className="hero-filter-count">{itemsByRarity(tier).length}</span>
+              <span className="hero-filter-count">{itemsByRarity(tier, catalogue).length}</span>
             </button>
           ))}
         </div>
@@ -92,7 +102,7 @@ export function CollectionGuide({ guide }: { guide: Guide }) {
       {rows.length === 0 ? (
         <p className="empty-state">{guide.empty}</p>
       ) : grouped ? (
-        USED_RARITIES.map((tier) => {
+        tiers.map((tier) => {
           const items = rows.filter((item) => item.rarity === tier);
           return (
             <section className="hero-group collection-group" data-rarity={tier} key={tier} aria-label={tier}>

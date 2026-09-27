@@ -117,12 +117,16 @@ export function buildingsByCategory(category: BuildingCategory | "all"): Buildin
   return BUILDINGS.filter((building) => building.category === category);
 }
 
-export function productionBuildings(): Building[] {
-  return BUILDINGS.filter((building) => building.category === "production");
+/** `list` defaults to the built file; a page passes the published buildings. */
+export function productionBuildings(list: readonly Building[] = BUILDINGS): Building[] {
+  return list.filter((building) => building.category === "production");
 }
 
-export function productionBuildingsByGroup(group: ProductionGroupId): Building[] {
-  return productionBuildings().filter((building) => building.group === group);
+export function productionBuildingsByGroup(
+  group: ProductionGroupId,
+  list: readonly Building[] = BUILDINGS,
+): Building[] {
+  return productionBuildings(list).filter((building) => building.group === group);
 }
 
 export function localizedBuildingName(building: Building, texts: BuildingTexts): string {

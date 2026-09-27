@@ -4,12 +4,8 @@ import Link from "next/link";
 import { useCallback, useId, useMemo, useRef, useState, type KeyboardEvent } from "react";
 import { guideLayout } from "../../lib/content/guides";
 import {
-  BATTLE_TIERS,
-  OVERALL_TIERS,
-  PRODUCTIVITY_TIERS,
   ROLE_GROUPS,
   TIER_IDS,
-  UTILITY_TIERS,
   entryRarity,
   matchesHero,
   parseGrade,
@@ -24,12 +20,14 @@ import {
   type TierId,
   type TierListId,
   type UtilityEntry,
+  type TierListData,
 } from "../../lib/content/hero-tiers";
 import { HERO_RARITIES, heroNamed, heroPortrait, type HeroRarity } from "../../lib/content/heroes";
 import type { Dictionary } from "../../lib/i18n";
 import { HeroPortrait } from "../components/HeroPortrait";
 import { CloseIcon, LinkIcon } from "../components/Icons";
 import { useLocale } from "../components/LocaleProvider";
+import { useGuideData } from "./GuideOverrides";
 
 type Guide = Dictionary["guideEntries"]["heroTierList"];
 
@@ -153,9 +151,9 @@ function CardList({ cards, guide, onOpen }: { cards: readonly Card[]; guide: Gui
 
 type Row = { tier: TierId; meta?: string; description?: string; cards: Card[] };
 
-function rowsFor(list: TierListId, guide: Guide, filter: Filter): Row[] {
+function rowsFor(list: TierListId, guide: Guide, filter: Filter, data: TierListData): Row[] {
   if (list === "overall") {
-    return OVERALL_TIERS.map((row) => ({
+    return data.overall.map((row) => ({
       tier: row.tier,
       meta: row.ordered ? guide.ordered : undefined,
       cards: row.entries
@@ -164,14 +162,14 @@ function rowsFor(list: TierListId, guide: Guide, filter: Filter): Row[] {
     }));
   }
   if (list === "battle") {
-    return BATTLE_TIERS.map((row) => ({
+    return data.battle.map((row) => ({
       tier: row.tier,
       description: guide.battleTiers[row.tier],
       cards: row.entries.map((entry): Card => ({ list: "battle", tier: row.tier, entry })).filter((card) => visible(card.entry, filter)),
     }));
   }
   if (list === "utility") {
-    return UTILITY_TIERS.map((row) => ({
+    return data.utility.map((row) => ({
       tier: row.tier,
       description: guide.utilityTiers[row.tier],
       cards: row.entries.map((entry): Card => ({ list: "utility", tier: row.tier, entry })).filter((card) => visible(card.entry, filter)),
@@ -180,7 +178,7 @@ function rowsFor(list: TierListId, guide: Guide, filter: Filter): Row[] {
   return TIER_IDS.map((tier) => ({
     tier,
     description: guide.productivityTiers[tier],
-    cards: (PRODUCTIVITY_TIERS.find((row) => row.tier === tier)?.groups ?? []).flatMap((group) =>
+    cards: (data.productivity.find((row) => row.tier === tier)?.groups ?? []).flatMap((group) =>
       group.entries
         .map((entry): Card => ({ list: "productivity", tier, entry, resource: group.resource }))
         .filter((card) => visible(card.entry, filter)),
@@ -188,22 +186,27 @@ function rowsFor(list: TierListId, guide: Guide, filter: Filter): Row[] {
   }));
 }
 
-function listEntries(list: TierListId): readonly { hero: string; rarity?: HeroRarity }[] {
-  if (list === "overall") return OVERALL_TIERS.flatMap((row) => row.entries);
-  if (list === "battle") return BATTLE_TIERS.flatMap((row) => row.entries);
-  if (list === "utility") return UTILITY_TIERS.flatMap((row) => row.entries);
-  return PRODUCTIVITY_TIERS.flatMap((row) => row.groups.flatMap((group) => group.entries));
+function listEntries(list: TierListId, data: TierListData): readonly { hero: string; rarity?: HeroRarity }[] {
+  if (list === "overall") return data.overall.flatMap((row) => row.entries);
+  if (list === "battle") return data.battle.flatMap((row) => row.entries);
+  if (list === "utility") return data.utility.flatMap((row) => row.entries);
+  return data.productivity.flatMap((row) => row.groups.flatMap((group) => group.entries));
 }
 
 /** Heroes in a list, once each however often they are placed, and per rarity for the filter chips. */
-function listSizes(list: TierListId): { all: number } & Record<HeroRarity, number> {
-  const entries = listEntries(list);
+function listSizes(list: TierListId, data: TierListData): { all: number } & Record<HeroRarity, number> {
+  const entries = listEntries(list, data);
   const count = (rarity?: HeroRarity) =>
     new Set(entries.filter((entry) => !rarity || entryRarity(entry) === rarity).map((entry) => entry.hero)).size;
   return { all: count(), ...(Object.fromEntries(HERO_RARITIES.map((rarity) => [rarity, count(rarity)])) as Record<HeroRarity, number>) };
 }
 
-const LIST_SIZES = Object.fromEntries(LISTS.map((list) => [list, listSizes(list)])) as Record<TierListId, ReturnType<typeof listSizes>>;
+/** Every list's counts, from what is published. */
+const listCounts = (data: TierListData) =>
+  Object.fromEntries(LISTS.map((list) => [list, listSizes(list, data)])) as Record<
+    TierListId,
+    ReturnType<typeof listSizes>
+  >;
 
 function RowBody({ row, list, guide, onOpen }: { row: Row; list: TierListId; guide: Guide; onOpen: (card: Card) => void }) {
   if (list === "battle") {
@@ -244,6 +247,9 @@ function RowBody({ row, list, guide, onOpen }: { row: Row; list: TierListId; gui
 }
 
 function TierBoard({ guide }: { guide: Guide }) {
+  // The build carries the guide; a published edit lies over it a moment later.
+  const data = useGuideData<TierListData>("hero-tiers");
+  const counts = useMemo(() => listCounts(data), [data]);
   const { tf } = useLocale();
   const base = useId();
   const [active, setActive] = useState<TierListId>("overall");
@@ -264,13 +270,13 @@ function TierBoard({ guide }: { guide: Guide }) {
   };
   const tabId = (id: TierListId) => `${base}-tab-${id}`;
   const filter = useMemo(() => ({ query, rarity }), [query, rarity]);
-  const rows = useMemo(() => rowsFor(active, guide, filter), [active, guide, filter]);
+  const rows = useMemo(() => rowsFor(active, guide, filter, data), [active, guide, filter, data]);
   const filtering = query.trim() !== "" || rarity !== "all";
   // While filtering, empty tiers collapse; otherwise a described tier stays so D ("replaceable") still reads.
   const shown = rows.filter((row) => row.cards.length > 0 || (!filtering && row.description));
   const matches = rows.reduce((sum, row) => sum + row.cards.length, 0);
   const heroesShown = new Set(rows.flatMap((row) => row.cards.map((card) => card.entry.hero))).size;
-  const sizes = LIST_SIZES[active];
+  const sizes = counts[active];
   const hasLinkers = rows.some((row) => row.cards.some((card) => (card.list === "overall" || card.list === "battle") && card.entry.linker));
   const hasSituational = rows.some((row) => row.cards.some((card) => card.list === "utility" && card.entry.situational));
 
@@ -306,7 +312,7 @@ function TierBoard({ guide }: { guide: Guide }) {
             onKeyDown={(event) => onKeyDown(event, index)}
           >
             <span className="tl-mode-title">{labels[id]}</span>
-            <span className="tl-mode-count">{tf(guide.listCount, { count: LIST_SIZES[id].all })}</span>
+            <span className="tl-mode-count">{tf(guide.listCount, { count: counts[id].all })}</span>
           </button>
         ))}
       </div>
@@ -443,7 +449,7 @@ function TierDetail({
   const hero = heroNamed(entry.hero);
   const rarity = entryRarity(entry);
   const caption = placementCaption(guide, entry);
-  const placements = tierPlacements(entry.hero);
+  const placements = tierPlacements(entry.hero, useGuideData<TierListData>("hero-tiers"));
   const reason = card.list === "overall" ? card.entry.reason : undefined;
 
   return (

@@ -9,10 +9,13 @@ import {
   searchMuseionBuildings,
   type MuseionBuilding,
   type MuseionStat,
+  MUSEION_DATA,
+  type MuseionBuildingTexts,
 } from "../../lib/content/museion";
 import { heroNamed, heroPortrait } from "../../lib/content/heroes";
-import { fill, LOCALES, getDictionary, type Dictionary } from "../../lib/i18n";
+import { fill, LOCALES, type Dictionary } from "../../lib/i18n";
 import { HeroPortrait } from "../components/HeroPortrait";
+import { useGuideData, usePublishedTexts } from "./GuideOverrides";
 
 type Guide = Dictionary["guideEntries"]["museion"];
 
@@ -70,13 +73,12 @@ function BuildingCard({ building, guide }: { building: MuseionBuilding; guide: G
 
 export function MuseionGuide({ guide }: { guide: Guide }) {
   const [query, setQuery] = useState("");
+  // The build carries the guide; a published edit lies over it a moment later.
+  const data = useGuideData<typeof MUSEION_DATA>("museion");
+  const catalogs = usePublishedTexts<MuseionBuildingTexts>("museion", "buildingTexts");
   const buildings = useMemo(
-    () =>
-      searchMuseionBuildings(
-        query,
-        LOCALES.map((locale) => getDictionary(locale.code).guideEntries.museion.buildingTexts),
-      ),
-    [query],
+    () => searchMuseionBuildings(query, LOCALES.map((locale) => catalogs[locale.code]), data.buildings),
+    [query, catalogs, data],
   );
 
   return (

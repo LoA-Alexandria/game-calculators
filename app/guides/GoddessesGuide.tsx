@@ -6,7 +6,6 @@ import { GODDESS_LEVELING_DATA } from "../../lib/content/goddess-leveling";
 import { guideHref, guideLayout } from "../../lib/content/guides";
 import {
   GODDESS_RARITIES,
-  GODDESSES,
   goddessImageUrl,
   goddessNamed,
   goddessesByRarity,
@@ -16,9 +15,8 @@ import {
   searchGoddesses,
   type Goddess,
   type GoddessRarity,
-  type GoddessTexts,
-} from "../../lib/content/goddesses";
-import { GODDESS_SKIN_GROUPS, GODDESS_SKINS, skinSearchText, skinsFor } from "../../lib/content/skins";
+  type GoddessTexts, GODDESS_DATA} from "../../lib/content/goddesses";
+import { GODDESS_SKIN_GROUPS, skinSearchText, skinsFor, type SkinData} from "../../lib/content/skins";
 import { fill, type Dictionary } from "../../lib/i18n";
 import { sectionById } from "../../lib/navigation";
 import { ChevronIcon, CloseIcon } from "../components/Icons";
@@ -28,14 +26,17 @@ import { ToolCard } from "../components/Ui";
 import { counted } from "./HeroRoster";
 import { ObtainMark } from "./ObtainMark";
 import { SkinCatalog, SkinLines } from "./SkinCatalog";
+import { useGuideData } from "./GuideOverrides";
 
 type Guide = Dictionary["guideEntries"]["goddesses"];
 
 /** The first goddesses the upgrade order raises, with a portrait, for the link card. */
-const LEVELING_FACES = GODDESS_LEVELING_DATA.phases
-  .flatMap((phase) => phase.rows.map((row) => (row.goddess ? GODDESSES.find((goddess) => goddess.id === row.goddess) : undefined)))
-  .filter((goddess, index, all): goddess is Goddess => Boolean(goddess?.images[0]) && all.indexOf(goddess) === index)
-  .slice(0, 4);
+function levelingFaces(data: typeof GODDESS_LEVELING_DATA, roster: readonly Goddess[]): Goddess[] {
+  return data.phases
+    .flatMap((phase) => phase.rows.map((row) => (row.goddess ? roster.find((goddess) => goddess.id === row.goddess) : undefined)))
+    .filter((goddess, index, all): goddess is Goddess => Boolean(goddess?.images[0]) && all.indexOf(goddess) === index)
+    .slice(0, 4);
+}
 
 export function isGoddessesGuide(
   guide: Dictionary["guideEntries"][keyof Dictionary["guideEntries"]],
@@ -109,6 +110,11 @@ function GoddessTile({ goddess, guide, onOpen }: { goddess: Goddess; guide: Guid
 }
 
 export function GoddessesGuide({ guide }: { guide: Guide }) {
+  // The build carries the guide; a published edit lies over it a moment later.
+  const roster = useGuideData<typeof GODDESS_DATA>("goddesses").goddesses;
+  const skins = useGuideData<SkinData>("goddess-skins").skins;
+  const leveling = useGuideData<typeof GODDESS_LEVELING_DATA>("goddess-leveling");
+  const faces = useMemo(() => levelingFaces(leveling, roster), [leveling, roster]);
   const { locale } = useLocale();
   const tools = sectionById("calculators").items.filter((item) => item.href.includes("goddess"));
   const [rarity, setRarity] = useState<GoddessRarity | "all">("all");
@@ -119,18 +125,23 @@ export function GoddessesGuide({ guide }: { guide: Guide }) {
   );
   const rows = useMemo(
     () =>
-      searchGoddesses(query, rarity, (goddess) => {
-        const text = localizedGoddess(goddess, texts);
-        return `${text.affinity} ${text.obtain} ${text.title} ${text.bio} ${skinSearchText(goddess.name, GODDESS_SKINS, [guide.skinTexts])}`;
-      }),
-    [query, rarity, texts, guide.skinTexts],
+      searchGoddesses(
+        query,
+        rarity,
+        (goddess) => {
+          const text = localizedGoddess(goddess, texts);
+          return `${text.affinity} ${text.obtain} ${text.title} ${text.bio} ${skinSearchText(goddess.name, skins, [guide.skinTexts])}`;
+        },
+        roster,
+      ),
+    [query, rarity, texts, guide.skinTexts, skins, roster],
   );
   const grouped = rarity === "all" && !query.trim();
 
   const hash = useSyncExternalStore(subscribeHash, () => window.location.hash, () => "");
   const openId = decodeURIComponent(hash.slice(1));
-  const open = openId ? GODDESSES.find((goddess) => goddess.id === openId) ?? null : null;
-  const stepList = open && rows.some((goddess) => goddess.id === open.id) ? rows : GODDESSES;
+  const open = openId ? roster.find((goddess) => goddess.id === openId) ?? null : null;
+  const stepList = open && rows.some((goddess) => goddess.id === open.id) ? rows : roster;
 
   return (
     <div className="guide-wide hero-roster">
@@ -143,7 +154,7 @@ export function GoddessesGuide({ guide }: { guide: Guide }) {
         <div className="hero-filters" role="group" aria-label={guide.filterLabel}>
           <button type="button" className="hero-filter" aria-pressed={rarity === "all"} onClick={() => setRarity("all")}>
             {guide.filterAll}
-            <span className="hero-filter-count">{GODDESSES.length}</span>
+            <span className="hero-filter-count">{roster.length}</span>
           </button>
           {GODDESS_RARITIES.map((tier) => (
             <button
@@ -155,7 +166,7 @@ export function GoddessesGuide({ guide }: { guide: Guide }) {
               onClick={() => setRarity(tier)}
             >
               {tier}
-              <span className="hero-filter-count">{goddessesByRarity(tier).length}</span>
+              <span className="hero-filter-count">{goddessesByRarity(tier, roster).length}</span>
             </button>
           ))}
         </div>
@@ -226,7 +237,7 @@ export function GoddessesGuide({ guide }: { guide: Guide }) {
         ))}
       </div>
       <SkinCatalog
-        skins={GODDESS_SKINS}
+        skins={skins}
         groups={guide.skinGroups}
         groupOrder={GODDESS_SKIN_GROUPS}
         texts={guide.skinTexts}
@@ -250,7 +261,7 @@ export function GoddessesGuide({ guide }: { guide: Guide }) {
       <h2>{guide.levelingTitle}</h2>
       <Link className="guide-link-card" href={guideHref("goddessLeveling")}>
         <span className="guide-link-card-art" aria-hidden="true">
-          {LEVELING_FACES.map((goddess) => (
+          {faces.map((goddess) => (
             <HeroPortrait key={goddess.id} name={goddess.name} rarity={goddess.rarity} src={goddessImageUrl(goddess.images[0])} className="hero-portrait-small" />
           ))}
         </span>
@@ -310,6 +321,7 @@ function GoddessDialog({
   const previous = index > 0 ? list[index - 1] : null;
   const next = index >= 0 && index < list.length - 1 ? list[index + 1] : null;
   const text = localizedGoddess(goddess, texts);
+  const ownSkins = skinsFor(useGuideData<SkinData>("goddess-skins").skins, goddess.name);
   const file = goddess.images[0];
   const [shown, setShown] = useState(0);
   const current = goddess.images[shown] ?? file;
@@ -382,11 +394,11 @@ function GoddessDialog({
         <p>{text.affinity || "—"}</p>
         <h3>{guide.colObtain}</h3>
         <p>{text.obtain || "—"}</p>
-        {skinsFor(GODDESS_SKINS, goddess.name).length > 0 ? (
+        {ownSkins.length > 0 ? (
           <>
             <h3>{guide.skinsHeading}</h3>
             <SkinLines
-              skins={skinsFor(GODDESS_SKINS, goddess.name)}
+              skins={ownSkins}
               texts={guide.skinTexts}
               missableLabel={guide.missableLabel}
               unconfirmedLabel={guide.unconfirmedLabel}
