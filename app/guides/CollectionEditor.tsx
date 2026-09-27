@@ -36,6 +36,7 @@ import { CheckIcon, ChevronIcon, CloseIcon, CopyIcon, DownloadIcon, PlusIcon, Tr
 import { useLocale } from "../components/LocaleProvider";
 import { createPersistentStore } from "../components/persistentStore";
 import { BackLink, PageHead } from "../components/Ui";
+import { SaveToSite } from "./SaveToSite";
 
 type EditorText = Dictionary["collectionEditor"];
 type Tf = (template: string, values: Record<string, string | number>) => string;
@@ -187,6 +188,7 @@ export function CollectionEditor() {
             {e.addItem}
           </button>
           <button className="button" type="button" onClick={reset} disabled={!draft}>{e.reset}</button>
+          <SaveToSite file="collection" data={exported.data} uploads={exported.uploads} />
           <button className="button button-primary" type="button" onClick={() => setExportOpen(true)}>
             {e.export}
             {problems.length > 0 ? <span className="tier-edit-count" aria-label={tf(e.problemCount, { count: problems.length })}>{problems.length}</span> : null}

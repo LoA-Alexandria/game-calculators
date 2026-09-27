@@ -37,6 +37,7 @@ import { useLocale } from "../components/LocaleProvider";
 import { createPersistentStore } from "../components/persistentStore";
 import { BackLink, PageHead } from "../components/Ui";
 import { CheckIcon, CloseIcon, CopyIcon, DownloadIcon, TrashIcon } from "../components/Icons";
+import { SaveToSite } from "./SaveToSite";
 
 type Guide = Dictionary["guideEntries"]["artworkLayouts"];
 type EditorText = Dictionary["artworkLayoutEditor"];
@@ -170,6 +171,7 @@ export function ArtworkLayoutEditor() {
           <button className="button" type="button" onClick={() => setAdding(true)}>{e.addBuild}</button>
           <button className="button" type="button" onClick={removeActive} disabled={state.builds.length <= 1}>{e.removeBuild}</button>
           <button className="button" type="button" onClick={reset} disabled={!draft}>{e.reset}</button>
+          <SaveToSite file="artwork-layouts" data={draftData} />
           <button className="button button-primary" type="button" onClick={() => setExportOpen(true)}>{e.export}</button>
         </div>
       </div>

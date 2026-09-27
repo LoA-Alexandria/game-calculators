@@ -7429,6 +7429,8 @@ const de: Dictionary = {
     removeOutput: "Notizen zum Entfernen",
     cancel: "Zurück",
     saveToSite: "Auf der Seite speichern",
+    saveToSitePicturesShort: "neue(s) Bild(er) gehen mit hoch.",
+    saveToSiteUnfit: "Das passt nicht zu der Form, die der Guide liest, und lässt sich deshalb nicht auf der Seite speichern.",
     publishNow: "Veröffentlichen",
     saving: "Wird gespeichert …",
     savedToSite: "Gespeichert",

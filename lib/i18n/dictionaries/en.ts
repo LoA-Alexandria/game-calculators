@@ -4218,6 +4218,8 @@ const en = {
     removeOutput: "Removal notes",
     cancel: "Back",
     saveToSite: "Save to the site",
+    saveToSitePicturesShort: "new picture(s) go up with it.",
+    saveToSiteUnfit: "This does not fit the shape the guide reads, so it cannot be saved to the site.",
     publishNow: "Publish",
     saving: "Saving…",
     savedToSite: "Saved",

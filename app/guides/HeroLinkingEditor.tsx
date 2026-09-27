@@ -35,6 +35,7 @@ import { AllLanguagesToggle, DictionaryBlocks, TranslatedField, useEditorLanguag
 import { useLocale } from "../components/LocaleProvider";
 import { createPersistentStore } from "../components/persistentStore";
 import { BackLink, PageHead } from "../components/Ui";
+import { SaveToSite } from "./SaveToSite";
 
 type EditorText = Dictionary["linkingEditor"];
 type Tf = (template: string, values: Record<string, string | number>) => string;
@@ -141,6 +142,7 @@ export function HeroLinkingEditor() {
   const commit = (next: LinkingEditorState) => draftStore.set(next);
 
   const [exportOpen, setExportOpen] = useState(false);
+  const savePayload = useMemo(() => exportLinking(state), [state]);
   const ctx: Ctx = { state, commit, e, tf, languages, sources: t.guideEntries.heroLinking.sources };
 
   const changes = useMemo(() => countLinkingChanges(PUBLISHED_LINKING, state), [state]);
@@ -163,6 +165,7 @@ export function HeroLinkingEditor() {
             {changes > 0 ? `${changes === 1 ? e.changeOne : tf(e.changes, { count: changes })} · ${e.savedNote}` : e.unchanged}
           </span>
           <button className="button" type="button" onClick={reset} disabled={!draft}>{e.reset}</button>
+          <SaveToSite file="hero-linking" data={savePayload} />
           <button className="button button-primary" type="button" onClick={() => setExportOpen(true)}>
             {e.export}
             {problems.length > 0 ? <span className="tier-edit-count" aria-label={tf(e.problemCount, { count: problems.length })}>{problems.length}</span> : null}

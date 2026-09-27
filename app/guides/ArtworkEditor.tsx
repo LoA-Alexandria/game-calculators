@@ -52,6 +52,7 @@ import { useLocale } from "../components/LocaleProvider";
 import { createPersistentStore } from "../components/persistentStore";
 import { BackLink, PageHead } from "../components/Ui";
 import { CheckIcon, CloseIcon, CopyIcon, DownloadIcon, TrashIcon, UploadIcon } from "../components/Icons";
+import { SaveToSite } from "./SaveToSite";
 
 type Guide = Dictionary["guideEntries"]["artwork"];
 type EditorText = Dictionary["artworkEditor"];
@@ -204,6 +205,7 @@ export function ArtworkEditor() {
           </span>
           <button className="button" type="button" onClick={add}>{e.addSet}</button>
           <button className="button" type="button" onClick={reset} disabled={!draft}>{e.reset}</button>
+          <SaveToSite file="paintings" data={draftData} />
           <button className="button button-primary" type="button" onClick={() => setExportOpen(true)}>{e.export}</button>
         </div>
       </div>

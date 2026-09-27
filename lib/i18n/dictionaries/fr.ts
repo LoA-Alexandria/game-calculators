@@ -7447,6 +7447,8 @@ const fr: Dictionary = {
     removeOutput: "Notes de retrait",
     cancel: "Retour",
     saveToSite: "Enregistrer sur le site",
+    saveToSitePicturesShort: "nouvelle(s) image(s) partent avec.",
+    saveToSiteUnfit: "Cela ne correspond pas à la forme que lit le guide ; impossible d’enregistrer sur le site.",
     publishNow: "Publier",
     saving: "Enregistrement…",
     savedToSite: "Enregistré",

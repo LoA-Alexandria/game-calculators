@@ -44,6 +44,7 @@ import { CheckIcon, ChevronIcon, CloseIcon, CopyIcon, DownloadIcon, PlusIcon, Tr
 import { useLocale } from "../components/LocaleProvider";
 import { createPersistentStore } from "../components/persistentStore";
 import { BackLink, PageHead } from "../components/Ui";
+import { SaveToSite } from "./SaveToSite";
 
 type EditorText = Dictionary["collectionLayoutsEditor"];
 type Tf = (template: string, values: Record<string, string | number>) => string;
@@ -105,6 +106,7 @@ export function CollectionLayoutsEditor() {
   const commit = (next: LayoutsEditorState) => draftStore.set(next);
   const [selected, setSelected] = useState<Selection>(null);
   const [exportOpen, setExportOpen] = useState(false);
+  const savePayload = useMemo(() => exportLayouts(state), [state]);
 
   const ctx: Ctx = { state, commit, e, guide, names, tf, languages };
   const changes = useMemo(() => countLayoutChanges(PUBLISHED, state), [state]);
@@ -152,6 +154,7 @@ export function CollectionLayoutsEditor() {
             {e.addSetup}
           </button>
           <button className="button" type="button" onClick={reset} disabled={!draft}>{e.reset}</button>
+          <SaveToSite file="collection-layouts" data={savePayload} />
           <button className="button button-primary" type="button" onClick={() => setExportOpen(true)}>
             {e.export}
             {problems.length > 0 ? <span className="tier-edit-count" aria-label={tf(e.problemCount, { count: problems.length })}>{problems.length}</span> : null}

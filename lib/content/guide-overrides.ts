@@ -23,11 +23,33 @@ export const OVERRIDABLE_FIELDS = [
   "status",
   "note",
   "sections",
-  // The names of the things a guide lists — a Cryptide, its skills, its feed.
-  // They live here rather than in the data file, because the file is one per
-  // guide and these are one per language, and the guide prefers them.
+  // The names of the things a guide lists — a Cryptide and its skills, a hero,
+  // a painting, a play. They live here rather than in the data file, because
+  // the file is one per guide and these are one per language, and every guide
+  // prefers them to the file when it has them.
+  "anecdoteTexts",
+  "buildTexts",
+  "buildingTexts",
+  "catalogTexts",
+  "collectionTexts",
   "cryptideTexts",
+  "eventTexts",
+  "goddessTexts",
+  "heroTexts",
+  "linkTexts",
+  "optionTexts",
+  "phaseTexts",
+  "playTexts",
+  "setupTexts",
+  "skinTexts",
 ] as const;
+
+/** The fields above that hold a tree of names rather than one line of text. */
+const TEXT_MAPS = new Set<string>([
+  "anecdoteTexts", "buildTexts", "buildingTexts", "catalogTexts", "collectionTexts",
+  "cryptideTexts", "eventTexts", "goddessTexts", "heroTexts", "linkTexts",
+  "optionTexts", "phaseTexts", "playTexts", "setupTexts", "skinTexts",
+]);
 export type OverridableField = (typeof OVERRIDABLE_FIELDS)[number];
 
 export type GuideSection = { heading: string; body: string[] };
@@ -81,8 +103,8 @@ export function readOverride(payload: unknown): GuideOverride {
       if (Array.isArray(value) && value.every(isSection)) out.sections = value;
       continue;
     }
-    if (field === "cryptideTexts") {
-      if (isTextTree(value) && typeof value === "object") out.cryptideTexts = value;
+    if (TEXT_MAPS.has(field)) {
+      if (isTextTree(value) && typeof value === "object") out[field] = value;
       continue;
     }
     if (typeof value === "string" && value.trim()) out[field] = value;
@@ -130,8 +152,8 @@ export function overrideFrom<T extends object>(base: T, edited: T): GuideOverrid
       if (Array.isArray(value) && value.every(isSection)) out.sections = value;
       continue;
     }
-    if (field === "cryptideTexts") {
-      if (isTextTree(value) && typeof value === "object") out.cryptideTexts = value;
+    if (TEXT_MAPS.has(field)) {
+      if (isTextTree(value) && typeof value === "object") out[field] = value;
       continue;
     }
     if (typeof value === "string" && value.trim()) out[field] = value;
