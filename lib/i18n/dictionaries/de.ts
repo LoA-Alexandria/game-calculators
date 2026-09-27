@@ -4464,6 +4464,58 @@ const de: Dictionary = {
       ],
       note: "",
     },
+    cryptidLayout: {
+      title: "Cryptid-Layout",
+      summary: "Die Reihenfolge, in der die vier Cryptiden in den Kampf gehen, was zuerst entwickelt wird, und welche Stufen ein Tower von einer Truppengattung verlangt.",
+      intro:
+        "Vier Cryptiden, vier Plätze. Wer anfängt und wer wartet, entscheidet, wie viel von jedem Buff überhaupt ankommt. Und die Tower dahinter verlangen eine ganze Truppengattung, nicht eine Handvoll Helden.",
+      credit: "Guide von Autumn (Ice, S12), geteilt auf Discord",
+      creditDate: "August 2026",
+      formationHeading: "Die Eröffnung",
+      formationLede:
+        "Kerberos und Caladrius wurden gemeinsam für die ersten beiden Plätze genannt — wer von beiden vorn steht, ist offen.",
+      slotLabel: "Platz {slots}",
+      slotReasons: {
+        opening: "Beide verstärken Angriff und Verteidigung, und genau daran entscheidet sich der Anfang eines Kampfes.",
+        nidhogg: "Der schwächste Buff der vier, deshalb Platz drei.",
+        sleipnir: "Heilt einen Anteil der maximalen LP — solange alle voll sind, bringt das nichts. Platz vier, wo es die langen Kämpfe trägt.",
+      },
+      formationSwap:
+        "Sobald Nidhöggr und Kerberos SSR sind, stellt Autumn um, damit Nidhöggrs Skill verstärkt wird. Die Reihenfolge dieser zweiten Aufstellung steht hier noch nicht.",
+      priorityHeading: "Was zuerst entwickeln",
+      priorityLede: "Die Reihenfolge, wenn du alle vier hast.",
+      priorityTarget: "auf {rarity}",
+      prioritySteps: {
+        allSsr: "Alle vier auf SSR bringen.",
+        order: "In dieser Reihenfolge hochziehen.",
+        nidhoggUr: "Dann Nidhöggr.",
+        cerberusUr: "Dann Kerberos.",
+        rest: "Dann die anderen beiden.",
+      },
+      towerHeading: "Stufen für die Tower",
+      towerBody: [
+        "Ein Tower ist ein Dungeon für eine einzige Truppengattung: Es gehen alle Helden dieser Gattung hinein. Also muss die ganze Gattung gelevelt werden, nicht nur die besten paar.",
+      ],
+      towerLevels: [
+        { tier: "Alle Helden", target: "100–130" },
+        { tier: "UR und UR+", target: "200+" },
+        { tier: "SSR", target: "150", note: "Nicht weiter aufsteigen lassen — die Materialien brauchst du für die UR-Helden." },
+        { tier: "R und SR", target: "120–130" },
+      ],
+      towerNote:
+        "Sind alle so weit, hältst du den Abstand zwischen den Seltenheiten bei und schiebst die ganze Gattung gemeinsam weiter.",
+      sections: [
+        {
+          heading: "Wo die Cryptiden selbst stehen",
+          body: [
+            "Skills, Futter, die Entwicklungsstufen und die Talentmaterialien stehen im Cryptides-Guide. Diese Seite behandelt nur die Reihenfolge und was du zuerst hochziehst.",
+          ],
+        },
+      ],
+      note: "Autumns Stufenziele sind vom August 2026 und verschieben sich, je älter ein Server wird. Korrekturen gern im Discord melden, falls auf deinem etwas anderes gilt.",
+      sourceNote:
+        "Aufstellung, Entwicklungsreihenfolge und Tower-Stufen von Autumn (Ice, S12), geteilt auf Discord am 6. und 11. August 2026. Namen und Porträts der Cryptiden stammen aus dem Cryptides-Guide.",
+    },
     cryptides: {
       title: "Cryptides",
       summary: "SSR-Cryptides, ihre Skills und Futter sowie welche Tower-Materialien Talente freischalten.",

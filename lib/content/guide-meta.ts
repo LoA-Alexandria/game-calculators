@@ -57,6 +57,16 @@ export const GUIDE_PRESENTATION: Record<GuideEntryId, GuidePresentation> = {
     art: ["/cryptides/nidhogg.webp", "/cryptides/caladrius.webp", "/cryptides/cerberus.webp", "/cryptides/sleipnir.webp"],
     editor: { href: "/guides/cryptides/edit/", label: (t) => t.cryptidesEditor.openEditor },
   },
+  cryptidLayout: {
+    // The line-up itself: the four in the order the guide puts them.
+    art: [
+      "/cryptides/evolution/cerberus-6.webp",
+      "/cryptides/evolution/caladrius-6.webp",
+      "/cryptides/evolution/nidhogg-6.webp",
+      "/cryptides/evolution/sleipnir-6.webp",
+    ],
+    cutout: true,
+  },
   goddessTheater: {
     art: ["/goddess-theater/hamlet.webp", "/goddess-theater/aladdin.webp", "/goddess-theater/frankenstein.webp"],
     editor: { href: "/guides/goddess-theater/edit/", label: (t) => t.theaterEditor.openEditor },

@@ -1441,6 +1441,58 @@ const en = {
       ],
       note: "",
     },
+    cryptidLayout: {
+      title: "Cryptid layout",
+      summary: "The order the four Cryptides go into a fight, what to evolve first, and the levels a Tower asks of a troop.",
+      intro:
+        "Four Cryptides, four slots. Which one opens and which one waits decides how much of each buff you actually get. The Towers behind them ask for a whole troop rather than a handful of heroes.",
+      credit: "Guide by Autumn (Ice, S12), shared on Discord",
+      creditDate: "August 2026",
+      formationHeading: "The opening line-up",
+      formationLede:
+        "Cerberus and Caladrius were named together for the first two spots, so which of the two leads is open.",
+      slotLabel: "Slot {slots}",
+      slotReasons: {
+        opening: "Both amplify attack and defence, and that is what the opening of a fight is decided by.",
+        nidhogg: "The weakest buff of the four, so it goes third.",
+        sleipnir: "Heals a share of maximum HP, which is worth nothing while everyone is still full. Fourth, where it carries the long fights.",
+      },
+      formationSwap:
+        "Once Nidhogg and Cerberus are SSR, Autumn changes the line-up so that Nidhogg’s skill is amplified. The order for that second formation is not written down here yet.",
+      priorityHeading: "What to evolve first",
+      priorityLede: "The order to push them, once you have all four.",
+      priorityTarget: "to {rarity}",
+      prioritySteps: {
+        allSsr: "Bring all four to SSR.",
+        order: "Push them in this order.",
+        nidhoggUr: "Then Nidhogg.",
+        cerberusUr: "Then Cerberus.",
+        rest: "Then the other two.",
+      },
+      towerHeading: "Levels for the Towers",
+      towerBody: [
+        "A Tower is a single-troop dungeon: every hero of that troop type goes in. So the whole troop has to be levelled, not only the best few.",
+      ],
+      towerLevels: [
+        { tier: "Every hero", target: "100–130" },
+        { tier: "UR and UR+", target: "200+" },
+        { tier: "SSR", target: "150", note: "Do not ascend past it — the materials are needed for the UR heroes." },
+        { tier: "R and SR", target: "120–130" },
+      ],
+      towerNote:
+        "Once everyone is there, keep the same gap between the rarities and push the whole troop forward together.",
+      sections: [
+        {
+          heading: "Where the Cryptides themselves are",
+          body: [
+            "Skills, feed, the evolution stages and the talent materials are in the Cryptides guide. This page is only about the order you put them in and what to raise first.",
+          ],
+        },
+      ],
+      note: "Autumn’s level targets are from August 2026 and move as a server ages. Bring a correction to Discord if yours runs different ones.",
+      sourceNote:
+        "Formation, evolution order, and Tower levels from Autumn (Ice, S12), shared on Discord on 6 and 11 August 2026. Cryptide names and portraits come from the Cryptides guide.",
+    },
     cryptides: {
       title: "Cryptides",
       summary: "SSR Cryptides, their skills and feed foods, and which Tower materials unlock talents.",

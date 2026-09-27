@@ -30,6 +30,7 @@ import { CollectionGuide, isCollectionGuide } from "./CollectionGuide";
 import { CollectionLayoutsGuide, isCollectionLayoutsGuide } from "./CollectionLayoutsGuide";
 import { BuildingsGuide, isBuildingsGuide } from "./BuildingsGuide";
 import { CryptidesGuide, isCryptidesGuide } from "./CryptidesGuide";
+import { CryptidLayoutGuide, isCryptidLayoutGuide } from "./CryptidLayoutGuide";
 import { HeroBanner } from "./HeroBanner";
 import { GoddessBanner } from "./GoddessBanner";
 
@@ -190,6 +191,8 @@ export function GuideArticle({ id }: { id: GuideEntryId }) {
           <BuildingsGuide guide={guide} />
         ) : isCryptidesGuide(guide) ? (
           <CryptidesGuide guide={guide} />
+        ) : isCryptidLayoutGuide(guide) ? (
+          <CryptidLayoutGuide guide={guide} />
         ) : isAdsBuyGuide(guide) ? (
           <AdsBuyGuide guide={guide} />
         ) : isArtworkLayoutsGuide(guide) ? (

@@ -3890,6 +3890,181 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
   align-items: baseline;
   gap: 6px 12px;
 }
+/* Cryptid layout: a row per slot group, the slot numbers on the left, the
+   Cryptides that go there beside them, and the reason underneath. The first row
+   holds two, so the portraits sit in a row of their own rather than in a fixed
+   first-and-second column. */
+.cryptid-formation {
+  margin: 0 0 14px;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+.cryptid-formation li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 6px 14px;
+  align-items: center;
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+}
+.cryptid-formation-slot {
+  grid-row: 1 / span 2;
+  align-self: start;
+  margin-top: 4px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  color: var(--accent);
+  font-size: .72rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.cryptid-formation-who {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+}
+.cryptid-formation-one {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.cryptid-formation-art {
+  width: 44px;
+  height: 44px;
+  flex: none;
+  object-fit: cover;
+  object-position: center top;
+  border-radius: var(--r-md);
+  background: color-mix(in srgb, var(--ink) 6%, var(--surface));
+}
+.cryptid-formation li p {
+  margin: 0;
+  color: var(--ink-soft);
+  font-size: .86rem;
+}
+/* The order to raise them in, as a path: a numbered marker per step with a
+   line running between them, the step on the right, and under it the
+   Cryptides it is about. */
+.cryptid-path {
+  counter-reset: cryptid-step;
+  margin: 0 0 18px;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 4px;
+}
+.cryptid-path > li {
+  position: relative;
+  counter-increment: cryptid-step;
+  padding: 0 0 16px 46px;
+}
+.cryptid-path > li::before {
+  content: counter(cryptid-step);
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--accent) 16%, var(--surface));
+  color: var(--accent);
+  font-family: var(--mono, ui-monospace, monospace);
+  font-size: .78rem;
+  font-weight: 700;
+}
+/* The thread between the markers; the last step ends the path. */
+.cryptid-path > li::after {
+  content: "";
+  position: absolute;
+  top: 32px;
+  bottom: 4px;
+  left: 13.5px;
+  width: 1px;
+  background: var(--line);
+}
+.cryptid-path > li:last-child { padding-bottom: 0; }
+.cryptid-path > li:last-child::after { display: none; }
+.cryptid-path-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  margin: 4px 0 0;
+}
+.cryptid-path-target {
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--gold) 45%, var(--line));
+  color: color-mix(in srgb, var(--gold) 80%, var(--ink));
+  font-size: .72rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.cryptid-path-target[data-rarity="UR"] {
+  border-color: color-mix(in srgb, var(--bad, #c0392b) 45%, var(--line));
+  color: color-mix(in srgb, var(--bad, #c0392b) 75%, var(--ink));
+}
+.cryptid-path-who {
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.cryptid-path-who li {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 3px 12px 3px 3px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  font-size: .82rem;
+  font-weight: 600;
+}
+.cryptid-path-who img {
+  width: 28px;
+  height: 28px;
+  flex: none;
+  object-fit: cover;
+  object-position: center top;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--ink) 6%, var(--surface));
+}
+.cryptid-path-rank {
+  margin-left: 6px;
+  color: var(--ink-faint);
+  font-size: .7rem;
+  font-weight: 700;
+}
+.cryptid-tower-levels {
+  margin: 0 0 10px;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+.cryptid-tower-levels li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 12px;
+}
+.cryptid-tower-levels li small {
+  flex-basis: 100%;
+  color: var(--ink-soft);
+  font-size: .8rem;
+}
+.cryptid-tower-note { color: var(--ink-soft); font-size: .88rem; }
+
 .cryptide-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));

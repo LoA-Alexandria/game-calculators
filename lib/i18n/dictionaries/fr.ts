@@ -4464,6 +4464,58 @@ const fr: Dictionary = {
       ],
       note: "",
     },
+    cryptidLayout: {
+      title: "Formation Cryptid",
+      summary: "L’ordre dans lequel les quatre Cryptides entrent en combat, quoi faire évoluer en premier, et les niveaux qu’une Tour demande à une troupe.",
+      intro:
+        "Quatre Cryptides, quatre places. Qui ouvre et qui attend décide de ce que chaque bonus rapporte vraiment. Et les Tours derrière eux demandent toute une troupe, pas une poignée de héros.",
+      credit: "Guide d’Autumn (Ice, S12), partagé sur Discord",
+      creditDate: "Août 2026",
+      formationHeading: "L’ouverture",
+      formationLede:
+        "Cerbère et Caladrius ont été nommés ensemble pour les deux premières places : lequel des deux ouvre reste ouvert.",
+      slotLabel: "Place {slots}",
+      slotReasons: {
+        opening: "Tous deux amplifient l’attaque et la défense, et c’est ce qui décide du début d’un combat.",
+        nidhogg: "Le bonus le plus faible des quatre, donc en troisième.",
+        sleipnir: "Soigne une part des PV max, ce qui ne vaut rien tant que tout le monde est au complet. En quatrième, où il porte les longs combats.",
+      },
+      formationSwap:
+        "Dès que Nidhogg et Cerbère sont SSR, Autumn change la formation pour que la compétence de Nidhogg soit amplifiée. L’ordre de cette seconde formation n’est pas encore noté ici.",
+      priorityHeading: "Quoi faire évoluer en premier",
+      priorityLede: "L’ordre à suivre une fois que vous avez les quatre.",
+      priorityTarget: "en {rarity}",
+      prioritySteps: {
+        allSsr: "Amener les quatre en SSR.",
+        order: "Les monter dans cet ordre.",
+        nidhoggUr: "Puis Nidhogg.",
+        cerberusUr: "Puis Cerbère.",
+        rest: "Puis les deux autres.",
+      },
+      towerHeading: "Niveaux pour les Tours",
+      towerBody: [
+        "Une Tour est un donjon à un seul type de troupe : tous vos héros de ce type y vont. C’est donc toute la troupe qu’il faut monter, pas seulement les meilleurs.",
+      ],
+      towerLevels: [
+        { tier: "Tous les héros", target: "100–130" },
+        { tier: "UR et UR+", target: "200+" },
+        { tier: "SSR", target: "150", note: "Ne les ascensionnez pas au-delà : les matériaux servent aux héros UR." },
+        { tier: "R et SR", target: "120–130" },
+      ],
+      towerNote:
+        "Une fois tout le monde à ce niveau, gardez le même écart entre les raretés et avancez toute la troupe ensemble.",
+      sections: [
+        {
+          heading: "Où trouver les Cryptides eux-mêmes",
+          body: [
+            "Les compétences, la nourriture, les stades d’évolution et les matériaux de talent sont dans le guide Cryptides. Cette page ne traite que de l’ordre et de ce qu’il faut monter en premier.",
+          ],
+        },
+      ],
+      note: "Les niveaux visés par Autumn datent d’août 2026 et bougent avec l’âge d’un serveur. Signalez une correction sur Discord si le vôtre diffère.",
+      sourceNote:
+        "Formation, ordre d’évolution et niveaux des Tours d’Autumn (Ice, S12), partagés sur Discord les 6 et 11 août 2026. Les noms et portraits des Cryptides viennent du guide Cryptides.",
+    },
     cryptides: {
       title: "Cryptides",
       summary: "Cryptides SSR, leurs compétences et nourritures, et quels matériaux de Tour débloquent les talents.",
