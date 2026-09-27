@@ -33,7 +33,16 @@ export type TextGuideDraft = {
   sections: TextGuideSection[];
 };
 
-function entryIn(catalog: TextGuideCatalog, id: string, locale: Locale): Entry | undefined {
+/**
+ * The entries a page actually shows: the dictionaries, with whatever has been
+ * published on the site laid over them. An editor opens on these, so it does
+ * not quietly put the built text back on its next save.
+ */
+export type TextGuideLive = Partial<Record<Locale, Record<string, unknown>>>;
+
+function entryIn(catalog: TextGuideCatalog, id: string, locale: Locale, live?: TextGuideLive): Entry | undefined {
+  const shown = live?.[locale];
+  if (shown) return shown as Entry;
   const entries = getDictionary(locale)[catalog] as unknown as Record<string, Entry | undefined>;
   return entries[id];
 }
@@ -70,17 +79,17 @@ export function splitParagraphs(text: string): string[] {
 }
 
 /** The entry as every dictionary has it now. */
-export function textGuideDraft(catalog: TextGuideCatalog, id: string): TextGuideDraft {
-  const english = entryIn(catalog, id, DEFAULT_LOCALE);
+export function textGuideDraft(catalog: TextGuideCatalog, id: string, live?: TextGuideLive): TextGuideDraft {
+  const english = entryIn(catalog, id, DEFAULT_LOCALE, live);
   if (!english) throw new Error(`${catalog}.${id} is not in the English dictionary`);
   const keys = Object.keys(english);
   const scalar = keys.filter((key) => key !== "sections");
-  const sectionCount = Math.max(...LOCALE_CODES.map((locale) => entryIn(catalog, id, locale)?.sections.length ?? 0), 0);
+  const sectionCount = Math.max(...LOCALE_CODES.map((locale) => entryIn(catalog, id, locale, live)?.sections.length ?? 0), 0);
   return {
     fields: scalar.map((key) => ({
       key,
       text: mapLocales((locale) => {
-        const value = entryIn(catalog, id, locale)?.[key];
+        const value = entryIn(catalog, id, locale, live)?.[key];
         return typeof value === "string" ? value : "";
       }),
     })),
@@ -88,15 +97,15 @@ export function textGuideDraft(catalog: TextGuideCatalog, id: string): TextGuide
     sections: Array.from({ length: sectionCount }, (_, index) => {
       const picture = english.sections[index]?.image;
       return {
-        heading: mapLocales((locale) => entryIn(catalog, id, locale)?.sections[index]?.heading ?? ""),
-        body: mapLocales((locale) => joinParagraphs(entryIn(catalog, id, locale)?.sections[index]?.body ?? [])),
+        heading: mapLocales((locale) => entryIn(catalog, id, locale, live)?.sections[index]?.heading ?? ""),
+        body: mapLocales((locale) => joinParagraphs(entryIn(catalog, id, locale, live)?.sections[index]?.body ?? [])),
         ...(picture
           ? {
               image: {
                 src: picture.src,
                 width: picture.width,
                 height: picture.height,
-                alt: mapLocales((locale) => entryIn(catalog, id, locale)?.sections[index]?.image?.alt ?? ""),
+                alt: mapLocales((locale) => entryIn(catalog, id, locale, live)?.sections[index]?.image?.alt ?? ""),
               },
             }
           : {}),

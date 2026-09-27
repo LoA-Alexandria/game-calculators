@@ -9,6 +9,8 @@ import {
   eventWiki,
   eventWikiHasHelp,
 } from "../../lib/content/event-guides";
+import { entryKey } from "../../lib/content/guide-overrides";
+import { useGuideEntry } from "../guides/GuideOverrides";
 import { asset } from "../../lib/site";
 import { useAuth } from "../components/AuthProvider";
 import { PenIcon } from "../components/Icons";
@@ -46,7 +48,9 @@ export function EventArticle({ id }: { id: EventGuideId }) {
   const [editing, setEditing] = useState(false);
   // While the editor is open the page shows the draft, so it is its own preview.
   const [draft, setDraft] = useState<TextGuideDraft | null>(null);
-  const published: ShownGuide = t.eventGuideEntries[id];
+  // What has been written on the site lies over the built entry and arrives a
+  // moment later, so an event page never waits on a database for its text.
+  const published = useGuideEntry(entryKey("eventGuideEntries", id), t.eventGuideEntries[id]) as ShownGuide;
   const guide: ShownGuide = draft ? (textGuideEntry(draft, toLocale(locale)) as unknown as ShownGuide) : published;
   const wiki = eventWiki(id);
   const showWiki = eventWikiHasHelp(id);

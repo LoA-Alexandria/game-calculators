@@ -6,10 +6,10 @@ import { guideTitleBanner } from "../../lib/content/banners";
 import { guidePresentation } from "../../lib/content/guide-meta";
 import { guideCategoryId, guideHasSnippetEditor, guideHref, isGuideEntryId, type GuideEntryId } from "../../lib/content/guides";
 import { toLocale, type Dictionary } from "../../lib/i18n";
+import { useGuideEntry } from "./GuideOverrides";
 import { isTextGuide, textGuideEntry, type TextGuideDraft } from "../../lib/content/text-guide-editor";
 import { useAuth } from "../components/AuthProvider";
 import { useDocumentTitle, useLocale } from "../components/LocaleProvider";
-import { useGuideOverride, withOverride } from "./useGuideContent";
 import { PenIcon, TrashIcon } from "../components/Icons";
 import { TextGuideEditor } from "../components/TextGuideEditor";
 import { GuideEditor, type GuideEditorTarget } from "./GuideEditor";
@@ -127,8 +127,7 @@ export function GuideArticle({ id }: { id: GuideEntryId }) {
   const { allows } = useAuth();
   // The build carries the guide; anything written on the site lies over it and
   // arrives a moment later, so the page never waits on a database for its text.
-  const override = useGuideOverride(id, toLocale(locale));
-  const published = withOverride(t.guideEntries[id], override);
+  const published = useGuideEntry(id, t.guideEntries[id]);
   const canWrite = allows("guides.draft") && guideHasSnippetEditor(id);
   // A guide that is only text and has neither its own editor nor the snippet one
   // (Ads / Buy) gets the text editor, with the page itself as the preview.

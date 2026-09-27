@@ -11,6 +11,7 @@ import {
   textGuideEntry,
 } from "../lib/content/text-guide-editor.ts";
 import { DEFAULT_LOCALE, LOCALE_CODES, getDictionary } from "../lib/i18n/index.ts";
+import { entryKey } from "../lib/content/guide-overrides.ts";
 
 const english = getDictionary(DEFAULT_LOCALE);
 const EVENT_GUIDES = Object.keys(english.eventGuideEntries);
@@ -96,4 +97,42 @@ test("a stored draft is read back against the entry it belongs to", () => {
   assert.deepEqual(back.fields.map((field) => field.key), base.fields.map((field) => field.key));
   assert.equal(parseTextGuideDraft("not json", base), null);
   assert.equal(parseTextGuideDraft(null, base), null);
+});
+
+test("the editor opens on what the site shows, not on what was built", () => {
+  // The same trap as the guide editors: opening on the built text means the
+  // next save puts it back over whatever was published.
+  const live = {
+    en: { ...english.eventGuideEntries.ringToss, title: "Ring Toss, published" },
+    de: { ...getDictionary("de").eventGuideEntries.ringToss, title: "Ringewerfen, veröffentlicht" },
+  };
+  const draft = textGuideDraft("eventGuideEntries", "ringToss", live);
+  const title = draft.fields.find((field) => field.key === "title");
+  assert.equal(title.text.en, "Ring Toss, published");
+  assert.equal(title.text.de, "Ringewerfen, veröffentlicht");
+  assert.equal(
+    title.text.fr,
+    getDictionary("fr").eventGuideEntries.ringToss.title,
+    "a language nobody published keeps the built text",
+  );
+
+  // And the entry it would save is that same published text.
+  assert.equal(textGuideEntry(draft, "en").title, "Ring Toss, published");
+  assert.deepEqual(
+    textGuideEntry(draft, "en").sections,
+    textGuideEntry(textGuideDraft("eventGuideEntries", "ringToss"), "en").sections,
+    "nothing else moved",
+  );
+});
+
+test("every event and text guide has a key of its own to be saved under", () => {
+  const events = Object.keys(english.eventGuideEntries);
+  const guides = Object.keys(english.guideEntries);
+  assert.equal(events.length, 29);
+  const keys = [...guides.map((id) => entryKey("guideEntries", id)), ...events.map((id) => entryKey("eventGuideEntries", id))];
+  assert.equal(new Set(keys).size, keys.length, "no event is saved over a guide");
+  for (const key of keys) {
+    assert.ok(key.length >= 1 && key.length <= 60, `${key} does not fit guide_content.guide_id`);
+  }
+  assert.equal(entryKey("guideEntries", "cryptides"), "cryptides", "a guide keeps the key it already had");
 });

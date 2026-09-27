@@ -23,6 +23,11 @@ export const OVERRIDABLE_FIELDS = [
   "status",
   "note",
   "sections",
+  // Headings and ledes a text-only guide carries beside its sections.
+  "adsHeading",
+  "adsLede",
+  "spendHeading",
+  "spendLede",
   // The names of the things a guide lists — a Cryptide and its skills, a hero,
   // a painting, a play. They live here rather than in the data file, because
   // the file is one per guide and these are one per language, and every guide
@@ -51,6 +56,15 @@ const TEXT_MAPS = new Set<string>([
   "optionTexts", "phaseTexts", "playTexts", "setupTexts", "skinTexts",
 ]);
 export type OverridableField = (typeof OVERRIDABLE_FIELDS)[number];
+
+/**
+ * What a row of `guide_content` is keyed by. Guides keep their dictionary key;
+ * an event is prefixed, because the two catalogues are numbered apart and
+ * nothing says an event may not one day be called what a guide is called.
+ */
+export function entryKey(catalog: "guideEntries" | "eventGuideEntries", id: string): string {
+  return catalog === "eventGuideEntries" ? `event:${id}` : id;
+}
 
 export type GuideSection = { heading: string; body: string[] };
 export type GuideOverride = Partial<Record<OverridableField, unknown>>;

@@ -101,3 +101,18 @@ test("a file cannot be saved under a name it does not fit", () => {
   assert.equal(dataFits("collection", heroes), false);
   assert.equal(dataFits("museion", heroes), false);
 });
+
+test("the text editor can save and starts from what is published", () => {
+  // Every event page and every text-only guide is edited through this one
+  // component, so its save path stands in for all of them.
+  const text = readFileSync(join(root, "app/components/TextGuideEditor.tsx"), "utf8");
+  assert.match(text, /saveGuideDraft\(/, "the text editor cannot write to the site");
+  assert.match(text, /publishGuide\(/, "the text editor cannot publish");
+  assert.match(text, /usePublishedOverrides\(/, "the text editor opens on the built text");
+  assert.match(text, /textGuideDraft\(catalog, id, shown\)/, "its baseline is not what the site shows");
+
+  // And both pages that mount it read the published entry back.
+  for (const page of ["app/events/EventArticle.tsx", "app/guides/GuideArticle.tsx"]) {
+    assert.match(readFileSync(join(root, page), "utf8"), /useGuideEntry\(/, `${page} shows only the built text`);
+  }
+});
