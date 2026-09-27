@@ -89,6 +89,17 @@ export function CryptidTowerLayoutGuide({ guide }: { guide: Guide }) {
       <p className="intro">{guide.intro}</p>
       <p className="ct-progress-note">{guide.progressNote}</p>
       <p className="callout">{guide.itemAliasNote}</p>
+      <section className="ct-level-guidance" aria-labelledby="ct-level-guidance-heading">
+        <h2 id="ct-level-guidance-heading">{guide.levelGuidanceHeading}</h2>
+        <p>{guide.levelGuidanceIntro}</p>
+        <ul>
+          <li>{guide.levelGuidanceEveryHero}</li>
+          <li>{guide.levelGuidanceUr}</li>
+          <li>{guide.levelGuidanceSsr}</li>
+          <li>{guide.levelGuidanceRsSr}</li>
+        </ul>
+        <p>{guide.levelGuidanceNote}</p>
+      </section>
       <div className="ct-towers">
         {CRYPTID_TOWER_BUILDS.map((build) => {
           const text = guide.towerBuilds[build.id];
