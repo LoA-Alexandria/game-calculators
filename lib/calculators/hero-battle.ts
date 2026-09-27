@@ -5,10 +5,10 @@ import { FORMATION_COLUMNS } from "../content/hero-layouts.ts";
 
 export type Fighter = { id: string; atk: number; hp: number; stars: number; level?: number };
 export type CryptidSelection = { id: string; skills: 1 | 2 | 3 };
-export type BattleOptions = { rounds: number; seed: number; trials: number; budget: number; size: number; enemyCount?: 1 | 5 | 10 | 20 | 30; infiniteDummy?: boolean; enemyFirst: boolean; objective: "damage" | "wins"; enemy: Fighter[]; dummy: boolean; enemyReduction: number; items: string[]; collection: string[]; cryptides?: (CryptidSelection | null)[] };
+export type BattleOptions = { rounds: number; seed: number; trials: number; budget: number; size: number; enemyCount?: 1 | 5 | 10 | 20 | 30; infiniteDummy?: boolean; enemyFirst: boolean; objective: "damage" | "wins"; enemy: Fighter[]; dummy: boolean; enemyReduction: number; items: string[]; collection: string[]; collectionSlots?: number; cryptides?: (CryptidSelection | null)[] };
 export type BattleEvent = { round: number; side: number; actor: string; action: string; amount: number; allyHp: number; enemyHp: number };
 export type BattleResult = { damage: number; healing: number; absorbed: number; alive: number; remaining: number; win: boolean; rounds: number; events: BattleEvent[]; timeline: { round: number; damage: number; allyHp: number; enemyHp: number }[] };
-export type Candidate = { team: Fighter[]; damage: number; healing: number; winRate: number; remaining: number; deviation: number };
+export type Candidate = { team: Fighter[]; collection: string[]; damage: number; healing: number; winRate: number; remaining: number; deviation: number };
 export type SearchResult = { candidates: Candidate[]; evaluated: number; exhaustive: boolean; validationTrials: number; trace: BattleResult };
 
 // Only skills whose complete recorded level text can be translated into effects.
@@ -55,12 +55,12 @@ type Side = { units: Unit[]; max: number; shield: number; effects: Effect[]; ite
 const totalHp = (side: Side) => side.units.reduce((sum, unit) => sum + unit.health, 0);
 const living = (side: Side) => side.units.filter((unit) => unit.health > 0);
 const effect = (side: Side, key: string) => side.effects.filter((entry) => entry.key === key).reduce((sum, entry) => sum + entry.value, 0);
-const buffs = new Set(["dodge", "break", "crit", "skill", "reduction", "barrier", "dotHeal", "counterHeal", "atk", "extra"]);
-const debuffs = new Set(["dot", "skillDown", "replace"]);
+const buffs = new Set(["dodge", "break", "crit", "skill", "reduction", "barrier", "dotHeal", "counterHeal", "atk", "extra", "frontForce", "reflect", "cryptidHeal"]);
+const debuffs = new Set(["dot", "skillDown", "replace", "atkDown", "reductionDown", "skillReductionDown"]);
 
 export function validateBattle(pool: Fighter[], options: BattleOptions) {
   const whole = (value: number, min: number, max: number) => Number.isInteger(value) && value >= min && value <= max;
-  if (!whole(options.rounds, 1, 100) || !whole(options.size, 1, 25) || (options.enemyCount !== undefined && ![1, 5, 10, 20, 30].includes(options.enemyCount)) || (options.infiniteDummy !== undefined && typeof options.infiniteDummy !== "boolean") || !whole(options.seed, 0, 2147483647) || !whole(options.trials, 1, 128) || !whole(options.budget, 1, 1000)) throw new RangeError("settings");
+  if (!whole(options.rounds, 1, 100) || !whole(options.size, 1, 25) || (options.enemyCount !== undefined && ![1, 5, 10, 20, 30].includes(options.enemyCount)) || (options.infiniteDummy !== undefined && typeof options.infiniteDummy !== "boolean") || (options.collectionSlots !== undefined && !whole(options.collectionSlots, 0, 6)) || !whole(options.seed, 0, 2147483647) || !whole(options.trials, 1, 128) || !whole(options.budget, 1, 1000)) throw new RangeError("settings");
   if (!["damage", "wins"].includes(options.objective) || !Number.isFinite(options.enemyReduction) || options.enemyReduction < 0 || options.enemyReduction > .9) throw new RangeError("settings");
   const validateTeam = (team: Fighter[], dummy = false) => {
     if (!team.length || team.length > 82 || new Set(team.map((unit) => unit.id)).size !== team.length) throw new RangeError("team");
@@ -71,10 +71,10 @@ export function validateBattle(pool: Fighter[], options: BattleOptions) {
   validateTeam(pool);
   const cryptides = options.cryptides ?? [];
   const selectedCryptides = cryptides.filter((entry): entry is CryptidSelection => entry !== null);
-  if (cryptides.length > 3 || new Set(selectedCryptides.map((entry) => entry.id)).size !== selectedCryptides.length || selectedCryptides.some((entry) => !CRYPTIDES.some((cryptide) => cryptide.id === entry.id) || !whole(entry.skills, 1, 3))) throw new RangeError("cryptides");
+  if (cryptides.length > 4 || new Set(selectedCryptides.map((entry) => entry.id)).size !== selectedCryptides.length || selectedCryptides.some((entry) => !CRYPTIDES.some((cryptide) => cryptide.id === entry.id) || !whole(entry.skills, 1, 3))) throw new RangeError("cryptides");
   if (pool.length < options.size) throw new RangeError("size");
   if (!options.dummy) { validateTeam(options.enemy); if (options.enemy.length > 25) throw new RangeError("enemy"); }
-  if (options.items.some((id) => !MODELED_ITEMS.has(id) || !EXCLUSIVE_COLLECTION_HEROES[id]) || options.collection.some((id) => !MODELED_ITEMS.has(id)) || options.collection.length > 25) throw new RangeError("items");
+  if (new Set(options.items).size !== options.items.length || options.items.some((id) => !MODELED_ITEMS.has(id) || !EXCLUSIVE_COLLECTION_HEROES[id]) || new Set(options.collection).size !== options.collection.length || options.collection.some((id) => !MODELED_ITEMS.has(id) || EXCLUSIVE_COLLECTION_HEROES[id]) || options.collection.length > 25) throw new RangeError("items");
 }
 
 /** Event simulation with an explicit scenario model; see HERO-TEAM-PLANNER.md. */
@@ -222,6 +222,7 @@ export function simulateBattle(team: Fighter[], options: BattleOptions, seed = o
     for (let index = side.effects.length - 1; index >= 0 && removed < count; index--) {
       if (kinds.has(side.effects[index].key)) { side.effects.splice(index, 1); removed++; }
     }
+    return removed;
   };
   const cryptidAction = (selection: CryptidSelection) => {
     const from = sides[0], to = sides[1];
@@ -251,8 +252,8 @@ export function simulateBattle(team: Fighter[], options: BattleOptions, seed = o
       case "sleipnir":
         heal(0, from.max * .3);
         add(from, "reflect", .2, 3, false, "sleipnir");
-        if (unlocked >= 2) removeEffects(to, buffs, 2);
-        if (unlocked >= 3) removeEffects(from, debuffs, 2);
+        if (unlocked >= 2) log(0, "dispelBuff", removeEffects(to, buffs, 2));
+        if (unlocked >= 3) log(0, "dispelDebuff", removeEffects(from, debuffs, 2));
         break;
     }
   };
@@ -307,58 +308,90 @@ export function simulateBattle(team: Fighter[], options: BattleOptions, seed = o
   return { damage: sides[0].damage, healing: sides[0].healing, absorbed: sides[0].absorbed, alive: living(sides[0]).length, remaining: totalHp(sides[0]) / sides[0].max, win: !options.dummy && totalHp(sides[1]) === 0 && totalHp(sides[0]) > 0, rounds: completed, events, timeline };
 }
 
-function evaluate(team: Fighter[], options: BattleOptions, trials: number, seedOffset = 0): Candidate {
+function evaluate(team: Fighter[], collection: string[], options: BattleOptions, trials: number, seedOffset = 0): Candidate {
+  const scenario = { ...options, collection };
   let damage = 0, squares = 0, healing = 0, wins = 0, remaining = 0;
   for (let i = 0; i < trials; i++) {
-    const battle = simulateBattle(team, options, (options.seed + i * 7919 + seedOffset) >>> 0);
+    const battle = simulateBattle(team, scenario, (options.seed + i * 7919 + seedOffset) >>> 0);
     damage += battle.damage; squares += battle.damage ** 2; healing += battle.healing; wins += Number(battle.win); remaining += battle.remaining;
   }
-  return { team, damage: damage / trials, healing: healing / trials, winRate: wins / trials, remaining: remaining / trials, deviation: Math.sqrt(Math.max(0, squares / trials - (damage / trials) ** 2)) };
+  return { team, collection, damage: damage / trials, healing: healing / trials, winRate: wins / trials, remaining: remaining / trials, deviation: Math.sqrt(Math.max(0, squares / trials - (damage / trials) ** 2)) };
 }
 export function optimizeTeams(pool: Fighter[], options: BattleOptions, progress?: (done: number) => void): SearchResult {
   validateBattle(pool, options);
   const sorted = [...pool].sort((a, b) => a.id.localeCompare(b.id, "en"));
+  const collectionPool = [...options.collection].sort((a, b) => a.localeCompare(b, "en"));
+  const collectionSlots = Math.min(options.collectionSlots ?? 6, collectionPool.length);
   const random = seededRandom(options.seed);
-  const compare = (a: Candidate, b: Candidate) => (options.objective === "wins" && !options.dummy ? b.winRate - a.winRate || b.remaining - a.remaining : 0) || b.damage - a.damage || a.team.map((u) => u.id).join(",").localeCompare(b.team.map((u) => u.id).join(","), "en");
+  const compare = (a: Candidate, b: Candidate) => (options.objective === "wins" && !options.dummy ? b.winRate - a.winRate || b.remaining - a.remaining : 0) || b.damage - a.damage || a.team.map((u) => u.id).join(",").localeCompare(b.team.map((u) => u.id).join(","), "en") || a.collection.join(",").localeCompare(b.collection.join(","), "en");
   const seen = new Set<string>();
   let elite: Candidate[] = [];
-  let count = 1;
-  for (let i = 0; i < options.size; i++) count *= sorted.length - i;
-  const exhaustive = count <= options.budget;
-  const assess = (team: Fighter[]) => {
-    const key = team.map((unit) => unit.id).join(",");
+  let teamCount = 1;
+  for (let i = 0; i < options.size; i++) teamCount *= sorted.length - i;
+  let collectionCount = 1;
+  for (let i = 0; i < collectionSlots; i++) collectionCount = collectionCount * (collectionPool.length - i) / (i + 1);
+  const exhaustive = teamCount * collectionCount <= options.budget;
+  const assess = (team: Fighter[], collection: string[]) => {
+    const key = team.map((unit) => unit.id).join(",") + "|" + collection.join(",");
     if (seen.has(key)) return;
     seen.add(key);
-    elite.push(evaluate(team, options, options.trials));
+    elite.push(evaluate(team, collection, options, options.trials));
     elite.sort(compare); elite = elite.slice(0, 8);
     if (seen.size % 10 === 0) progress?.(seen.size);
   };
+  const eachCollection = (visit: (collection: string[]) => void) => {
+    const choose = (start: number, current: string[]) => {
+      if (current.length === collectionSlots) { visit(current); return; }
+      for (let index = start; index <= collectionPool.length - (collectionSlots - current.length); index++) choose(index + 1, [...current, collectionPool[index]]);
+    };
+    choose(0, []);
+  };
+  const randomCollection = () => {
+    const shuffled = [...collectionPool];
+    for (let i = shuffled.length - 1; i > 0; i--) { const j = Math.floor(random() * (i + 1)); [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]; }
+    return shuffled.slice(0, collectionSlots).sort((a, b) => a.localeCompare(b, "en"));
+  };
+  const mutateCollection = (current: string[]) => {
+    if (collectionSlots === 0 || collectionPool.length <= collectionSlots) return randomCollection();
+    const next = [...current];
+    const replace = Math.floor(random() * next.length);
+    const choices = collectionPool.filter((id) => !next.includes(id));
+    next[replace] = choices[Math.floor(random() * choices.length)];
+    return next.sort((a, b) => a.localeCompare(b, "en"));
+  };
   if (exhaustive) {
     const visit = (team: Fighter[]) => {
-      if (team.length === options.size) { assess(team); return; }
+      if (team.length === options.size) { eachCollection((collection) => assess(team, collection)); return; }
       for (const unit of sorted) if (!team.includes(unit)) visit([...team, unit]);
     };
     visit([]);
   } else {
     // No archetypes, tiers, names or guide scores seed the search.
     for (let attempt = 0; seen.size < options.budget && attempt < options.budget * 8; attempt++) {
-      let team: Fighter[];
+      let team: Fighter[], collection: string[];
       if (elite.length && attempt % 3 !== 0) {
-        team = [...elite[Math.floor(random() * elite.length)].team];
-        const slot = Math.floor(random() * team.length);
-        const spare = sorted.filter((unit) => !team.includes(unit));
-        if (spare.length && random() < .6) team[slot] = spare[Math.floor(random() * spare.length)];
-        else { const other = Math.floor(random() * team.length); [team[slot], team[other]] = [team[other], team[slot]]; }
+        const parent = elite[Math.floor(random() * elite.length)];
+        team = [...parent.team];
+        collection = [...parent.collection];
+        if (collectionPool.length > collectionSlots && random() < .5) collection = mutateCollection(collection);
+        else {
+          const slot = Math.floor(random() * team.length);
+          const spare = sorted.filter((unit) => !team.includes(unit));
+          if (spare.length && random() < .6) team[slot] = spare[Math.floor(random() * spare.length)];
+          else { const other = Math.floor(random() * team.length); [team[slot], team[other]] = [team[other], team[slot]]; }
+          if (collectionPool.length > collectionSlots && random() < .25) collection = mutateCollection(collection);
+        }
       } else {
         const shuffled = [...sorted];
         for (let i = shuffled.length - 1; i > 0; i--) { const j = Math.floor(random() * (i + 1)); [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]; }
         team = shuffled.slice(0, options.size);
+        collection = randomCollection();
       }
-      assess(team);
+      assess(team, collection);
     }
   }
   // Independent seed set reduces selection bias; not a proof of global optimality.
   const validationTrials = 128;
-  const candidates = elite.map((candidate) => evaluate(candidate.team, options, validationTrials, 1000003)).sort(compare).slice(0, 3);
-  return { candidates, evaluated: seen.size, exhaustive, validationTrials, trace: simulateBattle(candidates[0].team, options, options.seed + 1000003, true) };
+  const candidates = elite.map((candidate) => evaluate(candidate.team, candidate.collection, options, validationTrials, 1000003)).sort(compare).slice(0, 3);
+  return { candidates, evaluated: seen.size, exhaustive, validationTrials, trace: simulateBattle(candidates[0].team, { ...options, collection: candidates[0].collection }, options.seed + 1000003, true) };
 }

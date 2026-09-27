@@ -1,6 +1,6 @@
 # Hero simulator
 
-Experimental event simulation and independent team search, model v3, 27 September
+Experimental event simulation and joint team / Collection search, model v4, 27 September
 2026. This replaces the original guide-weight ranking. Neither battle simulation
 nor team search imports layout archetypes, tiers, role scores, or recommended builds.
 The browser runs the search in a cancellable Web Worker with a reproducible seed.
@@ -28,30 +28,29 @@ recorded. Results compare modeled interactions, not real damage values.
 ## Coverage
 
 MODELED_HEROES and MODELED_ITEMS in lib/calculators/hero-battle.ts are the coverage
-boundary (27 heroes, 18 items in v2). Missing or ambiguous effects are disabled
+boundary (27 heroes and 18 exclusive / Collection items as of 27 September 2026). Missing or ambiguous effects are disabled
 and named in the UI, never assigned generic scores or inferred skills. Some
 recorded hero entries currently contain only direct damage; those simulate only
 that recorded damage, not unrecorded mechanics that may exist in the live game.
 The source ability text is available on each selected card.
 
 Implemented events include skill activation, normal hits, critical damage, extra
-attacks / pursuit, DoT, healing, shields, dodge, damage reduction, buff removal,
-the supported Collection triggers, and up to three ordered Cryptid attacks. A
-selected Cryptid attacks once at the start of its assigned round (slots 1–3 map
-to rounds 1–3); the chosen unlock count enables its first one, two, or three
-recorded skill effects. Cryptid timing follows the user's supplied rule; the
-Cryptid effect mapping follows the published skill text. No execute, revival, Plunder, unknown
+attacks, DoT, healing, shields, dodge, damage reduction, selected buff/debuff
+effects and removal, supported Collection triggers, and four ordered Cryptid
+attacks. All four unique Cryptids attack once at the start of rounds 1–4; their
+unlock count enables the first one, two, or three recorded effects. Cryptid
+timing follows the user's supplied rule; effect mapping follows published skill
+text. This is partial buff/debuff coverage, not a complete model. No execute, revival, Plunder, unknown
 proc chances, troop advantages, event passives, command scaling or enemy items
 are silently approximated.
 
 ## Explicit scenario assumptions (not verified game formulas)
 
-- One action per side per round. Player first by default, switchable. Command
+- One action per side per round. Player acts first. Command
   does not establish initiative because the source formula is missing.
 - Every ready living hero rolls its documented trigger chance. The lowest slot
-  among successes casts; Arthur has the priority stated in his text. A skill is
-  spent after use by default; an optional repeat mode is an experimental rule.
-  Normal attacks occur if none activates.
+  among successes casts; Arthur has the priority stated in his text. The skill
+  can activate again on later rounds. Normal attacks occur if none activates.
 - Attack strength is the sum of living heroes' entered ATK. Skill coefficients
   multiply that sum. Incoming damage consumes individual HP from the highest
   slot down and spills over; zero-HP heroes stop acting/contributing.
@@ -63,13 +62,11 @@ are silently approximated.
   Stat effects from different sources coexist; refreshing one source preserves
   other sources. Buff removal/counting currently treats each stat effect entry
   as one effect. Brutus Dagger resolves after the affected side's action.
-  Other repeated stacking behavior follows the explicit handlers; repeat mode
-  is a sensitivity experiment, not a claim about the game's stacking rules.
 - Additive skill bonuses multiply the base damage; reductions are capped at 90%.
   Critical attacks multiply by their recorded critical increment and then by the
   allied critical-damage modifier. These multiplier/stacking assumptions need
-  verification against real combat logs. Defence is not fabricated: an explicit
-  enemy damage-reduction input scales damage to the enemy.
+  verification against real combat logs. No enemy defence is added to the default
+  training target.
 - Damage metrics count effective HP loss after shields and reductions; overkill
   is excluded. Damage per scheduled round divides by the selected fight length,
   including unused rounds after a kill. There is no invented seconds-per-round.
@@ -77,23 +74,26 @@ are silently approximated.
   not apply. An optional finite target group uses 1,000 placeholder HP per selected
   target (1, 5, 10, 20, or 30) in one shared pool. Each action damages that pool once;
   damage is never multiplied by enemy count, and the rear-most pool segments fall first.
-  Standard test team: Achilles, Caesar, Da Vinci, each 100 ATK / 1,000 HP,
-  0 stars. Custom opponents use supported heroes with manual stats and slot order.
-  Enemy artifacts/Collection are not modeled in this version.
+  The public simulator exposes the training target only. Enemy artifacts and
+  Collection are not modeled.
 
 These rules produce real evolving combat state and emergent interactions, but
 do not yet establish a validated replica of Pop Epoch's combat engine.
 
 ## Team search
 
-Input: supported owned heroes, fixed owned artifacts and fixed equipped Collection,
-team size 1–25, rounds 1–100, trials 1–128, candidates 1–1,000, seed. Small spaces
-enumerate all ordered teams when the permutation count fits the budget. Larger
-spaces generate seeded random teams, then mutate membership and ordering of the
-current best candidates. No archetype is prescribed.
+Input: supported owned heroes, stars per hero, shared level, unlocked team slots,
+owned exclusive artifacts, owned Collection items, and Cryptid order / skill unlocks.
+The search runs against an unlimited-HP target with placeholder stats. Exclusive
+artifacts are assigned to their owner when selected. The user marks Collection
+ownership; the optimizer chooses the best six supported items (or all marked items
+if fewer than six) for each candidate. It searches ordered teams and Collection
+combinations jointly. Small spaces enumerate candidates within the fixed budget
+of 500; larger searches use seeded sampling and mutations. No archetype is
+prescribed.
 
-Candidates are measured by simulated damage, or win rate then remaining HP and
-damage. Eight search finalists are reevaluated on a separate set of 128 seeds;
+Candidates are measured by simulated damage. Eight search finalists are reevaluated
+on a separate set of 128 seeds;
 the best three are shown. This reduces search-seed overfitting without proving a
 global optimum. The deviation is the population standard deviation of damage,
 not a confidence interval. The graph and event log show one validation-seed
@@ -116,7 +116,8 @@ production ability rows can be interpolated; see lib/content/heroes.ts.
 
 tests/hero-battle.test.mjs covers reproducible random draws, source star gates,
 HP loss/death order, DoT ticks/expiry, healing/shields, Collection interactions,
-exhaustive and budgeted search, unsupported data and manual-stat sensitivity.
+four ordered Cryptid attacks, exhaustive joint team / Collection search, budgeted
+search, unsupported data and manual-stat sensitivity.
 tests/hero-team.test.mjs covers global production assignment, one-use constraints,
 zero/fractional time, star gates and invalid input.
 After building, run `node --experimental-strip-types scripts/verify-hero-worker.mjs`
