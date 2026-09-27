@@ -4065,6 +4065,48 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
 }
 .cryptid-tower-note { color: var(--ink-soft); font-size: .88rem; }
 
+.cryptid-tower-layout .ct-progress-note { color: var(--ink-soft); font-size: .88rem; margin: .25rem 0 1rem; }
+.ct-towers { display: grid; gap: 1.2rem; }
+.ct-tower-card { overflow: hidden; border: 1px solid var(--line); border-radius: 1rem; background: var(--surface); }
+.ct-tower-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem 1.2rem; border-bottom: 1px solid var(--line); background: color-mix(in srgb, var(--cat) 9%, var(--surface)); }
+.ct-tower-head[data-tower="pike"] { --cat: #be7654; }
+.ct-tower-head[data-tower="archer"] { --cat: #5c8eaf; }
+.ct-tower-head[data-tower="shield"] { --cat: #6e9d78; }
+.ct-tower-head h2 { margin: 0; }
+.ct-kicker { margin: 0 0 .25rem; color: var(--ink-soft); font-size: .72rem; font-weight: 700; letter-spacing: .09em; text-transform: uppercase; }
+.ct-cryptide { display: grid; grid-template-columns: 3rem auto; align-items: center; column-gap: .65rem; padding: .35rem .6rem; border: 1px solid var(--line); border-radius: .75rem; background: var(--surface); color: var(--ink); text-decoration: none; }
+.ct-cryptide img { grid-row: span 2; width: 3rem; height: 3rem; object-fit: contain; }
+.ct-cryptide span { font-weight: 700; }
+.ct-cryptide small { color: var(--ink-soft); }
+.ct-tower-copy { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 24rem), 1fr)); gap: .25rem 1.2rem; padding: .6rem 1.2rem .2rem; }
+.ct-tower-copy p { margin: .55rem 0; }
+.ct-recommendations { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; padding: .5rem 1.2rem 1rem; }
+.ct-recommendations h3, .ct-collections h3 { margin: 0 0 .55rem; font-size: 1rem; }
+.ct-hero-picks { display: grid; grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr)); gap: .5rem; margin: 0; padding: 0; list-style: none; }
+.ct-hero-picks > li { min-width: 0; display: grid; gap: .2rem; }
+.ct-hero-pick { display: flex; align-items: center; gap: .45rem; min-height: 3.1rem; padding: .35rem .5rem; border: 1px solid var(--line); border-radius: .65rem; color: var(--ink); text-decoration: none; }
+.ct-hero-pick:hover, .ct-collection-slot a:hover, .ct-cryptide:hover { border-color: var(--accent); }
+.ct-hero-pick:focus-visible, .ct-collection-slot a:focus-visible, .ct-cryptide:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.ct-hero-pick img { width: 2.2rem; height: 2.2rem; object-fit: contain; }
+.ct-hero-pick span { font-size: .8rem; line-height: 1.25; }
+.ct-hero-picks small { padding-left: .5rem; color: var(--ink-soft); font-size: .72rem; }
+.ct-inline-note { margin: .55rem 0 0; color: var(--ink-soft); font-size: .84rem; }
+.ct-collections { border-top: 1px solid var(--line); padding: 1rem 1.2rem 1.2rem; }
+.ct-collections > ol { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: .55rem; margin: .7rem 0 0; padding: 0; list-style: none; }
+.ct-collection-slot { min-width: 0; display: grid; align-content: start; gap: .4rem; }
+.ct-slot-number { display: grid; place-items: center; width: 1.55rem; height: 1.55rem; border-radius: 50%; background: color-mix(in srgb, var(--surface) 75%, var(--ink-soft)); color: var(--ink-soft); font-size: .75rem; font-weight: 700; }
+.ct-collection-slot ul { display: grid; gap: .35rem; margin: 0; padding: 0; list-style: none; }
+.ct-collection-slot a { min-height: 4.5rem; display: grid; justify-items: center; gap: .25rem; padding: .45rem .2rem; border: 1px solid var(--line); border-radius: .65rem; color: var(--ink); text-align: center; text-decoration: none; }
+.ct-collection-slot img { width: 3.1rem; height: 3.1rem; object-fit: contain; }
+.ct-collection-slot a span { font-size: .7rem; line-height: 1.2; }
+@media (max-width: 700px) {
+  .ct-tower-head { align-items: flex-start; padding: .85rem; }
+  .ct-recommendations { grid-template-columns: 1fr; padding-inline: .85rem; }
+  .ct-tower-copy, .ct-collections { padding-inline: .85rem; }
+  .ct-collections > ol { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .ct-hero-picks { grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr)); }
+}
+
 .cryptide-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));

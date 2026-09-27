@@ -67,6 +67,9 @@ export const GUIDE_PRESENTATION: Record<GuideEntryId, GuidePresentation> = {
     ],
     cutout: true,
   },
+  cryptidTowerLayout: {
+    art: ["/heroes/achilles.webp", "/heroes/caesar.webp", "/heroes/odysseus.webp", "/heroes/guan-yu.webp"],
+  },
   goddessTheater: {
     art: ["/goddess-theater/hamlet.webp", "/goddess-theater/aladdin.webp", "/goddess-theater/frankenstein.webp"],
     editor: { href: "/guides/goddess-theater/edit/", label: (t) => t.theaterEditor.openEditor },

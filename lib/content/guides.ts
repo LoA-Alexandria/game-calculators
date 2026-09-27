@@ -88,6 +88,7 @@ export type GuideLayout =
   | "collection"
   | "collectionLayouts"
   | "cryptidLayout"
+  | "cryptidTowerLayout"
   | "adsBuy"
   | "article";
 
@@ -101,7 +102,8 @@ export type GuideLayout =
  * Hero linking by `linksHeading`, Anecdotes by `anecdoteTexts`, Server age
  * unlocks by `timelineHeading`, Museion by `buildingsHeading`, Hero leveling
  * by `focusHeading`, city buildings by `categoriesHeading`,
- * Cryptides by `cryptidesHeading`, Cryptid layout by `slotReasons`, and
+ * Cryptides by `cryptidesHeading`, Cryptid layout by `slotReasons`, Cryptid
+ * Tower layouts by `towerBuilds`, and
  * Ads / Buy by `adsHeading`.
  * `tests/guides.test.mjs` pins every entry.
  */
@@ -123,6 +125,7 @@ export function guideLayout(guide: object): GuideLayout {
   if ("categoriesHeading" in guide) return "buildings";
   if ("cryptidesHeading" in guide) return "cryptides";
   if ("slotReasons" in guide) return "cryptidLayout";
+  if ("towerBuilds" in guide) return "cryptidTowerLayout";
   if ("adsHeading" in guide) return "adsBuy";
   if ("filterAll" in guide) return "heroes";
   return "article";

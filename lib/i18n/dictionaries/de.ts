@@ -4516,6 +4516,54 @@ const de: Dictionary = {
       sourceNote:
         "Aufstellung, Entwicklungsreihenfolge und Tower-Stufen von Autumn (Ice, S12), geteilt auf Discord am 6. und 11. August 2026. Namen und Porträts der Cryptiden stammen aus dem Cryptides-Guide.",
     },
+    cryptidTowerLayout: {
+      title: "Kryptidenturm-Layouts",
+      summary: "Turmspezifische Helden-Builds, Sammlungs-Setups und Kryptiden-Züge für Pike-, Archer- und Shield-Turm.",
+      intro: "In Kryptidentürmen ist die Heldenauswahl eingeschränkt. Deshalb braucht jeder Turm einen eigenen Build; die Empfehlungen berücksichtigen die Helden, die dort tatsächlich zusammen eingesetzt werden können.",
+      progressNote: "Erstellt von Autumn · In Arbeit",
+      towerLabel: "Turm-Build",
+      keyHeroesHeading: "Schlüsselhelden",
+      importantHeroesHeading: "Wichtige Helden",
+      collectionHeading: "Sammlungs-Setup",
+      itemAliasNote: "Abkürzungen sind mit den Core-Items verknüpft: „Maske“ steht für die Goldene Maske des Agamemnon, „Flügel“ für Ikarus’ Flügel.",
+      slotLabel: "Platz",
+      cryptidTurn: "Zug {turn}",
+      positionNotes: { positionOne: "Position 1", secondLine: "Zweite Reihe" },
+      towerBuilds: {
+        pike: {
+          title: "Pike-Turm",
+          description: [
+            "Der Pike-Turm ist eindeutig auf kritische Treffer ausgelegt. Man kann ihn auch mit Verfolgung kombinieren, aber DoT-Angebote gibt es wenige: nur Gawain und Hector. Hier ist Gawain wegen seiner Hinrichtung nützlicher als wegen seines DoT-Schadens.",
+            "Mit Achilles und Guan Yu steht der Schadenskern bereits. Richte die übrigen Helden so aus, dass sie beide unterstützen.",
+          ],
+          importantNote: "",
+          collectionNote: "Für den Krit-Build das gleiche Setup wie im Haupt-Build verwenden.",
+          collectionTips: [],
+        },
+        archer: {
+          title: "Archer-Turm",
+          description: [
+            "Das ist ein wirklich seltsamer Turm. Wenn Verfolgung das vergessene Kind ist, dann ist Archer der vergessene Turm. Hoffentlich wird Charlie Chaplin zum Archer, würde ich sagen.",
+            "Nutze eine Verfolgungsformation mit Krit-Sammlung und setze King Arthur in die zweite Reihe. Dank Nidhogg können SSR- und SR-Helden mit geringer Fähigkeits-Aktivierungschance in die erste Reihe, um von der erhöhten Auslösung zu profitieren. King Arthur gehört in die zweite Reihe, weil seine Fähigkeit garantiert auslöst und der Bonus ihm daher nicht hilft.",
+          ],
+          importantNote: "Wähle zwei Helden für die erste Reihe: Darwin, wenn Tutankhamun / Blackbeard stärker ausgebaut sind; Isabella für Schaden; Adam, wenn deine Verfolgungshelden stärker ausgebaut sind.",
+          collectionNote: "Das Pedalauto verwenden, wenn die Runde, an der du festhängst, eine Replica enthält; den Hammer, wenn sie eine Granate enthält.",
+          collectionTips: ["Die Maske verwenden, bis du einmal stirbst. Dann mit Flügeln erneut versuchen und anschließend zur Maske zurückwechseln."],
+        },
+        shield: {
+          title: "Shield-Turm",
+          description: [
+            "Das ist klar ein DoT- und Verzögerungs-Turm. Als zweite Ausrichtung bieten sich Krit oder Verfolgung an – je nachdem, welche Helden du hast und wie stark sie ausgebaut sind.",
+          ],
+          importantNote: "",
+          collectionNote: "",
+          collectionTips: [],
+        },
+      },
+      sourceNote: "Build-Notizen von Autumn (Ice, S12), Discord-Nachrichten vom 21. und 25. September 2026. Heldennamen und Porträts, Sammlungsnamen und Abbildungen sowie Kryptidenporträts verlinken auf die jeweiligen Core-Guides.",
+      sections: [],
+      note: "",
+    },
     cryptides: {
       title: "Cryptides",
       summary: "SSR-Cryptides, ihre Skills und Futter sowie welche Tower-Materialien Talente freischalten.",

@@ -4516,6 +4516,54 @@ const fr: Dictionary = {
       sourceNote:
         "Formation, ordre d’évolution et niveaux des Tours d’Autumn (Ice, S12), partagés sur Discord les 6 et 11 août 2026. Les noms et portraits des Cryptides viennent du guide Cryptides.",
     },
+    cryptidTowerLayout: {
+      title: "Formations des tours de cryptides",
+      summary: "Équipes de héros, configurations de Collection et tours de cryptide pour les tours Pike, Archer et Shield.",
+      intro: "Les tours de cryptides limitent les héros disponibles. Chaque tour demande donc une équipe adaptée, construite avec les héros qui peuvent réellement y combattre ensemble.",
+      progressNote: "Créé par Autumn · En cours",
+      towerLabel: "Équipe de la tour",
+      keyHeroesHeading: "Héros clés",
+      importantHeroesHeading: "Héros importants",
+      collectionHeading: "Configuration de Collection",
+      itemAliasNote: "Les raccourcis renvoient aux objets Core : « Masque » désigne le Masque d’or d’Agamemnon et « Ailes » les Ailes d’Icare.",
+      slotLabel: "Emplacement",
+      cryptidTurn: "Tour {turn}",
+      positionNotes: { positionOne: "Position 1", secondLine: "Deuxième ligne" },
+      towerBuilds: {
+        pike: {
+          title: "Tour Pike",
+          description: [
+            "La tour Pike est clairement axée sur les coups critiques. On peut aussi la combiner avec la poursuite, mais les options de dégâts sur la durée sont rares : seulement Gawain et Hector. Ici, Gawain est plus utile pour son exécution que pour ses dégâts sur la durée.",
+            "Achille et Guan Yu forment déjà le cœur des dégâts. Configure les autres héros pour les soutenir.",
+          ],
+          importantNote: "",
+          collectionNote: "Pour le build critique, reprenez la configuration du build principal.",
+          collectionTips: [],
+        },
+        archer: {
+          title: "Tour Archer",
+          description: [
+            "Cette tour est vraiment étrange. Si la poursuite est l’enfant oublié, Archer est la tour oubliée. Espérons que Charlie Chaplin soit Archer, je suppose.",
+            "Utilisez une formation de poursuite avec une Collection critique et placez King Arthur sur la deuxième ligne. Grâce à Nidhogg, les héros SSR / SR dont les compétences s’activent rarement peuvent être placés en première ligne pour profiter de l’augmentation des déclenchements. King Arthur reste en deuxième ligne : sa compétence est garantie et le bonus ne l’aide donc pas.",
+          ],
+          importantNote: "Choisissez-en deux pour la première ligne : Darwin si Tutankhamun / Blackbeard sont mieux améliorés ; Isabella pour les dégâts ; Adam si vos héros de poursuite sont mieux améliorés.",
+          collectionNote: "Utilisez la Voiture à pédales si la manche où vous bloquez contient la Réplique ; utilisez le Marteau si elle contient la Grenade.",
+          collectionTips: ["Gardez le Masque jusqu’à mourir une fois, réessayez avec les Ailes, puis remettez le Masque."],
+        },
+        shield: {
+          title: "Tour Shield",
+          description: [
+            "C’est clairement une tour de dégâts sur la durée et d’usure. Les critiques ou la poursuite peuvent être une orientation secondaire selon les héros disponibles et leur niveau d’amélioration.",
+          ],
+          importantNote: "",
+          collectionNote: "",
+          collectionTips: [],
+        },
+      },
+      sourceNote: "Conseils de build fournis par Autumn (Ice, S12), messages Discord datés des 21 et 25 septembre 2026. Les noms et portraits des héros, les noms et illustrations de Collection ainsi que les portraits des cryptides renvoient à leurs guides Core.",
+      sections: [],
+      note: "",
+    },
     cryptides: {
       title: "Cryptides",
       summary: "Cryptides SSR, leurs compétences et nourritures, et quels matériaux de Tour débloquent les talents.",

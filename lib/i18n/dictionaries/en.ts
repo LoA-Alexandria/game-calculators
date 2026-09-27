@@ -1493,6 +1493,54 @@ const en = {
       sourceNote:
         "Formation, evolution order, and Tower levels from Autumn (Ice, S12), shared on Discord on 6 and 11 August 2026. Cryptide names and portraits come from the Cryptides guide.",
     },
+    cryptidTowerLayout: {
+      title: "Cryptid Tower Layout",
+      summary: "Tower-specific hero builds, Collection setups, and Cryptid turns for Pike, Archer, and Shield Towers.",
+      intro: "Cryptid Towers restrict which heroes can enter, so each tower needs its own build. These recommendations cover the available combinations rather than assuming every hero from the general formations can be used together.",
+      progressNote: "Made by Autumn · In progress",
+      towerLabel: "Tower build",
+      keyHeroesHeading: "Key heroes",
+      importantHeroesHeading: "Important heroes",
+      collectionHeading: "Collection setup",
+      itemAliasNote: "Collection shorthand is linked to Core items: “Mask” means Golden Mask of Agamemnon, and “Wings” means Wings of Icarus.",
+      slotLabel: "Slot",
+      cryptidTurn: "{turn} turn",
+      positionNotes: { positionOne: "Position 1", secondLine: "Second line" },
+      towerBuilds: {
+        pike: {
+          title: "Pike Tower",
+          description: [
+            "Pike Tower is a crit tower, no doubt. You can also hybridize into pursuit, but DoT offerings are few, with only Gawain and Hector; Gawain is more useful here for his execute than for his DoT.",
+            "With Achilles and Guan Yu here, that's pretty much your DPS core; set up the rest to support them.",
+          ],
+          importantNote: "",
+          collectionNote: "For the crit build, use the same setup as the main build.",
+          collectionTips: [],
+        },
+        archer: {
+          title: "Archer Tower",
+          description: [
+            "This is a really weird tower. If pursuit is the forgotten child, Archer is the forgotten tower. Just hope Charlie Chaplin is Archer, I guess.",
+            "Use a pursuit formation with a crit Collection, and put King Arthur in the second line. Nidhogg lets you use SSR / SR heroes with low skill activation chance in the first line to benefit from its trigger increase. King Arthur belongs in the second line because his skill is guaranteed, so the extra trigger chance does not help him.",
+          ],
+          importantNote: "Pick two for the first line: Darwin if Tutankhamun / Blackbeard are more invested; Isabella for damage; Adam if your pursuit heroes are more invested.",
+          collectionNote: "Use the Pedal Car if the round you're stuck on has Replica; use Hammer if it has Grenade.",
+          collectionTips: ["Use Mask until you die once, retry with Wings, then switch back to Mask."],
+        },
+        shield: {
+          title: "Shield Tower",
+          description: [
+            "This is clearly a DoT / stall tower, with crit or pursuit as a secondary direction depending on which heroes you have and how invested they are.",
+          ],
+          importantNote: "",
+          collectionNote: "",
+          collectionTips: [],
+        },
+      },
+      sourceNote: "Build notes supplied by Autumn (Ice, S12), Discord messages dated 21 and 25 September 2026. Hero names and portraits, Collection names and artwork, and Cryptid portraits link to their respective Core guides.",
+      sections: [],
+      note: "",
+    },
     cryptides: {
       title: "Cryptides",
       summary: "SSR Cryptides, their skills and feed foods, and which Tower materials unlock talents.",
