@@ -155,9 +155,11 @@ test("the data names real plays and goddesses and stays consistent", () => {
 
 test("theater bases from the September 25–27 screenshots are complete and exact", () => {
   const expected = {
+    "alice-in-wonderland": [850, 850],
     "robin-hood": [135, 125],
     "count-of-monte-cristo": [480, 510],
     "robinson-crusoe": [500, 490],
+    cats: [505, 485],
     hamlet: [495, 495],
     "romeo-and-juliet": [305, 295],
     "pride-and-prejudice": [285, 315],
@@ -180,6 +182,6 @@ test("theater bases from the September 25–27 screenshots are complete and exac
   for (const [id, [ticket, visitors]] of Object.entries(expected)) {
     assert.deepEqual([incomePlay(id).ticket, incomePlay(id).visitors], [ticket, visitors], id);
   }
-  assert.equal(INCOME_PLAYS.filter((entry) => entry.ticket !== undefined && entry.visitors !== undefined).length, 21);
+  assert.equal(INCOME_PLAYS.filter((entry) => entry.ticket !== undefined && entry.visitors !== undefined).length, 23);
   assert.equal(incomePlay("macbeth").ticket, undefined, "unprovided plays remain ready for later data entry");
 });

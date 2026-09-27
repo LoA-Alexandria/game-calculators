@@ -235,6 +235,7 @@ export default function TheaterIncomePage() {
       <CalculatorHeader eyebrow={copy.eyebrow} title={t.tools.theaterIncome.name} description={copy.intro} />
 
       <PremiumGate>
+      <div className="theater-calculator">
       <fieldset className="theater-mode">
         <legend>{copy.simulation.mode}</legend>
         <label>
@@ -643,6 +644,7 @@ export default function TheaterIncomePage() {
           ) : stats && level !== null && Number.isSafeInteger(level) && level >= 1 ? <p className="result-note">{copy.simulation.invalidRun}</p> : null}
         </section>
       )}
+      </div>
       </PremiumGate>
     </>
   );
