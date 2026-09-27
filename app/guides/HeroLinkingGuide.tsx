@@ -3,15 +3,16 @@
 import Link from "next/link";
 import { guideHref, guideLayout } from "../../lib/content/guides";
 import {
-  LINK_PRIORITY,
   LINK_SOURCES,
   linkNote,
   linksBySource,
   priorityNote,
+  LINKING_DATA,
 } from "../../lib/content/hero-linking";
 import { heroNamed, heroPortrait } from "../../lib/content/heroes";
 import { DEFAULT_LOCALE, fill, getDictionary, type Dictionary } from "../../lib/i18n";
 import { HeroPortrait } from "../components/HeroPortrait";
+import { useGuideData } from "./GuideOverrides";
 
 type Guide = Dictionary["guideEntries"]["heroLinking"];
 
@@ -35,6 +36,8 @@ function HeroName({ hero }: { hero: string }) {
 }
 
 export function HeroLinkingGuide({ guide }: { guide: Guide }) {
+  // The build carries the guide; a published edit lies over it a moment later.
+  const data = useGuideData<typeof LINKING_DATA>("hero-linking");
   // A note nobody has translated yet shows its English text rather than nothing.
   const english = getDictionary(DEFAULT_LOCALE).guideEntries.heroLinking.linkTexts;
 
@@ -56,7 +59,7 @@ export function HeroLinkingGuide({ guide }: { guide: Guide }) {
       <p className="guide-lede">{guide.linksLede}</p>
       <div className="linking-tracks">
         {LINK_SOURCES.map((source) => {
-          const links = linksBySource(source);
+          const links = linksBySource(source, data.links);
           if (links.length === 0) return null;
           return (
             <section className="linking-track" key={source} aria-label={guide.sources[source]}>
@@ -81,7 +84,7 @@ export function HeroLinkingGuide({ guide }: { guide: Guide }) {
       <h2>{guide.priorityHeading}</h2>
       <p className="guide-lede">{guide.priorityLede}</p>
       <ol className="linking-list linking-priority">
-        {LINK_PRIORITY.map((target, index) => {
+        {data.priority.map((target, index) => {
           const note = priorityNote(target.hero, guide.linkTexts, english);
           return (
             <li className="linking-row" key={target.hero}>

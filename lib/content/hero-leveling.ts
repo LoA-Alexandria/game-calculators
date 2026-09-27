@@ -8,7 +8,7 @@
  */
 
 import data from "../data/hero-leveling.json" with { type: "json" };
-import { LAYOUT_DATA } from "./hero-layouts.ts";
+import { LAYOUT_DATA, type LayoutData} from "./hero-layouts.ts";
 
 /** Same build ids as Hero layouts. */
 export const LEVELING_BUILDS = ["crit", "dot", "pursuit", "execute"] as const;
@@ -54,15 +54,16 @@ export type LevelingHeroNotes = Record<string, string>;
 
 export const LEVELING_DATA = data as HeroLevelingData;
 
-export function levelingBuildIds(): LevelingBuildId[] {
-  const fromLayouts = LAYOUT_DATA.builds
+/** `layouts` and `data` default to the built files; a page passes the published ones. */
+export function levelingBuildIds(layouts: LayoutData = LAYOUT_DATA): LevelingBuildId[] {
+  const fromLayouts = layouts.builds
     .map((build) => build.id)
     .filter((id): id is LevelingBuildId => (LEVELING_BUILDS as readonly string[]).includes(id));
   return fromLayouts.length > 0 ? fromLayouts : [...LEVELING_BUILDS];
 }
 
-export function buildById(id: string): LevelingBuild | undefined {
-  return LEVELING_DATA.builds.find((build) => build.id === id);
+export function buildById(id: string, data: HeroLevelingData = LEVELING_DATA): LevelingBuild | undefined {
+  return data.builds.find((build) => build.id === id);
 }
 
 export function focusHeroes(build: LevelingBuild): string[] {

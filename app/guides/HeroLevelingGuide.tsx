@@ -1,5 +1,6 @@
 "use client";
 
+import { LAYOUT_DATA } from "../../lib/content/hero-layouts";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { guideHref, guideLayout } from "../../lib/content/guides";
@@ -18,6 +19,7 @@ import { heroNamed, heroPortrait } from "../../lib/content/heroes";
 import { fill, type Dictionary } from "../../lib/i18n";
 import { HeroPortrait } from "../components/HeroPortrait";
 import { useLocale } from "../components/LocaleProvider";
+import { useGuideData } from "./GuideOverrides";
 
 type Guide = Dictionary["guideEntries"]["heroLeveling"];
 
@@ -230,7 +232,10 @@ function BuildBoard({ build, guide }: { build: LevelingBuild; guide: Guide }) {
 
 export function HeroLevelingGuide({ guide }: { guide: Guide }) {
   const { t } = useLocale();
-  const buildIds = levelingBuildIds();
+  // The build carries the guide; a published edit lies over it a moment later.
+  const data = useGuideData<typeof LEVELING_DATA>("hero-leveling");
+  const layouts = useGuideData<typeof LAYOUT_DATA>("hero-layouts");
+  const buildIds = useMemo(() => levelingBuildIds(layouts), [layouts]);
   const [selected, setSelected] = useState<LevelingBuildId>(LEVELING_DATA.defaultBuild);
   const buildNames = useMemo(() => {
     const names: Record<string, string> = {};
@@ -239,7 +244,8 @@ export function HeroLevelingGuide({ guide }: { guide: Guide }) {
     }
     return names;
   }, [buildIds, guide.buildNames, t.guideEntries.heroLayouts.buildTexts]);
-  const build = buildById(selected);
+  // A build the published data no longer has falls back to its default.
+  const build = buildById(selected, data) ?? buildById(data.defaultBuild, data);
 
   return (
     <div className="guide-wide leveling-guide">
@@ -260,7 +266,7 @@ export function HeroLevelingGuide({ guide }: { guide: Guide }) {
       <h2>{guide.levelsHeading}</h2>
       <p className="guide-lede">{guide.levelsLede}</p>
       <ol className="gl-cards leveling-caps">
-        {LEVELING_DATA.levelTargets.map((target, index) => (
+        {data.levelTargets.map((target, index) => (
           <li className="gl-card" key={target.id} data-tone={tone(index)}>
             <span className="gl-card-link">
               <span className="gl-cap-number" aria-hidden="true">{index + 1}</span>

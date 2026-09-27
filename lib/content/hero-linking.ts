@@ -47,8 +47,9 @@ export const HERO_LINKS: HeroLink[] = LINKING_DATA.links;
 export const LINK_PRIORITY: LinkTarget[] = LINKING_DATA.priority;
 
 /** The links of one track, in step order. */
-export function linksBySource(source: LinkSource): HeroLink[] {
-  return HERO_LINKS.filter((link) => link.source === source).sort((left, right) => left.step - right.step);
+/** `links` defaults to the built roster; a page passes the published one. */
+export function linksBySource(source: LinkSource, links: readonly HeroLink[] = HERO_LINKS): HeroLink[] {
+  return links.filter((link) => link.source === source).sort((left, right) => left.step - right.step);
 }
 
 /**
