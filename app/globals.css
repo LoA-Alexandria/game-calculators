@@ -7481,6 +7481,9 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
 .theater-slot-card .field { margin: 0; }
 .theater-slot-card input, .theater-slot-card select { min-height: 42px; }
 .theater-session-odds { padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; color: var(--muted); font-size: .9rem; line-height: 1.6; }
+.theater-run-button { min-height: 48px; margin-top: 14px; }
+.theater-run-button:disabled { cursor: default; opacity: .78; }
+.theater-run-prompt { margin: 14px 0 0; }
 .theater-session-result { margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--line); }
 .theater-session-result h3 { margin: 0 0 14px; font-size: 1rem; }
 .theater-session-metrics { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
