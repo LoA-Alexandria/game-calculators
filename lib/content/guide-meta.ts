@@ -18,6 +18,13 @@ export type GuidePresentation = {
   art: readonly string[];
   /** The guide's own editor, when it has one, and the words on its button. */
   editor?: { href: string; label: (t: Dictionary) => string };
+  /**
+   * An editor this guide shares with another — the skins of the Heroes and the
+   * Goddesses rosters are one list edited in one place. Listed here so the
+   * button sits where the reader is, without pretending the page belongs to
+   * one guide alone.
+   */
+  shared?: readonly { href: string; label: (t: Dictionary) => string }[];
   /** The pictures are cut-outs on a transparent background: shown whole, not cropped into tiles. */
   cutout?: boolean;
 };
@@ -26,6 +33,7 @@ export const GUIDE_PRESENTATION: Record<GuideEntryId, GuidePresentation> = {
   heroes: {
     art: ["/heroes/king-arthur.webp", "/heroes/joan-of-arc.webp", "/heroes/odysseus.webp", "/heroes/merlin.webp"],
     editor: { href: "/guides/heroes/edit/", label: (t) => t.heroEditor.openEditor },
+    shared: [{ href: "/guides/skins/edit/", label: (t) => t.skinsEditor.openEditor }],
   },
   artwork: {
     art: ["/artwork/the-swing.webp", "/artwork/nightshade.webp", "/artwork/young-hare.webp"],
@@ -48,6 +56,7 @@ export const GUIDE_PRESENTATION: Record<GuideEntryId, GuidePresentation> = {
   goddesses: {
     art: ["/goddesses/athena.webp", "/goddesses/fortuna.webp", "/goddesses/venus.webp", "/goddesses/hera.webp"],
     editor: { href: "/guides/goddesses/edit/", label: (t) => t.goddessEditor.openEditor },
+    shared: [{ href: "/guides/skins/edit/", label: (t) => t.skinsEditor.openEditor }],
   },
   goddessLeveling: {
     art: ["/goddesses/demeter.webp", "/goddesses/venus.webp", "/goddesses/medusa.webp"],
