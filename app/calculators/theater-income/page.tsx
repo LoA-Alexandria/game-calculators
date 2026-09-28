@@ -153,7 +153,11 @@ export default function TheaterIncomePage() {
   const copy = t.theaterIncome;
   const saved = useSyncExternalStore(store.subscribe, store.getSnapshot, store.getServerSnapshot);
   const [openTrialLog, setOpenTrialLog] = useState<string | null>(null);
-  const update = (patch: Partial<Saved>) => store.set({ ...saved, ...patch });
+  const [runRequested, setRunRequested] = useState<string | null>(null);
+  const update = (patch: Partial<Saved>) => {
+    setRunRequested(null);
+    store.set({ ...saved, ...patch });
+  };
   const updatePlay = (id: string, patch: PlayInput) =>
     update({ plays: { ...saved.plays, [id]: { ...saved.plays[id], ...patch } } });
   const logRef = useRef<HTMLDialogElement>(null);
@@ -187,6 +191,7 @@ export default function TheaterIncomePage() {
     saved.event === `${kind}Up` ? 5 : saved.event === `${kind}Down` ? -5 : 0;
   const bonusFactor = current.numbers ? n(1 + current.numbers.bonusPercent / 100, { minimumFractionDigits: 2 }) : "";
 
+  const simulationSettingsKey = JSON.stringify(saved);
   const simulation = useMemo(() => {
     if (!stats || level === null || !Number.isSafeInteger(level) || level < 1) return null;
     const building = theaterBuildingForLevel(level);
@@ -214,6 +219,7 @@ export default function TheaterIncomePage() {
     if (lipsticks === null || !Number.isSafeInteger(lipsticks) || lipsticks > 10_000 || enteredLipstickSlot === null || lipstickSlot === null || !Number.isInteger(enteredLipstickSlot) || enteredLipstickSlot < 0 || simulationRounds === null || !Number.isSafeInteger(simulationRounds) || simulationRounds < 1 || simulationRounds > 1_000) return { building, tier: theaterTierForLevel(level), projection: null, knownPlays };
     const startingPlays = saved.startingPlays.slice(0, building.theaterSlots).map((id) => details.find(({ entry }) => entry.id === id));
     if (startingPlays.length !== building.theaterSlots || startingPlays.some((play) => !play)) return { building, tier: theaterTierForLevel(level), projection: null, knownPlays, details, startingPlays: [] };
+    if (runRequested !== simulationSettingsKey) return { building, tier: theaterTierForLevel(level), projection: null, knownPlays, details, startingPlays };
     try {
       return {
         building,
@@ -235,7 +241,7 @@ export default function TheaterIncomePage() {
     } catch {
       return { building, tier: theaterTierForLevel(level), projection: null, knownPlays, details, startingPlays };
     }
-  }, [stats, level, saved, plays]);
+  }, [stats, level, saved, plays, runRequested, simulationSettingsKey]);
 
   const invalid = (text: string) => amount(text) === null;
   const toggle = (name: string) =>
@@ -656,6 +662,9 @@ export default function TheaterIncomePage() {
               </div>
               <p className="theater-note">{copy.simulation.energyCap} {copy.simulation.lipstickCap} {copy.simulation.roundsCap}</p>
               <p className="theater-session-odds"><strong>{copy.simulation.chances}:</strong> {PLAY_RARITIES.filter((rarity) => simulation.building.rarityChances[rarity] > 0).map((rarity) => { const chance = simulation.building.rarityChances[rarity]; const menuChance = rarityAppearanceChance(chance); return `${rarity} ${tf(copy.simulation.chancePerOffer, { chance: n(chance), menuChance: n(menuChance, { maximumFractionDigits: 1 }) })} · ${PLAY_ENERGY[rarity]} ${copy.simulation.energyUnit}`; }).join(" · ")}</p>
+              <button type="button" className="button theater-run-button" disabled={Boolean(simulation.projection)} onClick={() => setRunRequested(simulationSettingsKey)}>
+                {simulation.projection ? copy.simulation.runComplete : copy.simulation.runButton}
+              </button>
             </>
           ) : <p className="result-error">{stats ? copy.simulation.levelError : copy.invalid}</p>}
           {simulation?.projection ? (
@@ -717,7 +726,9 @@ export default function TheaterIncomePage() {
               {simulation.knownPlays < plays.length ? <p className="theater-note theater-session-warning">{tf(copy.simulation.dataWarning, { known: simulation.knownPlays, total: plays.length })}</p> : null}
               <details className="theater-session-details"><summary>{copy.assumptionsTitle}</summary><p>{copy.simulation.runAssumptions}</p></details>
             </div>
-          ) : stats && level !== null && Number.isSafeInteger(level) && level >= 1 ? <p className="result-note">{copy.simulation.invalidRun}</p> : null}
+          ) : stats && level !== null && Number.isSafeInteger(level) && level >= 1 ? <p className={runRequested === simulationSettingsKey ? "result-error" : "result-note theater-run-prompt"} aria-live="polite">
+            {runRequested === simulationSettingsKey ? copy.simulation.invalidRun : copy.simulation.runPrompt}
+          </p> : null}
         </section>
       )}
       </div>

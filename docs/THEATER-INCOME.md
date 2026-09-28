@@ -62,6 +62,10 @@ unlocked by the building. A manual bonus override from Single does not alter
 this auto-assignment. Each play's Red Carpet range is the existing 83–85% Muse
 Coin formula, rounded down to whole hundreds.
 
+The Mass simulation runs only after the player presses **Run simulation**.
+Changing an input clears the previous result; press the button again to calculate
+with the updated settings. The calculation runs locally in the browser.
+
 Each simulation round independently draws three rarity offers, then chooses an
 affordable known play using its average Red Carpet value plus the expected value
 of the energy left for that slot. When a rarity is offered, its concrete play
