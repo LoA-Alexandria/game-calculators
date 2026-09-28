@@ -90,6 +90,7 @@ export const GUIDE_PRESENTATION: Record<GuideEntryId, GuidePresentation> = {
   buildings: {
     art: ["/production-buildings/farm.webp", "/production-buildings/blacksmith.webp", "/buildings/tent.webp"],
     editor: { href: "/guides/buildings/edit/", label: (t) => t.buildingsEditor.openEditor },
+    shared: [{ href: "/guides/buildings/levels/edit/", label: (t) => t.buildingLevelsEditor.openEditor }],
     cutout: true,
   },
   heroLayouts: {
