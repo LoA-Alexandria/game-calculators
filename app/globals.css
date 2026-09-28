@@ -7504,15 +7504,31 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
 .theater-log-table td:nth-child(2) { min-width: 190px; }
 .theater-trial-logs { display: grid; gap: 14px; margin-top: 18px; }
 .theater-trial-log { min-width: 0; overflow: hidden; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); }
-.theater-trial-log-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 13px 16px; border-bottom: 1px solid var(--line); }
-.theater-trial-log-heading h3 { margin: 0; font-size: .95rem; }
+.theater-trial-log-heading { display: flex; width: 100%; align-items: center; justify-content: space-between; gap: 12px; padding: 13px 16px; border: 0; border-bottom: 1px solid var(--line); background: transparent; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.theater-trial-log-heading:hover { background: var(--surface-hover, var(--accent-soft)); }
+.theater-trial-log-heading:focus-visible { outline: none; box-shadow: inset 0 0 0 2px var(--accent); }
+.theater-trial-log-heading > span:first-child { font-size: .95rem; font-weight: 750; }
 .theater-trial-log-heading strong { color: var(--accent); font-size: .9rem; font-variant-numeric: tabular-nums; }
-.theater-trial-log ol { display: grid; gap: 1px; max-height: 42vh; margin: 0; padding: 0; overflow: auto; list-style: none; }
-.theater-trial-log li { display: grid; grid-template-columns: 118px 48px minmax(120px, 1fr) minmax(140px, 1.1fr) auto auto; align-items: center; gap: 10px; min-width: 790px; padding: 9px 14px; border-bottom: 1px solid var(--line); font-size: .78rem; }
-.theater-trial-log li:last-child { border-bottom: 0; }
-.theater-trial-slot, .theater-trial-goddesses { color: var(--muted); }
-.theater-trial-play { min-width: 0; overflow: hidden; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
-.theater-trial-coins, .theater-trial-points { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.theater-trial-log-chevron { width: 24px; color: var(--muted); font-size: 1.2rem; line-height: 1; text-align: center; }
+.theater-trial-energy-summary { display: flex; flex-wrap: wrap; gap: 8px; padding: 10px 14px; border-bottom: 1px solid var(--line); }
+.theater-trial-energy-summary span { padding: 6px 9px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--muted); font-size: .75rem; font-variant-numeric: tabular-nums; }
+.theater-trial-table-wrap { max-height: 44vh; overflow: auto; }
+.theater-trial-table { width: 100%; min-width: 1080px; table-layout: fixed; border-collapse: collapse; font-size: .77rem; }
+.theater-trial-table th, .theater-trial-table td { padding: 9px 10px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+.theater-trial-table th { position: sticky; top: 0; z-index: 1; background: var(--surface); color: var(--muted); font-size: .71rem; text-align: left; }
+.theater-trial-table th:nth-child(1) { width: 12%; }
+.theater-trial-table th:nth-child(2) { width: 7%; }
+.theater-trial-table th:nth-child(3) { width: 16%; }
+.theater-trial-table th:nth-child(4) { width: 21%; }
+.theater-trial-table th:nth-child(5) { width: 12%; }
+.theater-trial-table th:nth-child(6) { width: 13%; }
+.theater-trial-table th:nth-child(7) { width: 19%; }
+.theater-trial-table .num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.theater-trial-table .theater-trial-energy { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.theater-trial-table .theater-trial-play { font-weight: 700; }
+.theater-trial-table .theater-trial-goddesses { color: var(--muted); overflow-wrap: anywhere; }
+.theater-trial-table tbody tr:last-child td { border-bottom: 0; }
+.theater-trial-start-play { background: var(--accent-soft); }
 .theater-upgrade { margin: 16px 0 0; line-height: 1.5; }
 .theater-upgrade strong { color: var(--on-inverse); }
 

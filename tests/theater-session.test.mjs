@@ -105,7 +105,7 @@ test("Monte Carlo logs every play in reproducible lowest, average-nearest, and h
     startingEnergy: [120, 120],
     startingPlays: plays,
     plays,
-    lipsticks: 0,
+    lipsticks: 3,
     lipstickSlot: 0,
     rounds: 80,
     seed: 42,
@@ -113,12 +113,17 @@ test("Monte Carlo logs every play in reproducible lowest, average-nearest, and h
   const result = simulateTheaterTrials(input);
   assert.deepEqual(simulateTheaterTrials(input), result, "the same inputs reproduce the same simulation");
   assert.equal(result.rounds, 80);
+  assert.deepEqual(result.slotStarts, [
+    { slot: 1, startingEnergy: 120, lipsticks: 3, lipstickEnergy: 15, totalEnergy: 135 },
+    { slot: 2, startingEnergy: 120, lipsticks: 0, lipstickEnergy: 0, totalEnergy: 120 },
+  ]);
   assert.ok(result.minimum <= result.average && result.average <= result.maximum);
   for (const run of [result.minimumRun, result.averageRun, result.maximumRun]) {
     assert.ok(run.plays.length >= 2);
     assert.deepEqual(run.plays.filter((play) => play.starting).map(({ id, slot }) => [id, slot]), [["r1", 1], ["sr1", 2]], "each slot includes its forced starting play");
     assert.ok(run.plays.every((play) => play.slot === 1 || play.slot === 2));
     assert.ok(run.plays.every((play) => play.coins >= 0 && play.goddesses.length === 1));
+    assert.ok(run.plays.every((play) => play.energyBefore - play.energyCost === play.energyAfter));
     assert.equal(run.points, run.plays.reduce((sum, play) => sum + play.redCarpet.average, 0));
   }
   assert.throws(() => simulateTheaterTrials({ ...input, rounds: 0 }), RangeError);
