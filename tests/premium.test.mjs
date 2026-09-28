@@ -4,6 +4,7 @@ import test from "node:test";
 import {
   isLifetimePremium,
   isPremiumActive,
+  manualPremiumExpiry,
   lifetimePremiumExpiry,
   nextPremiumExpiry,
   PREMIUM_LIFETIME_EXPIRES_AT,
@@ -55,4 +56,24 @@ test("renewal stacks thirty days from the later of now or current expiry", () =>
 
   const stacked = nextPremiumExpiry("2026-10-10T12:00:00Z", now);
   assert.equal(stacked.toISOString(), "2026-11-09T12:00:00.000Z");
+});
+
+test("manual Premium grants add one, two, or three 30-day months", () => {
+  const now = new Date("2026-09-28T12:00:00Z");
+  assert.equal(manualPremiumExpiry(null, 1, now).toISOString(), "2026-10-28T12:00:00.000Z");
+  assert.equal(manualPremiumExpiry(null, 2, now).toISOString(), "2026-11-27T12:00:00.000Z");
+  assert.equal(manualPremiumExpiry(null, 3, now).toISOString(), "2026-12-27T12:00:00.000Z");
+  assert.throws(() => manualPremiumExpiry(null, 4, now), RangeError);
+});
+
+test("manual Premium grants stack from future expiry and ignore expired expiry", () => {
+  const now = new Date("2026-09-28T12:00:00Z");
+  assert.equal(
+    manualPremiumExpiry("2026-10-10T12:00:00Z", 2, now).toISOString(),
+    "2026-12-09T12:00:00.000Z",
+  );
+  assert.equal(
+    manualPremiumExpiry("2026-09-01T12:00:00Z", 3, now).toISOString(),
+    "2026-12-27T12:00:00.000Z",
+  );
 });

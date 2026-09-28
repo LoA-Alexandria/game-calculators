@@ -4303,14 +4303,19 @@ const en = {
     adminReject: "Reject",
     adminEmpty: "No pending Premium claims.",
     adminGuildRequests: "Guild create requests",
-    adminLifetimeTitle: "Lifetime Premium",
+    adminLifetimeTitle: "Manual Premium grants",
     adminLifetimeLede:
-      "Grant Lifetime Premium as an entitlement (not a site role). Stored as a manual row with note “lifetime” and expiry 2099-01-01.",
-    adminLifetimeGrant: "Grant Lifetime Premium",
+      "Grant 1, 2, or 3 months (30 days per month), or Lifetime Premium. Temporary grants extend from the later of now or the member’s current expiry.",
+    adminLifetimeGrant: "Grant selected Premium duration",
+    adminGrantDuration: "Duration",
+    adminGrant1Month: "1 month (30 days)",
+    adminGrant2Months: "2 months (60 days)",
+    adminGrant3Months: "3 months (90 days)",
+    adminLifetimeAlreadyActive: "This member already has active Lifetime Premium. A timed grant cannot shorten it.",
     adminLifetimeRevoke: "Revoke Lifetime",
     adminLifetimeRevoked:
       "Lifetime Premium revoked. The member loses Premium after their next session reload (page refresh).",
-    adminLifetimeGranted: "Lifetime Premium granted. The member sees it after their next session reload (page refresh); re-login is not required.",
+    adminLifetimeGranted: "Manual Premium grant saved. The member sees it after their next page reload; re-login is not required.",
     adminLifetimeReloadNote:
       "The recipient must reload the page (or call refreshSession) to see Premium. A full sign-out is not needed.",
     adminLifetimeSearch: "Find member",

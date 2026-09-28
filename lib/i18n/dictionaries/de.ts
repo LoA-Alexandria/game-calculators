@@ -7513,15 +7513,20 @@ const de: Dictionary = {
     adminReject: "Ablehnen",
     adminEmpty: "Keine offenen Premium-Claims.",
     adminGuildRequests: "Gilden-Anträge",
-    adminLifetimeTitle: "Lifetime Premium",
+    adminLifetimeTitle: "Manuelle Premium-Vergabe",
     adminLifetimeLede:
-      "Lifetime Premium als Berechtigung vergeben (keine Site-Rolle). Gespeichert als manueller Eintrag mit Notiz „lifetime“ und Ablauf 2099-01-01.",
-    adminLifetimeGrant: "Lifetime Premium vergeben",
+      "Vergib 1, 2 oder 3 Monate (30 Tage pro Monat) oder Lifetime Premium. Zeitlich begrenzte Vergaben verlängern ab dem späteren Datum aus heute und aktuellem Ablauf.",
+    adminLifetimeGrant: "Ausgewählte Laufzeit vergeben",
+    adminGrantDuration: "Laufzeit",
+    adminGrant1Month: "1 Monat (30 Tage)",
+    adminGrant2Months: "2 Monate (60 Tage)",
+    adminGrant3Months: "3 Monate (90 Tage)",
+    adminLifetimeAlreadyActive: "Dieses Mitglied hat bereits Lifetime Premium. Eine zeitlich begrenzte Vergabe kann es nicht verkürzen.",
     adminLifetimeRevoke: "Lifetime entfernen",
     adminLifetimeRevoked:
-      "Lifetime Premium entfernt. Das Mitglied verliert Premium nach dem nächsten Session-Reload (Seitenaktualisierung).",
+      "Lifetime Premium entfernt. Das Mitglied verliert Premium nach dem nächsten Seiten-Reload.",
     adminLifetimeGranted:
-      "Lifetime Premium vergeben. Das Mitglied sieht es nach dem nächsten Session-Reload (Seitenaktualisierung); erneutes Anmelden ist nicht nötig.",
+      "Manuelles Premium vergeben. Das Mitglied sieht es nach dem nächsten Seiten-Reload; erneutes Anmelden ist nicht nötig.",
     adminLifetimeReloadNote:
       "Die Empfängerin oder der Empfänger muss die Seite neu laden (oder refreshSession aufrufen), um Premium zu sehen. Abmelden ist nicht nötig.",
     adminLifetimeSearch: "Mitglied suchen",
