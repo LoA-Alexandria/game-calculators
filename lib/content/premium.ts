@@ -7,6 +7,7 @@
  */
 
 export const PREMIUM_PERIOD_DAYS = 30;
+export type ManualPremiumMonths = 1 | 2 | 3;
 
 /** Listed Premium price (displayed as $). Must match the PayPal NCP amount. */
 export const PREMIUM_PRICE_EUR = 5;
@@ -57,9 +58,19 @@ export function lifetimePremiumExpiry(): string {
 
 /** Extend from the later of now or the current expiry by one Premium period. */
 export function nextPremiumExpiry(currentExpiresAt: string | null | undefined, now: Date = new Date()): Date {
+  return manualPremiumExpiry(currentExpiresAt, 1, now);
+}
+
+/** Add one to three 30-day Premium months from the later of now or current expiry. */
+export function manualPremiumExpiry(
+  currentExpiresAt: string | null | undefined,
+  months: ManualPremiumMonths,
+  now: Date = new Date(),
+): Date {
+  if (![1, 2, 3].includes(months)) throw new RangeError("Manual Premium grants support 1, 2, or 3 months.");
   const current = currentExpiresAt ? Date.parse(currentExpiresAt) : NaN;
   const base = Number.isFinite(current) && current > now.getTime() ? new Date(current) : now;
   const next = new Date(base.getTime());
-  next.setUTCDate(next.getUTCDate() + PREMIUM_PERIOD_DAYS);
+  next.setUTCDate(next.getUTCDate() + PREMIUM_PERIOD_DAYS * months);
   return next;
 }

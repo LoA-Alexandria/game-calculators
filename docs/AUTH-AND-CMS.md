@@ -76,15 +76,15 @@ and a banner in the room; the trigger is what actually enforces it.
 
 `frozen_guild_ids()` lists every frozen guild in one call for the guild list.
 
-Admins can also grant Lifetime Premium from the Premium tab on `/admin/`. That
-writes the same table with `source: 'manual'`, `note: 'lifetime'`, and
-`expires_at` set to `2099-01-01` (see `lifetimePremiumExpiry` in
-`lib/content/premium.ts`). No schema flag is required: `isPremiumActive` and
-RLS `has_active_premium` already treat any active row with a future expiry as
-Premium. Admins can revoke Lifetime from the same tab; that sets
-`status: 'revoked'` and clears the lifetime note. The member sees the change
-after the next session reload (`refreshSession` / page refresh); a full
-re-login is not required.
+Admins can manually grant Premium for 1, 2, or 3 months (30 days each) or
+Lifetime Premium from the Premium tab on `/admin/`. Temporary grants extend
+from the later of now or the current expiry; active Lifetime grants cannot be
+shortened. Grants use the existing `premium_entitlements` table with
+`source: 'manual'`; timed grants store a duration note, while Lifetime uses
+`note: 'lifetime'` and `expires_at` set to `2099-01-01`. No schema change is
+needed because `isPremiumActive` and RLS `has_active_premium` already recognize
+active entitlements with future expiry. Admins can revoke Lifetime grants from
+the same tab; members see changes after a page reload.
 
 `authenticated` needs table grants for `select, insert, update, delete` on
 `premium_entitlements`; RLS still blocks non-admin writes. If claim approval

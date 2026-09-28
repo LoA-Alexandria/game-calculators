@@ -5,6 +5,7 @@ import { formatGuildServer, isDiscordUserId } from "../../lib/content/guilds";
 import {
   isLifetimePremium,
   isPremiumActive,
+  manualPremiumExpiry,
   lifetimePremiumExpiry,
   nextPremiumExpiry,
   PREMIUM_LIFETIME_NOTE,
@@ -57,7 +58,7 @@ type EntitlementRow = Pick<
 /**
  * Admin queue for PayPal Premium claims and guild-create requests.
  * Approving a claim extends `premium_entitlements` by 30 days.
- * Admins can also grant or revoke Lifetime Premium (far-future expiry + note).
+ * Admins can grant manual Premium for 1-3 months or for life.
  */
 export function AdminPremiumQueues({ reloadToken, onChanged }: { reloadToken: number; onChanged: () => void }) {
   const { t, d } = useLocale();
@@ -72,6 +73,7 @@ export function AdminPremiumQueues({ reloadToken, onChanged }: { reloadToken: nu
   const [search, setSearch] = useState("");
   const [selectedUserId, setSelectedUserId] = useState("");
   const [manualUserId, setManualUserId] = useState("");
+  const [grantMonths, setGrantMonths] = useState<"1" | "2" | "3" | "lifetime">("1");
   // A request may arrive without a snowflake; guilds still need one.
   const [masterDrafts, setMasterDrafts] = useState<Record<string, string>>({});
   const [busy, setBusy] = useState(false);
@@ -306,7 +308,7 @@ export function AdminPremiumQueues({ reloadToken, onChanged }: { reloadToken: nu
 
   const grantTargetId = manualUserId.trim() || selectedUserId;
 
-  const grantLifetime = async () => {
+  const grantPremium = async () => {
     if (!supabase || !grantTargetId) return;
     setBusy(true);
     setError("");
@@ -315,7 +317,7 @@ export function AdminPremiumQueues({ reloadToken, onChanged }: { reloadToken: nu
     const now = new Date().toISOString();
     const existing = await supabase
       .from("premium_entitlements")
-      .select("starts_at, paypal_txn_id")
+      .select("status, starts_at, expires_at, note, paypal_txn_id")
       .eq("user_id", grantTargetId)
       .maybeSingle();
     if (existing.error) {
@@ -323,13 +325,23 @@ export function AdminPremiumQueues({ reloadToken, onChanged }: { reloadToken: nu
       setBusy(false);
       return;
     }
+    const existingIsLifetime = existing.data?.status === "active" && isLifetimePremium(existing.data);
+    if (existingIsLifetime && grantMonths !== "lifetime") {
+      setError(t.premium.adminLifetimeAlreadyActive);
+      setBusy(false);
+      return;
+    }
+    const isLifetimeGrant = grantMonths === "lifetime";
+    const expiresAt = isLifetimeGrant
+      ? lifetimePremiumExpiry()
+      : manualPremiumExpiry(existing.data?.expires_at ?? null, Number(grantMonths) as 1 | 2 | 3);
     const { error: upsertError } = await supabase.from("premium_entitlements").upsert({
       user_id: grantTargetId,
       status: "active",
-      starts_at: existing.data?.starts_at ?? now,
-      expires_at: lifetimePremiumExpiry(),
+      starts_at: existing.data?.status === "active" ? existing.data.starts_at : now,
+      expires_at: typeof expiresAt === "string" ? expiresAt : expiresAt.toISOString(),
       source: "manual",
-      note: PREMIUM_LIFETIME_NOTE,
+      note: isLifetimeGrant ? PREMIUM_LIFETIME_NOTE : "manual_" + grantMonths + "_months",
       paypal_txn_id: existing.data?.paypal_txn_id ?? null,
       updated_at: now,
     });
@@ -373,7 +385,9 @@ export function AdminPremiumQueues({ reloadToken, onChanged }: { reloadToken: nu
     return member?.label ?? `${userId.slice(0, 8)}…`;
   };
 
-  const selectedIsLifetime = isLifetimePremium(entitlementByUser.get(grantTargetId));
+  const selectedEntitlement = entitlementByUser.get(grantTargetId);
+  const selectedIsLifetime = isPremiumActive(selectedEntitlement) && isLifetimePremium(selectedEntitlement);
+  const selectedCanRevoke = selectedIsLifetime;
 
   return (
     <>
@@ -420,7 +434,7 @@ export function AdminPremiumQueues({ reloadToken, onChanged }: { reloadToken: nu
                 {filteredMembers.map((member) => {
                   const row = entitlementByUser.get(member.userId);
                   const active = isPremiumActive(row);
-                  const lifetime = isLifetimePremium(row);
+                  const lifetime = active && isLifetimePremium(row);
                   const suffix = lifetime
                     ? ` · ${t.premium.adminLifetimeBadge}`
                     : active
@@ -449,15 +463,28 @@ export function AdminPremiumQueues({ reloadToken, onChanged }: { reloadToken: nu
                 }}
               />
             </div>
+            <div className="field">
+              <label htmlFor={ids + "-duration"}>{t.premium.adminGrantDuration}</label>
+              <select
+                id={ids + "-duration"}
+                value={grantMonths}
+                onChange={(event) => setGrantMonths(event.target.value as "1" | "2" | "3" | "lifetime")}
+              >
+                <option value="1" disabled={selectedIsLifetime}>{t.premium.adminGrant1Month}</option>
+                <option value="2" disabled={selectedIsLifetime}>{t.premium.adminGrant2Months}</option>
+                <option value="3" disabled={selectedIsLifetime}>{t.premium.adminGrant3Months}</option>
+                <option value="lifetime">{t.premium.adminLifetimeBadge}</option>
+              </select>
+            </div>
             <button
               className="button button-primary"
               type="button"
-              disabled={!grantTargetId || busy}
-              onClick={() => void grantLifetime()}
+              disabled={!grantTargetId || busy || (selectedIsLifetime && grantMonths !== "lifetime")}
+              onClick={() => void grantPremium()}
             >
               {t.premium.adminLifetimeGrant}
             </button>
-            {selectedIsLifetime ? (
+            {selectedCanRevoke ? (
               <button
                 className="button button-danger"
                 type="button"

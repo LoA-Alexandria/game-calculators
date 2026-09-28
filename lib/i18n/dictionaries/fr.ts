@@ -7529,15 +7529,20 @@ const fr: Dictionary = {
     adminReject: "Refuser",
     adminEmpty: "Aucune demande Premium en attente.",
     adminGuildRequests: "Demandes de guilde",
-    adminLifetimeTitle: "Premium à vie",
+    adminLifetimeTitle: "Accès Premium manuels",
     adminLifetimeLede:
-      "Accorder le Premium à vie comme droit (pas un rôle du site). Enregistré comme ligne manuelle avec la note « lifetime » et l’expiration 2099-01-01.",
-    adminLifetimeGrant: "Accorder le Premium à vie",
+      "Accorder 1, 2 ou 3 mois (30 jours par mois), ou le Premium à vie. Les accès temporaires prolongent à partir de la date la plus tardive entre aujourd’hui et l’expiration actuelle.",
+    adminLifetimeGrant: "Accorder la durée sélectionnée",
+    adminGrantDuration: "Durée",
+    adminGrant1Month: "1 mois (30 jours)",
+    adminGrant2Months: "2 mois (60 jours)",
+    adminGrant3Months: "3 mois (90 jours)",
+    adminLifetimeAlreadyActive: "Ce membre a déjà le Premium à vie. Une durée limitée ne peut pas réduire cet accès.",
     adminLifetimeRevoke: "Retirer le Premium à vie",
     adminLifetimeRevoked:
-      "Premium à vie retiré. Le membre perd Premium après le prochain rechargement de session (rafraîchir la page).",
+      "Premium à vie retiré. Le membre perd Premium après le prochain rechargement de la page.",
     adminLifetimeGranted:
-      "Premium à vie accordé. Le membre le voit après le prochain rechargement de session (rafraîchir la page) ; une reconnexion n’est pas nécessaire.",
+      "Accès Premium manuel enregistré. Le membre le verra après avoir rechargé la page ; une reconnexion n’est pas nécessaire.",
     adminLifetimeReloadNote:
       "Le destinataire doit recharger la page (ou appeler refreshSession) pour voir Premium. Une déconnexion n’est pas nécessaire.",
     adminLifetimeSearch: "Trouver un membre",
