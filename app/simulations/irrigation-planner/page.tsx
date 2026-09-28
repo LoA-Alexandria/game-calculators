@@ -98,38 +98,67 @@ export default function IrrigationPlannerPage() {
 
   return (
     <div className="planner-page">
-      <div className="planner-bar">
+      <div className="planner-topline">
         <Link className="back-link" href="/simulations/">
           <span aria-hidden="true">←</span> {t.nav.simulations}
         </Link>
-        <div className="planner-title">
-          <h1>{t.tools.irrigation.name}</h1>
-          <span className="pill">{t.irrigation.eyebrow}</span>
-        </div>
-        <span className="spacer" />
-        {session?.premium && plannerHtml && plannerReady ? (
-          <button className="small-button" type="button" onClick={() => { void plannerFrame.current?.requestFullscreen(); }}>
-            {t.irrigation.openFullScreen} <span aria-hidden="true">↗</span>
-          </button>
-        ) : null}
+        <span className="pill">{t.irrigation.eyebrow}</span>
       </div>
+
+      <header className="planner-hero">
+        <div className="planner-hero-copy">
+          <span className="planner-kicker">{t.irrigation.eyebrow}</span>
+          <h1>{t.tools.irrigation.name}</h1>
+          <p>{t.irrigation.intro}</p>
+          <div className="planner-tags" aria-label={t.irrigation.quickStartTitle}>
+            {[t.irrigation.tagSolver, t.irrigation.tagTiers, t.irrigation.tagWorkers, t.irrigation.tagIo].map((tag) => (
+              <span className="planner-tag" key={tag}>{tag}</span>
+            ))}
+          </div>
+        </div>
+        <div className="planner-hero-mark" aria-hidden="true"><span>640</span><small>WATER</small></div>
+      </header>
+
+      <section className="planner-quickstart" aria-labelledby="planner-quickstart-title">
+        <h2 id="planner-quickstart-title">{t.irrigation.quickStartTitle}</h2>
+        <ol>
+          <li><span>1</span><div><strong>{t.irrigation.stepBuildingsTitle}</strong><p>{t.irrigation.stepBuildings}</p></div></li>
+          <li><span>2</span><div><strong>{t.irrigation.stepPlaceTitle}</strong><p>{t.irrigation.stepPlace}</p></div></li>
+          <li><span>3</span><div><strong>{t.irrigation.stepOptimizeTitle}</strong><p>{t.irrigation.stepOptimize}</p></div></li>
+        </ol>
+      </section>
+
+      <section className="planner-workspace" aria-labelledby="planner-workspace-title">
+        <div className="planner-workspace-head">
+          <div>
+            <h2 id="planner-workspace-title">{t.irrigation.workspaceTitle}</h2>
+            <p>{t.irrigation.workspaceHint}</p>
+          </div>
+          {session?.premium && plannerHtml && plannerReady ? (
+            <button className="small-button" type="button" onClick={() => { void plannerFrame.current?.requestFullscreen(); }}>
+              {t.irrigation.openFullScreen} <span aria-hidden="true">↗</span>
+            </button>
+          ) : null}
+        </div>
 
       <PremiumGate>
         {session?.premium && plannerHtml ? (
-          <iframe
-            ref={plannerFrame}
-            className="planner-frame"
-            srcDoc={plannerHtml}
-            sandbox="allow-scripts"
-            title={t.irrigation.frameTitle}
-            onLoad={(event) => {
-              if (!plannerNonce) return;
-              event.currentTarget.contentWindow?.postMessage({
-                type: "popepoch:planner-ping",
-                nonce: plannerNonce,
-              }, "*");
-            }}
-          />
+          <div className="planner-frame-shell">
+            <iframe
+              ref={plannerFrame}
+              className="planner-frame"
+              srcDoc={plannerHtml}
+              sandbox="allow-scripts"
+              title={t.irrigation.frameTitle}
+              onLoad={(event) => {
+                if (!plannerNonce) return;
+                event.currentTarget.contentWindow?.postMessage({
+                  type: "popepoch:planner-ping",
+                  nonce: plannerNonce,
+                }, "*");
+              }}
+            />
+          </div>
         ) : session?.premium && loading ? (
           <p className="assumption" role="status">Loading Premium planner…</p>
         ) : session?.premium && plannerError ? (
@@ -141,13 +170,17 @@ export default function IrrigationPlannerPage() {
           </div>
         ) : null}
 
-        <div className="planner-notes">
-          <p className="assumption">{t.irrigation.model}</p>
-          <p className="assumption">{t.irrigation.levels}</p>
-          <p className="assumption">{t.irrigation.storage}</p>
-          <p className="assumption">{t.irrigation.languageNote}</p>
-        </div>
+        <details className="planner-notes">
+          <summary>{t.irrigation.detailsTitle}</summary>
+          <div className="planner-notes-grid">
+            <p className="assumption">{t.irrigation.model}</p>
+            <p className="assumption">{t.irrigation.levels}</p>
+            <p className="assumption">{t.irrigation.storage}</p>
+            <p className="assumption">{t.irrigation.languageNote}</p>
+          </div>
+        </details>
       </PremiumGate>
+      </section>
     </div>
   );
 }

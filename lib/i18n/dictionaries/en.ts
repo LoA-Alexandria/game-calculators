@@ -730,6 +730,17 @@ const en = {
     eyebrow: "City layout",
     openFullScreen: "Open full screen",
     frameTitle: "Irrigation Planner",
+    intro: "Plan your water sources and production buildings on four connected fields, then let the solver find a strong layout.",
+    quickStartTitle: "Your plan in three steps",
+    stepBuildingsTitle: "Set your buildings",
+    stepBuildings: "Choose building types and how many you want to place.",
+    stepPlaceTitle: "Arrange the fields",
+    stepPlace: "Place water sources and buildings; rotate with R or use the controls.",
+    stepOptimizeTitle: "Run the solver",
+    stepOptimize: "Compute a layout, then review production and upgrade costs in the tabs.",
+    workspaceTitle: "Build your irrigation plan",
+    workspaceHint: "Your layout saves in this browser automatically. Start in Plan, then check Result and Upgrade.",
+    detailsTitle: "Rules, saved data, and language",
     languageNote:
       "The planner itself is a self-contained application and is currently available in English only. It follows the site theme.",
     model:

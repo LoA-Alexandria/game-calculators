@@ -77,6 +77,12 @@ stored formats only gained fields, so an older saved setup still loads.
    through a bounded in-memory store and nonce-checked `postMessage` bridge.
    With no stored theme the planner falls back to `prefers-color-scheme`; with
    no stored scheme it keeps the default stone palette.
+6. **Usability and layout** — the host page now introduces the three main steps
+   and keeps the model, level, language, and storage notes in a disclosure
+   below the workspace. Inside the planner, the default search action is
+   prominent while optional solver constraints sit in a collapsed Search
+   options panel; spacing, control targets, panel hierarchy, and narrow-screen
+   layout are polished. The solver, layout rules, and game data are unchanged.
 
 ## Updating the level tables
 
@@ -106,7 +112,7 @@ only the known storage keys cross the nonce-checked `postMessage` bridge.
 ## Updating the planner
 
 1. Replace `supabase/private-assets/irrigation-planner/index.html` with the new revision.
-2. Re-apply the five changes above.
+2. Re-apply the six changes above.
 3. Record the new revision number in the **Origin** section.
 4. Upload the private asset as described in
    [PREMIUM-IRRIGATION-DEPLOYMENT.md](PREMIUM-IRRIGATION-DEPLOYMENT.md).

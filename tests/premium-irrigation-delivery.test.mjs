@@ -6,6 +6,7 @@ import { loadTrustedPlannerHtml } from "../supabase/functions/premium-irrigation
 import { prepareSandboxedPlannerHtml } from "../lib/irrigation-planner-sandbox.ts";
 
 const asset = await readFile(new URL("../supabase/private-assets/irrigation-planner/index.html", import.meta.url));
+const plannerSource = asset.toString("utf8");
 
 test("only the versioned private planner asset may run in the browser", async () => {
   const html = await loadTrustedPlannerHtml("signed-url", async () => new Response(asset));
@@ -21,6 +22,22 @@ test("only the versioned private planner asset may run in the browser", async ()
     loadTrustedPlannerHtml("expired-url", async () => new Response("expired", { status: 403 })),
     /could not be read/,
   );
+});
+
+test("planner puts the main solve action before optional search settings", () => {
+  const solveButton = plannerSource.indexOf('id="solveBtn"');
+  const advancedOptions = plannerSource.indexOf('<details class="advanced-search">');
+  assert.ok(solveButton >= 0 && advancedOptions > solveButton);
+  assert.match(plannerSource, /id="budgetSel"/);
+  assert.match(plannerSource, /id="tierAutoChk"/);
+  assert.match(plannerSource, /id="minTypeChk"/);
+});
+
+test("planner wrapper explains the workflow and collapses reference notes", async () => {
+  const page = await readFile(new URL("../app/simulations/irrigation-planner/page.tsx", import.meta.url), "utf8");
+  assert.match(page, /planner-quickstart-title/);
+  assert.match(page, /planner-workspace-title/);
+  assert.match(page, /<details className="planner-notes">/);
 });
 
 test("sandboxed planner uses a bounded memory store and nonce-checked persistence bridge", () => {
