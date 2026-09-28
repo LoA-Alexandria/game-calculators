@@ -2474,6 +2474,27 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
   align-items: end;
 }
 
+.guild-trade-set-pick { margin: 0; min-width: 200px; }
+.guild-trade-set-pick label { margin-bottom: 4px; }
+
+/* --- trade sets editor --------------------------------------------------- */
+
+.ts-edit-set + .ts-edit-set { margin-top: 30px; }
+.ts-edit-set-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
+.ts-edit-set-head h2 { margin: 0; }
+.ts-edit-list { display: grid; gap: 10px; margin: 14px 0 0; padding: 0; list-style: none; }
+.ts-edit-row { display: grid; gap: 8px; }
+.ts-edit-head { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.ts-edit-head strong { flex: 1; min-width: 0; }
+.ts-edit-art { width: 44px; height: 44px; border-radius: 10px; background: var(--surface-2); object-fit: contain; }
+.ts-edit-art.is-empty { display: inline-block; }
+.ts-edit-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
+  gap: 4px 14px;
+}
+.ts-edit-fields input[aria-invalid] { border-color: var(--bad); }
+
 /* --- building levels editor ---------------------------------------------- */
 
 .bl-edit-pick { max-width: 420px; }

@@ -50,8 +50,9 @@ export function isTradeDayStatus(value: string): value is TradeDayStatus {
   return (TRADE_DAY_STATUSES as readonly string[]).includes(value);
 }
 
-export function tradeSetById(id: string): TradeSet | undefined {
-  return TRADE_SETS.find((set) => set.id === id);
+/** `sets` defaults to the built file; the board passes the published ones. */
+export function tradeSetById(id: string, sets: readonly TradeSet[] = TRADE_SETS): TradeSet | undefined {
+  return sets.find((set) => set.id === id);
 }
 
 export function tradeItemUrl(setId: string, itemId: string): string {

@@ -68,6 +68,9 @@ export const THEATER_INCOME_DRAFT_STORAGE_KEY = "popepoch-theater-income-draft";
 /** The building level tables, edited one building at a time. */
 export const BUILDING_LEVELS_DRAFT_STORAGE_KEY = "popepoch-building-levels-draft";
 
+/** The furniture sets behind the guild trade board. */
+export const TRADE_SETS_DRAFT_STORAGE_KEY = "popepoch-trade-sets-draft";
+
 /** Local draft of the Hero linking editor. */
 export const LINKING_DRAFT_STORAGE_KEY = "popepoch-linking-draft";
 

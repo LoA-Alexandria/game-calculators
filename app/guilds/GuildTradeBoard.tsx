@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import { useCallback, useEffect, useId, useMemo, useState } from "react";
 import {
   DEFAULT_TRADE_SET,
@@ -16,11 +18,14 @@ import {
   type TradeItem,
   type TradeMark,
   type TradeSuggestion,
+  type TradeSet,
 } from "../../lib/content/guild-trade";
 import type { GuildRosterEntry } from "../../lib/content/guilds";
 import { getSupabaseBrowserClient } from "../../lib/supabase/client";
 import { useLocale } from "../components/LocaleProvider";
-import { CheckIcon, PlusIcon, TrashIcon } from "../components/Icons";
+import { CheckIcon, PlusIcon, TrashIcon, PenIcon} from "../components/Icons";
+import { useGuideData } from "../guides/GuideOverrides";
+import { useAuth } from "../components/AuthProvider";
 
 type DayRow = {
   id: string;
@@ -61,12 +66,19 @@ function percent(share: number): string {
 
 export function GuildTradeBoard({ guildId, userId, roster, frozen = false }: Props) {
   const { t, tf, d } = useLocale();
+  const { allows } = useAuth();
   const supabase = getSupabaseBrowserClient();
   const ids = useId();
   const words = t.guilds.trade;
 
-  const setId = DEFAULT_TRADE_SET;
-  const set = tradeSetById(setId);
+  // The build carries the sets; a published one lies over them a moment later,
+  // so next season's furniture needs no deploy.
+  const sets = useGuideData<{ sets: TradeSet[] }>("trade-sets").sets;
+  // The first set is the one a guild is collecting; a second one appears when
+  // the next event's furniture is added, and everything below follows the pick.
+  const [chosen, setChosen] = useState("");
+  const setId = sets.some((entry) => entry.id === chosen) ? chosen : sets[0]?.id ?? DEFAULT_TRADE_SET;
+  const set = tradeSetById(setId, sets);
 
   const [marks, setMarks] = useState<TradeMark[]>([]);
   const [days, setDays] = useState<DayRow[]>([]);
@@ -285,6 +297,20 @@ export function GuildTradeBoard({ guildId, userId, roster, frozen = false }: Pro
         <div className="guild-panel-head">
           <h2>{words.progressHeading}</h2>
           <p className="guild-panel-lede">{tf(words.progressLede, { set: set.name })}</p>
+          {sets.length > 1 ? (
+            <div className="field guild-trade-set-pick">
+              <label htmlFor={`${ids}-set`}>{words.setLabel}</label>
+              <select id={`${ids}-set`} value={setId} onChange={(event) => setChosen(event.target.value)}>
+                {sets.map((entry) => <option key={entry.id} value={entry.id}>{entry.name}</option>)}
+              </select>
+            </div>
+          ) : null}
+          {allows("guides.draft") ? (
+            <Link className="small-button" href="/guilds/trade-sets/edit/">
+              <PenIcon className="icon icon-sm" />
+              {t.tradeSetsEditor.openEditor}
+            </Link>
+          ) : null}
         </div>
         {loading ? (
           <p className="guild-empty">{words.loading}</p>
