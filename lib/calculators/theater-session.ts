@@ -97,10 +97,18 @@ export type TheaterTrialInput = Omit<TheaterRunInput, "startingPlays" | "rewards
   rounds: number;
   seed: number;
 };
-export type TheaterTrialLogPlay = TheaterTrialPlay & { slot: number; starting: boolean };
+export type TheaterTrialLogPlay = TheaterTrialPlay & {
+  slot: number;
+  starting: boolean;
+  energyBefore: number;
+  energyCost: number;
+  energyAfter: number;
+};
 export type TheaterTrial = { points: number; plays: TheaterTrialLogPlay[] };
+export type TheaterTrialSlotStart = { slot: number; startingEnergy: number; lipsticks: number; lipstickEnergy: number; totalEnergy: number };
 export type TheaterTrialResult = {
   rounds: number;
+  slotStarts: TheaterTrialSlotStart[];
   minimum: number;
   average: number;
   maximum: number;
@@ -227,6 +235,11 @@ export function simulateTheaterTrials(input: TheaterTrialInput): TheaterTrialRes
   for (const play of input.plays) byRarity.set(play.rarity, [...(byRarity.get(play.rarity) ?? []), play]);
   const rewards = Object.fromEntries([...byRarity].map(([rarity, plays]) => [rarity, plays.reduce((sum, play) => sum + play.redCarpet.average, 0) / plays.length])) as Partial<Record<PlayRarity, number>>;
   const offers = offersFor(building);
+  const slotStarts = input.startingEnergy.map((startingEnergy, index) => {
+    const lipsticks = index === input.lipstickSlot ? input.lipsticks : 0;
+    const lipstickEnergy = lipsticks * 5;
+    return { slot: index + 1, startingEnergy, lipsticks, lipstickEnergy, totalEnergy: startingEnergy + lipstickEnergy };
+  });
   const maximumEnergy = Math.max(...input.startingEnergy.map((energy, index) => energy + (index === input.lipstickSlot ? input.lipsticks * 5 : 0)));
   const expected = Array.from({ length: maximumEnergy + 1 }, () => 0);
   for (let remaining = 1; remaining <= maximumEnergy; remaining += 1) {
@@ -266,9 +279,11 @@ export function simulateTheaterTrials(input: TheaterTrialInput): TheaterTrialRes
     let points = 0;
     for (let slot = 0; slot < building.theaterSlots; slot += 1) {
       const firstPlay = input.startingPlays[slot];
-      selected.push({ ...firstPlay, slot: slot + 1, starting: true });
+      let remaining = slotStarts[slot].totalEnergy;
+      const startingCost = PLAY_ENERGY[firstPlay.rarity];
+      selected.push({ ...firstPlay, slot: slot + 1, starting: true, energyBefore: remaining, energyCost: startingCost, energyAfter: remaining - startingCost });
       points += firstPlay.redCarpet.average;
-      let remaining = input.startingEnergy[slot] + (slot === input.lipstickSlot ? input.lipsticks * 5 : 0) - PLAY_ENERGY[firstPlay.rarity];
+      remaining -= startingCost;
       while (remaining >= Math.min(...Object.values(PLAY_ENERGY))) {
         const candidates = [drawPlay(), drawPlay(), drawPlay()].filter((play): play is TheaterTrialPlay => play !== null && PLAY_ENERGY[play.rarity] <= remaining);
         const chosen = candidates.sort((a, b) =>
@@ -276,9 +291,11 @@ export function simulateTheaterTrials(input: TheaterTrialInput): TheaterTrialRes
           PLAY_ENERGY[a.rarity] - PLAY_ENERGY[b.rarity] || a.id.localeCompare(b.id),
         )[0];
         if (!chosen) break;
-        selected.push({ ...chosen, slot: slot + 1, starting: false });
+        const energyBefore = remaining;
+        const energyCost = PLAY_ENERGY[chosen.rarity];
+        remaining -= energyCost;
+        selected.push({ ...chosen, slot: slot + 1, starting: false, energyBefore, energyCost, energyAfter: remaining });
         points += chosen.redCarpet.average;
-        remaining -= PLAY_ENERGY[chosen.rarity];
       }
     }
     trials.push({ points, plays: selected });
@@ -289,5 +306,5 @@ export function simulateTheaterTrials(input: TheaterTrialInput): TheaterTrialRes
   const minimumRun = trials.find((trial) => trial.points === minimum)!;
   const maximumRun = [...trials].reverse().find((trial) => trial.points === maximum)!;
   const averageRun = trials.reduce((best, trial) => Math.abs(trial.points - average) < Math.abs(best.points - average) ? trial : best, trials[0]);
-  return { rounds: input.rounds, minimum, average, maximum, minimumRun, averageRun, maximumRun };
+  return { rounds: input.rounds, slotStarts, minimum, average, maximum, minimumRun, averageRun, maximumRun };
 }

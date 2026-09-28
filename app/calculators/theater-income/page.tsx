@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useSyncExternalStore } from "react";
+import { useMemo, useRef, useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { CalculatorHeader } from "../../components/CalculatorHeader";
 import { useAuth } from "../../components/AuthProvider";
@@ -152,6 +152,7 @@ export default function TheaterIncomePage() {
   const { t, tf, n } = useLocale();
   const copy = t.theaterIncome;
   const saved = useSyncExternalStore(store.subscribe, store.getSnapshot, store.getServerSnapshot);
+  const [openTrialLog, setOpenTrialLog] = useState<string | null>(null);
   const update = (patch: Partial<Saved>) => store.set({ ...saved, ...patch });
   const updatePlay = (id: string, patch: PlayInput) =>
     update({ plays: { ...saved.plays, [id]: { ...saved.plays[id], ...patch } } });
@@ -672,23 +673,46 @@ export default function TheaterIncomePage() {
                 <p className="theater-note">{copy.simulation.runAssumptions}</p>
                 <div className="theater-log-summary"><div><span>{copy.simulation.minimum}</span><strong>{n(simulation.projection.minimum)}</strong></div><div><span>{copy.simulation.average}</span><strong>{n(simulation.projection.average)}</strong></div><div><span>{copy.simulation.maximum}</span><strong>{n(simulation.projection.maximum)}</strong></div><div><span>{copy.simulation.logSettings}</span><strong>{copy.ticketPercent}: {n(stats?.ticketPercent ?? 0)} % · {copy.visitorPercent}: {n(stats?.visitorPercent ?? 0)} % · {copy.merchandise}: {n(stats?.merchandise ?? 0)} · {copy.events[saved.event]}</strong></div></div>
                 <div className="theater-trial-logs">{([
-                  [copy.simulation.minimum, simulation.projection.minimumRun],
-                  [copy.simulation.average, simulation.projection.averageRun],
-                  [copy.simulation.maximum, simulation.projection.maximumRun],
-                ] as const).map(([label, run], runIndex) => <section className="theater-trial-log" key={label}>
-                  <div className="theater-trial-log-heading"><h3>{label}</h3><strong>{n(run.points)} {copy.redCarpet}</strong></div>
-                  <ol>{run.plays.map((play, index) => {
-                    const detail = simulation.details?.find((row) => row.entry.id === play.id);
-                    return <li key={`${runIndex}-${play.slot}-${index}`}>
-                      <span className="theater-trial-slot">{tf(copy.simulation.slotHeading, { slot: play.slot })}</span>
-                      <span className="rarity" data-rarity={play.rarity}>{play.rarity}</span>
-                      <span className="theater-trial-play">{detail ? playName(detail.entry) : play.id}</span>
-                      <span className="theater-trial-goddesses">{play.goddesses.join(", ") || copy.simulation.none}</span>
-                      <span className="theater-trial-coins">{n(play.coins)} {copy.simulation.logCoins}</span>
-                      <span className="theater-trial-points">{n(play.redCarpet.low)}–{n(play.redCarpet.high)} {copy.simulation.logPoints}</span>
-                    </li>;
-                  })}</ol>
-                </section>)}</div>
+                  ["minimum", copy.simulation.minimum, simulation.projection.minimumRun],
+                  ["average", copy.simulation.average, simulation.projection.averageRun],
+                  ["maximum", copy.simulation.maximum, simulation.projection.maximumRun],
+                ] as const).map(([key, label, run]) => {
+                  const isOpen = openTrialLog === key;
+                  const panelId = `theater-trial-log-${key}`;
+                  return <section className="theater-trial-log" key={key}>
+                    <button type="button" className="theater-trial-log-heading" aria-expanded={isOpen} aria-controls={panelId} onClick={() => setOpenTrialLog((current) => current === key ? null : key)}>
+                      <span>{label}</span><strong>{n(run.points)} {copy.redCarpet}</strong><span className="theater-trial-log-chevron" aria-hidden="true">{isOpen ? "−" : "+"}</span>
+                    </button>
+                    <div id={panelId} hidden={!isOpen}>
+                      {isOpen ? <>
+                        <div className="theater-trial-energy-summary">{simulation.projection.slotStarts.map((slot) => <span key={slot.slot}>{tf(copy.simulation.logSlotEnergy, { slot: slot.slot, start: n(slot.startingEnergy), lipsticks: n(slot.lipsticks), bonus: n(slot.lipstickEnergy), total: n(slot.totalEnergy) })}</span>)}</div>
+                        <div className="theater-trial-table-wrap"><table className="theater-trial-table">
+                          <thead><tr>
+                            <th scope="col">{copy.simulation.logSlotColumn}</th>
+                            <th scope="col">{copy.simulation.logRarityColumn}</th>
+                            <th scope="col">{copy.simulation.logPlayColumn}</th>
+                            <th scope="col">{copy.simulation.logGoddessColumn}</th>
+                            <th scope="col" className="num">{copy.simulation.logCoinColumn}</th>
+                            <th scope="col" className="num">{copy.simulation.logPointsColumn}</th>
+                            <th scope="col" className="num">{copy.simulation.logEnergyColumn}</th>
+                          </tr></thead>
+                          <tbody>{run.plays.map((play, index) => {
+                            const detail = simulation.details?.find((row) => row.entry.id === play.id);
+                            return <tr key={`${play.slot}-${index}`} className={play.starting ? "theater-trial-start-play" : undefined}>
+                              <td>{tf(copy.simulation.slotHeading, { slot: play.slot })}{play.starting ? ` · ${copy.simulation.logStarting}` : ""}</td>
+                              <td><span className="rarity" data-rarity={play.rarity}>{play.rarity}</span></td>
+                              <td className="theater-trial-play">{detail ? playName(detail.entry) : play.id}</td>
+                              <td className="theater-trial-goddesses">{play.goddesses.join(", ") || copy.simulation.none}</td>
+                              <td className="num theater-trial-coins">{n(play.coins)}</td>
+                              <td className="num theater-trial-points">{n(play.redCarpet.low)}–{n(play.redCarpet.high)}</td>
+                              <td className="num theater-trial-energy">{n(play.energyBefore)} − {n(play.energyCost)} = {n(play.energyAfter)}</td>
+                            </tr>;
+                          })}</tbody>
+                        </table></div>
+                      </> : null}
+                    </div>
+                  </section>;
+                })}</div>
               </dialog>
               {simulation.knownPlays < plays.length ? <p className="theater-note theater-session-warning">{tf(copy.simulation.dataWarning, { known: simulation.knownPlays, total: plays.length })}</p> : null}
               <details className="theater-session-details"><summary>{copy.assumptionsTitle}</summary><p>{copy.simulation.runAssumptions}</p></details>
