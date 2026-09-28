@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import { guideHref, guideLayout, isGuideEntryId } from "../../lib/content/guides";
 import {
   eventDescription,
@@ -25,6 +26,7 @@ export function isServerAgeUnlocksGuide(
 
 function EventRow({ event, guide }: { event: AgeEvent; guide: Guide }) {
   const { t } = useLocale();
+  const [detailsOpen, setDetailsOpen] = useState(false);
   const name = eventName(event, guide.eventTexts);
   const detail = eventDetail(event, guide.eventTexts);
   const description = eventDescription(event, guide.eventTexts);
@@ -33,11 +35,17 @@ function EventRow({ event, guide }: { event: AgeEvent; guide: Guide }) {
     event.relatedGuide && isGuideEntryId(event.relatedGuide, t.guideEntries)
       ? t.guideEntries[event.relatedGuide]
       : null;
-  const hasCard = Boolean(description || image);
+  const hasDetails = Boolean(description || image);
 
   return (
-    <li className={`age-event${hasCard ? " age-event-has-card" : ""}`}>
-      <button type="button" className="age-event-trigger" aria-describedby={hasCard ? `age-card-${event.id}` : undefined}>
+    <li className={`age-event${hasDetails ? " age-event-has-details" : ""}${detailsOpen ? " is-open" : ""}`}>
+      <button
+        type="button"
+        className="age-event-trigger"
+        aria-expanded={hasDetails ? detailsOpen : undefined}
+        aria-controls={hasDetails ? `age-details-${event.id}` : undefined}
+        onClick={hasDetails ? () => setDetailsOpen((open) => !open) : undefined}
+      >
         <span className="age-event-main">
           {image ? (
             // eslint-disable-next-line @next/next/no-img-element
@@ -49,6 +57,11 @@ function EventRow({ event, guide }: { event: AgeEvent; guide: Guide }) {
               {guide.oneTimeMark}
             </span>
           ) : null}
+          {hasDetails ? (
+            <span className="age-event-more" aria-hidden="true">
+              {detailsOpen ? "−" : "+"}
+            </span>
+          ) : null}
         </span>
         {detail ? <span className="age-event-detail">{detail}</span> : null}
       </button>
@@ -57,15 +70,13 @@ function EventRow({ event, guide }: { event: AgeEvent; guide: Guide }) {
           {fill(guide.relatedLabel, { guide: related.title })}
         </Link>
       ) : null}
-      {hasCard ? (
-        <div className="age-event-card" id={`age-card-${event.id}`} role="tooltip">
+      {hasDetails ? (
+        <div className="age-event-details" id={`age-details-${event.id}`} hidden={!detailsOpen}>
           {image ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img className="age-event-card-image" src={image} alt="" width={220} height={140} />
+            <img className="age-event-details-image" src={image} alt="" width={220} height={140} />
           ) : null}
-          <div className="age-event-card-body">
-            <strong className="age-event-card-name">{name}</strong>
-            {detail ? <span className="age-event-card-detail">{detail}</span> : null}
+          <div className="age-event-details-body">
             {description ? <p className="age-event-card-description">{description}</p> : null}
           </div>
         </div>
@@ -94,6 +105,28 @@ export function ServerAgeUnlocksGuide({ guide }: { guide: Guide }) {
         <h2>{guide.timelineHeading}</h2>
       </div>
       <p className="guide-lede">{guide.timelineLede}</p>
+      <nav className="age-milestone-index" aria-label={guide.timelineHeading}>
+        {milestones.map((milestone) => {
+          const label =
+            milestoneLabel(milestone, guide.eventTexts) ??
+            (milestone.day != null ? fill(guide.dayLabel, { day: milestone.day }) : milestone.id);
+          return (
+            <a
+              className="age-milestone-jump"
+              href={`#age-milestone-${milestone.id}`}
+              key={milestone.id}
+              aria-label={`${label}, ${milestone.events.length}`}
+            >
+              <span>{label}</span>
+              <b>{milestone.events.length}</b>
+            </a>
+          );
+        })}
+        <a className="age-milestone-jump age-milestone-jump-muted" href="#age-unconfirmed">
+          <span>{guide.unconfirmedHeading}</span>
+          <b>{data.unconfirmed.length}</b>
+        </a>
+      </nav>
       <ol className="age-timeline">
         {milestones.map((milestone, index) => {
           const label =
@@ -101,7 +134,7 @@ export function ServerAgeUnlocksGuide({ guide }: { guide: Guide }) {
             (milestone.day != null ? fill(guide.dayLabel, { day: milestone.day }) : milestone.id);
           const isLast = index === milestones.length - 1;
           return (
-            <li className="age-milestone" key={milestone.id}>
+            <li className="age-milestone" key={milestone.id} id={`age-milestone-${milestone.id}`}>
               <div className="age-milestone-rail" aria-hidden="true">
                 <span className="age-milestone-node" />
                 {!isLast ? (
@@ -123,13 +156,20 @@ export function ServerAgeUnlocksGuide({ guide }: { guide: Guide }) {
         })}
       </ol>
 
-      <h2>{guide.unconfirmedHeading}</h2>
-      <p className="guide-lede">{guide.unconfirmedLede}</p>
-      <ul className="age-unconfirmed">
-        {data.unconfirmed.map((event) => (
-          <EventRow key={event.id} event={event} guide={guide} />
-        ))}
-      </ul>
+      <section className="age-unconfirmed-section" id="age-unconfirmed">
+        <div className="age-unconfirmed-heading">
+          <span className="age-unconfirmed-icon" aria-hidden="true">?</span>
+          <div>
+            <h2>{guide.unconfirmedHeading}</h2>
+            <p className="guide-lede">{guide.unconfirmedLede}</p>
+          </div>
+        </div>
+        <ul className="age-unconfirmed">
+          {data.unconfirmed.map((event) => (
+            <EventRow key={event.id} event={event} guide={guide} />
+          ))}
+        </ul>
+      </section>
 
       <p className="hero-credit">{guide.credit}</p>
       {guide.note ? <p className="callout">{guide.note}</p> : null}

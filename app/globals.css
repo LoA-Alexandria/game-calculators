@@ -3666,13 +3666,16 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
   margin: 0;
   padding: 0;
   list-style: none;
-  max-width: 42rem;
+  display: grid;
+  gap: 14px;
+  max-width: none;
 }
 .age-milestone {
   display: grid;
-  grid-template-columns: 28px minmax(0, 1fr);
-  gap: 0 14px;
+  grid-template-columns: 30px minmax(0, 1fr);
+  gap: 0 12px;
   align-items: stretch;
+  scroll-margin-top: 100px;
 }
 .age-milestone-rail {
   display: flex;
@@ -3682,9 +3685,9 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
 }
 .age-milestone-node {
   flex: 0 0 auto;
-  width: 14px;
-  height: 14px;
-  margin-top: .35rem;
+  width: 16px;
+  height: 16px;
+  margin-top: 1.25rem;
   border-radius: 50%;
   border: 2px solid var(--accent);
   background: var(--surface);
@@ -3694,9 +3697,9 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
   position: relative;
   flex: 1 1 auto;
   width: 2px;
-  min-height: 28px;
-  margin: 6px 0 2px;
-  background: color-mix(in srgb, var(--line) 70%, var(--accent));
+  min-height: 40px;
+  margin: 8px 0 0;
+  background: color-mix(in srgb, var(--line) 55%, var(--accent));
 }
 .age-milestone-arrow {
   position: absolute;
@@ -3710,17 +3713,89 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
   background: transparent;
 }
 .age-milestone-body {
-  padding-bottom: 22px;
   min-width: 0;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--accent) 5%, transparent), transparent 40%),
+    var(--surface);
+  box-shadow: var(--shadow-1);
 }
-.age-milestone:last-child .age-milestone-body { padding-bottom: 4px; }
+.age-milestone:last-child .age-milestone-body { padding-bottom: 16px; }
 .age-milestone-day {
-  margin: 0 0 8px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0 0 12px;
   font-family: var(--font-display);
-  font-size: 1.05rem;
+  font-size: 1.12rem;
   font-weight: 700;
   letter-spacing: -.02em;
   line-height: 1.2;
+}
+.age-milestone-day::before {
+  content: "";
+  width: 4px;
+  height: 1.2em;
+  flex: none;
+  border-radius: 99px;
+  background: var(--accent);
+}
+.age-milestone-index {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  margin: 0 0 18px;
+  padding: 2px 2px 10px;
+  scrollbar-width: thin;
+  scroll-snap-type: x proximity;
+}
+.age-milestone-jump {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  flex: 0 0 auto;
+  padding: 0 11px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink-soft);
+  font-size: .78rem;
+  font-weight: 650;
+  text-decoration: none;
+  scroll-snap-align: start;
+  transition: border-color .16s ease, background .16s ease, color .16s ease;
+}
+@media (min-width: 721px) {
+  .age-milestone-index {
+    flex-wrap: wrap;
+    overflow: visible;
+    scroll-snap-type: none;
+    padding-bottom: 0;
+  }
+}
+.age-milestone-jump b {
+  display: grid;
+  min-width: 21px;
+  height: 21px;
+  place-items: center;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent) 12%, var(--surface));
+  color: var(--accent);
+  font-size: .68rem;
+}
+.age-milestone-jump:hover,
+.age-milestone-jump:focus-visible {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 7%, var(--surface));
+  color: var(--ink);
+}
+.age-milestone-jump-muted b {
+  background: color-mix(in srgb, var(--gold) 18%, var(--surface));
+  color: var(--gold);
 }
 .age-event-list,
 .age-unconfirmed {
@@ -3728,24 +3803,33 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
   padding: 0;
   list-style: none;
   display: grid;
-  gap: 8px;
-}
-.age-unconfirmed {
-  max-width: 42rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  align-items: start;
   gap: 10px;
 }
+.age-unconfirmed {
+  max-width: none;
+}
 .age-event {
-  position: relative;
   display: grid;
-  gap: 2px;
-  padding: 10px 12px;
+  align-content: start;
+  gap: 8px;
+  min-width: 0;
+  padding: 12px;
   border: 1px solid var(--line);
   border-radius: var(--r-md);
-  background: var(--surface);
+  background: color-mix(in srgb, var(--surface-2) 58%, var(--surface));
+  transition: border-color .16s ease, box-shadow .16s ease, transform .16s ease;
+}
+.age-event:hover {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+  box-shadow: var(--shadow-1);
+  transform: translateY(-1px);
 }
 .age-event-trigger {
   display: grid;
-  gap: 2px;
+  width: 100%;
+  gap: 7px;
   margin: 0;
   padding: 0;
   border: 0;
@@ -3755,10 +3839,15 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
   text-align: left;
   cursor: default;
 }
-.age-event-has-card .age-event-trigger { cursor: pointer; }
+.age-event-has-details .age-event-trigger { cursor: pointer; }
+.age-event-trigger:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+  border-radius: var(--r-sm);
+}
 .age-event-main {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
   gap: 8px;
 }
@@ -3770,6 +3859,8 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
   border: 1px solid var(--line);
 }
 .age-event-name {
+  min-width: 0;
+  flex: 1 1 auto;
   font-weight: 650;
   color: var(--ink);
   font-size: .95rem;
@@ -3789,6 +3880,19 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
   letter-spacing: .02em;
   text-transform: uppercase;
 }
+.age-event-more {
+  display: grid;
+  width: 25px;
+  height: 25px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--line));
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+  color: var(--accent);
+  font-size: 1.05rem;
+  line-height: 1;
+}
 .age-event-detail {
   color: var(--ink-soft);
   font-size: .84rem;
@@ -3804,57 +3908,73 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
   text-underline-offset: 3px;
 }
 .age-event-link:hover { color: var(--ink); }
-.age-event-card {
-  position: absolute;
-  z-index: 4;
-  left: 12px;
-  right: 12px;
-  top: calc(100% - 4px);
+.age-event-details {
   display: grid;
-  gap: 0;
+  grid-template-columns: minmax(0, 180px) minmax(0, 1fr);
+  gap: 10px;
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: var(--r-md);
   background: var(--surface);
-  box-shadow: var(--shadow-3);
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(6px);
-  pointer-events: none;
-  transition: opacity .18s ease, transform .18s ease, visibility .18s ease;
+  animation: age-details-in .16s ease both;
 }
-.age-event-has-card:hover .age-event-card,
-.age-event-has-card:focus-within .age-event-card {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-  pointer-events: auto;
-}
-.age-event-card-image {
+.age-event-details[hidden] { display: none; }
+.age-event-details-image {
   display: block;
   width: 100%;
-  height: 140px;
+  height: 100%;
+  min-height: 104px;
+  max-height: 148px;
   object-fit: cover;
   background: var(--surface-2);
 }
-.age-event-card-body {
-  display: grid;
-  gap: 4px;
-  padding: 10px 12px 12px;
-}
-.age-event-card-name {
-  font-size: .95rem;
-  line-height: 1.25;
-}
-.age-event-card-detail {
-  color: var(--ink-soft);
-  font-size: .8rem;
-}
+.age-event-details-body { align-self: center; padding: 10px; }
 .age-event-card-description {
-  margin: 2px 0 0;
+  margin: 0;
   color: var(--ink-soft);
   font-size: .84rem;
   line-height: 1.45;
+}
+.age-unconfirmed-section {
+  margin-top: 20px;
+  padding: 18px;
+  border: 1px solid color-mix(in srgb, var(--gold) 35%, var(--line));
+  border-radius: var(--r-lg);
+  background: color-mix(in srgb, var(--gold) 4%, var(--surface));
+  scroll-margin-top: 100px;
+}
+.age-unconfirmed-heading {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.age-unconfirmed-heading h2 { margin: 0 0 5px; }
+.age-unconfirmed-heading .guide-lede { margin: 0; }
+.age-unconfirmed-icon {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--gold) 17%, var(--surface));
+  color: var(--gold);
+  font-weight: 800;
+}
+@keyframes age-details-in {
+  from { opacity: .6; transform: translateY(-3px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 720px) {
+  .age-milestone { grid-template-columns: 20px minmax(0, 1fr); gap: 0 8px; }
+  .age-milestone-body { padding: 12px; border-radius: var(--r-md); }
+  .age-milestone-node { width: 12px; height: 12px; margin-top: 1.12rem; }
+  .age-milestone-index { margin-inline: -2px; }
+  .age-unconfirmed-section { padding: 14px 12px; }
+  .age-event-details { grid-template-columns: minmax(0, 1fr); }
+  .age-event-details-image { max-height: 180px; }
 }
 
 .age-unlocks-editor .age-edit-section-head {
@@ -3885,11 +4005,10 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .age-milestone-arrow { transition: none; }
-  .age-event-card {
-    transition: none;
-    transform: none;
-  }
+  .age-milestone-arrow,
+  .age-milestone-jump,
+  .age-event { transition: none; }
+  .age-event-details { animation: none; }
 }
 
 .museion-grid {
