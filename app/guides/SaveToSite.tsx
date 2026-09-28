@@ -15,6 +15,12 @@ type Props = {
   file: string;
   /** The data as the editor would export it. */
   data: unknown;
+  /**
+   * Further files this editor writes in the same press — the lore of one
+   * roster is a file per language, and saving German without French would
+   * leave a page half translated.
+   */
+  more?: readonly { file: string; data: unknown }[];
   /** Pictures the export adds, as data URLs, if the editor has any. */
   uploads?: readonly { file: string; data: string }[];
   /** Where committed pictures for this guide live under `public/`. */
@@ -42,7 +48,7 @@ type Props = {
  * Publishing is a separate press, and the database checks the role rather than
  * trusting the button.
  */
-export function SaveToSite({ file, data, uploads = [], folder, guideId, texts }: Props) {
+export function SaveToSite({ file, data, more = [], uploads = [], folder, guideId, texts }: Props) {
   const { t } = useLocale();
   const { session, allows } = useAuth();
   const published = usePublishedOverrides(guideId);
@@ -52,7 +58,7 @@ export function SaveToSite({ file, data, uploads = [], folder, guideId, texts }:
 
   if (!session || !allows("guides.draft")) return null;
 
-  const fits = dataFits(file, data);
+  const fits = dataFits(file, data) && more.every((entry) => dataFits(entry.file, entry.data));
 
   const run = async (andPublish: boolean) => {
     setState("saving");
@@ -68,6 +74,12 @@ export function SaveToSite({ file, data, uploads = [], folder, guideId, texts }:
 
     const wrote = await saveDataDraft(file, payload, session.userId);
     if (wrote) return stop(wrote);
+
+    for (const entry of more) {
+      if (!dataFits(entry.file, entry.data)) return stop(words.saveToSiteUnfit);
+      const failed = await saveDataDraft(entry.file, entry.data, session.userId);
+      if (failed) return stop(failed);
+    }
 
     // The languages this press wrote a draft for, and so the ones to publish.
     // A name put back to the committed one leaves an empty draft rather than
@@ -107,6 +119,10 @@ export function SaveToSite({ file, data, uploads = [], folder, guideId, texts }:
     if (andPublish) {
       const refused = await publishData(file);
       if (refused) return stop(refused);
+      for (const entry of more) {
+        const denied = await publishData(entry.file);
+        if (denied) return stop(denied);
+      }
       for (const locale of drafted) {
         const denied = await publishGuide(guideId as string, locale);
         if (denied) return stop(denied);

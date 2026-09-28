@@ -9,7 +9,6 @@ import {
   goddessImageUrl,
   goddessNamed,
   goddessesByRarity,
-  goddessLoreTexts,
   localizedGoddess,
   mergeGoddessTexts,
   searchGoddesses,
@@ -27,6 +26,7 @@ import { counted } from "./HeroRoster";
 import { ObtainMark } from "./ObtainMark";
 import { SkinCatalog, SkinLines } from "./SkinCatalog";
 import { useGuideData } from "./GuideOverrides";
+import { type LoreFile } from "../../lib/content/lore-editor";
 
 type Guide = Dictionary["guideEntries"]["goddesses"];
 
@@ -112,6 +112,9 @@ function GoddessTile({ goddess, guide, onOpen }: { goddess: Goddess; guide: Guid
 export function GoddessesGuide({ guide }: { guide: Guide }) {
   // The build carries the guide; a published edit lies over it a moment later.
   const roster = useGuideData<typeof GODDESS_DATA>("goddesses").goddesses;
+  // The lore of the reader's language, published or built.
+  const loreDe = useGuideData<LoreFile>("goddess-lore-de");
+  const loreFr = useGuideData<LoreFile>("goddess-lore-fr");
   const skins = useGuideData<SkinData>("goddess-skins").skins;
   const leveling = useGuideData<typeof GODDESS_LEVELING_DATA>("goddess-leveling");
   const faces = useMemo(() => levelingFaces(leveling, roster), [leveling, roster]);
@@ -120,8 +123,8 @@ export function GoddessesGuide({ guide }: { guide: Guide }) {
   const [rarity, setRarity] = useState<GoddessRarity | "all">("all");
   const [query, setQuery] = useState("");
   const texts = useMemo(
-    () => mergeGoddessTexts(guide.goddessTexts, goddessLoreTexts(locale)),
-    [guide.goddessTexts, locale],
+    () => mergeGoddessTexts(guide.goddessTexts, locale === "de" ? loreDe : locale === "fr" ? loreFr : {}),
+    [guide.goddessTexts, locale, loreDe, loreFr],
   );
   const rows = useMemo(
     () =>

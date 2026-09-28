@@ -54,10 +54,12 @@ test("every editor that saves points at a data file that exists", () => {
   assert.ok(found.length >= 16, `only ${found.length} editors can save`);
   for (const { editor, props } of found) {
     assert.ok(props.file, `${editor} has no file`);
-    assert.ok(
-      DATA_FILE_NAMES.includes(props.file),
-      `${editor} writes "${props.file}", which is not a file under lib/data`,
-    );
+    for (const name of filesOf(props)) {
+      assert.ok(
+        DATA_FILE_NAMES.includes(name),
+        `${editor} writes "${name}", which is not a file under lib/data`,
+      );
+    }
     assert.ok(props.data, `${editor} passes no data`);
   }
 });
@@ -67,11 +69,19 @@ test("no two editors claim the same data file", () => {
   // second save would silently undo the first.
   const byFile = new Map();
   for (const { editor, props } of savers()) {
-    const already = byFile.get(props.file);
-    assert.equal(already, undefined, `${editor} and ${already} both write ${props.file}`);
-    byFile.set(props.file, editor);
+    for (const name of filesOf(props)) {
+      const already = byFile.get(name);
+      assert.equal(already, undefined, `${editor} and ${already} both write ${name}`);
+      byFile.set(name, editor);
+    }
   }
 });
+
+/** Every data file one Save button writes: its own, and any it carries along. */
+function filesOf(props) {
+  const more = [...(props.more ?? "").matchAll(/file:\s*"([^"]+)"/g)].map((match) => match[1]);
+  return [props.file, ...more].filter(Boolean);
+}
 
 /** The dictionary fields an editor names in `texts={{ … }}`. */
 function textFields(props) {
