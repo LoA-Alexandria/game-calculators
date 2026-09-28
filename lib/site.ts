@@ -71,6 +71,10 @@ export const BUILDING_LEVELS_DRAFT_STORAGE_KEY = "popepoch-building-levels-draft
 /** The furniture sets behind the guild trade board. */
 export const TRADE_SETS_DRAFT_STORAGE_KEY = "popepoch-trade-sets-draft";
 
+/** The lore editor keeps one draft per roster, both languages in it. */
+export const HERO_LORE_DRAFT_STORAGE_KEY = "popepoch-hero-lore-draft";
+export const GODDESS_LORE_DRAFT_STORAGE_KEY = "popepoch-goddess-lore-draft";
+
 /** Local draft of the Hero linking editor. */
 export const LINKING_DRAFT_STORAGE_KEY = "popepoch-linking-draft";
 

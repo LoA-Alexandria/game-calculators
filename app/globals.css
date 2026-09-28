@@ -2477,6 +2477,21 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
 .guild-trade-set-pick { margin: 0; min-width: 200px; }
 .guild-trade-set-pick label { margin-bottom: 4px; }
 
+/* --- lore editor ---------------------------------------------------------- */
+
+.lore-edit-roster + .lore-edit-roster { margin-top: 34px; }
+.lore-edit-search { max-width: 360px; }
+.lore-edit-list { display: grid; gap: 14px; margin: 12px 0 0; padding: 0; list-style: none; }
+.lore-edit-row { display: grid; gap: 10px; }
+.lore-edit-head { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.lore-edit-head strong { font-size: 1.02rem; }
+.lore-edit-english { margin: 0; color: var(--ink-soft); font-size: .86rem; }
+.lore-edit-langs {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: 4px 16px;
+}
+
 /* --- trade sets editor --------------------------------------------------- */
 
 .ts-edit-set + .ts-edit-set { margin-top: 30px; }

@@ -25,12 +25,11 @@ import {
   heroesByRarity,
   localizedHero,
   searchHeroes,
-  heroLoreTexts,
   mergeHeroTexts,
   type Hero,
   type HeroRarity,
   type HeroTexts, HERO_DATA} from "../../lib/content/heroes";
-import { LOCALE_CODES, fill, getDictionary, type Dictionary } from "../../lib/i18n";
+import { LOCALE_CODES, fill, getDictionary, type Dictionary, toLocale, type Locale} from "../../lib/i18n";
 import { exclusiveCollectionSearchText, type CollectionTexts } from "../../lib/content/collection";
 import { HERO_SKIN_GROUPS, skinSearchText, skinsFor, type SkinData} from "../../lib/content/skins";
 import { ChevronIcon, CloseIcon } from "../components/Icons";
@@ -40,6 +39,7 @@ import { useLocale } from "../components/LocaleProvider";
 import { HeroAbilities, HeroArtifact } from "./HeroAbilities";
 import { SkinCatalog, SkinLines } from "./SkinCatalog";
 import { useGuideData } from "./GuideOverrides";
+import { type LoreFile } from "../../lib/content/lore-editor";
 
 type Guide = Dictionary["guideEntries"]["heroes"];
 
@@ -117,6 +117,14 @@ function closeHeroHash() {
 export function HeroRoster({ guide }: { guide: Guide }) {
   // The build carries the guide; a published edit lies over it a moment later.
   const roster = useGuideData<typeof HERO_DATA>("heroes").heroes;
+  // The lore of the reader's language, published or built. English has none of
+  // its own: the roster file carries it.
+  const loreDe = useGuideData<LoreFile>("hero-lore-de");
+  const loreFr = useGuideData<LoreFile>("hero-lore-fr");
+  const lore = useCallback(
+    (code: Locale): LoreFile => (code === "de" ? loreDe : code === "fr" ? loreFr : {}),
+    [loreDe, loreFr],
+  );
   const skins = useGuideData<SkinData>("hero-skins").skins;
   const { locale } = useLocale();
   const [rarity, setRarity] = useState<HeroRarity | "all">("all");
@@ -127,8 +135,8 @@ export function HeroRoster({ guide }: { guide: Guide }) {
     [],
   );
   const heroCatalogs = useMemo(
-    () => LOCALE_CODES.map((code) => mergeHeroTexts(getDictionary(code).guideEntries.heroes.heroTexts, heroLoreTexts(code))),
-    [],
+    () => LOCALE_CODES.map((code) => mergeHeroTexts(getDictionary(code).guideEntries.heroes.heroTexts, lore(code))),
+    [lore],
   );
   const collectionCatalogs = useMemo(
     () => LOCALE_CODES.map((code) => getDictionary(code).guideEntries.collection.collectionTexts as CollectionTexts),
@@ -162,8 +170,8 @@ export function HeroRoster({ guide }: { guide: Guide }) {
   // The subject the reader picked stays picked as they step through the roster.
   const [section, setSection] = useState("skills");
   const texts = useMemo(
-    () => mergeHeroTexts(guide.heroTexts, heroLoreTexts(locale)),
-    [guide.heroTexts, locale],
+    () => mergeHeroTexts(guide.heroTexts, lore(toLocale(locale))),
+    [guide.heroTexts, locale, lore],
   );
 
   return (
