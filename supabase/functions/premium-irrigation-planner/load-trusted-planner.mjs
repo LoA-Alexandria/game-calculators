@@ -1,7 +1,7 @@
 // SHA-256 of the versioned private asset, checked against the deployed copy.
 // The page runs this HTML on the site origin, so an unexpected Storage update
 // must never become executable code for signed-in visitors.
-const TRUSTED_PLANNER_SHA256 = "8a1b12edc0bd69bd23d8987c2de9df76fba1fd6224c3073044e8a2881b1793c5";
+const TRUSTED_PLANNER_SHA256 = "5816ac1dd40f4ed298656150accdca0c89e79f58a662f80c4855574706165252";
 const MAX_PLANNER_BYTES = 1_000_000;
 
 export async function loadTrustedPlannerHtml(signedUrl, fetchAsset = fetch) {

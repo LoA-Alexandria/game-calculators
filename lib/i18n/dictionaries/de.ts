@@ -729,6 +729,17 @@ const de: Dictionary = {
     eyebrow: "Stadtaufbau",
     openFullScreen: "Im Vollbild öffnen",
     frameTitle: "Bewässerungsplaner",
+    intro: "Plane Wasserquellen und Produktionsgebäude auf vier verbundenen Feldern. Anschließend sucht der Löser nach einer starken Anordnung.",
+    quickStartTitle: "Dein Plan in drei Schritten",
+    stepBuildingsTitle: "Gebäude festlegen",
+    stepBuildings: "Wähle die Gebäudetypen und wie viele davon du platzieren möchtest.",
+    stepPlaceTitle: "Felder anordnen",
+    stepPlace: "Platziere Wasserquellen und Gebäude. Mit R drehst du ein Gebäude; die Steuerung geht auch per Schaltfläche.",
+    stepOptimizeTitle: "Löser starten",
+    stepOptimize: "Berechne eine Anordnung und prüfe Ertrag und Ausbaukosten in den Tabs.",
+    workspaceTitle: "Bewässerung planen",
+    workspaceHint: "Dein Plan wird automatisch in diesem Browser gespeichert. Starte im Tab Plan und prüfe danach Ergebnis und Ausbau.",
+    detailsTitle: "Regeln, gespeicherte Daten und Sprache",
     languageNote:
       "Der Planer selbst ist eine eigenständige Anwendung und derzeit nur auf Englisch verfügbar. Die Darstellung folgt der Seite.",
     model:

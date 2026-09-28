@@ -28,8 +28,8 @@ lib/
   site.ts                      Base path, Discord, repository, storage keys
   theme.ts                     Colour-scheme ids and validation
 docs/                          Human and agent guidance
-public/
-  tools/irrigation-planner/    Vendored standalone planner (see below)
+supabase/private-assets/
+  irrigation-planner/          Premium-only planner source (never exported)
 tests/                         Calculation and output tests
 .github/workflows/pages.yml    Test, build, and Pages deployment
 ```
@@ -245,9 +245,10 @@ keeps one mark per reader and channel. The page polls every twenty seconds.
 
 ## Vendored applications
 
-`public/tools/irrigation-planner/` holds a complete standalone application that
-is embedded by a wrapper page rather than ported page by page. The reasoning, the
-exact changes made to the copy, and the update procedure are in
+`supabase/private-assets/irrigation-planner/` holds a complete standalone
+application. A Premium-gated Edge Function serves its verified HTML to a
+sandboxed iframe rather than porting it page by page. The reasoning, the exact
+changes made to the copy, and the update procedure are in
 [`IRRIGATION-PLANNER.md`](IRRIGATION-PLANNER.md). Treat it as an exception:
 new calculators follow [`ADDING-A-CALCULATOR.md`](ADDING-A-CALCULATOR.md).
 

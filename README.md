@@ -49,11 +49,12 @@ The first five production calculators were ported from Pop Bot. Their copied dat
 
 ## Irrigation Planner
 
-The Irrigation Planner is a self-contained application shipped in
-`public/tools/irrigation-planner/` and embedded by
-`app/simulations/irrigation-planner/`. It is vendored rather than ported, which
-is a documented exception to the architecture; read
-[`docs/IRRIGATION-PLANNER.md`](docs/IRRIGATION-PLANNER.md) before changing it.
+The Irrigation Planner is a self-contained application kept in
+`supabase/private-assets/irrigation-planner/` and embedded by
+`app/simulations/irrigation-planner/` after the Premium check. Its private copy
+is vendored rather than ported, which is a documented exception to the
+architecture; read [`docs/IRRIGATION-PLANNER.md`](docs/IRRIGATION-PLANNER.md)
+before changing or deploying it.
 
 ## Work with a coding agent
 

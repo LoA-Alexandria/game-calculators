@@ -729,6 +729,17 @@ const fr: Dictionary = {
     eyebrow: "Plan de ville",
     openFullScreen: "Ouvrir en plein écran",
     frameTitle: "Planificateur d’irrigation",
+    intro: "Placez vos sources d’eau et bâtiments de production sur quatre champs reliés, puis laissez le solveur chercher un agencement efficace.",
+    quickStartTitle: "Votre plan en trois étapes",
+    stepBuildingsTitle: "Choisir les bâtiments",
+    stepBuildings: "Choisissez les types de bâtiments et le nombre à placer.",
+    stepPlaceTitle: "Organiser les champs",
+    stepPlace: "Placez les sources d’eau et les bâtiments. Appuyez sur R pour faire pivoter un bâtiment ou utilisez les commandes.",
+    stepOptimizeTitle: "Lancer le solveur",
+    stepOptimize: "Calculez un agencement, puis consultez la production et les coûts d’amélioration dans les onglets.",
+    workspaceTitle: "Créer votre plan d’irrigation",
+    workspaceHint: "Votre plan est enregistré automatiquement dans ce navigateur. Commencez dans Plan, puis consultez Résultat et Amélioration.",
+    detailsTitle: "Règles, données enregistrées et langue",
     languageNote:
       "Le planificateur est une application autonome, disponible pour l’instant en anglais uniquement. Il suit le thème du site.",
     model:

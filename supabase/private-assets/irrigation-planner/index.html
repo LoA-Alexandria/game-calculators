@@ -603,6 +603,56 @@ body.m-mode .tabs button{padding:11px 6px; font-size:.85rem;}
 html.embedded body{padding:14px;}
 html.embedded .head{margin-bottom:12px;}
 html.embedded .head h1, html.embedded .head .eyebrow{display:none;}
+
+/* Clearer hierarchy and larger action targets for the embedded planner. */
+.app{max-width:1560px;}
+.head{gap:8px; margin-bottom:18px;}
+.head p{padding:13px 16px; border:1px solid var(--line); border-left:3px solid var(--accent);
+  border-radius:10px; background:var(--panel); line-height:1.55; box-shadow:0 2px 8px rgba(20,16,10,.04);}
+.layout{gap:18px;}
+.side{gap:12px;}
+.panel{padding:15px 16px; border-radius:14px; box-shadow:0 2px 10px rgba(20,16,10,.045);}
+.panel h2{font-size:.79rem; text-transform:none; letter-spacing:-.01em; color:var(--ink); margin-bottom:10px;}
+.tabs{position:sticky; top:8px; z-index:5; gap:5px; padding:5px; border-radius:12px; box-shadow:0 4px 12px rgba(20,16,10,.08);}
+.tabs button{min-height:40px; transition:background .15s ease, color .15s ease, transform .15s ease;}
+.btn{min-height:36px; border-radius:8px; transition:background .15s ease, border-color .15s ease, transform .15s ease;}
+.btn:hover:not(:disabled){transform:translateY(-1px);}
+.btn:focus-visible, .tabs button:focus-visible, .row:focus-visible, input:focus-visible, select:focus-visible,
+summary:focus-visible{outline:3px solid color-mix(in srgb, var(--accent) 55%, transparent); outline-offset:2px;}
+.row{min-height:42px; padding:7px 6px;}
+.solver-summary{padding:10px 12px; border-radius:9px; background:var(--accent-soft); color:var(--ink);}
+.solverbox .btnrow{display:grid; grid-template-columns:minmax(0,1fr) auto; gap:8px; margin:4px 0;}
+.solverbox #solveBtn{min-height:46px; font-size:.88rem;}
+.solverbox #stopBtn{min-height:46px;}
+.advanced-search{margin-top:4px; border:1px solid var(--line); border-radius:10px; background:var(--panel-2);}
+.advanced-search summary{padding:10px 12px; cursor:pointer; color:var(--accent-deep); font-size:.76rem; font-weight:700;}
+.advanced-search[open] summary{border-bottom:1px solid var(--line);}
+.advanced-search-body{display:flex; flex-direction:column; gap:8px; padding:10px 12px 12px;}
+.advanced-search-body .dsel{margin:0!important;}
+.progress{height:9px; border-radius:999px;}
+.progress .bar{transition:width .2s ease;}
+.gridwrap{border-radius:14px; box-shadow:0 4px 16px rgba(20,16,10,.06);}
+.legend{padding:0 4px; line-height:1.45;}
+.mobar{box-shadow:0 -8px 28px rgba(20,16,10,.16);}
+@media (max-width:820px){
+  body{padding:10px;}
+  .head{margin-bottom:12px;}
+  .head p{padding:11px 12px;}
+  .layout{gap:12px;}
+  .side{gap:10px;}
+  .panel{padding:13px;}
+  .tabs{top:4px;}
+  .toolbar{border-radius:10px;}
+  .solverbox .btnrow{grid-template-columns:minmax(0,1fr) auto;}
+}
+@media (max-width:420px){
+  .solverbox .btnrow{grid-template-columns:minmax(0,1fr);}
+  .solverbox #stopBtn{min-height:40px;}
+  .panelhead{align-items:flex-start; flex-wrap:wrap;}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{scroll-behavior:auto!important; transition-duration:.01ms!important; animation-duration:.01ms!important; animation-iteration-count:1!important;}
+}
 </style>
 <script>
 /* Embed flag plus a bounded storage/theme bridge to the authenticated host. */
@@ -756,23 +806,29 @@ html.embedded .head h1, html.embedded .head .eyebrow{display:none;}
         <div class="palette" id="palette"></div>
       </div>
       <div class="panel" id="solverPanel">
-        <h2>Auto-layout solver</h2>
+        <h2>Find the best layout</h2>
         <div class="solverbox">
           <p class="small" id="tierLine" style="margin:0 0 2px;"></p>
           <label>Search time <select id="budgetSel"><option value="30">30 s</option><option value="60">1 min</option><option value="180" selected>3 min</option><option value="600">10 min</option><option value="1800">30 min</option></select></label>
-          <label class="dsel" style="margin-top:6px;"><span>Compare water tiers, keep the best output</span><input type="checkbox" id="tierAutoChk" checked></label>
-          <p class="small" style="margin:0;">One full search per tier (+50 / +25 / +10 %), then the layout with the highest output wins. Each tier gets a third of the search time — pick a longer one, or switch this off for a single run at +50 %.</p>
-          <label class="dsel" style="margin-top:6px;"><span>At least one of every production type</span><input type="checkbox" id="minTypeChk" checked></label>
-          <div class="small" style="margin:6px 0 0;"><b>Build these completely</b> (max 3) – all of them or none:</div>
-          <div class="chklist" id="fullList"></div>
-          <p class="small" id="fullNote" style="margin:0;"></p>
-          <p class="small" style="margin:2px 0 0;">Required buildings (marked in the type editor) are always placed. Everything else the solver decides by output.</p>
+          <p class="small solver-summary" style="margin:0;">The default compares water tiers and keeps the highest output. Open search options to customize what the solver must place.</p>
           <div class="btnrow">
             <button class="btn primary" id="solveBtn">Compute best layout</button>
             <button class="btn" id="stopBtn" disabled>Stop</button>
           </div>
           <div class="progress"><div class="bar" id="solveBar"></div></div>
           <div class="small" id="solveMsg">Set how many of each building you want above, then let the solver find the best arrangement.</div>
+          <details class="advanced-search">
+            <summary>Search options</summary>
+            <div class="advanced-search-body">
+              <label class="dsel"><span>Compare water tiers, keep the best output</span><input type="checkbox" id="tierAutoChk" checked></label>
+              <p class="small" style="margin:0;">One full search per tier (+50 / +25 / +10 %), then the layout with the highest output wins. Each tier gets a third of the search time — pick a longer one, or switch this off for a single run at +50 %.</p>
+              <label class="dsel"><span>At least one of every production type</span><input type="checkbox" id="minTypeChk" checked></label>
+              <div class="small" style="margin:4px 0 0;"><b>Build these completely</b> (max 3) — all of them or none:</div>
+              <div class="chklist" id="fullList"></div>
+              <p class="small" id="fullNote" style="margin:0;"></p>
+              <p class="small" style="margin:0;">Required buildings (marked in the type editor) are always placed. Everything else the solver decides by output.</p>
+            </div>
+          </details>
         </div>
       </div>
       <div class="panel">
