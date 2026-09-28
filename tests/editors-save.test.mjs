@@ -10,9 +10,10 @@ import { getDictionary } from "../lib/i18n/index.ts";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const guidesDir = join(root, "app/guides");
-// Editors live beside what they edit: the guides' own, and the theater numbers
-// beside their calculator. Both are held to the same rules.
-const editorDirs = ["app/guides", "app/calculators"];
+// Editors live beside what they edit: the guides' own, the theater numbers
+// beside their calculator, the trade sets beside the guild board. All are
+// held to the same rules.
+const editorDirs = ["app/guides", "app/calculators", "app/guilds"];
 const editors = editorDirs.flatMap((dir) =>
   readdirSync(join(root, dir))
     .filter((name) => name.endsWith("Editor.tsx"))
