@@ -6028,7 +6028,7 @@ const fr: Dictionary = {
         "Liste combinée des événements uniques qui se débloquent avec l’âge du serveur, des autres fonctions liées à l’âge, et de la première apparition des événements récurrents sur un nouveau serveur. Les jours sont les mêmes pour tous les serveurs ; les nouveautés ajoutées plus tard au jeu arrivent au point compatible le plus tôt et peuvent sortir de ce guide.",
       timelineHeading: "Chronologie des déblocages",
       timelineLede:
-        "Suivez les jours de haut en bas. Les événements uniques sont marqués. Survolez ou focalisez une entrée avec image ou description pour en voir plus.",
+        "Utilisez les repères pour accéder directement à un âge du serveur, puis ouvrez les entrées avec le signe plus pour voir leurs détails.",
       dayLabel: "Jour {day}",
       oneTimeMark: "Unique",
       oneTimeHint: "Se joue une fois par serveur et ne revient pas selon un rythme.",
@@ -6044,7 +6044,7 @@ const fr: Dictionary = {
           heading: "Comment lire la liste",
           body: [
             "Les événements uniques se déclenchent une fois pendant que le serveur vieillit. Le reste est la première apparition d’un événement récurrent ou d’un déblocage de fonction.",
-            "Quand ce site a déjà un guide pour la fonction, un lien figure sous l’entrée. Les entrées avec image ou description plus longue ouvrent une carte au survol ou au focus clavier.",
+            "Quand ce site a déjà un guide pour la fonction, un lien figure sous l’entrée. Le signe plus ouvre les images et les descriptions détaillées.",
           ],
         },
       ],

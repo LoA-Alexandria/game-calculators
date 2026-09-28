@@ -6012,7 +6012,7 @@ const de: Dictionary = {
         "Eine kombinierte Liste aus einmaligen Events, die mit dem Serveralter freischalten, weiteren altersgesperrten Features und dem ersten Auftauchen wiederkehrender Events auf einem neuen Server. Die Tage gelten für alle Server gleich; neue Features, die später ins Spiel kommen, landen am frühest passenden Punkt und können außerhalb dieses Guides liegen.",
       timelineHeading: "Freischaltungs-Timeline",
       timelineLede:
-        "Die Tage laufen von oben nach unten. Einmalige Events sind markiert. Bei Einträgen mit Bild oder Beschreibung öffnet Hover oder Fokus eine Karte.",
+        "Springe über die Leiste direkt zu einem Serveralter und öffne Events mit dem Plus, um Bilder oder Zusatzinfos zu sehen.",
       dayLabel: "Tag {day}",
       oneTimeMark: "Einmalig",
       oneTimeHint: "Läuft einmal pro Server und kehrt nicht im Rhythmus zurück.",
@@ -6028,7 +6028,7 @@ const de: Dictionary = {
           heading: "So liest du die Liste",
           body: [
             "Einmalige Events feuern einmal, während der Server altert. Alles andere ist das erste Auftauchen eines wiederkehrenden Events oder einer Feature-Freischaltung.",
-            "Wo diese Seite schon einen Guide zum Feature hat, steht ein Link unter dem Eintrag. Einträge mit Bild oder längerer Beschreibung öffnen bei Hover oder Tastaturfokus eine Karte.",
+            "Wo diese Seite schon einen Guide zum Feature hat, steht ein Link unter dem Eintrag. Über das Plus lassen sich Bilder und längere Beschreibungen direkt öffnen.",
           ],
         },
       ],

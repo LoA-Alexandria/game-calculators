@@ -2803,7 +2803,7 @@ const en = {
         "A combined list of one-time events that unlock with server age, other age-locked features, and the first time recurring events show up on a new server. Days are the same on every server; new features added to the game later join at the soonest compatible point and may fall outside this guide.",
       timelineHeading: "Unlock timeline",
       timelineLede:
-        "Follow the days from top to bottom. One-time-only events are marked. Hover or focus an entry with a picture or description to see more.",
+        "Follow server-age milestones from left to right in the quick index, then open any event with a plus button to see its image or details.",
       dayLabel: "Day {day}",
       oneTimeMark: "One-time",
       oneTimeHint: "Runs once on a server; it does not return on a schedule.",
@@ -2819,7 +2819,7 @@ const en = {
           heading: "How to read this",
           body: [
             "One-time events fire once as the server ages. Everything else is the first appearance of a recurring event or feature unlock.",
-            "Where this site already has a guide for the feature, a link sits under the entry. Entries with a picture or longer description open a card on hover or keyboard focus.",
+            "Where this site already has a guide for the feature, a link sits under the entry. Open entries with a plus button to see a picture or longer description.",
           ],
         },
       ],
