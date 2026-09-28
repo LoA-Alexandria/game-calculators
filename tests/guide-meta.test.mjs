@@ -25,8 +25,13 @@ test("a guide lists its editor exactly when it has an editor page", () => {
     .filter((entry) => entry.isDirectory() && existsSync(file(`/app/guides/${entry.name}/edit/page.tsx`)))
     .map((entry) => `/guides/${entry.name}/edit/`)
     .sort();
-  const listed = Object.values(GUIDE_PRESENTATION).map((entry) => entry.editor?.href).filter(Boolean).sort();
-  assert.deepEqual(listed, withPage);
+  const listed = Object.values(GUIDE_PRESENTATION).flatMap((entry) => [
+    entry.editor?.href,
+    ...(entry.shared ?? []).map((one) => one.href),
+  ]);
+  // A shared editor is listed by every guide that points at it, so the set is
+  // what has to match: one page, one entry, nothing unreachable.
+  assert.deepEqual([...new Set(listed.filter(Boolean))].sort(), withPage);
 });
 
 test("every category on the Guides index has a line in every language", () => {

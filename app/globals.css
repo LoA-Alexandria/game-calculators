@@ -2382,6 +2382,33 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
 .guide-link-card-text strong { color: var(--accent); }
 
 /* Editor: phases stack like the guide, rows as a compact grid. */
+/* --- skins editor -------------------------------------------------------- */
+
+.skins-editor-roster + .skins-editor-roster { margin-top: 30px; }
+.skin-edit-list { display: grid; gap: 14px; margin: 16px 0 0; padding: 0; list-style: none; }
+.skin-edit-row { display: grid; gap: 12px; }
+.skin-edit-head { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.skin-edit-head strong { flex: 1; min-width: 0; }
+.skin-edit-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: .8rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.skin-edit-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: 4px 14px;
+  align-items: end;
+}
+
 .gl-edit-phases { display: grid; gap: 18px; margin: 18px 0 0; padding: 0; list-style: none; }
 .gl-edit-phase {
   display: grid;

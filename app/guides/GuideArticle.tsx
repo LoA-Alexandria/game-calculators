@@ -62,9 +62,11 @@ function GuideHeader({
   const category = guideCategoryId(guideHref(id), t.guideCategories);
   const banner = guideTitleBanner(id);
   const editor = guidePresentation(id).editor;
+  const shared = guidePresentation(id).shared ?? [];
   // Only guides with a dated byline carry a short credit; the others keep longer source notes on the page.
   const byline = "creditDate" in guide ? (guide as { credit?: string; creditDate?: string; status?: string }) : null;
-  const canEdit = Boolean(editor && allows("guides.draft"));
+  const mayEdit = allows("guides.draft");
+  const canEdit = Boolean(editor && mayEdit);
 
   return (
     <header className="guide-head" data-category={category}>
@@ -88,7 +90,7 @@ function GuideHeader({
           {byline?.credit ? <span className="guide-chip is-credit">{byline.credit}</span> : null}
           {byline?.creditDate ? <span className="guide-chip">{byline.creditDate}</span> : null}
           {byline?.status ? <span className="guide-chip is-status">{byline.status}</span> : null}
-          {canEdit || canSnippet || onTextEdit ? (
+          {canEdit || canSnippet || onTextEdit || (mayEdit && shared.length > 0) ? (
             <span className="guide-head-actions">
               {onTextEdit ? (
                 <button className="button" type="button" onClick={onTextEdit}>
@@ -102,6 +104,14 @@ function GuideHeader({
                   {editor.label(t)}
                 </Link>
               ) : null}
+              {mayEdit
+                ? shared.map((entry) => (
+                    <Link className="button" href={entry.href} key={entry.href}>
+                      <PenIcon className="icon icon-sm" />
+                      {entry.label(t)}
+                    </Link>
+                  ))
+                : null}
               {canSnippet ? (
                 <>
                   <button className="button" type="button" onClick={() => onSnippet("edit")}>

@@ -65,6 +65,10 @@ export const THEATER_DRAFT_STORAGE_KEY = "popepoch-theater-draft";
 /** Local draft of the Hero linking editor. */
 export const LINKING_DRAFT_STORAGE_KEY = "popepoch-linking-draft";
 
+/** The skins editor keeps one draft per roster. */
+export const HERO_SKINS_DRAFT_STORAGE_KEY = "popepoch-hero-skins-draft";
+export const GODDESS_SKINS_DRAFT_STORAGE_KEY = "popepoch-goddess-skins-draft";
+
 /** Local draft of the Anecdotes editor. */
 export const ANECDOTE_DRAFT_STORAGE_KEY = "popepoch-anecdote-draft";
 

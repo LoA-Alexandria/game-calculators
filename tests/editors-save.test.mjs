@@ -136,7 +136,7 @@ test("an editor that saves also starts from what is published", () => {
     // Only the editors that write words need those published too.
     if (textFields(props).length > 0) {
       assert.ok(
-        text.includes("usePublishedTexts(") || text.includes("fromLayout(") || text.includes("state.texts"),
+        /usePublishedTexts\s*[<(]/.test(text) || text.includes("usePublishedEntries") || text.includes("state.texts"),
         `${editor} opens on the committed names`,
       );
     }
