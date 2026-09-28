@@ -10,8 +10,15 @@ import { getDictionary } from "../lib/i18n/index.ts";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const guidesDir = join(root, "app/guides");
-const editors = readdirSync(guidesDir).filter((name) => name.endsWith("Editor.tsx"));
-const source = (name) => readFileSync(join(guidesDir, name), "utf8");
+// Editors live beside what they edit: the guides' own, and the theater numbers
+// beside their calculator. Both are held to the same rules.
+const editorDirs = ["app/guides", "app/calculators"];
+const editors = editorDirs.flatMap((dir) =>
+  readdirSync(join(root, dir))
+    .filter((name) => name.endsWith("Editor.tsx"))
+    .map((name) => `${dir}/${name}`),
+);
+const source = (name) => readFileSync(join(root, name.includes("/") ? name : `app/guides/${name}`), "utf8");
 
 /** Every `<SaveToSite …>` in the codebase, with the props it was given. */
 function savers() {
@@ -120,7 +127,7 @@ test("the editors that still only export are the ones we know about", () => {
   // GuideEditor writes guide prose rather than a data file, so it saves
   // through its own path. Anything else appearing here is an editor that was
   // added without a way to save it.
-  assert.deepEqual(without, ["GuideEditor.tsx"]);
+  assert.deepEqual(without, ["app/guides/GuideEditor.tsx"]);
 });
 
 test("an editor that saves also starts from what is published", () => {

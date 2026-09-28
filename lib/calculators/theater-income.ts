@@ -13,6 +13,12 @@
  *
  * Each matching aptitude between a deployed goddess and the play adds 10 % muse
  * coin bonus; auto deploy sends the goddesses with the most matches.
+ *
+ * The base numbers in `lib/data/theater-income.json` are read off each play's
+ * Script preview in the game. Frankenstein, Macbeth, Oedipus Rex and The
+ * Phantom of the Opera came from Xenatosa's screenshots of 28 September 2026;
+ * Hamilton, Les Miserables and Notre-Dame de Paris are still missing theirs,
+ * and the editor at /calculators/theater-income/edit/ is where they go in.
  */
 import data from "../data/theater-income.json" with { type: "json" };
 import { THEATER_PLAYS, type TheaterPlay } from "../content/goddess-theater.ts";
@@ -85,38 +91,62 @@ export type GoddessAptitudes = {
   lacks?: AptitudeId[];
 };
 
-type RawPlay = { id: string; rarity: string; slots?: number; ticket?: number; visitors?: number; aptitudes?: string[] };
-type RawData = {
+export type RawIncomePlay = { id: string; rarity: string; slots?: number; ticket?: number; visitors?: number; aptitudes?: string[] };
+export type RawIncomeData = {
   bonusPerMatch: number;
   slots: number;
   aptitudes: { id: string; resource?: string }[];
-  plays: RawPlay[];
+  plays: RawIncomePlay[];
   goddesses: { name: string; aptitudes: string[]; lacks?: string[] }[];
 };
 
-const RAW = data as RawData;
+const RAW = data as RawIncomeData;
 
-export const BONUS_PER_MATCH = RAW.bonusPerMatch;
-/** Each aptitude and the Exploration-age resource its goddess training raises, where the game has shown it. */
-export const APTITUDES = RAW.aptitudes as { id: AptitudeId; resource?: string }[];
-export const GODDESS_APTITUDES = RAW.goddesses as GoddessAptitudes[];
+export type IncomeData = {
+  bonusPerMatch: number;
+  slots: number;
+  /** Each aptitude and the Exploration-age resource its goddess training raises. */
+  aptitudes: { id: AptitudeId; resource?: string }[];
+  plays: IncomePlay[];
+  goddesses: GoddessAptitudes[];
+};
 
-export const INCOME_PLAYS: IncomePlay[] = RAW.plays.map((raw) => {
-  const play = THEATER_PLAYS.find((entry) => entry.id === raw.id);
-  if (!play) throw new Error(`theater-income.json names a play that is not in goddess-theater.json: ${raw.id}`);
+/**
+ * The file in the shape the page reads, from the build or from a published
+ * replacement. A play the theater guide does not have is left out rather than
+ * thrown over: the page must still open, and the editor names it as a problem.
+ */
+export function incomeFrom(raw: RawIncomeData, plays: readonly TheaterPlay[] = THEATER_PLAYS): IncomeData {
   return {
-    id: raw.id,
-    play,
-    rarity: raw.rarity as PlayRarity,
-    slots: raw.slots ?? RAW.slots,
-    ...(raw.ticket ? { ticket: raw.ticket } : {}),
-    ...(raw.visitors ? { visitors: raw.visitors } : {}),
-    ...(raw.aptitudes ? { aptitudes: raw.aptitudes as AptitudeId[] } : {}),
+    bonusPerMatch: raw.bonusPerMatch,
+    slots: raw.slots,
+    aptitudes: raw.aptitudes as { id: AptitudeId; resource?: string }[],
+    goddesses: raw.goddesses as GoddessAptitudes[],
+    plays: raw.plays.flatMap((row): IncomePlay[] => {
+      const play = plays.find((entry) => entry.id === row.id);
+      if (!play) return [];
+      return [{
+        id: row.id,
+        play,
+        rarity: row.rarity as PlayRarity,
+        slots: row.slots ?? raw.slots,
+        ...(row.ticket ? { ticket: row.ticket } : {}),
+        ...(row.visitors ? { visitors: row.visitors } : {}),
+        ...(row.aptitudes ? { aptitudes: row.aptitudes as AptitudeId[] } : {}),
+      }];
+    }),
   };
-});
+}
 
-export function incomePlay(id: string): IncomePlay | undefined {
-  return INCOME_PLAYS.find((entry) => entry.id === id);
+export const INCOME_DATA = incomeFrom(RAW);
+export const BONUS_PER_MATCH = INCOME_DATA.bonusPerMatch;
+export const APTITUDES = INCOME_DATA.aptitudes;
+export const GODDESS_APTITUDES = INCOME_DATA.goddesses;
+export const INCOME_PLAYS: IncomePlay[] = INCOME_DATA.plays;
+
+/** `plays` defaults to the built file; the page passes the published ones. */
+export function incomePlay(id: string, plays: readonly IncomePlay[] = INCOME_PLAYS): IncomePlay | undefined {
+  return plays.find((entry) => entry.id === id);
 }
 
 /** Percent in tenths, so 268.5 % is exactly 2685 and nothing drifts in floating point. */

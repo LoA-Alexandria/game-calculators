@@ -1,17 +1,20 @@
 "use client";
 
 import { useMemo, useRef, useSyncExternalStore } from "react";
+import Link from "next/link";
 import { CalculatorHeader } from "../../components/CalculatorHeader";
+import { useAuth } from "../../components/AuthProvider";
+import { PenIcon } from "../../components/Icons";
 import { useLocale } from "../../components/LocaleProvider";
 import { PremiumGate } from "../../components/PremiumGate";
 import { createPersistentStore } from "../../components/persistentStore";
 import {
   GODDESS_APTITUDES,
-  INCOME_PLAYS,
   PLAY_RARITIES,
   REHEARSAL_EVENTS,
   deployment,
   energyEfficiency,
+  incomeFrom,
   incomePlay,
   performance,
   redCarpetPoints,
@@ -19,11 +22,13 @@ import {
   type Deployment,
   type IncomePlay,
   type PlayNumbers,
+  type RawIncomeData,
   type RehearsalEvent,
   type TheaterStats,
 } from "../../../lib/calculators/theater-income";
 import { PLAY_ENERGY, rarityAppearanceChance, simulateTheaterRun, theaterBuildingForLevel, theaterTierForLevel, type RarityReward } from "../../../lib/calculators/theater-session";
-import { localizedPlayName } from "../../../lib/content/goddess-theater";
+import { localizedPlayName, type TheaterPlay } from "../../../lib/content/goddess-theater";
+import { useGuideData } from "../../guides/GuideOverrides";
 import { GODDESSES, goddessPortrait } from "../../../lib/content/goddesses";
 
 /** What a player typed; strings, so a half-typed "268." stays in the field. */
@@ -134,6 +139,7 @@ function resolve(entry: IncomePlay, saved: Saved, goddessSlots: number): Resolve
 }
 
 export default function TheaterIncomePage() {
+  const { allows } = useAuth();
   const { t, tf, n } = useLocale();
   const copy = t.theaterIncome;
   const saved = useSyncExternalStore(store.subscribe, store.getSnapshot, store.getServerSnapshot);
@@ -153,10 +159,15 @@ export default function TheaterIncomePage() {
     return { ticketPercent, visitorPercent, merchandise, event: saved.event };
   }, [saved.ticketPercent, saved.visitorPercent, saved.merchandise, saved.event]);
 
+  // The build carries the numbers; a published edit lies over them a moment later.
+  const raw = useGuideData<RawIncomeData>("theater-income");
+  const theaterPlays = useGuideData<{ plays: TheaterPlay[] }>("goddess-theater").plays;
+  const plays = useMemo(() => incomeFrom(raw, theaterPlays).plays, [raw, theaterPlays]);
+
   const level = amount(saved.theaterLevel);
   const validLevel = level !== null && Number.isSafeInteger(level) && level >= 1;
   const singleGoddessSlots = validLevel ? theaterBuildingForLevel(level).goddessSlots : 0;
-  const rows = useMemo(() => INCOME_PLAYS.map((entry) => resolve(entry, saved, singleGoddessSlots)), [saved, singleGoddessSlots]);
+  const rows = useMemo(() => plays.map((entry) => resolve(entry, saved, singleGoddessSlots)), [plays, saved, singleGoddessSlots]);
   const current = rows.find((row) => row.entry.id === saved.play) ?? rows[0];
   const result = stats && current.numbers ? performance(current.numbers, stats) : null;
   const gains = stats && current.numbers ? upgradeGains(current.numbers, stats) : null;
@@ -169,7 +180,7 @@ export default function TheaterIncomePage() {
   const simulation = useMemo(() => {
     if (!stats || level === null || !Number.isSafeInteger(level) || level < 1) return null;
     const building = theaterBuildingForLevel(level);
-    const details = INCOME_PLAYS.flatMap((entry) => {
+    const details = plays.flatMap((entry) => {
       const values = saved.plays[entry.id] ?? {};
       const ticket = amount(values.ticket) ?? (entry.ticket ?? null);
       const visitors = amount(values.visitors) ?? (entry.visitors ?? null);
@@ -220,7 +231,7 @@ export default function TheaterIncomePage() {
     } catch {
       return { building, tier: theaterTierForLevel(level), projection: null, knownPlays, details, startingPlays };
     }
-  }, [stats, level, saved]);
+  }, [stats, level, saved, plays]);
 
   const invalid = (text: string) => amount(text) === null;
   const toggle = (name: string) =>
@@ -234,6 +245,15 @@ export default function TheaterIncomePage() {
   return (
     <>
       <CalculatorHeader eyebrow={copy.eyebrow} title={t.tools.theaterIncome.name} description={copy.intro} />
+
+      {allows("guides.draft") ? (
+        <p className="tier-small">
+          <Link className="button" href="/calculators/theater-income/edit/">
+            <PenIcon className="icon icon-sm" />
+            {t.theaterIncomeEditor.openEditor}
+          </Link>
+        </p>
+      ) : null}
 
       <PremiumGate>
       <div className="theater-calculator">
@@ -320,7 +340,7 @@ export default function TheaterIncomePage() {
             <select id="theater-play" value={current.entry.id} onChange={(event) => update({ play: event.target.value })}>
               {PLAY_RARITIES.map((rarity) => (
                 <optgroup key={rarity} label={rarity}>
-                  {INCOME_PLAYS.filter((entry) => entry.rarity === rarity).map((entry) => (
+                  {plays.filter((entry) => entry.rarity === rarity).map((entry) => (
                     <option key={entry.id} value={entry.id}>{playName(entry)}</option>
                   ))}
                 </optgroup>
@@ -625,7 +645,7 @@ export default function TheaterIncomePage() {
                         }}
                       />
                       </div>
-                      <div className="field"><label htmlFor={`theater-start-play-${index}`}>{copy.simulation.startPlay}</label><select id={`theater-start-play-${index}`} value={saved.startingPlays[index] ?? ""} onChange={(event) => { const startingPlays = [...saved.startingPlays]; startingPlays[index] = event.target.value; update({ startingPlays }); }}><option value="">{copy.simulation.choosePlay}</option>{PLAY_RARITIES.map((rarity) => <optgroup key={rarity} label={rarity}>{INCOME_PLAYS.filter((entry) => entry.rarity === rarity && simulation.details?.some((row) => row.entry.id === entry.id)).map((entry) => <option key={entry.id} value={entry.id}>{playName(entry)}</option>)}</optgroup>)}</select></div>
+                      <div className="field"><label htmlFor={`theater-start-play-${index}`}>{copy.simulation.startPlay}</label><select id={`theater-start-play-${index}`} value={saved.startingPlays[index] ?? ""} onChange={(event) => { const startingPlays = [...saved.startingPlays]; startingPlays[index] = event.target.value; update({ startingPlays }); }}><option value="">{copy.simulation.choosePlay}</option>{PLAY_RARITIES.map((rarity) => <optgroup key={rarity} label={rarity}>{plays.filter((entry) => entry.rarity === rarity && simulation.details?.some((row) => row.entry.id === entry.id)).map((entry) => <option key={entry.id} value={entry.id}>{playName(entry)}</option>)}</optgroup>)}</select></div>
                     </div>
                   ))}
                 </div>
@@ -651,7 +671,7 @@ export default function TheaterIncomePage() {
                 <p className="theater-log-data-note">{copy.simulation.logDataNote}</p>
                 <h3>{copy.simulation.logKnownPlays}</h3><div className="table-scroll theater-log-table"><table className="data-table"><thead><tr><th scope="col">{copy.colPlay}</th><th scope="col">{copy.simulation.logGoddessColumn}</th><th scope="col" className="num">{copy.baseTicket}</th><th scope="col" className="num">{copy.simulation.logAdjustedTicket}</th><th scope="col" className="num">{copy.baseVisitors}</th><th scope="col" className="num">{copy.simulation.logAdjustedVisitors}</th><th scope="col" className="num">{copy.bonus}</th><th scope="col" className="num">{copy.ticketIncome}</th><th scope="col" className="num">{copy.merchandiseIncome}</th><th scope="col" className="num">{copy.simulation.logTotal}</th><th scope="col" className="num">{copy.redCarpet}</th></tr></thead><tbody>{simulation.details?.map((row) => <tr key={row.entry.id}><th scope="row">{playName(row.entry)} <span className="rarity" data-rarity={row.entry.rarity}>{row.entry.rarity}</span></th><td>{deployedNames(row.deploy)}</td><td className="num">{n(row.numbers.ticket)}</td><td className="num">{n(row.income.ticketPrice)}</td><td className="num">{n(row.numbers.visitors)}</td><td className="num">{n(row.income.audience)}</td><td className="num">{n(row.numbers.bonusPercent)} %</td><td className="num">{n(row.income.ticketIncome)}</td><td className="num">{n(row.income.merchandiseIncome)}</td><td className="num">{n(row.income.total)}</td><td className="num">{tf(copy.redCarpetRange, { low: n(row.low), high: n(row.high) })}</td></tr>)}</tbody></table></div>
               </dialog>
-              {simulation.knownPlays < INCOME_PLAYS.length ? <p className="theater-note theater-session-warning">{tf(copy.simulation.dataWarning, { known: simulation.knownPlays, total: INCOME_PLAYS.length })}</p> : null}
+              {simulation.knownPlays < plays.length ? <p className="theater-note theater-session-warning">{tf(copy.simulation.dataWarning, { known: simulation.knownPlays, total: plays.length })}</p> : null}
               <details className="theater-session-details"><summary>{copy.assumptionsTitle}</summary><p>{copy.simulation.runAssumptions}</p></details>
             </div>
           ) : stats && level !== null && Number.isSafeInteger(level) && level >= 1 ? <p className="result-note">{copy.simulation.invalidRun}</p> : null}
