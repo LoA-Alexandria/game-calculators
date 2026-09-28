@@ -26,7 +26,7 @@ import {
   type RehearsalEvent,
   type TheaterStats,
 } from "../../../lib/calculators/theater-income";
-import { PLAY_ENERGY, rarityAppearanceChance, simulateTheaterRun, theaterBuildingForLevel, theaterTierForLevel, type RarityReward } from "../../../lib/calculators/theater-session";
+import { PLAY_ENERGY, rarityAppearanceChance, simulateTheaterTrials, theaterBuildingForLevel, theaterTierForLevel } from "../../../lib/calculators/theater-session";
 import { localizedPlayName, type TheaterPlay } from "../../../lib/content/goddess-theater";
 import { useGuideData } from "../../guides/GuideOverrides";
 import { GODDESSES, goddessPortrait } from "../../../lib/content/goddesses";
@@ -47,6 +47,7 @@ type Saved = {
   startingPlays: string[];
   lipsticks: string;
   lipstickSlot: string;
+  simulationRounds: string;
   runMode: TheaterRunMode;
 };
 
@@ -64,6 +65,7 @@ const DEFAULTS: Saved = {
   startingPlays: ["happy-prince", "happy-prince", "happy-prince", "happy-prince", "happy-prince"],
   lipsticks: "0",
   lipstickSlot: "0",
+  simulationRounds: "250",
   runMode: "single",
 };
 
@@ -90,6 +92,7 @@ function parseSaved(raw: string | null): Saved | null {
         : DEFAULTS.startingPlays,
       lipsticks: text(value.lipsticks, DEFAULTS.lipsticks),
       lipstickSlot: text(value.lipstickSlot, DEFAULTS.lipstickSlot),
+      simulationRounds: text(value.simulationRounds, DEFAULTS.simulationRounds),
       runMode: value.runMode === "mass" ? "mass" : "single",
     };
   } catch {
@@ -110,6 +113,12 @@ function amount(text: string | undefined): number | null {
   if (text === undefined || text.trim() === "") return null;
   const value = Number(text.replace(",", "."));
   return Number.isFinite(value) && value >= 0 ? value : null;
+}
+
+function seedFrom(value: string): number {
+  let hash = 2166136261;
+  for (let index = 0; index < value.length; index += 1) hash = Math.imul(hash ^ value.charCodeAt(index), 16777619);
+  return hash >>> 0;
 }
 
 type Resolved = {
@@ -194,35 +203,29 @@ export default function TheaterIncomePage() {
       const [low, high] = redCarpetPoints(income.total);
       return [{ entry, numbers, deploy, income, low, high, average: (low + high) / 2 }];
     });
-    const rewardSets = PLAY_RARITIES.map((rarity) => {
-      const known = details.filter(({ entry }) => entry.rarity === rarity);
-      return { rarity, known };
-    });
     const knownPlays = details.length;
-    const rewards = Object.fromEntries(rewardSets.filter(({ known }) => known.length > 0).map(({ rarity, known }) => [rarity, {
-      low: known.reduce((sum, reward) => sum + reward.low, 0) / known.length,
-      average: known.reduce((sum, reward) => sum + reward.average, 0) / known.length,
-      high: known.reduce((sum, reward) => sum + reward.high, 0) / known.length,
-    }])) as Partial<Record<(typeof PLAY_RARITIES)[number], RarityReward>>;
     const energy = saved.startingEnergy.slice(0, building.theaterSlots).map((value) => amount(value));
     const lipsticks = amount(saved.lipsticks);
     const enteredLipstickSlot = amount(saved.lipstickSlot);
+    const simulationRounds = amount(saved.simulationRounds);
     const lipstickSlot = enteredLipstickSlot === null ? null : Math.min(enteredLipstickSlot, building.theaterSlots - 1);
     if (energy.length !== building.theaterSlots || energy.some((value) => value === null || !Number.isInteger(value) || value > 5_000)) return { building, tier: theaterTierForLevel(level), projection: null, knownPlays };
-    if (lipsticks === null || !Number.isSafeInteger(lipsticks) || lipsticks > 10_000 || enteredLipstickSlot === null || lipstickSlot === null || !Number.isInteger(enteredLipstickSlot) || enteredLipstickSlot < 0) return { building, tier: theaterTierForLevel(level), projection: null, knownPlays };
+    if (lipsticks === null || !Number.isSafeInteger(lipsticks) || lipsticks > 10_000 || enteredLipstickSlot === null || lipstickSlot === null || !Number.isInteger(enteredLipstickSlot) || enteredLipstickSlot < 0 || simulationRounds === null || !Number.isSafeInteger(simulationRounds) || simulationRounds < 1 || simulationRounds > 1_000) return { building, tier: theaterTierForLevel(level), projection: null, knownPlays };
     const startingPlays = saved.startingPlays.slice(0, building.theaterSlots).map((id) => details.find(({ entry }) => entry.id === id));
     if (startingPlays.length !== building.theaterSlots || startingPlays.some((play) => !play)) return { building, tier: theaterTierForLevel(level), projection: null, knownPlays, details, startingPlays: [] };
     try {
       return {
         building,
         tier: theaterTierForLevel(level),
-        projection: simulateTheaterRun({
+        projection: simulateTheaterTrials({
           level,
           startingEnergy: energy as number[],
-          startingPlays: startingPlays.map((play) => ({ rarity: play!.entry.rarity, reward: { low: play!.low, average: play!.average, high: play!.high } })),
+          startingPlays: startingPlays.map((play) => ({ id: play!.entry.id, rarity: play!.entry.rarity, coins: play!.income.total, redCarpet: { low: play!.low, average: play!.average, high: play!.high }, goddesses: play!.deploy?.goddesses.map((goddess) => goddess.name) ?? [] })),
+          plays: details.map((play) => ({ id: play.entry.id, rarity: play.entry.rarity, coins: play.income.total, redCarpet: { low: play.low, average: play.average, high: play.high }, goddesses: play.deploy?.goddesses.map((goddess) => goddess.name) ?? [] })),
           lipsticks,
           lipstickSlot,
-          rewards,
+          rounds: simulationRounds,
+          seed: seedFrom(JSON.stringify({ level, energy, starting: saved.startingPlays.slice(0, building.theaterSlots), lipsticks, lipstickSlot, owned: saved.owned, stats, plays: details.map(({ entry, low, high }) => [entry.id, low, high]) })),
         }),
         knownPlays,
         details,
@@ -237,10 +240,6 @@ export default function TheaterIncomePage() {
   const toggle = (name: string) =>
     update({ owned: saved.owned.includes(name) ? saved.owned.filter((owned) => owned !== name) : [...saved.owned, name] });
   const matchText = (count: number) => (count === 1 ? copy.matchOne : tf(copy.matchMany, { count }));
-  const deployedNames = (deploy: Deployment | null) => {
-    const names = deploy?.goddesses.map((row) => `${row.name} (${matchText(row.matches)})`).join(", ") || copy.simulation.none;
-    return deploy && !deploy.exact ? `${names} · ${copy.simulation.goddessUncertain}` : names;
-  };
 
   return (
     <>
@@ -608,6 +607,10 @@ export default function TheaterIncomePage() {
               <label htmlFor="theater-lipsticks">{copy.simulation.lipsticks}</label>
               <input id="theater-lipsticks" type="number" min="0" max="10000" step="1" value={saved.lipsticks} onChange={(event) => update({ lipsticks: event.target.value })} />
             </div>
+            <div className="field">
+              <label htmlFor="theater-simulation-rounds">{copy.simulation.rounds}</label>
+              <input id="theater-simulation-rounds" type="number" min="1" max="1000" step="1" value={saved.simulationRounds} onChange={(event) => update({ simulationRounds: event.target.value })} />
+            </div>
           </div>
           {simulation && level !== null ? (
             <>
@@ -650,7 +653,7 @@ export default function TheaterIncomePage() {
                   ))}
                 </div>
               </div>
-              <p className="theater-note">{copy.simulation.energyCap} {copy.simulation.lipstickCap}</p>
+              <p className="theater-note">{copy.simulation.energyCap} {copy.simulation.lipstickCap} {copy.simulation.roundsCap}</p>
               <p className="theater-session-odds"><strong>{copy.simulation.chances}:</strong> {PLAY_RARITIES.filter((rarity) => simulation.building.rarityChances[rarity] > 0).map((rarity) => { const chance = simulation.building.rarityChances[rarity]; const menuChance = rarityAppearanceChance(chance); return `${rarity} ${tf(copy.simulation.chancePerOffer, { chance: n(chance), menuChance: n(menuChance, { maximumFractionDigits: 1 }) })} · ${PLAY_ENERGY[rarity]} ${copy.simulation.energyUnit}`; }).join(" · ")}</p>
             </>
           ) : <p className="result-error">{stats ? copy.simulation.levelError : copy.invalid}</p>}
@@ -659,17 +662,33 @@ export default function TheaterIncomePage() {
               <h3>{copy.simulation.resultHeading}</h3>
               <div className="theater-session-metrics">
                 <div><span>{copy.simulation.minimum}</span><strong>{n(simulation.projection.minimum)}</strong></div>
-                <div><span>{copy.simulation.average}</span><strong>{n(simulation.projection.average)}</strong></div>
+                <div><span>{copy.simulation.average}</span><strong>{n(simulation.projection.average)}</strong><small>{tf(copy.simulation.averageRunValue, { points: n(simulation.projection.averageRun.points) })}</small></div>
                 <div><span>{copy.simulation.maximum}</span><strong>{n(simulation.projection.maximum)}</strong></div>
               </div>
+              <p className="theater-note">{tf(copy.simulation.roundsDone, { rounds: simulation.projection.rounds })}</p>
               <button type="button" className="theater-log-trigger" onClick={() => logRef.current?.showModal()}>{copy.simulation.openLog}</button>
               <dialog className="theater-log-dialog" ref={logRef} aria-labelledby="theater-log-title">
                 <div className="theater-log-header"><div><p className="eyebrow">{copy.simulation.logEyebrow}</p><h2 id="theater-log-title">{copy.simulation.logTitle}</h2></div><button type="button" className="small-button" onClick={() => logRef.current?.close()}>{copy.simulation.closeLog}</button></div>
                 <p className="theater-note">{copy.simulation.runAssumptions}</p>
                 <div className="theater-log-summary"><div><span>{copy.simulation.minimum}</span><strong>{n(simulation.projection.minimum)}</strong></div><div><span>{copy.simulation.average}</span><strong>{n(simulation.projection.average)}</strong></div><div><span>{copy.simulation.maximum}</span><strong>{n(simulation.projection.maximum)}</strong></div><div><span>{copy.simulation.logSettings}</span><strong>{copy.ticketPercent}: {n(stats?.ticketPercent ?? 0)} % · {copy.visitorPercent}: {n(stats?.visitorPercent ?? 0)} % · {copy.merchandise}: {n(stats?.merchandise ?? 0)} · {copy.events[saved.event]}</strong></div></div>
-                <div className="theater-log-slots">{simulation.startingPlays?.map((play, index) => { const projection = simulation.projection!.slots[index]; const startCost = PLAY_ENERGY[play!.entry.rarity]; return <article className="theater-log-slot" key={index}><h3>{tf(copy.simulation.slotHeading, { slot: index + 1 })} · {playName(play!.entry)}</h3><p>{tf(copy.simulation.logEnergy, { energy: n(projection.energy), remaining: n(projection.energy - startCost) })}</p><p>{tf(copy.simulation.logGoddesses, { goddesses: deployedNames(play!.deploy) })} · {tf(copy.simulation.logBonus, { bonus: n(play!.numbers.bonusPercent) })}</p><p>{tf(copy.simulation.logIncome, { ticket: n(play!.income.ticketIncome), merchandise: n(play!.income.merchandiseIncome), total: n(play!.income.total) })} · {tf(copy.simulation.logRedCarpet, { low: n(play!.low), high: n(play!.high) })}</p></article>; })}</div>
-                <p className="theater-log-data-note">{copy.simulation.logDataNote}</p>
-                <h3>{copy.simulation.logKnownPlays}</h3><div className="table-scroll theater-log-table"><table className="data-table"><thead><tr><th scope="col">{copy.colPlay}</th><th scope="col">{copy.simulation.logGoddessColumn}</th><th scope="col" className="num">{copy.baseTicket}</th><th scope="col" className="num">{copy.simulation.logAdjustedTicket}</th><th scope="col" className="num">{copy.baseVisitors}</th><th scope="col" className="num">{copy.simulation.logAdjustedVisitors}</th><th scope="col" className="num">{copy.bonus}</th><th scope="col" className="num">{copy.ticketIncome}</th><th scope="col" className="num">{copy.merchandiseIncome}</th><th scope="col" className="num">{copy.simulation.logTotal}</th><th scope="col" className="num">{copy.redCarpet}</th></tr></thead><tbody>{simulation.details?.map((row) => <tr key={row.entry.id}><th scope="row">{playName(row.entry)} <span className="rarity" data-rarity={row.entry.rarity}>{row.entry.rarity}</span></th><td>{deployedNames(row.deploy)}</td><td className="num">{n(row.numbers.ticket)}</td><td className="num">{n(row.income.ticketPrice)}</td><td className="num">{n(row.numbers.visitors)}</td><td className="num">{n(row.income.audience)}</td><td className="num">{n(row.numbers.bonusPercent)} %</td><td className="num">{n(row.income.ticketIncome)}</td><td className="num">{n(row.income.merchandiseIncome)}</td><td className="num">{n(row.income.total)}</td><td className="num">{tf(copy.redCarpetRange, { low: n(row.low), high: n(row.high) })}</td></tr>)}</tbody></table></div>
+                <div className="theater-trial-logs">{([
+                  [copy.simulation.minimum, simulation.projection.minimumRun],
+                  [copy.simulation.average, simulation.projection.averageRun],
+                  [copy.simulation.maximum, simulation.projection.maximumRun],
+                ] as const).map(([label, run], runIndex) => <section className="theater-trial-log" key={label}>
+                  <div className="theater-trial-log-heading"><h3>{label}</h3><strong>{n(run.points)} {copy.redCarpet}</strong></div>
+                  <ol>{run.plays.map((play, index) => {
+                    const detail = simulation.details?.find((row) => row.entry.id === play.id);
+                    return <li key={`${runIndex}-${play.slot}-${index}`}>
+                      <span className="theater-trial-slot">{tf(copy.simulation.slotHeading, { slot: play.slot })}</span>
+                      <span className="rarity" data-rarity={play.rarity}>{play.rarity}</span>
+                      <span className="theater-trial-play">{detail ? playName(detail.entry) : play.id}</span>
+                      <span className="theater-trial-goddesses">{play.goddesses.join(", ") || copy.simulation.none}</span>
+                      <span className="theater-trial-coins">{n(play.coins)} {copy.simulation.logCoins}</span>
+                      <span className="theater-trial-points">{n(play.redCarpet.low)}–{n(play.redCarpet.high)} {copy.simulation.logPoints}</span>
+                    </li>;
+                  })}</ol>
+                </section>)}</div>
               </dialog>
               {simulation.knownPlays < plays.length ? <p className="theater-note theater-session-warning">{tf(copy.simulation.dataWarning, { known: simulation.knownPlays, total: plays.length })}</p> : null}
               <details className="theater-session-details"><summary>{copy.assumptionsTitle}</summary><p>{copy.simulation.runAssumptions}</p></details>

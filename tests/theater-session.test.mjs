@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
-import { PLAY_ENERGY, THEATER_BUILDINGS, rarityAppearanceChance, simulateTheaterRun, theaterBuildingForLevel, theaterTierForLevel } from "../lib/calculators/theater-session.ts";
+import { PLAY_ENERGY, THEATER_BUILDINGS, rarityAppearanceChance, simulateTheaterRun, simulateTheaterTrials, theaterBuildingForLevel, theaterTierForLevel } from "../lib/calculators/theater-session.ts";
 
 test("theater levels resolve to the five buildings and their unlock capacities", () => {
   assert.deepEqual([1, 2, 3, 14, 15, 26, 27, 39, 40].map((level) => theaterBuildingForLevel(level).id), [
@@ -93,4 +93,35 @@ test("mass mode accepts more than 1,000 lipsticks and applies all of their energ
     lipstickSlot: 0,
     rewards: {},
   }), /does not cover its selected play/);
+});
+
+test("Monte Carlo logs every play in reproducible lowest, average-nearest, and highest runs", () => {
+  const plays = [
+    { id: "r1", rarity: "R", coins: 100, redCarpet: { low: 0, average: 100, high: 100 }, goddesses: ["Muse A"] },
+    { id: "sr1", rarity: "SR", coins: 500, redCarpet: { low: 100, average: 300, high: 300 }, goddesses: ["Muse B"] },
+  ];
+  const input = {
+    level: 3,
+    startingEnergy: [120, 120],
+    startingPlays: plays,
+    plays,
+    lipsticks: 0,
+    lipstickSlot: 0,
+    rounds: 80,
+    seed: 42,
+  };
+  const result = simulateTheaterTrials(input);
+  assert.deepEqual(simulateTheaterTrials(input), result, "the same inputs reproduce the same simulation");
+  assert.equal(result.rounds, 80);
+  assert.ok(result.minimum <= result.average && result.average <= result.maximum);
+  for (const run of [result.minimumRun, result.averageRun, result.maximumRun]) {
+    assert.ok(run.plays.length >= 2);
+    assert.deepEqual(run.plays.filter((play) => play.starting).map(({ id, slot }) => [id, slot]), [["r1", 1], ["sr1", 2]], "each slot includes its forced starting play");
+    assert.ok(run.plays.every((play) => play.slot === 1 || play.slot === 2));
+    assert.ok(run.plays.every((play) => play.coins >= 0 && play.goddesses.length === 1));
+    assert.equal(run.points, run.plays.reduce((sum, play) => sum + play.redCarpet.average, 0));
+  }
+  assert.throws(() => simulateTheaterTrials({ ...input, rounds: 0 }), RangeError);
+  assert.throws(() => simulateTheaterTrials({ ...input, rounds: 1_001 }), RangeError);
+  assert.throws(() => simulateTheaterTrials({ ...input, startingEnergy: [0, 120] }), /cover the selected play/);
 });
