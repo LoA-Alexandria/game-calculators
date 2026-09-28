@@ -38,6 +38,12 @@ already in a dictionary, so the pages themselves would barely change.
 
 ## Adding a language
 
+For volunteer translators who do not work in the code, start with the
+[Volunteer translator guide](TRANSLATOR-GUIDE.md) and its
+[translation-sheet template](translation-template.csv). The guide explains how
+to prepare one source-keyed translation pack per target language and how the
+project integrates and reviews it.
+
 ```sh
 pnpm i18n:add es "Español"
 pnpm i18n:add pt-BR "Português (Brasil)" --short PT --html-lang pt-BR
