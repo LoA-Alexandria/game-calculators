@@ -7422,6 +7422,7 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
 .theater-session-metrics span, .theater-session-metrics strong { display: block; }
 .theater-session-metrics span { margin-bottom: 7px; color: var(--muted); font-size: .82rem; }
 .theater-session-metrics strong { font-size: clamp(1rem, 2vw, 1.35rem); overflow-wrap: anywhere; }
+.theater-session-metrics small { display: block; margin-top: 5px; color: var(--muted); font-size: .76rem; }
 .theater-session-warning { margin-top: 14px; }
 .theater-session-details { margin-top: 12px; color: var(--muted); font-size: .9rem; }
 .theater-session-details summary { cursor: pointer; color: var(--text); }
@@ -7450,6 +7451,17 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
 .theater-log-table td { font-size: .78rem; }
 .theater-log-table .num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
 .theater-log-table td:nth-child(2) { min-width: 190px; }
+.theater-trial-logs { display: grid; gap: 14px; margin-top: 18px; }
+.theater-trial-log { min-width: 0; overflow: hidden; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); }
+.theater-trial-log-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 13px 16px; border-bottom: 1px solid var(--line); }
+.theater-trial-log-heading h3 { margin: 0; font-size: .95rem; }
+.theater-trial-log-heading strong { color: var(--accent); font-size: .9rem; font-variant-numeric: tabular-nums; }
+.theater-trial-log ol { display: grid; gap: 1px; max-height: 42vh; margin: 0; padding: 0; overflow: auto; list-style: none; }
+.theater-trial-log li { display: grid; grid-template-columns: 118px 48px minmax(120px, 1fr) minmax(140px, 1.1fr) auto auto; align-items: center; gap: 10px; min-width: 790px; padding: 9px 14px; border-bottom: 1px solid var(--line); font-size: .78rem; }
+.theater-trial-log li:last-child { border-bottom: 0; }
+.theater-trial-slot, .theater-trial-goddesses { color: var(--muted); }
+.theater-trial-play { min-width: 0; overflow: hidden; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
+.theater-trial-coins, .theater-trial-points { font-variant-numeric: tabular-nums; white-space: nowrap; }
 .theater-upgrade { margin: 16px 0 0; line-height: 1.5; }
 .theater-upgrade strong { color: var(--on-inverse); }
 
@@ -7552,6 +7564,7 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
   .theater-log-header { align-items: flex-start; }
   .theater-log-header .small-button { flex: none; }
   .theater-session-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .theater-trial-log-heading { align-items: flex-start; }
 }
 
 @media (min-width: 641px) and (max-width: 900px) {

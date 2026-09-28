@@ -39,9 +39,10 @@ plus one.
 
 Each script costs R 30, SR 60, SSR 160, UR 300, or UR+ 600 energy. Each lipstick
 adds 5 energy to one selected theater slot. The selected starting script in
-each slot is counted first and its energy cost is deducted. The calculator then
-models three independent rarity offers with replacement at each decision and
-selects the affordable offer that maximizes expected remaining points.
+each slot is counted first and its energy cost is deducted. Every simulation
+round then draws three independent rarity offers with replacement for each
+decision and selects an affordable play with the strongest expected total for
+the remaining energy.
 
 The calculator has two display modes to save space. **Single** is the existing
 per-play Muse Coin calculator and comparison tables. Its “All plays” tables
@@ -51,30 +52,30 @@ Red Carpet range divided by the rarity's energy cost. **Mass** exposes theater
 stats, owned goddesses, energy, lipsticks, and a starting play for every active
 slot, so the run can be set up without switching modes. Each starting play is
 counted exactly once before later offer choices and its energy cost is deducted
-from that slot. The lipstick input accepts 0–10,000 lipsticks; starting energy
-remains 0–5,000 per slot.
+from that slot. Enter 1–1,000 simulation rounds (default 250); the lipstick
+input accepts 0–10,000 lipsticks and starting energy remains 0–5,000 per slot.
 
 Reward per rarity is the mean of the available plays of that rarity for the
 player's current upgrade stats and selected goddesses. Mass mode always
 auto-assigns the best owned goddesses to each play, limited to the goddess slots
 unlocked by the building. A manual bonus override from Single does not alter
 this auto-assignment. Each play's Red Carpet range is the existing 83–85% Muse
-Coin formula, rounded down to whole hundreds; the projection uses its midpoint
-as the expected reward. The calculation log shows every included play, its base
-and upgraded ticket/visitor values, goddess assignment, bonus, ticket and
-merchandise income, and Red Carpet range. Later plays are an expected-value
-projection, not a fixed random sequence; the log makes that distinction clear.
-Since only some play previews have been recorded, the projection is partial:
-unknown plays are omitted, and a rarity with no usable preview data contributes
-zero points. It is not a complete ranking of every possible script until the
-remaining preview values are collected.
+Coin formula, rounded down to whole hundreds.
 
-In the Mass calculation log, the slot cards show the fixed starting plays.
-The table titled “Reference plays used for rarity averages” shows all known
-plays used to calculate each rarity's average reward and automatic goddess
-assignment. Those reference rows are not later plays selected by the
-simulator; later plays are valued by rarity averages and are not individually
-drawn or logged.
+Each simulation round independently draws three rarity offers, then chooses an
+affordable known play using its average Red Carpet value plus the expected value
+of the energy left for that slot. When a rarity is offered, its concrete play
+is sampled uniformly from the recorded previews for that rarity; missing
+previews are omitted. The selected play's best owned goddesses are assigned
+automatically. The summary reports the lowest observed result, arithmetic mean,
+and highest observed result among the requested rounds. The log shows every
+performance from those three representative runs; the average log is the run
+nearest the arithmetic mean. Results use a seed derived from the settings, so
+they are reproducible for the same inputs. Each run's points sum the midpoint
+of each play's existing Red Carpet range; coin income and the low–high Red
+Carpet range are shown per line. These are Monte Carlo observations, not
+theoretical absolute limits. Since only some play previews are recorded,
+unknown plays are omitted; a rarity with no usable preview cannot be selected.
 
 ## Existing income formula
 
@@ -85,5 +86,5 @@ those values and the deployed-goddess Muse Coin bonus. Red Carpet points remain
 
 The three checked performances and the boundary cases are in
 `tests/theater-income.test.mjs`; building boundaries, probability totals,
-energy costs, offer selection, lipstick assignment, and projection ranges are
-in `tests/theater-session.test.mjs`.
+energy costs, lipstick assignment, deterministic Monte Carlo outputs, and
+complete representative-run logs are in `tests/theater-session.test.mjs`.

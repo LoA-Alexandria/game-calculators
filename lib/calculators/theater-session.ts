@@ -84,6 +84,31 @@ export type TheaterRunProjection = {
   unpricedRarities: PlayRarity[];
 };
 
+export type TheaterTrialPlay = {
+  id: string;
+  rarity: PlayRarity;
+  coins: number;
+  redCarpet: RarityReward;
+  goddesses: readonly string[];
+};
+export type TheaterTrialInput = Omit<TheaterRunInput, "startingPlays" | "rewards"> & {
+  startingPlays: readonly TheaterTrialPlay[];
+  plays: readonly TheaterTrialPlay[];
+  rounds: number;
+  seed: number;
+};
+export type TheaterTrialLogPlay = TheaterTrialPlay & { slot: number; starting: boolean };
+export type TheaterTrial = { points: number; plays: TheaterTrialLogPlay[] };
+export type TheaterTrialResult = {
+  rounds: number;
+  minimum: number;
+  average: number;
+  maximum: number;
+  minimumRun: TheaterTrial;
+  averageRun: TheaterTrial;
+  maximumRun: TheaterTrial;
+};
+
 type ExpectedValue = { points: number };
 type RangeValue = { low: number; high: number };
 type Offer = { rarities: readonly PlayRarity[]; probability: number };
@@ -179,4 +204,90 @@ export function simulateTheaterRun(input: TheaterRunInput): TheaterRunProjection
     maximum: slots.reduce((sum, slot) => sum + slot.maximum, 0),
     unpricedRarities: rarityChances.filter((rarity) => building.rarityChances[rarity] > 0 && !input.rewards[rarity]),
   };
+}
+
+/**
+ * Run reproducible Monte Carlo trials over three rarity offers per choice.
+ * The representative log for average is the run nearest the arithmetic mean.
+ */
+export function simulateTheaterTrials(input: TheaterTrialInput): TheaterTrialResult {
+  const building = theaterBuildingForLevel(input.level);
+  if (!Number.isSafeInteger(input.rounds) || input.rounds < 1 || input.rounds > 1_000) throw new RangeError("Simulation rounds must be a whole number from 1 to 1,000.");
+  if (!Number.isSafeInteger(input.seed) || input.seed < 0 || input.seed > 0xffff_ffff) throw new RangeError("Simulation seed must be an unsigned 32-bit whole number.");
+  if (input.startingEnergy.length !== building.theaterSlots) throw new RangeError(`Enter the starting energy for all ${building.theaterSlots} theater slots.`);
+  if (input.startingPlays.length !== building.theaterSlots) throw new RangeError(`Choose a starting play for all ${building.theaterSlots} theater slots.`);
+  if (!Number.isSafeInteger(input.lipsticks) || input.lipsticks < 0 || input.lipsticks > 10_000) throw new RangeError("Lipsticks must be a whole number from 0 to 10,000.");
+  if (!Number.isInteger(input.lipstickSlot) || input.lipstickSlot < 0 || input.lipstickSlot >= building.theaterSlots) throw new RangeError("Choose an open theater slot for the lipsticks.");
+  for (const energy of input.startingEnergy) if (!Number.isInteger(energy) || energy < 0 || energy > 5_000) throw new RangeError("Starting energy must be a whole number from 0 to 5,000.");
+  if (!input.plays.length || input.plays.some((play) => !Number.isFinite(play.coins) || play.coins < 0 || !Number.isFinite(play.redCarpet.average))) throw new RangeError("Simulation needs usable play previews.");
+  if (input.startingPlays.some((play) => !input.plays.some((candidate) => candidate.id === play.id))) throw new RangeError("Every starting play must be included in the simulation data.");
+  if (input.startingPlays.some((play, index) => input.startingEnergy[index] + (index === input.lipstickSlot ? input.lipsticks * 5 : 0) < PLAY_ENERGY[play.rarity])) throw new RangeError("Starting energy must cover the selected play in every slot.");
+
+  const byRarity = new Map<PlayRarity, TheaterTrialPlay[]>();
+  for (const play of input.plays) byRarity.set(play.rarity, [...(byRarity.get(play.rarity) ?? []), play]);
+  const rewards = Object.fromEntries([...byRarity].map(([rarity, plays]) => [rarity, plays.reduce((sum, play) => sum + play.redCarpet.average, 0) / plays.length])) as Partial<Record<PlayRarity, number>>;
+  const offers = offersFor(building);
+  const maximumEnergy = Math.max(...input.startingEnergy.map((energy, index) => energy + (index === input.lipstickSlot ? input.lipsticks * 5 : 0)));
+  const expected = Array.from({ length: maximumEnergy + 1 }, () => 0);
+  for (let remaining = 1; remaining <= maximumEnergy; remaining += 1) {
+    let points = 0;
+    for (const offer of offers) {
+      const actions = [...new Set(offer.rarities)]
+        .filter((rarity) => byRarity.has(rarity) && PLAY_ENERGY[rarity] <= remaining)
+        .map((rarity) => ({ rarity, value: (rewards[rarity] ?? 0) + expected[remaining - PLAY_ENERGY[rarity]] }))
+        .sort(compareActions);
+      if (actions[0]) points += offer.probability * actions[0].value;
+    }
+    expected[remaining] = points;
+  }
+
+  let state = input.seed || 0x6d2b79f5;
+  const random = () => {
+    state = (state + 0x6d2b79f5) >>> 0;
+    let value = state;
+    value = Math.imul(value ^ (value >>> 15), value | 1);
+    value ^= value + Math.imul(value ^ (value >>> 7), value | 61);
+    return ((value ^ (value >>> 14)) >>> 0) / 0x1_0000_0000;
+  };
+  const drawPlay = (): TheaterTrialPlay | null => {
+    let roll = random() * 100;
+    for (const rarity of Object.keys(building.rarityChances) as PlayRarity[]) {
+      roll -= building.rarityChances[rarity];
+      if (roll < 0) {
+        const candidates = byRarity.get(rarity);
+        return candidates?.[Math.floor(random() * candidates.length)] ?? null;
+      }
+    }
+    return null;
+  };
+  const trials: TheaterTrial[] = [];
+  for (let round = 0; round < input.rounds; round += 1) {
+    const selected: TheaterTrialLogPlay[] = [];
+    let points = 0;
+    for (let slot = 0; slot < building.theaterSlots; slot += 1) {
+      const firstPlay = input.startingPlays[slot];
+      selected.push({ ...firstPlay, slot: slot + 1, starting: true });
+      points += firstPlay.redCarpet.average;
+      let remaining = input.startingEnergy[slot] + (slot === input.lipstickSlot ? input.lipsticks * 5 : 0) - PLAY_ENERGY[firstPlay.rarity];
+      while (remaining >= Math.min(...Object.values(PLAY_ENERGY))) {
+        const candidates = [drawPlay(), drawPlay(), drawPlay()].filter((play): play is TheaterTrialPlay => play !== null && PLAY_ENERGY[play.rarity] <= remaining);
+        const chosen = candidates.sort((a, b) =>
+          (b.redCarpet.average + expected[remaining - PLAY_ENERGY[b.rarity]]) - (a.redCarpet.average + expected[remaining - PLAY_ENERGY[a.rarity]]) ||
+          PLAY_ENERGY[a.rarity] - PLAY_ENERGY[b.rarity] || a.id.localeCompare(b.id),
+        )[0];
+        if (!chosen) break;
+        selected.push({ ...chosen, slot: slot + 1, starting: false });
+        points += chosen.redCarpet.average;
+        remaining -= PLAY_ENERGY[chosen.rarity];
+      }
+    }
+    trials.push({ points, plays: selected });
+  }
+  const minimum = Math.min(...trials.map((trial) => trial.points));
+  const maximum = Math.max(...trials.map((trial) => trial.points));
+  const average = trials.reduce((sum, trial) => sum + trial.points, 0) / trials.length;
+  const minimumRun = trials.find((trial) => trial.points === minimum)!;
+  const maximumRun = [...trials].reverse().find((trial) => trial.points === maximum)!;
+  const averageRun = trials.reduce((best, trial) => Math.abs(trial.points - average) < Math.abs(best.points - average) ? trial : best, trials[0]);
+  return { rounds: input.rounds, minimum, average, maximum, minimumRun, averageRun, maximumRun };
 }
