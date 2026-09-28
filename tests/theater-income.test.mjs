@@ -171,8 +171,13 @@ test("the data names real plays and goddesses and stays consistent", () => {
   }
 });
 
-test("theater bases from the September 25–27 screenshots are complete and exact", () => {
+test("theater bases from the screenshots are complete and exact", () => {
   const expected = {
+    // 28 September 2026, from the Script list.
+    frankenstein: [485, 505],
+    macbeth: [490, 500],
+    "oedipus-rex": [855, 845],
+    "phantom-of-the-opera": [845, 855],
     "alice-in-wonderland": [850, 850],
     "robin-hood": [135, 125],
     "count-of-monte-cristo": [480, 510],
@@ -200,6 +205,10 @@ test("theater bases from the September 25–27 screenshots are complete and exac
   for (const [id, [ticket, visitors]] of Object.entries(expected)) {
     assert.deepEqual([incomePlay(id).ticket, incomePlay(id).visitors], [ticket, visitors], id);
   }
-  assert.equal(INCOME_PLAYS.filter((entry) => entry.ticket !== undefined && entry.visitors !== undefined).length, 23);
-  assert.equal(incomePlay("macbeth").ticket, undefined, "unprovided plays remain ready for later data entry");
+  assert.equal(INCOME_PLAYS.filter((entry) => entry.ticket !== undefined && entry.visitors !== undefined).length, 27);
+  // Three plays are still waiting for somebody to read their preview.
+  assert.deepEqual(
+    INCOME_PLAYS.filter((entry) => entry.ticket === undefined || entry.visitors === undefined).map((entry) => entry.id),
+    ["hamilton", "les-miserables", "notre-dame-de-paris"],
+  );
 });
