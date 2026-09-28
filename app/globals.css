@@ -2474,6 +2474,36 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
   align-items: end;
 }
 
+/* --- building levels editor ---------------------------------------------- */
+
+.bl-edit-pick { max-width: 420px; }
+.bl-edit-stage-art { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+.bl-edit-stage-art img { width: 64px; height: 64px; border-radius: 10px; background: var(--surface-2); object-fit: contain; }
+.bl-edit-list { display: grid; gap: 12px; margin: 14px 0 0; padding: 0; list-style: none; }
+.bl-edit-row { display: grid; gap: 8px; }
+.bl-edit-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
+.bl-edit-level {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 34px;
+  height: 28px;
+  padding: 0 9px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: .8rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.bl-edit-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr));
+  gap: 4px 14px;
+}
+.bl-edit-fields textarea { font-family: var(--mono, ui-monospace, monospace); font-size: .82rem; }
+.bl-edit-fields textarea[aria-invalid] { border-color: var(--bad); }
+
 /* --- theater income editor ----------------------------------------------- */
 
 .ti-edit-list { display: grid; gap: 12px; margin: 14px 0 26px; padding: 0; list-style: none; }

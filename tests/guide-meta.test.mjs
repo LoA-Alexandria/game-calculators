@@ -20,11 +20,19 @@ test("every guide in the navigation has a card with pictures that exist", () => 
   }
 });
 
+/** Every `edit/page.tsx` under a guide, however deep — levels sit a floor down. */
+function editorPages(within = "") {
+  return readdirSync(file(`/app/guides/${within}`), { withFileTypes: true })
+    .filter((entry) => entry.isDirectory())
+    .flatMap((entry) => {
+      const path = `${within}${entry.name}/`;
+      if (entry.name === "edit") return existsSync(file(`/app/guides/${path}page.tsx`)) ? [`/guides/${within}edit/`] : [];
+      return editorPages(path);
+    });
+}
+
 test("a guide lists its editor exactly when it has an editor page", () => {
-  const withPage = readdirSync(file("/app/guides/"), { withFileTypes: true })
-    .filter((entry) => entry.isDirectory() && existsSync(file(`/app/guides/${entry.name}/edit/page.tsx`)))
-    .map((entry) => `/guides/${entry.name}/edit/`)
-    .sort();
+  const withPage = editorPages().sort();
   const listed = Object.values(GUIDE_PRESENTATION).flatMap((entry) => [
     entry.editor?.href,
     ...(entry.shared ?? []).map((one) => one.href),
