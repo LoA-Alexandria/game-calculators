@@ -27,7 +27,7 @@ an account with the required project privileges before pushing migrations.
 ## Discord integration
 
 The browser-first integration lives in the `benben-discord` Supabase Edge
-Function:
+Function. It handles `/benben` and `/share-content`:
 
 1. A member runs `/benben` in Discord.
 2. Discord receives an ephemeral **Open Benben** link containing a signed,
@@ -48,6 +48,12 @@ The channel and reusable message id are stored service-role-only in
 channel. Bot credentials and the Supabase service-role key never reach the
 browser. If Discord posting fails after a valid care action, the care remains
 saved and the page shows a warning.
+
+`/share-content` lets members with **Manage Messages** publish a News, Guide,
+or Event link as a branded embed in the channel where the command is run. It
+accepts only published Pop Epoch links and does not allow mentions. See
+[`DISCORD-INTEGRATIONS.md`](DISCORD-INTEGRATIONS.md) for details and Premium
+VIP role setup.
 
 The standard `/benben/` URL remains a separate, shared web-community Benben.
 Benben can be installed in additional Discord servers; the site's editor roles

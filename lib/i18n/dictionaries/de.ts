@@ -7521,6 +7521,7 @@ const de: Dictionary = {
     payCta: "{price} $ auf PayPal zahlen",
     adminClaims: "Premium-Claims",
     adminApprove: "Freigeben (+30 Tage)",
+    adminVipSyncFailed: "Premium wurde gespeichert, aber die Discord-VIP-Rolle konnte nicht aktualisiert werden. Prüfe, ob das Mitglied Discord verknüpft hat und die Bot-Rolle eingerichtet ist.",
     adminReject: "Ablehnen",
     adminEmpty: "Keine offenen Premium-Claims.",
     adminGuildRequests: "Gilden-Anträge",

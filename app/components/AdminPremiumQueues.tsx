@@ -81,6 +81,14 @@ export function AdminPremiumQueues({ reloadToken, onChanged }: { reloadToken: nu
   const [granted, setGranted] = useState(false);
   const [revoked, setRevoked] = useState(false);
 
+  const syncVipRole = async (userId: string) => {
+    if (!supabase) return;
+    const { data, error: syncError } = await supabase.functions.invoke<{ error?: string }>("sync-premium-discord-role", {
+      body: { userId },
+    });
+    if (syncError || data?.error) setError(t.premium.adminVipSyncFailed);
+  };
+
   useEffect(() => {
     if (!supabase) return;
     let gone = false;
@@ -211,7 +219,10 @@ export function AdminPremiumQueues({ reloadToken, onChanged }: { reloadToken: nu
           })
           .eq("id", claim.id);
         if (updateError) setError(updateError.message);
-        else onChanged();
+        else {
+          await syncVipRole(claim.user_id);
+          onChanged();
+        }
         setBusy(false);
         return;
       }
@@ -240,7 +251,10 @@ export function AdminPremiumQueues({ reloadToken, onChanged }: { reloadToken: nu
       })
       .eq("id", claim.id);
     if (updateError) setError(updateError.message);
-    else onChanged();
+    else {
+      if (approve) await syncVipRole(claim.user_id);
+      onChanged();
+    }
     setBusy(false);
   };
 
@@ -351,6 +365,7 @@ export function AdminPremiumQueues({ reloadToken, onChanged }: { reloadToken: nu
       return;
     }
     setGranted(true);
+    await syncVipRole(grantTargetId);
     onChanged();
     setBusy(false);
   };
@@ -376,6 +391,7 @@ export function AdminPremiumQueues({ reloadToken, onChanged }: { reloadToken: nu
       return;
     }
     setRevoked(true);
+    await syncVipRole(userId);
     onChanged();
     setBusy(false);
   };

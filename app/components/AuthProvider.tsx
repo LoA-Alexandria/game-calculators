@@ -116,6 +116,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       typeof access.data?.discord_user_id === "string" && access.data.discord_user_id.length > 0
         ? access.data.discord_user_id
         : null;
+    // Keep the Discord role in step when a linked member signs in. This also
+    // removes VIP after an entitlement expires or is revoked.
+    if (discordUserId) {
+      void supabase.functions.invoke("sync-premium-discord-role", { body: {} });
+    }
     const username =
       typeof profile.data?.username === "string" && profile.data.username.length > 0
         ? profile.data.username
