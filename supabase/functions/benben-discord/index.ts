@@ -1,5 +1,6 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 import { contentShareMessage, hasContentSharePermission, validShareFields } from "./content-share.ts";
+import { roleIdPickerActionRow, roleIdPickerSelectActionRow, ROLE_ID_PICKER_BUTTON, ROLE_ID_PICKER_SELECT, selectedRoleId } from "./role-id.ts";
 
 const DISCORD_API = "https://discord.com/api/v10";
 const GUILD_ID = "1534685294371274822";
@@ -158,9 +159,30 @@ async function handleInteraction(request: Request, rawBody: string) {
     guild_id?: string;
     channel_id?: string;
     member?: { permissions?: string };
-    data?: { name?: string; options?: Array<{ name: string; value: unknown }> };
+    data?: { name?: string; custom_id?: string; values?: unknown; options?: Array<{ name: string; value: unknown }> };
   };
   if (interaction.type === 1) return Response.json({ type: 1 });
+  if (interaction.type === 3) {
+    if (interaction.guild_id !== GUILD_ID) {
+      return Response.json({ type: 4, data: { content: "This helper is available in the Pop Epoch server only.", flags: 64 } });
+    }
+    if (interaction.data?.custom_id === ROLE_ID_PICKER_BUTTON) {
+      return Response.json({
+        type: 4,
+        data: {
+          content: "Choose the role. Benben will show its ID only to you.",
+          flags: 64,
+          components: [roleIdPickerSelectActionRow()],
+        },
+      });
+    }
+    if (interaction.data?.custom_id === ROLE_ID_PICKER_SELECT) {
+      const roleId = selectedRoleId(interaction.data.values);
+      if (!roleId) return Response.json({ type: 4, data: { content: "Select one valid server role.", flags: 64 } });
+      return Response.json({ type: 4, data: { content: `Role ID: \`${roleId}\``, flags: 64 } });
+    }
+    return Response.json({ type: 4, data: { content: "Unknown interaction.", flags: 64 } });
+  }
   if (interaction.type !== 2) return Response.json({ type: 4, data: { content: "Unknown interaction.", flags: 64 } });
   if (interaction.data?.name === "share-content") {
     if (interaction.guild_id !== GUILD_ID) {
@@ -191,7 +213,10 @@ async function handleInteraction(request: Request, rawBody: string) {
     data: {
       content: "Visit Benben, choose a care action, and this channel's shared status will be updated.",
       flags: 64,
-      components: [{ type: 1, components: [{ type: 2, style: 5, label: "Open Benben", emoji: { name: "🪨" }, url: url.toString() }] }],
+      components: [
+        { type: 1, components: [{ type: 2, style: 5, label: "Open Benben", emoji: { name: "🪨" }, url: url.toString() }] },
+        roleIdPickerActionRow(),
+      ],
     },
   });
 }
