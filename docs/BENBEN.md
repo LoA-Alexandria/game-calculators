@@ -55,6 +55,12 @@ accepts only published Pop Epoch links and does not allow mentions. See
 [`DISCORD-INTEGRATIONS.md`](DISCORD-INTEGRATIONS.md) for details and Premium
 VIP role setup.
 
+The ephemeral `/benben` response also includes **Get a role ID**. Select a
+server role in the private picker and Benben replies with its numeric ID visible
+only to you. This lets members without permission to open Server Settings copy
+the VIP role ID for the site administrator. The picker is restricted to the Pop
+Epoch server; it does not grant or change any role permissions.
+
 The standard `/benben/` URL remains a separate, shared web-community Benben.
 Benben can be installed in additional Discord servers; the site's editor roles
 remain specific to the Pop Epoch server.

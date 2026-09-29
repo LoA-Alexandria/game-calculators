@@ -6,6 +6,7 @@ import {
   validShareFields,
 } from "../supabase/functions/benben-discord/content-share.ts";
 import { premiumRoleShouldBePresent } from "../supabase/functions/sync-premium-discord-role/premium-role.ts";
+import { ROLE_ID_PICKER_BUTTON, ROLE_ID_PICKER_SELECT, roleIdPickerActionRow, roleIdPickerSelectActionRow, selectedRoleId } from "../supabase/functions/benben-discord/role-id.ts";
 
 test("content share accepts only complete content and published Pop Epoch links", () => {
   const fields = {
@@ -36,6 +37,17 @@ test("only members with Manage Messages may use the content share command", () =
   assert.equal(hasContentSharePermission("0"), false);
   assert.equal(hasContentSharePermission("manage_messages"), false);
   assert.equal(hasContentSharePermission(undefined), false);
+});
+
+test("Benben role ID picker uses a private server role selector", () => {
+  assert.equal(roleIdPickerActionRow().components[0].custom_id, ROLE_ID_PICKER_BUTTON);
+  const selector = roleIdPickerSelectActionRow().components[0];
+  assert.equal(selector.type, 6);
+  assert.equal(selector.custom_id, ROLE_ID_PICKER_SELECT);
+  assert.equal(selectedRoleId(["1534685294371274822"]), "1534685294371274822");
+  assert.equal(selectedRoleId([]), null);
+  assert.equal(selectedRoleId(["123"]), null);
+  assert.equal(selectedRoleId(["1534685294371274822", "1534685294371274823"]), null);
 });
 
 test("VIP exists only during a valid active entitlement window", () => {
