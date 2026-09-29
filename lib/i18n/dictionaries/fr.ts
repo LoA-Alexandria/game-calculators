@@ -7526,6 +7526,7 @@ const fr: Dictionary = {
     payCta: "Payer {price} $ sur PayPal",
     adminClaims: "Demandes Premium",
     adminApprove: "Approuver (+30 jours)",
+    adminVipSyncFailed: "Premium a été enregistré, mais le rôle VIP Discord n’a pas été mis à jour. Vérifiez que le membre a lié Discord et que le bot est configuré.",
     adminReject: "Refuser",
     adminEmpty: "Aucune demande Premium en attente.",
     adminGuildRequests: "Demandes de guilde",

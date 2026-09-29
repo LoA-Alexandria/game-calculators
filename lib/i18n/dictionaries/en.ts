@@ -4300,6 +4300,7 @@ const en = {
     payCta: "Pay ${price} on PayPal",
     adminClaims: "Premium claims",
     adminApprove: "Approve (+30 days)",
+    adminVipSyncFailed: "Premium was saved, but the Discord VIP role was not updated. Check that the member has linked Discord and that the bot role integration is configured.",
     adminReject: "Reject",
     adminEmpty: "No pending Premium claims.",
     adminGuildRequests: "Guild create requests",

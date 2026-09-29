@@ -90,6 +90,15 @@ print a snippet to commit into the dictionaries and navigation; shared wiki
 tables are still to be implemented. Read [`AUTH-AND-CMS.md`](AUTH-AND-CMS.md)
 before adding any write path.
 
+Premium VIP roles are synchronized by the authenticated
+`sync-premium-discord-role` Edge Function. It checks the active entitlement and
+verified Discord id server-side before calling Discord; admins can sync another
+member only after their server-maintained `editor_access.role` is confirmed.
+The existing Benben Discord interaction endpoint also publishes formatted
+News, Guide, and Event embeds with `/share-content`. See
+[`DISCORD-INTEGRATIONS.md`](DISCORD-INTEGRATIONS.md) for setup and the current
+manual PayPal-claim approval boundary.
+
 Community guilds live in Supabase (`guilds`, `guild_memberships`, `guild_posts`,
 `guild_active_events`, `guild_event_days`, `guild_event_pledges`,
 `guild_event_camps`, `guild_event_orders`, `guild_alliances`) with RLS. Admins

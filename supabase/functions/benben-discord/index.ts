@@ -1,6 +1,8 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
+import { contentShareMessage, hasContentSharePermission, validShareFields } from "./content-share.ts";
 
 const DISCORD_API = "https://discord.com/api/v10";
+const GUILD_ID = "1534685294371274822";
 const DEFAULT_SITE_URL = "https://loa-alexandria.github.io/game-calculators/benben/";
 const ACTIONS = new Set(["feed", "polish", "play", "rest"]);
 const ACTION_LABELS: Record<string, string> = {
@@ -151,9 +153,34 @@ async function updateDiscordStatus(
 
 async function handleInteraction(request: Request, rawBody: string) {
   if (!await verifyDiscordRequest(request, rawBody)) return new Response("invalid request signature", { status: 401 });
-  const interaction = JSON.parse(rawBody) as { type?: number; guild_id?: string; channel_id?: string; data?: { name?: string } };
+  const interaction = JSON.parse(rawBody) as {
+    type?: number;
+    guild_id?: string;
+    channel_id?: string;
+    member?: { permissions?: string };
+    data?: { name?: string; options?: Array<{ name: string; value: unknown }> };
+  };
   if (interaction.type === 1) return Response.json({ type: 1 });
-  if (interaction.type !== 2 || interaction.data?.name !== "benben") return Response.json({ type: 4, data: { content: "Unknown command.", flags: 64 } });
+  if (interaction.type !== 2) return Response.json({ type: 4, data: { content: "Unknown interaction.", flags: 64 } });
+  if (interaction.data?.name === "share-content") {
+    if (interaction.guild_id !== GUILD_ID) {
+      return Response.json({ type: 4, data: { content: "This command is available in the Pop Epoch server only.", flags: 64 } });
+    }
+    if (!hasContentSharePermission(interaction.member?.permissions)) {
+      return Response.json({ type: 4, data: { content: "You need Manage Messages to publish a content post.", flags: 64 } });
+    }
+    const values = Object.fromEntries((interaction.data.options ?? []).map(({ name, value }) => [name, value]));
+    if (!validShareFields(values)) {
+      return Response.json({ type: 4, data: { content: "Use a published Pop Epoch page link and complete all fields.", flags: 64 } });
+    }
+    return Response.json({
+      type: 4,
+      data: {
+        ...contentShareMessage(values.category, values.title, values.summary, values.link),
+      },
+    });
+  }
+  if (interaction.data?.name !== "benben") return Response.json({ type: 4, data: { content: "Unknown command.", flags: 64 } });
   if (!interaction.guild_id || !interaction.channel_id) return Response.json({ type: 4, data: { content: "Benben needs to be opened from a server channel.", flags: 64 } });
   const token = await createLaunchToken(interaction.guild_id, interaction.channel_id);
   const siteUrl = Deno.env.get("BENBEN_SITE_URL") ?? DEFAULT_SITE_URL;

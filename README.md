@@ -40,6 +40,8 @@ guides. Authentication and role checks are real; the editor prints a snippet
 to commit. Saving a guide to a shared wiki is the next backend phase. See
 [`docs/SUPABASE-SETUP.md`](docs/SUPABASE-SETUP.md) for deployment setup and
 [`docs/AUTH-AND-CMS.md`](docs/AUTH-AND-CMS.md) for the current boundary.
+Discord content sharing and Premium VIP role setup are documented in
+[`docs/DISCORD-INTEGRATIONS.md`](docs/DISCORD-INTEGRATIONS.md).
 
 ## Add a calculator
 
