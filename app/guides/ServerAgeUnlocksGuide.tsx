@@ -3,7 +3,10 @@
 import Link from "next/link";
 import { useState } from "react";
 import { guideHref, guideLayout, isGuideEntryId } from "../../lib/content/guides";
+import { eventWikiIconUrl } from "../../lib/content/event-guides";
+import { eventGuideHref } from "../../lib/content/event-guide-routes";
 import {
+  ageEventGuideId,
   eventDescription,
   eventDetail,
   eventImageUrl,
@@ -30,7 +33,14 @@ function EventRow({ event, guide }: { event: AgeEvent; guide: Guide }) {
   const name = eventName(event, guide.eventTexts);
   const detail = eventDetail(event, guide.eventTexts);
   const description = eventDescription(event, guide.eventTexts);
-  const image = event.image ? eventImageUrl(event.image) : null;
+  const eventGuideId = ageEventGuideId(event);
+  const eventGuide = eventGuideId ? t.eventGuideEntries[eventGuideId] : null;
+  const eventHref = eventGuideId ? eventGuideHref(eventGuideId) : null;
+  const image = event.image
+    ? eventImageUrl(event.image)
+    : eventGuideId
+      ? eventWikiIconUrl(eventGuideId) ?? null
+      : null;
   const related =
     event.relatedGuide && isGuideEntryId(event.relatedGuide, t.guideEntries)
       ? t.guideEntries[event.relatedGuide]
@@ -68,6 +78,11 @@ function EventRow({ event, guide }: { event: AgeEvent; guide: Guide }) {
       {related ? (
         <Link className="age-event-link" href={guideHref(event.relatedGuide!)}>
           {fill(guide.relatedLabel, { guide: related.title })}
+        </Link>
+      ) : null}
+      {eventGuide && eventHref ? (
+        <Link className="age-event-link" href={eventHref}>
+          {fill(guide.eventLinkLabel, { event: eventGuide.title })}
         </Link>
       ) : null}
       {hasDetails ? (
