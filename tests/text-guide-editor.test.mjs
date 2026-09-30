@@ -87,6 +87,25 @@ test("a new section lands in every language, an empty one is left out", () => {
   }
 });
 
+test("Ads / Buy explains the post-day-90 gem priorities in every language", () => {
+  const expected = {
+    en: ["day 90", "Road to the Cup", "2,000 gems", "events not mentioned"],
+    de: ["Tag 90", "Road to the Cup", "2.000 Gems", "nicht genannte Events"],
+    fr: ["jour 90", "Road to the Cup", "2 000 gemmes", "non mentionnés"],
+  };
+
+  for (const locale of LOCALE_CODES) {
+    const guide = getDictionary(locale).guideEntries.adsBuy;
+    const text = guide.sections
+      .map((section) => `${section.heading} ${section.body.join(" ")}`)
+      .join(" ")
+      .toLocaleLowerCase(locale);
+    for (const fragment of expected[locale]) {
+      assert.ok(text.includes(fragment.toLocaleLowerCase(locale)), `${locale} is missing "${fragment}"`);
+    }
+  }
+});
+
 test("a stored draft is read back against the entry it belongs to", () => {
   const base = textGuideDraft("eventGuideEntries", "ringToss");
   const stored = JSON.parse(JSON.stringify(base));

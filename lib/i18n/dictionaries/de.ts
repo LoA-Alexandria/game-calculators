@@ -4568,6 +4568,34 @@ const de: Dictionary = {
           ],
         },
         {
+          heading: "Kauf-Guide — Gem-Druck ab Tag 90",
+          body: [
+            "Dieser Community-Entwurf von Autumn ist noch in Arbeit. Ab Tag 90 bleiben die Events zwar in ihrer Rotation, können sich durch mehrere Matchmaking-Gruppen aber überlappen und starten, bevor das vorherige Event endet. Dadurch verdichtet sich der Zeitplan und die Gems werden stärker beansprucht. Setze Events mit Gem-Rückerstattung höher und überlege, bei manchen Main Events Gems zu sparen. Dein Budget entscheidet weiterhin; für hier nicht genannte Events sind Gems weiterhin eingeplant.",
+          ],
+        },
+        {
+          heading: "Kauf-Guide — Events überspringen",
+          body: [
+            "Wenn du deine Gem-Reserven schonen willst, überspringe diese Ausgaben, sofern die Ausnahme nicht zutrifft:",
+            "Road to the Cup-Stamina: überspringen, außer du möchtest die Artwork- oder Mount-Gegenstände.",
+            "Road to the Cup-Freundschaftskämpfe: keine zusätzlichen Versuche kaufen.",
+            "Ranking-Events: alle Gem-Ausgaben überspringen.",
+            "Duel-Festival-Versuche: keine zusätzlichen Versuche kaufen, außer du würdest sonst aus einer Runde fallen.",
+            "Nile-Stockpile-Phase: überspringen, außer deine Gilde würde aus der Qualifikation fallen.",
+            "Spring Returns: überspringen, besonders ab Gartenlevel 30.",
+          ],
+        },
+        {
+          heading: "Kauf-Guide — hier zurückfahren",
+          body: [
+            "Reduziere diese Gem-Ausgaben, wenn du nicht gezielt auf die jeweiligen Belohnungen spielst:",
+            "Odin-Vorbereitungshelme: nicht nötig, außer du zielst auf einen Helden oder kannst damit Surtr oder Jorm den letzten Treffer geben.",
+            "Atlantis-PvP: insgesamt höchstens 2.000 Gems ausgeben.",
+            "Zusatzgegenstände in Routine-Events: nur kaufen, wenn du sonst kurz davor bist, dein Brett zu verlieren.",
+            "Main Events: Wenn du nicht gezielt Heldensterne oder Skins anstrebst, kannst du auch hier weniger Gems ausgeben. Bei Main Events mit Heldenbelohnung kann das die Gilde ebenfalls betreffen.",
+          ],
+        },
+        {
           heading: "Kauf-Guide — essenziell & Pflicht",
           body: [
             "Immer das eigene Budget zuerst. Käufe nach Nutzen und situativer Notwendigkeit sortiert.",
