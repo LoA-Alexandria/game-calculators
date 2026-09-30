@@ -216,6 +216,7 @@ test("every banner is there, at twice the size it is drawn", async () => {
 test("a banner is cache-busted, so a redraw actually shows", async () => {
   const { guideTitleBanner } = await import("../lib/content/banners.ts");
   assert.match(guideTitleBanner("heroTierList").src, /\?v=/);
+  assert.match(guideTitleBanner("adsBuy").src, /\?v=hd2$/);
   assert.match(guideTitleBanner("artwork").src, /\?v=hd2$/);
   assert.match(guideTitleBanner("heroes").src, /\?v=hd2$/);
 });

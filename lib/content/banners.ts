@@ -57,6 +57,7 @@ const TITLE_BANNER_SIZE = { width: 1024, height: 144 } as const;
 const TITLE_BANNER_VERSION = "hd1";
 
 const GUIDE_TITLE_BANNER_VERSIONS: Partial<Record<GuideEntryId, string>> = {
+  adsBuy: "hd2",
   artwork: "hd2",
   heroes: "hd2",
 };
