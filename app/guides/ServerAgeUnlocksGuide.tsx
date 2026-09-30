@@ -75,16 +75,18 @@ function EventRow({ event, guide }: { event: AgeEvent; guide: Guide }) {
         </span>
         {detail ? <span className="age-event-detail">{detail}</span> : null}
       </button>
-      {related ? (
-        <Link className="age-event-link" href={guideHref(event.relatedGuide!)}>
-          {fill(guide.relatedLabel, { guide: related.title })}
-        </Link>
-      ) : null}
-      {eventGuide && eventHref ? (
-        <Link className="age-event-link" href={eventHref}>
-          {fill(guide.eventLinkLabel, { event: eventGuide.title })}
-        </Link>
-      ) : null}
+      <div className="age-event-links">
+        {related ? (
+          <Link className="age-event-link" href={guideHref(event.relatedGuide!)}>
+            {fill(guide.relatedLabel, { guide: related.title })}
+          </Link>
+        ) : null}
+        {eventGuide && eventHref ? (
+          <Link className="age-event-link" href={eventHref}>
+            {fill(guide.eventLinkLabel, { event: eventGuide.title })}
+          </Link>
+        ) : null}
+      </div>
       {hasDetails ? (
         <div className="age-event-details" id={`age-details-${event.id}`} hidden={!detailsOpen}>
           {image ? (
