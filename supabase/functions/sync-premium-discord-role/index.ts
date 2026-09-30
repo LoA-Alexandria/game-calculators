@@ -1,5 +1,5 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
-import { premiumRoleShouldBePresent } from "./premium-role.ts";
+import { earlySupporterRoleShouldBePresent, premiumRoleShouldBePresent } from "./premium-role.ts";
 
 const DISCORD_API = "https://discord.com/api/v10";
 const GUILD_ID = "1534685294371274822";
@@ -44,11 +44,16 @@ Deno.serve(async (request) => {
       if (callerAccess?.role !== "admin") return Response.json({ error: "Administrator access required" }, { status: 403, headers });
     }
 
-    const [{ data: entitlement, error: entitlementError }, { data: targetAccess, error: accessError }] = await Promise.all([
+    const [
+      { data: entitlement, error: entitlementError },
+      { data: targetAccess, error: accessError },
+      { data: earlySupporter, error: supporterError },
+    ] = await Promise.all([
       adminClient.from("premium_entitlements").select("status, starts_at, expires_at").eq("user_id", targetUserId).maybeSingle(),
       adminClient.from("editor_access").select("discord_user_id").eq("user_id", targetUserId).maybeSingle(),
+      adminClient.from("early_supporters").select("revoked_at").eq("user_id", targetUserId).maybeSingle(),
     ]);
-    if (entitlementError || accessError) return Response.json({ error: "Could not load Premium or Discord account data" }, { status: 500, headers });
+    if (entitlementError || accessError || supporterError) return Response.json({ error: "Could not load Premium, supporter, or Discord account data" }, { status: 500, headers });
     const discordUserId = targetAccess?.discord_user_id;
     if (!discordUserId || !/^\d{5,32}$/.test(discordUserId)) {
       return Response.json({ error: "This account has not signed in with its linked Discord account yet" }, { status: 409, headers });
@@ -61,17 +66,39 @@ Deno.serve(async (request) => {
     }
 
     const active = premiumRoleShouldBePresent(entitlement);
-    const method = active ? "PUT" : "DELETE";
-    const response = await fetch(`${DISCORD_API}/guilds/${GUILD_ID}/members/${discordUserId}/roles/${vipRoleId}`, {
-      method,
-      headers: { Authorization: `Bot ${botToken}` },
-    });
-    if (response.status === 404) return Response.json({ error: "Discord member or configured VIP role was not found" }, { status: 409, headers });
-    if (!response.ok) {
-      console.error(`Discord VIP role update failed (${response.status})`);
-      return Response.json({ error: "Discord could not update the VIP role; check the bot permission and role position" }, { status: 502, headers });
+    const isEarlySupporter = earlySupporterRoleShouldBePresent(earlySupporter);
+    const earlySupporterRoleId = Deno.env.get("DISCORD_EARLY_SUPPORTER_ROLE_ID");
+    const testVersionRoleId = Deno.env.get("DISCORD_TEST_VERSION_ROLE_ID");
+    const warnings: string[] = [];
+    const roleChanges = [{ id: vipRoleId, present: active, label: "VIP" }];
+    if (isEarlySupporter && (!earlySupporterRoleId || !/^\d{5,32}$/.test(earlySupporterRoleId))) {
+      warnings.push("Early Supporter Discord role is not configured");
     }
-    return Response.json({ action: active ? "assigned" : "removed" }, { headers });
+    if (isEarlySupporter && (!testVersionRoleId || !/^\d{5,32}$/.test(testVersionRoleId))) {
+      warnings.push("Test Version Discord role is not configured");
+    }
+    if (earlySupporterRoleId && /^\d{5,32}$/.test(earlySupporterRoleId)) {
+      roleChanges.push({ id: earlySupporterRoleId, present: isEarlySupporter, label: "Early Supporter" });
+    }
+    if (testVersionRoleId && /^\d{5,32}$/.test(testVersionRoleId)) {
+      roleChanges.push({ id: testVersionRoleId, present: isEarlySupporter, label: "Test Version" });
+    }
+
+    const results = await Promise.all(roleChanges.map(async (role) => {
+      const response = await fetch(`${DISCORD_API}/guilds/${GUILD_ID}/members/${discordUserId}/roles/${role.id}`, {
+        method: role.present ? "PUT" : "DELETE",
+        headers: { Authorization: `Bot ${botToken}` },
+      });
+      return { ...role, status: response.status, ok: response.ok };
+    }));
+    for (const result of results) {
+      if (!result.ok) warnings.push(`${result.label} role update failed (${result.status})`);
+    }
+    if (warnings.length) {
+      console.error("Discord role sync was incomplete", warnings);
+      return Response.json({ action: active ? "assigned" : "removed", earlySupporter: isEarlySupporter, warnings }, { headers });
+    }
+    return Response.json({ action: active ? "assigned" : "removed", earlySupporter: isEarlySupporter }, { headers });
   } catch (error) {
     console.error("Premium Discord role sync failed", error);
     return Response.json({ error: "Premium Discord role sync failed" }, { status: 500, headers });

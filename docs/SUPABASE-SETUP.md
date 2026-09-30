@@ -58,6 +58,8 @@ The guild is `1534685294371274822` and stays in the function.
   claims, and guild-create requests.
 - `20260929120000_premium_entitlements_write_grants.sql` — grants admin
   INSERT/UPDATE/DELETE on `premium_entitlements` (RLS still admin-only).
+- `20261012120000_early_supporters.sql` — the permanent first-20 Early
+  Supporter cohort and opt-in public credits.
 
 They only add tables, columns, functions and policies, so applying them changes
 nothing until a guild fills a board in, offers an alliance, ends an event or

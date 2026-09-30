@@ -11,11 +11,23 @@ import {
   PREMIUM_LIFETIME_NOTE,
   PREMIUM_PERIOD_DAYS,
   PREMIUM_PRICE_EUR,
+  EARLY_SUPPORTER_LIMIT,
+  isEarlySupporterActive,
 } from "../lib/content/premium.ts";
+import { earlySupporterRoleShouldBePresent } from "../supabase/functions/sync-premium-discord-role/premium-role.ts";
 
 test("listed Premium price is five dollars for thirty days", () => {
   assert.equal(PREMIUM_PRICE_EUR, 5);
   assert.equal(PREMIUM_PERIOD_DAYS, 30);
+});
+
+test("Early Supporter cohort is capped at twenty and remains independent of Premium expiry", () => {
+  assert.equal(EARLY_SUPPORTER_LIMIT, 20);
+  assert.equal(isEarlySupporterActive({ revoked_at: null }), true);
+  assert.equal(isEarlySupporterActive({ revoked_at: "2026-10-01T00:00:00Z" }), false);
+  assert.equal(earlySupporterRoleShouldBePresent({ revoked_at: null }), true);
+  assert.equal(earlySupporterRoleShouldBePresent({ revoked_at: "2026-10-01T00:00:00Z" }), false);
+  assert.equal(earlySupporterRoleShouldBePresent(null), false);
 });
 
 test("active premium needs status active and a future expiry", () => {
