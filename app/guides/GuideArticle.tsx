@@ -7,6 +7,7 @@ import { guidePresentation } from "../../lib/content/guide-meta";
 import { guideCategoryId, guideHasSnippetEditor, guideHref, isGuideEntryId, type GuideEntryId } from "../../lib/content/guides";
 import { toLocale, type Dictionary } from "../../lib/i18n";
 import { useGuideEntry } from "./GuideOverrides";
+import { RichContentText } from "../components/RichContentText";
 import { isTextGuide, textGuideEntry, type TextGuideDraft } from "../../lib/content/text-guide-editor";
 import { useAuth } from "../components/AuthProvider";
 import { useDocumentTitle, useLocale } from "../components/LocaleProvider";
@@ -232,7 +233,7 @@ export function GuideArticle({ id }: { id: GuideEntryId }) {
                 <section className="guide-section-card" key={section.heading}>
                   <h2>{section.heading}</h2>
                   {section.body.map((paragraph, index) => (
-                    <p key={index}>{paragraph}</p>
+                    <RichContentText key={index} text={paragraph} />
                   ))}
                 </section>
               ))}

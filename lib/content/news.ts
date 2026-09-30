@@ -13,6 +13,8 @@ export type NewsEntry = {
   date: string;
   /** Optional "read more" target, for example the tool the entry is about. */
   href?: string;
+  /** Optional card image, stored as a public site path. */
+  image?: string;
   title: (t: Dictionary) => string;
   summary: (t: Dictionary) => string;
   body: (t: Dictionary) => string[];
