@@ -16,6 +16,7 @@ import { useAuth } from "../components/AuthProvider";
 import { PenIcon } from "../components/Icons";
 import { useDocumentTitle, useLocale } from "../components/LocaleProvider";
 import { TextGuideEditor } from "../components/TextGuideEditor";
+import { RichContentText } from "../components/RichContentText";
 import { BackLink } from "../components/Ui";
 
 export type EventGuideId = keyof Dictionary["eventGuideEntries"];
@@ -142,7 +143,7 @@ export function EventArticle({ id }: { id: EventGuideId }) {
               <section key={section.heading}>
                 {showWiki ? <h3>{section.heading}</h3> : <h2>{section.heading}</h2>}
                 {section.body.map((paragraph, index) => (
-                  <p key={index}>{paragraph}</p>
+                  <RichContentText key={index} text={paragraph} />
                 ))}
                 {"image" in section && section.image ? (
                   // eslint-disable-next-line @next/next/no-img-element

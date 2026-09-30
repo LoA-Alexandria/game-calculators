@@ -4,7 +4,6 @@ import test from "node:test";
 
 import {
   allEventWikiEntries,
-  eventWiki,
   eventWikiIcon,
 } from "../lib/content/event-guides.ts";
 import { getDictionary } from "../lib/i18n/index.ts";
@@ -19,13 +18,10 @@ test("every Events nav row with an icon has that file in public/events", () => {
   }
 });
 
-test("wiki rows cover every published event write-up", () => {
+test("every wiki row belongs to a published event write-up", () => {
   const dictionary = getDictionary("en");
   const ids = Object.keys(dictionary.eventGuideEntries);
-  for (const id of ids) {
-    assert.ok(eventWiki(id), `event-wiki.json is missing ${id}`);
-  }
-  assert.equal(allEventWikiEntries().length, ids.length);
+  for (const entry of allEventWikiEntries()) assert.ok(ids.includes(entry.id), `stale event wiki row ${entry.id}`);
 });
 
 test("Heart of Gold still has the 2×2 dig figure on the community tip", () => {

@@ -2,10 +2,13 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { NEWS } from "../../lib/content/news";
 import { useAuth } from "../components/AuthProvider";
 import { useDocumentTitle, useLocale } from "../components/LocaleProvider";
 import { PageHead, SectionBanner } from "../components/Ui";
+import { RichContentText } from "../components/RichContentText";
+import { asset, BASE_PATH } from "../../lib/site";
 import { PenIcon, TrashIcon } from "../components/Icons";
 import { NewsEditor, type NewsEditorTarget } from "./NewsEditor";
 
@@ -35,8 +38,10 @@ export default function NewsPage() {
                 <time dateTime={entry.date}>{d(entry.date)}</time>
               </div>
               <h2>{entry.title(t)}</h2>
+              {entry.summary(t) ? <p className="guide-head-lede">{entry.summary(t)}</p> : null}
+              {entry.image ? <Image className="content-builder-cover" src={entry.image.startsWith("https://") || (BASE_PATH && entry.image.startsWith(`${BASE_PATH}/`)) ? entry.image : asset(entry.image)} alt="" width={1200} height={700} unoptimized /> : null}
               {entry.body(t).map((paragraph, index) => (
-                <p key={index}>{paragraph}</p>
+                <RichContentText key={index} text={paragraph} />
               ))}
               {(entry.href || canWrite) && (
                 <div className="entry-actions">

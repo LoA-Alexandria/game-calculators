@@ -53,8 +53,7 @@ export function AccountMenu() {
 
   const actions = [
     { href: "/account/", label: t.account.title, icon: StarIcon },
-    allows("news.write") ? { href: "/news/new/", label: t.nav.newNews, icon: PenIcon } : null,
-    allows("guides.draft") ? { href: "/guides/new/", label: t.nav.newGuide, icon: PenIcon } : null,
+    allows("news.write") || allows("guides.draft") ? { href: "/content-builder/", label: t.contentBuilder.navLabel, icon: PenIcon } : null,
     allows("roles.assign") ? { href: "/admin/", label: t.nav.admin, icon: ShieldIcon } : null,
   ].filter((action): action is { href: string; label: string; icon: typeof PenIcon } => action !== null);
 
