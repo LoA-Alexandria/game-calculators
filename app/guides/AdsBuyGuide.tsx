@@ -1,7 +1,9 @@
 "use client";
 
+import Image from "next/image";
 import { guideLayout } from "../../lib/content/guides";
 import type { Dictionary } from "../../lib/i18n";
+import { asset } from "../../lib/site";
 
 type Guide = Dictionary["guideEntries"]["adsBuy"];
 type Section = Guide["sections"][number];
@@ -26,6 +28,26 @@ function sectionGroup(heading: string): GroupId {
   if (/addendum|anhang/i.test(heading)) return "other";
   if (/kauf|spend|achat|buy/i.test(heading)) return "spend";
   return "ads";
+}
+
+function GuideSectionHeading({
+  title,
+  lede,
+  art,
+}: {
+  title: string;
+  lede: string;
+  art: string;
+}) {
+  return (
+    <header className="ads-buy-banner">
+      <div className="ads-buy-banner-copy">
+        <h2>{title}</h2>
+        <p>{lede}</p>
+      </div>
+      <Image className="ads-buy-banner-art" src={asset(art)} alt="" width={120} height={120} />
+    </header>
+  );
 }
 
 /**
@@ -85,30 +107,36 @@ export function AdsBuyGuide({ guide }: { guide: Guide }) {
     <div className="guide-wide ads-buy-guide">
       <p className="intro">{guide.intro}</p>
 
-      <div className="tier-lists-head">
-        <h2>{guide.adsHeading}</h2>
-      </div>
-      <p className="guide-lede">{guide.adsLede}</p>
-      <ol className="gl-phases ads-buy-phases">
-        {ads.map((section, index) => (
-          <PriorityBlock
-            key={section.heading}
-            section={section}
-            index={index}
-            ordered={/sofort|immediate|immédiat|jeden tag|every day|chaque jour|chronolog/i.test(section.heading)}
-          />
-        ))}
-      </ol>
+      <section className="ads-buy-section is-ads">
+        <GuideSectionHeading
+          title={guide.adsHeading}
+          lede={guide.adsLede}
+          art="/guides/ads-buy-phone.webp"
+        />
+        <ol className="gl-phases ads-buy-phases">
+          {ads.map((section, index) => (
+            <PriorityBlock
+              key={section.heading}
+              section={section}
+              index={index}
+              ordered={/sofort|immediate|immédiat|jeden tag|every day|chaque jour|chronolog/i.test(section.heading)}
+            />
+          ))}
+        </ol>
+      </section>
 
-      <div className="tier-lists-head">
-        <h2>{guide.spendHeading}</h2>
-      </div>
-      <p className="guide-lede">{guide.spendLede}</p>
-      <ol className="gl-phases ads-buy-phases">
-        {spend.map((section, index) => (
-          <PriorityBlock key={section.heading} section={section} index={index} ordered />
-        ))}
-      </ol>
+      <section className="ads-buy-section is-spending">
+        <GuideSectionHeading
+          title={guide.spendHeading}
+          lede={guide.spendLede}
+          art="/guides/ads-buy-chest.webp"
+        />
+        <ol className="gl-phases ads-buy-phases">
+          {spend.map((section, index) => (
+            <PriorityBlock key={section.heading} section={section} index={index} ordered />
+          ))}
+        </ol>
+      </section>
 
       {other.map((section) => {
         const { lede, items } = splitSection(section.body);

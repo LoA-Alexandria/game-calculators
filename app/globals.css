@@ -2198,11 +2198,63 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
 .article .guide-section-card p + p { margin-top: 8px; }
 .guide-plain .callout { max-width: 75ch; }
 
-/* Ads / Buy: vertical phases like other tips guides, not a side-by-side card grid. */
-.ads-buy-guide .tier-lists-head { margin-top: 28px; }
-.ads-buy-guide .tier-lists-head:first-of-type { margin-top: 8px; }
-.ads-buy-phases { margin-top: 14px; }
-.ads-buy-phase { padding-bottom: 4px; }
+/* Ads / Buy: clearer section banners and compact, scannable priority rows. */
+.ads-buy-guide > .intro {
+  max-width: 72ch;
+  margin: 0 0 22px;
+  padding: 18px 20px;
+  border: 1px solid color-mix(in srgb, var(--gold) 30%, var(--line));
+  border-radius: var(--r-lg);
+  background: linear-gradient(115deg, color-mix(in srgb, var(--gold) 11%, var(--surface)), var(--surface));
+  color: var(--ink);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+.ads-buy-section + .ads-buy-section { margin-top: 42px; }
+.ads-buy-banner {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  min-height: 126px;
+  overflow: hidden;
+  padding: 20px 28px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-xl);
+  background:
+    radial-gradient(ellipse at 92% 20%, color-mix(in srgb, var(--tone) 18%, transparent), transparent 42%),
+    linear-gradient(120deg, var(--surface-2), var(--surface));
+  box-shadow: 0 12px 32px color-mix(in srgb, var(--ink) 7%, transparent);
+}
+.ads-buy-section.is-ads .ads-buy-banner { --tone: #3d9ad6; }
+.ads-buy-section.is-spending .ads-buy-banner { --tone: #e0893a; }
+.ads-buy-banner-copy { position: relative; z-index: 1; max-width: 70ch; }
+.article .ads-buy-banner h2 {
+  margin: 0;
+  padding: 0;
+  font-size: clamp(1.35rem, 2vw, 1.75rem);
+  letter-spacing: -.025em;
+}
+.ads-buy-banner h2::before { content: none; }
+.ads-buy-banner p {
+  margin: 7px 0 0;
+  color: var(--ink-soft);
+  font-size: .95rem;
+  line-height: 1.55;
+}
+.ads-buy-banner-art {
+  width: 104px;
+  height: 104px;
+  flex: none;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 14px color-mix(in srgb, var(--ink) 18%, transparent));
+}
+.ads-buy-phases { margin-top: 22px; }
+.ads-buy-phase { padding-bottom: 2px; }
+.ads-buy-phase > .gl-phase-head > div { padding-top: 3px; }
+.article .ads-buy-phase .gl-phase-head h3 { font-size: 1.08rem; }
+.article .ads-buy-phase .gl-phase-lede { margin-top: 4px; }
 .ads-buy-alone {
   margin: 0;
   padding: 12px 14px;
@@ -2210,12 +2262,12 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
   border-radius: var(--r-md);
   background: var(--surface);
   color: var(--ink-soft);
-  font-size: .92rem;
-  line-height: 1.55;
+  font-size: .93rem;
+  line-height: 1.65;
 }
 .ads-buy-items {
   display: grid;
-  gap: 8px;
+  gap: 7px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -2224,24 +2276,30 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
 .ads-buy-items > li {
   position: relative;
   margin: 0;
-  padding: 12px 14px 12px 16px;
+  padding: 13px 16px;
   border: 1px solid var(--line);
   border-left: 3px solid color-mix(in srgb, var(--tone, var(--accent)) 55%, var(--line));
   border-radius: var(--r-md);
   background: var(--surface);
   color: var(--ink-soft);
-  font-size: .9rem;
-  line-height: 1.55;
+  font-size: .93rem;
+  line-height: 1.65;
+  transition: border-color .16s ease, background .16s ease, transform .16s ease;
+}
+.ads-buy-items > li:hover {
+  border-color: color-mix(in srgb, var(--tone, var(--accent)) 45%, var(--line));
+  background: color-mix(in srgb, var(--tone, var(--accent)) 5%, var(--surface));
+  transform: translateX(2px);
 }
 .ads-buy-items.is-ordered > li {
-  padding-left: 44px;
+  padding-left: 48px;
   counter-increment: ads-buy-item;
 }
 .ads-buy-items.is-ordered > li::before {
   content: counter(ads-buy-item);
   position: absolute;
-  top: 12px;
-  left: 12px;
+  top: 50%;
+  left: 13px;
   display: grid;
   place-items: center;
   width: 22px;
@@ -2252,12 +2310,34 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
   font-size: .72rem;
   font-weight: 800;
   font-variant-numeric: tabular-nums;
+  transform: translateY(-50%);
 }
-.ads-buy-addendum { margin-top: 28px; max-width: 75ch; }
+.ads-buy-addendum {
+  max-width: 88ch;
+  margin-top: 34px;
+  padding: 20px 22px;
+  border: 1px solid color-mix(in srgb, var(--gold) 30%, var(--line));
+  border-radius: var(--r-lg);
+  background: color-mix(in srgb, var(--gold) 6%, var(--surface));
+}
+.article .ads-buy-addendum h2 { margin-top: 0; }
+.ads-buy-addendum > p { color: var(--ink-soft); line-height: 1.7; }
 .ads-buy-guide .hero-credit { margin-top: 22px; }
 
+@media (max-width: 640px) {
+  .ads-buy-guide > .intro { padding: 15px 16px; font-size: .94rem; }
+  .ads-buy-section + .ads-buy-section { margin-top: 30px; }
+  .ads-buy-banner { min-height: 104px; padding: 16px 18px; }
+  .ads-buy-banner-art { width: 76px; height: 76px; margin-right: -5px; }
+  .ads-buy-banner p { max-width: 46ch; font-size: .9rem; }
+  .ads-buy-phases { margin-top: 19px; }
+  .ads-buy-items > li { padding: 11px 12px; font-size: .9rem; }
+  .ads-buy-items.is-ordered > li { padding-left: 43px; }
+  .ads-buy-addendum { padding: 16px; }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .guide-card, .guide-card-art img { transition: none; }
+  .guide-card, .guide-card-art img, .ads-buy-items > li { transition: none; }
   .guide-card:hover, .guide-card:focus-within { transform: none; }
 }
 
