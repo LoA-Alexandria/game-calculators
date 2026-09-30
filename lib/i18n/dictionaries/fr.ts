@@ -4568,6 +4568,34 @@ const fr: Dictionary = {
           ],
         },
         {
+          heading: "Guide d’achat — pression sur les gemmes après le jour 90",
+          body: [
+            "Ce brouillon communautaire d’Autumn est encore en cours. Après le jour 90, les events restent dans leur rotation, mais plusieurs groupes de matchmaking peuvent les faire commencer avant la fin de l’event précédent. Le calendrier se resserre et la pression sur les réserves de gemmes augmente. Donnez la priorité aux events qui rendent des gemmes et envisagez d’économiser sur certains Main Events. Votre budget reste le facteur décisif ; les events non mentionnés ici restent des priorités de dépense en gemmes.",
+          ],
+        },
+        {
+          heading: "Guide d’achat — events à sauter",
+          body: [
+            "Pour préserver vos réserves de gemmes, évitez ces dépenses sauf si l’exception s’applique :",
+            "Stamina de Road to the Cup : à sauter sauf si vous voulez les objets d’artwork ou de monture.",
+            "Matchs amicaux de Road to the Cup : ne prenez pas les tentatives supplémentaires.",
+            "Events de classement : évitez toutes les dépenses en gemmes.",
+            "Tentatives de Duel Festival : évitez les tentatives supplémentaires sauf si vous risquez de sortir d’un round.",
+            "Phase de stockpile du Nil : à sauter sauf si votre guilde risque de perdre sa qualification.",
+            "Spring Returns : à sauter, surtout après le niveau 30 du jardin.",
+          ],
+        },
+        {
+          heading: "Guide d’achat — réduire ces dépenses",
+          body: [
+            "Réduisez ces dépenses en gemmes si vous ne visez pas précisément leurs récompenses :",
+            "Casques de préparation d’Odin : pas indispensables sauf si vous visez un héros ou pouvez porter le coup final à Surtr ou Jorm avec eux.",
+            "PvP d’Atlantis : limitez la dépense totale à 2 000 gemmes.",
+            "Objets supplémentaires des events de routine : achetez-les seulement si vous êtes sur le point de perdre votre plateau.",
+            "Main Events : si vous ne visez pas des étoiles de héros ou des skins précis, vous pouvez aussi réduire vos dépenses ici. Pour les Main Events qui donnent un héros, cela peut également affecter votre guilde.",
+          ],
+        },
+        {
           heading: "Guide d’achat — essentiel & obligatoire",
           body: [
             "Priorisez toujours votre budget. Achats classés par valeur et nécessité situationnelle.",

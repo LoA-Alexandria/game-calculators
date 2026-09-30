@@ -1565,6 +1565,34 @@ const en = {
           ],
         },
         {
+          heading: "Spending guide — gem pressure after day 90",
+          body: [
+            "This is an in-progress community draft from Autumn. After day 90, events stay in their rotation, but multiple matchmaking groups can make them start before the previous event ends. That compresses the schedule and puts heavier pressure on your gem reserves. Prioritize events that return gems, and consider skipping gem spending on some Main Events. Your budget still decides; events not mentioned below remain gem-spend priorities.",
+          ],
+        },
+        {
+          heading: "Spending guide — events to skip",
+          body: [
+            "If you want to protect your gem reserves, skip these unless the exception applies:",
+            "Road to the Cup stamina: skip it unless you want the artwork or mount items.",
+            "Road to the Cup friendly match attempts: skip the extra attempts.",
+            "Ranking events: skip all gem spending.",
+            "Duel Festival attempts: skip extra attempts unless you would fall out of a round.",
+            "Nile stockpile phase: skip it unless your guild would fall out of qualifying.",
+            "Spring Returns: skip it, especially once you are past Garden level 30.",
+          ],
+        },
+        {
+          heading: "Spending guide — where to cut back",
+          body: [
+            "Reduce these gem spends when you are not pushing for their rewards:",
+            "Odin prep helmets: they are not essential unless you are pushing for a hero or can use them to last-hit Surtr or Jorm.",
+            "Atlantis PvP: cap your total spend at 2,000 gems.",
+            "Routine-event extra items: buy them only when you are about to lose your board.",
+            "Main Events: if you are not pushing for specific hero stars or skins, you can cut back here too. For hero-granting Main Events, lower spending can also affect your guild.",
+          ],
+        },
+        {
           heading: "Spending guide — essential & mandatory",
           body: [
             "Always prioritize your budget. This ranks purchases by value and situational necessity.",
