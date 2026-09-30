@@ -198,6 +198,13 @@ The source misspelling “Cerebrus” follows the canonical Core spelling,
 Cerberus. Diabolus and Cross Flag remain text-only Cavalry recommendations
 until they exist in the linked Core Collection catalogue.
 
+The Hero / Collection Destiny guide is in `guideEntries.heroCollectionDestiny`
+in all three dictionaries and uses its own renderer. Its rotation, milestone
+rewards, saving advice, and server-day-60 rebate split come from Autumn
+(Ice-S12)'s community notes shared on 14 and 28 September 2026. Keep the
+milestone payouts distinct from the cumulative 0–400 reward totals, and retain
+the source note that these rules are community-reported and can change.
+
 Goddess names, rarity, portraits, and the
 English affinity and obtain live in `lib/data/goddesses.json`, once for all
 languages; `goddessTexts` translates the wording. `tests/goddesses.test.mjs`

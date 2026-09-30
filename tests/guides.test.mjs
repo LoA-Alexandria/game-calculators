@@ -23,6 +23,7 @@ test("converts guide slugs and dictionary ids both ways", () => {
   assert.equal(guideHref("artworkLayouts"), "/guides/artwork-layouts/");
   assert.equal(guideHref("heroes"), "/guides/heroes/");
   assert.equal(guideHref("goddessTheater"), "/guides/goddess-theater/");
+  assert.equal(guideHref("heroCollectionDestiny"), "/guides/hero-collection-destiny/");
   assert.equal(guideIdFromHref("/guides/hero-layouts/"), "heroLayouts");
   assert.equal(guideIdFromHref("/guides/goddesses/"), "goddesses");
   assert.equal(guideIdFromHref("/guides/artwork/"), "artwork");
@@ -68,6 +69,19 @@ test("artwork layouts levels SSR ATK first", () => {
   assert.equal(note, "");
 });
 
+test("Hero / Collection Destiny keeps its rotation and milestone guide complete in every locale", () => {
+  for (const [code, dictionary] of Object.entries(mapLocales(getDictionary))) {
+    const guide = dictionary.guideEntries.heroCollectionDestiny;
+    assert.equal(guide.cycleEvents.length, 4, `${code}: four Destiny events`);
+    assert.equal(guide.ageBands.length, 2, `${code}: both server-age rebate cases`);
+    assert.equal(guide.saveRules.length, 4, `${code}: all saving thresholds`);
+    assert.equal(guide.milestones.length, 9, `${code}: complete milestone ladder`);
+    assert.equal(guide.heroRewards.length, 7, `${code}: Hero Destiny rewards`);
+    assert.equal(guide.collectionRewards.length, 6, `${code}: Collection Destiny rewards`);
+    assert.match(guide.note, /Autumn/i, `${code}: source attribution`);
+  }
+});
+
 test("each guide entry is claimed by exactly the renderer it was written for", () => {
   const custom = {
     goddesses: "goddesses",
@@ -81,6 +95,7 @@ test("each guide entry is claimed by exactly the renderer it was written for", (
     anecdotes: "anecdotes",
     serverAgeUnlocks: "serverAgeUnlocks",
     eventOrderRotation: "eventOrderRotation",
+    heroCollectionDestiny: "heroCollectionDestiny",
     museion: "museion",
     heroLeveling: "heroLeveling",
     buildings: "buildings",

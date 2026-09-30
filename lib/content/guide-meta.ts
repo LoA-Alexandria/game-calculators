@@ -136,6 +136,10 @@ export const GUIDE_PRESENTATION: Record<GuideEntryId, GuidePresentation> = {
   eventOrderRotation: {
     art: ["/events/holy-grail.webp", "/events/astral-wonderland.webp", "/events/great-flood.webp", "/events/grand-voyage.webp"],
   },
+  heroCollectionDestiny: {
+    art: ["/heroes/joan-of-arc.webp", "/collection/prometheus-torch.webp", "/collection/pandoras-box.webp"],
+    cutout: true,
+  },
 };
 
 export function guidePresentation(id: GuideEntryId): GuidePresentation {

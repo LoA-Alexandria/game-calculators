@@ -82,6 +82,7 @@ export type GuideLayout =
   | "anecdotes"
   | "serverAgeUnlocks"
   | "eventOrderRotation"
+  | "heroCollectionDestiny"
   | "museion"
   | "heroLeveling"
   | "buildings"
@@ -123,6 +124,7 @@ export function guideLayout(guide: object): GuideLayout {
   if ("anecdoteTexts" in guide) return "anecdotes";
   if ("timelineHeading" in guide) return "serverAgeUnlocks";
   if ("rotationHeading" in guide) return "eventOrderRotation";
+  if ("cycleHeading" in guide) return "heroCollectionDestiny";
   if ("buildingsHeading" in guide) return "museion";
   if ("focusHeading" in guide) return "heroLeveling";
   if ("categoriesHeading" in guide) return "buildings";
