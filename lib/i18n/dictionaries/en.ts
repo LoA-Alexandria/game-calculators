@@ -2851,6 +2851,7 @@ const en = {
       oneTimeMark: "One-time",
       oneTimeHint: "Runs once on a server; it does not return on a schedule.",
       relatedLabel: "See {guide}",
+      eventLinkLabel: "Open {event} event guide",
       unconfirmedHeading: "Timing still unconfirmed",
       unconfirmedLede:
         "These show up with server age somehow, but nobody has pinned a reliable day yet.",

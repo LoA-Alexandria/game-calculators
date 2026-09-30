@@ -6060,6 +6060,7 @@ const de: Dictionary = {
       oneTimeMark: "Einmalig",
       oneTimeHint: "Läuft einmal pro Server und kehrt nicht im Rhythmus zurück.",
       relatedLabel: "Siehe {guide}",
+      eventLinkLabel: "Event-Guide {event} öffnen",
       unconfirmedHeading: "Zeitpunkt noch unbestätigt",
       unconfirmedLede:
         "Diese hängen irgendwie am Serveralter, aber ein verlässlicher Tag steht noch nicht fest.",

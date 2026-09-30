@@ -6,6 +6,7 @@ import {
   allEventWikiEntries,
   eventWikiIcon,
 } from "../lib/content/event-guides.ts";
+import { EVENT_GUIDE_HREFS } from "../lib/content/event-guide-routes.ts";
 import { getDictionary } from "../lib/i18n/index.ts";
 import { sectionById } from "../lib/navigation.ts";
 
@@ -48,5 +49,12 @@ test("each event guide page folder exists for the nav slug", () => {
   );
   for (const item of sectionById("events").items) {
     assert.ok(pages.has(item.href), `${item.href} has no app/events page`);
+  }
+});
+
+test("the shared event guide routes match the Events navigation", () => {
+  const items = sectionById("events").items;
+  for (const [id, href] of Object.entries(EVENT_GUIDE_HREFS)) {
+    assert.ok(items.some((item) => item.href === href), `${id} route ${href} is missing from Events`);
   }
 });
