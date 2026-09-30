@@ -3,6 +3,10 @@
 import Link from "next/link";
 import Image from "next/image";
 import { asset, BASE_PATH } from "../../lib/site";
+import { HEROES, heroImageUrl } from "../../lib/content/heroes";
+import { GODDESSES, goddessImageUrl } from "../../lib/content/goddesses";
+import { HeroPortrait } from "./HeroPortrait";
+import { useLocale } from "./LocaleProvider";
 
 /** Renders the small, safe content notation emitted by the Content Builder. */
 export function RichContentText({ text }: { text: string }) {
@@ -11,6 +15,14 @@ export function RichContentText({ text }: { text: string }) {
     if (!line) return null;
     if (line.startsWith("## ")) return <h3 key={index}>{line.slice(3)}</h3>;
     if (line.startsWith("> ")) return <p className="callout" key={index}>{inline(line.slice(2))}</p>;
+    const character = /^\[\[(hero|goddess):([a-z0-9-]+)\]\]$/i.exec(line);
+    if (character) return <CoreCharacterEmbed key={index} kind={character[1].toLowerCase() as "hero" | "goddess"} id={character[2]} />;
+    const arrow = /^\[\[arrow:(right|down|left)\]\]$/i.exec(line);
+    if (arrow) {
+      const direction = arrow[1].toLowerCase();
+      const symbol = direction === "down" ? "↓" : direction === "left" ? "←" : "→";
+      return <div className={`guide-content-arrow is-${direction}`} key={index} aria-hidden="true"><span>{symbol}</span></div>;
+    }
     const image = /^!\[([^\]]*)\]\(([^)]+)\)$/.exec(line);
     if (image && safeImage(image[2])) {
       return (
@@ -22,6 +34,20 @@ export function RichContentText({ text }: { text: string }) {
     }
     return <p key={index}>{inline(line)}</p>;
   })}</>;
+}
+
+function CoreCharacterEmbed({ kind, id }: { kind: "hero" | "goddess"; id: string }) {
+  const { t } = useLocale();
+  const person = kind === "hero" ? HEROES.find((entry) => entry.id === id) : GODDESSES.find((entry) => entry.id === id);
+  if (!person) return null;
+  const image = person.images[0];
+  const src = image ? (kind === "hero" ? heroImageUrl(image) : goddessImageUrl(image)) : null;
+  const href = `/guides/${kind === "hero" ? "heroes" : "goddesses"}/#${encodeURIComponent(person.id)}`;
+  return <Link className="guide-content-character" href={href}>
+    <HeroPortrait name={person.name} rarity={person.rarity} src={src} className="hero-portrait-medium" />
+    <span className="guide-content-character-copy"><strong>{person.name}</strong><small>{person.rarity} · {kind === "hero" ? t.contentBuilder.coreHero : t.contentBuilder.coreGoddess}</small></span>
+    <span className="guide-content-character-link" aria-hidden="true">↗</span>
+  </Link>;
 }
 
 function safeImage(value: string) {

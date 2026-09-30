@@ -1,14 +1,19 @@
 import { LOCALE_CODES, dictionaryFile, type Locale } from "../i18n/index.ts";
 import { blankTranslations, dictionaryLiteral, propertyName, textIn, type Translations } from "../i18n/translations.ts";
+import { HEROES } from "./heroes.ts";
+import { GODDESSES } from "./goddesses.ts";
 
 export type ContentKind = "news" | "guide" | "event";
-export type ContentBlockType = "paragraph" | "heading" | "image" | "coreLink" | "callout";
+export type ContentBlockType = "paragraph" | "heading" | "image" | "coreLink" | "hero" | "goddess" | "arrow" | "callout";
+export type ContentArrowDirection = "right" | "down" | "left";
 export type ContentBlock = {
   type: ContentBlockType;
   text: Translations;
   src: string;
   alt: Translations;
   href: string;
+  entityId: string;
+  direction: ContentArrowDirection;
 };
 export type ContentBuilderDraft = {
   kind: ContentKind;
@@ -24,7 +29,7 @@ export type ContentBuilderDraft = {
 };
 
 export function emptyContentBlock(type: ContentBlockType = "paragraph"): ContentBlock {
-  return { type, text: blankTranslations(), src: "", alt: blankTranslations(), href: "" };
+  return { type, text: blankTranslations(), src: "", alt: blankTranslations(), href: "", entityId: "", direction: "right" };
 }
 
 export function slugifyContent(value: string): string {
@@ -51,6 +56,9 @@ function bodyLines(draft: ContentBuilderDraft, locale: Locale): string[] {
     if (block.type === "paragraph" && text) lines.push(text);
     if (block.type === "heading" && text) lines.push(`## ${text}`);
     if (block.type === "callout" && text) lines.push(`> ${text}`);
+    if (block.type === "hero" && HEROES.some((hero) => hero.id === block.entityId)) lines.push(`[[hero:${block.entityId}]]`);
+    if (block.type === "goddess" && GODDESSES.some((goddess) => goddess.id === block.entityId)) lines.push(`[[goddess:${block.entityId}]]`);
+    if (block.type === "arrow" && ["right", "down", "left"].includes(block.direction)) lines.push(`[[arrow:${block.direction}]]`);
     if (block.type === "image" && safeContentUrl(block.src)) {
       const alt = textIn(block.alt, locale).trim();
       lines.push(`![${alt}](${block.src})`);
