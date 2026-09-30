@@ -38,6 +38,7 @@ import {
   type Guild,
   type GuildMembership,
   type GuildPost,
+  type GuildRoomTab,
   type GuildRosterEntry,
   type GuildTab,
 } from "../../lib/content/guilds";
@@ -47,6 +48,7 @@ import { useAuth } from "../components/AuthProvider";
 import { useDocumentTitle, useLocale } from "../components/LocaleProvider";
 import {
   CloseIcon,
+  ChatIcon,
   EventsIcon,
   GearIcon,
   GlobeIcon,
@@ -62,6 +64,7 @@ import {
 } from "../components/Icons";
 import { SignInCard } from "../components/SignInGate";
 import { PageHead, SectionBanner } from "../components/Ui";
+import { GuildChatPanel } from "./GuildChatPanel";
 
 type PendingRow = Pick<GuildMembership, "guild_id" | "user_id" | "status" | "request_note" | "requested_at">;
 type ManagePanel = "requests" | "settings" | null;
@@ -133,7 +136,7 @@ async function functionErrorDetail(error: unknown): Promise<string> {
   }
 }
 
-export function GuildRoom({ tab }: { tab: GuildTab }) {
+export function GuildRoom({ tab }: { tab: GuildRoomTab }) {
   const { t, tf, d, locale } = useLocale();
   const { session, loading: authLoading } = useAuth();
   const supabase = getSupabaseBrowserClient();
@@ -183,7 +186,7 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
 
   const reload = useCallback(() => setReloadToken((value) => value + 1), []);
 
-  const tabTitle = tab === "news" ? t.guilds.news : tab === "trade" ? t.guilds.tradeTab : t.guilds.planung;
+  const tabTitle = tab === "news" ? t.guilds.news : tab === "trade" ? t.guilds.tradeTab : tab === "chat" ? t.guilds.chatTab : t.guilds.planung;
   useDocumentTitle(guild ? `${guild.name} · ${tabTitle}` : t.guilds.title);
 
   useEffect(() => {
@@ -267,21 +270,26 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
       }
 
       if (canEnter) {
-        const [feed, members, active] = await Promise.all([
-          supabase
+        const [members, active] = await Promise.all([
+          supabase.rpc("guild_roster", { p_guild_id: nextGuild.id }),
+          supabase.from("guild_active_events").select("event_id").eq("guild_id", nextGuild.id),
+        ]);
+        if (gone) return;
+        if (tab === "chat") {
+          setPosts([]);
+        } else {
+          const feed = await supabase
             .from("guild_posts")
             .select("id, guild_id, channel, title, body, source_locale, title_i18n, body_i18n, author_id, created_at, updated_at")
             .eq("guild_id", nextGuild.id)
             // Trade has a board rather than a feed, so it borrows the news channel
             // for the query and shows none of it.
             .eq("channel", tab === "trade" ? "news" : tab)
-            .order("created_at", { ascending: false }),
-          supabase.rpc("guild_roster", { p_guild_id: nextGuild.id }),
-          supabase.from("guild_active_events").select("event_id").eq("guild_id", nextGuild.id),
-        ]);
-        if (gone) return;
-        if (feed.error) setError(feed.error.message);
-        else setPosts((feed.data ?? []) as GuildPost[]);
+            .order("created_at", { ascending: false });
+          if (gone) return;
+          if (feed.error) setError(feed.error.message);
+          else setPosts((feed.data ?? []) as GuildPost[]);
+        }
         if (members.error) setError(members.error.message);
         else {
           setRoster(
@@ -498,7 +506,7 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
     setTitleI18n(titles);
     setBodyI18n(bodies);
     setHasTranslations(otherLocales(source).some((code) => Boolean(titles[code]?.trim() || bodies[code]?.trim())));
-    setComposeFor(tab);
+    setComposeFor(post.channel);
   };
 
   const removePost = async (postId: string) => {
@@ -959,6 +967,14 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
             <TradeIcon className="icon" />
             {t.guilds.tradeTab}
           </Link>
+          <Link
+            className={tab === "chat" ? "guild-hero-tab is-active" : "guild-hero-tab"}
+            href={guildRoomHref(guild.slug, "chat")}
+            aria-current={tab === "chat" ? "page" : undefined}
+          >
+            <ChatIcon className="icon" />
+            {t.guilds.chatTab}
+          </Link>
         </nav>
       </header>
 
@@ -1119,7 +1135,15 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
 
       <div className="guild-room-layout">
         <div className="guild-room-main">
-          {tab === "trade" ? (
+          {tab === "chat" ? (
+            <GuildChatPanel
+              key={guild.id}
+              guildId={guild.id}
+              roster={roster}
+              frozen={frozen}
+              canWrite={!frozen && (membership?.status === "active" || isDiscordMaster)}
+            />
+          ) : tab === "trade" ? (
             <GuildTradeBoard
               guildId={guild.id}
               userId={session.userId}

@@ -114,3 +114,14 @@ export function peopleInMessages(rows: readonly MessageRow[]): string[] {
 export function chatOrder(rows: readonly MessageRow[]): MessageRow[] {
   return rows.slice().sort((a, b) => when(a).localeCompare(when(b)));
 }
+
+/** Merge a fetched history page with live inserts, deduplicating and keeping the newest rows. */
+export function mergeChatRows(
+  current: readonly MessageRow[],
+  incoming: readonly MessageRow[],
+  limit = 200,
+): MessageRow[] {
+  const rows = new Map<string, MessageRow>();
+  for (const row of [...current, ...incoming]) rows.set(row.id, row);
+  return chatOrder([...rows.values()]).slice(-Math.max(0, limit));
+}

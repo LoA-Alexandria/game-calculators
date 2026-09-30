@@ -26,6 +26,7 @@ test("isGuildSlug accepts stable room ids only", () => {
 test("guild room links stay static-export friendly", () => {
   assert.equal(guildRoomHref("ice-s12"), "/guilds/room/news/?guild=ice-s12");
   assert.equal(guildRoomHref("ice-s12", "planung"), "/guilds/room/planung/?guild=ice-s12");
+  assert.equal(guildRoomHref("ice-s12", "chat"), "/guilds/room/chat/?guild=ice-s12");
 });
 
 test("readGuildSlugParam rejects junk", () => {
