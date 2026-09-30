@@ -2,7 +2,7 @@
 -- The first 20 assignments are reserved permanently; revoking a reward does
 -- not reopen its place for a later member.
 
-create table public.early_supporters (
+create table if not exists public.early_supporters (
   id uuid primary key default gen_random_uuid(),
   user_id uuid unique references auth.users(id) on delete set null,
   granted_at timestamptz not null default now(),
@@ -30,18 +30,22 @@ grant insert (user_id) on table public.early_supporters to authenticated;
 grant update (revoked_at, show_on_credits, display_name)
   on table public.early_supporters to authenticated;
 
+drop policy if exists "Public may read opted-in Early Supporter credits" on public.early_supporters;
 create policy "Public may read opted-in Early Supporter credits"
   on public.early_supporters for select to anon
   using (show_on_credits and revoked_at is null);
 
+drop policy if exists "Members read their Early Supporter status; admins read all" on public.early_supporters;
 create policy "Members read their Early Supporter status; admins read all"
   on public.early_supporters for select to authenticated
   using (user_id = auth.uid() or public.current_site_role() = 'admin');
 
+drop policy if exists "Admins may grant Early Supporters" on public.early_supporters;
 create policy "Admins may grant Early Supporters"
   on public.early_supporters for insert to authenticated
   with check (public.current_site_role() = 'admin');
 
+drop policy if exists "Members manage only their public credit; admins manage grants" on public.early_supporters;
 create policy "Members manage only their public credit; admins manage grants"
   on public.early_supporters for update to authenticated
   using (user_id = auth.uid() or public.current_site_role() = 'admin')
@@ -96,6 +100,7 @@ $$;
 
 revoke all on function public.limit_early_supporter_grants() from public, anon, authenticated;
 
+drop trigger if exists early_supporters_limit_grants on public.early_supporters;
 create trigger early_supporters_limit_grants
   before insert or update on public.early_supporters
   for each row execute function public.limit_early_supporter_grants();
