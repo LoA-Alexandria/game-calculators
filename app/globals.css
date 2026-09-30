@@ -3881,8 +3881,13 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
   list-style: none;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
-  align-items: start;
+  grid-auto-rows: 1fr;
+  align-items: stretch;
   gap: 10px;
+}
+.age-event-list:has(.age-event-details:not([hidden])),
+.age-unconfirmed:has(.age-event-details:not([hidden])) {
+  grid-auto-rows: auto;
 }
 .age-unconfirmed {
   max-width: none;
@@ -3977,12 +3982,17 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
 }
 .age-event-link {
   justify-self: start;
-  margin-top: 2px;
   color: var(--accent);
   font-size: .82rem;
   font-weight: 600;
+  line-height: 1.4;
   text-decoration: underline;
   text-underline-offset: 3px;
+}
+.age-event-links {
+  display: grid;
+  align-content: start;
+  min-height: calc(.82rem * 1.4);
 }
 .age-event-link:hover { color: var(--ink); }
 .age-event-details {
