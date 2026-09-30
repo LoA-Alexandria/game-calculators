@@ -10536,6 +10536,23 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
 .content-builder-instructions textarea { margin-top: 10px; }
 .content-builder-actions { display: flex; flex-wrap: wrap; gap: 8px; }
 .content-builder-actions .button-primary { background: var(--builder-accent); border-color: var(--builder-accent); }
+.content-builder-character-picker { display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: end; gap: 14px; }
+.content-builder-character-selection { display: flex; align-items: center; gap: 10px; min-width: 160px; padding: 7px 11px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+.content-builder-character-selection > span:last-child, .guide-content-character-copy { display: grid; gap: 2px; min-width: 0; }
+.content-builder-character-selection strong, .guide-content-character-copy strong { overflow: hidden; color: var(--ink); text-overflow: ellipsis; }
+.content-builder-character-selection small, .guide-content-character-copy small { color: var(--ink-soft); font-size: .75rem; }
+.guide-content-character { display: inline-flex; align-items: center; gap: 12px; width: fit-content; max-width: 100%; margin: 8px 0; padding: 10px 14px 10px 10px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface-2); box-shadow: 0 5px 16px rgba(36, 32, 25, .07); text-decoration: none; transition: border-color .18s ease, transform .18s ease, box-shadow .18s ease; }
+.guide-content-character:hover { transform: translateY(-2px); border-color: var(--accent); box-shadow: 0 8px 22px rgba(36, 32, 25, .12); }
+.guide-content-character .hero-portrait { flex: 0 0 auto; }
+.guide-content-character-link { margin-left: 6px; color: var(--accent); font-size: 1.15rem; }
+.guide-content-arrow { display: flex; align-items: center; justify-content: center; width: min(100%, 260px); min-height: 34px; margin: 4px auto; color: var(--accent); }
+.guide-content-arrow::before, .guide-content-arrow::after { height: 1px; flex: 1; content: ""; background: linear-gradient(90deg, transparent, var(--line-strong, var(--line))); }
+.guide-content-arrow::after { background: linear-gradient(90deg, var(--line-strong, var(--line)), transparent); }
+.guide-content-arrow span { display: grid; place-items: center; width: 32px; height: 32px; margin: 0 10px; border: 1px solid color-mix(in srgb, var(--accent), var(--line) 60%); border-radius: 50%; background: var(--surface-2); font-size: 1.15rem; font-weight: 800; line-height: 1; }
+.guide-content-arrow.is-down { min-height: 40px; flex-direction: column; }
+.guide-content-arrow.is-down::before, .guide-content-arrow.is-down::after { max-width: 1px; height: 20px; flex: 1; background: linear-gradient(180deg, transparent, var(--line)); }
+.guide-content-arrow.is-down::after { background: linear-gradient(180deg, var(--line), transparent); }
+.guide-content-arrow.is-down span { margin: 0 8px; }
 @media (max-width: 980px) {
   .content-builder-grid { grid-template-columns: minmax(0,1fr); }
   .content-builder-side { position: static; }
@@ -10545,6 +10562,8 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
   .content-kind-card { min-height: 68px; }
   .content-builder-image-picker { grid-template-columns: 1fr; }
   .content-builder-image-preview { height: 140px; }
+  .content-builder-character-picker { grid-template-columns: minmax(0,1fr); }
+  .content-builder-character-selection { width: fit-content; max-width: 100%; }
   .content-builder-panel, .content-builder-preview, .content-builder-export { padding: 16px; border-radius: 15px; }
   .content-builder-actions { display: grid; grid-template-columns: 1fr; }
   .content-builder-actions > button { justify-content: center; }
@@ -10552,4 +10571,6 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
 @media (prefers-reduced-motion: reduce) {
   .content-kind-card { transition: none; }
   .content-kind-card:hover { transform: none; }
+  .guide-content-character { transition: none; }
+  .guide-content-character:hover { transform: none; }
 }

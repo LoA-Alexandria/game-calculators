@@ -17,6 +17,9 @@ import {
   type ContentKind,
 } from "../../lib/content/content-builder";
 import { guidePresentation } from "../../lib/content/guide-meta";
+import { HEROES, heroPortrait } from "../../lib/content/heroes";
+import { GODDESSES, goddessPortrait } from "../../lib/content/goddesses";
+import { HeroPortrait } from "../components/HeroPortrait";
 import { useAuth } from "../components/AuthProvider";
 import { AllLanguagesToggle, DictionaryBlocks, TranslatedField, useEditorLanguages } from "../components/EditorLanguages";
 import { RichContentText } from "../components/RichContentText";
@@ -26,7 +29,7 @@ import { PageHead } from "../components/Ui";
 import { asset, BASE_PATH } from "../../lib/site";
 
 const STORAGE_KEY = "popepoch-content-builder-draft";
-const BLOCK_TYPES: ContentBlockType[] = ["paragraph", "heading", "image", "coreLink", "callout"];
+const BLOCK_TYPES: ContentBlockType[] = ["paragraph", "heading", "hero", "goddess", "arrow", "image", "coreLink", "callout"];
 const CORE_LINKS = sectionById("guides").items.filter((item) => item.categoryId === "coreElements");
 const IMAGE_OPTIONS = [...new Set([
   ...CORE_LINKS.flatMap((item) => item.icon ? [item.icon] : []),
@@ -108,7 +111,7 @@ export function ContentBuilder() {
       if (!raw) return;
       const value = JSON.parse(raw) as ContentBuilderDraft;
       if (!value || !["news", "guide", "event"].includes(value.kind) || !permittedKinds.includes(value.kind) || !Array.isArray(value.blocks)) return;
-      setDraft({ ...emptyDraft(), ...value });
+      setDraft({ ...emptyDraft(), ...value, blocks: value.blocks.map((block) => ({ ...emptyContentBlock(block.type), ...block })) });
       setSlugTouched(true);
     } catch { /* ignore malformed local drafts */ }
   };
@@ -169,7 +172,7 @@ export function ContentBuilder() {
                     <button type="button" className="icon-button button-danger" aria-label={words.remove} title={words.remove} disabled={draft.blocks.length < 2} onClick={() => setDraft((current) => ({ ...current, blocks: current.blocks.filter((_, at) => at !== index) }))}><TrashIcon className="icon icon-sm" /></button>
                   </div>
                 </header>
-                {block.type === "image" ? <>
+                {block.type === "hero" || block.type === "goddess" ? <CoreCharacterPicker block={block} index={index} onChange={(entityId) => setBlock(index, { entityId })} label={words.fieldCharacter} /> : block.type === "arrow" ? <div className="field"><label htmlFor={`content-builder-arrow-${index}`}>{words.fieldArrowDirection}</label><select id={`content-builder-arrow-${index}`} value={block.direction ?? "right"} onChange={(event) => setBlock(index, { direction: event.target.value as ContentBlock["direction"] })}><option value="right">{words.arrowDirections.right} →</option><option value="down">{words.arrowDirections.down} ↓</option><option value="left">{words.arrowDirections.left} ←</option></select></div> : block.type === "image" ? <>
                   <ImagePicker value={block.src} onChange={(src) => setBlock(index, { src })} label={words.fieldImage} />
                   <TranslatedField label={words.fieldAlt} languages={languages} get={(locale) => block.alt[locale]} set={(locale, value) => setBlock(index, { alt: { ...block.alt, [locale]: value } })} />
                 </> : block.type === "coreLink" ? <>
@@ -234,7 +237,26 @@ function PreviewBlock({ block, locale, t }: { block: ContentBlock; locale: strin
     const label = text || CORE_LINKS.find((item) => item.href === block.href)?.label(t) || "Core guide";
     return block.href ? <RichContentText text={`[${label}](${block.href})`} /> : null;
   }
+  if (block.type === "hero" || block.type === "goddess") return block.entityId ? <RichContentText text={`[[${block.type}:${block.entityId}]]`} /> : null;
+  if (block.type === "arrow") return <RichContentText text={`[[arrow:${block.direction ?? "right"}]]`} />;
   if (!text.trim()) return null;
   const markdown = block.type === "heading" ? `## ${text}` : block.type === "callout" ? `> ${text}` : text;
   return <RichContentText text={markdown} />;
+}
+
+function CoreCharacterPicker({ block, index, onChange, label }: { block: ContentBlock; index: number; onChange: (id: string) => void; label: string }) {
+  const { t } = useLocale();
+  const [query, setQuery] = useState("");
+  const people = block.type === "hero" ? HEROES : GODDESSES;
+  const filteredPeople = people.filter((person) => person.name.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase()));
+  const selected = people.find((person) => person.id === block.entityId);
+  const portrait = selected ? (block.type === "hero" ? heroPortrait(selected.name) : goddessPortrait(selected.name)) : null;
+  return <div className="content-builder-character-picker">
+    <div className="field"><label htmlFor={`content-builder-character-search-${index}`}>{label}</label><input id={`content-builder-character-search-${index}`} type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder={t.contentBuilder.searchCharacters} /><select aria-label={t.contentBuilder.chooseCharacter} value={block.entityId} onChange={(event) => onChange(event.target.value)}><option value="">{t.contentBuilder.chooseCharacter}</option>{filteredPeople.map((person) => <option key={person.id} value={person.id}>{person.rarity} · {person.name}</option>)}</select></div>
+    {selected ? <div className="content-builder-character-selection"><HeroPortrait name={selected.name} rarity={selected.rarity} src={portrait} className="hero-portrait-small" /><span><strong>{selected.name}</strong><small>{selected.rarity} · {block.type === "hero" ? t.contentBuilder.coreHero : t.contentBuilder.coreGoddess}</small></span></div> : <p className="tier-small">{wordsForCharacter(block.type, t.contentBuilder)}</p>}
+  </div>;
+}
+
+function wordsForCharacter(type: ContentBlock["type"], words: ReturnType<typeof useLocale>["t"]["contentBuilder"]) {
+  return type === "hero" ? words.selectHeroFromCore : words.selectGoddessFromCore;
 }

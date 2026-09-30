@@ -11,6 +11,8 @@ import {
   slugifyContent,
 } from "../lib/content/content-builder.ts";
 import { LOCALE_CODES } from "../lib/i18n/index.ts";
+import { HEROES } from "../lib/content/heroes.ts";
+import { GODDESSES } from "../lib/content/goddesses.ts";
 
 function translated(en) {
   return Object.fromEntries(LOCALE_CODES.map((locale) => [locale, locale === "en" ? en : ""]));
@@ -65,6 +67,33 @@ test("guide dictionaries serialize the rich block sequence into existing guide s
   ]);
   assert.equal(entry.sections[1].heading, "Getting started");
   assert.equal(entry.note, "A closing note.");
+});
+
+test("Core roster blocks and directional arrows serialize as safe rich-content elements", () => {
+  const hero = emptyContentBlock("hero");
+  hero.entityId = HEROES[0].id;
+  const goddess = emptyContentBlock("goddess");
+  goddess.entityId = GODDESSES[0].id;
+  const right = emptyContentBlock("arrow");
+  right.direction = "right";
+  const down = emptyContentBlock("arrow");
+  down.direction = "down";
+  const entry = contentDictionaryEntry({ ...draft(), blocks: [hero, right, goddess, down] }, "en");
+  assert.deepEqual(entry.sections[0].body, [
+    `[[hero:${HEROES[0].id}]]`,
+    "[[arrow:right]]",
+    `[[goddess:${GODDESSES[0].id}]]`,
+    "[[arrow:down]]",
+  ]);
+});
+
+test("unknown Core ids do not produce broken embeds", () => {
+  const hero = emptyContentBlock("hero");
+  hero.entityId = "not-in-core";
+  const goddess = emptyContentBlock("goddess");
+  goddess.entityId = "not-in-core";
+  const entry = contentDictionaryEntry({ ...draft(), blocks: [hero, goddess] }, "en");
+  assert.equal(entry.sections.length, 0);
 });
 
 test("news output includes summary and article page instructions", () => {

@@ -1045,6 +1045,19 @@ order included.
 
 Dates are formatted for the reader's language, so store them as `YYYY-MM-DD`.
 
+## Composing a guide or event visually
+
+The Content Builder at `/content-builder/` assembles News, Guide, and Event
+entries from ordered blocks and previews them before export. Alongside text,
+headings, images, Core-guide links, and callouts, a writer can insert an actual
+Hero or Goddess from the Core roster by name; the published block shows its
+portrait and links to that Core entry. Arrow blocks add a right, down, or left
+direction marker between surrounding content. These two elements are stored as
+small `[[hero:<id>]]`, `[[goddess:<id>]]`, or `[[arrow:<direction>]]` lines in
+the existing dictionary body, and `RichContentText` renders them both in
+preview and on the published Guide, Event, or News page. Do not remove those
+tokens when editing a generated entry by hand.
+
 ## Section banners
 
 News, Events, Calculators, and Simulations use illustrated banners in
