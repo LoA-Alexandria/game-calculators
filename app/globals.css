@@ -1844,6 +1844,60 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
 .event-rotation-milestone h3 { margin: 8px 0; font-size: 1.02rem; }
 .event-rotation-milestone p { margin: 0; color: var(--ink-soft); font-size: .9rem; line-height: 1.55; }
 .event-rotation-source-note { margin-top: 22px !important; }
+.destiny-guide { --destiny-accent: #8a63d2; }
+.destiny-guide > .intro { max-width: 72ch; margin-bottom: 20px; }
+.destiny-guide-section { margin-top: 28px; padding: clamp(16px, 2.3vw, 26px); border: 1px solid var(--line); border-radius: var(--r-xl, 20px); background: color-mix(in srgb, var(--destiny-accent) 4%, var(--surface)); }
+.destiny-guide-section-heading { max-width: 74ch; margin-bottom: 18px; }
+.destiny-guide-section-heading h2, .destiny-guide-overview h2, .destiny-tips-card h2 { margin: 4px 0 8px; font-size: clamp(1.25rem, 2vw, 1.65rem); }
+.destiny-guide-section-heading > p, .destiny-guide-overview p, .destiny-age-note > p { margin: 0; color: var(--ink-soft); line-height: 1.6; }
+.destiny-guide-overview { display: grid; grid-template-columns: 54px minmax(0, 1fr); align-items: start; gap: 16px; margin-top: 20px; padding: 20px; border: 1px solid color-mix(in srgb, var(--destiny-accent) 35%, var(--line)); border-radius: var(--r-lg); background: linear-gradient(135deg, color-mix(in srgb, var(--destiny-accent) 13%, var(--surface)), var(--surface) 72%); }
+.destiny-guide-symbol, .destiny-tips-symbol { display: grid; width: 50px; height: 50px; place-items: center; border-radius: 16px; background: color-mix(in srgb, var(--destiny-accent) 15%, var(--surface)); color: var(--destiny-accent); font-size: 1.9rem; font-weight: 800; }
+.destiny-guide-overview p { max-width: 74ch; }
+.destiny-cycle-list { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin: 18px 0 0; padding: 0; list-style: none; counter-reset: destiny-cycle; }
+.destiny-cycle-card { display: grid; grid-template-columns: 32px minmax(0, 1fr); align-content: start; gap: 10px; min-width: 0; padding: 16px; border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--surface); }
+.destiny-cycle-number { display: grid; width: 30px; height: 30px; place-items: center; border-radius: 50%; background: var(--destiny-accent); color: var(--surface); font-size: .82rem; font-weight: 800; }
+.destiny-cycle-card h3, .destiny-age-note h3, .destiny-reward-card h3 { margin: 2px 0 8px; font-size: 1rem; }
+.destiny-resource-tag { display: inline-flex; padding: 4px 8px; border-radius: 99px; background: color-mix(in srgb, var(--destiny-accent) 10%, var(--surface)); color: var(--destiny-accent); font-size: .76rem; font-weight: 800; line-height: 1.35; }
+.destiny-cycle-card p { margin: 10px 0 0; color: var(--ink-soft); font-size: .88rem; line-height: 1.5; }
+.destiny-age-note { margin-top: 16px; padding: 18px; border-radius: var(--r-lg); background: color-mix(in srgb, var(--surface-2) 76%, var(--surface)); }
+.destiny-age-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 14px; }
+.destiny-age-band { display: grid; gap: 5px; padding: 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+.destiny-age-band strong { font-size: .87rem; }
+.destiny-age-band span { color: var(--ink-soft); font-size: .86rem; line-height: 1.45; }
+.destiny-save-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+.destiny-save-card { min-width: 0; padding: 16px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); }
+.destiny-save-card.is-use-now { border-color: color-mix(in srgb, var(--good) 48%, var(--line)); background: color-mix(in srgb, var(--good) 8%, var(--surface)); }
+.destiny-save-range { display: block; color: var(--destiny-accent); font-size: .8rem; font-weight: 850; letter-spacing: .04em; }
+.destiny-save-card p { margin: 8px 0 0; color: var(--ink-soft); font-size: .9rem; line-height: 1.5; }
+.destiny-milestone-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; margin: 0; padding: 0; list-style: none; }
+.destiny-milestone-row { display: grid; grid-template-columns: minmax(72px, .45fr) minmax(0, 1fr); align-items: center; gap: 12px; min-width: 0; padding: 12px 14px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+.destiny-milestone-row strong { color: var(--destiny-accent); font-size: .9rem; }
+.destiny-milestone-row span { color: var(--ink-soft); font-size: .87rem; line-height: 1.4; }
+.destiny-reward-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.destiny-reward-card { min-width: 0; padding: 20px; border: 1px solid var(--line); border-radius: var(--r-lg); background: var(--surface); }
+.destiny-reward-hero { --reward-accent: #d98c45; }
+.destiny-reward-collection { --reward-accent: #4c9d9a; }
+.destiny-reward-icon { display: grid; width: 40px; height: 40px; place-items: center; margin-bottom: 12px; border-radius: 12px; background: color-mix(in srgb, var(--reward-accent) 14%, var(--surface)); color: var(--reward-accent); font-size: 1.35rem; font-weight: 900; }
+.destiny-reward-card h3 { font-size: 1.05rem; }
+.destiny-reward-card > p { margin: 0; color: var(--ink-soft); font-size: .86rem; line-height: 1.5; }
+.destiny-reward-card ul, .destiny-tips-card ul { display: grid; gap: 8px; margin: 16px 0 0; padding-left: 20px; color: var(--ink-soft); }
+.destiny-reward-card li, .destiny-tips-card li { padding-left: 2px; line-height: 1.45; }
+.destiny-reward-card li::marker { color: var(--reward-accent); }
+.destiny-tips-card { display: grid; grid-template-columns: 50px minmax(0, 1fr); gap: 16px; margin-top: 24px; padding: 20px; border: 1px solid color-mix(in srgb, var(--gold) 42%, var(--line)); border-radius: var(--r-xl, 20px); background: color-mix(in srgb, var(--gold) 7%, var(--surface)); }
+.destiny-tips-symbol { background: color-mix(in srgb, var(--gold) 16%, var(--surface)); color: var(--gold); }
+.destiny-tips-card h2 { margin-top: 0; }
+.destiny-tips-card ul { margin-top: 8px; }
+@media (max-width: 900px) {
+  .destiny-cycle-list, .destiny-save-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .destiny-milestone-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 600px) {
+  .destiny-guide-section { padding: 14px; }
+  .destiny-guide-overview, .destiny-tips-card { grid-template-columns: 1fr; padding: 16px; }
+  .destiny-cycle-list, .destiny-save-grid, .destiny-milestone-list, .destiny-age-grid, .destiny-reward-grid { grid-template-columns: 1fr; }
+  .destiny-cycle-card { padding: 14px; }
+  .destiny-milestone-row { grid-template-columns: 80px minmax(0, 1fr); }
+}
 @media (max-width: 900px) {
   .event-rotation-sequence { flex-wrap: wrap; }
   .event-rotation-sequence > .event-rotation-step { flex: 1 1 calc(50% - 10px); }

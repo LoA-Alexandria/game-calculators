@@ -26,6 +26,7 @@ import { HeroLinkingGuide, isHeroLinkingGuide } from "./HeroLinkingGuide";
 import { AnecdotesGuide, isAnecdotesGuide } from "./AnecdotesGuide";
 import { ServerAgeUnlocksGuide, isServerAgeUnlocksGuide } from "./ServerAgeUnlocksGuide";
 import { EventOrderRotationGuide, isEventOrderRotationGuide } from "./EventOrderRotationGuide";
+import { HeroCollectionDestinyGuide, isHeroCollectionDestinyGuide } from "./HeroCollectionDestinyGuide";
 import { MuseionGuide, isMuseionGuide } from "./MuseionGuide";
 import { HeroLevelingGuide, isHeroLevelingGuide } from "./HeroLevelingGuide";
 import { GoddessLevelingGuide, isGoddessLevelingGuide } from "./GoddessLevelingGuide";
@@ -195,6 +196,8 @@ export function GuideArticle({ id }: { id: GuideEntryId }) {
           <ServerAgeUnlocksGuide guide={guide} />
         ) : isEventOrderRotationGuide(guide) ? (
           <EventOrderRotationGuide guide={guide} />
+        ) : isHeroCollectionDestinyGuide(guide) ? (
+          <HeroCollectionDestinyGuide guide={guide} />
         ) : isMuseionGuide(guide) ? (
           <MuseionGuide guide={guide} />
         ) : isHeroLevelingGuide(guide) ? (
