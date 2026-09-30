@@ -99,6 +99,14 @@ News, Guide, and Event embeds with `/share-content`. See
 [`DISCORD-INTEGRATIONS.md`](DISCORD-INTEGRATIONS.md) for setup and the current
 manual PayPal-claim approval boundary.
 
+Early Supporter is a separate, admin-awarded record for the permanent first-20
+cohort; it does not replace or alter a member's Premium entitlement. A locked
+database grant path requires active Premium and permanently caps assignments at
+20, even when a reward is later revoked. The optional public credits page reads
+only names that members explicitly opt to display. Discord role sync handles
+the Early Supporter and Test Version roles through separately configured role
+ids.
+
 Community guilds live in Supabase (`guilds`, `guild_memberships`, `guild_posts`,
 `guild_active_events`, `guild_event_days`, `guild_event_pledges`,
 `guild_event_camps`, `guild_event_orders`, `guild_alliances`) with RLS. Admins

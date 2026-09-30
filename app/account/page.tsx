@@ -31,6 +31,13 @@ type OwnRequest = {
 };
 
 type OwnGuild = Pick<Guild, "id" | "slug" | "name" | "server_name" | "master_discord_user_id">;
+type EarlySupporterAccount = {
+  user_id: string;
+  granted_at: string;
+  revoked_at: string | null;
+  show_on_credits: boolean;
+  display_name: string | null;
+};
 
 /** Your Premium and the guild it holds open, in one place. */
 export default function AccountPage() {
@@ -43,6 +50,9 @@ export default function AccountPage() {
   const [premium, setPremium] = useState<PremiumRow | null>(null);
   const [request, setRequest] = useState<OwnRequest | null>(null);
   const [guild, setGuild] = useState<OwnGuild | null>(null);
+  const [earlySupporter, setEarlySupporter] = useState<EarlySupporterAccount | null>(null);
+  const [creditName, setCreditName] = useState("");
+  const [showCredit, setShowCredit] = useState(false);
   const [masterDraft, setMasterDraft] = useState("");
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -56,7 +66,7 @@ export default function AccountPage() {
     if (!supabase || !session) return;
     let gone = false;
     void (async () => {
-      const [premiumRow, requestRow] = await Promise.all([
+      const [premiumRow, requestRow, supporterRow] = await Promise.all([
         supabase
           .from("premium_entitlements")
           .select("status, expires_at, note, auto_renew")
@@ -68,12 +78,24 @@ export default function AccountPage() {
           .eq("user_id", session.userId)
           .in("status", ["pending", "approved"])
           .maybeSingle(),
+        supabase
+          .from("early_supporters")
+          .select("user_id, granted_at, revoked_at, show_on_credits, display_name")
+          .eq("user_id", session.userId)
+          .maybeSingle(),
       ]);
       if (gone) return;
       if (premiumRow.error) setError(premiumRow.error.message);
       else setPremium((premiumRow.data as PremiumRow | null) ?? null);
       if (requestRow.error) setError(requestRow.error.message);
       else setRequest((requestRow.data as OwnRequest | null) ?? null);
+      if (supporterRow.error) setError(supporterRow.error.message);
+      else {
+        const row = (supporterRow.data as EarlySupporterAccount | null) ?? null;
+        setEarlySupporter(row);
+        setCreditName(row?.display_name ?? "");
+        setShowCredit(Boolean(row?.show_on_credits));
+      }
 
       const guildId = (requestRow.data as OwnRequest | null)?.created_guild_id;
       if (!guildId) {
@@ -169,6 +191,32 @@ export default function AccountPage() {
     reload();
   };
 
+  const saveEarlySupporterCredit = async () => {
+    if (!supabase || !session || !earlySupporter || earlySupporter.revoked_at) return;
+    const displayName = creditName.trim();
+    if (showCredit && !displayName) {
+      setError(t.account.earlySupporterNameRequired);
+      return;
+    }
+    setBusy(true);
+    setError("");
+    setMessage("");
+    const { data, error: updateError } = await supabase
+      .from("early_supporters")
+      .update({ display_name: displayName || null, show_on_credits: showCredit })
+      .eq("user_id", session.userId)
+      .is("revoked_at", null)
+      .select("user_id, granted_at, revoked_at, show_on_credits, display_name")
+      .single();
+    setBusy(false);
+    if (updateError) {
+      setError(updateError.message);
+      return;
+    }
+    setEarlySupporter(data as EarlySupporterAccount);
+    setMessage(t.account.earlySupporterSaved);
+  };
+
   const priceVars = { price: PREMIUM_PRICE_EUR, days: PREMIUM_PERIOD_DAYS };
 
   return (
@@ -236,6 +284,45 @@ export default function AccountPage() {
           </Link>
         </p>
       </section>
+
+      {earlySupporter && !earlySupporter.revoked_at ? (
+        <section className="panel account-panel">
+          <h2>{t.account.earlySupporterTitle}</h2>
+          <p>{t.premium.supporterPageLede}</p>
+          <label className="account-toggle" htmlFor={`${ids}-early-credit`}>
+            <input
+              id={`${ids}-early-credit`}
+              type="checkbox"
+              checked={showCredit}
+              disabled={busy}
+              onChange={(event) => setShowCredit(event.target.checked)}
+            />
+            <span>{t.account.earlySupporterOptIn}</span>
+          </label>
+          {showCredit ? (
+            <div className="field account-master">
+              <label htmlFor={`${ids}-credit-name`}>{t.account.earlySupporterName}</label>
+              <input
+                id={`${ids}-credit-name`}
+                value={creditName}
+                maxLength={40}
+                onChange={(event) => setCreditName(event.target.value)}
+              />
+            </div>
+          ) : null}
+          <p className="account-actions">
+            <button
+              className="small-button button-primary"
+              type="button"
+              disabled={busy}
+              onClick={() => void saveEarlySupporterCredit()}
+            >
+              {t.account.earlySupporterSave}
+            </button>
+            <Link className="small-button" href="/early-supporters/">{t.account.earlySupporterManage}</Link>
+          </p>
+        </section>
+      ) : null}
 
       <section className="panel account-panel">
         <h2>{t.account.guildTitle}</h2>

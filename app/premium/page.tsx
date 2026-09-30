@@ -68,6 +68,12 @@ export default function PremiumPage() {
         </ul>
       </section>
 
+      <section className="panel premium-transparency" aria-labelledby="premium-transparency-title">
+        <h2 id="premium-transparency-title">{t.premium.transparencyTitle}</h2>
+        <p>{t.premium.transparencyBody}</p>
+        <Link className="small-button" href="/early-supporters/">{t.account.earlySupporterManage}</Link>
+      </section>
+
       {session?.premium ? (
         <section className="panel" style={{ marginTop: 16 }}>
           <h2>{t.premium.activeTitle}</h2>

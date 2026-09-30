@@ -7,6 +7,7 @@
  */
 
 export const PREMIUM_PERIOD_DAYS = 30;
+export const EARLY_SUPPORTER_LIMIT = 20;
 export type ManualPremiumMonths = 1 | 2 | 3;
 
 /** Listed Premium price (displayed as $). Must match the PayPal NCP amount. */
@@ -30,6 +31,12 @@ export type PremiumEntitlement = {
   paypal_txn_id: string | null;
   note: string | null;
 };
+
+export type EarlySupporterGrant = { revoked_at?: string | null } | null | undefined;
+
+export function isEarlySupporterActive(row: EarlySupporterGrant): boolean {
+  return Boolean(row) && !row?.revoked_at;
+}
 
 export function isPremiumActive(
   row: Pick<PremiumEntitlement, "status" | "expires_at"> | null | undefined,

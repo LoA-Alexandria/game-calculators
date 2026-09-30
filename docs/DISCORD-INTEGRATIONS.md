@@ -45,6 +45,32 @@ server-verified `editor_access.discord_user_id`, never a Discord id supplied
 by the browser. Password-only accounts without a linked Discord identity are
 left unchanged and the admin panel reports the sync failure.
 
+## Early Supporter rewards
+
+Admins can manually award the permanent Early Supporter status from **Admin →
+Premium** to an account with active Premium. The database serializes grants and
+reserves the first 20 places permanently; revoking a reward does not free its
+place. The Discord sync assigns or removes two additional roles for this cohort
+independently of the member's later Premium expiry:
+
+- `DISCORD_EARLY_SUPPORTER_ROLE_ID` for Early Supporter.
+- `DISCORD_TEST_VERSION_ROLE_ID` for early access to test builds.
+
+Create both roles in Discord, allow the bot to manage them, and keep them below
+the bot's highest role. Configure the ids as Supabase Edge Function secrets:
+
+```powershell
+supabase secrets set DISCORD_EARLY_SUPPORTER_ROLE_ID="<Early Supporter role id>"
+supabase secrets set DISCORD_TEST_VERSION_ROLE_ID="<Test Version role id>"
+supabase functions deploy sync-premium-discord-role --use-api
+```
+
+The first 20 are assigned manually, so admins should verify that a buyer is
+eligible before awarding a place. Each supporter can separately opt in to
+displaying a chosen name on `/early-supporters/` from `/account/`; public reads
+expose only opted-in names and award dates. Polls and development previews are
+hosted in the Discord channels you create for those roles.
+
 Set the VIP role id and deploy the function after the usual Supabase setup:
 
 ```powershell

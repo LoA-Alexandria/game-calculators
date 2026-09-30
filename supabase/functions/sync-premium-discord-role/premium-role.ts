@@ -10,3 +10,9 @@ export function premiumRoleShouldBePresent(entitlement: PremiumRoleEntitlement |
   const expiresAt = Date.parse(entitlement.expires_at);
   return Number.isFinite(startsAt) && Number.isFinite(expiresAt) && startsAt <= now && expiresAt > now;
 }
+
+export function earlySupporterRoleShouldBePresent(
+  grant: { revoked_at?: string | null } | null | undefined,
+): boolean {
+  return Boolean(grant) && !grant?.revoked_at;
+}

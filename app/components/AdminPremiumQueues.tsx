@@ -9,6 +9,8 @@ import {
   lifetimePremiumExpiry,
   nextPremiumExpiry,
   PREMIUM_LIFETIME_NOTE,
+  EARLY_SUPPORTER_LIMIT,
+  isEarlySupporterActive,
   type PremiumEntitlement,
 } from "../../lib/content/premium";
 import { getSupabaseBrowserClient } from "../../lib/supabase/client";
@@ -55,13 +57,23 @@ type EntitlementRow = Pick<
   "user_id" | "status" | "expires_at" | "source" | "note"
 >;
 
+type EarlySupporterRow = {
+  id: string;
+  user_id: string | null;
+  granted_at: string;
+  granted_by: string | null;
+  revoked_at: string | null;
+  show_on_credits: boolean;
+  display_name: string | null;
+};
+
 /**
  * Admin queue for PayPal Premium claims and guild-create requests.
  * Approving a claim extends `premium_entitlements` by 30 days.
  * Admins can grant manual Premium for 1-3 months or for life.
  */
 export function AdminPremiumQueues({ reloadToken, onChanged }: { reloadToken: number; onChanged: () => void }) {
-  const { t, d } = useLocale();
+  const { t, d, tf } = useLocale();
   const { session } = useAuth();
   const supabase = getSupabaseBrowserClient();
   const ids = useId();
@@ -70,6 +82,8 @@ export function AdminPremiumQueues({ reloadToken, onChanged }: { reloadToken: nu
   const [profiles, setProfiles] = useState<ProfileRow[]>([]);
   const [accessRows, setAccessRows] = useState<AccessRow[]>([]);
   const [entitlements, setEntitlements] = useState<EntitlementRow[]>([]);
+  const [earlySupporters, setEarlySupporters] = useState<EarlySupporterRow[]>([]);
+  const [earlySupporterUserId, setEarlySupporterUserId] = useState("");
   const [search, setSearch] = useState("");
   const [selectedUserId, setSelectedUserId] = useState("");
   const [manualUserId, setManualUserId] = useState("");
@@ -80,20 +94,21 @@ export function AdminPremiumQueues({ reloadToken, onChanged }: { reloadToken: nu
   const [error, setError] = useState("");
   const [granted, setGranted] = useState(false);
   const [revoked, setRevoked] = useState(false);
+  const [earlySupporterSaved, setEarlySupporterSaved] = useState(false);
 
-  const syncVipRole = async (userId: string) => {
+  const syncDiscordRoles = async (userId: string) => {
     if (!supabase) return;
-    const { data, error: syncError } = await supabase.functions.invoke<{ error?: string }>("sync-premium-discord-role", {
+    const { data, error: syncError } = await supabase.functions.invoke<{ error?: string; warnings?: string[] }>("sync-premium-discord-role", {
       body: { userId },
     });
-    if (syncError || data?.error) setError(t.premium.adminVipSyncFailed);
+    if (syncError || data?.error || data?.warnings?.length) setError(t.premium.adminVipSyncFailed);
   };
 
   useEffect(() => {
     if (!supabase) return;
     let gone = false;
     void (async () => {
-      const [claimRows, guildRows, profileRows, access, premiumRows] = await Promise.all([
+      const [claimRows, guildRows, profileRows, access, premiumRows, supporterRows] = await Promise.all([
         supabase
           .from("premium_claims")
           .select("id, user_id, paypal_txn_id, status, note, created_at")
@@ -112,6 +127,10 @@ export function AdminPremiumQueues({ reloadToken, onChanged }: { reloadToken: nu
           .from("premium_entitlements")
           .select("user_id, status, expires_at, source, note")
           .order("expires_at", { ascending: false }),
+        supabase
+          .from("early_supporters")
+          .select("id, user_id, granted_at, granted_by, revoked_at, show_on_credits, display_name")
+          .order("granted_at"),
       ]);
       if (gone) return;
       if (claimRows.error) setError(claimRows.error.message);
@@ -124,6 +143,8 @@ export function AdminPremiumQueues({ reloadToken, onChanged }: { reloadToken: nu
       else setAccessRows((access.data ?? []) as AccessRow[]);
       if (premiumRows.error) setError(premiumRows.error.message);
       else setEntitlements((premiumRows.data ?? []) as EntitlementRow[]);
+      if (supporterRows.error) setError(supporterRows.error.message);
+      else setEarlySupporters((supporterRows.data ?? []) as EarlySupporterRow[]);
     })();
     return () => {
       gone = true;
@@ -189,6 +210,14 @@ export function AdminPremiumQueues({ reloadToken, onChanged }: { reloadToken: nu
     () => entitlements.filter((row) => isPremiumActive(row)),
     [entitlements],
   );
+  const earlySupporterByUser = useMemo(
+    () => new Map(earlySupporters.map((row) => [row.user_id, row])),
+    [earlySupporters],
+  );
+  const eligibleSupporterRows = useMemo(
+    () => activeEntitlements.filter((row) => !earlySupporterByUser.has(row.user_id)),
+    [activeEntitlements, earlySupporterByUser],
+  );
 
   const reviewClaim = async (claim: Claim, approve: boolean) => {
     if (!supabase || !session) return;
@@ -220,7 +249,7 @@ export function AdminPremiumQueues({ reloadToken, onChanged }: { reloadToken: nu
           .eq("id", claim.id);
         if (updateError) setError(updateError.message);
         else {
-          await syncVipRole(claim.user_id);
+          await syncDiscordRoles(claim.user_id);
           onChanged();
         }
         setBusy(false);
@@ -252,7 +281,7 @@ export function AdminPremiumQueues({ reloadToken, onChanged }: { reloadToken: nu
       .eq("id", claim.id);
     if (updateError) setError(updateError.message);
     else {
-      if (approve) await syncVipRole(claim.user_id);
+      if (approve) await syncDiscordRoles(claim.user_id);
       onChanged();
     }
     setBusy(false);
@@ -365,7 +394,7 @@ export function AdminPremiumQueues({ reloadToken, onChanged }: { reloadToken: nu
       return;
     }
     setGranted(true);
-    await syncVipRole(grantTargetId);
+    await syncDiscordRoles(grantTargetId);
     onChanged();
     setBusy(false);
   };
@@ -391,8 +420,57 @@ export function AdminPremiumQueues({ reloadToken, onChanged }: { reloadToken: nu
       return;
     }
     setRevoked(true);
-    await syncVipRole(userId);
+    await syncDiscordRoles(userId);
     onChanged();
+    setBusy(false);
+  };
+
+  const grantEarlySupporter = async () => {
+    if (!supabase || !earlySupporterUserId) return;
+    setBusy(true);
+    setError("");
+    setEarlySupporterSaved(false);
+    const { error: grantError } = await supabase.from("early_supporters").insert({ user_id: earlySupporterUserId });
+    if (grantError) {
+      setError(grantError.message);
+      setBusy(false);
+      return;
+    }
+    setEarlySupporterSaved(true);
+    await syncDiscordRoles(earlySupporterUserId);
+    setEarlySupporterUserId("");
+    onChanged();
+    setBusy(false);
+  };
+
+  const revokeEarlySupporter = async (userId: string) => {
+    if (!supabase || !userId) return;
+    setBusy(true);
+    setError("");
+    setEarlySupporterSaved(false);
+    const { error: revokeError } = await supabase
+      .from("early_supporters")
+      .update({ revoked_at: new Date().toISOString(), show_on_credits: false })
+      .eq("user_id", userId)
+      .is("revoked_at", null);
+    if (revokeError) {
+      setError(revokeError.message);
+      setBusy(false);
+      return;
+    }
+    setEarlySupporterSaved(true);
+    await syncDiscordRoles(userId);
+    onChanged();
+    setBusy(false);
+  };
+
+  const syncEarlySupporterRoles = async (userId: string) => {
+    if (!supabase || !userId) return;
+    setBusy(true);
+    setError("");
+    setEarlySupporterSaved(false);
+    await syncDiscordRoles(userId);
+    setEarlySupporterSaved(true);
     setBusy(false);
   };
 
@@ -557,6 +635,96 @@ export function AdminPremiumQueues({ reloadToken, onChanged }: { reloadToken: nu
                       ) : (
                         "—"
                       )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
+
+      <section className="panel">
+        <h2>{t.premium.adminEarlySupportersTitle}</h2>
+        <p>{t.premium.adminEarlySupportersLede}</p>
+        <p className="assumption" role="status">
+          {tf(t.premium.adminEarlySupportersCount, { used: earlySupporters.length, limit: EARLY_SUPPORTER_LIMIT })}
+        </p>
+        {earlySupporterSaved ? (
+          <p className="assumption" role="status">{t.premium.adminEarlySupporterSaved}</p>
+        ) : null}
+        <div className="mapping-form">
+          <div className="field">
+            <label htmlFor={`${ids}-early-supporter`}>{t.premium.adminEarlySupporterSelect}</label>
+            <select
+              id={`${ids}-early-supporter`}
+              value={earlySupporterUserId}
+              onChange={(event) => setEarlySupporterUserId(event.target.value)}
+            >
+              <option value="">{t.premium.adminEarlySupporterPick}</option>
+              {eligibleSupporterRows.map((row) => (
+                <option key={row.user_id} value={row.user_id}>{memberLabel(row.user_id)}</option>
+              ))}
+            </select>
+          </div>
+          <button
+            className="button button-primary"
+            type="button"
+            disabled={!earlySupporterUserId || busy || earlySupporters.length >= EARLY_SUPPORTER_LIMIT}
+            onClick={() => void grantEarlySupporter()}
+          >
+            {t.premium.adminEarlySupporterGrant}
+          </button>
+        </div>
+        <p className="assumption">{t.premium.adminEarlySupporterRolesNote}</p>
+
+        {earlySupporters.length === 0 ? (
+          <p className="assumption">{t.premium.adminEarlySupportersEmpty}</p>
+        ) : (
+          <div className="table-scroll">
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>{t.premium.adminLifetimeUser}</th>
+                  <th>{t.premium.adminEarlySupporterStatus}</th>
+                  <th>{t.premium.adminEarlySupporterGrantedAt}</th>
+                  <th>{t.premium.adminActions}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {earlySupporters.map((row) => (
+                  <tr key={row.id}>
+                    <td data-label={t.premium.adminLifetimeUser}>
+                      {row.user_id ? memberLabel(row.user_id) : t.premium.adminEarlySupporterDeletedMember}
+                    </td>
+                    <td data-label={t.premium.adminEarlySupporterStatus}>
+                      {isEarlySupporterActive(row) ? t.premium.adminEarlySupporterActive : t.premium.adminEarlySupporterRevoked}
+                      {row.show_on_credits ? <div className="assumption">{t.premium.adminEarlySupporterOptedIn}</div> : null}
+                    </td>
+                    <td data-label={t.premium.adminEarlySupporterGrantedAt} className="mono">{d(row.granted_at.slice(0, 10))}</td>
+                    <td className="actions" data-label={t.premium.adminActions}>
+                      {row.user_id ? (
+                        <>
+                          <button
+                            className="small-button"
+                            type="button"
+                            disabled={busy}
+                            onClick={() => void syncEarlySupporterRoles(row.user_id!)}
+                          >
+                            {t.premium.adminEarlySupporterSync}
+                          </button>
+                          {isEarlySupporterActive(row) ? (
+                        <button
+                          className="small-button button-danger"
+                          type="button"
+                          disabled={busy}
+                          onClick={() => row.user_id && void revokeEarlySupporter(row.user_id)}
+                        >
+                          {t.premium.adminEarlySupporterRevoke}
+                        </button>
+                          ) : null}
+                        </>
+                      ) : "—"}
                     </td>
                   </tr>
                 ))}
