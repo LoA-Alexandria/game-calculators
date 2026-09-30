@@ -4363,6 +4363,7 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
 .cryptid-tower-layout [data-build="pike"] { --build: #be7654; }
 .cryptid-tower-layout [data-build="archer"] { --build: #5c8eaf; }
 .cryptid-tower-layout [data-build="shield"] { --build: #6e9d78; }
+.cryptid-tower-layout [data-build="cavalry"] { --build: #a1805f; }
 .ct-build-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
 .ct-build-head > div { min-width: 0; }
 .ct-cryptide { display: grid; grid-template-columns: 2.5rem auto; align-items: center; column-gap: .55rem; flex: none; color: var(--ink); text-decoration: none; }

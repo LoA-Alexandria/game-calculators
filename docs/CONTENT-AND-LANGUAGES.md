@@ -192,10 +192,11 @@ Cryptid Tower Layout is separate from the existing Cryptid layout:
 Cryptide ids, while the localized copy lives in
 `guideEntries.cryptidTowerLayout`. Those ids resolve to pictures, names, and
 anchors in the Core Heroes, Collection, and Cryptides guides. Autumn's notes
-were supplied from Discord messages dated 21 and 25 September 2026; shorthand
+were supplied from Discord messages dated 21, 25, and 28 September 2026; shorthand
 “Mask” and “Wings” are mapped to Golden Mask of Agamemnon and Wings of Icarus.
 The source misspelling “Cerebrus” follows the canonical Core spelling,
-Cerberus.
+Cerberus. Diabolus and Cross Flag remain text-only Cavalry recommendations
+until they exist in the linked Core Collection catalogue.
 
 Goddess names, rarity, portraits, and the
 English affinity and obtain live in `lib/data/goddesses.json`, once for all
