@@ -231,12 +231,15 @@ both guilds. `is_alliance_member` and `is_alliance_officer` gate it, a village a
 guild holds can never be a target, and each guild's own board stays private.
 Ending the alliance, from either side, deletes the shared plan with it.
 
-Players write to each other at `/post/` (top-bar Mail shortcut; not a left-rail
-section). One table, `messages`, holds all three kinds and tells them apart by
-`kind`: direct mail between two players, the chat of one guild, and the chat the
-two guilds of an alliance share. RLS decides who reads what — sender or recipient
-for mail, `is_guild_member` for a guild chat, `is_alliance_member` for an alliance
-chat — and the two chats are plain inserts.
+The Guild Room has a live chat beside News, Planning and Trade. It uses the
+`messages` table and Supabase Realtime, so a new message appears without
+refreshing or waiting for the mail page poll. `/post/` (top-bar Mail shortcut;
+not a left-rail section) keeps direct mail and also offers the same guild chat
+and shared alliance chat. RLS decides who reads and writes: only guild members
+can read or write their guild channel, alliance members can read and write their
+alliance channel, and direct mail is limited to its sender and recipient. A
+frozen guild remains readable but cannot send chat messages until its Premium
+is renewed.
 
 Guild news posts on `guild_posts` keep a source `title`/`body` plus optional
 `title_i18n` / `body_i18n` maps (en/de/fr). Officers tap **Translate to all

@@ -9606,6 +9606,22 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
 }
 .mail-composer textarea:focus-visible { outline: none; border-color: var(--accent); }
 
+.guild-chat-panel { min-width: 0; }
+.guild-chat-head h2 { display: inline-flex; align-items: center; gap: 8px; margin: 0; font-family: var(--font-display); font-size: 1rem; }
+.guild-chat-status { display: inline-flex; align-items: center; gap: 7px; color: var(--ink-faint); font-size: .78rem; }
+.guild-chat-status > span { width: 8px; height: 8px; border-radius: 50%; background: var(--ink-faint); }
+.guild-chat-status.is-live { color: var(--good); }
+.guild-chat-status.is-live > span { background: var(--good); }
+.guild-chat-status.is-reconnecting { color: var(--warn); }
+.guild-chat-status.is-reconnecting > span { background: var(--warn); }
+.guild-chat-thread { min-height: 180px; max-height: min(62vh, 680px); padding: 12px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface-2); }
+.guild-chat-scroll-anchor { height: 1px; list-style: none; }
+.guild-chat-empty { display: grid; min-height: 180px; place-content: center; justify-items: center; gap: 6px; padding: 18px; border: 1px dashed var(--line-strong); border-radius: var(--r-md); color: var(--ink-soft); text-align: center; }
+.guild-chat-empty .icon { width: 28px; height: 28px; color: var(--accent); }
+.guild-chat-empty strong { color: var(--ink); }
+.guild-chat-empty p { margin: 0; max-width: 42ch; font-size: .88rem; }
+.guild-chat-hint { margin: -6px 0 0; color: var(--ink-faint); font-size: .75rem; }
+
 @media (max-width: 640px) {
   .mail-thread { max-height: 60vh; }
   .mail-bubble { max-width: 94%; }

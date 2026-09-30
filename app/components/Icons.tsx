@@ -429,6 +429,15 @@ export function InboxIcon({ className }: IconProps) {
   );
 }
 
+export function ChatIcon({ className }: IconProps) {
+  return (
+    <svg className={className} {...base}>
+      <path d="M20 11.5a7.5 7.5 0 0 1-8 7.5 8.8 8.8 0 0 1-3.4-.7L4 20l1.3-3.8A7.1 7.1 0 0 1 4 11.5 7.5 7.5 0 0 1 12 4a7.5 7.5 0 0 1 8 7.5Z" />
+      <path d="M8 11h8M8 14h5" />
+    </svg>
+  );
+}
+
 export const SECTION_ICONS = {
   news: NewsIcon,
   events: EventsIcon,
