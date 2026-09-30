@@ -11,10 +11,13 @@ import {
   AGE_UNCONFIRMED,
   AGE_UNLOCKS_DATA,
   allAgeEvents,
+  ageEventGuideId,
   eventDetail,
   eventName,
   milestoneLabel,
 } from "../lib/content/server-age-unlocks.ts";
+import { eventWikiIcon } from "../lib/content/event-guides.ts";
+import { eventGuideHref } from "../lib/content/event-guide-routes.ts";
 import {
   PUBLISHED_AGE_UNLOCKS,
   addEvent,
@@ -56,6 +59,21 @@ test("related guides named by age events exist in the dictionaries", () => {
   for (const event of allAgeEvents()) {
     if (!event.relatedGuide) continue;
     assert.equal(isGuideEntryId(event.relatedGuide, en.guideEntries), true, event.relatedGuide);
+  }
+});
+
+test("age events with published event guides use their existing icons and pages", () => {
+  const eventItems = sectionById("events").items;
+  const linked = allAgeEvents().filter((event) => ageEventGuideId(event));
+  assert.ok(linked.length > 0);
+
+  for (const event of linked) {
+    const guideId = ageEventGuideId(event);
+    const href = eventGuideHref(guideId);
+    const navItem = eventItems.find((item) => item.href === href);
+    assert.ok(navItem, `${event.id} must link to a published event page`);
+    assert.equal(navItem.icon, eventWikiIcon(guideId), `${event.id} reuses the event's icon`);
+    assert.ok(navItem.icon, `${event.id} has an event icon`);
   }
 });
 

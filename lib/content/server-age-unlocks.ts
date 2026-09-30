@@ -8,6 +8,7 @@
 import data from "../data/server-age-unlocks.json" with { type: "json" };
 import { asset } from "../site.ts";
 import type { GuideEntryId } from "./guides.ts";
+import type { EventGuideId } from "./event-guide-routes.ts";
 
 export type AgeEvent = {
   id: string;
@@ -38,6 +39,33 @@ export type AgeUnlockText = {
 };
 export type AgeUnlockTexts = Record<string, AgeUnlockText>;
 
+/** Existing event write-ups that explain a server-age entry in more detail. */
+const EVENT_GUIDES_BY_UNLOCK_ID: Partial<Record<string, EventGuideId>> = {
+  "mushroom-adventure": "mushroomAdventure",
+  "goddess-of-time": "goddessOfTime",
+  "holy-grail": "holyGrail",
+  "crown-glory": "gloryPick",
+  "life-incubator-lab": "lifeIncubator",
+  "civilization-evolution": "evolutionInstitute",
+  "muses-choice": "peakOfEnlightenment",
+  "legend-of-serenissima": "legendOfSerenissima",
+  "supply-reform": "supplyReform",
+  "dawn-of-rome": "dawnOfRome",
+  "delve-into-atlantis": "atlantis",
+  "goddess-theater-chronogate": "redCarpet",
+  "trials-of-odin": "trialsOfOdin",
+  "spring-returns": "springReturns",
+  "island-adventure": "grandVoyage",
+  "astral-wonderland": "astralWonderland",
+  "duel-festival": "duelFestival",
+  "road-to-the-cup": "roadToWorldcup",
+  "heart-of-gold": "heartOfGold",
+  "race-to-civilization": "greatFlood",
+  genie: "genieWish",
+  "ring-toss": "ringToss",
+  "shopping-cart": "shoppingCartRace",
+};
+
 export type AgeUnlocksData = {
   milestones: AgeMilestone[];
   unconfirmed: AgeEvent[];
@@ -66,6 +94,10 @@ export function eventDetail(event: AgeEvent, texts: AgeUnlockTexts): string | nu
 export function eventDescription(event: AgeEvent, texts: AgeUnlockTexts): string | null {
   const description = pick(texts[event.id]?.description, event.description);
   return description || null;
+}
+
+export function ageEventGuideId(event: AgeEvent): EventGuideId | undefined {
+  return EVENT_GUIDES_BY_UNLOCK_ID[event.id];
 }
 
 /** Custom milestone wording, or null when the day template should be used. */

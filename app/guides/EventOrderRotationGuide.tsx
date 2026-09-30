@@ -1,35 +1,12 @@
 import Link from "next/link";
 import { guideLayout } from "../../lib/content/guides";
 import { eventWikiIconUrl } from "../../lib/content/event-guides";
+import { eventGuideHref, type EventGuideId } from "../../lib/content/event-guide-routes";
 import type { Dictionary } from "../../lib/i18n";
 import { useLocale } from "../components/LocaleProvider";
 
 type Guide = Dictionary["guideEntries"]["eventOrderRotation"];
-type EventId = keyof Dictionary["eventGuideEntries"];
-
-const EVENT_LINKS: Partial<Record<EventId, string>> = {
-  holyGrail: "/events/holy-grail/",
-  dawnOfRome: "/events/dawn-of-rome/",
-  atlantis: "/events/atlantis/",
-  trialsOfOdin: "/events/trials-of-odin/",
-  mushroomAdventure: "/events/mushroom-adventure/",
-  goddessOfTime: "/events/goddess-of-time/",
-  lifeIncubator: "/events/life-incubator/",
-  evolutionInstitute: "/events/evolution-institute/",
-  supplyReform: "/events/supply-reform/",
-  legendOfSerenissima: "/events/legend-of-serenissima/",
-  genieWish: "/events/genie-wish/",
-  ringToss: "/events/ring-toss/",
-  shoppingCartRace: "/events/shopping-cart-race/",
-  peakOfEnlightenment: "/events/peak-of-enlightenment/",
-  redCarpet: "/events/red-carpet/",
-  roadToWorldcup: "/events/road-to-worldcup/",
-  astralWonderland: "/events/astral-wonderland/",
-  duelFestival: "/events/duel-festival/",
-  heartOfGold: "/events/heart-of-gold/",
-  greatFlood: "/events/great-flood/",
-  grandVoyage: "/events/grand-voyage/",
-};
+type EventId = EventGuideId;
 
 export function isEventOrderRotationGuide(
   guide: Dictionary["guideEntries"][keyof Dictionary["guideEntries"]],
@@ -41,7 +18,7 @@ function EventCard({ id, number }: { id: EventId; number?: number }) {
   const { t } = useLocale();
   const event = t.eventGuideEntries[id];
   const image = eventWikiIconUrl(id);
-  const href = EVENT_LINKS[id];
+  const href = eventGuideHref(id);
   const content = (
     <>
       {number ? <span className="event-rotation-number">{number}</span> : null}
@@ -53,11 +30,7 @@ function EventCard({ id, number }: { id: EventId; number?: number }) {
     </>
   );
 
-  return href ? (
-    <Link className="event-rotation-card" href={href}>{content}</Link>
-  ) : (
-    <div className="event-rotation-card">{content}</div>
-  );
+  return <Link className="event-rotation-card" href={href}>{content}</Link>;
 }
 
 function PlainEventCard({ name, number }: { name: string; number?: number }) {

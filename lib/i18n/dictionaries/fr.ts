@@ -6076,6 +6076,7 @@ const fr: Dictionary = {
       oneTimeMark: "Unique",
       oneTimeHint: "Se joue une fois par serveur et ne revient pas selon un rythme.",
       relatedLabel: "Voir {guide}",
+      eventLinkLabel: "Ouvrir le guide de l’événement {event}",
       unconfirmedHeading: "Timing encore non confirmé",
       unconfirmedLede:
         "Ces éléments apparaissent d’une façon ou d’une autre avec l’âge du serveur, mais personne n’a encore fixé un jour fiable.",

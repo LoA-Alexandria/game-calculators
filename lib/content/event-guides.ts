@@ -33,6 +33,10 @@ export type EventWikiEntry = {
 
 const ENTRIES = data.events as EventWikiEntry[];
 const BY_ID = new Map(ENTRIES.map((entry) => [entry.id, entry]));
+const EVENT_ICON_OVERRIDES: Record<string, string> = {
+  // The event write-up predates the wiki icon field; use the local original icon.
+  redCarpet: "/events/red-carpet.svg",
+};
 
 export const EVENT_WIKI_SOURCE = data.source;
 export const EVENT_WIKI_FETCHED = data.fetched;
@@ -41,9 +45,9 @@ export function eventWiki(id: string): EventWikiEntry | undefined {
   return BY_ID.get(id);
 }
 
-/** Public path (`/events/….webp`) for a nav or index icon, if the wiki had one. */
+/** Public path for a nav or index icon, from the wiki or a local override. */
 export function eventWikiIcon(id: string): string | undefined {
-  return BY_ID.get(id)?.icon ?? undefined;
+  return BY_ID.get(id)?.icon ?? EVENT_ICON_OVERRIDES[id];
 }
 
 export function eventWikiIconUrl(id: string): string | undefined {
