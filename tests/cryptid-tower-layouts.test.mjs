@@ -13,7 +13,7 @@ const file = (path) => new URL(`..${path}`, import.meta.url);
 const cryptideIds = new Set(CRYPTIDES.map((cryptide) => cryptide.id));
 
 test("tower recommendations resolve to Core heroes, collections, and Cryptides", () => {
-  assert.deepEqual(CRYPTID_TOWER_BUILDS.map((build) => build.id), ["pike", "archer", "shield"]);
+  assert.deepEqual(CRYPTID_TOWER_BUILDS.map((build) => build.id), ["pike", "archer", "shield", "cavalry"]);
   for (const build of CRYPTID_TOWER_BUILDS) {
     assert.ok(cryptideIds.has(build.cryptide), `${build.id} Cryptide`);
     assert.ok(build.key.length && build.important.length, `${build.id} has hero recommendations`);
@@ -32,6 +32,15 @@ test("tower recommendations resolve to Core heroes, collections, and Cryptides",
       }
     }
   }
+  const cavalry = CRYPTID_TOWER_BUILDS.find((build) => build.id === "cavalry");
+  assert.equal(cavalry.cryptide, "sleipnir");
+  assert.ok(cavalry.key.includes("joan-of-arc"));
+  assert.ok(cavalry.key.includes("lancelot"));
+  assert.ok(cavalry.important.includes("queen-victoria"));
+  assert.ok(cavalry.important.includes("richard-i"));
+  const shield = CRYPTID_TOWER_BUILDS.find((build) => build.id === "shield");
+  assert.deepEqual(shield.collections[0], ["prometheus-torch", "model-of-noahs-ark"]);
+  assert.deepEqual(shield.collections[4], ["notre-dame-de-paris-replica", "holy-hand-grenade"]);
 });
 
 test("Cryptid Tower guide has localized copy and a Layouts navigation entry", () => {
@@ -43,6 +52,10 @@ test("Cryptid Tower guide has localized copy and a Layouts navigation entry", ()
     assert.ok(guide.towerBuilds.pike.title.trim());
     assert.ok(guide.towerBuilds.archer.title.trim());
     assert.ok(guide.towerBuilds.shield.title.trim());
+    assert.ok(guide.towerBuilds.cavalry.title.trim());
+    assert.ok(guide.towerBuilds.cavalry.collectionNote.includes("Diabolus"));
+    assert.ok(guide.towerBuilds.cavalry.collectionNote.includes("Cross Flag"));
+    assert.match(guide.towerBuilds.shield.collectionNote, /Replica|Réplique/);
     assert.ok(guide.levelGuidanceHeading.trim());
     assert.ok(guide.levelGuidanceIntro.trim());
     assert.ok(guide.levelGuidanceEveryHero.includes("100"));

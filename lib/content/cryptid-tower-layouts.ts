@@ -1,8 +1,8 @@
 /**
- * Autumn's hero and Collection recommendations for the three supplied
- * Cryptid Towers. Source: Autumn (Ice, S12), Discord messages dated 21 and 25
- * September 2026, supplied by the site maintainer. Names, portraits, and item
- * art are resolved from the Core Heroes and Collection catalogues at render
+ * Autumn's hero and Collection recommendations for the four supplied
+ * Cryptid Towers. Source: Autumn (Ice, S12), Discord messages dated 21, 25,
+ * and 28 September 2026, supplied by the site maintainer. Names, portraits,
+ * and item art are resolved from the Core Heroes and Collection catalogues at render
  * time. The shorthand "Mask" is mapped to Golden Mask of Agamemnon and
  * "Wings" to Wings of Icarus; Cerberus follows the canonical Core spelling.
  */
@@ -47,11 +47,27 @@ export const CRYPTID_TOWER_BUILDS = [
     important: ["isaac-newton", "da-vinci", "franklin", "hermes", "andersen", "noah", "wallace", "hammurabi"],
     positions: {},
     collections: [
-      ["prometheus-torch"],
+      ["prometheus-torch", "model-of-noahs-ark"],
       ["thors-hammer"],
       ["golden-mask-of-agamemnon", "wings-of-icarus"],
-      ["brutus-dagger"],
-      ["notre-dame-de-paris-replica"],
+      ["brutus-dagger", "olympia-olive-wreath"],
+      ["notre-dame-de-paris-replica", "holy-hand-grenade"],
+      ["galileos-telescope"],
+    ],
+  },
+  {
+    id: "cavalry",
+    cryptide: "sleipnir",
+    turn: 2,
+    key: ["joan-of-arc", "lancelot", "billy-the-kid", "pompey", "lu-bu", "morgana", "merlin"],
+    important: ["queen-victoria", "richard-i"],
+    positions: {},
+    collections: [
+      ["model-of-noahs-ark"],
+      ["thors-hammer"],
+      ["golden-mask-of-agamemnon", "wings-of-icarus"],
+      ["olympia-olive-wreath"],
+      ["holy-hand-grenade"],
       ["galileos-telescope"],
     ],
   },
