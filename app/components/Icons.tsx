@@ -53,6 +53,17 @@ export function NewsIcon({ className }: IconProps) {
   );
 }
 
+/** A small stepped pyramid for Benben, the communal game. */
+export function BenbenIcon({ className }: IconProps) {
+  return (
+    <svg className={className} {...base}>
+      <path d="m3.5 20 8.5-16 8.5 16z" />
+      <path d="M6.2 15h11.6M8.8 10h6.4M11 6h2" />
+      <path d="M2.5 21h19" />
+    </svg>
+  );
+}
+
 /** Two arrows passing each other: something goes out, something comes back. */
 export function TradeIcon({ className }: IconProps) {
   return (
@@ -440,6 +451,7 @@ export function ChatIcon({ className }: IconProps) {
 
 export const SECTION_ICONS = {
   news: NewsIcon,
+  benben: BenbenIcon,
   events: EventsIcon,
   guides: GuidesIcon,
   calculators: CalculatorsIcon,
