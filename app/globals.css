@@ -2430,7 +2430,7 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
 .event-title-card[data-tier="purple"], .event-title-tier-section[data-tier="purple"], .event-title-legend-item[data-tier="purple"] { --tone: #a96bd8; }
 .event-title-card[data-tier="blue"], .event-title-tier-section[data-tier="blue"], .event-title-legend-item[data-tier="blue"] { --tone: #4c9de2; }
 .event-title-card[data-tier="green"], .event-title-tier-section[data-tier="green"], .event-title-legend-item[data-tier="green"] { --tone: #42b98d; }
-.event-title-art-wrap { display: grid; min-height: 88px; place-items: center; overflow: hidden; border: 1px solid color-mix(in srgb, var(--tone) 25%, var(--line)); border-radius: 12px; background: linear-gradient(120deg, color-mix(in srgb, var(--tone) 13%, var(--panel)), color-mix(in srgb, var(--panel) 92%, #0c1119)); }
+.event-title-art-wrap { display: grid; min-height: 88px; place-items: center; overflow: visible; border: 0; border-radius: 0; background: transparent; }
 .event-title-art { display: block; width: min(100%, 520px); height: auto; }
 .event-title-art-fallback { display: grid; min-height: 88px; width: 100%; padding: 15px; place-items: center; color: var(--ink); text-align: center; font-weight: 850; letter-spacing: .015em; }
 .event-title-card-head { display: flex; align-items: center; gap: 10px; justify-content: space-between; padding: 13px 1px 9px; }
