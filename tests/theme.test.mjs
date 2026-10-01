@@ -8,7 +8,10 @@ test("stone is the default colour scheme", () => {
   assert.equal(COLOR_SCHEMES[0].id, "stone");
 });
 
-test("isColorScheme accepts only the four palettes", () => {
+test("isColorScheme accepts all seven palettes and rejects unknown values", () => {
+  assert.deepEqual(COLOR_SCHEMES.map(({ id }) => id), [
+    "stone", "lapis", "papyrus", "steam", "ruby", "jade", "amethyst",
+  ]);
   for (const scheme of COLOR_SCHEMES) {
     assert.equal(isColorScheme(scheme.id), true);
   }

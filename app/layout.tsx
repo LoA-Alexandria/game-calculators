@@ -37,7 +37,7 @@ export const viewport: Viewport = {
  * language cannot be handled this way — the exported HTML carries the default
  * language and `LocaleProvider` swaps it as soon as React hydrates.
  */
-const themeBootstrap = `(function(){try{var d=document.documentElement;var t=localStorage.getItem(${JSON.stringify(THEME_STORAGE_KEY)});if(t==="light"||t==="dark")d.dataset.theme=t;var s=localStorage.getItem(${JSON.stringify(SCHEME_STORAGE_KEY)});if(s==="stone"||s==="lapis"||s==="papyrus"||s==="steam")d.dataset.scheme=s;}catch(e){}})();`;
+const themeBootstrap = `(function(){try{var d=document.documentElement;var t=localStorage.getItem(${JSON.stringify(THEME_STORAGE_KEY)});if(t==="light"||t==="dark")d.dataset.theme=t;var s=localStorage.getItem(${JSON.stringify(SCHEME_STORAGE_KEY)});if(s==="stone"||s==="lapis"||s==="papyrus"||s==="steam"||s==="ruby"||s==="jade"||s==="amethyst")d.dataset.scheme=s;}catch(e){}})();`;
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
