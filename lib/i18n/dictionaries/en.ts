@@ -719,8 +719,8 @@ const en = {
       category: "Grand Voyage",
     },
     signetRings: {
-      name: "Signet Ring cost calculator",
-      description: "Estimate the coins and Signet Rings needed to level from A to B.",
+      name: "Hero Level Calculator",
+      description: "Estimate the coins and Signet Rings needed to level a hero from A to B.",
       category: "Free calculator",
     },
     route: {
@@ -968,7 +968,7 @@ const en = {
     cityToLevel: "→ level {level}",
     cityNote:
       "Upgrade prices belong to the destination level. Group gates occur every five levels and do not themselves cost Bills. Towns and Cities support level 30; Metropolises support level 35.",
-    signetEyebrow: "Free calculator",
+    signetEyebrow: "Free hero calculator",
     signetIntro: "Estimate the coins and Signet Rings needed to raise a hero from one level to another.",
     signetFrom: "Current level",
     signetTo: "Target level",
