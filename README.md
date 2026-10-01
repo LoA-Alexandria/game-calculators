@@ -3,8 +3,8 @@
 A shared collection of focused game calculators and planners for Pop Epoch,
 maintained by LoA Alexandria. The site is a static Next.js application deployed
 through GitHub Pages. It follows the reader's light or dark preference, adds a
-toggle to override it, and offers four colour schemes (stone, lapis, papyrus,
-steam) from the top bar.
+toggle to override it, and offers seven colour schemes (stone, lapis, papyrus,
+steam, ruby, jade, and amethyst) from the top bar.
 
 ## Start locally
 

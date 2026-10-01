@@ -1,0 +1,25 @@
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+.card { border: 1px solid var(--line); border-radius: 22px; overflow: hidden; background: var(--surface); box-shadow: var(--shadow-1); min-width: 0; }
+.cardLink { display: flex; flex-direction: column; height: 100%; color: var(--ink); text-decoration: none; }
+.card:has(> div) .cardLink { height: auto; }
+.cardLink:hover { text-decoration: none; background: var(--accent-soft); }
+.cardLink:focus-visible { outline: 3px solid var(--accent); outline-offset: -4px; }
+.art { position: relative; height: 160px; overflow: hidden; display: grid; place-items: center; background: radial-gradient(ellipse at 25% 20%, var(--accent-soft), transparent 70%), linear-gradient(130deg, var(--surface-2), var(--gold-soft)); border-bottom: 1px solid var(--line); }
+.art > span { font-size: 90px; color: var(--gold); line-height: 1; }
+.card:nth-child(even) .art { background: radial-gradient(ellipse at 75% 20%, var(--gold-soft), transparent 70%), var(--accent-soft); }
+.art img { object-fit: cover; }
+.cardContent { padding: 28px; display: flex; flex: 1; flex-direction: column; gap: 14px; }
+.date { color: var(--ink-soft); font-size: .8rem; font-weight: 650; letter-spacing: .04em; }
+.cardContent h2 { font-size: clamp(1.3rem, 2vw, 1.75rem); line-height: 1.25; margin: 0; }
+.excerpt { color: var(--ink-soft); line-height: 1.75; margin: 0 0 12px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.read { display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 18px; border-top: 1px solid var(--line); font-weight: 700; color: var(--accent); }
+.card > div { padding: 0 28px 20px; }
+.reader { max-width: 900px; margin: 0 auto; }
+.back { display: inline-block; margin-bottom: 28px; color: var(--accent); }
+.articleHead { padding: 32px 0; border-top: 3px solid var(--accent); border-bottom: 1px solid var(--line); margin-bottom: 32px; }
+.articleHead h1 { font-size: clamp(2rem, 4vw, 3.4rem); line-height: 1.15; margin: 16px 0; text-wrap: balance; }
+.articleHead p { font-size: 1.15rem; line-height: 1.8; color: var(--ink-soft); max-width: 65ch; }
+.cover { width: 100%; height: auto; border-radius: 16px; margin-bottom: 24px; }
+.body { line-height: 1.85; overflow-wrap: anywhere; }
+.footer { border-top: 1px solid var(--line); padding-top: 28px; margin-top: 36px; display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
+@media (max-width: 700px) { .grid { grid-template-columns: 1fr; gap: 18px; } .cardContent { padding: 22px; } .art { height: 130px; } .articleHead { padding-top: 24px; } }

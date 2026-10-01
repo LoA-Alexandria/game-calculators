@@ -7,7 +7,7 @@ import { NEWS } from "../../lib/content/news";
 import { useAuth } from "../components/AuthProvider";
 import { useDocumentTitle, useLocale } from "../components/LocaleProvider";
 import { PageHead, SectionBanner } from "../components/Ui";
-import { RichContentText } from "../components/RichContentText";
+import styles from "./news.module.css";
 import { asset, BASE_PATH } from "../../lib/site";
 import { PenIcon, TrashIcon } from "../components/Icons";
 import { NewsEditor, type NewsEditorTarget } from "./NewsEditor";
@@ -31,45 +31,46 @@ export default function NewsPage() {
       {NEWS.length === 0 ? (
         <div className="empty-state">{t.news.empty}</div>
       ) : (
-        <div className="entry-list">
+        <div className={styles.grid}>
           {NEWS.map((entry) => (
-            <article className="entry-card" key={entry.id}>
-              <div className="entry-meta">
-                <time dateTime={entry.date}>{d(entry.date)}</time>
-              </div>
-              <h2>{entry.title(t)}</h2>
-              {entry.summary(t) ? <p className="guide-head-lede">{entry.summary(t)}</p> : null}
-              {entry.image ? <Image className="content-builder-cover" src={entry.image.startsWith("https://") || (BASE_PATH && entry.image.startsWith(`${BASE_PATH}/`)) ? entry.image : asset(entry.image)} alt="" width={1200} height={700} unoptimized /> : null}
-              {entry.body(t).map((paragraph, index) => (
-                <RichContentText key={index} text={paragraph} />
-              ))}
-              {(entry.href || canWrite) && (
+            <article className={styles.card} key={entry.id}>
+              <Link className={styles.cardLink} href={`/news/${entry.id}/`}>
+                <div className={styles.art} aria-hidden="true">
+                  {entry.image ? (
+                    <Image
+                      src={entry.image.startsWith("https://") || (BASE_PATH && entry.image.startsWith(`${BASE_PATH}/`)) ? entry.image : asset(entry.image)}
+                      alt=""
+                      fill
+                      sizes="(max-width: 700px) 100vw, 50vw"
+                      unoptimized
+                    />
+                  ) : <span>✦</span>}
+                </div>
+                <div className={styles.cardContent}>
+                  <time className={styles.date} dateTime={entry.date}>{d(entry.date)}</time>
+                  <h2>{entry.title(t)}</h2>
+                  <p className={styles.excerpt}>{entry.summary(t)}</p>
+                  <span className={styles.read}>{t.common.readMore} <span aria-hidden="true">→</span></span>
+                </div>
+              </Link>
+              {canWrite && (
                 <div className="entry-actions">
-                  {entry.href && (
-                    <Link className="small-button" href={entry.href}>
-                      {t.common.open} <span aria-hidden="true">→</span>
-                    </Link>
-                  )}
-                  {canWrite && (
-                    <>
-                      <button
-                        className="small-button"
-                        type="button"
-                        onClick={() => openEditor({ entry, action: "edit" })}
-                      >
-                        <PenIcon className="icon icon-sm" />
-                        {t.news.edit}
-                      </button>
-                      <button
-                        className="small-button button-danger"
-                        type="button"
-                        onClick={() => openEditor({ entry, action: "remove" })}
-                      >
-                        <TrashIcon className="icon icon-sm" />
-                        {t.news.remove}
-                      </button>
-                    </>
-                  )}
+                  <button
+                    className="small-button"
+                    type="button"
+                    onClick={() => openEditor({ entry, action: "edit" })}
+                  >
+                    <PenIcon className="icon icon-sm" />
+                    {t.news.edit}
+                  </button>
+                  <button
+                    className="small-button button-danger"
+                    type="button"
+                    onClick={() => openEditor({ entry, action: "remove" })}
+                  >
+                    <TrashIcon className="icon icon-sm" />
+                    {t.news.remove}
+                  </button>
                 </div>
               )}
             </article>

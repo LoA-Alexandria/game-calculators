@@ -18,6 +18,13 @@ import { ChatIcon } from "../components/Icons";
 const COLUMNS = "id, kind, sender_id, recipient_id, guild_id, alliance_id, subject, body, created_at, read_at";
 const HISTORY_LIMIT = 200;
 
+/** Stable name colours are decorative, not ranks or online indicators. */
+function nameTone(id: string): number {
+  let hash = 0;
+  for (const character of id) hash = (hash * 31 + character.charCodeAt(0)) >>> 0;
+  return hash % 6;
+}
+
 type ChatConnection = "connecting" | "live" | "reconnecting";
 
 export function GuildChatPanel({
@@ -143,16 +150,17 @@ export function GuildChatPanel({
           <p>{t.guilds.chatEmpty}</p>
         </div>
       ) : (
-        <ol className="mail-thread guild-chat-thread" aria-label={t.guilds.chatTitle} aria-live="polite">
+        <ol className="guild-chat-thread" aria-label={t.guilds.chatTitle} aria-live="polite" aria-relevant="additions" tabIndex={0}>
           {ordered.map((row) => (
-            <li key={row.id} className={row.sender_id === me ? "mail-bubble is-mine" : "mail-bubble"}>
-              <p className="mail-bubble-head">
-                <strong>{nameOf(row.sender_id)}</strong>
-                <time dateTime={row.created_at}>
-                  {d(row.created_at)} · {new Intl.DateTimeFormat(locale, { hour: "2-digit", minute: "2-digit" }).format(new Date(row.created_at))}
-                </time>
+            <li key={row.id} className={`guild-chat-line${row.sender_id === me ? " is-mine" : ""}`}>
+              <time dateTime={row.created_at} title={d(row.created_at)} aria-label={new Intl.DateTimeFormat(locale, { dateStyle: "medium", timeStyle: "short" }).format(new Date(row.created_at))}>
+                {new Intl.DateTimeFormat(locale, { hour: "2-digit", minute: "2-digit" }).format(new Date(row.created_at))}
+              </time>
+              <p className="guild-chat-message">
+                <span className="guild-chat-channel">[{t.messages.tabGuild}] </span>
+                <strong className={`guild-chat-name tone-${nameTone(row.sender_id)}`}>[{nameOf(row.sender_id)}]</strong>
+                <span className="guild-chat-body">: {row.body}</span>
               </p>
-              <p className="mail-bubble-body">{row.body}</p>
             </li>
           ))}
           <li className="guild-chat-scroll-anchor" aria-hidden="true" ref={bottom} />
