@@ -186,7 +186,7 @@ export default function BenbenPage() {
   };
 
   return <>
-    <BackLink href="/simulations/" label={t.nav.simulations} />
+    <BackLink href="/" label={t.nav.home} />
     <PageHead eyebrow={t.benben.greeting} title={t.benben.title} lede={t.benben.lede} />
     <div className="benben-stage">
       <section className="benben-character-card" aria-label="Benben">
