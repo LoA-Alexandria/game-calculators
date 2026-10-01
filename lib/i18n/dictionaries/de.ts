@@ -718,8 +718,8 @@ const de: Dictionary = {
       category: "Große Reise",
     },
     signetRings: {
-      name: "Signetring-Kostenrechner",
-      description: "Schätzt Münzen und Signetringe für einen Stufenaufstieg von A bis B.",
+      name: "Hero Level Calculator",
+      description: "Schätzt Münzen und Signetringe für einen Helden-Aufstieg von Stufe A bis B.",
       category: "Kostenloser Rechner",
     },
     route: {
@@ -968,7 +968,7 @@ const de: Dictionary = {
     cityToLevel: "→ Stufe {level}",
     cityNote:
       "Die Ausbaupreise gehören zur Zielstufe. Gruppen-Schranken greifen alle fünf Stufen und kosten selbst keine Wechselbriefe. Städte und Dörfer gehen bis Stufe 30, Metropolen bis Stufe 35.",
-    signetEyebrow: "Kostenloser Rechner",
+    signetEyebrow: "Kostenloser Helden-Rechner",
     signetIntro: "Schätze die benötigten Münzen und Signetringe, um einen Helden von einer Stufe auf eine andere zu bringen.",
     signetFrom: "Aktuelle Stufe",
     signetTo: "Zielstufe",

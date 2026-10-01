@@ -718,8 +718,8 @@ const fr: Dictionary = {
       category: "Grand Voyage",
     },
     signetRings: {
-      name: "Calculateur de coûts des anneaux sigillaires",
-      description: "Estime les pièces et anneaux sigillaires nécessaires pour passer du niveau A au niveau B.",
+      name: "Calculateur de niveau de héros",
+      description: "Estime les pièces et anneaux sigillaires nécessaires pour faire progresser un héros du niveau A au niveau B.",
       category: "Calculateur gratuit",
     },
     route: {
@@ -968,7 +968,7 @@ const fr: Dictionary = {
     cityToLevel: "→ niveau {level}",
     cityNote:
       "Les prix d’amélioration correspondent au niveau d’arrivée. Les paliers de groupe surviennent tous les cinq niveaux et ne coûtent eux-mêmes aucune lettre. Bourgs et villes vont au niveau 30, les métropoles au niveau 35.",
-    signetEyebrow: "Calculateur gratuit",
+    signetEyebrow: "Calculateur de héros gratuit",
     signetIntro: "Estimez les pièces et anneaux sigillaires nécessaires pour faire passer un héros d’un niveau à un autre.",
     signetFrom: "Niveau actuel",
     signetTo: "Niveau cible",

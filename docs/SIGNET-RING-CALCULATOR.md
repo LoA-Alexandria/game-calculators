@@ -1,4 +1,4 @@
-# Signet Ring cost calculator
+# Hero Level Calculator
 
 The calculator uses the level cost schedule pasted by the site owner on 1 October 2026. The game version and original effective date were not included with the schedule. The source records rounded values (including `k`, `m`, `b`, and `t` suffixes), so totals are estimates based on those displayed values.
 
