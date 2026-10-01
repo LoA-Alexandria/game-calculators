@@ -1113,3 +1113,11 @@ hundreds, because every Red Carpet item is worth a multiple of 100.
 Hero and Collection names in the Hero layouts and tier list data are not
 translated at all: they live in the JSON files, and only qualifiers such as
 "with item" (`pickNotes`) are translated.
+
+### News previews and article pages
+
+The index displays translated summaries as three-line previews. Cards and the
+home news feature link to `/news/<id>/`, statically generated from `NEWS`.
+Articles render the full translated rich body and optional image. The optional
+`href` remains a separate related-tool link. Keep IDs stable for shared links
+and summaries concise. New entries require a site build and deployment.
