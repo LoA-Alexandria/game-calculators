@@ -718,6 +718,11 @@ const en = {
       description: "Plan Bills of Exchange for a city and its required group milestones.",
       category: "Grand Voyage",
     },
+    signetRings: {
+      name: "Signet Ring cost calculator",
+      description: "Estimate the coins and Signet Rings needed to level from A to B.",
+      category: "Free calculator",
+    },
     route: {
       name: "Route calculator",
       description: "Compare travel time, profit, and efficiency for a two-to-six-city round trip.",
@@ -963,6 +968,17 @@ const en = {
     cityToLevel: "→ level {level}",
     cityNote:
       "Upgrade prices belong to the destination level. Group gates occur every five levels and do not themselves cost Bills. Towns and Cities support level 30; Metropolises support level 35.",
+    signetEyebrow: "Free calculator",
+    signetIntro: "Estimate the coins and Signet Rings needed to raise a hero from one level to another.",
+    signetFrom: "Current level",
+    signetTo: "Target level",
+    signetRange: "Enter whole levels from 1 to 500. The same start and target level costs nothing.",
+    signetCoins: "Estimated coins required",
+    signetRings: "Signet Rings",
+    signetAscension: "Ascend after level {level}",
+    signetNoAscensions: "No ascension ring milestones in this range.",
+    signetNote:
+      "Based on the player-provided, rounded cost schedule. Level costs are added for each destination level; an ascension ring cost is included only when the target passes its milestone. The source game version is unknown, so treat totals as estimates.",
     routeEyebrow: "Grand Voyage",
     routeIntro: "Build a two-to-six-city round trip and compare every leg, travel time, profit, and profit per hour.",
     routeOrder: "Route order",
