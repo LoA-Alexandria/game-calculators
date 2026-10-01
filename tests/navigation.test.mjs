@@ -48,6 +48,14 @@ test("guilds section is listed and has no static child routes", () => {
   assert.equal(sectionHasBrowsePanel(guilds), false);
 });
 
+test("Benben is a direct top-level destination without a browse panel", () => {
+  const benben = sectionById("benben");
+  assert.equal(benben.href, "/benben/");
+  assert.equal(benben.label(getDictionary("en")), "Benben");
+  assert.equal(benben.items.length, 0);
+  assert.equal(sectionHasBrowsePanel(benben), false);
+});
+
 test("Mail is a top-bar shortcut, not a left-rail section", () => {
   assert.equal(SECTIONS.some((section) => section.href === "/post/"), false);
   assert.equal(SECTIONS.some((section) => section.id === "post"), false);

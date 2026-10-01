@@ -96,7 +96,7 @@ function NewsHero() {
         <h1>{entry.title(t)}</h1>
         <p className="lede">{entry.summary(t)}</p>
         <div className="hero-actions">
-          <Link className="button button-primary" href={entry.href ?? "/news/"}>
+          <Link className="button button-primary" href={`/news/${entry.id}/`}>
             {t.common.readMore} <span aria-hidden="true">→</span>
           </Link>
           <Link className="button button-secondary" href="/news/">{t.home.allNews}</Link>

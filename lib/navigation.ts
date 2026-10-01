@@ -31,11 +31,11 @@ export type NavItem = {
 };
 
 export type NavSection = {
-  id: "news" | "events" | "guides" | "calculators" | "simulations" | "guilds";
+  id: "news" | "benben" | "events" | "guides" | "calculators" | "simulations" | "guilds";
   href: string;
   label: (t: Dictionary) => string;
   description: (t: Dictionary) => string;
-  icon: "news" | "events" | "guides" | "calculators" | "simulations" | "guilds";
+  icon: "news" | "benben" | "events" | "guides" | "calculators" | "simulations" | "guilds";
   items: NavItem[];
 };
 
@@ -58,6 +58,14 @@ export const SECTIONS: NavSection[] = [
     label: (t) => t.nav.news,
     description: (t) => t.navDescriptions.news,
     icon: "news",
+    items: [],
+  },
+  {
+    id: "benben",
+    href: "/benben/",
+    label: (t) => t.benben.title,
+    description: (t) => t.benben.lede,
+    icon: "benben",
     items: [],
   },
   {

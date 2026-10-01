@@ -8,6 +8,9 @@ export const COLOR_SCHEMES = [
   { id: "lapis", swatch: "#3a66e8" },
   { id: "papyrus", swatch: "#9a5a18" },
   { id: "steam", swatch: "#8f4a2a" },
+  { id: "ruby", swatch: "#b43c63" },
+  { id: "jade", swatch: "#237858" },
+  { id: "amethyst", swatch: "#7651b5" },
 ] as const;
 
 export type ColorScheme = (typeof COLOR_SCHEMES)[number]["id"];

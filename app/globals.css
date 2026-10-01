@@ -10,7 +10,8 @@
    change both.
 
    Theme: light on bare :root, dark under prefers-color-scheme and [data-theme].
-   Scheme: stone is the default; lapis, papyrus, and steam override tokens.
+   Scheme: stone is the default; lapis, papyrus, steam, ruby, jade, and
+   amethyst override tokens.
    ========================================================================== */
 
 :root {
@@ -236,6 +237,45 @@
   --ring: 0 0 0 3px var(--accent-soft);
 }
 
+:root[data-scheme="ruby"] {
+  --bg: #f8f1f3; --surface: #fffafb; --surface-2: #f3e8eb; --surface-3: #ead8de;
+  --inverse: #1b1014; --ink: #24151b; --ink-soft: #70515d; --ink-faint: #927985;
+  --on-inverse: #f8f1f3; --on-inverse-soft: #c7b1b9; --line: #ead9df; --line-strong: #d6bac4;
+  --accent: #b43c63; --accent-hi: #932d4e; --accent-ink: #ffffff;
+  --accent-soft: rgba(180, 60, 99, .11); --accent-line: rgba(180, 60, 99, .34);
+  --gold: #a9741a; --gold-hi: #d69c2e; --gold-soft: rgba(214, 156, 46, .14);
+  --shadow-1: 0 1px 2px rgba(36, 21, 27, .05), 0 1px 3px rgba(36, 21, 27, .04);
+  --shadow-2: 0 4px 12px rgba(36, 21, 27, .07), 0 1px 3px rgba(36, 21, 27, .05);
+  --shadow-3: 0 18px 44px rgba(36, 21, 27, .12), 0 4px 12px rgba(36, 21, 27, .06);
+  --ring: 0 0 0 3px var(--accent-soft);
+}
+
+:root[data-scheme="jade"] {
+  --bg: #eff5f1; --surface: #fbfefa; --surface-2: #e7f0e9; --surface-3: #d8e7dc;
+  --inverse: #0e1711; --ink: #142019; --ink-soft: #4f6858; --ink-faint: #788d7e;
+  --on-inverse: #eff5f1; --on-inverse-soft: #adc0b2; --line: #d8e6dc; --line-strong: #b9d0c0;
+  --accent: #237858; --accent-hi: #195f44; --accent-ink: #ffffff;
+  --accent-soft: rgba(35, 120, 88, .11); --accent-line: rgba(35, 120, 88, .34);
+  --gold: #a9741a; --gold-hi: #d69c2e; --gold-soft: rgba(214, 156, 46, .14);
+  --shadow-1: 0 1px 2px rgba(20, 32, 25, .05), 0 1px 3px rgba(20, 32, 25, .04);
+  --shadow-2: 0 4px 12px rgba(20, 32, 25, .07), 0 1px 3px rgba(20, 32, 25, .05);
+  --shadow-3: 0 18px 44px rgba(20, 32, 25, .12), 0 4px 12px rgba(20, 32, 25, .06);
+  --ring: 0 0 0 3px var(--accent-soft);
+}
+
+:root[data-scheme="amethyst"] {
+  --bg: #f4f1f8; --surface: #fdfbff; --surface-2: #ece7f3; --surface-3: #dfd6eb;
+  --inverse: #17121d; --ink: #20182a; --ink-soft: #625372; --ink-faint: #827590;
+  --on-inverse: #f4f1f8; --on-inverse-soft: #bdb2ca; --line: #e1d9ec; --line-strong: #c9badb;
+  --accent: #7651b5; --accent-hi: #5f3f96; --accent-ink: #ffffff;
+  --accent-soft: rgba(118, 81, 181, .11); --accent-line: rgba(118, 81, 181, .34);
+  --gold: #a9741a; --gold-hi: #d69c2e; --gold-soft: rgba(214, 156, 46, .14);
+  --shadow-1: 0 1px 2px rgba(32, 24, 42, .05), 0 1px 3px rgba(32, 24, 42, .04);
+  --shadow-2: 0 4px 12px rgba(32, 24, 42, .07), 0 1px 3px rgba(32, 24, 42, .05);
+  --shadow-3: 0 18px 44px rgba(32, 24, 42, .12), 0 4px 12px rgba(32, 24, 42, .06);
+  --ring: 0 0 0 3px var(--accent-soft);
+}
+
 @media (prefers-color-scheme: dark) {
   :root[data-scheme="lapis"]:not([data-theme="light"]) {
     --bg: #0a0c11;
@@ -316,6 +356,39 @@
     --shadow-2: 0 6px 18px rgba(0, 0, 0, .45);
     --shadow-3: 0 22px 56px rgba(0, 0, 0, .6);
     --ring: 0 0 0 3px rgba(224, 138, 88, .28);
+  }
+
+  :root[data-scheme="ruby"]:not([data-theme="light"]) {
+    --bg: #130b0f; --surface: #1e1218; --surface-2: #291922; --surface-3: #35212c;
+    --inverse: #080507; --ink: #f4e8ed; --ink-soft: #c3a3b0; --ink-faint: #8c7180;
+    --on-inverse: #f4e8ed; --on-inverse-soft: #c3a3b0; --line: #392631; --line-strong: #503341;
+    --accent: #ee789a; --accent-hi: #f5a2b9; --accent-ink: #241019;
+    --accent-soft: rgba(238, 120, 154, .16); --accent-line: rgba(238, 120, 154, .38);
+    --gold: #f0b64c; --gold-hi: #ffcd72; --gold-soft: rgba(240, 182, 76, .14);
+    --shadow-1: 0 1px 2px rgba(0, 0, 0, .5); --shadow-2: 0 6px 18px rgba(0, 0, 0, .45);
+    --shadow-3: 0 22px 56px rgba(0, 0, 0, .6); --ring: 0 0 0 3px rgba(238, 120, 154, .28);
+  }
+
+  :root[data-scheme="jade"]:not([data-theme="light"]) {
+    --bg: #09110d; --surface: #111d16; --surface-2: #18271e; --surface-3: #203329;
+    --inverse: #050907; --ink: #e7f3eb; --ink-soft: #9db9a6; --ink-faint: #6f8a78;
+    --on-inverse: #e7f3eb; --on-inverse-soft: #9db9a6; --line: #22352a; --line-strong: #344c3c;
+    --accent: #62c995; --accent-hi: #89ddb1; --accent-ink: #092015;
+    --accent-soft: rgba(98, 201, 149, .16); --accent-line: rgba(98, 201, 149, .38);
+    --gold: #f0b64c; --gold-hi: #ffcd72; --gold-soft: rgba(240, 182, 76, .14);
+    --shadow-1: 0 1px 2px rgba(0, 0, 0, .5); --shadow-2: 0 6px 18px rgba(0, 0, 0, .45);
+    --shadow-3: 0 22px 56px rgba(0, 0, 0, .6); --ring: 0 0 0 3px rgba(98, 201, 149, .28);
+  }
+
+  :root[data-scheme="amethyst"]:not([data-theme="light"]) {
+    --bg: #100c16; --surface: #1a1422; --surface-2: #241b30; --surface-3: #30243e;
+    --inverse: #07050a; --ink: #f0eafa; --ink-soft: #b5a5cb; --ink-faint: #817292;
+    --on-inverse: #f0eafa; --on-inverse-soft: #b5a5cb; --line: #30253d; --line-strong: #453554;
+    --accent: #b394f0; --accent-hi: #ccb4fb; --accent-ink: #1a102b;
+    --accent-soft: rgba(179, 148, 240, .16); --accent-line: rgba(179, 148, 240, .38);
+    --gold: #f0b64c; --gold-hi: #ffcd72; --gold-soft: rgba(240, 182, 76, .14);
+    --shadow-1: 0 1px 2px rgba(0, 0, 0, .5); --shadow-2: 0 6px 18px rgba(0, 0, 0, .45);
+    --shadow-3: 0 22px 56px rgba(0, 0, 0, .6); --ring: 0 0 0 3px rgba(179, 148, 240, .28);
   }
 }
 
@@ -398,6 +471,39 @@
   --shadow-2: 0 6px 18px rgba(0, 0, 0, .45);
   --shadow-3: 0 22px 56px rgba(0, 0, 0, .6);
   --ring: 0 0 0 3px rgba(224, 138, 88, .28);
+}
+
+:root[data-scheme="ruby"][data-theme="dark"] {
+  --bg: #130b0f; --surface: #1e1218; --surface-2: #291922; --surface-3: #35212c;
+  --inverse: #080507; --ink: #f4e8ed; --ink-soft: #c3a3b0; --ink-faint: #8c7180;
+  --on-inverse: #f4e8ed; --on-inverse-soft: #c3a3b0; --line: #392631; --line-strong: #503341;
+  --accent: #ee789a; --accent-hi: #f5a2b9; --accent-ink: #241019;
+  --accent-soft: rgba(238, 120, 154, .16); --accent-line: rgba(238, 120, 154, .38);
+  --gold: #f0b64c; --gold-hi: #ffcd72; --gold-soft: rgba(240, 182, 76, .14);
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, .5); --shadow-2: 0 6px 18px rgba(0, 0, 0, .45);
+  --shadow-3: 0 22px 56px rgba(0, 0, 0, .6); --ring: 0 0 0 3px rgba(238, 120, 154, .28);
+}
+
+:root[data-scheme="jade"][data-theme="dark"] {
+  --bg: #09110d; --surface: #111d16; --surface-2: #18271e; --surface-3: #203329;
+  --inverse: #050907; --ink: #e7f3eb; --ink-soft: #9db9a6; --ink-faint: #6f8a78;
+  --on-inverse: #e7f3eb; --on-inverse-soft: #9db9a6; --line: #22352a; --line-strong: #344c3c;
+  --accent: #62c995; --accent-hi: #89ddb1; --accent-ink: #092015;
+  --accent-soft: rgba(98, 201, 149, .16); --accent-line: rgba(98, 201, 149, .38);
+  --gold: #f0b64c; --gold-hi: #ffcd72; --gold-soft: rgba(240, 182, 76, .14);
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, .5); --shadow-2: 0 6px 18px rgba(0, 0, 0, .45);
+  --shadow-3: 0 22px 56px rgba(0, 0, 0, .6); --ring: 0 0 0 3px rgba(98, 201, 149, .28);
+}
+
+:root[data-scheme="amethyst"][data-theme="dark"] {
+  --bg: #100c16; --surface: #1a1422; --surface-2: #241b30; --surface-3: #30243e;
+  --inverse: #07050a; --ink: #f0eafa; --ink-soft: #b5a5cb; --ink-faint: #817292;
+  --on-inverse: #f0eafa; --on-inverse-soft: #b5a5cb; --line: #30253d; --line-strong: #453554;
+  --accent: #b394f0; --accent-hi: #ccb4fb; --accent-ink: #1a102b;
+  --accent-soft: rgba(179, 148, 240, .16); --accent-line: rgba(179, 148, 240, .38);
+  --gold: #f0b64c; --gold-hi: #ffcd72; --gold-soft: rgba(240, 182, 76, .14);
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, .5); --shadow-2: 0 6px 18px rgba(0, 0, 0, .45);
+  --shadow-3: 0 22px 56px rgba(0, 0, 0, .6); --ring: 0 0 0 3px rgba(179, 148, 240, .28);
 }
 
 /* --- base ---------------------------------------------------------------- */
@@ -2430,7 +2536,7 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
 .event-title-card[data-tier="purple"], .event-title-tier-section[data-tier="purple"], .event-title-legend-item[data-tier="purple"] { --tone: #a96bd8; }
 .event-title-card[data-tier="blue"], .event-title-tier-section[data-tier="blue"], .event-title-legend-item[data-tier="blue"] { --tone: #4c9de2; }
 .event-title-card[data-tier="green"], .event-title-tier-section[data-tier="green"], .event-title-legend-item[data-tier="green"] { --tone: #42b98d; }
-.event-title-art-wrap { display: grid; min-height: 88px; place-items: center; overflow: hidden; border: 1px solid color-mix(in srgb, var(--tone) 25%, var(--line)); border-radius: 12px; background: linear-gradient(120deg, color-mix(in srgb, var(--tone) 13%, var(--panel)), color-mix(in srgb, var(--panel) 92%, #0c1119)); }
+.event-title-art-wrap { display: grid; min-height: 88px; place-items: center; overflow: visible; border: 0; border-radius: 0; background: transparent; }
 .event-title-art { display: block; width: min(100%, 520px); height: auto; }
 .event-title-art-fallback { display: grid; min-height: 88px; width: 100%; padding: 15px; place-items: center; color: var(--ink); text-align: center; font-weight: 850; letter-spacing: .015em; }
 .event-title-card-head { display: flex; align-items: center; gap: 10px; justify-content: space-between; padding: 13px 1px 9px; }
@@ -9850,9 +9956,40 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
 .guild-chat-status.is-live > span { background: var(--good); }
 .guild-chat-status.is-reconnecting { color: var(--warn); }
 .guild-chat-status.is-reconnecting > span { background: var(--warn); }
-.guild-chat-thread { min-height: 180px; max-height: min(62vh, 680px); padding: 12px; border: 1px solid var(--line); border-radius: var(--r-md); background: var(--surface-2); }
+.guild-chat-thread {
+  display: grid;
+  align-content: start;
+  gap: 2px;
+  min-height: 240px;
+  max-height: min(62vh, 680px);
+  overflow: auto;
+  margin: 0;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: linear-gradient(155deg, #101c20, #11151b 45%, #17151e);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .035), 0 12px 28px rgba(0, 0, 0, .14);
+  list-style: none;
+  scrollbar-color: #536273 transparent;
+}
+.guild-chat-thread:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.guild-chat-line { display: flex; align-items: baseline; gap: 9px; min-width: 0; padding: 3px 5px; border-radius: 5px; }
+.guild-chat-line:hover { background: rgba(255, 255, 255, .045); }
+.guild-chat-line > time { flex: 0 0 3.2em; color: #778594; font-family: var(--font-mono); font-size: .7rem; font-variant-numeric: tabular-nums; }
+.guild-chat-message { min-width: 0; margin: 0; color: #d7dce5; font-size: .9rem; line-height: 1.55; overflow-wrap: anywhere; }
+.guild-chat-channel { color: #59c88b; font-weight: 650; }
+.guild-chat-name { font-weight: 750; }
+.guild-chat-name.tone-0 { color: #f2bb64; }
+.guild-chat-name.tone-1 { color: #70c5ee; }
+.guild-chat-name.tone-2 { color: #d891ee; }
+.guild-chat-name.tone-3 { color: #8ddd9b; }
+.guild-chat-name.tone-4 { color: #f18f91; }
+.guild-chat-name.tone-5 { color: #edcf73; }
+.guild-chat-line.is-mine { background: rgba(83, 157, 242, .075); }
+.guild-chat-line.is-mine .guild-chat-name { text-decoration: underline; text-decoration-color: rgba(255,255,255,.35); text-underline-offset: 3px; }
 .guild-chat-scroll-anchor { height: 1px; list-style: none; }
 .guild-chat-empty { display: grid; min-height: 180px; place-content: center; justify-items: center; gap: 6px; padding: 18px; border: 1px dashed var(--line-strong); border-radius: var(--r-md); color: var(--ink-soft); text-align: center; }
+.guild-chat-panel .guild-chat-empty { border-style: solid; background: linear-gradient(155deg, #101c20, #17151e); }
 .guild-chat-empty .icon { width: 28px; height: 28px; color: var(--accent); }
 .guild-chat-empty strong { color: var(--ink); }
 .guild-chat-empty p { margin: 0; max-width: 42ch; font-size: .88rem; }
@@ -9862,6 +9999,10 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
   .mail-thread { max-height: 60vh; }
   .mail-bubble { max-width: 94%; }
   .mail-composer { grid-template-columns: minmax(0, 1fr); }
+  .guild-chat-thread { min-height: 220px; max-height: 58vh; padding: 10px 8px; }
+  .guild-chat-line { gap: 6px; }
+  .guild-chat-line > time { flex-basis: 2.9em; font-size: .66rem; }
+  .guild-chat-message { font-size: .86rem; }
 }
 
 /* --- one line above the guild list, the form lives in a dialog ----------- */
