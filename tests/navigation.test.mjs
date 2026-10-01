@@ -37,7 +37,7 @@ test("groups nav items by category id, then badge, and keeps first-seen order", 
 
 test("home counters match the published navigation tree", () => {
   assert.equal(toolCount(), 10);
-  assert.equal(guideCount(), 24);
+  assert.equal(guideCount(), 25);
   assert.equal(eventCount(), 29);
 });
 

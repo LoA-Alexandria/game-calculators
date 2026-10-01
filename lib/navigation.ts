@@ -241,6 +241,13 @@ export const SECTIONS: NavSection[] = [
         categoryId: "tips",
       },
       {
+        href: "/guides/event-titles/",
+        label: (t) => t.guideEntries.eventTitles.title,
+        description: (t) => t.guideEntries.eventTitles.summary,
+        badge: (t) => t.guideCategories.tips,
+        categoryId: "tips",
+      },
+      {
         href: "/guides/hero-collection-destiny/",
         label: (t) => t.guideEntries.heroCollectionDestiny.title,
         description: (t) => t.guideEntries.heroCollectionDestiny.summary,
