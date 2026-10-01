@@ -6,6 +6,18 @@ import { useLocale } from "../../components/LocaleProvider";
 import { useCalculatorError } from "../../components/useCalculatorError";
 import { calculateSignetRingCost, MAXIMUM_SIGNET_LEVEL } from "../../../lib/calculators/signet-ring-cost";
 
+function formatCompactCoins(value: number, formatNumber: (value: number, options?: Intl.NumberFormatOptions) => string) {
+  const units = [
+    { threshold: 1_000_000_000_000, suffix: "t" },
+    { threshold: 1_000_000_000, suffix: "b" },
+    { threshold: 1_000_000, suffix: "m" },
+    { threshold: 1_000, suffix: "k" },
+  ];
+  const unit = units.find(({ threshold }) => value >= threshold);
+  if (!unit) return formatNumber(value);
+  return `${formatNumber(value / unit.threshold, { maximumFractionDigits: 2 })}${unit.suffix}`;
+}
+
 export default function SignetRingsPage() {
   const { t, n } = useLocale();
   const describeError = useCalculatorError();
@@ -43,7 +55,9 @@ export default function SignetRingsPage() {
         </div>
         <div className="result-panel" aria-live="polite">
           <span className="result-label">{t.calculator.signetCoins}</span>
-          <strong className="result-number">{result.value ? n(result.value.coins) : "—"}</strong>
+          <strong className="result-number">
+            {result.value ? formatCompactCoins(result.value.coins, n) : "—"}
+          </strong>
           <div className="result-breakdown signet-results">
             <span><strong>{result.value ? n(result.value.signetRings) : "—"}</strong> {t.calculator.signetRings}</span>
             {result.value?.ascensions.length ? result.value.ascensions.map((ascension) => (
