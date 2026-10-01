@@ -29,6 +29,7 @@ import goddessTheater from "../data/goddess-theater.json" with { type: "json" };
 import goddesses from "../data/goddesses.json" with { type: "json" };
 import grandVoyageRoutes from "../data/grand-voyage-routes.json" with { type: "json" };
 import grandVoyageShipwreckObservation from "../data/grand-voyage-shipwreck-observation.json" with { type: "json" };
+import heroBaseValues from "../data/hero-base-values.json" with { type: "json" };
 import heroLayouts from "../data/hero-layouts.json" with { type: "json" };
 import heroLeveling from "../data/hero-leveling.json" with { type: "json" };
 import heroLinking from "../data/hero-linking.json" with { type: "json" };
@@ -61,6 +62,7 @@ export const DATA_FILES: Record<string, unknown> = {
   "goddesses": goddesses,
   "grand-voyage-routes": grandVoyageRoutes,
   "grand-voyage-shipwreck-observation": grandVoyageShipwreckObservation,
+  "hero-base-values": heroBaseValues,
   "hero-layouts": heroLayouts,
   "hero-leveling": heroLeveling,
   "hero-linking": heroLinking,

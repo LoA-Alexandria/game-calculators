@@ -1,7 +1,8 @@
 # Hero simulator
 
 Experimental event simulation and joint team / Collection search, model v4, 27 September
-2026. This replaces the original guide-weight ranking. Neither battle simulation
+2026. The baseline lineup mode added 1 October 2026 is a separate workbook-derived
+ranking and does not change the battle model. Neither battle simulation
 nor team search imports layout archetypes, tiers, role scores, or recommended builds.
 The browser runs the search in a cancellable Web Worker with a reproducible seed.
 
@@ -99,6 +100,29 @@ global optimum. The deviation is the population standard deviation of damage,
 not a confidence interval. The graph and event log show one validation-seed
 replay, while headline metrics average all validation runs.
 
+## Workbook baseline lineup
+
+Source: user-supplied `Pop Epoch Calculator 9.29 (1).xlsx`, accessed 1 October
+2026. The filename identifies the workbook as 9.29; it does not state a game
+patch date. Baseline fields are taken from `Without Pics!B3:O86` and its lookup
+tables. Rows were matched to the Core roster by hero identity; the “Mime Hero”
+placeholder is omitted. The `Base Attack` sheet is player-specific and is not
+used as a default. Eight heroes have no baseline ATK in the source and are
+skipped until a user enters their own ATK. Source star color is only a starting
+selection; it can be edited for the player's account.
+
+The workbook's Value column uses `ATK × trigger chance × skill damage`. Trigger
+chance by rarity is UR+/UR 40%, SSR 30%, SR 25%, R 20%. Base skill damage is
+200%, 200%, 160%, 140%, or 120% respectively. The sheet increases skill damage
+by 10 percentage points per star-color step above Green; the calculator derives
+that multiplier from the selected color. The recommended lineup sorts individual
+scores descending and takes the chosen number of unlocked hero slots. Ties sort
+by hero name. This is a baseline comparison only: it is not total damage per
+round and does not model critical hits, support skills, synergies, troop
+matchups, items, Collection, goddesses, enemy defense, or multi-part damage.
+Changing the entered ATK and star color does not change the data file or the
+battle simulator's separate placeholder-stat assumptions.
+
 ## Production
 
 Production is now a global one-to-one hero/building assignment, followed by a
@@ -120,6 +144,9 @@ four ordered Cryptid attacks, exhaustive joint team / Collection search, budgete
 search, unsupported data and manual-stat sensitivity.
 tests/hero-team.test.mjs covers global production assignment, one-use constraints,
 zero/fractional time, star gates and invalid input.
+tests/hero-base-value.test.mjs covers source roster reconciliation, missing attack
+values, the workbook formula, star-color boundaries, top-slot ranking, ties, and
+invalid inputs.
 After building, run `node --experimental-strip-types scripts/verify-hero-worker.mjs`
 to execute the exported worker in an isolated JavaScript context and compare
 its output with the source engine. This does not replace browser UI checks.
