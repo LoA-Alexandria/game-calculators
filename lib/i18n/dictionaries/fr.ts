@@ -717,6 +717,11 @@ const fr: Dictionary = {
       description: "Planifier les lettres de change d’une ville et les paliers de groupe requis.",
       category: "Grand Voyage",
     },
+    signetRings: {
+      name: "Calculateur de coûts des anneaux sigillaires",
+      description: "Estime les pièces et anneaux sigillaires nécessaires pour passer du niveau A au niveau B.",
+      category: "Calculateur gratuit",
+    },
     route: {
       name: "Calculateur d’itinéraire",
       description: "Comparer durée, profit et efficacité d’une boucle de deux à six villes.",
@@ -963,6 +968,17 @@ const fr: Dictionary = {
     cityToLevel: "→ niveau {level}",
     cityNote:
       "Les prix d’amélioration correspondent au niveau d’arrivée. Les paliers de groupe surviennent tous les cinq niveaux et ne coûtent eux-mêmes aucune lettre. Bourgs et villes vont au niveau 30, les métropoles au niveau 35.",
+    signetEyebrow: "Calculateur gratuit",
+    signetIntro: "Estimez les pièces et anneaux sigillaires nécessaires pour faire passer un héros d’un niveau à un autre.",
+    signetFrom: "Niveau actuel",
+    signetTo: "Niveau cible",
+    signetRange: "Saisissez des niveaux entiers de 1 à 500. Le même niveau de départ et d’arrivée ne coûte rien.",
+    signetCoins: "Pièces estimées nécessaires",
+    signetRings: "Anneaux sigillaires",
+    signetAscension: "Ascension après le niveau {level}",
+    signetNoAscensions: "Aucun palier d’anneaux sigillaires dans cette plage.",
+    signetNote:
+      "Basé sur le tableau de coûts arrondis fourni par un joueur. Les coûts de chaque niveau d’arrivée sont additionnés ; les anneaux ne sont comptés que si la cible dépasse leur palier. La version du jeu associée à la source est inconnue : les totaux sont des estimations.",
     routeEyebrow: "Grand Voyage",
     routeIntro:
       "Composez une boucle de deux à six villes et comparez chaque étape, la durée, le profit et le profit horaire.",

@@ -323,6 +323,12 @@ export const SECTIONS: NavSection[] = [
         badge: (t) => t.tools.cityUpgrade.category,
       },
       {
+        href: "/calculators/signet-rings/",
+        label: (t) => t.tools.signetRings.name,
+        description: (t) => t.tools.signetRings.description,
+        badge: (t) => t.tools.signetRings.category,
+      },
+      {
         href: "/calculators/grand-voyage-route/",
         label: (t) => t.tools.route.name,
         description: (t) => t.tools.route.description,

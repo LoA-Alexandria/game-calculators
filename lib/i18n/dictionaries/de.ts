@@ -717,6 +717,11 @@ const de: Dictionary = {
       description: "Wechselbriefe für eine Stadt und die nötigen Gruppen-Meilensteine planen.",
       category: "Große Reise",
     },
+    signetRings: {
+      name: "Signetring-Kostenrechner",
+      description: "Schätzt Münzen und Signetringe für einen Stufenaufstieg von A bis B.",
+      category: "Kostenloser Rechner",
+    },
     route: {
       name: "Routenrechner",
       description: "Reisezeit, Gewinn und Effizienz einer Rundreise über zwei bis sechs Städte vergleichen.",
@@ -963,6 +968,17 @@ const de: Dictionary = {
     cityToLevel: "→ Stufe {level}",
     cityNote:
       "Die Ausbaupreise gehören zur Zielstufe. Gruppen-Schranken greifen alle fünf Stufen und kosten selbst keine Wechselbriefe. Städte und Dörfer gehen bis Stufe 30, Metropolen bis Stufe 35.",
+    signetEyebrow: "Kostenloser Rechner",
+    signetIntro: "Schätze die benötigten Münzen und Signetringe, um einen Helden von einer Stufe auf eine andere zu bringen.",
+    signetFrom: "Aktuelle Stufe",
+    signetTo: "Zielstufe",
+    signetRange: "Ganze Stufen von 1 bis 500 eingeben. Bei gleicher Start- und Zielstufe entstehen keine Kosten.",
+    signetCoins: "Geschätzte Münzkosten",
+    signetRings: "Signetringe",
+    signetAscension: "Aufstieg nach Stufe {level}",
+    signetNoAscensions: "In diesem Bereich gibt es keine Signetring-Meilensteine.",
+    signetNote:
+      "Basiert auf der vom Spieler bereitgestellten, gerundeten Kostentabelle. Die Kosten jeder erreichten Zielstufe werden addiert; Signetringe fallen nur an, wenn die Zielstufe den jeweiligen Meilenstein überschreitet. Die Spielversion der Quelle ist unbekannt, daher sind die Summen Schätzwerte.",
     routeEyebrow: "Große Reise",
     routeIntro:
       "Stelle eine Rundreise über zwei bis sechs Städte zusammen und vergleiche jede Etappe, Reisezeit, Gewinn und Gewinn pro Stunde.",
