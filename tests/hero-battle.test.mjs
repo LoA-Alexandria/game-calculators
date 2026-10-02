@@ -36,6 +36,13 @@ test("every living hero rolls; the lowest successful unused slot gets the single
   assert.equal(result.events.filter((event) => event.action === "heroAction" && event.side === 0).length, 1);
   assert.ok(result.events.filter((event) => ["normal", "skill", "critical", "extra", "collection"].includes(event.action)).every((event) => event.target && event.hpBefore !== undefined && event.hpAfter !== undefined));
 });
+test("a 25-hero formation records all 25 skill rolls but only one hero action", () => {
+  const team = Array.from(MODELED_HEROES).slice(0, 25).map((id) => hero(id));
+  assert.equal(team.length, 25);
+  const result = simulateBattle(team, { ...options, rounds: 1 }, 42, true);
+  assert.equal(result.events.filter((event) => event.action === "skillRoll" && event.side === 0).length, 25);
+  assert.equal(result.events.filter((event) => event.action === "heroAction" && event.side === 0).length, 1);
+});
 test("the player opens round 1 and the enemy gets exactly one action after that", () => {
   const team = [hero("achilles", { hp: 100000 }), hero("caesar", { hp: 100000 })];
   const enemy = [hero("guinevere", { atk: 30, hp: 100000 }), hero("merlin", { atk: 30, hp: 100000 })];
