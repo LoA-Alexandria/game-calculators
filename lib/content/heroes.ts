@@ -7,10 +7,10 @@
  * five were rematched on 18 September 2026 so each bio names its hero. Lagertha's
  * missing wiki blurb was restored in the same encyclopedia style from Saxo
  * Grammaticus's Gesta Danorum, not from in-game text.
- * Skill, buff, and production tables for 37 heroes come from German client
- * screenshots on 18 September 2026; English is a translation of that German
- * text. Joan of Arc had no skill tables in that dump, so her abilities stay
- * empty. Five wiki heroes (Billy the Kid, Guan Yu, Miyamoto Musashi, Yi
+ * Skill, buff, and production tables for 39 heroes come from German client
+ * screenshots on 18 September and 2 October 2026; English is a translation of
+ * that German text. Joan of Arc had no skill tables in that dump, so her
+ * abilities stay empty. Four wiki heroes (Guan Yu, Miyamoto Musashi, Yi
  * Sun-sin, Lü Bu) were added from the Hero page without skill tables.
  *
  * Production mid-levels that were not photographed are interpolated as noted
@@ -74,7 +74,9 @@ export type HeroSkill = {
  * text is not known yet.
  */
 export const HERO_ABILITY_KINDS = ["skill", "buff", "production"] as const;
-export type HeroAbilityKind = (typeof HERO_ABILITY_KINDS)[number];
+/** Additional ability panels that do not count toward the three standard slots. */
+export const HERO_EDITOR_ABILITY_KINDS = ["skill", "buff", "production", "skinSkill"] as const;
+export type HeroAbilityKind = (typeof HERO_EDITOR_ABILITY_KINDS)[number];
 export type HeroAbility = { name: string; levels: string[] };
 
 export type Hero = {
@@ -91,6 +93,8 @@ export type Hero = {
   /** Encyclopedia blurb from the wiki Hero page. */
   bio?: string;
   skill?: HeroAbility;
+  /** Alternate battle skill shown for a specific skin; separate from the standard skill. */
+  skinSkill?: HeroAbility;
   buff?: HeroAbility;
   production?: HeroAbility;
   artifact?: HeroSkill;
@@ -118,6 +122,7 @@ export type HeroTexts = Record<
     title?: string;
     bio?: string;
     skill?: HeroAbilityText;
+    skinSkill?: HeroAbilityText;
     buff?: HeroAbilityText;
     production?: HeroAbilityText;
     artifact?: { name?: string; text?: string };
@@ -175,6 +180,7 @@ export function localizedHero(hero: Hero, texts: HeroTexts, collectionTexts: Col
       const ability = hero[kind];
       if (ability) next[kind] = localizedAbility(ability, local[kind]);
     }
+    if (hero.skinSkill) next.skinSkill = localizedAbility(hero.skinSkill, local.skinSkill);
     if (hero.artifact) {
       next.artifact = {
         name: local.artifact?.name?.trim() || hero.artifact.name,
@@ -223,7 +229,7 @@ export function heroesByRarity(rarity: HeroRarity | "all", roster: readonly Hero
 
 /** Every searchable string of one translation of a hero. */
 function textOf(hero: Hero): string[] {
-  const abilities = HERO_ABILITY_KINDS.flatMap((kind) => [hero[kind]?.name ?? "", ...(hero[kind]?.levels ?? [])]);
+  const abilities = HERO_EDITOR_ABILITY_KINDS.flatMap((kind) => [hero[kind]?.name ?? "", ...(hero[kind]?.levels ?? [])]);
   return [
     hero.obtain,
     hero.title ?? "",

@@ -58,6 +58,24 @@ test("an untouched draft exports the published JSON and dictionary blocks byte f
   assert.equal(countHeroDraftChanges(PUBLISHED_HEROES, PUBLISHED_HEROES), 0);
 });
 
+test("the roster editor preserves and translates Billy the Kid's alternate skin skill", () => {
+  let state = fromHeroData(HERO_DATA);
+  const billy = uidOf(state, "Billy the Kid");
+  const original = HERO_DATA.heroes.find((hero) => hero.id === "billy-the-kid").skinSkill;
+  assert.deepEqual(heroByUid(state, billy).abilities.skinSkill, original);
+  state = setAbilityName(state, billy, "skinSkill", "Untoten-Salve", "de");
+  state = setAbilityLevel(state, billy, "skinSkill", 0, "Trefferquote 30%", "de");
+
+  const exported = exportHeroes(state, HERO_DATA).data.heroes.find((hero) => hero.id === "billy-the-kid");
+  assert.deepEqual(exported.skinSkill, original);
+  assert.deepEqual(exportedHeroTexts(state).de["billy-the-kid"].skinSkill, {
+    name: "Untoten-Salve",
+    levels: ["Trefferquote 30%"],
+  });
+  const parsed = parseHeroDraft(JSON.stringify(state));
+  assert.deepEqual(heroByUid(parsed, billy).abilities.skinSkill, original);
+});
+
 test("a new hero joins the end of its rarity and gets an id from its name", () => {
   let { state, uid } = addHero(fromHeroData(HERO_DATA), "UR");
   state = updateHero(state, uid, { name: "  Zhou Yu ", obtain: "Warlord event" });
@@ -116,24 +134,24 @@ test("rarity changes regroup a hero and moves stay inside the rarity", () => {
 });
 
 test("abilities keep their three slots and their levels", () => {
-  let state = fromHeroData(HERO_DATA);
+  let { state, uid: abilityHero } = addHero(fromHeroData(HERO_DATA), "UR", "Ability Test");
   const heracles = heroByUid(state, uidOf(state, "Heracles"));
-  assert.deepEqual(Object.keys(heracles.abilities), ["skill", "buff", "production"]);
+  assert.deepEqual(Object.keys(heracles.abilities), ["skill", "buff", "production", "skinSkill"]);
   assert.equal(heracles.abilities.skill.levels.length, 9);
 
-  const morgana = uidOf(state, "Morgana");
-  assert.deepEqual(heroByUid(state, morgana).abilities.buff, { name: "", levels: [""] });
-  state = addAbilityLevel(state, morgana, "skill");
-  const copied = heroByUid(state, morgana).abilities.skill.levels;
+  state = setAbilityName(state, abilityHero, "skill", "Quick");
+  state = setAbilityLevel(state, abilityHero, "skill", 0, "Damage 200%.");
+  state = addAbilityLevel(state, abilityHero, "skill");
+  const copied = heroByUid(state, abilityHero).abilities.skill.levels;
   assert.equal(copied[1], copied[0], "a new level starts from the one before");
-  state = setAbilityLevel(state, morgana, "skill", 1, copied[0].replace("200%", "210%"));
-  state = setAbilityName(state, morgana, "production", "  Farm Mastery ");
-  state = setAbilityLevel(state, morgana, "production", 0, "Farm Resource Productivity +40%. ");
-  state = setArtifact(state, morgana, { name: "Wand", text: "Longer curses." });
+  state = setAbilityLevel(state, abilityHero, "skill", 1, "Damage 210%.");
+  state = setAbilityName(state, abilityHero, "production", "  Farm Mastery ");
+  state = setAbilityLevel(state, abilityHero, "production", 0, "Farm Resource Productivity +40%. ");
+  state = setArtifact(state, abilityHero, { name: "Wand", text: "Longer curses." });
 
-  let row = exportHeroes(state, HERO_DATA).data.heroes.find((hero) => hero.name === "Morgana");
+  let row = exportHeroes(state, HERO_DATA).data.heroes.find((hero) => hero.name === "Ability Test");
   assert.equal(row.skill.levels.length, 2);
-  assert.match(row.skill.levels[1], /210% of ATK/);
+  assert.match(row.skill.levels[1], /210%/);
   assert.deepEqual(row.production, { name: "Farm Mastery", levels: ["Farm Resource Productivity +40%."] });
   assert.equal(row.buff, undefined, "an empty slot is left out");
   assert.deepEqual(row.artifact, { name: "Wand", text: "Longer curses." });
@@ -142,11 +160,11 @@ test("abilities keep their three slots and their levels", () => {
     "each ability sits on its own line",
   );
 
-  state = removeAbilityLevel(state, morgana, "skill", 1);
-  state = clearAbility(setArtifact(state, morgana, null), morgana, "production");
-  row = exportHeroes(state, HERO_DATA).data.heroes.find((hero) => hero.name === "Morgana");
-  assert.deepEqual(row, HERO_DATA.heroes.find((hero) => hero.name === "Morgana"));
-  assert.deepEqual(heroByUid(removeAbilityLevel(state, morgana, "skill", 0), morgana).abilities.skill.levels, [""]);
+  state = removeAbilityLevel(state, abilityHero, "skill", 1);
+  state = clearAbility(setArtifact(state, abilityHero, null), abilityHero, "production");
+  row = exportHeroes(state, HERO_DATA).data.heroes.find((hero) => hero.name === "Ability Test");
+  assert.deepEqual(row.skill, { name: "Quick", levels: ["Damage 200%."] });
+  assert.deepEqual(heroByUid(removeAbilityLevel(state, abilityHero, "skill", 0), abilityHero).abilities.skill.levels, [""]);
 
   // An empty first level is kept; only trailing blanks are dropped.
   const gap = addHero(fromHeroData(HERO_DATA), "R");

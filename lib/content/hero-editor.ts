@@ -16,7 +16,7 @@
 
 import { heroReferences, rosterName, type HeroReference } from "./hero-links.ts";
 import {
-  HERO_ABILITY_KINDS,
+  HERO_EDITOR_ABILITY_KINDS,
   HERO_AGES,
   HERO_DATA,
   HERO_RARITIES,
@@ -95,7 +95,7 @@ function emptyHeroText(): HeroTextDraft {
     obtain: "",
     title: "",
     bio: "",
-    abilities: { skill: emptyAbilityText(), buff: emptyAbilityText(), production: emptyAbilityText() },
+    abilities: { skill: emptyAbilityText(), buff: emptyAbilityText(), production: emptyAbilityText(), skinSkill: emptyAbilityText() },
     artifact: { name: "", text: "" },
   };
 }
@@ -131,7 +131,7 @@ export function heroIdFrom(name: string, taken: Iterable<string>): string {
 const emptyAbility = (): HeroAbility => ({ name: "", levels: [""] });
 
 function emptyAbilities(): Record<HeroAbilityKind, HeroAbility> {
-  return { skill: emptyAbility(), buff: emptyAbility(), production: emptyAbility() };
+  return { skill: emptyAbility(), buff: emptyAbility(), production: emptyAbility(), skinSkill: emptyAbility() };
 }
 
 export function fromHeroData(data: HeroData, catalogs: Partial<Record<Locale, HeroTexts>> = {}): HeroEditorState {
@@ -139,7 +139,7 @@ export function fromHeroData(data: HeroData, catalogs: Partial<Record<Locale, He
   const texts = emptyTexts();
   const heroes = data.heroes.map((hero) => {
     const abilities = emptyAbilities();
-    for (const kind of HERO_ABILITY_KINDS) {
+    for (const kind of HERO_EDITOR_ABILITY_KINDS) {
       const ability = hero[kind];
       if (ability) abilities[kind] = { name: ability.name, levels: ability.levels.length ? [...ability.levels] : [""] };
     }
@@ -152,7 +152,7 @@ export function fromHeroData(data: HeroData, catalogs: Partial<Record<Locale, He
       draft.obtain = local.obtain ?? "";
       draft.title = local.title ?? "";
       draft.bio = local.bio ?? "";
-      for (const kind of HERO_ABILITY_KINDS) {
+      for (const kind of HERO_EDITOR_ABILITY_KINDS) {
         draft.abilities[kind] = {
           name: local[kind]?.name ?? "",
           levels: [...(local[kind]?.levels ?? [])],
@@ -187,8 +187,8 @@ export function heroTextOf(state: HeroEditorState, locale: Locale, uid: string):
   const hero = heroByUid(state, uid);
   if (!hero) return emptyHeroText();
   if (locale === DEFAULT_LOCALE) {
-    const abilities = { skill: emptyAbilityText(), buff: emptyAbilityText(), production: emptyAbilityText() };
-    for (const kind of HERO_ABILITY_KINDS) {
+    const abilities = { skill: emptyAbilityText(), buff: emptyAbilityText(), production: emptyAbilityText(), skinSkill: emptyAbilityText() };
+    for (const kind of HERO_EDITOR_ABILITY_KINDS) {
       abilities[kind] = { name: hero.abilities[kind].name, levels: [...hero.abilities[kind].levels] };
     }
     return {
@@ -298,7 +298,7 @@ export function exportHeroes(state: HeroEditorState, published: HeroData): HeroE
     if (hero.troop) row.troop = hero.troop;
     if (hero.age) row.age = hero.age;
     if (hero.bio?.trim()) row.bio = hero.bio.trim();
-    for (const kind of HERO_ABILITY_KINDS) {
+    for (const kind of HERO_EDITOR_ABILITY_KINDS) {
       const ability = cleanAbility(hero.abilities[kind]);
       if (ability) row[kind] = ability;
     }
@@ -544,7 +544,7 @@ export function serializeHeroData(data: HeroData): string {
     if (hero.bio) fields.push(`"bio": ${json(hero.bio)}`);
     const head = `    { ${fields.join(", ")}`;
     const parts: string[] = [];
-    for (const kind of HERO_ABILITY_KINDS) {
+    for (const kind of HERO_EDITOR_ABILITY_KINDS) {
       const ability = hero[kind];
       if (ability) parts.push(`      ${json(kind)}: ${abilityJson(ability)}`);
     }
@@ -586,7 +586,7 @@ function cleanHeroText(hero: EditorHero, draft: HeroTextDraft): HeroTexts[string
   if (title) entry.title = title;
   const bio = draft.bio.trim();
   if (bio) entry.bio = bio;
-  for (const kind of HERO_ABILITY_KINDS) {
+  for (const kind of HERO_EDITOR_ABILITY_KINDS) {
     // Nothing to translate for a slot the roster has no English text for.
     const english = cleanAbility(hero.abilities[kind]);
     if (!english) continue;
@@ -641,7 +641,7 @@ function formatHeroTexts(catalog: HeroTexts): string {
     if (entry.obtain) lines.push(`          obtain: ${json(entry.obtain)},`);
     if (entry.title) lines.push(`          title: ${json(entry.title)},`);
     if (entry.bio) lines.push(`          bio: ${json(entry.bio)},`);
-    for (const kind of HERO_ABILITY_KINDS) {
+    for (const kind of HERO_EDITOR_ABILITY_KINDS) {
       const text = entry[kind];
       if (text) lines.push(...formatAbilityText(kind, text));
     }
@@ -705,7 +705,7 @@ export function findHeroProblems(state: HeroEditorState, published: HeroData): H
     const key = name.toLowerCase();
     if (name && seen.has(key)) problems.push({ code: "duplicateName", name });
     seen.add(key);
-    for (const kind of HERO_ABILITY_KINDS) {
+    for (const kind of HERO_EDITOR_ABILITY_KINDS) {
       const ability = cleanAbility(hero.abilities[kind]);
       // A level may be unknown, but a named ability needs some text and text needs a name.
       if (ability && (!ability.name || ability.levels.every((level) => level === ""))) {
@@ -747,7 +747,7 @@ function isHeroText(value: unknown): value is HeroTextDraft {
   if (text.bio !== undefined && typeof text.bio !== "string") return false;
   if (typeof text.abilities !== "object" || text.abilities === null) return false;
   if (typeof text.artifact?.name !== "string" || typeof text.artifact.text !== "string") return false;
-  return HERO_ABILITY_KINDS.every((kind) => isAbilityText(text.abilities[kind]));
+  return HERO_EDITOR_ABILITY_KINDS.every((kind) => isAbilityText(text.abilities[kind]));
 }
 
 function isAbility(value: unknown): value is HeroAbility {
@@ -772,6 +772,10 @@ export function parseHeroDraft(raw: string | null): HeroEditorState | null {
       if (!catalog) continue;
       if (typeof catalog !== "object") return null;
       for (const draft of Object.values(catalog)) {
+        draft.abilities = {
+          ...emptyHeroText().abilities,
+          ...draft.abilities,
+        };
         if (!isHeroText(draft)) return null;
         draft.title = draft.title ?? "";
         draft.bio = draft.bio ?? "";
@@ -795,7 +799,8 @@ export function parseHeroDraft(raw: string | null): HeroEditorState | null {
         const hasData = isImageData(image.data);
         if (hasFile === hasData) return null;
       }
-      for (const kind of HERO_ABILITY_KINDS) if (!isAbility(hero.abilities[kind])) return null;
+      hero.abilities.skinSkill = hero.abilities.skinSkill ?? emptyAbility();
+      for (const kind of HERO_EDITOR_ABILITY_KINDS) if (!isAbility(hero.abilities[kind])) return null;
       if (hero.artifact !== null && !isSkill(hero.artifact)) return null;
     }
     return { ...value, texts };
