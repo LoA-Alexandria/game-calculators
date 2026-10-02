@@ -29,6 +29,11 @@ export const MODELED_ITEMS = new Set([
   "the-creation-of-adam", "scarab-amulet", "heimdalls-horn",
   "model-of-the-minotaurs-labyrinth", "plague-doctor-mask",
   "decameron-manuscript", "dead-sea-scrolls", "brutus-dagger",
+  "golden-mask-of-agamemnon", "david", "model-of-noahs-ark",
+  "flintstone-pedal-car", "thors-hammer", "wings-of-icarus",
+  "olympia-olive-wreath", "pandoras-box", "trojan-horse",
+  "otzis-copper-axe", "discobolus", "cross-of-lorraine-flag",
+  "galileos-telescope",
 ]);
 const heroMap = new Map(HEROES.map((hero) => [hero.id, hero]));
 const itemMap = new Map(COLLECTION_ITEMS.map((item) => [item.id, item]));
@@ -69,12 +74,12 @@ export function seededRandom(seed: number) {
 }
 type Effect = { key: string; source: string; value: number; expires: number; ticks?: number };
 type Unit = Fighter & { health: number };
-type Side = { units: Unit[]; max: number; shield: number; effects: Effect[]; items: Set<string>; damage: number; healing: number; absorbed: number; actions: number; nextUnit: number; usedSkills: Set<string>; labyrinth: boolean; dotTaken: number };
+type Side = { units: Unit[]; max: number; shield: number; effects: Effect[]; items: Set<string>; damage: number; healing: number; absorbed: number; actions: number; nextUnit: number; usedSkills: Set<string>; labyrinth: boolean; dotTaken: number; pedalCarTriggered: boolean; pedalCarShield: boolean; hammerTriggered: boolean; wingsTriggered: boolean; skillsUsed: number };
 const totalHp = (side: Side) => side.units.reduce((sum, unit) => sum + unit.health, 0);
 const living = (side: Side) => side.units.filter((unit) => unit.health > 0);
 const effect = (side: Side, key: string) => side.effects.filter((entry) => entry.key === key).reduce((sum, entry) => sum + entry.value, 0);
-const buffs = new Set(["dodge", "break", "crit", "skill", "reduction", "barrier", "dotHeal", "counterHeal", "atk", "extra", "frontForce", "reflect", "cryptidHeal"]);
-const debuffs = new Set(["dot", "skillDown", "replace", "atkDown", "reductionDown", "skillReductionDown"]);
+const buffs = new Set(["dodge", "break", "crit", "skill", "reduction", "barrier", "dotHeal", "counterHeal", "atk", "extra", "frontForce", "reflect", "cryptidHeal", "skillReductionDown", "damageCap"]);
+const debuffs = new Set(["dot", "skillDown", "replace", "atkDown", "reductionDown"]);
 
 export function validateBattle(pool: Fighter[], options: BattleOptions) {
   const whole = (value: number, min: number, max: number) => Number.isInteger(value) && value >= min && value <= max;
@@ -98,7 +103,7 @@ export function validateBattle(pool: Fighter[], options: BattleOptions) {
 /** Event simulation with an explicit scenario model; see HERO-TEAM-PLANNER.md. */
 export function simulateBattle(team: Fighter[], options: BattleOptions, seed = options.seed, record = false): BattleResult {
   const random = seededRandom(seed);
-  const make = (units: Fighter[], items: string[]): Side => ({ units: units.map((unit) => ({ ...unit, health: unit.hp })), max: units.reduce((sum, unit) => sum + unit.hp, 0), shield: 0, effects: [], items: new Set(items), damage: 0, healing: 0, absorbed: 0, actions: 0, nextUnit: 0, usedSkills: new Set(), labyrinth: false, dotTaken: 0 });
+  const make = (units: Fighter[], items: string[]): Side => ({ units: units.map((unit) => ({ ...unit, health: unit.hp })), max: units.reduce((sum, unit) => sum + unit.hp, 0), shield: 0, effects: [], items: new Set(items), damage: 0, healing: 0, absorbed: 0, actions: 0, nextUnit: 0, usedSkills: new Set(), labyrinth: false, dotTaken: 0, pedalCarTriggered: false, pedalCarShield: false, hammerTriggered: false, wingsTriggered: false, skillsUsed: 0 });
   const owned = options.items.filter((id) => team.some((unit) => unit.id === EXCLUSIVE_COLLECTION_HEROES[id]));
   const targets = options.infiniteDummy === false
     ? Array.from({ length: options.enemyCount ?? 1 }, (_, index) => ({ id: "target-" + (index + 1), atk: 0, hp: 1000, stars: 0 }))
@@ -112,11 +117,23 @@ export function simulateBattle(team: Fighter[], options: BattleOptions, seed = o
   const add = (side: Side, key: string, value: number, turns: number, stack = false, source = actor) => {
     if (!stack) side.effects = side.effects.filter((entry) => entry.key !== key || entry.source !== source);
     if (value) {
-      side.effects.push({ key, source, value, expires: side.actions + turns });
-      log(side === sides[0] ? 0 : 1, debuffs.has(key) ? "debuff" : "buff", value, { actor: source, target: side === sides[0] ? "allies" : "enemies", effectKey: key, duration: turns });
+      let duration = turns;
+      let triggerChance = 0;
+      if (side === sides[0] && key !== "seal" && side.items.has("galileos-telescope")) triggerChance = item(side, "galileos-telescope");
+      if (side === sides[1] && debuffs.has(key) && sides[0].items.has("discobolus")) triggerChance = item(sides[0], "discobolus");
+      const extended = triggerChance > 0 && random() < triggerChance;
+      if (extended) duration += 2;
+      side.effects.push({ key, source, value, expires: side.actions + duration });
+      log(side === sides[0] ? 0 : 1, debuffs.has(key) || key === "seal" ? "debuff" : "buff", value, { actor: source, target: side === sides[0] ? "allies" : "enemies", effectKey: key, duration, chance: triggerChance || undefined, succeeded: triggerChance ? extended : undefined });
     }
   };
-  const addDot = (side: Side, value: number) => { side.effects.push({ key: "dot", source: actor, value, expires: Infinity, ticks: 3 }); log(side === sides[0] ? 0 : 1, "debuff", value, { target: side === sides[0] ? "allies" : "enemies", effectKey: "dot", duration: 3 }); };
+  const addDot = (side: Side, value: number) => {
+    const chance = side === sides[1] && sides[0].items.has("discobolus") ? item(sides[0], "discobolus") : 0;
+    const extended = chance > 0 && random() < chance;
+    const duration = extended ? 5 : 3;
+    side.effects.push({ key: "dot", source: actor, value, expires: Infinity, ticks: duration });
+    log(side === sides[0] ? 0 : 1, "debuff", value, { target: side === sides[0] ? "allies" : "enemies", effectKey: "dot", duration, chance: chance || undefined, succeeded: chance ? extended : undefined });
+  };
   const item = (side: Side, id: string, index = 0) => side.items.has(id) ? percentages(itemMap.get(id)!.skill.text)[index] ?? 0 : 0;
   const attack = (side: Side) => living(side).reduce((sum, unit) => sum + unit.atk, 0) * (1 + Math.max(0, effect(side, "atk") - effect(side, "atkDown")));
   const heal = (index: number, amount: number) => {
@@ -148,10 +165,16 @@ export function simulateBattle(team: Fighter[], options: BattleOptions, seed = o
     if (kind === "dot") amount *= 1 + item(from, "dead-sea-scrolls");
     if (critical) amount *= 1 + effect(from, "crit");
     if (index === 0) amount *= 1 - Math.max(0, options.enemyReduction - effect(to, "reductionDown"));
+    if (effect(to, "damageCap") > 0) amount = Math.min(amount, to.max * effect(to, "damageCap"));
     const bypass = kind === "skill" || kind === "extra" ? Math.min(1, effect(from, "break")) : 0;
     const absorbed = Math.min(to.shield, amount * (1 - bypass));
     to.shield -= absorbed; to.absorbed += absorbed; amount -= absorbed;
     if (absorbed) log(1 - index, "absorb", absorbed);
+    if (to === sides[0] && to.pedalCarShield && to.shield <= 0) {
+      to.pedalCarShield = false;
+      actor = "flintstone-pedal-car";
+      add(to, "reduction", item(to, "flintstone-pedal-car", 2), 1000, true, "flintstone-pedal-car");
+    }
     let remaining = amount;
     const losses: { id: string; amount: number; before: number; after: number }[] = [];
     // Highest slot falls first; spillover goes to the next living slot.
@@ -161,9 +184,28 @@ export function simulateBattle(team: Fighter[], options: BattleOptions, seed = o
       const wasAlive = unit.health > 0;
       unit.health -= damage; remaining -= damage;
       if (damage > 0) losses.push({ id: unit.id, amount: damage, before, after: unit.health });
+      if (to === sides[0] && !to.pedalCarTriggered && to.items.has("flintstone-pedal-car") && before >= unit.hp * .5 && unit.health < unit.hp * .5) {
+        to.pedalCarTriggered = true; to.pedalCarShield = true;
+        const shield = to.max * item(to, "flintstone-pedal-car");
+        to.shield += shield;
+        actor = "flintstone-pedal-car"; log(0, "shield", shield, { effectKey: "flintstone-pedal-car" });
+        add(to, "reduction", item(to, "flintstone-pedal-car", 1), 1000, false, "flintstone-pedal-car");
+      }
+      if (to === sides[0] && !to.hammerTriggered && to.items.has("thors-hammer") && totalHp(to) < to.max * .35) {
+        to.hammerTriggered = true;
+        add(to, "damageCap", item(to, "thors-hammer"), 3, false, "thors-hammer");
+      }
       if (wasAlive && unit.health === 0) {
         log(1 - index, "fall:" + unit.id, 0);
         if (to.items.has("holy-hand-grenade")) add(to, "skill", item(to, "holy-hand-grenade", 1), 1000, true);
+        if (!to.wingsTriggered && to.items.has("wings-of-icarus")) {
+          to.wingsTriggered = true;
+          const reviveCount = 9 + Math.floor(random() * 3);
+          const fallen = to.units.filter((candidate) => candidate.health <= 0).slice(0, reviveCount);
+          for (const revived of fallen) revived.health = 1;
+          actor = "wings-of-icarus";
+          log(1 - index, "revive", fallen.length, { effectKey: "wings-of-icarus" });
+        }
       }
       if (remaining <= 0) break;
     }
@@ -186,6 +228,13 @@ export function simulateBattle(team: Fighter[], options: BattleOptions, seed = o
     add(side, "crit", item(side, "holy-hand-grenade"), 1000, false, "holy-hand-grenade");
     add(side, "crit", item(side, "plague-doctor-mask", 1), 1000, false, "plague-doctor-mask");
   }
+  if (sides[0].items.has("golden-mask-of-agamemnon")) {
+    const enemyAttack = attack(sides[1]);
+    const ownAttack = attack(sides[0]);
+    const reduction = enemyAttack > 0 ? Math.min(enemyAttack * item(sides[0], "golden-mask-of-agamemnon"), ownAttack) / enemyAttack : 0;
+    actor = "golden-mask-of-agamemnon";
+    add(sides[1], "atkDown", reduction, 5, false, "golden-mask-of-agamemnon");
+  }
   const cast = (index: number, unit: Unit) => {
     const from = sides[index], to = sides[1 - index];
     const skill = skillFor(unit)!;
@@ -200,6 +249,11 @@ export function simulateBattle(team: Fighter[], options: BattleOptions, seed = o
     const critBonus = unit.id === "bjorn-ironside" ? v[4] : v[3];
     const critical = critHero && random() < critChance;
     const damage = hit(index, atk * skill.coefficient * (critical ? 1 + critBonus : 1), "skill", critical);
+    from.skillsUsed++;
+    if (index === 0 && from.items.has("cross-of-lorraine-flag")) add(from, "skillReductionDown", item(from, "cross-of-lorraine-flag"), 3, true, "cross-of-lorraine-flag");
+    if (index === 1 && sides[0].items.has("trojan-horse") && from.skillsUsed % 3 === 0 && random() < item(sides[0], "trojan-horse")) {
+      actor = "trojan-horse"; add(from, "seal", 1, 1, false, "trojan-horse");
+    }
     switch (unit.id) {
       case "hermes": add(from, "dodge", Math.min(1, v[2] + item(from, "winged-sandals")), 3); break;
       case "merlin": add(from, "break", v[2], 3); if (hadShield) hit(index, atk * v[3], "extra"); break;
@@ -241,6 +295,7 @@ export function simulateBattle(team: Fighter[], options: BattleOptions, seed = o
       } break;
       case "augustus": hit(index, atk * (round <= 5 ? v[2] : v[3]), "extra"); break;
     }
+    if (index === 0 && unit.id === "augustus" && from.items.has("augustus-coin") && round <= 5) add(from, "skill", item(from, "augustus-coin"), 1, true, "augustus-coin");
     if (from.items.has("notre-dame-de-paris-replica") && random() < item(from, "notre-dame-de-paris-replica")) hit(index, atk * item(from, "notre-dame-de-paris-replica", 1), "collection");
   };
   const removeEffects = (side: Side, kinds: Set<string>, count: number) => {
@@ -318,6 +373,7 @@ export function simulateBattle(team: Fighter[], options: BattleOptions, seed = o
       const damageBefore = from.damage;
       const replacement = effect(from, "replace");
       if (replacement) { from.effects = from.effects.filter((e) => e.key !== "replace"); hit(1 - index, replacement, "normal"); }
+      else if (effect(from, "seal") > 0) log(index, "sealed", 0, { effectKey: "seal" });
       else {
         const frontCount = FORMATION_COLUMNS.front.filter((value) => value > 0).length;
         // Every living hero rolls each action. Successful unused skills are
@@ -336,25 +392,45 @@ export function simulateBattle(team: Fighter[], options: BattleOptions, seed = o
           rolls.push({ unit, slot, skill, chance: procChance, succeeded, eligible });
         }
         const winner = rolls.find((entry) => entry.succeeded && entry.eligible);
+        const arkForced = index === 0 && round % 4 === 0 && from.items.has("model-of-noahs-ark")
+          ? from.units.find((unit) => unit.health > 0 && !from.usedSkills.has(unit.id)) : undefined;
+        const selectedUnit = arkForced ?? winner?.unit;
         for (const roll of rolls) {
           actor = roll.unit.id;
-          log(index, "skillRoll", roll.chance, { target: living(to).at(-1)?.id, chance: roll.chance, succeeded: roll.succeeded, eligible: roll.eligible, selected: roll === winner });
+          log(index, "skillRoll", roll.chance, { target: living(to).at(-1)?.id, chance: roll.chance, succeeded: roll.succeeded, eligible: roll.eligible, selected: roll.unit === selectedUnit });
         }
-        const slot = winner?.slot ?? lowestLivingSlot(from);
+        const slot = selectedUnit ? from.units.indexOf(selectedUnit) : lowestLivingSlot(from);
         const unit = slot >= 0 ? from.units[slot] : undefined;
         if (unit && totalHp(to) > 0) {
           const actionDamageBefore = from.damage;
           const target = living(to).at(-1)?.id;
-          const succeeded = Boolean(winner);
+          const succeeded = Boolean(selectedUnit && (arkForced || winner));
           actor = unit.id;
-          if (winner) { cast(index, unit); from.usedSkills.add(unit.id); }
-          else hit(index, unit.atk * (1 + Math.max(0, effect(from, "atk") - effect(from, "atkDown"))), "normal");
-          log(index, "heroAction", from.damage - actionDamageBefore, { target, effectKey: succeeded ? "skillAttack" : "normalAttack", chance: winner?.skill.chance, succeeded, selected: true });
+          if (arkForced) { actor = "model-of-noahs-ark"; add(from, "skill", 2.5, 1, false, "model-of-noahs-ark"); log(index, "forcedSkill", 2.5, { target: unit.id, effectKey: "model-of-noahs-ark" }); }
+          const pandora = index === 0 && from.items.has("pandoras-box") && random() < item(from, "pandoras-box");
+          if (pandora) { actor = "pandoras-box"; add(from, "skill", item(from, "pandoras-box", 1), 1, true, "pandoras-box"); log(index, "empower", item(from, "pandoras-box", 1), { target: unit.id, effectKey: "pandoras-box" }); }
+          actor = unit.id;
+          if (succeeded) { cast(index, unit); from.usedSkills.add(unit.id); }
+          else hit(index, unit.atk * (1 + Math.max(0, effect(from, "atk") - effect(from, "atkDown"))) * (pandora ? 1 + item(from, "pandoras-box", 1) : 1), "normal");
+          log(index, "heroAction", from.damage - actionDamageBefore, { target, effectKey: succeeded ? "skillAttack" : "normalAttack", chance: arkForced ? skillFor(unit)?.chance : winner?.skill.chance, succeeded, selected: true });
         }
       }
       if (effect(from, "dotHeal")) heal(index, to.dotTaken * effect(from, "dotHeal"));
       if (effect(to, "counterHeal")) heal(1 - index, (from.damage - damageBefore) * effect(to, "counterHeal"));
       from.actions++;
+      if (index === 0 && from.items.has("otzis-copper-axe") && round % 3 === 0) {
+        actor = "otzis-copper-axe"; add(from, "skillReductionDown", item(from, "otzis-copper-axe"), 1, false, "otzis-copper-axe");
+      }
+      if (index === 0 && round % 2 === 0) {
+        if (from.items.has("david")) {
+          actor = "david";
+          const qualified = living(from).filter(() => from.effects.filter((entry) => buffs.has(entry.key)).length >= 2);
+          if (qualified.length) heal(index, qualified.reduce((sum, unit) => sum + unit.hp * item(from, "david"), 0));
+        }
+        if (from.items.has("olympia-olive-wreath") && to.effects.filter((entry) => debuffs.has(entry.key)).length >= 2 && random() < item(from, "olympia-olive-wreath")) {
+          actor = "olympia-olive-wreath"; add(to, "seal", 1, 1, false, "olympia-olive-wreath");
+        }
+      }
       if (from.actions <= 5) {
         if (from.items.has("scarab-amulet")) add(from, "atk", item(from, "scarab-amulet"), 1000, true, "scarab-amulet");
         if (from.items.has("heimdalls-horn")) add(from, "reduction", item(from, "heimdalls-horn"), 1000, true, "heimdalls-horn");

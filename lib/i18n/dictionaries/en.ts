@@ -207,10 +207,11 @@ const en = {
     "expire": "Effect expired",
     "removeEffect": "Effect removed",
     "dispelBuff": "Buff dispelled",
-    "dispelDebuff": "Debuff dispelled"
+    "dispelDebuff": "Debuff dispelled",
+    "revive": "Revived", "forcedSkill": "Collection-forced skill", "empower": "Attack empowered", "sealed": "Action sealed", "damageCap": "Damage cap activated"
   },
   "effects": {
-    "dodge": "Dodge chance", "break": "Break", "crit": "Critical chance", "skill": "Skill chance", "reduction": "Damage reduction", "barrier": "Barrier", "dotHeal": "DoT healing", "counterHeal": "Counter healing", "atk": "Attack", "extra": "Extra attack", "frontForce": "Front-line force", "reflect": "Damage reflect", "cryptidHeal": "Cryptid healing", "dot": "Damage over time", "skillDown": "Skill chance down", "replace": "Replacement damage", "atkDown": "Attack down", "reductionDown": "Damage reduction down", "skillReductionDown": "Skill reduction down"
+    "dodge": "Dodge chance", "break": "Break", "crit": "Critical chance", "skill": "Skill chance", "reduction": "Damage reduction", "barrier": "Barrier", "dotHeal": "DoT healing", "counterHeal": "Counter healing", "atk": "Attack", "extra": "Extra attack", "frontForce": "Front-line force", "reflect": "Damage reflect", "cryptidHeal": "Cryptid healing", "dot": "Damage over time", "skillDown": "Skill chance down", "replace": "Replacement damage", "atkDown": "Attack down", "reductionDown": "Damage reduction down", "skillReductionDown": "Skill reduction down", "damageCap": "Damage taken cap", "seal": "Unable to act"
   },
   "ally": "Allies",
   "enemy": "Enemy",

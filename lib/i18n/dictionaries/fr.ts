@@ -205,10 +205,11 @@ const fr: Dictionary = {
     "expire": "Effet expiré",
     "removeEffect": "Effet retiré",
     "dispelBuff": "Bonus dissipé",
-    "dispelDebuff": "Malus dissipé"
+    "dispelDebuff": "Malus dissipé",
+    "revive": "Ressuscité", "forcedSkill": "Compétence forcée par la Collection", "empower": "Attaque renforcée", "sealed": "Action scellée", "damageCap": "Limite de dégâts activée"
   },
   "effects": {
-    "dodge": "Chance d’esquive", "break": "Rupture", "crit": "Chance critique", "skill": "Chance de compétence", "reduction": "Réduction des dégâts", "barrier": "Barrière", "dotHeal": "Soins DoT", "counterHeal": "Contre-soins", "atk": "Attaque", "extra": "Attaque supplémentaire", "frontForce": "Force de première ligne", "reflect": "Renvoi des dégâts", "cryptidHeal": "Soins du cryptide", "dot": "Dégâts sur la durée", "skillDown": "Chance de compétence réduite", "replace": "Dégâts de remplacement", "atkDown": "Attaque réduite", "reductionDown": "Réduction des dégâts diminuée", "skillReductionDown": "Réduction de compétence diminuée"
+    "dodge": "Chance d’esquive", "break": "Rupture", "crit": "Chance critique", "skill": "Chance de compétence", "reduction": "Réduction des dégâts", "barrier": "Barrière", "dotHeal": "Soins DoT", "counterHeal": "Contre-soins", "atk": "Attaque", "extra": "Attaque supplémentaire", "frontForce": "Force de première ligne", "reflect": "Renvoi des dégâts", "cryptidHeal": "Soins du cryptide", "dot": "Dégâts sur la durée", "skillDown": "Chance de compétence réduite", "replace": "Dégâts de remplacement", "atkDown": "Attaque réduite", "reductionDown": "Réduction des dégâts diminuée", "skillReductionDown": "Réduction de compétence diminuée", "damageCap": "Limite de dégâts subis", "seal": "Incapable d’agir"
   },
   "ally": "Alliés",
   "enemy": "Adversaire",

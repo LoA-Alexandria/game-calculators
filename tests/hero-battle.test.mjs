@@ -15,6 +15,14 @@ test("modeled entries exist and all recorded star tiers compile to finite skill 
   for (const id of MODELED_ITEMS) assert.ok(COLLECTION_ITEMS.some((item) => item.id === id));
   assert.equal(skillFor(hero("billy-the-kid")).source, "workbook-fallback");
 });
+test("all 13 owned non-exclusive Collection items are accepted by the battle and optimizer", () => {
+  const requested = ["golden-mask-of-agamemnon", "david", "model-of-noahs-ark", "flintstone-pedal-car", "thors-hammer", "wings-of-icarus", "olympia-olive-wreath", "pandoras-box", "trojan-horse", "otzis-copper-axe", "discobolus", "cross-of-lorraine-flag", "galileos-telescope"];
+  assert.ok(requested.every((id) => MODELED_ITEMS.has(id)));
+  assert.ok(requested.every((id) => COLLECTION_ITEMS.some((item) => item.id === id)));
+  assert.doesNotThrow(() => validateBattle([hero("achilles")], { ...options, size: 1, collection: requested }));
+  const result = optimizeTeams([hero("achilles")], { ...options, size: 1, budget: 100, collectionSlots: 1, collection: ["model-of-noahs-ark", "golden-mask-of-agamemnon"] });
+  assert.ok(result.candidates.every((candidate) => ["model-of-noahs-ark", "golden-mask-of-agamemnon"].includes(candidate.collection[0])));
+});
 test("every Core hero has a documented direct-damage model or is rejected as unknown", () => {
   for (const entry of HEROES) {
     const skill = skillFor(hero(entry.id));
@@ -133,10 +141,26 @@ test("Cryptid healing resolves in its later scheduled round after the opponent's
 });
 test("unsupported skills/items and invalid settings fail instead of receiving invented effects", () => {
   const pool = [hero("achilles"), hero("caesar")];
-  for (const patch of [{ rounds: 0 }, { rounds: 101 }, { seed: -1 }, { size: 0 }, { size: 3 }, { trials: 0 }, { budget: 1001 }, { enemyReduction: NaN }, { collection: ["wings-of-icarus"] }, { collectionSlots: 7 }, { enemyCount: 2 }, { cryptides: [{ id: "nidhogg", skills: 4 }] }, { cryptides: Array.from({ length: 5 }, () => ({ id: "nidhogg", skills: 1 })) }]) assert.throws(() => validateBattle(pool, { ...options, ...patch }), RangeError);
+  for (const patch of [{ rounds: 0 }, { rounds: 101 }, { seed: -1 }, { size: 0 }, { size: 3 }, { trials: 0 }, { budget: 1001 }, { enemyReduction: NaN }, { collection: ["not-a-collection-item"] }, { collectionSlots: 7 }, { enemyCount: 2 }, { cryptides: [{ id: "nidhogg", skills: 4 }] }, { cryptides: Array.from({ length: 5 }, () => ({ id: "nidhogg", skills: 1 })) }]) assert.throws(() => validateBattle(pool, { ...options, ...patch }), RangeError);
   assert.doesNotThrow(() => validateBattle([hero("billy-the-kid"), hero("caesar")], options));
   assert.throws(() => validateBattle([hero("not-a-core-hero"), hero("caesar")], options), RangeError);
   assert.throws(() => validateBattle([hero("achilles", { hp: 0 }), hero("caesar")], options), RangeError);
+});
+test("Collection triggers appear in the replay and keep one hero action per round", () => {
+  const team = [hero("achilles", { hp: 1000 }), hero("caesar", { hp: 1000 })];
+  const enemy = [hero("guinevere", { atk: 800, hp: 100000 })];
+  const requested = ["golden-mask-of-agamemnon", "david", "model-of-noahs-ark", "flintstone-pedal-car", "thors-hammer", "wings-of-icarus", "olympia-olive-wreath", "pandoras-box", "trojan-horse", "otzis-copper-axe", "discobolus", "cross-of-lorraine-flag", "galileos-telescope"];
+  const result = simulateBattle(team, { ...options, rounds: 8, dummy: false, enemy, collection: requested }, 42, true);
+  assert.ok(Number.isFinite(result.damage) && result.remaining >= 0);
+  assert.ok(result.events.filter((event) => event.action === "heroAction" && event.side === 0).length <= 8);
+  assert.ok(result.events.some((event) => event.actor === "golden-mask-of-agamemnon" && event.effectKey === "atkDown"));
+  assert.ok(result.events.some((event) => event.effectKey === "flintstone-pedal-car"));
+  assert.ok(result.events.some((event) => event.actor === "thors-hammer" && event.effectKey === "damageCap"));
+  assert.ok(result.events.some((event) => event.action === "revive" && event.effectKey === "wings-of-icarus"));
+  assert.ok(result.events.some((event) => event.action === "forcedSkill" && event.round === 4));
+  assert.ok(result.events.some((event) => event.action === "empower" && event.effectKey === "pandoras-box"));
+  assert.ok(result.events.some((event) => event.actor === "cross-of-lorraine-flag" && event.effectKey === "skillReductionDown"));
+  assert.ok(result.events.some((event) => event.actor === "otzis-copper-axe" && event.effectKey === "skillReductionDown"));
 });
 test("optimizer independently enumerates and ranks ordered teams from a small inventory", () => {
   const pool = [hero("achilles"), hero("caesar"), hero("da-vinci")];

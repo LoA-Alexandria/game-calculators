@@ -205,10 +205,11 @@ const de: Dictionary = {
     "expire": "Effekt abgelaufen",
     "removeEffect": "Effekt entfernt",
     "dispelBuff": "Buff entfernt",
-    "dispelDebuff": "Debuff entfernt"
+    "dispelDebuff": "Debuff entfernt",
+    "revive": "Wiederbelebt", "forcedSkill": "Durch Collection erzwungener Skill", "empower": "Angriff verstärkt", "sealed": "Aktion versiegelt", "damageCap": "Schadenslimit aktiviert"
   },
   "effects": {
-    "dodge": "Ausweichchance", "break": "Durchbruch", "crit": "Krit-Chance", "skill": "Skill-Chance", "reduction": "Schadensreduktion", "barrier": "Barriere", "dotHeal": "DoT-Heilung", "counterHeal": "Gegenheilung", "atk": "Angriff", "extra": "Zusatzangriff", "frontForce": "Frontlinienkraft", "reflect": "Schadensreflexion", "cryptidHeal": "Cryptid-Heilung", "dot": "Schaden über Zeit", "skillDown": "Skill-Chance gesenkt", "replace": "Ersatzschaden", "atkDown": "Angriff gesenkt", "reductionDown": "Schadensreduktion gesenkt", "skillReductionDown": "Skillreduktion gesenkt"
+    "dodge": "Ausweichchance", "break": "Durchbruch", "crit": "Krit-Chance", "skill": "Skill-Chance", "reduction": "Schadensreduktion", "barrier": "Barriere", "dotHeal": "DoT-Heilung", "counterHeal": "Gegenheilung", "atk": "Angriff", "extra": "Zusatzangriff", "frontForce": "Frontlinienkraft", "reflect": "Schadensreflexion", "cryptidHeal": "Cryptid-Heilung", "dot": "Schaden über Zeit", "skillDown": "Skill-Chance gesenkt", "replace": "Ersatzschaden", "atkDown": "Angriff gesenkt", "reductionDown": "Schadensreduktion gesenkt", "skillReductionDown": "Skillreduktion gesenkt", "damageCap": "Schadenslimit", "seal": "Handlungsunfähig"
   },
   "ally": "Verbündete",
   "enemy": "Gegner",
