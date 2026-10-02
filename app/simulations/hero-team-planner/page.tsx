@@ -26,7 +26,7 @@ const fighter = (id: string): Fighter => {
 const withDefaultProfile = (unit: Fighter): Fighter => ({ ...unit, ...fighter(unit.id) });
 const initial: Saved = {
   heroes: [], enemy: [], heroLevel: 100,
-  options: { rounds: 10, seed: 42, trials: 16, budget: 500, size: 3, enemyCount: 1, infiniteDummy: true, enemyFirst: false, objective: "damage", enemy: [], dummy: true, enemyReduction: 0, items: [], collection: [], collectionSlots: 6, cryptides: defaultCryptides() },
+  options: { rounds: 10, seed: 42, trials: 16, budget: 500, size: 3, enemyCount: 1, infiniteDummy: true, objective: "damage", enemy: [], dummy: true, enemyReduction: 0, items: [], collection: [], collectionSlots: 6, cryptides: defaultCryptides() },
 };
 const store = createPersistentStore<Saved>({
   key: "popepoch-hero-simulator-v3", serverValue: initial, fallback: () => initial, serialize: JSON.stringify,
@@ -135,7 +135,7 @@ export default function HeroSimulator() {
   const unsupportedItems = [...input.options.items, ...input.options.collection].filter((id) => !MODELED_ITEMS.has(id)).map(itemName);
   return <div className={styles.planner}>
     <PageHead eyebrow={t.nav.simulations} title={sim.title} lede={sim.intro} />
-    <aside className={styles.notice} title={`${sim.model}\n\n${sim.searchNote}\n\n${sim.combatFlow}`}><p>{sim.stats}</p></aside>
+    <aside className={styles.notice} title={`${sim.model}\n\n${sim.searchNote}`}><p>{sim.stats}</p><p>{sim.combatFlow}</p></aside>
     <section className="panel">
       <h2>{sim.setup}</h2>
       <div className={styles.controls}>
@@ -144,7 +144,6 @@ export default function HeroSimulator() {
         <label>{sim.round}<input type="number" min={1} max={100} value={Number.isNaN(input.options.rounds) ? "" : input.options.rounds} onChange={(event) => options({ rounds: event.target.valueAsNumber })} /></label>
         <label>{sim.trials}<input type="number" min={1} max={128} value={Number.isNaN(input.options.trials) ? "" : input.options.trials} onChange={(event) => options({ trials: event.target.valueAsNumber })} /></label>
         <label>{sim.budget}<input type="number" min={1} max={1000} value={Number.isNaN(input.options.budget) ? "" : input.options.budget} onChange={(event) => options({ budget: event.target.valueAsNumber })} /></label>
-        <label className={styles.inlineCheck}><input type="checkbox" checked={input.options.enemyFirst} onChange={(event) => options({ enemyFirst: event.target.checked })} />{sim.enemyFirst}</label>
         <label>{sim.reduction}<input type="number" min={0} max={0.9} step={0.05} value={Number.isNaN(input.options.enemyReduction) ? "" : input.options.enemyReduction} onChange={(event) => options({ enemyReduction: event.target.valueAsNumber })} /></label>
       </div>
       <p>{sim.inventoryNote} · {sim.fixedProfile} · {text.heroes}: {selectedHeroCount} · {sim.size}: {input.options.size}</p>
@@ -215,10 +214,11 @@ export default function HeroSimulator() {
         <h3>{sim.trace} · {result.data.trace.events.length} {sim.eventsLogged}</h3><p>{sim.logNote}</p>
         <div className={styles.roundList}>{[...eventsByRound.entries()].map(([round, events]) => {
           const mainAction = events.find((event) => event.action === "heroAction");
+          const enemyAction = events.find((event) => event.action === "heroAction" && event.side === 1);
           const cryptidAction = events.find((event) => event.action === "cryptidAction");
           return <article className={styles.roundCard} key={round}>
-            <header><strong>{sim.round} {round}</strong><span>{mainAction ? `${actorName(mainAction.actor)} · ${mainAction.effectKey === "skillAttack" ? sim.skillAttack : sim.normalAttack} · ${fmt(mainAction.amount)} ${sim.damageUnit}` : sim.noHeroAttack}</span>{cryptidAction && <span className={styles.cryptidBadge}>{actorName(cryptidAction.actor)} · {sim.cryptidActionLabel} · {sim.onceOnly}</span>}</header>
-            <div className={styles.roundTable}><table><thead><tr><th>{sim.action}</th><th>{sim.target}</th><th>{sim.amount}</th><th>{sim.hp}</th></tr></thead><tbody>{events.filter((event) => event.action !== "heroAction").map((event, index) => <tr key={`${event.actor}-${event.action}-${index}`}><td><strong>{event.action.startsWith("fall:") ? sim.events.fall : event.action === "skillRoll" ? sim.skillRoll : event.action === "buff" ? sim.buff : event.action === "debuff" ? sim.debuff : sim.events[event.action as keyof typeof sim.events] ?? event.action}</strong>{event.effectKey ? <small>{sim.effects[event.effectKey as keyof typeof sim.effects] ?? actorName(event.effectKey)}</small> : null}{event.duration ? <small>{event.duration}t</small> : null}{event.action === "skillRoll" && <small>{fmt((event.chance ?? 0) * 100)}% · {event.succeeded ? sim.skillSucceeded : sim.skillFailed}</small>}</td><td>{event.target ? actorName(event.target) : "—"}</td><td>{event.action === "skillRoll" ? "—" : `${fmt(event.amount)}${event.raw !== undefined && event.raw !== event.amount ? ` (${sim.rawDamage}: ${fmt(event.raw)})` : ""}`}</td><td>{event.hpBefore !== undefined ? `${fmt(event.hpBefore)} → ${fmt(event.hpAfter ?? event.hpBefore)}` : <span>{sim.ally}: {fmt(event.allyHp)} · {sim.enemy}: {fmt(event.enemyHp)}</span>}</td></tr>)}</tbody></table></div>
+            <header><strong>{sim.round} {round}</strong><span>{mainAction ? `${actorName(mainAction.actor)} · ${mainAction.effectKey === "skillAttack" ? sim.skillAttack : sim.normalAttack} · ${fmt(mainAction.amount)} ${sim.damageUnit}` : sim.noHeroAttack}</span>{enemyAction && <span>{sim.enemyAction}: {actorName(enemyAction.actor)} · {enemyAction.effectKey === "skillAttack" ? sim.skillAttack : sim.normalAttack} · {fmt(enemyAction.amount)} {sim.damageUnit}</span>}{cryptidAction && <span className={styles.cryptidBadge}>{actorName(cryptidAction.actor)} · {sim.cryptidActionLabel} · {sim.onceOnly}</span>}</header>
+            <div className={styles.roundTable}><table><thead><tr><th>{sim.action}</th><th>{sim.target}</th><th>{sim.amount}</th><th>{sim.hp}</th></tr></thead><tbody>{events.filter((event) => event.action !== "heroAction").map((event, index) => <tr key={`${event.actor}-${event.action}-${index}`}><td><strong>{event.action.startsWith("fall:") ? sim.events.fall : event.action === "skillRoll" ? sim.skillRoll : event.action === "buff" ? sim.buff : event.action === "debuff" ? sim.debuff : sim.events[event.action as keyof typeof sim.events] ?? event.action}</strong>{event.effectKey ? <small>{sim.effects[event.effectKey as keyof typeof sim.effects] ?? actorName(event.effectKey)}</small> : null}{event.duration ? <small>{event.duration}t</small> : null}{event.action === "skillRoll" && <small>{fmt((event.chance ?? 0) * 100)}% · {event.selected ? sim.rollSelected : !event.eligible ? sim.rollAlreadyUsed : event.succeeded ? sim.rollPassedNotSelected : sim.skillFailed}</small>}</td><td>{event.target ? actorName(event.target) : "—"}</td><td>{event.action === "skillRoll" ? "—" : `${fmt(event.amount)}${event.raw !== undefined && event.raw !== event.amount ? ` (${sim.rawDamage}: ${fmt(event.raw)})` : ""}`}</td><td>{event.hpBefore !== undefined ? `${fmt(event.hpBefore)} → ${fmt(event.hpAfter ?? event.hpBefore)}` : <span>{sim.ally}: {fmt(event.allyHp)} · {sim.enemy}: {fmt(event.enemyHp)}</span>}</td></tr>)}</tbody></table></div>
           </article>;
         })}</div>
       </section>
