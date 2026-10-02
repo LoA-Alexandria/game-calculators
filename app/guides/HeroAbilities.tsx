@@ -140,6 +140,7 @@ export function HeroAbilities({ hero, guide }: { hero: Hero; guide: Guide }) {
       {HERO_ABILITY_KINDS.map((kind) => (
         <AbilityCard key={kind} kind={kind} ability={hero[kind]} guide={guide} />
       ))}
+      {hero.skinSkill ? <AbilityCard kind="skinSkill" ability={hero.skinSkill} guide={guide} /> : null}
     </div>
   );
 }

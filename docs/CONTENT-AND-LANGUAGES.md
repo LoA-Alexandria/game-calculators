@@ -491,18 +491,23 @@ publisher as well; the roster credits them under the grid (`figureCredit`), and
 deleting the folder together with the list takes them out again.
 `tests/heroes.test.mjs` keeps list, folder, and roster in step.
 
-Skill, buff, and production tables for 37 heroes come from German client
-screenshots taken on 18 September 2026. English in `lib/data/heroes.json` is a
-translation of that German text; `guideEntries.heroes.heroTexts` holds the
-German wording. Production mid-levels that were not photographed are
+Skill, buff, and production tables for 39 heroes come from German client
+screenshots taken on 18 September and 2 October 2026. English in
+`lib/data/heroes.json` is a translation of that German text;
+`guideEntries.heroes.heroTexts` holds German and French translations. Billy
+the Kid's alternate `Undead Salvo` skin skill is stored and translated
+separately from his three standard abilities, so it does not increase the
+standard ability count. Production mid-levels that were not photographed are
 interpolated: UR/UR+ +4% per level, SSR 30% + 3% × (n−1), as noted in the
 source files. Joan of Arc had no skill tables in that dump, so her abilities
-stay empty. Billy the Kid is not in this roster (skin cards only).
+stay empty. Billy the Kid's skin cards are now supplemented by the newly
+recorded skill tables.
 
 The French ability texts were written on 21 September 2026 from the English
-ones: every ability is one French sentence whose placeholders take the numbers
-of each level, with "S’active à N étoiles." in front where the English level
-says "Activates at N-Star." Event names stay in English, as on the French event
+ones and extended on 2 October 2026 with the new Billy the Kid and Morgana
+tables: every ability is one French sentence whose values match each English
+level, with "S’active à N étoiles." in front where the English level says
+"Activates at N-Star." Event names stay in English, as on the French event
 pages. `tests/heroes.test.mjs` checks that every French level carries exactly
 the numbers of the English level. On the same day the German texts got their
 umlauts back — the screenshot import had written "fuegt", "Hoehe", "Koenig" and

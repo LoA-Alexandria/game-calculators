@@ -7,6 +7,7 @@ import {
   HERO_RARITIES,
   HERO_TROOPS,
   HEROES,
+  abilityCount,
   HERO_STAR_COSTS,
   heroImageUrl,
   heroNamed,
@@ -95,7 +96,7 @@ test("roster covers every wiki rarity and names the screenshot fills", () => {
   assert.equal(HEROES.some((hero) => JSON.stringify(hero).includes("Data pending")), false);
 
   const filled = HEROES.filter((hero) => hero.skill && hero.buff && hero.production);
-  assert.equal(filled.length, 37);
+  assert.equal(filled.length, 39);
   for (const hero of filled) {
     assert.equal(hero.skill?.levels.length, 9, `${hero.name} skill table`);
     assert.equal(hero.buff?.levels.length, 9, `${hero.name} buff table`);
@@ -109,6 +110,23 @@ test("roster covers every wiki rarity and names the screenshot fills", () => {
   const morgana = HEROES.find((hero) => hero.id === "morgana");
   assert.equal(morgana?.rarity, "UR");
   assert.match(morgana?.skill?.levels[0] ?? "", /Strip/);
+  assert.equal(morgana?.skill?.levels.length, 9);
+  assert.equal(morgana?.skill?.levels[0].match(/200%/g)?.length, 1);
+  assert.match(morgana?.skill?.levels[8] ?? "", /280%.*74%/);
+  assert.equal(morgana?.buff?.levels.length, 9);
+  assert.match(morgana?.buff?.levels[0] ?? "", /12%/);
+  assert.match(morgana?.buff?.levels[8] ?? "", /44%/);
+  assert.equal(morgana?.production?.levels.length, 25);
+  const billy = HEROES.find((hero) => hero.id === "billy-the-kid");
+  assert.equal(billy?.skill?.levels.length, 9);
+  assert.equal(billy?.skinSkill?.levels.length, 9);
+  assert.equal(abilityCount(billy), 3, "the alternate skin skill does not count as a fourth standard ability");
+  assert.match(billy?.skill?.levels[0] ?? "", /70%.*30%/);
+  assert.match(billy?.skill?.levels[8] ?? "", /94%.*38%/);
+  assert.equal(billy?.buff?.levels.length, 9);
+  assert.match(billy?.buff?.levels[0] ?? "", /6%/);
+  assert.match(billy?.buff?.levels[8] ?? "", /22%/);
+  assert.equal(billy?.production?.levels.length, 25);
   const cleopatra = HEROES.find((hero) => hero.id === "cleopatra");
   assert.equal(cleopatra?.rarity, "UR+");
   assert.ok(cleopatra?.skill?.levels[0], "client screenshots filled Cleopatra Lv. 1");
@@ -243,11 +261,11 @@ test("every published dictionary keys its hero texts to a hero in the roster", a
   }
   assert.deepEqual(getDictionary("en").guideEntries.heroes.heroTexts, {}, "English is the roster JSON itself");
   const de = getDictionary("de").guideEntries.heroes.heroTexts;
-  assert.equal(Object.keys(de).length, 38);
+  assert.equal(Object.keys(de).length, 39);
   assert.equal(de.merlin?.skill?.name, "Eisiger Drachenatem");
   assert.match(de.merlin?.skill?.levels[0] ?? "", /Schildbruch/);
   const fr = getDictionary("fr").guideEntries.heroes.heroTexts;
-  assert.equal(Object.keys(fr).length, 38, "French covers every hero with ability text");
+  assert.equal(Object.keys(fr).length, 39, "French covers every hero with ability text");
   assert.equal(fr.merlin?.skill?.name, "Souffle du dragon de glace");
   assert.match(fr.merlin?.skill?.levels[0] ?? "", /Brise-bouclier/);
 });
@@ -258,7 +276,7 @@ test("every French ability level carries exactly the numbers of the English one"
   const numbers = (text) => (text.match(/\d+(?:[.,]\d+)?/g) ?? []).map((n) => n.replace(",", ".")).sort();
   let checked = 0;
   for (const hero of HEROES) {
-    for (const kind of ["skill", "buff", "production"]) {
+    for (const kind of ["skill", "buff", "production", "skinSkill"]) {
       const english = hero[kind];
       if (!english) continue;
       const french = fr[hero.id]?.[kind];
@@ -271,6 +289,26 @@ test("every French ability level carries exactly the numbers of the English one"
     }
   }
   assert.ok(checked > 1500, `${checked} levels`);
+});
+
+test("new Billy and Morgana tables have translated screenshot values in every language", async () => {
+  const { getDictionary } = await import("../lib/i18n/index.ts");
+  for (const code of ["de", "fr"]) {
+    const texts = getDictionary(code).guideEntries.heroes.heroTexts;
+    assert.equal(texts["billy-the-kid"]?.skill?.levels.length, 9, `${code} Billy skill`);
+    assert.equal(texts["billy-the-kid"]?.skinSkill?.levels.length, 9, `${code} Billy skin skill`);
+    assert.equal(texts["billy-the-kid"]?.buff?.levels.length, 9, `${code} Billy buff`);
+    assert.equal(texts["billy-the-kid"]?.production?.levels.length, 25, `${code} Billy production`);
+    assert.equal(texts.morgana?.skill?.levels.length, 9, `${code} Morgana skill`);
+    assert.equal(texts.morgana?.buff?.levels.length, 9, `${code} Morgana buff`);
+    assert.equal(texts.morgana?.production?.levels.length, 25, `${code} Morgana production`);
+  }
+  const deBilly = getDictionary("de").guideEntries.heroes.heroTexts["billy-the-kid"];
+  const frMorgana = getDictionary("fr").guideEntries.heroes.heroTexts.morgana;
+  assert.equal(deBilly.skinSkill.name, "Untoten-Salve");
+  assert.match(deBilly.skill.levels[8], /94%.*38%/);
+  assert.equal(frMorgana.skill.name, "Chaîne d’âme");
+  assert.match(frMorgana.skill.levels[8], /280 %.*74 %/);
 });
 
 test("the heroes banner collage uses primary portraits that exist on disk", async () => {
