@@ -2,11 +2,12 @@ import { HEROES } from "../content/heroes.ts";
 import { COLLECTION_ITEMS, EXCLUSIVE_COLLECTION_HEROES } from "../content/collection.ts";
 import { CRYPTIDES } from "../content/cryptides.ts";
 import { FORMATION_COLUMNS } from "../content/hero-layouts.ts";
+import { baseValueSource } from "./hero-base-value.ts";
 
 export type Fighter = { id: string; atk: number; hp: number; stars: number; level?: number };
 export type CryptidSelection = { id: string; skills: 1 | 2 | 3 };
 export type BattleOptions = { rounds: number; seed: number; trials: number; budget: number; size: number; enemyCount?: 1 | 5 | 10 | 20 | 30; infiniteDummy?: boolean; enemyFirst: boolean; objective: "damage" | "wins"; enemy: Fighter[]; dummy: boolean; enemyReduction: number; items: string[]; collection: string[]; collectionSlots?: number; cryptides?: (CryptidSelection | null)[] };
-export type BattleEvent = { round: number; side: number; actor: string; action: string; amount: number; allyHp: number; enemyHp: number };
+export type BattleEvent = { round: number; side: number; actor: string; target?: string; action: string; amount: number; raw?: number; hpBefore?: number; hpAfter?: number; effectKey?: string; duration?: number; chance?: number; succeeded?: boolean; allyHp: number; enemyHp: number };
 export type BattleResult = { damage: number; healing: number; absorbed: number; alive: number; remaining: number; win: boolean; rounds: number; events: BattleEvent[]; timeline: { round: number; damage: number; allyHp: number; enemyHp: number }[] };
 export type Candidate = { team: Fighter[]; collection: string[]; damage: number; healing: number; winRate: number; remaining: number; deviation: number };
 export type SearchResult = { candidates: Candidate[]; evaluated: number; exhaustive: boolean; validationTrials: number; trace: BattleResult };
@@ -34,7 +35,24 @@ const itemMap = new Map(COLLECTION_ITEMS.map((item) => [item.id, item]));
 const percentages = (text: string) => [...text.matchAll(/(\d+(?:\.\d+)?)%/g)].map((match) => Number(match[1]) / 100);
 export function skillFor(fighter: Fighter) {
   const source = heroMap.get(fighter.id)?.skill;
-  if (!source || !MODELED_HEROES.has(fighter.id)) return null;
+  if (!source || !MODELED_HEROES.has(fighter.id)) {
+    const hero = heroMap.get(fighter.id);
+    const baseline = baseValueSource(fighter.id);
+    if (!hero) return null;
+    if (source) {
+      let index = 0;
+      source.levels.forEach((text, i) => { const gate = text.match(/^Activates at (\d+)-Star\./); if (gate && fighter.stars >= Number(gate[1])) index = i; });
+      const text = source.levels[index];
+      const values = percentages(text);
+      if (/\bchance to activate\b/i.test(text) && values.length >= 2 && values[0] > 0 && values[0] <= 1 && values[1] > 1) {
+        return { text, level: index + 1, chance: values[0], coefficient: values[1], values, source: "hero-skill-direct" as const };
+      }
+    }
+    const chance: Record<string, number> = { "UR+": .4, UR: .4, SSR: .3, SR: .25, R: .2 };
+    const baseDamage: Record<string, number> = { "UR+": 2, UR: 2, SSR: 1.6, SR: 1.4, R: 1.2 };
+    const proc = chance[hero.rarity], coefficient = baseDamage[hero.rarity] + ((baseline?.starColor ?? 1) - 1) * .1;
+    return proc && coefficient > 0 ? { text: "Workbook baseline direct-damage fallback; secondary effects are not modeled.", level: 0, chance: proc, coefficient, values: [proc, coefficient], source: "workbook-fallback" as const } : null;
+  }
   let index = 0;
   source.levels.forEach((text, i) => {
     const gate = text.match(/^Activates at (\d+)-Star\./);
@@ -43,7 +61,7 @@ export function skillFor(fighter: Fighter) {
   const text = source.levels[index];
   const values = percentages(text);
   if (values.length < 2) return null;
-  return { text, level: index + 1, chance: values[0], coefficient: values[1], values };
+  return { text, level: index + 1, chance: values[0], coefficient: values[1], values, source: "hero-skill" as const };
 }
 export function seededRandom(seed: number) {
   let state = seed >>> 0;
@@ -90,12 +108,15 @@ export function simulateBattle(team: Fighter[], options: BattleOptions, seed = o
   const timeline: BattleResult["timeline"] = [];
   let round = 0;
   let actor = "";
-  const log = (side: number, action: string, amount: number) => { if (record) events.push({ round, side, actor, action, amount, allyHp: totalHp(sides[0]), enemyHp: totalHp(sides[1]) }); };
+  const log = (side: number, action: string, amount: number, detail: Partial<BattleEvent> = {}) => { if (record) events.push({ round, side, actor, action, amount, ...detail, allyHp: totalHp(sides[0]), enemyHp: totalHp(sides[1]) }); };
   const add = (side: Side, key: string, value: number, turns: number, stack = false, source = actor) => {
     if (!stack) side.effects = side.effects.filter((entry) => entry.key !== key || entry.source !== source);
-    if (value) side.effects.push({ key, source, value, expires: side.actions + turns });
+    if (value) {
+      side.effects.push({ key, source, value, expires: side.actions + turns });
+      log(side === sides[0] ? 0 : 1, debuffs.has(key) ? "debuff" : "buff", value, { actor: source, target: side === sides[0] ? "allies" : "enemies", effectKey: key, duration: turns });
+    }
   };
-  const addDot = (side: Side, value: number) => side.effects.push({ key: "dot", source: actor, value, expires: Infinity, ticks: 3 });
+  const addDot = (side: Side, value: number) => { side.effects.push({ key: "dot", source: actor, value, expires: Infinity, ticks: 3 }); log(side === sides[0] ? 0 : 1, "debuff", value, { target: side === sides[0] ? "allies" : "enemies", effectKey: "dot", duration: 3 }); };
   const item = (side: Side, id: string, index = 0) => side.items.has(id) ? percentages(itemMap.get(id)!.skill.text)[index] ?? 0 : 0;
   const attack = (side: Side) => living(side).reduce((sum, unit) => sum + unit.atk, 0) * (1 + Math.max(0, effect(side, "atk") - effect(side, "atkDown")));
   const heal = (index: number, amount: number) => {
@@ -117,7 +138,7 @@ export function simulateBattle(team: Fighter[], options: BattleOptions, seed = o
   const hit = (index: number, raw: number, kind: string, critical = false) => {
     const from = sides[index], to = sides[1 - index];
     if (totalHp(to) <= 0 || raw <= 0) return 0;
-    if (effect(to, "barrier") > 0) { log(index, "immune", 0); return 0; }
+    if (effect(to, "barrier") > 0) { log(index, "immune", 0, { target: living(to).at(-1)?.id }); return 0; }
     // Each action applies damage once to a shared pool represented by ordered
     // 1,000-HP segments; enemy count changes pool capacity, never hit damage.
     let amount = raw;
@@ -131,11 +152,14 @@ export function simulateBattle(team: Fighter[], options: BattleOptions, seed = o
     to.shield -= absorbed; to.absorbed += absorbed; amount -= absorbed;
     if (absorbed) log(1 - index, "absorb", absorbed);
     let remaining = amount;
+    const losses: { id: string; amount: number; before: number; after: number }[] = [];
     // Highest slot falls first; spillover goes to the next living slot.
     for (const unit of [...to.units].reverse()) {
+      const before = unit.health;
       const damage = Math.min(unit.health, remaining);
       const wasAlive = unit.health > 0;
       unit.health -= damage; remaining -= damage;
+      if (damage > 0) losses.push({ id: unit.id, amount: damage, before, after: unit.health });
       if (wasAlive && unit.health === 0) {
         log(1 - index, "fall:" + unit.id, 0);
         if (to.items.has("holy-hand-grenade")) add(to, "skill", item(to, "holy-hand-grenade", 1), 1000, true);
@@ -144,7 +168,8 @@ export function simulateBattle(team: Fighter[], options: BattleOptions, seed = o
     }
     const dealt = amount - remaining;
     from.damage += dealt;
-    log(index, critical ? "critical" : kind, dealt);
+    if (losses.length) for (const loss of losses) log(index, critical ? "critical" : kind, loss.amount, { target: loss.id, raw, hpBefore: loss.before, hpAfter: loss.after });
+    else log(index, critical ? "critical" : kind, 0, { target: living(to).at(-1)?.id, raw, hpBefore: totalHp(to), hpAfter: totalHp(to) });
     if (kind === "dot") to.dotTaken += dealt;
     if (dealt > 0 && effect(to, "cryptidHeal") > 0) heal(1 - index, to.max * effect(to, "cryptidHeal"));
     if (dealt > 0 && kind !== "reflection" && effect(to, "reflect") > 0) hit(1 - index, dealt * effect(to, "reflect"), "reflection");
@@ -164,7 +189,7 @@ export function simulateBattle(team: Fighter[], options: BattleOptions, seed = o
     const from = sides[index], to = sides[1 - index];
     const skill = skillFor(unit)!;
     const v = skill.values;
-    const atk = attack(from);
+    const atk = unit.atk * (1 + Math.max(0, effect(from, "atk") - effect(from, "atkDown")));
     const hadShield = to.shield > 0;
     if (random() < effect(to, "dodge")) { log(index, "dodge", 0); return; }
     log(index, "cast", skill.level);
@@ -220,7 +245,10 @@ export function simulateBattle(team: Fighter[], options: BattleOptions, seed = o
   const removeEffects = (side: Side, kinds: Set<string>, count: number) => {
     let removed = 0;
     for (let index = side.effects.length - 1; index >= 0 && removed < count; index--) {
-      if (kinds.has(side.effects[index].key)) { side.effects.splice(index, 1); removed++; }
+      if (kinds.has(side.effects[index].key)) {
+        const [entry] = side.effects.splice(index, 1); removed++;
+        log(side === sides[0] ? 0 : 1, "removeEffect", entry.value, { actor, target: side === sides[0] ? "allies" : "enemies", effectKey: entry.key });
+      }
     }
     return removed;
   };
@@ -264,7 +292,9 @@ export function simulateBattle(team: Fighter[], options: BattleOptions, seed = o
     for (const index of options.enemyFirst ? [1, 0] : [0, 1]) {
       const from = sides[index], to = sides[1 - index];
       if (totalHp(from) <= 0 || totalHp(to) <= 0) break;
+      const expired = from.effects.filter((entry) => entry.expires <= from.actions);
       from.effects = from.effects.filter((entry) => entry.expires > from.actions);
+      for (const entry of expired) log(index, "expire", entry.value, { actor: entry.source, target: index === 0 ? "allies" : "enemies", effectKey: entry.key });
       actor = "team";
       from.dotTaken = 0;
       const dot = effect(from, "dot");
@@ -283,15 +313,20 @@ export function simulateBattle(team: Fighter[], options: BattleOptions, seed = o
       const replacement = effect(from, "replace");
       if (replacement) { from.effects = from.effects.filter((e) => e.key !== "replace"); hit(1 - index, replacement, "normal"); }
       else {
-        const available = living(from);
-        const ready = available.filter((unit, slot) => random() < Math.min(1, (skillFor(unit)?.chance ?? 0) + (slot < FORMATION_COLUMNS.front.filter((value) => value > 0).length ? effect(from, "frontForce") : 0)));
-        // Arthur's text explicitly gives him activation priority.
-        const unit = ready.find((entry) => entry.id === "king-arthur") ?? ready[0];
-        if (unit && effect(from, "frontForce") > 0) {
-          for (const front of ready.filter((entry) => from.units.indexOf(entry) < FORMATION_COLUMNS.front.filter((value) => value > 0).length)) { actor = front.id; cast(index, front); }
+        const frontCount = FORMATION_COLUMNS.front.filter((value) => value > 0).length;
+        // Heroes resolve in formation order. Each living hero makes one attack;
+        // a successful skill proc replaces that hero's normal attack.
+        for (let slot = 0; slot < from.units.length && totalHp(to) > 0; slot++) {
+          const unit = from.units[slot];
+          if (unit.health <= 0) continue;
+          const skill = skillFor(unit);
+          const procChance = Math.min(1, (skill?.chance ?? 0) + (slot < frontCount ? effect(from, "frontForce") : 0));
+          const succeeded = Boolean(skill && random() < procChance);
+          actor = unit.id;
+          log(index, "skillRoll", procChance, { target: living(to).at(-1)?.id, chance: procChance, succeeded });
+          if (succeeded) cast(index, unit);
+          else hit(index, unit.atk * (1 + Math.max(0, effect(from, "atk") - effect(from, "atkDown"))), "normal");
         }
-        else if (unit) { actor = unit.id; cast(index, unit); }
-        else hit(index, attack(from), "normal");
       }
       if (effect(from, "dotHeal")) heal(index, to.dotTaken * effect(from, "dotHeal"));
       if (effect(to, "counterHeal")) heal(1 - index, (from.damage - damageBefore) * effect(to, "counterHeal"));
