@@ -886,6 +886,13 @@ export function GuildRoom({ tab }: { tab: GuildTab }) {
         </nav>
       </header>
 
+      {frozen ? (
+        <aside className="guild-frozen-banner" role="status">
+          <h2>{t.guilds.frozenTitle}</h2>
+          <p>{t.guilds.frozenLede}</p>
+        </aside>
+      ) : null}
+
       {error && (
         <p className="result-error" role="alert">
           {error}

@@ -9085,6 +9085,9 @@ legend span { color: var(--ink-faint); font-size: .78rem; font-weight: 400; }
   .premium-claim-form {
     max-width: none;
   }
+  .guild-request-server-row {
+    grid-template-columns: 1fr;
+  }
   .premium-page .button {
     width: 100%;
     min-height: 44px;

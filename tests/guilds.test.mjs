@@ -2,10 +2,12 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
+  formatGuildServerLabel,
   guildRoomHref,
   isDiscordUserId,
   isGuildMasterOf,
   isGuildSlug,
+  parseGuildServerLabel,
   readGuildSlugParam,
   suggestGuildSlug,
 } from "../lib/content/guilds.ts";
@@ -45,6 +47,16 @@ test("Discord snowflake and master match helpers", () => {
     isGuildMasterOf({ master_discord_user_id: "1534890988588498944" }, "1"),
     false,
   );
+});
+
+test("server number and name compose a stored label", () => {
+  assert.equal(formatGuildServerLabel("42", "North"), "#42 North");
+  assert.equal(formatGuildServerLabel("7", ""), "#7");
+  assert.equal(formatGuildServerLabel("", "Solo"), "Solo");
+  assert.equal(formatGuildServerLabel("  ", "  "), "");
+  assert.deepEqual(parseGuildServerLabel("#42 North"), { number: "42", name: "North" });
+  assert.deepEqual(parseGuildServerLabel("#7"), { number: "7", name: "" });
+  assert.deepEqual(parseGuildServerLabel("Legacy"), { number: "", name: "Legacy" });
 });
 
 test("guild icon paths and public URLs", async () => {

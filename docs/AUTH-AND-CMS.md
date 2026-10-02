@@ -49,6 +49,19 @@ re-login is not required.
 fails with `permission denied for table premium_entitlements`, apply
 `20260929120000_premium_entitlements_write_grants.sql` via `supabase db push`.
 
+Premium members may request one guild listing (`guild_create_requests`). On
+`/guilds/` a compact bar expands to the form. Server number and name are entered
+separately and stored as `#N Name`. The master is the requester’s linked Discord
+id or someone else (Discord id / site username). A `pending` or `approved`
+request blocks another submission even after Premium renews; cancelling a
+pending request frees the slot. The account menu shows Premium duration, a local
+renew preference, and pending-request cancel / owner edit.
+
+When the guild master’s Discord-linked Premium lapses, `guild_is_frozen` is true:
+the room stays readable, but posts, roster, and planning writes are disabled
+until Premium is active again. Members (not masters) can always leave via
+`guilds.leave` on the guild list.
+
 Site roles and UI permissions live in `lib/auth/roles.ts`. The Edge Function
 keeps the same rank table. The browser uses the stored role to show or hide
 editors and the admin link (`roles.assign`). Future write policies must
