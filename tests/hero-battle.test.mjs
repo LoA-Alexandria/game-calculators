@@ -1,11 +1,11 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { HEROES } from "../lib/content/heroes.ts";
-import { MODELED_HEROES, MODELED_ITEMS, skillFor, simulateBattle, optimizeTeams, validateBattle } from "../lib/calculators/hero-battle.ts";
+import { MODELED_HEROES, MODELED_ITEMS, seededRandom, skillFor, simulateBattle, optimizeTeams, validateBattle } from "../lib/calculators/hero-battle.ts";
 import { COLLECTION_ITEMS } from "../lib/content/collection.ts";
 
 const hero = (id, patch = {}) => ({ id, atk: 100, hp: 1000, stars: 0, ...patch });
-const options = { rounds: 20, seed: 42, trials: 8, budget: 30, size: 2, enemyFirst: false, objective: "damage", enemy: [hero("achilles")], dummy: true, enemyReduction: 0, items: [], collection: [] };
+const options = { rounds: 20, seed: 42, trials: 8, budget: 30, size: 2, objective: "damage", enemy: [hero("achilles")], dummy: true, enemyReduction: 0, items: [], collection: [] };
 test("modeled entries exist and all recorded star tiers compile to finite skill values", () => {
   for (const id of MODELED_HEROES) for (const stars of [0, 4, 5, 9, 10, 39, 40]) {
     const skill = skillFor(hero(id, { stars }));
@@ -22,14 +22,32 @@ test("every Core hero has a documented direct-damage model or is rejected as unk
   }
   assert.equal(skillFor(hero("not-a-core-hero")), null);
 });
-test("only one hero attacks per side and round; the detailed log preserves attacker and target", () => {
+test("every living hero rolls; the lowest successful unused slot gets the single action", () => {
   const team = [hero("achilles"), hero("billy-the-kid"), hero("caesar")];
-  const result = simulateBattle(team, { ...options, rounds: 3 }, 5, true);
-  const rolls = result.events.filter((event) => event.action === "skillRoll");
-  assert.deepEqual(rolls.map((event) => [event.round, event.actor]), team.map((unit, index) => [index + 1, unit.id]));
-  assert.deepEqual(result.events.filter((event) => event.action === "heroAction" && event.side === 0).map((event) => [event.round, event.actor, event.effectKey]), [[1, "achilles", "normalAttack"], [2, "billy-the-kid", "normalAttack"], [3, "caesar", "skillAttack"]]);
-  assert.equal(result.events.filter((event) => event.action === "heroAction" && event.side === 0).length, 3);
+  const seed = Array.from({ length: 10_000 }, (_, value) => value).find((value) => {
+    const random = seededRandom(value);
+    return team.every((unit) => random() < skillFor(unit).chance);
+  });
+  assert.notEqual(seed, undefined, "find a deterministic trial where every slot triggers");
+  const result = simulateBattle(team, { ...options, rounds: 1 }, seed, true);
+  const rolls = result.events.filter((event) => event.action === "skillRoll" && event.side === 0);
+  assert.deepEqual(rolls.map((event) => [event.round, event.actor, event.succeeded, event.selected]), team.map((unit, index) => [1, unit.id, true, index === 0]));
+  assert.deepEqual(result.events.filter((event) => event.action === "heroAction" && event.side === 0).map((event) => [event.round, event.actor, event.effectKey]), [[1, "achilles", "skillAttack"]]);
+  assert.equal(result.events.filter((event) => event.action === "heroAction" && event.side === 0).length, 1);
   assert.ok(result.events.filter((event) => ["normal", "skill", "critical", "extra", "collection"].includes(event.action)).every((event) => event.target && event.hpBefore !== undefined && event.hpAfter !== undefined));
+});
+test("the player opens round 1 and the enemy gets exactly one action after that", () => {
+  const team = [hero("achilles", { hp: 100000 }), hero("caesar", { hp: 100000 })];
+  const enemy = [hero("guinevere", { atk: 30, hp: 100000 }), hero("merlin", { atk: 30, hp: 100000 })];
+  const result = simulateBattle(team, { ...options, rounds: 4, dummy: false, enemy }, 1, true);
+  const actions = result.events.filter((event) => event.action === "heroAction");
+  const playerFirst = result.events.findIndex((event) => event.action === "heroAction" && event.side === 0);
+  const enemyFirst = result.events.findIndex((event) => event.action === "heroAction" && event.side === 1);
+  assert.ok(playerFirst >= 0 && enemyFirst > playerFirst);
+  assert.deepEqual(actions.filter((event) => event.side === 1).map(({ round }) => round), [1]);
+  assert.deepEqual(actions.filter((event) => event.side === 0).map(({ round }) => round), [1, 2, 3, 4]);
+  const dummy = simulateBattle(team, { ...options, rounds: 4, dummy: true }, 1, true);
+  assert.equal(dummy.events.some((event) => event.side === 1 && event.action === "heroAction"), false);
 });
 test("star boundary uses source unlocks without scaling ATK or HP", () => {
   assert.equal(skillFor(hero("hermes", { stars: 4 })).level, 1);
@@ -49,11 +67,11 @@ test("zero attack deals zero damage and all state remains bounded", () => {
   assert.ok(result.events.every((event) => event.amount >= 0 && event.allyHp >= 0 && event.enemyHp >= 0));
 });
 test("normal and skill damage consume HP; highest slot falls first and dead units stop contributing", () => {
-  const opts = { ...options, dummy: false, enemyFirst: true, enemy: [hero("guinevere", { atk: 2000, hp: 100000 })] };
+  const opts = { ...options, dummy: false, enemy: [hero("guinevere", { atk: 2000, hp: 100000 })] };
   const result = simulateBattle([hero("achilles", { hp: 100 }), hero("caesar", { hp: 100 })], opts, 42, true);
   const falls = result.events.filter((event) => event.action.startsWith("fall:"));
   assert.deepEqual(falls.slice(0, 2).map((event) => event.action), ["fall:caesar", "fall:achilles"]);
-  assert.equal(result.damage, 0);
+  assert.ok(result.damage > 0, "player acts before the opponent in round 1");
   assert.equal(result.alive, 0);
   assert.equal(result.remaining, 0);
 });
@@ -75,12 +93,36 @@ test("each hero skill is consumed at most once and later turns become normal att
   assert.equal(result.events.filter((event) => event.action === "cast").length, 1);
   assert.ok(result.events.filter((event) => event.action === "heroAction" && event.effectKey === "normalAttack").length > 1);
 });
-test("healing restores actual missing HP and shields absorb incoming damage", () => {
-  const opts = { ...options, dummy: false, enemy: [hero("guinevere", { atk: 80, hp: 100000 })], rounds: 50 };
-  const result = simulateBattle([hero("da-vinci", { hp: 3000 }), hero("pompey", { hp: 3000 })], opts, 42, true);
-  assert.ok(result.healing > 0);
+test("a used skill still rolls but cannot win a later action", () => {
+  const unit = hero("guinevere");
+  const seed = Array.from({ length: 10_000 }, (_, value) => value).find((candidate) => {
+    const result = simulateBattle([unit], { ...options, rounds: 2 }, candidate, true);
+    return result.events.some((event) => event.action === "cast" && event.actor === unit.id && event.round === 1)
+      && result.events.some((event) => event.action === "skillRoll" && event.actor === unit.id && event.round === 2 && event.succeeded);
+  });
+  assert.notEqual(seed, undefined);
+  const result = simulateBattle([unit], { ...options, rounds: 2 }, seed, true);
+  const secondRoll = result.events.find((event) => event.action === "skillRoll" && event.actor === unit.id && event.round === 2);
+  assert.equal(secondRoll.succeeded, true);
+  assert.equal(secondRoll.eligible, false);
+  assert.equal(secondRoll.selected, false);
+  assert.equal(result.events.find((event) => event.action === "heroAction" && event.round === 2).effectKey, "normalAttack");
+  assert.equal(result.events.filter((event) => event.action === "cast" && event.actor === unit.id).length, 1);
+});
+test("the one-time round-1 opponent attack can be absorbed by a shield", () => {
+  const opts = { ...options, dummy: false, enemy: [hero("guinevere", { atk: 80, hp: 100000 })], rounds: 2 };
+  const seed = Array.from({ length: 10_000 }, (_, value) => value).find((value) => seededRandom(value)() < skillFor(hero("da-vinci")).chance);
+  const result = simulateBattle([hero("da-vinci", { hp: 3000 }), hero("pompey", { hp: 3000 })], opts, seed, true);
   assert.ok(result.absorbed > 0);
   assert.ok(result.remaining >= 0 && result.remaining <= 1);
+});
+test("Cryptid healing resolves in its later scheduled round after the opponent's opening hit", () => {
+  const result = simulateBattle([hero("achilles", { hp: 3000 })], {
+    ...options, dummy: false, rounds: 2, enemy: [hero("guinevere", { atk: 80, hp: 100000 })],
+    cryptides: [null, { id: "sleipnir", skills: 1 }],
+  }, 1, true);
+  assert.ok(result.healing > 0);
+  assert.equal(result.events.find((event) => event.action === "heal")?.round, 2);
 });
 test("unsupported skills/items and invalid settings fail instead of receiving invented effects", () => {
   const pool = [hero("achilles"), hero("caesar")];
@@ -133,7 +175,7 @@ test("all one-round supported skills remain finite across seeded samples", () =>
   }
 });
 test("a one-turn barrier protects against the next incoming action even when casting second", () => {
-  const opts = { ...options, rounds: 3, dummy: false, enemyFirst: true, enemy: [hero("guinevere", { atk: 30, hp: 100000 })] };
+  const opts = { ...options, rounds: 3, dummy: false, enemy: [hero("guinevere", { atk: 30, hp: 100000 })] };
   let protectedSecondCaster = false;
   for (let seed = 0; seed < 100; seed++) {
     const result = simulateBattle([hero("pompey", { hp: 10000 })], opts, seed, true);
@@ -193,17 +235,13 @@ test("optimizer evaluates Cryptid identity and round assignments as part of the 
   assert.deepEqual(result.trace.events.filter((event) => event.action === "cryptidAction").map(({ round, actor }) => [round, actor]), best.cryptides.flatMap((entry, index) => entry ? [[index + 1, entry.id]] : []));
 });
 
-test("Sleipnir removes modeled enemy buffs and allied debuffs", () => {
-  let observed = false;
-  for (let seed = 0; seed < 1000 && !observed; seed++) {
-    const result = simulateBattle([hero("lancelot")], {
-      ...options, dummy: false, rounds: 4, enemy: [hero("hermes", { hp: 100000 }), hero("charles-the-great", { hp: 100000 })],
-      cryptides: [null, null, { id: "sleipnir", skills: 3 }],
-    }, seed, true);
-    observed = result.events.some((event) => event.action === "dispelBuff" && event.amount > 0)
-      && result.events.some((event) => event.action === "dispelDebuff" && event.amount > 0);
-  }
-  assert.equal(observed, true);
+test("Sleipnir removes the allied debuff applied by the opponent's round-1 skill", () => {
+  const seed = Array.from({ length: 10_000 }, (_, value) => value).find((candidate) => seededRandom(candidate)() < skillFor(hero("charles-the-great")).chance);
+  const result = simulateBattle([hero("lancelot")], {
+    ...options, dummy: false, rounds: 4, enemy: [hero("charles-the-great", { hp: 100000 })],
+    cryptides: [null, null, { id: "sleipnir", skills: 3 }],
+  }, seed, true);
+  assert.ok(result.events.some((event) => event.action === "dispelDebuff" && event.amount > 0));
 });
 
 test("finite dummy groups share one pool and attacks are never multiplied by target count", () => {

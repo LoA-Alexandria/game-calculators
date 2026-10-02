@@ -6,8 +6,8 @@ import { baseValueSource } from "./hero-base-value.ts";
 
 export type Fighter = { id: string; atk: number; hp: number; stars: number; level?: number };
 export type CryptidSelection = { id: string; skills: 1 | 2 | 3 };
-export type BattleOptions = { rounds: number; seed: number; trials: number; budget: number; size: number; enemyCount?: 1 | 5 | 10 | 20 | 30; infiniteDummy?: boolean; enemyFirst: boolean; objective: "damage" | "wins"; enemy: Fighter[]; dummy: boolean; enemyReduction: number; items: string[]; collection: string[]; collectionSlots?: number; cryptides?: (CryptidSelection | null)[] };
-export type BattleEvent = { round: number; side: number; actor: string; target?: string; action: string; amount: number; raw?: number; hpBefore?: number; hpAfter?: number; effectKey?: string; duration?: number; chance?: number; succeeded?: boolean; allyHp: number; enemyHp: number };
+export type BattleOptions = { rounds: number; seed: number; trials: number; budget: number; size: number; enemyCount?: 1 | 5 | 10 | 20 | 30; infiniteDummy?: boolean; objective: "damage" | "wins"; enemy: Fighter[]; dummy: boolean; enemyReduction: number; items: string[]; collection: string[]; collectionSlots?: number; cryptides?: (CryptidSelection | null)[] };
+export type BattleEvent = { round: number; side: number; actor: string; target?: string; action: string; amount: number; raw?: number; hpBefore?: number; hpAfter?: number; effectKey?: string; duration?: number; chance?: number; succeeded?: boolean; eligible?: boolean; selected?: boolean; allyHp: number; enemyHp: number };
 export type BattleResult = { damage: number; healing: number; absorbed: number; alive: number; remaining: number; win: boolean; rounds: number; events: BattleEvent[]; timeline: { round: number; damage: number; allyHp: number; enemyHp: number }[] };
 export type Candidate = { team: Fighter[]; collection: string[]; cryptides: (CryptidSelection | null)[]; damage: number; healing: number; winRate: number; remaining: number; deviation: number };
 export type SearchResult = { candidates: Candidate[]; evaluated: number; exhaustive: boolean; validationTrials: number; trace: BattleResult };
@@ -135,17 +135,7 @@ export function simulateBattle(team: Fighter[], options: BattleOptions, seed = o
     if (shield) log(index, "shield", shield);
     return restored;
   };
-  const nextAttacker = (side: Side) => {
-    for (let offset = 0; offset < side.units.length; offset++) {
-      const slot = (side.nextUnit + offset) % side.units.length;
-      const unit = side.units[slot];
-      if (unit.health > 0) {
-        side.nextUnit = (slot + 1) % side.units.length;
-        return { unit, slot };
-      }
-    }
-    return null;
-  };
+  const lowestLivingSlot = (side: Side) => side.units.findIndex((unit) => unit.health > 0);
   const hit = (index: number, raw: number, kind: string, critical = false) => {
     const from = sides[index], to = sides[1 - index];
     if (totalHp(to) <= 0 || raw <= 0) return 0;
@@ -300,7 +290,10 @@ export function simulateBattle(team: Fighter[], options: BattleOptions, seed = o
   for (round = 1; round <= options.rounds && totalHp(sides[0]) > 0 && totalHp(sides[1]) > 0; round++) {
     const cryptid = options.cryptides?.[round - 1];
     if (cryptid && totalHp(sides[0]) > 0 && totalHp(sides[1]) > 0) cryptidAction(cryptid);
-    for (const index of options.enemyFirst ? [1, 0] : [0, 1]) {
+    // Player always starts. The opponent gets exactly one action, after the
+    // player's action in round 1; later rounds are player + scheduled Cryptid.
+    const actingSides = [0, 1];
+    for (const index of actingSides) {
       const from = sides[index], to = sides[1 - index];
       if (totalHp(from) <= 0 || totalHp(to) <= 0) break;
       const expired = from.effects.filter((entry) => entry.expires <= from.actions);
@@ -319,27 +312,44 @@ export function simulateBattle(team: Fighter[], options: BattleOptions, seed = o
           hit(1 - index, from.dotTaken * item(to, "brutus-dagger"), "collection");
         }
       };
-      if (options.dummy && index === 1) { from.actions++; dagger(); continue; }
+      // Training targets and later opponent rounds still advance their effect
+      // clocks and DoT ticks, but only a real opponent attacks in round 1.
+      if (index === 1 && (options.dummy || round > 1)) { from.actions++; dagger(); continue; }
       const damageBefore = from.damage;
       const replacement = effect(from, "replace");
       if (replacement) { from.effects = from.effects.filter((e) => e.key !== "replace"); hit(1 - index, replacement, "normal"); }
       else {
         const frontCount = FORMATION_COLUMNS.front.filter((value) => value > 0).length;
-        // One hero attacks per side and round. A successfully used skill cannot
-        // trigger again in a later round; that hero then uses normal attacks.
-        const selected = nextAttacker(from);
-        if (selected && totalHp(to) > 0) {
-          const { unit, slot } = selected;
-          const skill = from.usedSkills.has(unit.id) ? null : skillFor(unit);
-          const procChance = Math.min(1, (skill?.chance ?? 0) + (slot < frontCount ? effect(from, "frontForce") : 0));
-          const succeeded = Boolean(skill && random() < procChance);
+        // Every living hero rolls each action. Successful unused skills are
+        // considered in formation order; the lowest numbered eligible slot
+        // gets the one action. If none qualifies, the lowest living slot makes
+        // the normal attack. A skill remains consumed for the whole battle.
+        const rolls: { unit: Unit; slot: number; skill: NonNullable<ReturnType<typeof skillFor>>; chance: number; succeeded: boolean; eligible: boolean }[] = [];
+        for (let slot = 0; slot < from.units.length; slot++) {
+          const unit = from.units[slot];
+          if (unit.health <= 0) continue;
+          const skill = skillFor(unit);
+          if (!skill) continue;
+          const procChance = Math.min(1, skill.chance + (slot < frontCount ? effect(from, "frontForce") : 0));
+          const succeeded = random() < procChance;
+          const eligible = !from.usedSkills.has(unit.id);
+          rolls.push({ unit, slot, skill, chance: procChance, succeeded, eligible });
+        }
+        const winner = rolls.find((entry) => entry.succeeded && entry.eligible);
+        for (const roll of rolls) {
+          actor = roll.unit.id;
+          log(index, "skillRoll", roll.chance, { target: living(to).at(-1)?.id, chance: roll.chance, succeeded: roll.succeeded, eligible: roll.eligible, selected: roll === winner });
+        }
+        const slot = winner?.slot ?? lowestLivingSlot(from);
+        const unit = slot >= 0 ? from.units[slot] : undefined;
+        if (unit && totalHp(to) > 0) {
           const actionDamageBefore = from.damage;
           const target = living(to).at(-1)?.id;
+          const succeeded = Boolean(winner);
           actor = unit.id;
-          if (skill) log(index, "skillRoll", procChance, { target: living(to).at(-1)?.id, chance: procChance, succeeded });
-          if (succeeded) { cast(index, unit); from.usedSkills.add(unit.id); }
+          if (winner) { cast(index, unit); from.usedSkills.add(unit.id); }
           else hit(index, unit.atk * (1 + Math.max(0, effect(from, "atk") - effect(from, "atkDown"))), "normal");
-          log(index, "heroAction", from.damage - actionDamageBefore, { target, effectKey: succeeded ? "skillAttack" : "normalAttack", chance: skill ? procChance : undefined, succeeded });
+          log(index, "heroAction", from.damage - actionDamageBefore, { target, effectKey: succeeded ? "skillAttack" : "normalAttack", chance: winner?.skill.chance, succeeded, selected: true });
         }
       }
       if (effect(from, "dotHeal")) heal(index, to.dotTaken * effect(from, "dotHeal"));
