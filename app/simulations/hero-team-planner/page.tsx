@@ -50,6 +50,8 @@ export default function HeroSimulator() {
   const text = t.heroTeamPlanner, sim = t.heroBattle;
   const input = useSyncExternalStore(store.subscribe, store.getSnapshot, store.getServerSnapshot);
   const [search, setSearch] = useState("");
+  const [rarityFilter, setRarityFilter] = useState("all");
+  const [showSelectedOnly, setShowSelectedOnly] = useState(false);
   const [collectionSearch, setCollectionSearch] = useState("");
   const [running, setRunning] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -69,7 +71,7 @@ export default function HeroSimulator() {
   const fmt = (value: number) => new Intl.NumberFormat(locale, { maximumFractionDigits: 1 }).format(value);
   const toggleOwned = (id: string, checked: boolean) => update({ heroes: checked ? [...input.heroes, fighter(id)] : input.heroes.filter((hero) => hero.id !== id) });
   const toggleEnemy = (id: string, checked: boolean) => update({ enemy: checked ? [...input.enemy, fighter(id)] : input.enemy.filter((hero) => hero.id !== id) });
-  const toggleAllHeroes = (checked: boolean) => update({ heroes: checked ? HEROES.map((hero) => input.heroes.find((owned) => owned.id === hero.id) ?? fighter(hero.id)) : [] });
+  const toggleAllHeroes = () => update({ heroes: HEROES.map((hero) => input.heroes.find((owned) => owned.id === hero.id) ?? fighter(hero.id)) });
   const toggleCryptide = (id: string, checked: boolean) => {
     const selected = new Map((input.options.cryptides ?? defaultCryptides()).flatMap((entry) => entry ? [[entry.id, entry] as const] : []));
     if (checked) selected.set(id, { id, skills: 1 }); else selected.delete(id);
@@ -101,7 +103,10 @@ export default function HeroSimulator() {
   const roster = (enemy = false) => {
     const chosen = enemy ? input.enemy : input.heroes;
     const toggle = enemy ? toggleEnemy : toggleOwned;
-    return <div className={styles.roster} role="list">{HEROES.filter((hero) => hero.name.toLocaleLowerCase(locale).includes(search.toLocaleLowerCase(locale))).map((hero) => {
+    const filtered = HEROES.filter((hero) => hero.name.toLocaleLowerCase(locale).includes(search.toLocaleLowerCase(locale))
+      && (enemy || rarityFilter === "all" || hero.rarity === rarityFilter)
+      && (enemy || !showSelectedOnly || chosen.some((entry) => entry.id === hero.id)));
+    return <div className={styles.roster} role="list">{filtered.map((hero) => {
       const own = chosen.find((entry) => entry.id === hero.id);
       const localized = localizedHero(hero, t.guideEntries.heroes.heroTexts, t.guideEntries.collection.collectionTexts);
       const exclusive = Object.entries(EXCLUSIVE_COLLECTION_HEROES).find(([, owner]) => owner === hero.id);
@@ -143,7 +148,13 @@ export default function HeroSimulator() {
         <label>{sim.reduction}<input type="number" min={0} max={0.9} step={0.05} value={Number.isNaN(input.options.enemyReduction) ? "" : input.options.enemyReduction} onChange={(event) => options({ enemyReduction: event.target.valueAsNumber })} /></label>
       </div>
       <p>{sim.inventoryNote} · {sim.fixedProfile} · {text.heroes}: {selectedHeroCount} · {sim.size}: {input.options.size}</p>
-      <div className={styles.controls}><label>{text.search}<input type="search" value={search} onChange={(event) => setSearch(event.target.value)} /></label><label className={styles.inlineCheck}><input type="checkbox" checked={input.heroes.length === HEROES.length} onChange={(event) => toggleAllHeroes(event.target.checked)} />{sim.modeSelectAll}</label><button className="button" onClick={() => update({ heroes: [] })}>{text.none}</button></div>
+      <div className={styles.rosterToolbar}>
+        <label>{text.search}<input type="search" value={search} onChange={(event) => setSearch(event.target.value)} /></label>
+        <label>{sim.rarityFilter}<select value={rarityFilter} onChange={(event) => setRarityFilter(event.target.value)}><option value="all">{sim.allRarities}</option>{[...new Set(HEROES.map((hero) => hero.rarity))].map((rarity) => <option key={rarity} value={rarity}>{rarity}</option>)}</select></label>
+        <label className={styles.inlineCheck}><input type="checkbox" checked={showSelectedOnly} onChange={(event) => setShowSelectedOnly(event.target.checked)} />{sim.showSelectedOnly}</label>
+        <span className={styles.rosterCount}>{input.heroes.length} / {HEROES.length} {text.heroes}</span>
+        <div className={styles.rosterActions}><button className="button" onClick={toggleAllHeroes}>{sim.selectEveryHero}</button><button className="button" onClick={() => update({ heroes: [] })}>{text.none}</button></div>
+      </div>
       <h3>{text.heroes}</h3>{roster()}
       <div className={styles.subsection}><h3>{sim.enemy} · {input.enemy.length} / 25</h3><p>{sim.trainingTargetNote}</p>{roster(true)}</div>
     </section>
