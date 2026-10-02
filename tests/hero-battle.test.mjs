@@ -13,7 +13,22 @@ test("modeled entries exist and all recorded star tiers compile to finite skill 
     assert.ok(skill.values.every(Number.isFinite));
   }
   for (const id of MODELED_ITEMS) assert.ok(COLLECTION_ITEMS.some((item) => item.id === id));
-  assert.equal(skillFor(hero("billy-the-kid")), null);
+  assert.equal(skillFor(hero("billy-the-kid")).source, "workbook-fallback");
+});
+test("every Core hero has a documented direct-damage model or is rejected as unknown", () => {
+  for (const entry of HEROES) {
+    const skill = skillFor(hero(entry.id));
+    assert.ok(skill && skill.chance > 0 && skill.coefficient > 0, entry.id);
+  }
+  assert.equal(skillFor(hero("not-a-core-hero")), null);
+});
+test("each living hero gets an individual skill roll and logged attacks retain attacker and target", () => {
+  const team = [hero("achilles"), hero("billy-the-kid"), hero("caesar")];
+  const result = simulateBattle(team, { ...options, rounds: 1 }, 5, true);
+  const rolls = result.events.filter((event) => event.action === "skillRoll");
+  assert.deepEqual(rolls.map((event) => event.actor), team.map((unit) => unit.id));
+  assert.ok(result.events.some((event) => event.action === "normal" && event.actor === "billy-the-kid" && event.target === "dummy"));
+  assert.ok(result.events.filter((event) => ["normal", "skill", "critical", "extra", "collection"].includes(event.action)).every((event) => event.target && event.hpBefore !== undefined && event.hpAfter !== undefined));
 });
 test("star boundary uses source unlocks without scaling ATK or HP", () => {
   assert.equal(skillFor(hero("hermes", { stars: 4 })).level, 1);
@@ -69,7 +84,8 @@ test("healing restores actual missing HP and shields absorb incoming damage", ()
 test("unsupported skills/items and invalid settings fail instead of receiving invented effects", () => {
   const pool = [hero("achilles"), hero("caesar")];
   for (const patch of [{ rounds: 0 }, { rounds: 101 }, { seed: -1 }, { size: 0 }, { size: 3 }, { trials: 0 }, { budget: 1001 }, { enemyReduction: NaN }, { collection: ["wings-of-icarus"] }, { collectionSlots: 7 }, { enemyCount: 2 }, { cryptides: [{ id: "nidhogg", skills: 4 }] }, { cryptides: Array.from({ length: 5 }, () => ({ id: "nidhogg", skills: 1 })) }]) assert.throws(() => validateBattle(pool, { ...options, ...patch }), RangeError);
-  assert.throws(() => validateBattle([hero("billy-the-kid"), hero("caesar")], options), RangeError);
+  assert.doesNotThrow(() => validateBattle([hero("billy-the-kid"), hero("caesar")], options));
+  assert.throws(() => validateBattle([hero("not-a-core-hero"), hero("caesar")], options), RangeError);
   assert.throws(() => validateBattle([hero("achilles", { hp: 0 }), hero("caesar")], options), RangeError);
 });
 test("optimizer independently enumerates and ranks ordered teams from a small inventory", () => {
