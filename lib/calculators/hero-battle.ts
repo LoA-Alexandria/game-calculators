@@ -9,7 +9,7 @@ export type CryptidSelection = { id: string; skills: 1 | 2 | 3 };
 export type BattleOptions = { rounds: number; seed: number; trials: number; budget: number; size: number; enemyCount?: 1 | 5 | 10 | 20 | 30; infiniteDummy?: boolean; enemyFirst: boolean; objective: "damage" | "wins"; enemy: Fighter[]; dummy: boolean; enemyReduction: number; items: string[]; collection: string[]; collectionSlots?: number; cryptides?: (CryptidSelection | null)[] };
 export type BattleEvent = { round: number; side: number; actor: string; target?: string; action: string; amount: number; raw?: number; hpBefore?: number; hpAfter?: number; effectKey?: string; duration?: number; chance?: number; succeeded?: boolean; allyHp: number; enemyHp: number };
 export type BattleResult = { damage: number; healing: number; absorbed: number; alive: number; remaining: number; win: boolean; rounds: number; events: BattleEvent[]; timeline: { round: number; damage: number; allyHp: number; enemyHp: number }[] };
-export type Candidate = { team: Fighter[]; collection: string[]; damage: number; healing: number; winRate: number; remaining: number; deviation: number };
+export type Candidate = { team: Fighter[]; collection: string[]; cryptides: (CryptidSelection | null)[]; damage: number; healing: number; winRate: number; remaining: number; deviation: number };
 export type SearchResult = { candidates: Candidate[]; evaluated: number; exhaustive: boolean; validationTrials: number; trace: BattleResult };
 
 // Only skills whose complete recorded level text can be translated into effects.
@@ -69,7 +69,7 @@ export function seededRandom(seed: number) {
 }
 type Effect = { key: string; source: string; value: number; expires: number; ticks?: number };
 type Unit = Fighter & { health: number };
-type Side = { units: Unit[]; max: number; shield: number; effects: Effect[]; items: Set<string>; damage: number; healing: number; absorbed: number; actions: number; labyrinth: boolean; dotTaken: number };
+type Side = { units: Unit[]; max: number; shield: number; effects: Effect[]; items: Set<string>; damage: number; healing: number; absorbed: number; actions: number; nextUnit: number; usedSkills: Set<string>; labyrinth: boolean; dotTaken: number };
 const totalHp = (side: Side) => side.units.reduce((sum, unit) => sum + unit.health, 0);
 const living = (side: Side) => side.units.filter((unit) => unit.health > 0);
 const effect = (side: Side, key: string) => side.effects.filter((entry) => entry.key === key).reduce((sum, entry) => sum + entry.value, 0);
@@ -98,7 +98,7 @@ export function validateBattle(pool: Fighter[], options: BattleOptions) {
 /** Event simulation with an explicit scenario model; see HERO-TEAM-PLANNER.md. */
 export function simulateBattle(team: Fighter[], options: BattleOptions, seed = options.seed, record = false): BattleResult {
   const random = seededRandom(seed);
-  const make = (units: Fighter[], items: string[]): Side => ({ units: units.map((unit) => ({ ...unit, health: unit.hp })), max: units.reduce((sum, unit) => sum + unit.hp, 0), shield: 0, effects: [], items: new Set(items), damage: 0, healing: 0, absorbed: 0, actions: 0, labyrinth: false, dotTaken: 0 });
+  const make = (units: Fighter[], items: string[]): Side => ({ units: units.map((unit) => ({ ...unit, health: unit.hp })), max: units.reduce((sum, unit) => sum + unit.hp, 0), shield: 0, effects: [], items: new Set(items), damage: 0, healing: 0, absorbed: 0, actions: 0, nextUnit: 0, usedSkills: new Set(), labyrinth: false, dotTaken: 0 });
   const owned = options.items.filter((id) => team.some((unit) => unit.id === EXCLUSIVE_COLLECTION_HEROES[id]));
   const targets = options.infiniteDummy === false
     ? Array.from({ length: options.enemyCount ?? 1 }, (_, index) => ({ id: "target-" + (index + 1), atk: 0, hp: 1000, stars: 0 }))
@@ -134,6 +134,17 @@ export function simulateBattle(team: Fighter[], options: BattleOptions, seed = o
     side.shield += shield;
     if (shield) log(index, "shield", shield);
     return restored;
+  };
+  const nextAttacker = (side: Side) => {
+    for (let offset = 0; offset < side.units.length; offset++) {
+      const slot = (side.nextUnit + offset) % side.units.length;
+      const unit = side.units[slot];
+      if (unit.health > 0) {
+        side.nextUnit = (slot + 1) % side.units.length;
+        return { unit, slot };
+      }
+    }
+    return null;
   };
   const hit = (index: number, raw: number, kind: string, critical = false) => {
     const from = sides[index], to = sides[1 - index];
@@ -256,7 +267,7 @@ export function simulateBattle(team: Fighter[], options: BattleOptions, seed = o
     const from = sides[0], to = sides[1];
     const unlocked = selection.skills;
     actor = selection.id;
-    log(0, "cryptid", unlocked);
+    log(0, "cryptidAction", unlocked);
     switch (selection.id) {
       case "nidhogg":
         hit(0, attack(from) * 2, "cryptid");
@@ -314,18 +325,21 @@ export function simulateBattle(team: Fighter[], options: BattleOptions, seed = o
       if (replacement) { from.effects = from.effects.filter((e) => e.key !== "replace"); hit(1 - index, replacement, "normal"); }
       else {
         const frontCount = FORMATION_COLUMNS.front.filter((value) => value > 0).length;
-        // Heroes resolve in formation order. Each living hero makes one attack;
-        // a successful skill proc replaces that hero's normal attack.
-        for (let slot = 0; slot < from.units.length && totalHp(to) > 0; slot++) {
-          const unit = from.units[slot];
-          if (unit.health <= 0) continue;
-          const skill = skillFor(unit);
+        // One hero attacks per side and round. A successfully used skill cannot
+        // trigger again in a later round; that hero then uses normal attacks.
+        const selected = nextAttacker(from);
+        if (selected && totalHp(to) > 0) {
+          const { unit, slot } = selected;
+          const skill = from.usedSkills.has(unit.id) ? null : skillFor(unit);
           const procChance = Math.min(1, (skill?.chance ?? 0) + (slot < frontCount ? effect(from, "frontForce") : 0));
           const succeeded = Boolean(skill && random() < procChance);
+          const actionDamageBefore = from.damage;
+          const target = living(to).at(-1)?.id;
           actor = unit.id;
-          log(index, "skillRoll", procChance, { target: living(to).at(-1)?.id, chance: procChance, succeeded });
-          if (succeeded) cast(index, unit);
+          if (skill) log(index, "skillRoll", procChance, { target: living(to).at(-1)?.id, chance: procChance, succeeded });
+          if (succeeded) { cast(index, unit); from.usedSkills.add(unit.id); }
           else hit(index, unit.atk * (1 + Math.max(0, effect(from, "atk") - effect(from, "atkDown"))), "normal");
+          log(index, "heroAction", from.damage - actionDamageBefore, { target, effectKey: succeeded ? "skillAttack" : "normalAttack", chance: skill ? procChance : undefined, succeeded });
         }
       }
       if (effect(from, "dotHeal")) heal(index, to.dotTaken * effect(from, "dotHeal"));
@@ -343,34 +357,51 @@ export function simulateBattle(team: Fighter[], options: BattleOptions, seed = o
   return { damage: sides[0].damage, healing: sides[0].healing, absorbed: sides[0].absorbed, alive: living(sides[0]).length, remaining: totalHp(sides[0]) / sides[0].max, win: !options.dummy && totalHp(sides[1]) === 0 && totalHp(sides[0]) > 0, rounds: completed, events, timeline };
 }
 
-function evaluate(team: Fighter[], collection: string[], options: BattleOptions, trials: number, seedOffset = 0): Candidate {
-  const scenario = { ...options, collection };
+function evaluate(team: Fighter[], collection: string[], cryptides: (CryptidSelection | null)[], options: BattleOptions, trials: number, seedOffset = 0): Candidate {
+  const scenario = { ...options, collection, cryptides };
   let damage = 0, squares = 0, healing = 0, wins = 0, remaining = 0;
   for (let i = 0; i < trials; i++) {
     const battle = simulateBattle(team, scenario, (options.seed + i * 7919 + seedOffset) >>> 0);
     damage += battle.damage; squares += battle.damage ** 2; healing += battle.healing; wins += Number(battle.win); remaining += battle.remaining;
   }
-  return { team, collection, damage: damage / trials, healing: healing / trials, winRate: wins / trials, remaining: remaining / trials, deviation: Math.sqrt(Math.max(0, squares / trials - (damage / trials) ** 2)) };
+  return { team, collection, cryptides, damage: damage / trials, healing: healing / trials, winRate: wins / trials, remaining: remaining / trials, deviation: Math.sqrt(Math.max(0, squares / trials - (damage / trials) ** 2)) };
+}
+function cryptidSchedules(selected: CryptidSelection[]): (CryptidSelection | null)[][] {
+  const schedules: (CryptidSelection | null)[][] = [];
+  const place = (index: number, current: (CryptidSelection | null)[], usedRounds: Set<number>) => {
+    if (index === selected.length) { schedules.push(current); return; }
+    for (let round = 0; round < 4; round++) {
+      if (usedRounds.has(round)) continue;
+      const next = [...current]; next[round] = selected[index];
+      const used = new Set(usedRounds); used.add(round);
+      place(index + 1, next, used);
+    }
+  };
+  place(0, Array.from({ length: 4 }, () => null), new Set());
+  return schedules;
 }
 export function optimizeTeams(pool: Fighter[], options: BattleOptions, progress?: (done: number) => void): SearchResult {
   validateBattle(pool, options);
   const sorted = [...pool].sort((a, b) => a.id.localeCompare(b.id, "en"));
   const collectionPool = [...options.collection].sort((a, b) => a.localeCompare(b, "en"));
+  const selectedCryptides = (options.cryptides ?? []).filter((entry): entry is CryptidSelection => entry !== null);
+  const schedules = cryptidSchedules(selectedCryptides);
   const collectionSlots = Math.min(options.collectionSlots ?? 6, collectionPool.length);
   const random = seededRandom(options.seed);
-  const compare = (a: Candidate, b: Candidate) => (options.objective === "wins" && !options.dummy ? b.winRate - a.winRate || b.remaining - a.remaining : 0) || b.damage - a.damage || a.team.map((u) => u.id).join(",").localeCompare(b.team.map((u) => u.id).join(","), "en") || a.collection.join(",").localeCompare(b.collection.join(","), "en");
+  const scheduleKey = (schedule: (CryptidSelection | null)[]) => schedule.map((entry) => entry?.id ?? "-").join(",");
+  const compare = (a: Candidate, b: Candidate) => (options.objective === "wins" && !options.dummy ? b.winRate - a.winRate || b.remaining - a.remaining : 0) || b.damage - a.damage || a.team.map((u) => u.id).join(",").localeCompare(b.team.map((u) => u.id).join(","), "en") || a.collection.join(",").localeCompare(b.collection.join(","), "en") || scheduleKey(a.cryptides).localeCompare(scheduleKey(b.cryptides), "en");
   const seen = new Set<string>();
   let elite: Candidate[] = [];
   let teamCount = 1;
   for (let i = 0; i < options.size; i++) teamCount *= sorted.length - i;
   let collectionCount = 1;
   for (let i = 0; i < collectionSlots; i++) collectionCount = collectionCount * (collectionPool.length - i) / (i + 1);
-  const exhaustive = teamCount * collectionCount <= options.budget;
-  const assess = (team: Fighter[], collection: string[]) => {
-    const key = team.map((unit) => unit.id).join(",") + "|" + collection.join(",");
+  const exhaustive = teamCount * collectionCount * schedules.length <= options.budget;
+  const assess = (team: Fighter[], collection: string[], cryptides: (CryptidSelection | null)[]) => {
+    const key = team.map((unit) => unit.id).join(",") + "|" + collection.join(",") + "|" + scheduleKey(cryptides);
     if (seen.has(key)) return;
     seen.add(key);
-    elite.push(evaluate(team, collection, options, options.trials));
+    elite.push(evaluate(team, collection, cryptides, options, options.trials));
     elite.sort(compare); elite = elite.slice(0, 8);
     if (seen.size % 10 === 0) progress?.(seen.size);
   };
@@ -396,18 +427,20 @@ export function optimizeTeams(pool: Fighter[], options: BattleOptions, progress?
   };
   if (exhaustive) {
     const visit = (team: Fighter[]) => {
-      if (team.length === options.size) { eachCollection((collection) => assess(team, collection)); return; }
+      if (team.length === options.size) { eachCollection((collection) => schedules.forEach((schedule) => assess(team, collection, schedule))); return; }
       for (const unit of sorted) if (!team.includes(unit)) visit([...team, unit]);
     };
     visit([]);
   } else {
     // No archetypes, tiers, names or guide scores seed the search.
     for (let attempt = 0; seen.size < options.budget && attempt < options.budget * 8; attempt++) {
-      let team: Fighter[], collection: string[];
+      let team: Fighter[], collection: string[], cryptides: (CryptidSelection | null)[];
       if (elite.length && attempt % 3 !== 0) {
         const parent = elite[Math.floor(random() * elite.length)];
         team = [...parent.team];
         collection = [...parent.collection];
+        cryptides = [...parent.cryptides];
+        if (schedules.length > 1 && random() < .4) cryptides = schedules[Math.floor(random() * schedules.length)];
         if (collectionPool.length > collectionSlots && random() < .5) collection = mutateCollection(collection);
         else {
           const slot = Math.floor(random() * team.length);
@@ -421,12 +454,13 @@ export function optimizeTeams(pool: Fighter[], options: BattleOptions, progress?
         for (let i = shuffled.length - 1; i > 0; i--) { const j = Math.floor(random() * (i + 1)); [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]; }
         team = shuffled.slice(0, options.size);
         collection = randomCollection();
+        cryptides = schedules[Math.floor(random() * schedules.length)];
       }
-      assess(team, collection);
+      assess(team, collection, cryptides);
     }
   }
   // Independent seed set reduces selection bias; not a proof of global optimality.
   const validationTrials = 128;
-  const candidates = elite.map((candidate) => evaluate(candidate.team, candidate.collection, options, validationTrials, 1000003)).sort(compare).slice(0, 3);
-  return { candidates, evaluated: seen.size, exhaustive, validationTrials, trace: simulateBattle(candidates[0].team, { ...options, collection: candidates[0].collection }, options.seed + 1000003, true) };
+  const candidates = elite.map((candidate) => evaluate(candidate.team, candidate.collection, candidate.cryptides, options, validationTrials, 1000003)).sort(compare).slice(0, 3);
+  return { candidates, evaluated: seen.size, exhaustive, validationTrials, trace: simulateBattle(candidates[0].team, { ...options, collection: candidates[0].collection, cryptides: candidates[0].cryptides }, options.seed + 1000003, true) };
 }

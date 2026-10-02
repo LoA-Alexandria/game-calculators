@@ -22,12 +22,13 @@ test("every Core hero has a documented direct-damage model or is rejected as unk
   }
   assert.equal(skillFor(hero("not-a-core-hero")), null);
 });
-test("each living hero gets an individual skill roll and logged attacks retain attacker and target", () => {
+test("only one hero attacks per side and round; the detailed log preserves attacker and target", () => {
   const team = [hero("achilles"), hero("billy-the-kid"), hero("caesar")];
-  const result = simulateBattle(team, { ...options, rounds: 1 }, 5, true);
+  const result = simulateBattle(team, { ...options, rounds: 3 }, 5, true);
   const rolls = result.events.filter((event) => event.action === "skillRoll");
-  assert.deepEqual(rolls.map((event) => event.actor), team.map((unit) => unit.id));
-  assert.ok(result.events.some((event) => event.action === "normal" && event.actor === "billy-the-kid" && event.target === "dummy"));
+  assert.deepEqual(rolls.map((event) => [event.round, event.actor]), team.map((unit, index) => [index + 1, unit.id]));
+  assert.deepEqual(result.events.filter((event) => event.action === "heroAction" && event.side === 0).map((event) => [event.round, event.actor, event.effectKey]), [[1, "achilles", "normalAttack"], [2, "billy-the-kid", "normalAttack"], [3, "caesar", "skillAttack"]]);
+  assert.equal(result.events.filter((event) => event.action === "heroAction" && event.side === 0).length, 3);
   assert.ok(result.events.filter((event) => ["normal", "skill", "critical", "extra", "collection"].includes(event.action)).every((event) => event.target && event.hpBefore !== undefined && event.hpAfter !== undefined));
 });
 test("star boundary uses source unlocks without scaling ATK or HP", () => {
@@ -56,23 +57,23 @@ test("normal and skill damage consume HP; highest slot falls first and dead unit
   assert.equal(result.alive, 0);
   assert.equal(result.remaining, 0);
 });
-test("DoT resolves per victim action and stacks while the hero reapplies it", () => {
+test("DoT resolves per victim action while a hero skill is used only once", () => {
   const result = simulateBattle([hero("lancelot")], { ...options, rounds: 30 }, 42, true);
   const dots = result.events.filter((event) => event.action === "dot");
   const casts = result.events.filter((event) => event.actor === "lancelot" && event.action === "cast").length;
-  assert.ok(casts > 3);
-  assert.ok(dots.length > 3 && dots.length < 30);
-  assert.ok(dots.every((event) => event.amount >= 75 && event.amount % 75 === 0));
-  assert.ok(dots.some((event) => event.amount > 75));
+  assert.equal(casts, 1);
+  assert.equal(dots.length, 3);
+  assert.ok(dots.every((event) => event.amount === 75));
 });
 test("DoT Collection effects change simulated damage rather than guide points", () => {
   const base = simulateBattle([hero("lancelot")], options);
   const boosted = simulateBattle([hero("lancelot")], { ...options, collection: ["dead-sea-scrolls", "brutus-dagger"] });
   assert.ok(boosted.damage > base.damage);
 });
-test("a ready hero skill can activate again on later rounds", () => {
+test("each hero skill is consumed at most once and later turns become normal attacks", () => {
   const result = simulateBattle([hero("guinevere")], { ...options, rounds: 100 }, 42, true);
-  assert.ok(result.events.filter((event) => event.action === "cast").length > 1);
+  assert.equal(result.events.filter((event) => event.action === "cast").length, 1);
+  assert.ok(result.events.filter((event) => event.action === "heroAction" && event.effectKey === "normalAttack").length > 1);
 });
 test("healing restores actual missing HP and shields absorb incoming damage", () => {
   const opts = { ...options, dummy: false, enemy: [hero("guinevere", { atk: 80, hp: 100000 })], rounds: 50 };
@@ -155,23 +156,41 @@ test("Brutus Dagger resolves after the opponent acts, including dummy boundaries
   assert.equal(dummy.events.filter((event) => event.actor === "brutus-dagger").length, dummy.events.filter((event) => event.action === "dot").length);
 });
 
-test("Horn stacks coexist with Arthur reduction and persist after its expiry", () => {
+test("one-time Arthur skill expires while the Horn's independently stacked reduction remains", () => {
   const opts = { ...options, rounds: 15, dummy: false, enemy: [hero("guinevere", { hp: 100000 })], collection: ["heimdalls-horn"] };
   const result = simulateBattle([hero("king-arthur", { atk: 1, hp: 100000 })], opts, 42, true);
-  const damageAt = (round) => result.events.find((event) => event.round === round && event.side === 1 && event.action === "skill").amount;
-  assert.ok(Math.abs(damageAt(9) - 64) < 1e-9); // 48% Horn + 20% Arthur.
-  assert.equal(damageAt(13), 104); // Arthur expires; 48% Horn remains.
+  assert.equal(result.events.filter((event) => event.side === 0 && event.action === "cast").length, 1);
+  assert.ok(result.events.some((event) => event.side === 0 && event.action === "expire" && event.effectKey === "reduction"));
+  assert.equal(result.events.filter((event) => event.side === 0 && event.actor === "heimdalls-horn" && event.action === "buff").length, 5);
 });
 
-test("all four Cryptides attack exactly once at the start of their ordered rounds and use skill unlocks", () => {
+test("Cryptides are staggered one per round in slots 1–4 and never act again", () => {
   const result = simulateBattle([hero("achilles"), hero("caesar")], {
-    ...options, rounds: 4, cryptides: [{ id: "sleipnir", skills: 3 }, { id: "nidhogg", skills: 3 }, { id: "cerberus", skills: 2 }, { id: "caladrius", skills: 1 }],
+    ...options, rounds: 8, cryptides: [{ id: "sleipnir", skills: 3 }, { id: "nidhogg", skills: 3 }, { id: "cerberus", skills: 2 }, { id: "caladrius", skills: 1 }],
   }, 42, true);
-  assert.deepEqual(result.events.filter((event) => event.action === "cryptid" && event.amount <= 3).map(({ round, actor, amount }) => [round, actor, amount]), [[1, "sleipnir", 3], [2, "nidhogg", 3], [3, "cerberus", 2], [4, "caladrius", 1]]);
+  assert.deepEqual(result.events.filter((event) => event.action === "cryptidAction").map(({ round, actor, amount }) => [round, actor, amount]), [[1, "sleipnir", 3], [2, "nidhogg", 3], [3, "cerberus", 2], [4, "caladrius", 1]]);
+  assert.equal(result.events.filter((event) => event.action === "cryptidAction").length, 4);
+  assert.ok(result.events.filter((event) => event.action === "cryptidAction").every((event) => event.round <= 4));
+  const secondSlotOnly = simulateBattle([hero("achilles")], { ...options, rounds: 6, cryptides: [null, { id: "nidhogg", skills: 2 }] }, 42, true);
+  assert.deepEqual(secondSlotOnly.events.filter((event) => event.action === "cryptidAction").map(({ round, actor }) => [round, actor]), [[2, "nidhogg"]]);
   assert.ok(result.damage > simulateBattle([hero("achilles"), hero("caesar")], { ...options, rounds: 4 }, 42).damage);
   const oneUnlocked = simulateBattle([hero("guinevere")], { ...options, rounds: 8, enemyReduction: .5, cryptides: [{ id: "nidhogg", skills: 1 }] }, 42);
   const threeUnlocked = simulateBattle([hero("guinevere")], { ...options, rounds: 8, enemyReduction: .5, cryptides: [{ id: "nidhogg", skills: 3 }] }, 42);
   assert.ok(threeUnlocked.damage > oneUnlocked.damage);
+});
+
+test("optimizer evaluates Cryptid identity and round assignments as part of the layout", () => {
+  const result = optimizeTeams([hero("achilles")], {
+    ...options, size: 1, rounds: 4, trials: 1, budget: 20, collectionSlots: 0,
+    cryptides: [{ id: "nidhogg", skills: 2 }, { id: "caladrius", skills: 1 }],
+  });
+  assert.equal(result.exhaustive, true);
+  assert.equal(result.evaluated, 12); // 4 × 3 distinct assignments of 2 Cryptids to rounds 1–4.
+  const best = result.candidates[0];
+  assert.equal(best.cryptides.length, 4);
+  assert.equal(best.cryptides.filter(Boolean).length, 2);
+  assert.deepEqual(new Set(best.cryptides.filter(Boolean).map(({ id }) => id)), new Set(["nidhogg", "caladrius"]));
+  assert.deepEqual(result.trace.events.filter((event) => event.action === "cryptidAction").map(({ round, actor }) => [round, actor]), best.cryptides.flatMap((entry, index) => entry ? [[index + 1, entry.id]] : []));
 });
 
 test("Sleipnir removes modeled enemy buffs and allied debuffs", () => {
