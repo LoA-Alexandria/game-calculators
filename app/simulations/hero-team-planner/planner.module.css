@@ -32,6 +32,37 @@
 .log :is(td,th) { padding: 10px; border-bottom: 1px solid var(--line); text-align: left; }
 .results dl { display: grid; grid-template-columns: 1fr auto; gap: 8px; }
 .results dd { margin: 0; }
+.bestResult { display: grid; gap: 14px; }
+.bestResult > :is(h3,h4,p) { margin: 0; }
+.formationWrap { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.formationColumn { display: grid; grid-template-rows: auto repeat(9, minmax(52px, auto)); gap: 5px; padding: 9px; border: 1px solid var(--line); border-radius: 12px; background: color-mix(in srgb, var(--surface) 82%, var(--accent)); }
+.formationColumn h4 { text-align: center; margin: 0 0 4px; color: var(--ink-soft); }
+.formationCell { position: relative; display: grid; grid-template-columns: 36px minmax(0, 1fr); grid-template-rows: 1fr auto; align-items: center; gap: 0 7px; min-width: 0; min-height: 50px; padding: 4px 6px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); }
+.formationCell img { grid-row: 1 / 3; width: 34px; height: 34px; object-fit: contain; }
+.formationCell strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .78rem; }
+.formationCell small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .68rem; }
+.slotNumber { position: absolute; top: 2px; right: 4px; color: var(--accent); font-size: .65rem; font-weight: 800; }
+.emptySlot { display: grid; place-items: center; opacity: .45; }
+.resultItems { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr)); gap: 6px; }
+.resultItem { display: flex; align-items: center; gap: 8px; min-width: 0; padding: 6px 9px; border: 1px solid var(--line); border-radius: 8px; }
+.resultItem img { flex: 0 0 32px; object-fit: contain; }
+.resultItem span { overflow: hidden; text-overflow: ellipsis; }
+.battleLog { display: grid; gap: 12px; }
+.battleLog > :is(h3,p) { margin: 0; }
+.roundList { display: grid; gap: 10px; }
+.roundCard { min-width: 0; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--surface); }
+.roundCard > header { display: flex; flex-wrap: wrap; align-items: center; gap: 7px 16px; padding: 10px 14px; background: color-mix(in srgb, var(--accent) 10%, var(--surface)); }
+.roundCard > header strong { color: var(--accent); }
+.roundCard > header span { font-size: .88rem; }
+.cryptidBadge { padding: 3px 8px; border-radius: 999px; background: color-mix(in srgb, #b07be2 16%, var(--surface)); }
+.roundTable { max-width: 100%; overflow-x: auto; }
+.roundTable table { width: 100%; border-collapse: collapse; }
+.roundTable :is(th,td) { padding: 8px 11px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line); }
+.roundTable th { font-size: .76rem; color: var(--ink-soft); }
+.roundTable td { font-size: .84rem; }
+.roundTable td:first-child { min-width: 170px; }
+.roundTable td small { display: block; color: var(--ink-soft); }
+.roundTable tr:last-child td { border-bottom: 0; }
 .planner label:has(input:disabled) { opacity: .6; }
 .notice { border-left: 3px solid var(--accent); padding: 4px 20px; background: var(--surface); border-radius: 8px; }
 .notice p { line-height: 1.65; }
@@ -40,16 +71,18 @@
 .planner input:not([type=checkbox]), .planner select { width: 100%; min-width: 0; min-height: 42px; padding: 8px; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
 .controls > label { flex: 1 1 180px; min-width: 0; }
 .roster { display: grid; grid-template-columns: 1fr; gap: 6px; max-height: 520px; overflow: auto; padding: 4px; }
-.heroRow { display: grid; grid-template-columns: minmax(190px, 1.4fr) 82px 110px 110px minmax(180px, 1fr); align-items: center; gap: 8px; min-width: 690px; border: 1px solid var(--line); border-radius: 9px; padding: 6px 9px; }
+.heroRow { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, min(36%, 230px)); align-items: center; gap: 8px; min-width: 0; min-height: 52px; border: 1px solid var(--line); border-radius: 9px; padding: 4px 9px; }
 .owned { background: var(--surface); border-color: var(--accent); }
-.planner .heroCheck { display: flex; align-items: center; gap: 10px; cursor: pointer; min-height: 48px; }
-.heroCheck img { object-fit: contain; border-radius: 8px; }
-.heroCheck span { min-width: 0; }
-.heroRow > label:not(.heroCheck) { font-size: .78rem; }
-.heroRow input:not([type=checkbox]) { min-height: 34px; }
+.planner .heroCheck { display: flex; align-items: center; gap: 9px; cursor: pointer; min-width: 0; min-height: 42px; }
+.heroCheck img { width: 32px; height: 32px; flex: 0 0 32px; object-fit: contain; border-radius: 7px; }
+.heroCheck span { display: flex; align-items: baseline; gap: 6px; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.heroCheck small { display: inline; flex: 0 0 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin: 0; font-size: .72em; }
+.exclusiveCheck { display: flex !important; align-items: center; gap: 7px !important; min-width: 0; cursor: pointer; font-size: .78rem !important; }
+.exclusiveCheck img { width: 26px; height: 26px; flex: 0 0 26px; object-fit: contain; }
+.exclusiveCheck span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.noExclusive { justify-self: start; color: var(--ink-soft); }
 .inlineCheck { display: flex !important; grid-auto-flow: column; align-items: center; justify-content: start; gap: 8px !important; cursor: pointer; }
 .inlineCheck img { object-fit: contain; }
-.skillDetail { grid-column: 1 / -1; padding-inline: 8px; }
 .subsection { margin-top: 18px; }
 .planner small { display: block; color: var(--ink-soft); margin-top: 3px; }
 .heroFields { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
@@ -59,8 +92,9 @@
 .itemRow, .cryptideRow { display: grid; grid-template-columns: 20px 38px minmax(180px, 1fr) auto; align-items: center; gap: 10px; min-height: 48px; border: 1px solid var(--line); border-radius: 8px; padding: 5px 10px; cursor: pointer; }
 .itemRow img, .cryptideRow img { object-fit: contain; }
 .itemRow small, .cryptideRow > small { color: var(--ink-soft); white-space: nowrap; }
-.cryptideRow { grid-template-columns: minmax(220px, 1fr) 130px minmax(200px, 1fr) auto; cursor: default; }
+.cryptideRow { grid-template-columns: minmax(160px, 1fr) 110px minmax(100px, .8fr) auto; cursor: default; }
 .cryptideRow .inlineCheck { justify-content: start; }
+.hoverInfo { display: inline-flex; justify-self: start; color: var(--accent); cursor: help; font-size: .8rem; text-decoration: underline dotted; text-underline-offset: 3px; }
 .gaps { border: 1px solid color-mix(in srgb, #d99b31 45%, var(--line)); border-left: 4px solid #d99b31; border-radius: 12px; background: color-mix(in srgb, #d99b31 6%, var(--surface)); padding: 16px 20px; }
 .gaps h2 { margin-top: 0; }
 .gaps ul { margin-bottom: 0; padding-left: 22px; }
@@ -72,4 +106,4 @@
 .team li { border-bottom: 1px solid var(--line); padding: 12px 0; }
 .team li > span { display: block; color: var(--accent); }
 .planner :is(input, select, button, summary):focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
-@media (max-width: 600px) { .roster { max-height: 430px; } .cryptideRow { grid-template-columns: minmax(200px, 1fr) 115px auto; min-width: 470px; } .cryptideRow details { grid-column: 1 / -1; } .itemRow { min-width: 390px; } .gaps { padding-inline: 13px; } .notice { padding-inline: 12px; } }
+@media (max-width: 600px) { .roster { max-height: 430px; } .heroRow { grid-template-columns: minmax(0, 1fr) minmax(0, 42%); gap: 4px; padding-inline: 6px; } .planner .heroCheck { gap: 6px; } .heroCheck img { width: 28px; height: 28px; flex-basis: 28px; } .exclusiveCheck { gap: 4px !important; font-size: .72rem !important; } .exclusiveCheck img { width: 22px; height: 22px; flex-basis: 22px; } .cryptideRow { grid-template-columns: minmax(0, 1fr) 90px auto; min-width: 0; } .cryptideRow > small { grid-column: 1 / -1; } .itemRow { min-width: 0; grid-template-columns: 20px 30px minmax(0, 1fr) auto; gap: 7px; } .itemRow small { max-width: 118px; overflow: hidden; text-overflow: ellipsis; } .gaps { padding-inline: 13px; } .notice { padding-inline: 12px; } .formationWrap { gap: 4px; } .formationColumn { padding: 4px; gap: 3px; } .formationCell { grid-template-columns: 24px minmax(0, 1fr); gap: 0 3px; min-height: 43px; padding: 3px; } .formationCell img { width: 23px; height: 23px; } .formationCell strong { font-size: .63rem; } .formationCell small { font-size: .58rem; } .roundTable table { min-width: 540px; } }
