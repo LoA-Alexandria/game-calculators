@@ -984,27 +984,27 @@ p { margin: 0; }
   background-repeat: no-repeat;
   background-position: right clamp(12px, 5vw, 76px) top calc(clamp(48px, 6vh, 72px) + 65px);
   background-size: min(82vw, 1120px) auto;
-  opacity: .32;
+  opacity: .12;
   mix-blend-mode: multiply;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) .page-background-art {
     mix-blend-mode: screen;
-    opacity: .08;
+    opacity: .03;
   }
 }
 
 :root[data-theme="dark"] .page-background-art {
   mix-blend-mode: screen;
-  opacity: .08;
+  opacity: .03;
 }
 
 @media (max-width: 720px) {
   .page-background-art {
     background-position: center top 113px;
     background-size: min(100%, 620px) auto;
-    opacity: .2;
+    opacity: .08;
   }
 }
 
@@ -1015,11 +1015,11 @@ p { margin: 0; }
 }
 
 @media (max-width: 720px) and (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .page-background-art { opacity: .06; }
+  :root:not([data-theme="light"]) .page-background-art { opacity: .02; }
 }
 
 @media (max-width: 720px) {
-  :root[data-theme="dark"] .page-background-art { opacity: .06; }
+  :root[data-theme="dark"] .page-background-art { opacity: .02; }
 }
 
 .topbar {
