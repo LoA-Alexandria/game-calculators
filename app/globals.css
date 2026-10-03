@@ -982,7 +982,7 @@ p { margin: 0; }
   z-index: -1;
   pointer-events: none;
   background-repeat: no-repeat;
-  background-position: right clamp(12px, 5vw, 76px) top clamp(48px, 6vh, 72px);
+  background-position: right clamp(12px, 5vw, 76px) top calc(clamp(48px, 6vh, 72px) + 50px);
   background-size: min(82vw, 1120px) auto;
   opacity: .32;
   mix-blend-mode: multiply;
@@ -1002,7 +1002,7 @@ p { margin: 0; }
 
 @media (max-width: 720px) {
   .page-background-art {
-    background-position: center top 48px;
+    background-position: center top 98px;
     background-size: min(100%, 620px) auto;
     opacity: .2;
   }
