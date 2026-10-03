@@ -20,7 +20,7 @@ test("hero stat catalog covers the published hero roster without inventing missi
   assert.ok(catalog.heldStatObservations.every((row) => Number.isInteger(row.level) && Number.isInteger(row.heldAng)));
 });
 
-test("every hero profile receives Basic stats and unknown LP stays explicitly blank", () => {
+test("every hero profile receives a Basic tab and unknown LP stays blank", () => {
   assert.ok(roster.heroes.every((hero) => heroBasicStatsForHero(hero.id) !== null));
   assert.equal(heroBasicStatsForHero("unknown-hero"), null);
   assert.equal(heroBasicStatsForHero("guan-yu").heldAng, 616);
@@ -29,11 +29,12 @@ test("every hero profile receives Basic stats and unknown LP stays explicitly bl
   assert.equal(heroBasicStatsForHero("achilles").heldAngEstimated, true);
 });
 
-test("Basic stats are nested in Core Heroes instead of a standalone stats page", () => {
+test("Basic stats use their own profile tab instead of the other-guides list", () => {
   const heroRoster = readFileSync(new URL("../app/guides/HeroRoster.tsx", import.meta.url), "utf8");
   const navigation = readFileSync(new URL("../lib/navigation.ts", import.meta.url), "utf8");
-  assert.match(heroRoster, /guide\.basicHeading/);
+  assert.match(heroRoster, /id: "basic"[\s\S]*?title: guide\.basicHeading/);
   assert.match(heroRoster, /heroBasicStatsForHero\(hero\.id\)/);
+  assert.doesNotMatch(heroRoster, /hero-basic-observations|basicReadings|basicUnavailable/);
   assert.equal(existsSync(new URL("../app/guides/hero-stats/page.tsx", import.meta.url)), false);
   assert.equal(navigation.includes("/guides/hero-stats/"), false);
 });

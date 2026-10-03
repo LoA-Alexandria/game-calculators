@@ -1318,14 +1318,6 @@ const de: Dictionary = {
       basicBaseAttack: "Basis-ANG · Grün 1★",
       basicHeroAng: "Helden-ANG · Stufe 1",
       basicLp: "Helden-LP · Stufe 1",
-      basicUnavailable: "Nicht erfasst",
-      basicEstimated: "Aus Stufenwerten geschätzt",
-      basicReadings: "Erfasste Stufenwerte ({count})",
-      basicNormal: "Normal",
-      basicBeforeAscension: "Vor dem Aufstieg",
-      basicAfterAscension: "Nach dem Aufstieg",
-      basicBeforeEnlightenment: "Vor der Erleuchtung",
-      basicAfterEnlightenment: "Nach der Erleuchtung",
       // Übersetzte Spieltexte je Held, Schlüssel ist die Helden-Id aus lib/data/heroes.json.
       heroTexts: {
         hermes: {

@@ -5529,19 +5529,11 @@ button.pb-card:focus-visible { outline: none; box-shadow: var(--ring); }
 .hero-link-tier[data-tier="B"] { --tier: #8a5cc7; }
 .hero-link-tier[data-tier="C"] { --tier: #2d6fa9; }
 .hero-link-tier[data-tier="D"] { --tier: #6c6760; }
-.hero-links li.hero-basic-entry { grid-template-columns: minmax(0, 1fr); gap: 9px; padding: 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface-2); }
-.hero-basic-title { color: var(--accent); font-size: .86rem; }
 .hero-basic-values { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr)); gap: 8px; margin: 0; }
 .hero-basic-values div { min-width: 0; padding: 9px 11px; border: 1px solid var(--line); border-radius: 9px; background: var(--surface); }
 .hero-basic-values dt { color: var(--ink-soft); font-size: .73rem; line-height: 1.4; }
 .hero-basic-values dd { margin: 4px 0 0; color: var(--ink); font-size: .92rem; font-weight: 700; font-variant-numeric: tabular-nums; }
-.hero-basic-values small { display: block; margin-top: 3px; color: var(--ink-faint); font-size: .7rem; }
-.hero-basic-observations { color: var(--ink-soft); font-size: .78rem; }
-.hero-basic-observations summary { width: fit-content; cursor: pointer; font-weight: 650; }
-.hero-basic-observations ul { display: grid; gap: 6px; margin: 8px 0 0; padding: 0; list-style: none; }
-.hero-links .hero-basic-observations li { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 130px), 1fr)); gap: 4px 10px; padding: 7px 9px; border-radius: 8px; background: var(--surface); font-size: .75rem; font-variant-numeric: tabular-nums; }
-.hero-basic-observations li small { grid-column: 1 / -1; color: var(--ink-faint); font-size: .68rem; }
-.hero-basic-observations li[data-warning="true"] { color: var(--warn); }
+.hero-basic-panel { align-content: start; }
 
 /* --- the hero sheet: a head, then one panel per subject --- */
 .hero-detail-obtain {
