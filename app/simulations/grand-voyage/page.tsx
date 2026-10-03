@@ -4,9 +4,14 @@ import { useEffect, useMemo, useState } from "react";
 import { useDocumentTitle, useLocale } from "../../components/LocaleProvider";
 import { BackLink, PageHead } from "../../components/Ui";
 import { formatDuration } from "../../../lib/calculators/grand-voyage-route";
+import { type RouteData } from "../../../lib/calculators/grand-voyage-route";
+import { useGuideData } from "../../guides/GuideOverrides";
+import Link from "next/link";
+import { useAuth } from "../../components/AuthProvider";
+import { PenIcon } from "../../components/Icons";
 import {
   DEFAULT_VOYAGE_PROFILE, levelForCity, nextCityUpgrade, observedShipwreckShipments, optimizeVoyageRoutes,
-  VOYAGE_CITIES, VOYAGE_REGIONS, type VoyageProfile,
+  VOYAGE_CITIES, VOYAGE_REGIONS, type VoyageData, type VoyageProfile,
 } from "../../../lib/calculators/grand-voyage-simulator";
 
 const STORAGE_KEY = "popepoch-grand-voyage-profile-v1";
@@ -42,10 +47,15 @@ export default function GrandVoyageSimulationPage() {
     return () => window.clearTimeout(timer);
   }, []);
   useEffect(() => { if (ready) localStorage.setItem(STORAGE_KEY, JSON.stringify(profile)); }, [profile, ready]);
+  // The build carries the numbers; a published edit lies over them a moment later.
+  const { allows } = useAuth();
+  const routes = useGuideData<RouteData>("grand-voyage-routes");
+  const shipwreck = useGuideData<VoyageData["shipwreck"]>("grand-voyage-shipwreck-observation");
+  const voyage: VoyageData = useMemo(() => ({ routes, shipwreck }), [routes, shipwreck]);
   const calculation = useMemo(() => {
-    try { return { routes: optimizeVoyageRoutes(profile, maxStops), shipments: observedShipwreckShipments(profile), error: "" }; }
+    try { return { routes: optimizeVoyageRoutes(profile, maxStops, 5, voyage), shipments: observedShipwreckShipments(profile, voyage), error: "" }; }
     catch (error) { return { routes: [], shipments: [], error: error instanceof Error ? error.message : String(error) }; }
-  }, [profile, maxStops]);
+  }, [profile, maxStops, voyage]);
   const update = (patch: Partial<VoyageProfile>) => setProfile((old) => ({ ...old, ...patch }));
   const best = calculation.routes[0];
   const upgrades = best?.cities.map((city) => nextCityUpgrade(profile, city)).filter((item) => item !== null) ?? [];
@@ -53,6 +63,14 @@ export default function GrandVoyageSimulationPage() {
     <>
       <BackLink href="/simulations/" label={t.nav.simulations} />
       <PageHead eyebrow="Grand Voyage" title={s.title} lede={s.intro} />
+      {allows("guides.draft") ? (
+        <p className="tier-small">
+          <Link className="button" href="/simulations/grand-voyage/edit/">
+            <PenIcon className="icon icon-sm" />
+            {t.voyageEditor.openEditor}
+          </Link>
+        </p>
+      ) : null}
       <div className="voyage-sim-layout">
         <section className="surface voyage-sim-panel" aria-labelledby="voyage-profile-title">
           <h2 id="voyage-profile-title">{s.profile}</h2>

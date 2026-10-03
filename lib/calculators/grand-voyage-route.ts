@@ -3,16 +3,27 @@ import { CalculatorError } from "./errors.ts";
 
 export const MIN_ROUTE_CITIES = 2;
 export const MAX_ROUTE_CITIES = 6;
-export const ROUTE_CITIES = routeData.cities;
-export const ROUTE_ASSUMPTIONS = routeData.assumptions;
+export const ROUTE_DATA = routeData as RouteData;
+export const ROUTE_CITIES = ROUTE_DATA.cities;
+export const ROUTE_ASSUMPTIONS = ROUTE_DATA.assumptions;
+
+/** The shape both the built file and a published replacement have. */
+export type RouteData = {
+  source: string;
+  assumptions: string[];
+  cities: string[];
+  time_days: number[][];
+  profits: number[][];
+};
 
 export type RouteLeg = { origin: string; destination: string; travelHours: number; profit: number };
 
-export function calculateRoute(selectedCities: string[]) {
+/** `data` defaults to the built file; the page passes the published one. */
+export function calculateRoute(selectedCities: string[], data: RouteData = ROUTE_DATA) {
   if (selectedCities.length < MIN_ROUTE_CITIES || selectedCities.length > MAX_ROUTE_CITIES) throw new CalculatorError("routeCount", `Choose between ${MIN_ROUTE_CITIES} and ${MAX_ROUTE_CITIES} cities.`, { min: MIN_ROUTE_CITIES, max: MAX_ROUTE_CITIES });
   if (new Set(selectedCities).size !== selectedCities.length) throw new CalculatorError("routeDuplicate", "Each city can appear only once.");
   const indexes = selectedCities.map((city) => {
-    const index = ROUTE_CITIES.indexOf(city);
+    const index = data.cities.indexOf(city);
     if (index < 0) throw new CalculatorError("unknownCity", `Unknown city: ${city}`, { city });
     return index;
   });
@@ -22,8 +33,8 @@ export function calculateRoute(selectedCities: string[]) {
     const destinationIndex = completeIndexes[index + 1];
     return {
       origin: completeRoute[index], destination: completeRoute[index + 1],
-      travelHours: routeData.time_days[originIndex][destinationIndex] * 24,
-      profit: Math.trunc(routeData.profits[originIndex][destinationIndex]),
+      travelHours: data.time_days[originIndex][destinationIndex] * 24,
+      profit: Math.trunc(data.profits[originIndex][destinationIndex]),
     };
   });
   const totalTravelHours = legs.reduce((sum, leg) => sum + leg.travelHours, 0);

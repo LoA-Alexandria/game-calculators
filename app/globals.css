@@ -2477,6 +2477,20 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
 .guild-trade-set-pick { margin: 0; min-width: 200px; }
 .guild-trade-set-pick label { margin-bottom: 4px; }
 
+/* --- grand voyage editor -------------------------------------------------- */
+
+.gv-edit-pick { max-width: 320px; }
+.gv-edit-cities { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 8px 14px; margin: 12px 0; padding: 0; list-style: none; }
+.gv-edit-cities li { display: flex; align-items: center; gap: 8px; }
+.gv-edit-cities input { flex: 1; min-width: 0; }
+.gv-edit-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 4px 14px; }
+.gv-edit-cargo { display: grid; gap: 8px; margin: 10px 0 18px; padding: 0; list-style: none; }
+.gv-edit-cargo li { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 8px; }
+.gv-edit-paste textarea { font-family: var(--mono, ui-monospace, monospace); font-size: .8rem; }
+.gv-edit-table input { min-height: 38px; padding: 6px 9px; font-variant-numeric: tabular-nums; }
+.gv-edit-table input[aria-invalid] { border-color: var(--bad); }
+.gv-edit-table tr[data-self] th { color: var(--ink-faint); }
+
 /* --- lore editor ---------------------------------------------------------- */
 
 .lore-edit-roster + .lore-edit-roster { margin-top: 34px; }

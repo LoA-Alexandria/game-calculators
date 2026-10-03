@@ -1,5 +1,6 @@
 import routeData from "../data/grand-voyage-routes.json" with { type: "json" };
 import shipwreckData from "../data/grand-voyage-shipwreck-observation.json" with { type: "json" };
+import type { RouteData } from "./grand-voyage-route.ts";
 import { CITIES, CITY_GROUPS, UPGRADE_COSTS } from "./city-upgrades.ts";
 
 /** The old workbook is a reference scenario, not a price model for a player's ship. */
@@ -73,40 +74,50 @@ export function nextCityUpgrade(profile: VoyageProfile, cityName: string) {
   };
 }
 
-function routeFromIndexes(indexes: number[], timeCalibration: number): SimulatedRoute {
+/** What the two files hold, built or published. */
+export type VoyageData = { routes: RouteData; shipwreck: typeof shipwreckData };
+export const VOYAGE_DATA: VoyageData = { routes: routeData as RouteData, shipwreck: shipwreckData };
+
+function routeFromIndexes(indexes: number[], timeCalibration: number, data: RouteData): SimulatedRoute {
   const cycle = [...indexes, indexes[0]];
   const legs = cycle.slice(0, -1).map((fromIndex, index) => {
     const toIndex = cycle[index + 1];
     return {
-      from: routeData.cities[fromIndex],
-      to: routeData.cities[toIndex],
-      hours: routeData.time_days[fromIndex][toIndex] * 24 * timeCalibration,
-      referenceProfit: Math.trunc(routeData.profits[fromIndex][toIndex]),
+      from: data.cities[fromIndex],
+      to: data.cities[toIndex],
+      hours: data.time_days[fromIndex][toIndex] * 24 * timeCalibration,
+      referenceProfit: Math.trunc(data.profits[fromIndex][toIndex]),
     };
   });
   const hours = legs.reduce((sum, leg) => sum + leg.hours, 0);
   const referenceProfit = legs.reduce((sum, leg) => sum + leg.referenceProfit, 0);
-  return { cities: indexes.map((index) => routeData.cities[index]), legs, hours, referenceProfit, referencePerHour: referenceProfit / hours };
+  return { cities: indexes.map((index) => data.cities[index]), legs, hours, referenceProfit, referencePerHour: referenceProfit / hours };
 }
 
 /** Exhaustive search of all accessible two- and three-port cycles, not a preset build list. */
-export function optimizeVoyageRoutes(profile: VoyageProfile, maxStops: 2 | 3 = 3, limit = 5): SimulatedRoute[] {
+/** `data` defaults to the built files; the page passes what the site serves. */
+export function optimizeVoyageRoutes(
+  profile: VoyageProfile,
+  maxStops: 2 | 3 = 3,
+  limit = 5,
+  data: VoyageData = VOYAGE_DATA,
+): SimulatedRoute[] {
   requireProfile(profile);
   if (maxStops !== 2 && maxStops !== 3) throw new Error("Choose two or three ports.");
   if (!Number.isInteger(limit) || limit < 1 || limit > 20) throw new Error("Limit must be 1–20.");
   const regions = new Set(profile.unlockedRegions);
-  const available = routeData.cities.flatMap((name, index) => {
+  const available = data.routes.cities.flatMap((name, index) => {
     const city = VOYAGE_CITIES.find((entry) => entry.name === name);
     return city && regions.has(city.group) ? [index] : [];
   });
   const results: SimulatedRoute[] = [];
   for (let a = 0; a < available.length; a++) {
     for (let b = a + 1; b < available.length; b++) {
-      results.push(routeFromIndexes([available[a], available[b]], profile.timeCalibration));
+      results.push(routeFromIndexes([available[a], available[b]], profile.timeCalibration, data.routes));
       if (maxStops === 2) continue;
       for (let c = b + 1; c < available.length; c++) {
-        results.push(routeFromIndexes([available[a], available[b], available[c]], profile.timeCalibration));
-        results.push(routeFromIndexes([available[a], available[c], available[b]], profile.timeCalibration));
+        results.push(routeFromIndexes([available[a], available[b], available[c]], profile.timeCalibration, data.routes));
+        results.push(routeFromIndexes([available[a], available[c], available[b]], profile.timeCalibration, data.routes));
       }
     }
   }
@@ -114,20 +125,23 @@ export function optimizeVoyageRoutes(profile: VoyageProfile, maxStops: 2 | 3 = 3
 }
 
 /** One observed cargo, one-way only; no restocking or return cargo is implied. */
-export function observedShipwreckShipments(profile: VoyageProfile): ObservedShipment[] {
+export function observedShipwreckShipments(
+  profile: VoyageProfile,
+  data: VoyageData = VOYAGE_DATA,
+): ObservedShipment[] {
   requireProfile(profile);
   const regions = new Set(profile.unlockedRegions);
   if (!regions.has("North Atlantic Islands")) return [];
-  const fromIndex = routeData.cities.indexOf(shipwreckData.origin);
-  const cargo = shipwreckData.cargo;
+  const fromIndex = data.routes.cities.indexOf(data.shipwreck.origin);
+  const cargo = data.shipwreck.cargo;
   const buy = Object.entries(cargo).reduce((sum, [, item]) => sum + item.quantity * item.buy, 0);
-  return Object.entries(shipwreckData.salePrices).flatMap(([destination, prices]) => {
+  return Object.entries(data.shipwreck.salePrices).flatMap(([destination, prices]) => {
     const city = VOYAGE_CITIES.find((item) => item.name === destination);
-    const toIndex = routeData.cities.indexOf(destination);
+    const toIndex = data.routes.cities.indexOf(destination);
     if (!city || !regions.has(city.group) || toIndex < 0) return [];
     const sale = Object.entries(cargo).reduce((sum, [good, item]) => sum + item.quantity * (prices as Record<string, number>)[good], 0);
     const profit = sale - buy;
-    const hours = routeData.time_days[fromIndex][toIndex] * 24 * profile.timeCalibration;
+    const hours = data.routes.time_days[fromIndex][toIndex] * 24 * profile.timeCalibration;
     return [{ destination, profit, hours, profitPerHour: profit / hours }];
   }).sort((a, b) => b.profitPerHour - a.profitPerHour);
 }
