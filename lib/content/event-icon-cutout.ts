@@ -52,7 +52,7 @@ export function removeEventIconTile(
   const halfWidth = width * 0.46;
   const halfHeight = height * 0.46;
   const radius = scale * 0.15;
-  const frameWidth = scale * 0.035;
+  const frameWidth = scale * 0.05;
   for (let y = 0; y < height; y += 1) {
     for (let x = 0; x < width; x += 1) {
       const qx = Math.abs(x + 0.5 - width / 2) - (halfWidth - radius);
