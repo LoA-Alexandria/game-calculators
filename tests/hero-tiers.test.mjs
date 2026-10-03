@@ -213,6 +213,20 @@ test("every banner is there, at twice the size it is drawn", async () => {
   ]) check(toolTitleBanner(href), `tool ${href}`);
 });
 
+test("Hero Level Calculator card uses its supplied icon without a title banner", async () => {
+  const { readFileSync } = await import("node:fs");
+  const { toolIconUrl, toolTitleBanner } = await import("../lib/content/banners.ts");
+
+  const href = "/calculators/signet-rings/";
+  const icon = toolIconUrl(href);
+  assert.ok(icon?.endsWith("/tool-icons/signet-rings.webp"));
+  assert.equal(toolTitleBanner(href), null);
+
+  const file = readFileSync(new URL("../public/tool-icons/signet-rings.webp", import.meta.url));
+  assert.equal(file.toString("ascii", 0, 4), "RIFF");
+  assert.equal(file.toString("ascii", 8, 12), "WEBP");
+});
+
 test("a banner is cache-busted, so a redraw actually shows", async () => {
   const { guideTitleBanner } = await import("../lib/content/banners.ts");
   assert.match(guideTitleBanner("heroTierList").src, /\?v=/);

@@ -101,11 +101,19 @@ const TOOL_ART: Record<string, string> = {
   "/simulations/irrigation-planner/": "irrigation-planner",
 };
 
+/** Cards can have an icon before a matching title banner has been supplied. */
+const ADDITIONAL_TOOL_ICONS: Record<string, string> = {
+  "/calculators/signet-rings/": "signet-rings",
+};
+
 /** Trailing slash or not, a path finds its artwork. */
-function toolKey(href: string | null | undefined): string | null {
+function toolKey(
+  href: string | null | undefined,
+  artwork: Record<string, string> = TOOL_ART,
+): string | null {
   if (!href) return null;
   const path = href.endsWith("/") ? href : `${href}/`;
-  return TOOL_ART[path] ?? null;
+  return artwork[path] ?? null;
 }
 
 export function toolTitleBanner(href: string | null | undefined): TitleBanner | null {
@@ -114,7 +122,7 @@ export function toolTitleBanner(href: string | null | undefined): TitleBanner | 
 }
 
 export function toolIconUrl(href: string | null | undefined): string | null {
-  const name = toolKey(href);
+  const name = toolKey(href) ?? toolKey(href, ADDITIONAL_TOOL_ICONS);
   return name ? asset(`/tool-icons/${name}.webp`) : null;
 }
 
