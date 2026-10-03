@@ -4,6 +4,7 @@ import { eventWikiIconUrl } from "../../lib/content/event-guides";
 import { eventGuideHref, type EventGuideId } from "../../lib/content/event-guide-routes";
 import type { Dictionary } from "../../lib/i18n";
 import { useLocale } from "../components/LocaleProvider";
+import { useEventWiki } from "../events/useEventWiki";
 
 type Guide = Dictionary["guideEntries"]["eventOrderRotation"];
 type EventId = EventGuideId;
@@ -17,7 +18,7 @@ export function isEventOrderRotationGuide(
 function EventCard({ id, number }: { id: EventId; number?: number }) {
   const { t } = useLocale();
   const event = t.eventGuideEntries[id];
-  const image = eventWikiIconUrl(id);
+  const image = eventWikiIconUrl(id, useEventWiki());
   const href = eventGuideHref(id);
   const content = (
     <>

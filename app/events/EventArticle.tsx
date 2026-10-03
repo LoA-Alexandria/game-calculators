@@ -18,6 +18,7 @@ import { useDocumentTitle, useLocale } from "../components/LocaleProvider";
 import { TextGuideEditor } from "../components/TextGuideEditor";
 import { RichContentText } from "../components/RichContentText";
 import { BackLink } from "../components/Ui";
+import { useEventWiki } from "./useEventWiki";
 
 export type EventGuideId = keyof Dictionary["eventGuideEntries"];
 
@@ -53,8 +54,10 @@ export function EventArticle({ id }: { id: EventGuideId }) {
   // moment later, so an event page never waits on a database for its text.
   const published = useGuideEntry(entryKey("eventGuideEntries", id), t.eventGuideEntries[id]) as ShownGuide;
   const guide: ShownGuide = draft ? (textGuideEntry(draft, toLocale(locale)) as unknown as ShownGuide) : published;
-  const wiki = eventWiki(id);
-  const showWiki = eventWikiHasHelp(id);
+  // The build carries the help; a published correction lies over it a moment later.
+  const entries = useEventWiki();
+  const wiki = eventWiki(id, entries);
+  const showWiki = eventWikiHasHelp(id, entries);
   const banner = eventTitleBanner(id);
   useDocumentTitle(guide.title);
 
@@ -93,6 +96,10 @@ export function EventArticle({ id }: { id: EventGuideId }) {
                   <PenIcon className="icon icon-sm" />
                   {t.guides.edit}
                 </button>
+                <Link className="button" href="/events/help/edit/">
+                  <PenIcon className="icon icon-sm" />
+                  {t.eventWikiEditor.openEditor}
+                </Link>
               </span>
             </div>
           ) : null}
