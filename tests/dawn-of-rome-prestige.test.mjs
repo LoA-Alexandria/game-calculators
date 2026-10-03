@@ -27,6 +27,18 @@ describe("what kind of place a hex is", () => {
 });
 
 describe("prestige a minute", () => {
+  it("uses the rates reported on the Rome and Nile guild pages", () => {
+    assert.deepEqual(ROME_PRESTIGE_PER_MINUTE, {
+      home: 400,
+      large: 360,
+      rome: 1400,
+      gate: 400,
+      medium: 240,
+      small: 120,
+      plain: 6,
+    });
+  });
+
   it("pays an outpost once, not once per hex", () => {
     const tally = romePrestigeFor(hexesOf("home", 1), 1);
     assert.equal(tally.hexes, 4);
@@ -54,12 +66,11 @@ describe("prestige a minute", () => {
     );
   });
 
-  it("says so when a rate is still missing instead of counting it as nothing", () => {
-    assert.equal(ROME_PRESTIGE_PER_MINUTE.rome, null);
+  it("counts Rome/Alexandria at its reported rate", () => {
     const tally = romePrestigeFor(hexesOf("rome", 1), 1);
-    assert.equal(tally.incomplete, true);
-    assert.equal(tally.lines[0].total, null);
-    assert.equal(tally.perMinute, 0);
+    assert.equal(tally.incomplete, false);
+    assert.equal(tally.lines[0].total, 1400);
+    assert.equal(tally.perMinute, 1400);
   });
 
   it("ignores hexes another guild holds", () => {
@@ -88,7 +99,8 @@ describe("the board of guilds", () => {
     const board = romePrestigeBoard(painted);
     assert.deepEqual(board.map((tally) => tally.tone), [1, 3, 5]);
     assert.equal(board[0].perMinute, 400);
-    assert.equal(board[2].incomplete, true, "the round city has no rate yet");
+    assert.equal(board[2].perMinute, 240, "one medium city earns 240 per minute");
+    assert.equal(board[2].incomplete, false);
   });
 
   it("leaves out tones that hold nothing", () => {

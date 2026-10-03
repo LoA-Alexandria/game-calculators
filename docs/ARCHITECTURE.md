@@ -187,11 +187,14 @@ about who holds it. Each fill is one upsert and each wipe one delete, not a few
 hundred round trips.
 
 Territory pays prestige (`dawn-of-rome-prestige.ts`): open land by the hex, a
-structure once for the whole place. Only the outpost (400/min) and the walled
-city (360/min) have known rates so far; the rest are `null`, which the board
-shows as `+?` rather than counting as zero. Rome therefore has no day tabs, no
-score fields and no call line (`scoreboard: false`), and its board stays on day
-1 — its scoreboard is the prestige table under the map.
+structure once for the whole place. The rates are 6/min per open hex, 120/min
+per small city, 240/min per medium city, 360/min per large city, 400/min per
+home base or gate/pass, and 1,400/min for Rome/Alexandria. The site owner
+transcribed these values from the in-game Rome and Nile guild pages on
+2026-10-03; unconfirmed future place types remain `null` and appear as `+?`
+rather than counting as zero. Rome therefore has no day tabs, no score fields
+and no call line (`scoreboard: false`), and its board stays on day 1 — its
+scoreboard is the prestige table under the map.
 
 Officers turn events on and off from a dialog that the board's own header opens.
 Ending an event calls `end_guild_event`, which deletes its villages, stock, day
