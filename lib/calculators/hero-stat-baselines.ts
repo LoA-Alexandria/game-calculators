@@ -12,15 +12,25 @@ export type HeldStatObservation = {
   dataQuality?: "needs-confirmation";
 };
 
+export type HeroStarRarity = "UR+" | "UR" | "SSR" | "SR" | "R";
+
 const REFERENCE_LEVEL_ONE_ANG = 616;
 export const MAX_HELD_LEVEL = 500;
-export const MAX_HERO_STAR_COUNT = 40;
+export const MAX_HERO_STAR_LEVEL = 13;
 
-/** Star ANG bonuses are intentionally empty until their fixed values are supplied. */
-export const HELD_STAR_ANG_BONUS_PERCENTAGES: readonly (number | null)[] = Object.freeze([
-  0,
-  ...Array<number | null>(MAX_HERO_STAR_COUNT).fill(null),
-]);
+/** Fixed bonus added by each star level; LP and ANG use the same percentage. */
+export const HELD_STAR_BONUS_PER_LEVEL: Readonly<Record<HeroStarRarity, number>> = Object.freeze({
+  "UR+": 15,
+  UR: 15,
+  SSR: 12,
+  SR: 8,
+  R: 5,
+});
+
+export function maxHeroStarLevelAtLevel(heroLevel: number): number {
+  if (!Number.isInteger(heroLevel) || heroLevel < 1 || heroLevel > MAX_HELD_LEVEL) return 0;
+  return Math.min(MAX_HERO_STAR_LEVEL, Math.floor(heroLevel / 5));
+}
 
 /**
  * Observed universal held-ANG additions. The level-300 value is currently
@@ -83,16 +93,23 @@ export function estimatedHeldLpLevelOne(observation: HeldStatObservation): numbe
   return Math.round((lpBeforeBonuses * REFERENCE_LEVEL_ONE_ANG) / baseAtLevel);
 }
 
-export function heldStarAngBonusPercent(starCount: number): number | null {
-  if (!Number.isInteger(starCount) || starCount < 0 || starCount > MAX_HERO_STAR_COUNT) return null;
-  return HELD_STAR_ANG_BONUS_PERCENTAGES[starCount] ?? null;
+export function heldStarBonusPercent(starLevel: number, rarity: HeroStarRarity): number | null {
+  if (!Number.isInteger(starLevel) || starLevel < 0 || starLevel > MAX_HERO_STAR_LEVEL) return null;
+  return starLevel * HELD_STAR_BONUS_PER_LEVEL[rarity];
 }
 
-export function heldAngAfterStarBonus(levelAng: number | null, starCount: number): number | null {
+export function heldAngAfterStarBonus(levelAng: number | null, starLevel: number, rarity: HeroStarRarity): number | null {
   if (levelAng == null) return null;
-  const bonusPercent = heldStarAngBonusPercent(starCount);
+  const bonusPercent = heldStarBonusPercent(starLevel, rarity);
   if (bonusPercent == null) return null;
   return Math.round(levelAng * (1 + bonusPercent / 100));
+}
+
+export function heldLpAfterStarBonus(levelLp: number | null, starLevel: number, rarity: HeroStarRarity): number | null {
+  if (levelLp == null) return null;
+  const bonusPercent = heldStarBonusPercent(starLevel, rarity);
+  if (bonusPercent == null) return null;
+  return Math.round(levelLp * (1 + bonusPercent / 100));
 }
 
 /** Scales chat-derived level-one ANG and LP to the requested level. */

@@ -15,12 +15,13 @@ import { guideHref, guideLayout } from "../../lib/content/guides";
 import { heroAppearances } from "../../lib/content/hero-links";
 import {
   heldAngAfterStarBonus,
+  heldLpAfterStarBonus,
   heldStatsAtLevel,
-  heldStarAngBonusPercent,
+  heldStarBonusPercent,
   heroBasicStatsForHero,
   HELD_ANG_MILESTONES,
+  maxHeroStarLevelAtLevel,
   MAX_HELD_LEVEL,
-  MAX_HERO_STAR_COUNT,
 } from "../../lib/calculators/hero-stat-baselines";
 import { placementCaption } from "../../lib/content/hero-tiers";
 import { layoutTexts, type BuildZone } from "../../lib/content/hero-layouts";
@@ -531,7 +532,7 @@ function HeroDetail({
   const collectionTexts = t.guideEntries.collection.collectionTexts as CollectionTexts;
   const [shown, setShown] = useState(0);
   const [basicLevelInput, setBasicLevelInput] = useState("1");
-  const [basicStarInput, setBasicStarInput] = useState("0");
+  const [basicStarLevelInput, setBasicStarLevelInput] = useState("0");
   const [currentAscensionApplied, setCurrentAscensionApplied] = useState(false);
   // Name, rarity, and pictures are shared; the game text comes from the dictionary + lore.
   // Exclusive collection names come from the Collection guide, not from heroTexts.
@@ -541,14 +542,16 @@ function HeroDetail({
   const found = heroAppearances(hero.name);
   const basicStats = heroBasicStatsForHero(hero.id);
   const basicLevel = Number(basicLevelInput);
-  const basicStars = Number(basicStarInput);
+  const basicStarLevel = Number(basicStarLevelInput);
   const validBasicLevel = Number.isInteger(basicLevel) && basicLevel >= 1 && basicLevel <= MAX_HELD_LEVEL;
-  const validBasicStars = Number.isInteger(basicStars) && basicStars >= 0 && basicStars <= MAX_HERO_STAR_COUNT;
+  const maxBasicStarLevel = validBasicLevel ? maxHeroStarLevelAtLevel(basicLevel) : 0;
+  const validBasicStarLevel = Number.isInteger(basicStarLevel) && basicStarLevel >= 0 && basicStarLevel <= maxBasicStarLevel;
   const levelStats = basicStats && validBasicLevel
     ? heldStatsAtLevel(basicStats, basicLevel, currentAscensionApplied ? "after-ascension" : "normal")
     : { heldAng: null, heldLp: null };
-  const starBonusPercent = validBasicStars ? heldStarAngBonusPercent(basicStars) : null;
-  const starAdjustedAng = validBasicStars ? heldAngAfterStarBonus(levelStats.heldAng, basicStars) : null;
+  const starBonusPercent = validBasicStarLevel ? heldStarBonusPercent(basicStarLevel, hero.rarity) : null;
+  const starAdjustedAng = validBasicStarLevel ? heldAngAfterStarBonus(levelStats.heldAng, basicStarLevel, hero.rarity) : null;
+  const starAdjustedLp = validBasicStarLevel ? heldLpAfterStarBonus(levelStats.heldLp, basicStarLevel, hero.rarity) : null;
   const currentLevelHasMilestone = validBasicLevel && HELD_ANG_MILESTONES.some((milestone) => milestone.level === basicLevel);
   const layouts = layoutTexts(t.guideEntries.heroLayouts);
   const layoutGuide = t.guideEntries.heroLayouts;
@@ -687,14 +690,15 @@ function HeroDetail({
               <input
                 type="number"
                 min={0}
-                max={MAX_HERO_STAR_COUNT}
+                max={maxBasicStarLevel}
                 step={1}
-                value={basicStarInput}
-                onChange={(event) => setBasicStarInput(event.target.value)}
+                value={basicStarLevelInput}
+                onChange={(event) => setBasicStarLevelInput(event.target.value)}
               />
             </label>
           </div>
           <p className="hero-basic-note" id={`${nameId}-basic-level-note`}>{guide.basicLevelNote}</p>
+          <p className="hero-basic-note">{guide.basicStarsNote}</p>
           {currentLevelHasMilestone ? (
             <label className="hero-basic-ascension">
               <input
@@ -729,6 +733,10 @@ function HeroDetail({
             <div>
               <dt>{guide.basicAngAfterStars}</dt>
               <dd>{starAdjustedAng == null ? "—" : `${basicStats?.heldAngEstimated ? "≈ " : ""}${n(starAdjustedAng)}`}</dd>
+            </div>
+            <div>
+              <dt>{guide.basicLpAfterStars}</dt>
+              <dd>{starAdjustedLp == null ? "—" : `${basicStats?.heldLpEstimated ? "≈ " : ""}${n(starAdjustedLp)}`}</dd>
             </div>
           </dl>
           <p className="hero-basic-formula">{guide.basicStarFormula}</p>

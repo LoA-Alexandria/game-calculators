@@ -1318,15 +1318,17 @@ const fr: Dictionary = {
       basicHeroAng: "ATQ de base du héros · niv. 1",
       basicLp: "PV de base du héros · niv. 1",
       basicLevelLabel: "Niveau à calculer",
-      basicStarsLabel: "Nombre d’étoiles",
+      basicStarsLabel: "Niveau d’étoile",
       basicLevelNote: "Saisissez un niveau entier de 1 à 500. Les bonus d’ascension précédents connus sont inclus ; activez le bonus du palier actuel après l’ascension.",
+      basicStarsNote: "Chaque niveau d’étoile correspond à 5 niveaux de héros. Bonus indiqué par niveau d’étoile : UR+/UR 15 %, SSR 12 %, SR 8 %, R 5 %.",
       basicAscensionApplied: "Ascension de ce niveau terminée",
       basicAngAtLevel: "ATQ héros · niv. {level}",
       basicLpAtLevel: "PV héros · niv. {level}",
-      basicStarBonus: "Bonus d’ATQ des étoiles",
-      basicStarBonusMissing: "Pas encore défini",
+      basicStarBonus: "Bonus d’étoile · ATQ et PV",
+      basicStarBonusMissing: "Niveau d’étoile invalide",
       basicAngAfterStars: "ATQ après les étoiles",
-      basicStarFormula: "ATQ après étoiles = ATQ au niveau choisi × (1 + bonus fixe du nombre d’étoiles). Les pourcentages restent provisoires jusqu’à réception des valeurs.",
+      basicLpAfterStars: "PV après les étoiles",
+      basicStarFormula: "ATQ et PV après étoiles = valeur au niveau choisi × (1 + niveau d’étoile × bonus de rareté par étoile). Le même bonus s’applique aux deux valeurs.",
       // Textes de jeu traduits par héros, indexés par l'id de lib/data/heroes.json.
       heroTexts: {
         hermes: {

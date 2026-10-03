@@ -45,12 +45,14 @@ at the exact milestone level, a checkbox controls whether that level's
 ascension has been completed. Values derived from estimated level-one stats
 remain marked with `≈`.
 
-The star selector accepts 0 to 40 stars. The fixed ANG bonus percentages have
-not yet been supplied, so only zero stars calculate (0% bonus); other star
-counts show the star bonus as not set and leave the post-star ANG blank. Once
-the percentages are known, the calculation is `ANG at selected level × (1 +
-fixed bonus for selected stars)`, rounded to a whole point. Stars do not change
-the displayed LP estimate.
+The star-level selector accepts 0 to 13 levels; each star level represents five
+hero levels. Each star level adds a fixed rarity-based bonus to both ANG and LP:
+UR+/UR 15%, SSR 12%, SR 8%, and R 5%. The total bonus is the selected star level
+multiplied by the hero's per-level rarity bonus. Both selected-level stats are
+multiplied by `1 + total bonus` and rounded to a whole point.
+The maximum selectable star level is `floor(hero level / 5)`, capped at 13.
+These user-reported rates and the five-level progression were supplied on
+3 October 2026 and remain provisional until confirmed in game.
 
 LP has its own per-hero level-one base, but uses the same level-growth
 multiplier as the existing integer ANG reference curve. This is a fitted
