@@ -96,12 +96,38 @@ test("roster covers every wiki rarity and names the screenshot fills", () => {
   assert.equal(HEROES.some((hero) => JSON.stringify(hero).includes("Data pending")), false);
 
   const filled = HEROES.filter((hero) => hero.skill && hero.buff && hero.production);
-  assert.equal(filled.length, 39);
+  assert.equal(filled.length, 47);
   for (const hero of filled) {
     assert.equal(hero.skill?.levels.length, 9, `${hero.name} skill table`);
     assert.equal(hero.buff?.levels.length, 9, `${hero.name} buff table`);
     assert.equal(hero.production?.levels.length, 25, `${hero.name} production table`);
   }
+
+  const octoberScreenshots = [
+    "michelangelo", "livia-drusilla", "nikola-tesla", "columbus", "franklin",
+    "louis-xiv", "beethoven", "charles-darwin", "noah", "prometheus", "homer",
+    "adam", "wallace", "hatshepsut", "hypatia", "hannibal", "mary-i", "saladin",
+    "catherine-de-medici", "isabella-i", "thomas-edison", "victor-hugo", "james-watt",
+    "drake", "andersen", "elizabeth-i", "marco-polo", "dido", "cu-chulainn",
+    "archimedes", "himiko", "cervantes", "chaucer", "robin-hood", "alexander-hamilton",
+    "anne-bonny", "mary-shelley", "florence-nightingale",
+  ];
+  for (const id of octoberScreenshots) {
+    const hero = HEROES.find((entry) => entry.id === id);
+    assert.ok(hero?.skill?.levels.every(Boolean), `${id} skill values`);
+    assert.equal(hero?.skill?.levels.length, 9, `${id} screenshot skill levels`);
+    assert.equal(hero?.production?.levels.length, 25, `${id} production levels`);
+    if (hero?.rarity === "SSR") assert.equal(hero.buff?.levels.length, 9, `${id} buff levels`);
+    else assert.equal(hero?.buff, undefined, `${id} has no buff panel at this rarity`);
+  }
+  for (const id of ["joan-of-arc", "guan-yu", "lu-bu", "miyamoto-musashi", "yi-sun-sin"]) {
+    const hero = HEROES.find((entry) => entry.id === id);
+    assert.ok(hero, `${id} remains in the encyclopedia roster`);
+    assert.equal(hero.skill, undefined, `${id} remains without unprovided skill data`);
+  }
+  assert.match(HEROES.find((hero) => hero.id === "michelangelo")?.skill?.levels[0] ?? "", /160%.*10%/);
+  assert.match(HEROES.find((hero) => hero.id === "michelangelo")?.skill?.levels[8] ?? "", /240%.*14\.8%/);
+  assert.equal(HEROES.find((hero) => hero.id === "alexander-hamilton")?.production?.levels[0], "Assign to the Steel Plant for Resource Productivity +10%.");
 
   const merlin = HEROES.find((hero) => hero.id === "merlin");
   assert.equal(merlin?.skill?.name, "Ice Dragon's Breath");
@@ -261,11 +287,11 @@ test("every published dictionary keys its hero texts to a hero in the roster", a
   }
   assert.deepEqual(getDictionary("en").guideEntries.heroes.heroTexts, {}, "English is the roster JSON itself");
   const de = getDictionary("de").guideEntries.heroes.heroTexts;
-  assert.equal(Object.keys(de).length, 39);
+  assert.equal(Object.keys(de).length, 77);
   assert.equal(de.merlin?.skill?.name, "Eisiger Drachenatem");
   assert.match(de.merlin?.skill?.levels[0] ?? "", /Schildbruch/);
   const fr = getDictionary("fr").guideEntries.heroes.heroTexts;
-  assert.equal(Object.keys(fr).length, 39, "French covers every hero with ability text");
+  assert.equal(Object.keys(fr).length, 77, "French covers every hero with ability data");
   assert.equal(fr.merlin?.skill?.name, "Souffle du dragon de glace");
   assert.match(fr.merlin?.skill?.levels[0] ?? "", /Brise-bouclier/);
 });
@@ -289,6 +315,38 @@ test("every French ability level carries exactly the numbers of the English one"
     }
   }
   assert.ok(checked > 1500, `${checked} levels`);
+});
+
+test("October hero ability translations preserve every source value in German and French", async () => {
+  const { getDictionary } = await import("../lib/i18n/index.ts");
+  const ids = [
+    "michelangelo", "livia-drusilla", "nikola-tesla", "columbus", "franklin",
+    "louis-xiv", "beethoven", "charles-darwin", "noah", "prometheus", "homer",
+    "adam", "wallace", "hatshepsut", "hypatia", "hannibal", "mary-i", "saladin",
+    "catherine-de-medici", "isabella-i", "thomas-edison", "victor-hugo", "james-watt",
+    "drake", "andersen", "elizabeth-i", "marco-polo", "dido", "cu-chulainn",
+    "archimedes", "himiko", "cervantes", "chaucer", "robin-hood",
+    "alexander-hamilton", "anne-bonny", "mary-shelley", "florence-nightingale",
+  ];
+  const numbers = (text) => (text.match(/\d+(?:[.,]\d+)?/g) ?? [])
+    .map((value) => value.replace(",", "."))
+    .sort((a, b) => Number(a) - Number(b));
+
+  for (const locale of ["de", "fr"]) {
+    const texts = getDictionary(locale).guideEntries.heroes.heroTexts;
+    for (const id of ids) {
+      const hero = HEROES.find((entry) => entry.id === id);
+      for (const kind of ["skill", "buff", "production"]) {
+        const source = hero?.[kind];
+        if (!source) continue;
+        const translated = texts[id]?.[kind];
+        assert.equal(translated?.levels?.length, source.levels.length, `${locale} ${id} ${kind} level count`);
+        source.levels.forEach((level, index) => {
+          assert.deepEqual(numbers(translated.levels[index]), numbers(level), `${locale} ${id} ${kind} Lv. ${index + 1}`);
+        });
+      }
+    }
+  }
 });
 
 test("new Billy and Morgana tables have translated screenshot values in every language", async () => {
