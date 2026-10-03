@@ -1,0 +1,3103 @@
+{
+  "schemaVersion": 1,
+  "updated": "2026-10-03",
+  "sources": [
+    {
+      "id": "combat-base-attack",
+      "title": "Pop Epoch Calculator 9.29 (1).xlsx",
+      "sheet": "Base Attack",
+      "range": "B3:F75",
+      "fileModified": "2026-10-01",
+      "effectiveGameVersion": "not stated",
+      "notes": "The workbook labels these as the very base hero value without personal bonuses. Values are recorded at green star 1. Workbook labels were mapped to the site roster only where the identity was clear; Anderson/Andersen is left unresolved."
+    },
+    {
+      "id": "hero-level-screenshots",
+      "title": "User-provided HeroSkale screenshots",
+      "captured": "2026-10-03",
+      "notes": "Guan Yu stat-panel Held contributions transcribed from the image sequence. Original images are not copied into the repository."
+    },
+    {
+      "id": "user-level-values",
+      "title": "User-provided hero level readings",
+      "captured": "2026-10-03",
+      "notes": "Guan Yu levels 23-53, Lü Bu levels 1/10/15, and Miyamoto Musashi level 1. K-suffixed display values are approximate because the game rounds them."
+    },
+    {
+      "id": "hero-level-batch-2026-10-03",
+      "title": "User-provided hero panel readings in conversation",
+      "captured": "2026-10-03",
+      "notes": "Held ANG and LP values transcribed from the supplied level, ascension, and panel readings. K/M display values are approximate. Ascension state is preserved as stated; levels above a known cap imply the prior ascension. The 77.98K ANG / 853.1K LP Guan Yu reading is level 151, as confirmed by the user."
+    }
+  ],
+  "model": {
+    "id": "held-ang-integer-increment-reference-v2",
+    "status": "experimental-reference-only",
+    "referenceHeroId": "guan-yu",
+    "metric": "heldAng",
+    "fit": "base ANG starts at 616; each level step k adds floor((985 + 114*k)/20)",
+    "fitLevels": [
+      1,
+      53
+    ],
+    "excludedLevels": [
+      43
+    ],
+    "excludedLevelNotes": {
+      "43": "Reported 8313 is an outlier; 8213 would fit the curve, but the corrected value is unconfirmed. Raw observation remains 8313."
+    },
+    "milestoneBonuses": {
+      "enlightenment": {
+        "level": 20,
+        "heldAng": 400,
+        "heldLp": 4000
+      },
+      "ascensions": [
+        {
+          "level": 50,
+          "heldAng": 1600,
+          "heldLp": 16000
+        },
+        {
+          "level": 100,
+          "heldAng": 1500,
+          "heldLp": 15000
+        },
+        {
+          "level": 150,
+          "heldAng": 1920,
+          "heldLp": 19200
+        },
+        {
+          "level": 200,
+          "heldAng": 2400,
+          "heldLp": 20000
+        },
+        {
+          "level": 300,
+          "heldAng": 9000,
+          "heldLp": 90000
+        }
+      ],
+      "nextKnownMilestoneLevel": 500
+    },
+    "crossHeroScaleHypothesis": "Estimated hero level-1 held ANG = (observed held ANG minus known milestone bonuses) × 616 / reference held ANG at the observed level. This assumes the reference level-growth curve scales proportionally across heroes; this remains experimental. The level-300 bonus is currently transcribed from Queen Victoria and assumed universal for estimates.",
+    "rounding": "The level increments use integer division and return whole ANG values. User K/M readings are approximate; the model is fitted to rounded observations and is not the confirmed game formula."
+  },
+  "heroes": [
+    {
+      "id": "hermes",
+      "name": "Hermes",
+      "rarity": "UR+",
+      "troop": "Shieldman",
+      "combatBaseAttack": {
+        "value": 142100,
+        "unit": "game points",
+        "sourceRow": 43,
+        "sourceName": "Hermes",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "merlin",
+      "name": "Merlin",
+      "rarity": "UR+",
+      "troop": "Cavalry",
+      "combatBaseAttack": {
+        "value": null,
+        "unit": "game points",
+        "sourceRow": null,
+        "sourceName": null,
+        "starColor": null,
+        "star": null,
+        "status": "not-listed-in-source"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "heracles",
+      "name": "Heracles",
+      "rarity": "UR+",
+      "troop": "Shieldman",
+      "combatBaseAttack": {
+        "value": null,
+        "unit": "game points",
+        "sourceRow": 42,
+        "sourceName": "Heracles",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-blank"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "circe",
+      "name": "Circe",
+      "rarity": "UR+",
+      "troop": "Shieldman",
+      "combatBaseAttack": {
+        "value": null,
+        "unit": "game points",
+        "sourceRow": null,
+        "sourceName": null,
+        "starColor": null,
+        "star": null,
+        "status": "not-listed-in-source"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "lancelot",
+      "name": "Lancelot",
+      "rarity": "UR+",
+      "troop": "Shieldman",
+      "combatBaseAttack": {
+        "value": 307100,
+        "unit": "game points",
+        "sourceRow": 50,
+        "sourceName": "Lancelot",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "king-arthur",
+      "name": "King Arthur",
+      "rarity": "UR+",
+      "troop": "Archer",
+      "combatBaseAttack": {
+        "value": 145400,
+        "unit": "game points",
+        "sourceRow": 12,
+        "sourceName": "Arthur",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "odysseus",
+      "name": "Odysseus",
+      "rarity": "UR+",
+      "troop": "Cavalry",
+      "combatBaseAttack": {
+        "value": 144500,
+        "unit": "game points",
+        "sourceRow": 60,
+        "sourceName": "Odysseus",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "bjorn-ironside",
+      "name": "Bjorn Ironside",
+      "rarity": "UR+",
+      "troop": "Pikeman",
+      "combatBaseAttack": {
+        "value": null,
+        "unit": "game points",
+        "sourceRow": null,
+        "sourceName": null,
+        "starColor": null,
+        "star": null,
+        "status": "not-listed-in-source"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "ragnar-lodbrok",
+      "name": "Ragnar Lodbrok",
+      "rarity": "UR+",
+      "troop": "Shieldman",
+      "combatBaseAttack": {
+        "value": 150100,
+        "unit": "game points",
+        "sourceRow": 63,
+        "sourceName": "Ragnar",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "lagertha",
+      "name": "Lagertha",
+      "rarity": "UR+",
+      "troop": "Pikeman",
+      "combatBaseAttack": {
+        "value": null,
+        "unit": "game points",
+        "sourceRow": null,
+        "sourceName": null,
+        "starColor": null,
+        "star": null,
+        "status": "not-listed-in-source"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "pompey",
+      "name": "Pompey",
+      "rarity": "UR+",
+      "troop": "Cavalry",
+      "combatBaseAttack": {
+        "value": 111700,
+        "unit": "game points",
+        "sourceRow": 61,
+        "sourceName": "Pompey",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "spartacus",
+      "name": "Spartacus",
+      "rarity": "UR+",
+      "troop": "Shieldman",
+      "combatBaseAttack": {
+        "value": 137200,
+        "unit": "game points",
+        "sourceRow": 69,
+        "sourceName": "Spartacus",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "caesar",
+      "name": "Caesar",
+      "rarity": "UR+",
+      "troop": "Archer",
+      "combatBaseAttack": {
+        "value": 130700,
+        "unit": "game points",
+        "sourceRow": 17,
+        "sourceName": "Caesar",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "cleopatra",
+      "name": "Cleopatra",
+      "rarity": "UR+",
+      "troop": "Pikeman",
+      "combatBaseAttack": {
+        "value": null,
+        "unit": "game points",
+        "sourceRow": null,
+        "sourceName": null,
+        "starColor": null,
+        "star": null,
+        "status": "not-listed-in-source"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "billy-the-kid",
+      "name": "Billy the Kid",
+      "rarity": "UR+",
+      "troop": "Cavalry",
+      "combatBaseAttack": {
+        "value": 82170,
+        "unit": "game points",
+        "sourceRow": 15,
+        "sourceName": "Billy the Kid",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "morgana",
+      "name": "Morgana",
+      "rarity": "UR",
+      "troop": "Archer",
+      "combatBaseAttack": {
+        "value": null,
+        "unit": "game points",
+        "sourceRow": null,
+        "sourceName": null,
+        "starColor": null,
+        "star": null,
+        "status": "not-listed-in-source"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "guinevere",
+      "name": "Guinevere",
+      "rarity": "UR",
+      "troop": "Cavalry",
+      "combatBaseAttack": {
+        "value": null,
+        "unit": "game points",
+        "sourceRow": 37,
+        "sourceName": "Guinevere",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-blank"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "garwain",
+      "name": "Gawain",
+      "rarity": "UR",
+      "troop": "Pikeman",
+      "combatBaseAttack": {
+        "value": 99590,
+        "unit": "game points",
+        "sourceRow": 35,
+        "sourceName": "Gawain",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "queen-victoria",
+      "name": "Queen Victoria",
+      "rarity": "UR",
+      "troop": "Cavalry",
+      "combatBaseAttack": {
+        "value": 142500,
+        "unit": "game points",
+        "sourceRow": 74,
+        "sourceName": "Victoria",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "napoleon-bonaparte",
+      "name": "Napoleon Bonaparte",
+      "rarity": "UR",
+      "troop": "Pikeman",
+      "combatBaseAttack": {
+        "value": 130900,
+        "unit": "game points",
+        "sourceRow": 57,
+        "sourceName": "Napoleon",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "isaac-newton",
+      "name": "Isaac Newton",
+      "rarity": "UR",
+      "troop": "Shieldman",
+      "combatBaseAttack": {
+        "value": 123800,
+        "unit": "game points",
+        "sourceRow": 58,
+        "sourceName": "Newton",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "blackbeard",
+      "name": "Blackbeard",
+      "rarity": "UR",
+      "troop": "Archer",
+      "combatBaseAttack": {
+        "value": 144600,
+        "unit": "game points",
+        "sourceRow": 16,
+        "sourceName": "Blackbeard",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "charles-the-great",
+      "name": "Charles the Great",
+      "rarity": "UR",
+      "troop": "Archer",
+      "combatBaseAttack": {
+        "value": 142100,
+        "unit": "game points",
+        "sourceRow": 20,
+        "sourceName": "Charlemagne",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "achilles",
+      "name": "Achilles",
+      "rarity": "UR",
+      "troop": "Pikeman",
+      "combatBaseAttack": {
+        "value": 138400,
+        "unit": "game points",
+        "sourceRow": 4,
+        "sourceName": "Achilles",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "william-shakespeare",
+      "name": "William Shakespeare",
+      "rarity": "UR",
+      "troop": "Pikeman",
+      "combatBaseAttack": {
+        "value": 146800,
+        "unit": "game points",
+        "sourceRow": 67,
+        "sourceName": "Shakespeare",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "tutankhamun",
+      "name": "Tutankhamun",
+      "rarity": "UR",
+      "troop": "Archer",
+      "combatBaseAttack": {
+        "value": 157700,
+        "unit": "game points",
+        "sourceRow": 72,
+        "sourceName": "Tutankhamun",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "da-vinci",
+      "name": "Da Vinci",
+      "rarity": "UR",
+      "troop": "Shieldman",
+      "combatBaseAttack": {
+        "value": 141600,
+        "unit": "game points",
+        "sourceRow": 26,
+        "sourceName": "Da Vinci",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "richard-i",
+      "name": "Richard I",
+      "rarity": "UR",
+      "troop": "Cavalry",
+      "combatBaseAttack": {
+        "value": 129800,
+        "unit": "game points",
+        "sourceRow": 64,
+        "sourceName": "Richard",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "alexander-the-great",
+      "name": "Alexander the Great",
+      "rarity": "UR",
+      "troop": "Cavalry",
+      "combatBaseAttack": {
+        "value": 127300,
+        "unit": "game points",
+        "sourceRow": 6,
+        "sourceName": "Alexander",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "augustus",
+      "name": "Augustus",
+      "rarity": "UR",
+      "troop": "Shieldman",
+      "combatBaseAttack": {
+        "value": 142800,
+        "unit": "game points",
+        "sourceRow": 13,
+        "sourceName": "Augustus",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "guan-yu",
+      "name": "Guan Yu",
+      "rarity": "UR",
+      "troop": "Pikeman",
+      "combatBaseAttack": {
+        "value": null,
+        "unit": "game points",
+        "sourceRow": null,
+        "sourceName": null,
+        "starColor": null,
+        "star": null,
+        "status": "not-listed-in-source"
+      },
+      "heldStatStart": {
+        "ang": 616,
+        "lp": 6791,
+        "unit": "held contribution points",
+        "source": "user-supplied HeroSkale screenshots"
+      },
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "reference-fit"
+    },
+    {
+      "id": "lu-bu",
+      "name": "Lü Bu",
+      "rarity": "UR",
+      "troop": "Cavalry",
+      "combatBaseAttack": {
+        "value": null,
+        "unit": "game points",
+        "sourceRow": null,
+        "sourceName": null,
+        "starColor": null,
+        "star": null,
+        "status": "not-listed-in-source"
+      },
+      "heldStatStart": {
+        "ang": 587,
+        "lp": null,
+        "unit": "held contribution points",
+        "source": "user-supplied HeroSkale screenshots"
+      },
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "miyamoto-musashi",
+      "name": "Miyamoto Musashi",
+      "rarity": "UR",
+      "troop": "Archer",
+      "combatBaseAttack": {
+        "value": null,
+        "unit": "game points",
+        "sourceRow": null,
+        "sourceName": null,
+        "starColor": null,
+        "star": null,
+        "status": "not-listed-in-source"
+      },
+      "heldStatStart": {
+        "ang": 652,
+        "lp": null,
+        "unit": "held contribution points",
+        "source": "user-supplied HeroSkale screenshots"
+      },
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "start-only"
+    },
+    {
+      "id": "yi-sun-sin",
+      "name": "Yi Sun-sin",
+      "rarity": "UR",
+      "troop": "Shieldman",
+      "combatBaseAttack": {
+        "value": null,
+        "unit": "game points",
+        "sourceRow": null,
+        "sourceName": null,
+        "starColor": null,
+        "star": null,
+        "status": "not-listed-in-source"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "no-observations"
+    },
+    {
+      "id": "beethoven",
+      "name": "Beethoven",
+      "rarity": "SSR",
+      "troop": "Cavalry",
+      "combatBaseAttack": {
+        "value": 68810,
+        "unit": "game points",
+        "sourceRow": 14,
+        "sourceName": "Beethoven",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "charles-darwin",
+      "name": "Charles Darwin",
+      "rarity": "SSR",
+      "troop": "Archer",
+      "combatBaseAttack": {
+        "value": 78870,
+        "unit": "game points",
+        "sourceRow": 21,
+        "sourceName": "Charles Darwin",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "nikola-tesla",
+      "name": "Nikola Tesla",
+      "rarity": "SSR",
+      "troop": "Pikeman",
+      "combatBaseAttack": {
+        "value": 89420,
+        "unit": "game points",
+        "sourceRow": 70,
+        "sourceName": "Tesla",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "franklin",
+      "name": "Franklin",
+      "rarity": "SSR",
+      "troop": "Shieldman",
+      "combatBaseAttack": {
+        "value": 68150,
+        "unit": "game points",
+        "sourceRow": 33,
+        "sourceName": "Franklin",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "louis-xiv",
+      "name": "Louis XIV",
+      "rarity": "SSR",
+      "troop": "Pikeman",
+      "combatBaseAttack": {
+        "value": 90390,
+        "unit": "game points",
+        "sourceRow": 52,
+        "sourceName": "Louis XIV",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "columbus",
+      "name": "Columbus",
+      "rarity": "SSR",
+      "troop": "Shieldman",
+      "combatBaseAttack": {
+        "value": 49360,
+        "unit": "game points",
+        "sourceRow": 23,
+        "sourceName": "Columbus",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "alfred-the-great",
+      "name": "Alfred the Great",
+      "rarity": "SSR",
+      "troop": "Cavalry",
+      "combatBaseAttack": {
+        "value": 97830,
+        "unit": "game points",
+        "sourceRow": 8,
+        "sourceName": "Alfred",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "galileo-galilei",
+      "name": "Galileo Galilei",
+      "rarity": "SSR",
+      "troop": "Shieldman",
+      "combatBaseAttack": {
+        "value": 96490,
+        "unit": "game points",
+        "sourceRow": 34,
+        "sourceName": "Galileo",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "eleanor-of-aquitaine",
+      "name": "Eleanor of Aquitaine",
+      "rarity": "SSR",
+      "troop": "Archer",
+      "combatBaseAttack": {
+        "value": 83860,
+        "unit": "game points",
+        "sourceRow": 30,
+        "sourceName": "Eleanor",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "hector",
+      "name": "Hector",
+      "rarity": "SSR",
+      "troop": "Pikeman",
+      "combatBaseAttack": {
+        "value": 89230,
+        "unit": "game points",
+        "sourceRow": 41,
+        "sourceName": "Hector",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "hammurabi",
+      "name": "Hammurabi",
+      "rarity": "SSR",
+      "troop": "Shieldman",
+      "combatBaseAttack": {
+        "value": 84760,
+        "unit": "game points",
+        "sourceRow": 38,
+        "sourceName": "Hammurabi",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "joan-of-arc",
+      "name": "Joan of Arc",
+      "rarity": "SSR",
+      "troop": "Cavalry",
+      "combatBaseAttack": {
+        "value": 161900,
+        "unit": "game points",
+        "sourceRow": 49,
+        "sourceName": "Joan of Arc",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "no-observations"
+    },
+    {
+      "id": "livia-drusilla",
+      "name": "Livia Drusilla",
+      "rarity": "SSR",
+      "troop": "Shieldman",
+      "combatBaseAttack": {
+        "value": 88360,
+        "unit": "game points",
+        "sourceRow": 51,
+        "sourceName": "Livia",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "dante",
+      "name": "Dante",
+      "rarity": "SSR",
+      "troop": "Archer",
+      "combatBaseAttack": {
+        "value": 84100,
+        "unit": "game points",
+        "sourceRow": 27,
+        "sourceName": "Dante",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "socrates",
+      "name": "Socrates",
+      "rarity": "SSR",
+      "troop": "Cavalry",
+      "combatBaseAttack": {
+        "value": 98740,
+        "unit": "game points",
+        "sourceRow": 68,
+        "sourceName": "Socrates",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "gilgamesh",
+      "name": "Gilgamesh",
+      "rarity": "SSR",
+      "troop": "Pikeman",
+      "combatBaseAttack": {
+        "value": 91190,
+        "unit": "game points",
+        "sourceRow": 36,
+        "sourceName": "Gilgamesh",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "confucius",
+      "name": "Confucius",
+      "rarity": "SSR",
+      "troop": "Pikeman",
+      "combatBaseAttack": {
+        "value": 83660,
+        "unit": "game points",
+        "sourceRow": 24,
+        "sourceName": "Confucius",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "michelangelo",
+      "name": "Michelangelo",
+      "rarity": "SSR",
+      "troop": "Archer",
+      "combatBaseAttack": {
+        "value": 85980,
+        "unit": "game points",
+        "sourceRow": 56,
+        "sourceName": "Michelangelo",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "victor-hugo",
+      "name": "Victor Hugo",
+      "rarity": "SR",
+      "troop": "Archer",
+      "combatBaseAttack": {
+        "value": 27460,
+        "unit": "game points",
+        "sourceRow": 73,
+        "sourceName": "Victor Hugo",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "thomas-edison",
+      "name": "Thomas Edison",
+      "rarity": "SR",
+      "troop": "Archer",
+      "combatBaseAttack": {
+        "value": 26850,
+        "unit": "game points",
+        "sourceRow": 71,
+        "sourceName": "Thomas Edison",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "james-watt",
+      "name": "James Watt",
+      "rarity": "SR",
+      "troop": "Pikeman",
+      "combatBaseAttack": {
+        "value": 27160,
+        "unit": "game points",
+        "sourceRow": 48,
+        "sourceName": "James Watt",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "andersen",
+      "name": "Andersen",
+      "rarity": "SR",
+      "troop": "Shieldman",
+      "combatBaseAttack": {
+        "value": null,
+        "unit": "game points",
+        "sourceRow": null,
+        "sourceName": null,
+        "starColor": null,
+        "star": null,
+        "status": "possible-name-match-needs-confirmation",
+        "possibleSourceName": "Anderson"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "elizabeth-i",
+      "name": "Elizabeth I",
+      "rarity": "SR",
+      "troop": "Cavalry",
+      "combatBaseAttack": {
+        "value": 27190,
+        "unit": "game points",
+        "sourceRow": 31,
+        "sourceName": "Elizabeth",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "drake",
+      "name": "Drake",
+      "rarity": "SR",
+      "troop": "Archer",
+      "combatBaseAttack": {
+        "value": 28600,
+        "unit": "game points",
+        "sourceRow": 29,
+        "sourceName": "Drake",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "mary-i",
+      "name": "Mary I",
+      "rarity": "SR",
+      "troop": "Pikeman",
+      "combatBaseAttack": {
+        "value": 41960,
+        "unit": "game points",
+        "sourceRow": 54,
+        "sourceName": "Mary",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "saladin",
+      "name": "Saladin",
+      "rarity": "SR",
+      "troop": "Cavalry",
+      "combatBaseAttack": {
+        "value": 25530,
+        "unit": "game points",
+        "sourceRow": 66,
+        "sourceName": "Saladin",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "homer",
+      "name": "Homer",
+      "rarity": "SR",
+      "troop": "Archer",
+      "combatBaseAttack": {
+        "value": 45250,
+        "unit": "game points",
+        "sourceRow": 45,
+        "sourceName": "Homer",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "wallace",
+      "name": "Wallace",
+      "rarity": "SR",
+      "troop": "Shieldman",
+      "combatBaseAttack": {
+        "value": 27100,
+        "unit": "game points",
+        "sourceRow": 75,
+        "sourceName": "Wallace",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "isabella-i",
+      "name": "Isabella I",
+      "rarity": "SR",
+      "troop": "Archer",
+      "combatBaseAttack": {
+        "value": 25500,
+        "unit": "game points",
+        "sourceRow": 47,
+        "sourceName": "Isabella",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "hatshepsut",
+      "name": "Hatshepsut",
+      "rarity": "SR",
+      "troop": "Cavalry",
+      "combatBaseAttack": {
+        "value": 39280,
+        "unit": "game points",
+        "sourceRow": 40,
+        "sourceName": "Hatshepsut",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "hypatia",
+      "name": "Hypatia",
+      "rarity": "SR",
+      "troop": "Shieldman",
+      "combatBaseAttack": {
+        "value": 26900,
+        "unit": "game points",
+        "sourceRow": 46,
+        "sourceName": "Hypatia",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "hannibal",
+      "name": "Hannibal",
+      "rarity": "SR",
+      "troop": "Cavalry",
+      "combatBaseAttack": {
+        "value": 26300,
+        "unit": "game points",
+        "sourceRow": 39,
+        "sourceName": "Hannibal",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "catherine-de-medici",
+      "name": "Catherine de'Medici",
+      "rarity": "SR",
+      "troop": "Pikeman",
+      "combatBaseAttack": {
+        "value": 24360,
+        "unit": "game points",
+        "sourceRow": 18,
+        "sourceName": "Catherine de Medici",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "noah",
+      "name": "Noah",
+      "rarity": "SR",
+      "troop": "Shieldman",
+      "combatBaseAttack": {
+        "value": 46160,
+        "unit": "game points",
+        "sourceRow": 59,
+        "sourceName": "Noah",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "adam",
+      "name": "Adam",
+      "rarity": "SR",
+      "troop": "Archer",
+      "combatBaseAttack": {
+        "value": 45980,
+        "unit": "game points",
+        "sourceRow": 5,
+        "sourceName": "Adam",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "prometheus",
+      "name": "Prometheus",
+      "rarity": "SR",
+      "troop": "Pikeman",
+      "combatBaseAttack": {
+        "value": 48440,
+        "unit": "game points",
+        "sourceRow": 62,
+        "sourceName": "Prometheus",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "florence-nightingale",
+      "name": "Florence Nightingale",
+      "rarity": "R",
+      "troop": "Pikeman",
+      "combatBaseAttack": {
+        "value": 10360,
+        "unit": "game points",
+        "sourceRow": 32,
+        "sourceName": "Florence Nightingale",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "mary-shelley",
+      "name": "Mary Shelley",
+      "rarity": "R",
+      "troop": "Shieldman",
+      "combatBaseAttack": {
+        "value": 12120,
+        "unit": "game points",
+        "sourceRow": 55,
+        "sourceName": "Mary Shelley",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "alexander-hamilton",
+      "name": "Alexander Hamilton",
+      "rarity": "R",
+      "troop": "Cavalry",
+      "combatBaseAttack": {
+        "value": 9922,
+        "unit": "game points",
+        "sourceRow": 7,
+        "sourceName": "Alexander Hamilton",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "anne-bonny",
+      "name": "Anne Bonny",
+      "rarity": "R",
+      "troop": "Archer",
+      "combatBaseAttack": {
+        "value": 9749,
+        "unit": "game points",
+        "sourceRow": 10,
+        "sourceName": "Anne Bonny",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "chaucer",
+      "name": "Chaucer",
+      "rarity": "R",
+      "troop": "Shieldman",
+      "combatBaseAttack": {
+        "value": 14290,
+        "unit": "game points",
+        "sourceRow": 22,
+        "sourceName": "Chaucer",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "robin-hood",
+      "name": "Robin Hood",
+      "rarity": "R",
+      "troop": "Archer",
+      "combatBaseAttack": {
+        "value": 12300,
+        "unit": "game points",
+        "sourceRow": 65,
+        "sourceName": "Robin Hood",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "himiko",
+      "name": "Himiko",
+      "rarity": "R",
+      "troop": "Cavalry",
+      "combatBaseAttack": {
+        "value": 11090,
+        "unit": "game points",
+        "sourceRow": 44,
+        "sourceName": "Himiko",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "marco-polo",
+      "name": "Marco Polo",
+      "rarity": "R",
+      "troop": "Cavalry",
+      "combatBaseAttack": {
+        "value": 13730,
+        "unit": "game points",
+        "sourceRow": 53,
+        "sourceName": "Marco Polo",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "cervantes",
+      "name": "Cervantes",
+      "rarity": "R",
+      "troop": "Archer",
+      "combatBaseAttack": {
+        "value": 12360,
+        "unit": "game points",
+        "sourceRow": 19,
+        "sourceName": "Cervantes",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "dido",
+      "name": "Dido",
+      "rarity": "R",
+      "troop": "Pikeman",
+      "combatBaseAttack": {
+        "value": 23030,
+        "unit": "game points",
+        "sourceRow": 28,
+        "sourceName": "Dido",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "cu-chulainn",
+      "name": "Cu Chulainn",
+      "rarity": "R",
+      "troop": "Pikeman",
+      "combatBaseAttack": {
+        "value": 21540,
+        "unit": "game points",
+        "sourceRow": 25,
+        "sourceName": "Cu Chulainn",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    },
+    {
+      "id": "archimedes",
+      "name": "Archimedes",
+      "rarity": "R",
+      "troop": "Shieldman",
+      "combatBaseAttack": {
+        "value": 12420,
+        "unit": "game points",
+        "sourceRow": 11,
+        "sourceName": "Archimedes",
+        "starColor": "Green",
+        "star": 1,
+        "status": "source-value"
+      },
+      "heldStatStart": null,
+      "combatBaseLp": {
+        "value": null,
+        "unit": "game points",
+        "status": "not-in-source"
+      },
+      "heldStatScalingStatus": "partial-check"
+    }
+  ],
+  "heldStatObservations": [
+    {
+      "heroId": "guan-yu",
+      "level": 1,
+      "phase": "normal",
+      "heldAng": 616,
+      "heldLp": 6791,
+      "precision": "screen-read integer"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 2,
+      "phase": "normal",
+      "heldAng": 673,
+      "heldLp": 7420,
+      "precision": "screen-read integer"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 3,
+      "phase": "normal",
+      "heldAng": 731,
+      "heldLp": 8049,
+      "precision": "screen-read integer"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 4,
+      "phase": "normal",
+      "heldAng": 799,
+      "heldLp": 8804,
+      "precision": "screen-read integer"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 5,
+      "phase": "normal",
+      "heldAng": 868,
+      "heldLp": 9558,
+      "precision": "screen-read integer"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 6,
+      "phase": "normal",
+      "heldAng": 948,
+      "heldLp": 10430,
+      "precision": "screen-read integer"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 7,
+      "phase": "normal",
+      "heldAng": 1028,
+      "heldLp": 11310,
+      "precision": "screen-read integer"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 8,
+      "phase": "normal",
+      "heldAng": 1119,
+      "heldLp": 12320,
+      "precision": "screen-read integer"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 9,
+      "phase": "normal",
+      "heldAng": 1210,
+      "heldLp": 13330,
+      "precision": "screen-read integer"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 10,
+      "phase": "normal",
+      "heldAng": 1313,
+      "heldLp": 14460,
+      "precision": "screen-read integer"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 11,
+      "phase": "normal",
+      "heldAng": 1416,
+      "heldLp": 15590,
+      "precision": "screen-read integer"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 12,
+      "phase": "normal",
+      "heldAng": 1530,
+      "heldLp": 16850,
+      "precision": "screen-read integer"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 13,
+      "phase": "normal",
+      "heldAng": 1644,
+      "heldLp": 18110,
+      "precision": "screen-read integer"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 14,
+      "phase": "normal",
+      "heldAng": 1770,
+      "heldLp": 19490,
+      "precision": "screen-read integer"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 15,
+      "phase": "normal",
+      "heldAng": 1896,
+      "heldLp": 20870,
+      "precision": "screen-read integer"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 16,
+      "phase": "normal",
+      "heldAng": 2033,
+      "heldLp": 22380,
+      "precision": "screen-read integer"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 17,
+      "phase": "normal",
+      "heldAng": 2170,
+      "heldLp": 23890,
+      "precision": "screen-read integer"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 18,
+      "phase": "normal",
+      "heldAng": 2318,
+      "heldLp": 25530,
+      "precision": "screen-read integer"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 19,
+      "phase": "normal",
+      "heldAng": 2467,
+      "heldLp": 27160,
+      "precision": "screen-read integer"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 20,
+      "phase": "before-enlightenment",
+      "heldAng": 2627,
+      "heldLp": 28920,
+      "precision": "screen-read integer"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 20,
+      "phase": "after-enlightenment",
+      "heldAng": 3027,
+      "heldLp": 32920,
+      "precision": "screen-read integer"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 21,
+      "phase": "normal",
+      "heldAng": 3187,
+      "heldLp": 34680,
+      "precision": "screen-read integer"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 22,
+      "phase": "normal",
+      "heldAng": 3358,
+      "heldLp": 36570,
+      "precision": "screen-read integer"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 23,
+      "phase": "normal",
+      "heldAng": 3529,
+      "heldLp": null,
+      "precision": "user transcription; ANG values above 10K rounded to nearest 10; LP in K rounded to nearest 10"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 24,
+      "phase": "normal",
+      "heldAng": 3712,
+      "heldLp": 40270,
+      "precision": "user transcription; ANG values above 10K rounded to nearest 10; LP in K rounded to nearest 10"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 25,
+      "phase": "normal",
+      "heldAng": 3895,
+      "heldLp": 42480,
+      "precision": "user transcription; ANG values above 10K rounded to nearest 10; LP in K rounded to nearest 10"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 26,
+      "phase": "normal",
+      "heldAng": 4089,
+      "heldLp": 44620,
+      "precision": "user transcription; ANG values above 10K rounded to nearest 10; LP in K rounded to nearest 10"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 27,
+      "phase": "normal",
+      "heldAng": 4283,
+      "heldLp": 46760,
+      "precision": "user transcription; ANG values above 10K rounded to nearest 10; LP in K rounded to nearest 10"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 28,
+      "phase": "normal",
+      "heldAng": 4489,
+      "heldLp": 49020,
+      "precision": "user transcription; ANG values above 10K rounded to nearest 10; LP in K rounded to nearest 10"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 29,
+      "phase": "normal",
+      "heldAng": 4694,
+      "heldLp": 51290,
+      "precision": "user transcription; ANG values above 10K rounded to nearest 10; LP in K rounded to nearest 10"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 30,
+      "phase": "normal",
+      "heldAng": 4912,
+      "heldLp": 53670,
+      "precision": "user transcription; ANG values above 10K rounded to nearest 10; LP in K rounded to nearest 10"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 31,
+      "phase": "normal",
+      "heldAng": 5129,
+      "heldLp": 56060,
+      "precision": "user transcription; ANG values above 10K rounded to nearest 10; LP in K rounded to nearest 10"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 32,
+      "phase": "normal",
+      "heldAng": 5357,
+      "heldLp": 58580,
+      "precision": "user transcription; ANG values above 10K rounded to nearest 10; LP in K rounded to nearest 10"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 33,
+      "phase": "normal",
+      "heldAng": 5585,
+      "heldLp": 61100,
+      "precision": "user transcription; ANG values above 10K rounded to nearest 10; LP in K rounded to nearest 10"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 34,
+      "phase": "normal",
+      "heldAng": 5825,
+      "heldLp": 63740,
+      "precision": "user transcription; ANG values above 10K rounded to nearest 10; LP in K rounded to nearest 10"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 35,
+      "phase": "normal",
+      "heldAng": 6065,
+      "heldLp": 66380,
+      "precision": "user transcription; ANG values above 10K rounded to nearest 10; LP in K rounded to nearest 10"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 36,
+      "phase": "normal",
+      "heldAng": 6317,
+      "heldLp": 69140,
+      "precision": "user transcription; ANG values above 10K rounded to nearest 10; LP in K rounded to nearest 10"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 37,
+      "phase": "normal",
+      "heldAng": 6568,
+      "heldLp": 71910,
+      "precision": "user transcription; ANG values above 10K rounded to nearest 10; LP in K rounded to nearest 10"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 38,
+      "phase": "normal",
+      "heldAng": 6831,
+      "heldLp": 74800,
+      "precision": "user transcription; ANG values above 10K rounded to nearest 10; LP in K rounded to nearest 10"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 39,
+      "phase": "normal",
+      "heldAng": 7093,
+      "heldLp": 77700,
+      "precision": "user transcription; ANG values above 10K rounded to nearest 10; LP in K rounded to nearest 10"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 40,
+      "phase": "normal",
+      "heldAng": 7367,
+      "heldLp": 80720,
+      "precision": "user transcription; ANG values above 10K rounded to nearest 10; LP in K rounded to nearest 10"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 41,
+      "phase": "normal",
+      "heldAng": 7642,
+      "heldLp": 83730,
+      "precision": "user transcription; ANG values above 10K rounded to nearest 10; LP in K rounded to nearest 10"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 42,
+      "phase": "normal",
+      "heldAng": 7927,
+      "heldLp": 86880,
+      "precision": "user transcription; ANG values above 10K rounded to nearest 10; LP in K rounded to nearest 10"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 43,
+      "phase": "normal",
+      "heldAng": 8313,
+      "heldLp": 90020,
+      "precision": "user transcription; ANG values above 10K rounded to nearest 10; LP in K rounded to nearest 10"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 44,
+      "phase": "normal",
+      "heldAng": 8510,
+      "heldLp": 93290,
+      "precision": "user transcription; ANG values above 10K rounded to nearest 10; LP in K rounded to nearest 10"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 45,
+      "phase": "normal",
+      "heldAng": 8807,
+      "heldLp": 96560,
+      "precision": "user transcription; ANG values above 10K rounded to nearest 10; LP in K rounded to nearest 10"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 46,
+      "phase": "normal",
+      "heldAng": 9115,
+      "heldLp": 99960,
+      "precision": "user transcription; ANG values above 10K rounded to nearest 10; LP in K rounded to nearest 10"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 47,
+      "phase": "normal",
+      "heldAng": 9424,
+      "heldLp": 103300,
+      "precision": "user transcription; ANG values above 10K rounded to nearest 10; LP in K rounded to nearest 10"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 48,
+      "phase": "normal",
+      "heldAng": 9743,
+      "heldLp": 106800,
+      "precision": "user transcription; ANG values above 10K rounded to nearest 10; LP in K rounded to nearest 10"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 49,
+      "phase": "normal",
+      "heldAng": 10060,
+      "heldLp": 110400,
+      "precision": "user transcription; ANG values above 10K rounded to nearest 10; LP in K rounded to nearest 10"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 50,
+      "phase": "normal",
+      "heldAng": 10390,
+      "heldLp": 114000,
+      "precision": "user transcription; ANG values above 10K rounded to nearest 10; LP in K rounded to nearest 10"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 50,
+      "phase": "after-ascension",
+      "heldAng": 11990,
+      "heldLp": 130000,
+      "precision": "user transcription; rounded display"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 51,
+      "phase": "after-ascension",
+      "heldAng": 12320,
+      "heldLp": 133600,
+      "precision": "user transcription; rounded display"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 52,
+      "phase": "after-ascension",
+      "heldAng": 12660,
+      "heldLp": 137400,
+      "precision": "user transcription; rounded display"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 53,
+      "phase": "after-ascension",
+      "heldAng": 13010,
+      "heldLp": 141200,
+      "precision": "user transcription; rounded display"
+    },
+    {
+      "heroId": "lu-bu",
+      "level": 1,
+      "phase": "normal",
+      "heldAng": 587,
+      "heldLp": null,
+      "precision": "user-reported screenshot value"
+    },
+    {
+      "heroId": "lu-bu",
+      "level": 10,
+      "phase": "normal",
+      "heldAng": 1250,
+      "heldLp": null,
+      "precision": "user-reported screenshot value"
+    },
+    {
+      "heroId": "lu-bu",
+      "level": 15,
+      "phase": "normal",
+      "heldAng": 1805,
+      "heldLp": null,
+      "precision": "user-reported screenshot value"
+    },
+    {
+      "heroId": "miyamoto-musashi",
+      "level": 1,
+      "phase": "normal",
+      "heldAng": 652,
+      "heldLp": null,
+      "precision": "user-reported screenshot value"
+    },
+    {
+      "heroId": "billy-the-kid",
+      "level": 300,
+      "phase": "after-ascension",
+      "heldAng": 307300,
+      "heldLp": 2960000,
+      "precision": "ANG rounded to 0.1K; LP to 0.01M"
+    },
+    {
+      "heroId": "caesar",
+      "level": 372,
+      "phase": "normal",
+      "heldAng": 434300,
+      "heldLp": 4660000,
+      "precision": "ANG rounded to 0.1K; LP to 0.01M"
+    },
+    {
+      "heroId": "cleopatra",
+      "level": 300,
+      "phase": "after-ascension",
+      "heldAng": 287500,
+      "heldLp": 3160000,
+      "precision": "ANG rounded to 0.1K; LP to 0.01M"
+    },
+    {
+      "heroId": "hermes",
+      "level": 300,
+      "phase": "after-ascension",
+      "heldAng": 316000,
+      "heldLp": 2870000,
+      "precision": "ANG rounded to 1K; LP to 0.01M"
+    },
+    {
+      "heroId": "circe",
+      "level": 300,
+      "phase": "after-ascension",
+      "heldAng": 316000,
+      "heldLp": 2870000,
+      "precision": "ANG rounded to 1K; LP to 0.01M"
+    },
+    {
+      "heroId": "heracles",
+      "level": 300,
+      "phase": "after-ascension",
+      "heldAng": 327500,
+      "heldLp": 2780000,
+      "precision": "ANG rounded to 0.1K; LP to 0.01M"
+    },
+    {
+      "heroId": "lagertha",
+      "level": 500,
+      "phase": "before-ascension",
+      "heldAng": 814600,
+      "heldLp": 7680000,
+      "precision": "ANG rounded to 0.1K; LP to 0.01M"
+    },
+    {
+      "heroId": "odysseus",
+      "level": 300,
+      "phase": "after-ascension",
+      "heldAng": 316000,
+      "heldLp": 2870000,
+      "precision": "ANG rounded to 1K; LP to 0.01M"
+    },
+    {
+      "heroId": "lancelot",
+      "level": 300,
+      "phase": "after-ascension",
+      "heldAng": 316100,
+      "heldLp": 2870000,
+      "precision": "ANG rounded to 0.1K; LP to 0.01M"
+    },
+    {
+      "heroId": "ragnar-lodbrok",
+      "level": 315,
+      "phase": "normal",
+      "heldAng": 359400,
+      "heldLp": 3000000,
+      "precision": "ANG rounded to 0.1K; LP reported as 3M"
+    },
+    {
+      "heroId": "king-arthur",
+      "level": 300,
+      "phase": "after-ascension",
+      "heldAng": 318200,
+      "heldLp": 2850000,
+      "precision": "ANG rounded to 0.1K; LP to 0.01M"
+    },
+    {
+      "heroId": "bjorn-ironside",
+      "level": 300,
+      "phase": "after-ascension",
+      "heldAng": 292900,
+      "heldLp": 3100000,
+      "precision": "ANG rounded to 0.1K; LP to 0.1M"
+    },
+    {
+      "heroId": "spartacus",
+      "level": 300,
+      "phase": "after-ascension",
+      "heldAng": 300200,
+      "heldLp": 3030000,
+      "precision": "ANG rounded to 0.1K; LP to 0.01M"
+    },
+    {
+      "heroId": "pompey",
+      "level": 300,
+      "phase": "after-ascension",
+      "heldAng": 301400,
+      "heldLp": 3020000,
+      "precision": "ANG rounded to 0.1K; LP to 0.01M"
+    },
+    {
+      "heroId": "merlin",
+      "level": 300,
+      "phase": "after-ascension",
+      "heldAng": 306000,
+      "heldLp": 2970000,
+      "precision": "ANG rounded to 1K; LP to 0.01M"
+    },
+    {
+      "heroId": "achilles",
+      "level": 500,
+      "phase": "before-ascension",
+      "heldAng": 724500,
+      "heldLp": 8580000,
+      "precision": "ANG rounded to 0.1K; LP to 0.01M"
+    },
+    {
+      "heroId": "charles-the-great",
+      "level": 300,
+      "phase": "after-ascension",
+      "heldAng": 310900,
+      "heldLp": 2920000,
+      "precision": "ANG rounded to 0.1K; LP to 0.01M"
+    },
+    {
+      "heroId": "da-vinci",
+      "level": 300,
+      "phase": "after-ascension",
+      "heldAng": 309700,
+      "heldLp": 2930000,
+      "precision": "ANG rounded to 0.1K; LP to 0.01M"
+    },
+    {
+      "heroId": "augustus",
+      "level": 300,
+      "phase": "after-ascension",
+      "heldAng": 312500,
+      "heldLp": 2910000,
+      "precision": "ANG rounded to 0.1K; LP to 0.01M"
+    },
+    {
+      "heroId": "william-shakespeare",
+      "level": 300,
+      "phase": "after-ascension",
+      "heldAng": 321200,
+      "heldLp": 2820000,
+      "precision": "ANG rounded to 0.1K; LP to 0.01M"
+    },
+    {
+      "heroId": "tutankhamun",
+      "level": 500,
+      "phase": "before-ascension",
+      "heldAng": 829100,
+      "heldLp": 7530000,
+      "precision": "ANG rounded to 0.1K; LP to 0.01M"
+    },
+    {
+      "heroId": "richard-i",
+      "level": 300,
+      "phase": "after-ascension",
+      "heldAng": 283900,
+      "heldLp": 3190000,
+      "precision": "ANG rounded to 0.1K; LP to 0.01M"
+    },
+    {
+      "heroId": "alexander-the-great",
+      "level": 300,
+      "phase": "after-ascension",
+      "heldAng": 278400,
+      "heldLp": 3250000,
+      "precision": "ANG rounded to 0.1K; LP to 0.01M"
+    },
+    {
+      "heroId": "queen-victoria",
+      "level": 300,
+      "phase": "after-ascension",
+      "heldAng": 316900,
+      "heldLp": 2860000,
+      "precision": "ANG rounded to 0.1K; LP to 0.01M"
+    },
+    {
+      "heroId": "blackbeard",
+      "level": 500,
+      "phase": "before-ascension",
+      "heldAng": 830600,
+      "heldLp": 7520000,
+      "precision": "ANG rounded to 0.1K; LP to 0.01M"
+    },
+    {
+      "heroId": "isaac-newton",
+      "level": 300,
+      "phase": "after-ascension",
+      "heldAng": 276000,
+      "heldLp": 3270000,
+      "precision": "ANG rounded to 1K; LP to 0.01M"
+    },
+    {
+      "heroId": "napoleon-bonaparte",
+      "level": 300,
+      "phase": "after-ascension",
+      "heldAng": 291600,
+      "heldLp": 3110000,
+      "precision": "ANG rounded to 0.1K; LP to 0.01M"
+    },
+    {
+      "heroId": "morgana",
+      "level": 10,
+      "phase": "normal",
+      "heldAng": 1310,
+      "heldLp": 14490,
+      "precision": "screen-read integer"
+    },
+    {
+      "heroId": "garwain",
+      "level": 200,
+      "phase": "after-ascension",
+      "heldAng": 136200,
+      "heldLp": 1390000,
+      "precision": "ANG rounded to 0.1K; LP to 0.01M"
+    },
+    {
+      "heroId": "lu-bu",
+      "level": 100,
+      "phase": "before-ascension",
+      "heldAng": 34070,
+      "heldLp": 407200,
+      "precision": "ANG rounded to 0.01K; LP to 0.1K"
+    },
+    {
+      "heroId": "miyamoto-musashi",
+      "level": 10,
+      "phase": "normal",
+      "heldAng": 1388,
+      "heldLp": 13710,
+      "precision": "ANG screen-read integer; LP rounded to 0.01K"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 99,
+      "phase": "normal",
+      "heldAng": 35080,
+      "heldLp": null,
+      "precision": "ANG rounded to 0.01K"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 100,
+      "phase": "normal",
+      "heldAng": 35690,
+      "heldLp": 391000,
+      "precision": "ANG rounded to 0.01K; LP rounded to 0.1K"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 100,
+      "phase": "after-ascension",
+      "heldAng": 37170,
+      "heldLp": 405800,
+      "precision": "ANG rounded to 0.01K; LP rounded to 0.1K"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 101,
+      "phase": "normal",
+      "heldAng": 37790,
+      "heldLp": 412600,
+      "precision": "ANG rounded to 0.01K; LP rounded to 0.1K"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 149,
+      "phase": "normal",
+      "heldAng": 74250,
+      "heldLp": 814000,
+      "precision": "ANG rounded to 0.01K; LP rounded to 1K"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 150,
+      "phase": "normal",
+      "heldAng": 75150,
+      "heldLp": 824000,
+      "precision": "ANG rounded to 0.01K; LP rounded to 1K"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 150,
+      "phase": "after-ascension",
+      "heldAng": 77070,
+      "heldLp": 843200,
+      "precision": "ANG rounded to 0.01K; LP rounded to 0.1K"
+    },
+    {
+      "heroId": "guan-yu",
+      "level": 151,
+      "phase": "normal",
+      "heldAng": 77980,
+      "heldLp": 853100,
+      "precision": "ANG rounded to 0.01K; LP rounded to 0.1K"
+    },
+    {
+      "heroId": "guinevere",
+      "level": 150,
+      "phase": "after-ascension",
+      "heldAng": 76910,
+      "heldLp": 844800,
+      "precision": "ANG rounded to 0.01K; LP rounded to 0.1K"
+    },
+    {
+      "heroId": "hammurabi",
+      "level": 300,
+      "phase": "after-ascension",
+      "heldAng": 185300,
+      "heldLp": 2170000,
+      "precision": "ANG rounded to 0.1K; LP rounded to 0.01M"
+    },
+    {
+      "heroId": "hector",
+      "level": 280,
+      "phase": "normal",
+      "heldAng": 165900,
+      "heldLp": 1760000,
+      "precision": "ANG rounded to 0.1K; LP rounded to 0.01M"
+    },
+    {
+      "heroId": "dante",
+      "level": 280,
+      "phase": "normal",
+      "heldAng": 156100,
+      "heldLp": 1860000,
+      "precision": "ANG rounded to 0.1K; LP rounded to 0.01M"
+    },
+    {
+      "heroId": "socrates",
+      "level": 280,
+      "phase": "normal",
+      "heldAng": 184200,
+      "heldLp": 1580000,
+      "precision": "ANG rounded to 0.1K; LP rounded to 0.01M"
+    },
+    {
+      "heroId": "gilgamesh",
+      "level": 280,
+      "phase": "normal",
+      "heldAng": 169700,
+      "heldLp": 1730000,
+      "precision": "ANG rounded to 0.1K; LP rounded to 0.01M"
+    },
+    {
+      "heroId": "confucius",
+      "level": 270,
+      "phase": "normal",
+      "heldAng": 148100,
+      "heldLp": 1720000,
+      "precision": "ANG rounded to 0.1K; LP rounded to 0.01M"
+    },
+    {
+      "heroId": "galileo-galilei",
+      "level": 270,
+      "phase": "normal",
+      "heldAng": 170900,
+      "heldLp": 1490000,
+      "precision": "ANG rounded to 0.1K; LP rounded to 0.01M"
+    },
+    {
+      "heroId": "alfred-the-great",
+      "level": 270,
+      "phase": "normal",
+      "heldAng": 173300,
+      "heldLp": 1460000,
+      "precision": "ANG rounded to 0.1K; LP rounded to 0.01M"
+    },
+    {
+      "heroId": "eleanor-of-aquitaine",
+      "level": 150,
+      "phase": "before-ascension",
+      "heldAng": 48690,
+      "heldLp": 562600,
+      "precision": "ANG rounded to 0.01K; LP rounded to 0.1K"
+    },
+    {
+      "heroId": "michelangelo",
+      "level": 270,
+      "phase": "normal",
+      "heldAng": 152200,
+      "heldLp": 1680000,
+      "precision": "ANG rounded to 0.1K; LP rounded to 0.01M"
+    },
+    {
+      "heroId": "livia-drusilla",
+      "level": 150,
+      "phase": "before-ascension",
+      "heldAng": 51300,
+      "heldLp": 536500,
+      "precision": "ANG rounded to 0.1K; LP rounded to 0.1K"
+    },
+    {
+      "heroId": "nikola-tesla",
+      "level": 150,
+      "phase": "before-ascension",
+      "heldAng": 51910,
+      "heldLp": 530400,
+      "precision": "ANG rounded to 0.01K; LP rounded to 0.1K"
+    },
+    {
+      "heroId": "columbus",
+      "level": 150,
+      "phase": "before-ascension",
+      "heldAng": 49360,
+      "heldLp": 555900,
+      "precision": "ANG rounded to 0.01K; LP rounded to 0.1K"
+    },
+    {
+      "heroId": "franklin",
+      "level": 150,
+      "phase": "before-ascension",
+      "heldAng": 47950,
+      "heldLp": 570000,
+      "precision": "ANG rounded to 0.01K; LP rounded to 1K"
+    },
+    {
+      "heroId": "louis-xiv",
+      "level": 150,
+      "phase": "before-ascension",
+      "heldAng": 52470,
+      "heldLp": 524800,
+      "precision": "ANG rounded to 0.01K; LP rounded to 0.1K"
+    },
+    {
+      "heroId": "beethoven",
+      "level": 190,
+      "phase": "normal",
+      "heldAng": 75900,
+      "heldLp": 886500,
+      "precision": "ANG rounded to 0.1K; LP rounded to 0.1K"
+    },
+    {
+      "heroId": "charles-darwin",
+      "level": 150,
+      "phase": "before-ascension",
+      "heldAng": 55530,
+      "heldLp": 494200,
+      "precision": "ANG rounded to 0.01K; LP rounded to 0.1K"
+    },
+    {
+      "heroId": "noah",
+      "level": 270,
+      "phase": "normal",
+      "heldAng": 81780,
+      "heldLp": 783300,
+      "precision": "ANG rounded to 0.01K; LP rounded to 0.1K"
+    },
+    {
+      "heroId": "prometheus",
+      "level": 270,
+      "phase": "normal",
+      "heldAng": 85840,
+      "heldLp": 742700,
+      "precision": "ANG rounded to 0.01K; LP rounded to 0.1K"
+    },
+    {
+      "heroId": "homer",
+      "level": 270,
+      "phase": "normal",
+      "heldAng": 80160,
+      "heldLp": 799500,
+      "precision": "ANG rounded to 0.01K; LP rounded to 0.1K"
+    },
+    {
+      "heroId": "adam",
+      "level": 270,
+      "phase": "normal",
+      "heldAng": 81450,
+      "heldLp": 786600,
+      "precision": "ANG rounded to 0.01K; LP rounded to 0.1K"
+    },
+    {
+      "heroId": "wallace",
+      "level": 150,
+      "phase": "before-ascension",
+      "heldAng": 27100,
+      "heldLp": 253700,
+      "precision": "ANG rounded to 0.1K; LP rounded to 0.1K"
+    },
+    {
+      "heroId": "hatshepsut",
+      "level": 150,
+      "phase": "before-ascension",
+      "heldAng": 25050,
+      "heldLp": 274200,
+      "precision": "ANG rounded to 0.01K; LP rounded to 0.1K"
+    },
+    {
+      "heroId": "hypatia",
+      "level": 150,
+      "phase": "before-ascension",
+      "heldAng": 26900,
+      "heldLp": 255700,
+      "precision": "ANG rounded to 0.1K; LP rounded to 0.1K"
+    },
+    {
+      "heroId": "hannibal",
+      "level": 150,
+      "phase": "before-ascension",
+      "heldAng": 26300,
+      "heldLp": 261700,
+      "precision": "ANG rounded to 0.1K; LP rounded to 0.1K"
+    },
+    {
+      "heroId": "mary-i",
+      "level": 150,
+      "phase": "before-ascension",
+      "heldAng": 24370,
+      "heldLp": 281000,
+      "precision": "ANG rounded to 0.01K; LP rounded to 1K"
+    },
+    {
+      "heroId": "saladin",
+      "level": 150,
+      "phase": "before-ascension",
+      "heldAng": 25530,
+      "heldLp": 269400,
+      "precision": "ANG rounded to 0.01K; LP rounded to 0.1K"
+    },
+    {
+      "heroId": "catherine-de-medici",
+      "level": 150,
+      "phase": "before-ascension",
+      "heldAng": 24360,
+      "heldLp": 281100,
+      "precision": "ANG rounded to 0.01K; LP rounded to 0.1K"
+    },
+    {
+      "heroId": "isabella-i",
+      "level": 150,
+      "phase": "before-ascension",
+      "heldAng": 25500,
+      "heldLp": 269700,
+      "precision": "ANG rounded to 0.1K; LP rounded to 0.1K"
+    },
+    {
+      "heroId": "thomas-edison",
+      "level": 150,
+      "phase": "before-ascension",
+      "heldAng": 26850,
+      "heldLp": 256200,
+      "precision": "ANG rounded to 0.01K; LP rounded to 0.1K"
+    },
+    {
+      "heroId": "victor-hugo",
+      "level": 150,
+      "phase": "before-ascension",
+      "heldAng": 27460,
+      "heldLp": 250100,
+      "precision": "ANG rounded to 0.01K; LP rounded to 0.1K"
+    },
+    {
+      "heroId": "james-watt",
+      "level": 150,
+      "phase": "before-ascension",
+      "heldAng": 27160,
+      "heldLp": 253100,
+      "precision": "ANG rounded to 0.01K; LP rounded to 0.1K"
+    },
+    {
+      "heroId": "elizabeth-i",
+      "level": 150,
+      "phase": "before-ascension",
+      "heldAng": 27190,
+      "heldLp": 252800,
+      "precision": "ANG rounded to 0.01K; LP rounded to 0.1K"
+    },
+    {
+      "heroId": "drake",
+      "level": 150,
+      "phase": "before-ascension",
+      "heldAng": 28600,
+      "heldLp": 238700,
+      "precision": "ANG rounded to 0.1K; LP rounded to 0.1K"
+    },
+    {
+      "heroId": "andersen",
+      "level": 150,
+      "phase": "before-ascension",
+      "heldAng": 26240,
+      "heldLp": 262400,
+      "precision": "ANG rounded to 0.01K; LP rounded to 0.1K"
+    },
+    {
+      "heroId": "marco-polo",
+      "level": 150,
+      "phase": "before-ascension",
+      "heldAng": 13730,
+      "heldLp": 125100,
+      "precision": "ANG rounded to 0.01K; LP rounded to 0.1K"
+    },
+    {
+      "heroId": "dido",
+      "level": 200,
+      "phase": "before-ascension",
+      "heldAng": 23030,
+      "heldLp": 221800,
+      "precision": "ANG rounded to 0.01K; LP rounded to 0.1K"
+    },
+    {
+      "heroId": "cu-chulainn",
+      "level": 150,
+      "phase": "before-ascension",
+      "heldAng": 12500,
+      "heldLp": 137400,
+      "precision": "ANG rounded to 0.1K; LP rounded to 0.1K"
+    },
+    {
+      "heroId": "archimedes",
+      "level": 150,
+      "phase": "before-ascension",
+      "heldAng": 12420,
+      "heldLp": 138200,
+      "precision": "ANG rounded to 0.01K; LP rounded to 0.1K"
+    },
+    {
+      "heroId": "himiko",
+      "level": 150,
+      "phase": "before-ascension",
+      "heldAng": 14330,
+      "heldLp": 119100,
+      "precision": "ANG rounded to 0.01K; LP rounded to 0.1K"
+    },
+    {
+      "heroId": "cervantes",
+      "level": 150,
+      "phase": "before-ascension",
+      "heldAng": 12360,
+      "heldLp": 138800,
+      "precision": "ANG rounded to 0.01K; LP rounded to 0.1K"
+    },
+    {
+      "heroId": "chaucer",
+      "level": 150,
+      "phase": "before-ascension",
+      "heldAng": 14290,
+      "heldLp": 119500,
+      "precision": "ANG rounded to 0.01K; LP rounded to 0.1K"
+    },
+    {
+      "heroId": "robin-hood",
+      "level": 150,
+      "phase": "before-ascension",
+      "heldAng": 12300,
+      "heldLp": 139400,
+      "precision": "ANG rounded to 0.1K; LP rounded to 0.1K"
+    },
+    {
+      "heroId": "alexander-hamilton",
+      "level": 150,
+      "phase": "before-ascension",
+      "heldAng": 12800,
+      "heldLp": 134400,
+      "precision": "ANG rounded to 0.1K; LP rounded to 0.1K"
+    },
+    {
+      "heroId": "anne-bonny",
+      "level": 150,
+      "phase": "before-ascension",
+      "heldAng": 13730,
+      "heldLp": 125200,
+      "precision": "ANG rounded to 0.1K; LP rounded to 0.1K"
+    },
+    {
+      "heroId": "mary-shelley",
+      "level": 150,
+      "phase": "before-ascension",
+      "heldAng": 12580,
+      "heldLp": 136700,
+      "precision": "ANG rounded to 0.01K; LP rounded to 0.1K"
+    },
+    {
+      "heroId": "florence-nightingale",
+      "level": 150,
+      "phase": "before-ascension",
+      "heldAng": 13380,
+      "heldLp": 128600,
+      "precision": "ANG rounded to 0.01K; LP rounded to 0.1K"
+    },
+    {
+      "heroId": "queen-victoria",
+      "level": 280,
+      "phase": "normal",
+      "heldAng": 270200,
+      "heldLp": 2430000,
+      "precision": "user transcript; ANG rounded to 0.1K; LP to 0.01M"
+    },
+    {
+      "heroId": "garwain",
+      "level": 198,
+      "phase": "normal",
+      "heldAng": 131400,
+      "heldLp": null,
+      "precision": "user transcript; ANG rounded to 0.1K"
+    },
+    {
+      "heroId": "garwain",
+      "level": 200,
+      "phase": "before-ascension",
+      "heldAng": 133800,
+      "heldLp": 1370000,
+      "precision": "user transcript; ANG rounded to 0.1K; LP to 0.01M"
+    }
+  ]
+}

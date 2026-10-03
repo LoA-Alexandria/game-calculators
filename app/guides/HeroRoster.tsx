@@ -13,6 +13,7 @@ import {
 } from "react";
 import { guideHref, guideLayout } from "../../lib/content/guides";
 import { heroAppearances } from "../../lib/content/hero-links";
+import { hasHeroStatRecord } from "../../lib/calculators/hero-stat-baselines";
 import { placementCaption } from "../../lib/content/hero-tiers";
 import { layoutTexts, type BuildZone } from "../../lib/content/hero-layouts";
 import type { PaintingTexts } from "../../lib/content/artwork";
@@ -527,6 +528,7 @@ function HeroDetail({
   const file = hero.images[shown] ?? hero.images[0];
   const figure = heroChibiUrl(hero.id);
   const found = heroAppearances(hero.name);
+  const hasStatRecord = hasHeroStatRecord(hero.id);
   const layouts = layoutTexts(t.guideEntries.heroLayouts);
   const layoutGuide = t.guideEntries.heroLayouts;
   const tierGuide = t.guideEntries.heroTierList;
@@ -537,7 +539,7 @@ function HeroDetail({
     collection: layoutGuide.labelCollection,
     counter: layoutGuide.labelCounters,
   };
-  const nothing = !found.tiers.length && !found.builds.length && !found.roles.length && !found.paintings.length;
+  const nothing = !found.tiers.length && !found.builds.length && !found.roles.length && !found.paintings.length && !hasStatRecord;
   const listedSkins = skinsFor(useGuideData<SkinData>("hero-skins").skins, hero.name);
   const troopLabel = hero.troop ? guide.troops[hero.troop] : null;
   const ageLabel = hero.age ? guide.ages[hero.age] : null;
@@ -547,6 +549,7 @@ function HeroDetail({
     found.builds.length,
     found.roles.length,
     found.paintings.length,
+    hasStatRecord,
   ].filter(Boolean).length;
 
   const sections: Section[] = [
@@ -636,6 +639,12 @@ function HeroDetail({
                   </span>
                 ))}
               </span>
+            </li>
+          ) : null}
+          {hasStatRecord ? (
+            <li>
+              <Link href={`/guides/hero-stats/#hero-${encodeURIComponent(hero.id)}`}>{guide.inHeroStats}</Link>
+              <span className="hero-link-values"><span className="hero-link-chip">{guide.heldStatMeasurements}</span></span>
             </li>
           ) : null}
         </ul>
