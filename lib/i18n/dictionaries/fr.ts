@@ -1315,8 +1315,18 @@ const fr: Dictionary = {
       inLayouts: "Formations des héros",
       inArtwork: "Artwork",
       basicHeading: "Base",
-      basicHeroAng: "ATQ héros · niv. 1",
-      basicLp: "PV héros · niv. 1",
+      basicHeroAng: "ATQ de base du héros · niv. 1",
+      basicLp: "PV de base du héros · niv. 1",
+      basicLevelLabel: "Niveau à calculer",
+      basicStarsLabel: "Nombre d’étoiles",
+      basicLevelNote: "Saisissez un niveau entier de 1 à 500. Les bonus d’ascension précédents connus sont inclus ; activez le bonus du palier actuel après l’ascension.",
+      basicAscensionApplied: "Ascension de ce niveau terminée",
+      basicAngAtLevel: "ATQ héros · niv. {level}",
+      basicLpAtLevel: "PV héros · niv. {level}",
+      basicStarBonus: "Bonus d’ATQ des étoiles",
+      basicStarBonusMissing: "Pas encore défini",
+      basicAngAfterStars: "ATQ après les étoiles",
+      basicStarFormula: "ATQ après étoiles = ATQ au niveau choisi × (1 + bonus fixe du nombre d’étoiles). Les pourcentages restent provisoires jusqu’à réception des valeurs.",
       // Textes de jeu traduits par héros, indexés par l'id de lib/data/heroes.json.
       heroTexts: {
         hermes: {

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 import test from "node:test";
-import { estimatedHeldAngLevelOne, estimatedHeldLpLevelOne, heldAngMilestoneBonus, heldLpMilestoneBonus, heroBasicStatsForHero, referenceHeldAng } from "../lib/calculators/hero-stat-baselines.ts";
+import { estimatedHeldAngLevelOne, estimatedHeldLpLevelOne, heldAngAfterStarBonus, heldAngMilestoneBonus, heldLpMilestoneBonus, heldStatsAtLevel, heldStarAngBonusPercent, heroBasicStatsForHero, referenceHeldAng } from "../lib/calculators/hero-stat-baselines.ts";
 
 const catalog = JSON.parse(readFileSync(new URL("../lib/calculators/hero-stat-baselines.json", import.meta.url), "utf8"));
 const roster = JSON.parse(readFileSync(new URL("../lib/data/heroes.json", import.meta.url), "utf8"));
@@ -50,6 +50,39 @@ test("the shared level curve reproduces Guan Yu's chat LP values within their di
     const projected = Math.round(6791 * referenceHeldAng(row.level) / 616) + heldLpMilestoneBonus(row.level, row.phase);
     assert.ok(Math.abs(projected - row.heldLp) <= Math.max(300, row.heldLp * 0.006), `Lv. ${row.level} ${row.phase}: ${projected} vs ${row.heldLp}`);
   }
+});
+
+test("Basic level calculator scales ANG and LP and applies milestone bonuses", () => {
+  const base = { heldAng: 616, heldLp: 6791 };
+  assert.deepEqual(heldStatsAtLevel(base, 1), base);
+  assert.deepEqual(heldStatsAtLevel(base, 20), { heldAng: referenceHeldAng(20), heldLp: Math.round(6791 * referenceHeldAng(20) / 616) });
+  assert.deepEqual(heldStatsAtLevel(base, 20, "after-ascension"), {
+    heldAng: referenceHeldAng(20) + 400,
+    heldLp: Math.round(6791 * referenceHeldAng(20) / 616) + 4000,
+  });
+  assert.deepEqual(heldStatsAtLevel(base, 21), {
+    heldAng: referenceHeldAng(21) + 400,
+    heldLp: Math.round(6791 * referenceHeldAng(21) / 616) + 4000,
+  });
+  assert.deepEqual(heldStatsAtLevel(base, 500), {
+    heldAng: Math.round(616 * referenceHeldAng(500) / 616) + 16820,
+    heldLp: Math.round(6791 * referenceHeldAng(500) / 616) + 164200,
+  });
+  const guan151 = catalog.heldStatObservations.find((row) => row.heroId === "guan-yu" && row.level === 151 && row.phase === "normal");
+  const projectedGuan151 = heldStatsAtLevel(heroBasicStatsForHero("guan-yu"), 151);
+  assert.ok(Math.abs(projectedGuan151.heldAng - guan151.heldAng) <= 100);
+  assert.ok(Math.abs(projectedGuan151.heldLp - guan151.heldLp) <= 300);
+  assert.deepEqual(heldStatsAtLevel(base, 0), { heldAng: null, heldLp: null });
+  assert.deepEqual(heldStatsAtLevel(base, 501), { heldAng: null, heldLp: null });
+});
+
+test("star input is accepted while unprovided star percentages remain placeholders", () => {
+  assert.equal(heldStarAngBonusPercent(0), 0);
+  assert.equal(heldAngAfterStarBonus(1234, 0), 1234);
+  assert.equal(heldStarAngBonusPercent(1), null);
+  assert.equal(heldAngAfterStarBonus(1234, 1), null);
+  assert.equal(heldStarAngBonusPercent(40), null);
+  assert.equal(heldStarAngBonusPercent(41), null);
 });
 
 test("Basic stats use their own profile tab instead of the other-guides list", () => {

@@ -1315,8 +1315,18 @@ const de: Dictionary = {
       inLayouts: "Helden-Layouts",
       inArtwork: "Artwork",
       basicHeading: "Basic",
-      basicHeroAng: "Helden-ANG · Stufe 1",
-      basicLp: "Helden-LP · Stufe 1",
+      basicHeroAng: "Helden-Basis-ANG · Stufe 1",
+      basicLp: "Helden-Basis-LP · Stufe 1",
+      basicLevelLabel: "Zu berechnende Stufe",
+      basicStarsLabel: "Sternanzahl",
+      basicLevelNote: "Gib eine ganze Stufe von 1 bis 500 ein. Bekannte frühere Aufstiegsboni werden eingerechnet; den Bonus der aktuellen Meilenstein-Stufe kannst du nach dem Aufstieg aktivieren.",
+      basicAscensionApplied: "Aufstieg auf dieser Stufe abgeschlossen",
+      basicAngAtLevel: "Helden-ANG · Stufe {level}",
+      basicLpAtLevel: "Helden-LP · Stufe {level}",
+      basicStarBonus: "Sternbonus auf ANG",
+      basicStarBonusMissing: "Noch nicht hinterlegt",
+      basicAngAfterStars: "ANG nach Sternbonus",
+      basicStarFormula: "ANG nach Sternen = ANG auf der gewählten Stufe × (1 + fester Bonus für die Sternanzahl). Die Sternprozente sind Platzhalter, bis die Werte vorliegen.",
       // Übersetzte Spieltexte je Held, Schlüssel ist die Helden-Id aus lib/data/heroes.json.
       heroTexts: {
         hermes: {
