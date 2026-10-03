@@ -19,11 +19,14 @@ it("removes the connected pale tile and keeps the coloured event art", () => {
   pixels.set([177, 62, 42, 255], artIndex);
   const frameIndex = (0 * width + 10) * 4;
   pixels.set([45, 39, 33, 255], frameIndex);
+  const roundedCornerFrameIndex = (4 * width + 1) * 4;
+  pixels.set([45, 39, 33, 255], roundedCornerFrameIndex);
 
   const cutout = removeEventIconTile(pixels, width, height);
   assert.equal(cutout[(4 * width + 4) * 4 + 3], 0);
   assert.equal(cutout[artIndex + 3], 255);
   assert.equal(cutout[frameIndex + 3], 0, "the standard tile outline is removed");
+  assert.equal(cutout[roundedCornerFrameIndex + 3], 0, "the rounded corner outline is removed");
   assert.equal(cutout[0 + 3], 0, "the original transparent exterior stays transparent");
 });
 
