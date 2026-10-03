@@ -18,6 +18,7 @@ import {
 import { fill, type Dictionary } from "../../lib/i18n";
 import { useLocale } from "../components/LocaleProvider";
 import { useGuideData } from "./GuideOverrides";
+import { useEventWiki } from "../events/useEventWiki";
 
 type Guide = Dictionary["guideEntries"]["serverAgeUnlocks"];
 
@@ -29,6 +30,7 @@ export function isServerAgeUnlocksGuide(
 
 function EventRow({ event, guide }: { event: AgeEvent; guide: Guide }) {
   const { t } = useLocale();
+  const entries = useEventWiki();
   const [detailsOpen, setDetailsOpen] = useState(false);
   const name = eventName(event, guide.eventTexts);
   const detail = eventDetail(event, guide.eventTexts);
@@ -39,7 +41,7 @@ function EventRow({ event, guide }: { event: AgeEvent; guide: Guide }) {
   const image = event.image
     ? eventImageUrl(event.image)
     : eventGuideId
-      ? eventWikiIconUrl(eventGuideId) ?? null
+      ? eventWikiIconUrl(eventGuideId, entries) ?? null
       : null;
   const related =
     event.relatedGuide && isGuideEntryId(event.relatedGuide, t.guideEntries)

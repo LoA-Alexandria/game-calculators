@@ -74,6 +74,9 @@ export const TRADE_SETS_DRAFT_STORAGE_KEY = "popepoch-trade-sets-draft";
 /** The Grand Voyage matrices and the observed cargo. */
 export const GRAND_VOYAGE_DRAFT_STORAGE_KEY = "popepoch-grand-voyage-draft";
 
+/** The in-game help on the event pages. */
+export const EVENT_WIKI_DRAFT_STORAGE_KEY = "popepoch-event-wiki-draft";
+
 /** The lore editor keeps one draft per roster, both languages in it. */
 export const HERO_LORE_DRAFT_STORAGE_KEY = "popepoch-hero-lore-draft";
 export const GODDESS_LORE_DRAFT_STORAGE_KEY = "popepoch-goddess-lore-draft";

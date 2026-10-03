@@ -31,8 +31,16 @@ export type EventWikiEntry = {
   stub: boolean;
 };
 
-const ENTRIES = data.events as EventWikiEntry[];
+export type EventWikiData = { source: string; fetched: string; events: EventWikiEntry[] };
+
+export const EVENT_WIKI_DATA = data as EventWikiData;
+const ENTRIES = EVENT_WIKI_DATA.events;
 const BY_ID = new Map(ENTRIES.map((entry) => [entry.id, entry]));
+
+/** One entry, from the built file or from what the site serves. */
+function entryOf(id: string, entries: readonly EventWikiEntry[]): EventWikiEntry | undefined {
+  return entries === ENTRIES ? BY_ID.get(id) : entries.find((entry) => entry.id === id);
+}
 const EVENT_ICON_OVERRIDES: Record<string, string> = {
   // The event write-up predates the wiki icon field; use the local original icon.
   redCarpet: "/events/red-carpet.svg",
@@ -41,26 +49,27 @@ const EVENT_ICON_OVERRIDES: Record<string, string> = {
 export const EVENT_WIKI_SOURCE = data.source;
 export const EVENT_WIKI_FETCHED = data.fetched;
 
-export function eventWiki(id: string): EventWikiEntry | undefined {
-  return BY_ID.get(id);
+/** `entries` defaults to the built file; a page passes the published ones. */
+export function eventWiki(id: string, entries: readonly EventWikiEntry[] = ENTRIES): EventWikiEntry | undefined {
+  return entryOf(id, entries);
 }
 
 /** Public path for a nav or index icon, from the wiki or a local override. */
-export function eventWikiIcon(id: string): string | undefined {
-  return BY_ID.get(id)?.icon ?? EVENT_ICON_OVERRIDES[id];
+export function eventWikiIcon(id: string, entries: readonly EventWikiEntry[] = ENTRIES): string | undefined {
+  return entryOf(id, entries)?.icon ?? EVENT_ICON_OVERRIDES[id];
 }
 
-export function eventWikiIconUrl(id: string): string | undefined {
-  const icon = eventWikiIcon(id);
+export function eventWikiIconUrl(id: string, entries: readonly EventWikiEntry[] = ENTRIES): string | undefined {
+  const icon = eventWikiIcon(id, entries);
   return icon ? asset(icon) : undefined;
 }
 
-export function eventWikiHasHelp(id: string): boolean {
-  const entry = BY_ID.get(id);
+export function eventWikiHasHelp(id: string, entries: readonly EventWikiEntry[] = ENTRIES): boolean {
+  const entry = entryOf(id, entries);
   if (!entry) return false;
   return Boolean(entry.intro || entry.sections.length > 0);
 }
 
-export function allEventWikiEntries(): readonly EventWikiEntry[] {
-  return ENTRIES;
+export function allEventWikiEntries(entries: readonly EventWikiEntry[] = ENTRIES): readonly EventWikiEntry[] {
+  return entries;
 }

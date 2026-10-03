@@ -6,6 +6,7 @@ import { EVENT_TITLES, UNNAMED_GREEN_TITLE_EVENTS, eventTitleHref, type EventTit
 import { eventWikiIconUrl } from "../../lib/content/event-guides";
 import type { Dictionary } from "../../lib/i18n";
 import { asset } from "../../lib/site";
+import { useEventWiki } from "../events/useEventWiki";
 
 type Guide = Dictionary["guideEntries"]["eventTitles"];
 
@@ -18,7 +19,8 @@ export function isEventTitlesGuide(
 }
 
 function EventLink({ entry, guide, t }: { entry: EventTitle["events"][number]; guide: Guide; t: Dictionary }) {
-  const icon = entry.guideId ? eventWikiIconUrl(entry.guideId) : undefined;
+  const entries = useEventWiki();
+  const icon = entry.guideId ? eventWikiIconUrl(entry.guideId, entries) : undefined;
   const name = guide.eventNames[entry.name as keyof typeof guide.eventNames] ?? (entry.guideId ? t.eventGuideEntries[entry.guideId].title : entry.name);
   const condition = entry.condition ? guide.conditions[entry.condition as keyof typeof guide.conditions] ?? entry.condition : undefined;
   const noteKey = `steelheart-overlord:${entry.name}` as keyof typeof guide.eventNotes;

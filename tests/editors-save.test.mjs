@@ -190,7 +190,6 @@ test("a guide reads the data the site serves, or is on the list of those that do
   // nothing of it. The list below is the work left, and it may only shrink.
   const waiting = [
     "CryptidTowerLayoutGuide.tsx",
-    "EventTitlesGuide.tsx",
   ];
   const pages = readdirSync(guidesDir).filter(
     (name) => name.endsWith("Guide.tsx") || name === "HeroRoster.tsx",
@@ -198,7 +197,8 @@ test("a guide reads the data the site serves, or is on the list of those that do
   const withoutData = pages
     // A guide with a data constant in its imports: a plain helper is no sign.
     .filter((name) => /import \{[^}]*\b[A-Z][A-Z_0-9]{2,}\b[^}]*\} from "\.\.\/\.\.\/lib\/content\//s.test(source(name)))
-    .filter((name) => !source(name).includes("useGuideData<"))
+    // `useEventWiki` is the same read through one shared hook.
+    .filter((name) => !source(name).includes("useGuideData<") && !source(name).includes("useEventWiki("))
     .sort();
   assert.deepEqual(
     withoutData,

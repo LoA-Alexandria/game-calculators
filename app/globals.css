@@ -2873,6 +2873,14 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
 .guild-trade-set-pick { margin: 0; min-width: 200px; }
 .guild-trade-set-pick label { margin-bottom: 4px; }
 
+/* --- event help editor ---------------------------------------------------- */
+
+.ew-edit-pick { max-width: 420px; }
+.ew-edit-fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 4px 14px; align-items: end; }
+.ew-edit-icon { width: 48px; height: 48px; margin-bottom: 14px; border-radius: 10px; background: var(--surface-2); object-fit: contain; }
+.ew-edit-sections { display: grid; gap: 12px; margin: 12px 0 0; padding: 0; list-style: none; }
+.ew-edit-section-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
+
 /* --- grand voyage editor -------------------------------------------------- */
 
 .gv-edit-pick { max-width: 320px; }
