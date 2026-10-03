@@ -9,19 +9,26 @@ import {
   MAX_ROUTE_CITIES,
   MIN_ROUTE_CITIES,
   ROUTE_CITIES,
+  type RouteData,
 } from "../../../lib/calculators/grand-voyage-route";
+import { useGuideData } from "../../guides/GuideOverrides";
 
 export default function GrandVoyageRoutePage() {
   const { t, tf, n } = useLocale();
+  // The build carries the matrix; a published edit lies over it a moment later.
+  const data = useGuideData<RouteData>("grand-voyage-routes");
+  const cities = data.cities;
   const [route, setRoute] = useState<string[]>([ROUTE_CITIES[0], ROUTE_CITIES[1]]);
+  // A city the published list no longer has cannot be planned with.
+  const chosen = route.filter((city) => cities.includes(city));
 
   const result = useMemo(() => {
     try {
-      return calculateRoute(route);
+      return calculateRoute(chosen, data);
     } catch {
       return null;
     }
-  }, [route]);
+  }, [chosen, data]);
 
   const units = { hour: t.units.hour, minute: t.units.minute };
   const updateCity = (index: number, city: string) =>
@@ -45,7 +52,7 @@ export default function GrandVoyageRoutePage() {
               onClick={() =>
                 setRoute((current) => [
                   ...current,
-                  ROUTE_CITIES.find((city) => !current.includes(city)) ?? ROUTE_CITIES[0],
+                  cities.find((city) => !current.includes(city)) ?? cities[0],
                 ])
               }
             >
@@ -60,7 +67,7 @@ export default function GrandVoyageRoutePage() {
                 value={city}
                 onChange={(event) => updateCity(index, event.target.value)}
               >
-                {ROUTE_CITIES.map((option) => (
+                {cities.map((option) => (
                   <option disabled={option !== city && route.includes(option)} key={option}>
                     {option}
                   </option>
