@@ -30,6 +30,7 @@ import {
  */
 const VISIBLE_ITEMS = 8;
 const DRAWER_QUERY = "(max-width: 1024px)";
+const PAGE_BACKGROUND_SECTIONS = new Set(["news", "guides", "events", "calculators", "simulations"]);
 
 function matches(haystack: string, needle: string): boolean {
   return haystack.toLocaleLowerCase().includes(needle);
@@ -102,6 +103,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const menuButtonRef = useRef<HTMLButtonElement>(null);
 
   const pathSection = sectionForPath(pathname);
+  const pageBackground = pathSection && PAGE_BACKGROUND_SECTIONS.has(pathSection.id)
+    ? pathSection.id
+    : "general";
   const onOverview = pathIsExact(pathname, "/");
   const pathHasPanel = Boolean(pathSection && sectionHasBrowsePanel(pathSection));
   const query = filter.trim().toLocaleLowerCase();
@@ -526,6 +530,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       </aside>
 
       <div className="layout-main" {...(open && narrow ? { inert: true } : {})}>
+        <div
+          className="page-background-art"
+          aria-hidden="true"
+          style={{ backgroundImage: `url("${asset(`/backgrounds/bg-${pageBackground}.webp`)}")` }}
+        />
         <header className="topbar">
           {narrow ? (
             <button
