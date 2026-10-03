@@ -6,6 +6,7 @@ import { sectionById, type NavItem } from "../../lib/navigation";
 import { EventsIcon, SearchIcon } from "../components/Icons";
 import { useDocumentTitle, useLocale } from "../components/LocaleProvider";
 import { PageHead, SectionBanner } from "../components/Ui";
+import { EventIcon } from "../components/EventIcon";
 import { asset } from "../../lib/site";
 
 /** Lower-case and without accents, so "grosse" finds Große. */
@@ -37,7 +38,7 @@ export default function EventsPage() {
       <SectionBanner id="events" />
       <PageHead eyebrow={t.navDescriptions.events} title={t.events.title} lede={t.events.lede} />
 
-      <div className="guides-index">
+      <div className="guides-index events-index">
         <ul className="guides-stats">
           <li>
             <strong>{total}</strong> {t.events.statEntries}
@@ -82,8 +83,7 @@ function EventCard({ item }: { item: NavItem }) {
     <article className="guide-card">
       {icon ? (
         <div className="guide-card-art is-icon" aria-hidden="true">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={icon} alt="" width={88} height={88} />
+          <EventIcon src={icon} className="event-card-icon" width={88} height={88} />
         </div>
       ) : (
         <div className="guide-card-art is-glyph" aria-hidden="true">
