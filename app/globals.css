@@ -968,7 +968,53 @@ p { margin: 0; }
   cursor: pointer;
 }
 
-.layout-main { display: flex; flex-direction: column; min-width: 0; }
+.layout-main {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.page-background-art {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-repeat: no-repeat;
+  background-position: right clamp(12px, 5vw, 76px) top clamp(78px, 11vh, 132px);
+  background-size: min(82vw, 1120px) auto;
+  opacity: .32;
+  mix-blend-mode: multiply;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .page-background-art {
+    mix-blend-mode: screen;
+    opacity: .08;
+  }
+}
+
+:root[data-theme="dark"] .page-background-art {
+  mix-blend-mode: screen;
+  opacity: .08;
+}
+
+@media (max-width: 720px) {
+  .page-background-art {
+    background-position: center top 86px;
+    background-size: min(100%, 620px) auto;
+    opacity: .2;
+  }
+}
+
+@media (max-width: 720px) and (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .page-background-art { opacity: .06; }
+}
+
+@media (max-width: 720px) {
+  :root[data-theme="dark"] .page-background-art { opacity: .06; }
+}
 
 .topbar {
   position: sticky;
