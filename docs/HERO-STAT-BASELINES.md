@@ -3,8 +3,8 @@
 `lib/calculators/hero-stat-baselines.json` is the roster-wide catalog for
 workbook base attack values, recorded level-panel observations, and the
 experimental held-ANG estimate. It is separate from skill damage coefficients
-in the battle calculator. Hero profiles link to their row in `/guides/hero-stats/`
-under “Other guides”.
+in the battle calculator. Each Core Heroes profile displays its Basic stats
+under “In other guides”; no separate roster page is used.
 
 ## Base attack source
 
@@ -31,9 +31,10 @@ presented as exact integers. The source and effective date are recorded in the
 catalog. Guan Yu's 77.07K reading is level 150 after ascension; the 77.98K /
 853.1K reading is level 151, as confirmed by the user.
 
-The site shows the observations in expandable rows and links each measured
-hero's profile to the matching catalog row. LP is shown only at observed levels;
-there is no supported roster-wide LP formula, so level-one LP is not inferred.
+Each profile shows its level-one held ANG estimate, level-one LP when a direct
+reading exists, and expandable observed readings. LP is shown only at observed
+levels; there is no supported roster-wide LP formula, so level-one LP is not
+inferred.
 
 ## Experimental held-ANG estimate
 

@@ -13,7 +13,7 @@ import {
 } from "react";
 import { guideHref, guideLayout } from "../../lib/content/guides";
 import { heroAppearances } from "../../lib/content/hero-links";
-import { hasHeroStatRecord } from "../../lib/calculators/hero-stat-baselines";
+import { heroBasicStatsForHero } from "../../lib/calculators/hero-stat-baselines";
 import { placementCaption } from "../../lib/content/hero-tiers";
 import { layoutTexts, type BuildZone } from "../../lib/content/hero-layouts";
 import type { PaintingTexts } from "../../lib/content/artwork";
@@ -518,7 +518,7 @@ function HeroDetail({
   onSection: (id: string) => void;
   nameId: string;
 }) {
-  const { t, tf } = useLocale();
+  const { t, tf, n } = useLocale();
   const artworkTexts = t.guideEntries.artwork.catalogTexts as PaintingTexts;
   const collectionTexts = t.guideEntries.collection.collectionTexts as CollectionTexts;
   const [shown, setShown] = useState(0);
@@ -528,7 +528,8 @@ function HeroDetail({
   const file = hero.images[shown] ?? hero.images[0];
   const figure = heroChibiUrl(hero.id);
   const found = heroAppearances(hero.name);
-  const hasStatRecord = hasHeroStatRecord(hero.id);
+  const basicStats = heroBasicStatsForHero(hero.id);
+  const hasStatRecord = basicStats !== null;
   const layouts = layoutTexts(t.guideEntries.heroLayouts);
   const layoutGuide = t.guideEntries.heroLayouts;
   const tierGuide = t.guideEntries.heroTierList;
@@ -642,9 +643,38 @@ function HeroDetail({
             </li>
           ) : null}
           {hasStatRecord ? (
-            <li>
-              <Link href={`/guides/hero-stats/#hero-${encodeURIComponent(hero.id)}`}>{guide.inHeroStats}</Link>
-              <span className="hero-link-values"><span className="hero-link-chip">{guide.heldStatMeasurements}</span></span>
+            <li className="hero-basic-entry">
+              <strong className="hero-basic-title">{guide.basicHeading}</strong>
+              <dl className="hero-basic-values">
+                <div>
+                  <dt>{guide.basicBaseAttack}</dt>
+                  <dd>{basicStats.baseAttack == null ? guide.basicUnavailable : n(basicStats.baseAttack)}</dd>
+                </div>
+                <div>
+                  <dt>{guide.basicHeroAng}</dt>
+                  <dd>{basicStats.heldAng == null ? guide.basicUnavailable : `${basicStats.heldAngEstimated ? "≈ " : ""}${n(basicStats.heldAng)}`}</dd>
+                  {basicStats.heldAngEstimated ? <small>{guide.basicEstimated}</small> : null}
+                </div>
+                <div>
+                  <dt>{guide.basicLp}</dt>
+                  <dd>{basicStats.heldLp == null ? guide.basicUnavailable : n(basicStats.heldLp)}</dd>
+                </div>
+              </dl>
+              {basicStats.observations.length ? (
+                <details className="hero-basic-observations">
+                  <summary>{tf(guide.basicReadings, { count: basicStats.observations.length })}</summary>
+                  <ul>
+                    {basicStats.observations.map((observation, index) => (
+                      <li key={`${observation.level}-${observation.phase}-${index}`} data-warning={observation.dataQuality === "needs-confirmation" ? "true" : undefined}>
+                        <span>{tf(guide.levelLabel, { level: observation.level })} · {basicPhaseLabel(observation.phase, guide)}</span>
+                        <span>ANG {observation.dataQuality === "needs-confirmation" ? "⚠ " : !observation.precision.toLowerCase().includes("screen-read integer") ? "≈ " : ""}{n(observation.heldAng)}</span>
+                        <span>LP {observation.heldLp == null ? guide.basicUnavailable : `${!observation.precision.toLowerCase().includes("screen-read integer") ? "≈ " : ""}${n(observation.heldLp)}`}</span>
+                        <small>{observation.precision}</small>
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+              ) : null}
             </li>
           ) : null}
         </ul>
@@ -700,4 +730,12 @@ function HeroDetail({
       </div>
     </>
   );
+}
+
+function basicPhaseLabel(phase: string, guide: Guide) {
+  if (phase === "after-ascension") return guide.basicAfterAscension;
+  if (phase === "before-ascension") return guide.basicBeforeAscension;
+  if (phase === "after-enlightenment") return guide.basicAfterEnlightenment;
+  if (phase === "before-enlightenment") return guide.basicBeforeEnlightenment;
+  return guide.basicNormal;
 }
