@@ -649,16 +649,12 @@ function HeroDetail({
       body: (
         <dl className="hero-basic-values hero-basic-panel">
           <div>
-            <dt>{guide.basicBaseAttack}</dt>
-            <dd>{basicStats?.baseAttack == null ? "—" : n(basicStats.baseAttack)}</dd>
-          </div>
-          <div>
             <dt>{guide.basicHeroAng}</dt>
             <dd>{basicStats?.heldAng == null ? "—" : `${basicStats.heldAngEstimated ? "≈ " : ""}${n(basicStats.heldAng)}`}</dd>
           </div>
           <div>
             <dt>{guide.basicLp}</dt>
-            <dd>{basicStats?.heldLp == null ? "—" : n(basicStats.heldLp)}</dd>
+            <dd>{basicStats?.heldLp == null ? "—" : `${basicStats.heldLpEstimated ? "≈ " : ""}${n(basicStats.heldLp)}`}</dd>
           </div>
         </dl>
       ),

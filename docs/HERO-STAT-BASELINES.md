@@ -22,7 +22,7 @@ heroes absent from the sheet remain `null`; skill coefficients are not used as
 base stats. The workbook has no LP column, so `combatBaseLp` is explicitly
 `null` for every hero rather than inferred from attack.
 
-## Held-stat observations
+## Chat-derived level-one stats
 
 `heldStatObservations` contains the values shown in the user-supplied hero
 panels, with level, before/after ascension state, and visible precision retained.
@@ -31,10 +31,19 @@ presented as exact integers. The source and effective date are recorded in the
 catalog. Guan Yu's 77.07K reading is level 150 after ascension; the 77.98K /
 853.1K reading is level 151, as confirmed by the user.
 
-Each profile shows the workbook combat base attack, its level-one held ANG,
-and level-one held LP when the value exists. The held-ANG estimate is labeled
-with an approximation mark. No LP formula is used where the source provides no
-level-one value.
+The Basic tab uses the hero values supplied in chat, not the workbook table.
+For each hero with a level reading, it scales the reading back to a level-one
+ANG and LP value, subtracting the known enlightenment and ascension bonuses
+first. The UI prefixes formula-derived values with `≈` and shows direct
+level-one readings without the prefix.
+
+LP has its own per-hero level-one base, but uses the same level-growth
+multiplier as the existing integer ANG reference curve. This is a fitted
+cross-stat assumption, not a confirmed game formula. It is checked against 61
+Guan Yu LP readings through level 151: the largest absolute residual is 271
+points, and the largest relative residual is 0.55% (at a rounded level-24
+reading). Multiple samples for one hero are combined by their median
+level-one estimate. Heroes without a chat LP reading remain blank.
 
 ## Experimental held-ANG estimate
 

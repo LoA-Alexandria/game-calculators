@@ -19,12 +19,12 @@ const REFERENCE_LEVEL_ONE_ANG = 616;
  * based on one confirmed example and is an explicit cross-hero assumption.
  */
 export const HELD_ANG_MILESTONES = [
-  { level: 20, ang: 400 },
-  { level: 50, ang: 1600 },
-  { level: 100, ang: 1500 },
-  { level: 150, ang: 1920 },
-  { level: 200, ang: 2400 },
-  { level: 300, ang: 9000 },
+  { level: 20, ang: 400, lp: 4_000 },
+  { level: 50, ang: 1_600, lp: 16_000 },
+  { level: 100, ang: 1_500, lp: 15_000 },
+  { level: 150, ang: 1_920, lp: 19_200 },
+  { level: 200, ang: 2_400, lp: 20_000 },
+  { level: 300, ang: 9_000, lp: 90_000 },
 ] as const;
 
 /** Integer growth step fitted to Guan Yu observations, before milestone bonuses. */
@@ -48,12 +48,31 @@ export function heldAngMilestoneBonus(level: number, phase: string): number {
   }, 0);
 }
 
+export function heldLpMilestoneBonus(level: number, phase: string): number {
+  return HELD_ANG_MILESTONES.reduce((sum, milestone) => {
+    if (level > milestone.level) return sum + milestone.lp;
+    if (level < milestone.level) return sum;
+    return phase === "after-ascension" || phase === "after-enlightenment"
+      ? sum + milestone.lp
+      : sum;
+  }, 0);
+}
+
 export function estimatedHeldAngLevelOne(observation: HeldStatObservation): number | null {
   if (observation.dataQuality === "needs-confirmation") return null;
   const baseAtLevel = referenceHeldAng(observation.level);
   const angBeforeBonuses = observation.heldAng - heldAngMilestoneBonus(observation.level, observation.phase);
   if (baseAtLevel <= 0 || angBeforeBonuses <= 0) return null;
   return Math.round((angBeforeBonuses * REFERENCE_LEVEL_ONE_ANG) / baseAtLevel);
+}
+
+/** Estimates a hero's level-one LP from its chat-supplied level reading. */
+export function estimatedHeldLpLevelOne(observation: HeldStatObservation): number | null {
+  if (observation.dataQuality === "needs-confirmation" || observation.heldLp == null) return null;
+  const baseAtLevel = referenceHeldAng(observation.level);
+  const lpBeforeBonuses = observation.heldLp - heldLpMilestoneBonus(observation.level, observation.phase);
+  if (baseAtLevel <= 0 || lpBeforeBonuses <= 0) return null;
+  return Math.round((lpBeforeBonuses * REFERENCE_LEVEL_ONE_ANG) / baseAtLevel);
 }
 
 export const HELD_STAT_OBSERVATIONS = (catalogData as { heldStatObservations: HeldStatObservation[] }).heldStatObservations;
@@ -78,11 +97,22 @@ export function heroBasicStatsForHero(heroId: string) {
     .filter((observation) => estimatedHeldAngLevelOne(observation) !== null)
     .sort((a, b) => b.level - a.level || Number(b.phase === "after-ascension" || b.phase === "after-enlightenment") - Number(a.phase === "after-ascension" || a.phase === "after-enlightenment"))[0];
   const estimatedAng = estimateFrom ? estimatedHeldAngLevelOne(estimateFrom) : null;
+  const lpEstimates = observations
+    .map(estimatedHeldLpLevelOne)
+    .filter((value): value is number => value !== null)
+    .sort((a, b) => a - b);
+  const estimatedLp = lpEstimates.length
+    ? lpEstimates.length % 2
+      ? lpEstimates[(lpEstimates.length - 1) / 2]
+      : Math.round((lpEstimates[lpEstimates.length / 2 - 1] + lpEstimates[lpEstimates.length / 2]) / 2)
+    : null;
+  const levelOneLp = observations.find((observation) => observation.level === 1 && observation.phase === "normal")?.heldLp ?? null;
 
   return {
     baseAttack: hero.combatBaseAttack.value,
     heldAng: hero.heldStatStart?.ang ?? levelOne?.heldAng ?? estimatedAng,
     heldAngEstimated: hero.heldStatStart?.ang == null && levelOne?.heldAng == null && estimatedAng !== null,
-    heldLp: hero.heldStatStart?.lp ?? levelOne?.heldLp ?? hero.combatBaseLp.value,
+    heldLp: hero.heldStatStart?.lp ?? levelOneLp ?? estimatedLp,
+    heldLpEstimated: hero.heldStatStart?.lp == null && levelOneLp == null && estimatedLp !== null,
   };
 }

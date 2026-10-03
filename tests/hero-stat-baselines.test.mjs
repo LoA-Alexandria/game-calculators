@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 import test from "node:test";
-import { estimatedHeldAngLevelOne, heldAngMilestoneBonus, heroBasicStatsForHero, referenceHeldAng } from "../lib/calculators/hero-stat-baselines.ts";
+import { estimatedHeldAngLevelOne, estimatedHeldLpLevelOne, heldAngMilestoneBonus, heldLpMilestoneBonus, heroBasicStatsForHero, referenceHeldAng } from "../lib/calculators/hero-stat-baselines.ts";
 
 const catalog = JSON.parse(readFileSync(new URL("../lib/calculators/hero-stat-baselines.json", import.meta.url), "utf8"));
 const roster = JSON.parse(readFileSync(new URL("../lib/data/heroes.json", import.meta.url), "utf8"));
@@ -20,13 +20,36 @@ test("hero stat catalog covers the published hero roster without inventing missi
   assert.ok(catalog.heldStatObservations.every((row) => Number.isInteger(row.level) && Number.isInteger(row.heldAng)));
 });
 
-test("every hero profile receives a Basic tab and unknown LP stays blank", () => {
+test("chat LP values produce individual level-one estimates for heroes with readings", () => {
+  const heroesWithLp = new Set(catalog.heldStatObservations.filter((row) => row.heldLp !== null).map((row) => row.heroId));
   assert.ok(roster.heroes.every((hero) => heroBasicStatsForHero(hero.id) !== null));
+  assert.equal(heroesWithLp.size, 80);
+  for (const heroId of heroesWithLp) assert.ok(heroBasicStatsForHero(heroId).heldLp > 0, heroId);
   assert.equal(heroBasicStatsForHero("unknown-hero"), null);
   assert.equal(heroBasicStatsForHero("guan-yu").heldAng, 616);
   assert.equal(heroBasicStatsForHero("guan-yu").heldLp, 6791);
-  assert.equal(heroBasicStatsForHero("achilles").heldLp, null);
+  assert.equal(heroBasicStatsForHero("guan-yu").heldLpEstimated, false);
+  assert.equal(heroBasicStatsForHero("lu-bu").heldLp, 7087);
+  assert.equal(heroBasicStatsForHero("morgana").heldLp, 6808);
+  assert.equal(heroBasicStatsForHero("queen-victoria").heldLp, 6129);
+  assert.equal(heroBasicStatsForHero("garwain").heldLp, 6550);
+  assert.equal(heroBasicStatsForHero("lu-bu").heldLpEstimated, true);
+  assert.equal(heroBasicStatsForHero("yi-sun-sin").heldLp, null);
   assert.equal(heroBasicStatsForHero("achilles").heldAngEstimated, true);
+});
+
+test("the shared level curve reproduces Guan Yu's chat LP values within their display precision", () => {
+  assert.equal(estimatedHeldLpLevelOne(observation("guan-yu", 10)), 6794);
+  assert.equal(heldLpMilestoneBonus(20, "before-enlightenment"), 0);
+  assert.equal(heldLpMilestoneBonus(20, "after-enlightenment"), 4000);
+  assert.equal(heldLpMilestoneBonus(50, "after-ascension"), 20000);
+
+  const readings = catalog.heldStatObservations.filter((row) => row.heroId === "guan-yu" && row.heldLp !== null);
+  assert.equal(readings.length, 61);
+  for (const row of readings) {
+    const projected = Math.round(6791 * referenceHeldAng(row.level) / 616) + heldLpMilestoneBonus(row.level, row.phase);
+    assert.ok(Math.abs(projected - row.heldLp) <= Math.max(300, row.heldLp * 0.006), `Lv. ${row.level} ${row.phase}: ${projected} vs ${row.heldLp}`);
+  }
 });
 
 test("Basic stats use their own profile tab instead of the other-guides list", () => {
