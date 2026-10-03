@@ -1314,7 +1314,6 @@ const en = {
       inLayouts: "Hero layouts",
       inArtwork: "Artwork",
       basicHeading: "Basic",
-      basicBaseAttack: "Combat base ATK · Green 1★",
       basicHeroAng: "Hero ANG · Lv. 1",
       basicLp: "Hero LP · Lv. 1",
       // English is the wording in lib/data/heroes.json, so this catalog stays empty.

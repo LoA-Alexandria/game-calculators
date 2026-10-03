@@ -1315,7 +1315,6 @@ const de: Dictionary = {
       inLayouts: "Helden-Layouts",
       inArtwork: "Artwork",
       basicHeading: "Basic",
-      basicBaseAttack: "Basis-ANG · Grün 1★",
       basicHeroAng: "Helden-ANG · Stufe 1",
       basicLp: "Helden-LP · Stufe 1",
       // Übersetzte Spieltexte je Held, Schlüssel ist die Helden-Id aus lib/data/heroes.json.

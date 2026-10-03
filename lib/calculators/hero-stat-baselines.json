@@ -82,6 +82,18 @@
       "nextKnownMilestoneLevel": 500
     },
     "crossHeroScaleHypothesis": "Estimated hero level-1 held ANG = (observed held ANG minus known milestone bonuses) × 616 / reference held ANG at the observed level. This assumes the reference level-growth curve scales proportionally across heroes; this remains experimental. The level-300 bonus is currently transcribed from Queen Victoria and assumed universal for estimates.",
+    "heldLpScaling": {
+      "status": "chat-derived-estimate",
+      "referenceHeroId": "guan-yu",
+      "referenceLevelOneLp": 6791,
+      "levelMultiplier": "same integer level multiplier as held ANG",
+      "milestoneBonuses": "Use the LP values in milestoneBonuses; subtract before scaling to level 1.",
+      "fitRows": 61,
+      "validatedThroughLevel": 151,
+      "maxAbsoluteResidual": 271,
+      "maxRelativeResidual": 0.005488,
+      "notes": "The user-supplied chat values support an estimate, not a confirmed game formula. Rounded K/M readings contribute display error."
+    },
     "rounding": "The level increments use integer division and return whole ANG values. User K/M readings are approximate; the model is fitted to rounded observations and is not the confirmed game formula."
   },
   "heroes": [

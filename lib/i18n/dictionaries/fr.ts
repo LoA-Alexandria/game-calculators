@@ -1315,7 +1315,6 @@ const fr: Dictionary = {
       inLayouts: "Formations des héros",
       inArtwork: "Artwork",
       basicHeading: "Base",
-      basicBaseAttack: "ATQ de base · vert 1★",
       basicHeroAng: "ATQ héros · niv. 1",
       basicLp: "PV héros · niv. 1",
       // Textes de jeu traduits par héros, indexés par l'id de lib/data/heroes.json.
