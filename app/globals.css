@@ -1022,6 +1022,26 @@ p { margin: 0; }
   :root[data-theme="dark"] .page-background-art { opacity: .06; }
 }
 
+.layout-main:has(.events-index) .page-background-art { opacity: .1; }
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .layout-main:has(.events-index) .page-background-art { opacity: .02; }
+}
+
+:root[data-theme="dark"] .layout-main:has(.events-index) .page-background-art { opacity: .02; }
+
+@media (max-width: 720px) {
+  .layout-main:has(.events-index) .page-background-art { opacity: .06; }
+}
+
+@media (max-width: 720px) and (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .layout-main:has(.events-index) .page-background-art { opacity: .015; }
+}
+
+@media (max-width: 720px) {
+  :root[data-theme="dark"] .layout-main:has(.events-index) .page-background-art { opacity: .015; }
+}
+
 .topbar {
   position: sticky;
   top: 0;
