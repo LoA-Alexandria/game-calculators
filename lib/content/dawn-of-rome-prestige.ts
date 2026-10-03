@@ -6,10 +6,11 @@
  * are one target — painting any of them paints them all, and the game quotes
  * one rate per outpost or city rather than one per hex.
  *
- * Only two rates are known so far. The rest are `null` on purpose: a missing
- * rate reads as "not known yet" everywhere, rather than quietly counting as
- * zero and making a total look complete when it is not. Fill them in below and
- * nothing else has to change.
+ * Rates were transcribed from the in-game Rome and Nile guild pages supplied
+ * by the site owner on 2026-10-03. They are prestige per minute; structure
+ * rates apply once per whole place, while plain land pays per hex. Any future
+ * rate not yet confirmed remains `null` so totals cannot silently treat it as
+ * zero.
  */
 
 import {
@@ -23,11 +24,11 @@ import { ROME_STRUCTURES } from "./dawn-of-rome-tile-data.ts";
 export const ROME_PRESTIGE_PER_MINUTE: Record<RomePlaceKind, number | null> = {
   home: 400,
   large: 360,
-  rome: null,
-  gate: null,
-  medium: null,
-  small: null,
-  plain: null,
+  rome: 1400,
+  gate: 400,
+  medium: 240,
+  small: 120,
+  plain: 6,
 };
 
 /** The order the board lists places in: the richest first, land last. */
