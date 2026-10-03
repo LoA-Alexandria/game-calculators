@@ -7,15 +7,18 @@
  * five were rematched on 18 September 2026 so each bio names its hero. Lagertha's
  * missing wiki blurb was restored in the same encyclopedia style from Saxo
  * Grammaticus's Gesta Danorum, not from in-game text.
- * Skill, buff, and production tables for 39 heroes come from German client
- * screenshots on 18 September and 2 October 2026; English is a translation of
- * that German text. Joan of Arc had no skill tables in that dump, so her
- * abilities stay empty. Four wiki heroes (Guan Yu, Miyamoto Musashi, Yi
- * Sun-sin, Lü Bu) were added from the Hero page without skill tables.
+ * Skill and production tables for 77 heroes, and buff tables for 47 of them,
+ * come from German client screenshots on 18 September and 2 October 2026;
+ * English skill text is translated from the German client. The 2 October
+ * screenshots supplied the newly added 38 heroes (8 SSR, 18 SR, 12 R).
+ * Joan of Arc and four wiki heroes (Guan Yu, Miyamoto Musashi, Yi Sun-sin,
+ * Lü Bu) remain without skill tables because their data was not present.
  *
- * Production mid-levels that were not photographed are interpolated as noted
- * in the source files: UR/UR+ +4% per level, SSR 30% + 3% × (n−1). Do not
- * treat those interpolated rows as photographed values.
+ * Production mid-levels that were not photographed are interpolated from the
+ * screenshot progression: UR/UR+ +4%, SSR +3%, SR +2%, and R +1% per level.
+ * Do not treat those interpolated rows as photographed values. Production
+ * star gates follow the client sequence from level 6 (8 stars) through level
+ * 25 (39 stars), with the intermediate gates listed in source data.
  *
  * Rows live in `lib/data/heroes.json`; the roster editor exports a replacement
  * for that file. A missing `skill`, `buff`, or `production` means nobody has

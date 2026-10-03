@@ -1323,7 +1323,7 @@ const en = {
           ],
         },
       ],
-      note: "Skill, buff, and production tables for 39 heroes come from German client screenshots taken on 18 September and 2 October 2026. German is the source text; English and French are translations and may differ from the in-game wording. Production levels missing from the screenshots are interpolated: UR and UR+ +4% per level, SSR 30% + 3% × (n−1). Titles, troops, ages, and bios come from the Pop Epoch Wiki Hero page. Joan of Arc and four heroes added from the wiki do not yet have complete ability tables here.",
+      note: "Skill and production tables for 77 heroes, plus buff tables for 47, come from German client screenshots taken on 18 September and 2 October 2026. German is the source text; English and French are translations and may differ from the in-game wording. Production levels missing from the screenshots are interpolated at +4% per level for UR/UR+, +3% for SSR, +2% for SR, and +1% for R. Titles, troops, ages, and bios come from the Pop Epoch Wiki Hero page. Joan of Arc and four UR heroes added from the wiki do not yet have complete ability tables here.",
     },
     technology: {
       title: "Technology",
