@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
+import { estimatedHeldAngLevelOne, heldAngMilestoneBonus, referenceHeldAng } from "../lib/calculators/hero-stat-baselines.ts";
 
 const catalog = JSON.parse(readFileSync(new URL("../lib/calculators/hero-stat-baselines.json", import.meta.url), "utf8"));
 const roster = JSON.parse(readFileSync(new URL("../lib/data/heroes.json", import.meta.url), "utf8"));
@@ -15,6 +16,8 @@ test("hero stat catalog covers the published hero roster without inventing missi
   assert.equal(catalog.heroes.find((hero) => hero.id === "guinevere").combatBaseAttack.status, "source-blank");
   assert.equal(catalog.heroes.find((hero) => hero.id === "heracles").combatBaseAttack.status, "source-blank");
   assert.equal(catalog.heroes.find((hero) => hero.id === "andersen").combatBaseAttack.status, "possible-name-match-needs-confirmation");
+  assert.ok(catalog.heldStatObservations.every((row) => roster.heroes.some((hero) => hero.id === row.heroId)));
+  assert.ok(catalog.heldStatObservations.every((row) => Number.isInteger(row.level) && Number.isInteger(row.heldAng)));
 });
 
 test("Guan Yu milestone readings and later user readings are kept as observations", () => {
@@ -27,14 +30,27 @@ test("Guan Yu milestone readings and later user readings are kept as observation
   assert.equal(observation("guan-yu", 23).heldLp, null, "unknown observations stay blank");
 });
 
-test("the tentative reference curve is close to observed non-milestone hero data", () => {
-  const { coefficients, referenceHeroId } = catalog.model;
-  const start = (id) => catalog.heroes.find((hero) => hero.id === id).heldStatStart.ang;
-  const predict = (level, heroId) => {
-    const reference = coefficients.a + coefficients.b * level + coefficients.c * level ** 2;
-    return reference * start(heroId) / start(referenceHeroId);
-  };
-  assert.ok(Math.abs(predict(10, "lu-bu") - observation("lu-bu", 10).heldAng) < 2);
-  assert.ok(Math.abs(predict(15, "lu-bu") - observation("lu-bu", 15).heldAng) < 4);
-  assert.equal(catalog.heroes.find((hero) => hero.id === "miyamoto-musashi").heldStatStart.ang, 652);
+test("integer growth rule and milestone boundaries stay explicit", () => {
+  assert.equal(referenceHeldAng(1), 616);
+  assert.equal(referenceHeldAng(2), 670);
+  assert.equal(heldAngMilestoneBonus(19, "normal"), 0);
+  assert.equal(heldAngMilestoneBonus(20, "before-enlightenment"), 0);
+  assert.equal(heldAngMilestoneBonus(20, "after-enlightenment"), 400);
+  assert.equal(heldAngMilestoneBonus(50, "after-ascension"), 2000);
+  assert.equal(heldAngMilestoneBonus(100, "before-ascension"), 2000);
+  assert.equal(heldAngMilestoneBonus(100, "after-ascension"), 3500);
+  assert.equal(heldAngMilestoneBonus(300, "after-ascension"), 16820);
+  assert.equal(heldAngMilestoneBonus(500, "before-ascension"), 16820, "level-500 bonus is not included before ascension");
+});
+
+test("cross-hero level-one ANG estimates match known low-level checks and flag disputed input", () => {
+  assert.ok(Math.abs(estimatedHeldAngLevelOne(observation("lu-bu", 10)) - 587) <= 1);
+  assert.ok(Math.abs(estimatedHeldAngLevelOne(observation("morgana", 10)) - 615) <= 1);
+  assert.ok(Math.abs(estimatedHeldAngLevelOne(observation("miyamoto-musashi", 10)) - 652) <= 2);
+  const after150 = observation("guan-yu", 150, "after-ascension");
+  assert.equal(after150.heldAng, 77070);
+  assert.equal(estimatedHeldAngLevelOne(after150), 617);
+  assert.equal(observation("guan-yu", 151).heldAng, 77980);
+  assert.equal(catalog.heldStatObservations.some((row) => row.dataQuality === "needs-confirmation"), false);
+  assert.ok(catalog.heldStatObservations.some((row) => row.heroId === "queen-victoria" && row.level === 300 && row.heldAng === 316900));
 });

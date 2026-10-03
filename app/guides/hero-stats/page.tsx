@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import catalogData from "../../../lib/calculators/hero-stat-baselines.json" with { type: "json" };
+import { estimatedHeldAngLevelOne, heldStatObservationsForHero } from "../../../lib/calculators/hero-stat-baselines";
 import { HERO_RARITIES } from "../../../lib/content/heroes";
 import { useDocumentTitle, useLocale } from "../../components/LocaleProvider";
 import styles from "./hero-stats.module.css";
@@ -65,6 +66,7 @@ export default function HeroStatsPage() {
                 <th scope="col">{copy.baseAttack}</th>
                 <th scope="col">{copy.heldAttack}</th>
                 <th scope="col">{copy.heldHp}</th>
+                <th scope="col">{copy.observedReadings}</th>
                 <th scope="col">{copy.scaling}</th>
               </tr>
             </thead>
@@ -86,14 +88,46 @@ function StatRow({ hero, copy, n }: { hero: CatalogHero; copy: GuideText; n: (va
       : base.status === "possible-name-match-needs-confirmation" ? copy.statusUnconfirmed : copy.unknown;
   const scaling = hero.heldStatScalingStatus === "reference-fit" ? copy.known
     : hero.heldStatScalingStatus === "partial-check" || hero.heldStatScalingStatus === "start-only" ? copy.partial : copy.unknown;
+  const observations = heldStatObservationsForHero(hero.id);
+  const estimateFrom = observations
+    .filter((observation) => estimatedHeldAngLevelOne(observation) !== null)
+    .sort((a, b) => b.level - a.level || Number(b.phase === "after-ascension" || b.phase === "after-enlightenment") - Number(a.phase === "after-ascension" || a.phase === "after-enlightenment"))[0];
+  const estimatedAng = estimateFrom ? estimatedHeldAngLevelOne(estimateFrom) : null;
+  const heldAngStart = hero.heldStatStart?.ang ?? estimatedAng;
   return (
-    <tr>
+    <tr id={`hero-${hero.id}`}>
       <th scope="row"><span className={styles.heroName}>{hero.name}</span><span className={styles.rarity}>{hero.rarity}</span></th>
       <td>{hero.troop}</td>
       <td><strong>{base.value === null ? "—" : n(base.value)}</strong><small>{status}</small></td>
-      <td>{hero.heldStatStart?.ang == null ? "—" : n(hero.heldStatStart.ang)}</td>
+      <td>{heldAngStart == null ? "—" : <><strong>{hero.heldStatStart?.ang == null ? "≈" : ""}{n(heldAngStart)}</strong><small>{hero.heldStatStart?.ang == null ? copy.estimatedFrom : copy.recordedStart}</small></>}</td>
       <td>{hero.heldStatStart?.lp == null ? "—" : n(hero.heldStatStart.lp)}</td>
+      <td>
+        {observations.length ? (
+          <details className={styles.readings}>
+            <summary>{copy.readingsCount.replace("{count}", String(observations.length))}</summary>
+            <ul>
+              {observations.map((observation, index) => (
+                <li key={`${observation.level}-${observation.phase}-${index}`} data-warning={observation.dataQuality === "needs-confirmation" ? "true" : undefined}>
+                  <span>{copy.levelShort} {observation.level} · {phaseLabel(observation.phase, copy)}</span>
+                  <span>ANG {observation.dataQuality === "needs-confirmation" ? "⚠ " : "≈ "}{n(observation.heldAng)}</span>
+                  <span>LP {observation.heldLp == null ? "—" : `≈ ${n(observation.heldLp)}`}</span>
+                  <small>{observation.precision}</small>
+                  {observation.dataQuality === "needs-confirmation" ? <small>{copy.needsConfirmation}</small> : null}
+                </li>
+              ))}
+            </ul>
+          </details>
+        ) : "—"}
+      </td>
       <td><span className={styles.status} data-known={scaling === copy.known ? "true" : "false"}>{scaling}</span></td>
     </tr>
   );
+}
+
+function phaseLabel(phase: string, copy: GuideText): string {
+  if (phase === "after-ascension") return copy.afterAscension;
+  if (phase === "before-ascension") return copy.beforeAscension;
+  if (phase === "after-enlightenment") return copy.afterEnlightenment;
+  if (phase === "before-enlightenment") return copy.beforeEnlightenment;
+  return copy.normalPhase;
 }
