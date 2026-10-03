@@ -12,6 +12,7 @@ import { AccountMenu } from "./AccountMenu";
 import { LanguageMenu } from "./LanguageMenu";
 import { SchemeMenu } from "./SchemeMenu";
 import { ThemeToggle } from "./ThemeToggle";
+import { EventIcon } from "./EventIcon";
 import {
   BrandMark,
   CloseIcon,
@@ -281,8 +282,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                           aria-current={exact ? "page" : undefined}
                         >
                           {item.icon ? (
-                            // eslint-disable-next-line @next/next/no-img-element
-                            <img className="panel-link-icon" src={asset(item.icon)} alt="" width={28} height={28} />
+                            section.id === "events" ? (
+                              <EventIcon className="panel-link-icon is-event-icon" src={asset(item.icon)} width={28} height={28} />
+                            ) : (
+                              // eslint-disable-next-line @next/next/no-img-element
+                              <img className="panel-link-icon" src={asset(item.icon)} alt="" width={28} height={28} />
+                            )
                           ) : null}
                           <span className="panel-link-title">{item.label(t)}</span>
                         </Link>
@@ -312,8 +317,12 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 aria-current={exact ? "page" : undefined}
               >
                 {item.icon ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img className="panel-link-icon" src={asset(item.icon)} alt="" width={28} height={28} />
+                  section.id === "events" ? (
+                    <EventIcon className="panel-link-icon is-event-icon" src={asset(item.icon)} width={28} height={28} />
+                  ) : (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img className="panel-link-icon" src={asset(item.icon)} alt="" width={28} height={28} />
+                  )
                 ) : null}
                 <span className="panel-link-title">{item.label(t)}</span>
               </Link>

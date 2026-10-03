@@ -2283,6 +2283,17 @@ a.entry-card:hover { transform: translateY(-2px); border-color: var(--accent-lin
   box-shadow: 0 8px 18px rgba(0, 0, 0, .4);
   transform: none;
 }
+.events-index .guide-card-art {
+  background: transparent;
+}
+.events-index .guide-card-art.is-icon img {
+  border-radius: 0;
+  box-shadow: none;
+}
+.panel-link-icon.is-event-icon {
+  border-radius: 0;
+  box-shadow: none;
+}
 .guide-card:hover .guide-card-art.is-icon img:nth-child(odd),
 .guide-card:hover .guide-card-art.is-icon img:nth-child(even) {
   transform: none;

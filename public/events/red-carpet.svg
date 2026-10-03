@@ -9,7 +9,7 @@
       <stop offset="1" stop-color="#a9193c" />
     </linearGradient>
   </defs>
-  <rect width="128" height="128" rx="22" fill="#f3dfbd" />
+  <rect width="128" height="128" rx="22" fill="none" />
   <path d="M13 16h102v82H13z" fill="#241d2d" stroke="#b98b50" stroke-width="4" />
   <path d="M15 18h26v78H15c9-12 9-26 0-39 9-13 9-26 0-39Zm98 0H87v78h26c-9-12-9-26 0-39-9-13-9-26 0-39Z" fill="url(#curtain)" />
   <path d="M41 18h46v78H41z" fill="#332438" />
