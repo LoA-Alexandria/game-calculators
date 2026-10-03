@@ -13,6 +13,14 @@ export type HeldStatObservation = {
 };
 
 const REFERENCE_LEVEL_ONE_ANG = 616;
+export const MAX_HELD_LEVEL = 500;
+export const MAX_HERO_STAR_COUNT = 40;
+
+/** Star ANG bonuses are intentionally empty until their fixed values are supplied. */
+export const HELD_STAR_ANG_BONUS_PERCENTAGES: readonly (number | null)[] = Object.freeze([
+  0,
+  ...Array<number | null>(MAX_HERO_STAR_COUNT).fill(null),
+]);
 
 /**
  * Observed universal held-ANG additions. The level-300 value is currently
@@ -73,6 +81,39 @@ export function estimatedHeldLpLevelOne(observation: HeldStatObservation): numbe
   const lpBeforeBonuses = observation.heldLp - heldLpMilestoneBonus(observation.level, observation.phase);
   if (baseAtLevel <= 0 || lpBeforeBonuses <= 0) return null;
   return Math.round((lpBeforeBonuses * REFERENCE_LEVEL_ONE_ANG) / baseAtLevel);
+}
+
+export function heldStarAngBonusPercent(starCount: number): number | null {
+  if (!Number.isInteger(starCount) || starCount < 0 || starCount > MAX_HERO_STAR_COUNT) return null;
+  return HELD_STAR_ANG_BONUS_PERCENTAGES[starCount] ?? null;
+}
+
+export function heldAngAfterStarBonus(levelAng: number | null, starCount: number): number | null {
+  if (levelAng == null) return null;
+  const bonusPercent = heldStarAngBonusPercent(starCount);
+  if (bonusPercent == null) return null;
+  return Math.round(levelAng * (1 + bonusPercent / 100));
+}
+
+/** Scales chat-derived level-one ANG and LP to the requested level. */
+export function heldStatsAtLevel(
+  levelOne: { heldAng: number | null; heldLp: number | null },
+  level: number,
+  currentMilestonePhase: "normal" | "after-ascension" = "normal",
+) {
+  if (!Number.isInteger(level) || level < 1 || level > MAX_HELD_LEVEL) {
+    return { heldAng: null, heldLp: null };
+  }
+  const referenceAtLevel = referenceHeldAng(level);
+  const multiplier = referenceAtLevel / REFERENCE_LEVEL_ONE_ANG;
+  return {
+    heldAng: levelOne.heldAng == null
+      ? null
+      : Math.round(levelOne.heldAng * multiplier) + heldAngMilestoneBonus(level, currentMilestonePhase),
+    heldLp: levelOne.heldLp == null
+      ? null
+      : Math.round(levelOne.heldLp * multiplier) + heldLpMilestoneBonus(level, currentMilestonePhase),
+  };
 }
 
 export const HELD_STAT_OBSERVATIONS = (catalogData as { heldStatObservations: HeldStatObservation[] }).heldStatObservations;

@@ -13,7 +13,15 @@ import {
 } from "react";
 import { guideHref, guideLayout } from "../../lib/content/guides";
 import { heroAppearances } from "../../lib/content/hero-links";
-import { heroBasicStatsForHero } from "../../lib/calculators/hero-stat-baselines";
+import {
+  heldAngAfterStarBonus,
+  heldStatsAtLevel,
+  heldStarAngBonusPercent,
+  heroBasicStatsForHero,
+  HELD_ANG_MILESTONES,
+  MAX_HELD_LEVEL,
+  MAX_HERO_STAR_COUNT,
+} from "../../lib/calculators/hero-stat-baselines";
 import { placementCaption } from "../../lib/content/hero-tiers";
 import { layoutTexts, type BuildZone } from "../../lib/content/hero-layouts";
 import type { PaintingTexts } from "../../lib/content/artwork";
@@ -522,6 +530,9 @@ function HeroDetail({
   const artworkTexts = t.guideEntries.artwork.catalogTexts as PaintingTexts;
   const collectionTexts = t.guideEntries.collection.collectionTexts as CollectionTexts;
   const [shown, setShown] = useState(0);
+  const [basicLevelInput, setBasicLevelInput] = useState("1");
+  const [basicStarInput, setBasicStarInput] = useState("0");
+  const [currentAscensionApplied, setCurrentAscensionApplied] = useState(false);
   // Name, rarity, and pictures are shared; the game text comes from the dictionary + lore.
   // Exclusive collection names come from the Collection guide, not from heroTexts.
   const hero = localizedHero(row, texts, collectionTexts);
@@ -529,6 +540,16 @@ function HeroDetail({
   const figure = heroChibiUrl(hero.id);
   const found = heroAppearances(hero.name);
   const basicStats = heroBasicStatsForHero(hero.id);
+  const basicLevel = Number(basicLevelInput);
+  const basicStars = Number(basicStarInput);
+  const validBasicLevel = Number.isInteger(basicLevel) && basicLevel >= 1 && basicLevel <= MAX_HELD_LEVEL;
+  const validBasicStars = Number.isInteger(basicStars) && basicStars >= 0 && basicStars <= MAX_HERO_STAR_COUNT;
+  const levelStats = basicStats && validBasicLevel
+    ? heldStatsAtLevel(basicStats, basicLevel, currentAscensionApplied ? "after-ascension" : "normal")
+    : { heldAng: null, heldLp: null };
+  const starBonusPercent = validBasicStars ? heldStarAngBonusPercent(basicStars) : null;
+  const starAdjustedAng = validBasicStars ? heldAngAfterStarBonus(levelStats.heldAng, basicStars) : null;
+  const currentLevelHasMilestone = validBasicLevel && HELD_ANG_MILESTONES.some((milestone) => milestone.level === basicLevel);
   const layouts = layoutTexts(t.guideEntries.heroLayouts);
   const layoutGuide = t.guideEntries.heroLayouts;
   const tierGuide = t.guideEntries.heroTierList;
@@ -647,16 +668,71 @@ function HeroDetail({
       id: "basic",
       title: guide.basicHeading,
       body: (
-        <dl className="hero-basic-values hero-basic-panel">
-          <div>
-            <dt>{guide.basicHeroAng}</dt>
-            <dd>{basicStats?.heldAng == null ? "—" : `${basicStats.heldAngEstimated ? "≈ " : ""}${n(basicStats.heldAng)}`}</dd>
+        <div className="hero-basic-calculator">
+          <div className="hero-basic-controls">
+            <label>
+              <span>{guide.basicLevelLabel}</span>
+              <input
+                type="number"
+                min={1}
+                max={MAX_HELD_LEVEL}
+                step={1}
+                value={basicLevelInput}
+                onChange={(event) => setBasicLevelInput(event.target.value)}
+                aria-describedby={`${nameId}-basic-level-note`}
+              />
+            </label>
+            <label>
+              <span>{guide.basicStarsLabel}</span>
+              <input
+                type="number"
+                min={0}
+                max={MAX_HERO_STAR_COUNT}
+                step={1}
+                value={basicStarInput}
+                onChange={(event) => setBasicStarInput(event.target.value)}
+              />
+            </label>
           </div>
-          <div>
-            <dt>{guide.basicLp}</dt>
-            <dd>{basicStats?.heldLp == null ? "—" : `${basicStats.heldLpEstimated ? "≈ " : ""}${n(basicStats.heldLp)}`}</dd>
-          </div>
-        </dl>
+          <p className="hero-basic-note" id={`${nameId}-basic-level-note`}>{guide.basicLevelNote}</p>
+          {currentLevelHasMilestone ? (
+            <label className="hero-basic-ascension">
+              <input
+                type="checkbox"
+                checked={currentAscensionApplied}
+                onChange={(event) => setCurrentAscensionApplied(event.target.checked)}
+              />
+              <span>{guide.basicAscensionApplied}</span>
+            </label>
+          ) : null}
+          <dl className="hero-basic-values hero-basic-panel">
+            <div>
+              <dt>{guide.basicHeroAng}</dt>
+              <dd>{basicStats?.heldAng == null ? "—" : `${basicStats.heldAngEstimated ? "≈ " : ""}${n(basicStats.heldAng)}`}</dd>
+            </div>
+            <div>
+              <dt>{guide.basicLp}</dt>
+              <dd>{basicStats?.heldLp == null ? "—" : `${basicStats.heldLpEstimated ? "≈ " : ""}${n(basicStats.heldLp)}`}</dd>
+            </div>
+            <div>
+              <dt>{fill(guide.basicAngAtLevel, { level: validBasicLevel ? basicLevel : "—" })}</dt>
+              <dd>{levelStats.heldAng == null ? "—" : `${basicStats?.heldAngEstimated ? "≈ " : ""}${n(levelStats.heldAng)}`}</dd>
+            </div>
+            <div>
+              <dt>{fill(guide.basicLpAtLevel, { level: validBasicLevel ? basicLevel : "—" })}</dt>
+              <dd>{levelStats.heldLp == null ? "—" : `${basicStats?.heldLpEstimated ? "≈ " : ""}${n(levelStats.heldLp)}`}</dd>
+            </div>
+            <div>
+              <dt>{guide.basicStarBonus}</dt>
+              <dd>{starBonusPercent == null ? guide.basicStarBonusMissing : `${n(starBonusPercent)}%`}</dd>
+            </div>
+            <div>
+              <dt>{guide.basicAngAfterStars}</dt>
+              <dd>{starAdjustedAng == null ? "—" : `${basicStats?.heldAngEstimated ? "≈ " : ""}${n(starAdjustedAng)}`}</dd>
+            </div>
+          </dl>
+          <p className="hero-basic-formula">{guide.basicStarFormula}</p>
+        </div>
       ),
     },
   ];

@@ -37,6 +37,21 @@ ANG and LP value, subtracting the known enlightenment and ascension bonuses
 first. The UI prefixes formula-derived values with `≈` and shows direct
 level-one readings without the prefix.
 
+The Basic tab also accepts a target level from 1 to 500 and calculates ANG and
+LP at that level from the level-one values. It uses the same integer ANG
+reference curve for both stats, rounds the scaled stat to a whole point, then
+adds the known milestone bonus. Bonuses from earlier milestones are included;
+at the exact milestone level, a checkbox controls whether that level's
+ascension has been completed. Values derived from estimated level-one stats
+remain marked with `≈`.
+
+The star selector accepts 0 to 40 stars. The fixed ANG bonus percentages have
+not yet been supplied, so only zero stars calculate (0% bonus); other star
+counts show the star bonus as not set and leave the post-star ANG blank. Once
+the percentages are known, the calculation is `ANG at selected level × (1 +
+fixed bonus for selected stars)`, rounded to a whole point. Stars do not change
+the displayed LP estimate.
+
 LP has its own per-hero level-one base, but uses the same level-growth
 multiplier as the existing integer ANG reference curve. This is a fitted
 cross-stat assumption, not a confirmed game formula. It is checked against 61
