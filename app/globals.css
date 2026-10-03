@@ -977,12 +977,12 @@ p { margin: 0; }
 }
 
 .page-background-art {
-  position: absolute;
-  inset: 0;
+  position: fixed;
+  inset: var(--topbar) 0 0 var(--sidebar);
   z-index: -1;
   pointer-events: none;
   background-repeat: no-repeat;
-  background-position: right clamp(12px, 5vw, 76px) top clamp(78px, 11vh, 132px);
+  background-position: right clamp(12px, 5vw, 76px) top clamp(18px, 4vh, 36px);
   background-size: min(82vw, 1120px) auto;
   opacity: .32;
   mix-blend-mode: multiply;
@@ -1002,9 +1002,15 @@ p { margin: 0; }
 
 @media (max-width: 720px) {
   .page-background-art {
-    background-position: center top 86px;
+    background-position: center top 26px;
     background-size: min(100%, 620px) auto;
     opacity: .2;
+  }
+}
+
+@media (max-width: 1024px) {
+  .page-background-art {
+    left: 0;
   }
 }
 
