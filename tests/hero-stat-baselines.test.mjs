@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
 
-const catalog = JSON.parse(readFileSync(new URL("../lib/data/hero-stat-baselines.json", import.meta.url), "utf8"));
+const catalog = JSON.parse(readFileSync(new URL("../lib/calculators/hero-stat-baselines.json", import.meta.url), "utf8"));
 const roster = JSON.parse(readFileSync(new URL("../lib/data/heroes.json", import.meta.url), "utf8"));
 const observation = (heroId, level, phase = "normal") => catalog.heldStatObservations.find((row) => row.heroId === heroId && row.level === level && row.phase === phase);
 

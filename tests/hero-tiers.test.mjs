@@ -196,7 +196,7 @@ test("every banner is there, at twice the size it is drawn", async () => {
 
   // Keep the list pinned so a guide cannot lose its banner unnoticed.
   const withoutBanner = Object.keys(en.guideEntries).filter((id) => !guideTitleBanner(id));
-  assert.deepEqual(withoutBanner, ["eventOrderRotation", "eventTitles", "heroCollectionDestiny"], "only guides with custom visual layouts skip a title image");
+  assert.deepEqual(withoutBanner, ["heroStats", "eventOrderRotation", "eventTitles", "heroCollectionDestiny"], "only guides with custom visual layouts skip a title image");
   for (const id of Object.keys(en.guideEntries)) {
     const banner = guideTitleBanner(id);
     if (banner) check(banner, `guide ${id}`);

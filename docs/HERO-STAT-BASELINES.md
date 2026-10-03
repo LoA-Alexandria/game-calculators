@@ -1,6 +1,6 @@
 # Hero stat baselines
 
-`lib/data/hero-stat-baselines.json` is the roster-wide catalog for hero base
+`lib/calculators/hero-stat-baselines.json` is the roster-wide catalog for hero base
 attack and observed level-stat contributions. It is separate from skill damage
 coefficients in the battle calculator.
 
