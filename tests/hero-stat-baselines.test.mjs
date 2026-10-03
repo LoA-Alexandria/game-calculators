@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 import test from "node:test";
-import { estimatedHeldAngLevelOne, estimatedHeldLpLevelOne, heldAngAfterStarBonus, heldAngMilestoneBonus, heldLpMilestoneBonus, heldStatsAtLevel, heldStarAngBonusPercent, heroBasicStatsForHero, referenceHeldAng } from "../lib/calculators/hero-stat-baselines.ts";
+import { estimatedHeldAngLevelOne, estimatedHeldLpLevelOne, heldAngAfterStarBonus, heldAngMilestoneBonus, heldLpAfterStarBonus, heldLpMilestoneBonus, heldStatsAtLevel, heldStarBonusPercent, heroBasicStatsForHero, maxHeroStarLevelAtLevel, referenceHeldAng } from "../lib/calculators/hero-stat-baselines.ts";
 
 const catalog = JSON.parse(readFileSync(new URL("../lib/calculators/hero-stat-baselines.json", import.meta.url), "utf8"));
 const roster = JSON.parse(readFileSync(new URL("../lib/data/heroes.json", import.meta.url), "utf8"));
@@ -76,13 +76,31 @@ test("Basic level calculator scales ANG and LP and applies milestone bonuses", (
   assert.deepEqual(heldStatsAtLevel(base, 501), { heldAng: null, heldLp: null });
 });
 
-test("star input is accepted while unprovided star percentages remain placeholders", () => {
-  assert.equal(heldStarAngBonusPercent(0), 0);
-  assert.equal(heldAngAfterStarBonus(1234, 0), 1234);
-  assert.equal(heldStarAngBonusPercent(1), null);
-  assert.equal(heldAngAfterStarBonus(1234, 1), null);
-  assert.equal(heldStarAngBonusPercent(40), null);
-  assert.equal(heldStarAngBonusPercent(41), null);
+test("star level applies the rarity-specific fixed bonus to both ANG and LP", () => {
+  assert.equal(heldStarBonusPercent(0, "UR"), 0);
+  assert.equal(heldAngAfterStarBonus(1234, 0, "UR"), 1234);
+  assert.equal(heldLpAfterStarBonus(5678, 0, "UR"), 5678);
+  assert.equal(heldStarBonusPercent(1, "UR+"), 15);
+  assert.equal(heldStarBonusPercent(1, "UR"), 15);
+  assert.equal(heldStarBonusPercent(1, "SSR"), 12);
+  assert.equal(heldStarBonusPercent(1, "SR"), 8);
+  assert.equal(heldStarBonusPercent(1, "R"), 5);
+  assert.deepEqual(Array.from({ length: 13 }, (_, index) => heldStarBonusPercent(index + 1, "UR")), [15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180, 195]);
+  assert.equal(heldStarBonusPercent(13, "UR"), 195);
+  assert.equal(heldStarBonusPercent(13, "SSR"), 156);
+  assert.equal(heldStarBonusPercent(13, "SR"), 104);
+  assert.equal(heldStarBonusPercent(13, "R"), 65);
+  assert.equal(heldAngAfterStarBonus(1000, 2, "SSR"), 1240);
+  assert.equal(heldLpAfterStarBonus(10000, 2, "SSR"), 12400);
+  assert.equal(heldStarBonusPercent(14, "UR"), null);
+  assert.equal(heldAngAfterStarBonus(1234, 14, "UR"), null);
+  assert.equal(heldLpAfterStarBonus(1234, 14, "UR"), null);
+  assert.equal(maxHeroStarLevelAtLevel(4), 0);
+  assert.equal(maxHeroStarLevelAtLevel(5), 1);
+  assert.equal(maxHeroStarLevelAtLevel(64), 12);
+  assert.equal(maxHeroStarLevelAtLevel(65), 13);
+  assert.equal(maxHeroStarLevelAtLevel(500), 13);
+  assert.equal(maxHeroStarLevelAtLevel(0), 0);
 });
 
 test("Basic stats use their own profile tab instead of the other-guides list", () => {
