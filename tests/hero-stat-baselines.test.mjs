@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import test from "node:test";
-import { estimatedHeldAngLevelOne, hasHeroStatRecord, heldAngMilestoneBonus, referenceHeldAng } from "../lib/calculators/hero-stat-baselines.ts";
+import { estimatedHeldAngLevelOne, heldAngMilestoneBonus, heroBasicStatsForHero, referenceHeldAng } from "../lib/calculators/hero-stat-baselines.ts";
 
 const catalog = JSON.parse(readFileSync(new URL("../lib/calculators/hero-stat-baselines.json", import.meta.url), "utf8"));
 const roster = JSON.parse(readFileSync(new URL("../lib/data/heroes.json", import.meta.url), "utf8"));
@@ -20,9 +20,22 @@ test("hero stat catalog covers the published hero roster without inventing missi
   assert.ok(catalog.heldStatObservations.every((row) => Number.isInteger(row.level) && Number.isInteger(row.heldAng)));
 });
 
-test("every hero profile can link to its Basic row, including heroes without measurements", () => {
-  assert.ok(roster.heroes.every((hero) => hasHeroStatRecord(hero.id)));
-  assert.equal(hasHeroStatRecord("unknown-hero"), false);
+test("every hero profile receives Basic stats and unknown LP stays explicitly blank", () => {
+  assert.ok(roster.heroes.every((hero) => heroBasicStatsForHero(hero.id) !== null));
+  assert.equal(heroBasicStatsForHero("unknown-hero"), null);
+  assert.equal(heroBasicStatsForHero("guan-yu").heldAng, 616);
+  assert.equal(heroBasicStatsForHero("guan-yu").heldLp, 6791);
+  assert.equal(heroBasicStatsForHero("achilles").heldLp, null);
+  assert.equal(heroBasicStatsForHero("achilles").heldAngEstimated, true);
+});
+
+test("Basic stats are nested in Core Heroes instead of a standalone stats page", () => {
+  const heroRoster = readFileSync(new URL("../app/guides/HeroRoster.tsx", import.meta.url), "utf8");
+  const navigation = readFileSync(new URL("../lib/navigation.ts", import.meta.url), "utf8");
+  assert.match(heroRoster, /guide\.basicHeading/);
+  assert.match(heroRoster, /heroBasicStatsForHero\(hero\.id\)/);
+  assert.equal(existsSync(new URL("../app/guides/hero-stats/page.tsx", import.meta.url)), false);
+  assert.equal(navigation.includes("/guides/hero-stats/"), false);
 });
 
 test("Guan Yu milestone readings and later user readings are kept as observations", () => {

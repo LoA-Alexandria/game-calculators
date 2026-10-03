@@ -130,13 +130,6 @@ export const SECTIONS: NavSection[] = [
         categoryId: "coreElements",
       },
       {
-        href: "/guides/hero-stats/",
-        label: (t) => t.guideEntries.heroStats.title,
-        description: (t) => t.guideEntries.heroStats.summary,
-        badge: (t) => t.guideCategories.coreElements,
-        categoryId: "coreElements",
-      },
-      {
         href: "/guides/artwork/",
         label: (t) => t.guideEntries.artwork.title,
         description: (t) => t.guideEntries.artwork.summary,

@@ -124,9 +124,6 @@ export const GUIDE_PRESENTATION: Record<GuideEntryId, GuidePresentation> = {
     art: ["/heroes/achilles-3.webp", "/heroes/joan-of-arc-2.webp", "/heroes/tutankhamun-2.webp"],
     editor: { href: "/guides/hero-leveling/edit/", label: (t) => t.levelingEditor.openEditor },
   },
-  heroStats: {
-    art: ["/heroes/guan-yu.webp", "/heroes/lu-bu.webp", "/heroes/miyamoto-musashi.webp"],
-  },
   anecdotes: {
     art: ["/artwork/landscape-shaped-like-a-face.webp", "/heroes/socrates-2.webp", "/goddesses/muse.webp"],
     editor: { href: "/guides/anecdotes/edit/", label: (t) => t.anecdoteEditor.openEditor },

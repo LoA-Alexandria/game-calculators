@@ -58,10 +58,32 @@ export function estimatedHeldAngLevelOne(observation: HeldStatObservation): numb
 
 export const HELD_STAT_OBSERVATIONS = (catalogData as { heldStatObservations: HeldStatObservation[] }).heldStatObservations;
 
+export type HeroStatBaseline = (typeof catalogData.heroes)[number];
+
+export function heroStatBaselineForHero(heroId: string): HeroStatBaseline | null {
+  return (catalogData as { heroes: HeroStatBaseline[] }).heroes.find((hero) => hero.id === heroId) ?? null;
+}
+
 export function heldStatObservationsForHero(heroId: string): HeldStatObservation[] {
   return HELD_STAT_OBSERVATIONS.filter((observation) => observation.heroId === heroId);
 }
 
-export function hasHeroStatRecord(heroId: string): boolean {
-  return (catalogData as { heroes: Array<{ id: string }> }).heroes.some((hero) => hero.id === heroId);
+export function heroBasicStatsForHero(heroId: string) {
+  const hero = heroStatBaselineForHero(heroId);
+  if (!hero) return null;
+
+  const observations = heldStatObservationsForHero(heroId);
+  const levelOne = observations.find((observation) => observation.level === 1 && observation.phase === "normal");
+  const estimateFrom = observations
+    .filter((observation) => estimatedHeldAngLevelOne(observation) !== null)
+    .sort((a, b) => b.level - a.level || Number(b.phase === "after-ascension" || b.phase === "after-enlightenment") - Number(a.phase === "after-ascension" || a.phase === "after-enlightenment"))[0];
+  const estimatedAng = estimateFrom ? estimatedHeldAngLevelOne(estimateFrom) : null;
+
+  return {
+    baseAttack: hero.combatBaseAttack.value,
+    heldAng: hero.heldStatStart?.ang ?? levelOne?.heldAng ?? estimatedAng,
+    heldAngEstimated: hero.heldStatStart?.ang == null && levelOne?.heldAng == null && estimatedAng !== null,
+    heldLp: hero.heldStatStart?.lp ?? levelOne?.heldLp ?? hero.combatBaseLp.value,
+    observations,
+  };
 }
