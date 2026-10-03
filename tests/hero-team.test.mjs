@@ -14,7 +14,7 @@ test("production gates and missing source text do not invent bonuses", () => {
   const slots = [{ building: "Coal Plant", baseRate: 100 }];
   assert.equal(simulateProduction([hero("heracles", { productionLevel: 5, stars: 5 })], slots, 1).rate, 100);
   assert.equal(simulateProduction([hero("heracles", { productionLevel: 5, stars: 6 })], slots, 1).rate, 156);
-  assert.equal(productionValue(HEROES.find((entry) => entry.id === "billy-the-kid")), null);
+  assert.equal(productionValue(HEROES.find((entry) => entry.id === "joan-of-arc")), null);
 });
 test("zero time and empty inventory preserve base output with no invented assignments", () => {
   const slots = [{ building: "Farm", baseRate: 100 }];

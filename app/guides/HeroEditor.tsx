@@ -35,7 +35,7 @@ import {
   type HeroExport,
   type HeroProblem,
 } from "../../lib/content/hero-editor";
-import { HERO_ABILITY_KINDS, HERO_DATA, HERO_RARITIES, heroImageUrl, type HeroAbilityKind, type HeroRarity } from "../../lib/content/heroes";
+import { HERO_EDITOR_ABILITY_KINDS, HERO_DATA, HERO_RARITIES, heroImageUrl, type HeroAbilityKind, type HeroRarity } from "../../lib/content/heroes";
 import { DEFAULT_LOCALE, LOCALE_CODES, fill, type Dictionary, type Locale } from "../../lib/i18n";
 import { HERO_DRAFT_STORAGE_KEY } from "../../lib/site";
 import { AllLanguagesToggle, DictionaryBlocks, TranslatedField, useEditorLanguages } from "../components/EditorLanguages";
@@ -354,7 +354,7 @@ function HeroForm({
       </div>
 
       <p className="tier-small hero-edit-abilities-hint">{e.abilitiesHint}</p>
-      {HERO_ABILITY_KINDS.map((kind) => (
+      {HERO_EDITOR_ABILITY_KINDS.map((kind) => (
         <AbilityField key={kind} ctx={ctx} hero={hero} kind={kind} />
       ))}
 

@@ -1299,7 +1299,7 @@ const en = {
       skinLabel: "Skin {number}",
       sectionsLabel: "Sections",
       skillsHeading: "Skills",
-      abilityKinds: { skill: "Skill", buff: "Buff", production: "Production" },
+      abilityKinds: { skill: "Skill", buff: "Buff", production: "Production", skinSkill: "Skin skill" },
       abilityProgress: "{count}/3 skills",
       abilityMissing: "Not filled in yet",
       abilityPending: "Nobody has added this text yet.",
@@ -1323,7 +1323,7 @@ const en = {
           ],
         },
       ],
-      note: "Skill, buff, and production tables for 37 heroes are from German client screenshots taken on 18 September 2026. English is a translation and may differ from the in-game English. Production levels that were not on those screenshots are interpolated: UR and UR+ +4% per level, SSR 30% + 3% × (n−1). Titles, troops, ages, bios, and the five Crown Vault / Billy the Kid cards come from the Pop Epoch Wiki Hero page; those five have no skill tables here yet.",
+      note: "Skill, buff, and production tables for 39 heroes come from German client screenshots taken on 18 September and 2 October 2026. German is the source text; English and French are translations and may differ from the in-game wording. Production levels missing from the screenshots are interpolated: UR and UR+ +4% per level, SSR 30% + 3% × (n−1). Titles, troops, ages, and bios come from the Pop Epoch Wiki Hero page. Joan of Arc and four heroes added from the wiki do not yet have complete ability tables here.",
     },
     technology: {
       title: "Technology",
