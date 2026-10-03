@@ -1318,14 +1318,6 @@ const fr: Dictionary = {
       basicBaseAttack: "ATQ de base · vert 1★",
       basicHeroAng: "ATQ héros · niv. 1",
       basicLp: "PV héros · niv. 1",
-      basicUnavailable: "Non renseigné",
-      basicEstimated: "Estimé d’après les niveaux observés",
-      basicReadings: "Valeurs observées ({count})",
-      basicNormal: "Normal",
-      basicBeforeAscension: "Avant l’ascension",
-      basicAfterAscension: "Après l’ascension",
-      basicBeforeEnlightenment: "Avant l’éveil",
-      basicAfterEnlightenment: "Après l’éveil",
       // Textes de jeu traduits par héros, indexés par l'id de lib/data/heroes.json.
       heroTexts: {
         hermes: {

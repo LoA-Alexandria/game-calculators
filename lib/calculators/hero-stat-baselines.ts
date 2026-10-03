@@ -84,6 +84,5 @@ export function heroBasicStatsForHero(heroId: string) {
     heldAng: hero.heldStatStart?.ang ?? levelOne?.heldAng ?? estimatedAng,
     heldAngEstimated: hero.heldStatStart?.ang == null && levelOne?.heldAng == null && estimatedAng !== null,
     heldLp: hero.heldStatStart?.lp ?? levelOne?.heldLp ?? hero.combatBaseLp.value,
-    observations,
   };
 }
