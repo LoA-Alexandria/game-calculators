@@ -1354,8 +1354,8 @@ const en = {
       inTierList: "Hero tier list",
       inLayouts: "Hero layouts",
       inArtwork: "Artwork",
-      inHeroStats: "Hero Base Stats",
-      heldStatMeasurements: "Observed stats and estimated level-1 ANG",
+      inHeroStats: "Basic",
+      heldStatMeasurements: "Base attack, held ANG and LP",
       // English is the wording in lib/data/heroes.json, so this catalog stays empty.
       heroTexts: {},
       sections: [

@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import test from "node:test";
-import { estimatedHeldAngLevelOne, heldAngMilestoneBonus, referenceHeldAng } from "../lib/calculators/hero-stat-baselines.ts";
+import { estimatedHeldAngLevelOne, hasHeroStatRecord, heldAngMilestoneBonus, referenceHeldAng } from "../lib/calculators/hero-stat-baselines.ts";
 
 const catalog = JSON.parse(readFileSync(new URL("../lib/calculators/hero-stat-baselines.json", import.meta.url), "utf8"));
 const roster = JSON.parse(readFileSync(new URL("../lib/data/heroes.json", import.meta.url), "utf8"));
@@ -18,6 +18,11 @@ test("hero stat catalog covers the published hero roster without inventing missi
   assert.equal(catalog.heroes.find((hero) => hero.id === "andersen").combatBaseAttack.status, "possible-name-match-needs-confirmation");
   assert.ok(catalog.heldStatObservations.every((row) => roster.heroes.some((hero) => hero.id === row.heroId)));
   assert.ok(catalog.heldStatObservations.every((row) => Number.isInteger(row.level) && Number.isInteger(row.heldAng)));
+});
+
+test("every hero profile can link to its Basic row, including heroes without measurements", () => {
+  assert.ok(roster.heroes.every((hero) => hasHeroStatRecord(hero.id)));
+  assert.equal(hasHeroStatRecord("unknown-hero"), false);
 });
 
 test("Guan Yu milestone readings and later user readings are kept as observations", () => {

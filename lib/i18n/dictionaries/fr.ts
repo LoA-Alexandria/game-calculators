@@ -1355,8 +1355,8 @@ const fr: Dictionary = {
       inTierList: "Classement des héros",
       inLayouts: "Formations des héros",
       inArtwork: "Artwork",
-      inHeroStats: "Stats de base des héros",
-      heldStatMeasurements: "Mesures et ATQ niv. 1 estimée",
+      inHeroStats: "Base",
+      heldStatMeasurements: "ATQ de base, ATQ héros et PV",
       // Textes de jeu traduits par héros, indexés par l'id de lib/data/heroes.json.
       heroTexts: {
         hermes: {

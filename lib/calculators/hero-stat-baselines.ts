@@ -63,5 +63,5 @@ export function heldStatObservationsForHero(heroId: string): HeldStatObservation
 }
 
 export function hasHeroStatRecord(heroId: string): boolean {
-  return heldStatObservationsForHero(heroId).length > 0;
+  return (catalogData as { heroes: Array<{ id: string }> }).heroes.some((hero) => hero.id === heroId);
 }

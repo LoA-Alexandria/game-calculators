@@ -1355,8 +1355,8 @@ const de: Dictionary = {
       inTierList: "Helden-Tier-Liste",
       inLayouts: "Helden-Layouts",
       inArtwork: "Artwork",
-      inHeroStats: "Helden-Basiswerte",
-      heldStatMeasurements: "Messwerte und geschätzter ANG auf Stufe 1",
+      inHeroStats: "Basiswerte",
+      heldStatMeasurements: "Basis-ANG, Held-ANG und LP",
       // Übersetzte Spieltexte je Held, Schlüssel ist die Helden-Id aus lib/data/heroes.json.
       heroTexts: {
         hermes: {
